@@ -202,6 +202,37 @@ Add to your Cursor MCP settings (`.cursor/mcp.json` in your project or global co
 claude mcp add gnosys npx gnosys-mcp
 ```
 
+### Codex
+
+Add to `~/.codex/config.toml` or `.codex/config.toml` in your project:
+
+```toml
+[mcp.gnosys]
+type = "local"
+command = ["npx", "gnosys-mcp"]
+
+[mcp.gnosys.env]
+ANTHROPIC_API_KEY = "your-key-here"
+```
+
+### OpenCode
+
+Add to `~/.config/opencode/opencode.json` or `opencode.json` in your project:
+
+```json
+{
+  "mcp": {
+    "gnosys": {
+      "type": "local",
+      "command": ["npx", "gnosys-mcp"],
+      "env": {
+        "ANTHROPIC_API_KEY": "your-key-here"
+      }
+    }
+  }
+}
+```
+
 ### MCP Tools
 
 The MCP server exposes the same operations as the CLI:
