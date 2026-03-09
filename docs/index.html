@@ -955,10 +955,10 @@ footer a:hover { color: var(--accent-light); }
               <span class="hiw-code-dot"></span>
               terminal
               <span class="hiw-copy-buttons">
-                <button class="hiw-copy-btn" onclick="var b=this;var ic=b.innerHTML;navigator.clipboard.writeText('claude mcp add gnosys npx gnosys-mcp').then(function(){b.innerHTML='copied!';b.classList.add('copied');setTimeout(function(){b.innerHTML=ic;b.classList.remove('copied')},2000)})"><svg class="copy-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy command</button>
+                <button class="hiw-copy-btn" data-highlight="full" data-panel="panel-claude-code" onclick="var b=this;var ic=b.innerHTML;navigator.clipboard.writeText('claude mcp add gnosys npx gnosys-mcp').then(function(){b.innerHTML='copied!';b.classList.add('copied');setTimeout(function(){b.innerHTML=ic;b.classList.remove('copied')},2000)})"><svg class="copy-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy command</button>
               </span>
             </div>
-            <pre><span class="punct">$</span> claude mcp add gnosys npx <span class="string">gnosys-mcp</span></pre>
+            <pre><span class="hl-line" data-group="full"><span class="punct">$</span> claude mcp add gnosys npx <span class="string">gnosys-mcp</span></span></pre>
           </div>
         </div>
 
