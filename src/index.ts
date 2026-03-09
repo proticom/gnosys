@@ -472,12 +472,12 @@ server.tool(
     context: z.string().optional().describe("Why this signal was given"),
   },
   async ({ memory_id, signal, context }) => {
-    // Log to the first writable store's .gnosys directory
+    // Log to the first writable store's .config directory
     const writeTarget = resolver.getWriteTarget();
     if (writeTarget) {
       const logPath = path.join(
         writeTarget.store.getStorePath(),
-        ".gnosys",
+        ".config",
         "reinforcement.log"
       );
       const entry = JSON.stringify({
@@ -548,7 +548,7 @@ server.tool(
 
     // Create directory structure
     await fs.mkdir(storePath, { recursive: true });
-    await fs.mkdir(path.join(storePath, ".gnosys"), { recursive: true });
+    await fs.mkdir(path.join(storePath, ".config"), { recursive: true });
 
     // Seed default tag registry
     const defaultRegistry = {
@@ -577,7 +577,7 @@ server.tool(
       status_tag: ["draft", "stable", "deprecated", "experimental"],
     };
     await fs.writeFile(
-      path.join(storePath, ".gnosys", "tags.json"),
+      path.join(storePath, ".config", "tags.json"),
       JSON.stringify(defaultRegistry, null, 2),
       "utf-8"
     );
@@ -624,7 +624,7 @@ server.tool(
       content: [
         {
           type: "text",
-          text: `Gnosys store initialized at ${storePath}\n\nCreated:\n- .gnosys/ (internal config)\n- tags.json (tag registry)\n- CHANGELOG.md\n- git repo initialized\n\nThe store is ready. Use gnosys_discover to find existing memories or gnosys_add to create new ones.`,
+          text: `Gnosys store initialized at ${storePath}\n\nCreated:\n- .config/ (internal config)\n- tags.json (tag registry)\n- CHANGELOG.md\n- git repo initialized\n\nThe store is ready. Use gnosys_discover to find existing memories or gnosys_add to create new ones.`,
         },
       ],
     };

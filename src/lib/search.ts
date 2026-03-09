@@ -32,7 +32,7 @@ export class GnosysSearch {
     // volumes in sandboxed environments) allow file creation but block the
     // journal/WAL delete operations that SQLite requires.
     try {
-      const dbPath = path.join(storePath, ".gnosys", "search.db");
+      const dbPath = path.join(storePath, ".config", "search.db");
       this.db = new Database(dbPath);
       this.initSchema();
       // Smoke-test: insert + delete to confirm journal ops work

@@ -1,6 +1,6 @@
 /**
  * Gnosys Tag Registry — Categorized controlled vocabulary for tags.
- * Stored in .gnosys/tags.yml. The ingestion LLM must use existing tags
+ * Stored in .config/tags.json. The ingestion LLM must use existing tags
  * but can propose new ones for approval.
  */
 
@@ -69,7 +69,7 @@ export class GnosysTagRegistry {
   private registry: TagRegistry;
 
   constructor(storePath: string) {
-    this.registryPath = path.join(storePath, ".gnosys", "tags.json");
+    this.registryPath = path.join(storePath, ".config", "tags.json");
     this.registry = { ...DEFAULT_REGISTRY };
   }
 

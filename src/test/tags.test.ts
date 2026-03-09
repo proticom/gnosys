@@ -13,9 +13,9 @@ let registry: GnosysTagRegistry;
 beforeEach(async () => {
   tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "gnosys-tags-test-"));
 
-  // GnosysTagRegistry expects tags at .gnosys/tags.json inside the store
-  const gnosysDir = path.join(tmpDir, ".gnosys");
-  await fs.mkdir(gnosysDir, { recursive: true });
+  // GnosysTagRegistry expects tags at .config/tags.json inside the store
+  const configDir = path.join(tmpDir, ".config");
+  await fs.mkdir(configDir, { recursive: true });
 
   const defaultTags = {
     domain: ["architecture", "auth", "testing"],
@@ -23,7 +23,7 @@ beforeEach(async () => {
     concern: ["dx", "scalability"],
   };
   await fs.writeFile(
-    path.join(gnosysDir, "tags.json"),
+    path.join(configDir, "tags.json"),
     JSON.stringify(defaultTags, null, 2),
     "utf-8"
   );
@@ -63,9 +63,9 @@ describe("GnosysTagRegistry", () => {
       expect(added).toBe(true);
       expect(registry.hasTag("frontend")).toBe(true);
 
-      // Verify it was persisted to disk at .gnosys/tags.json
+      // Verify it was persisted to disk at .config/tags.json
       const raw = await fs.readFile(
-        path.join(tmpDir, ".gnosys", "tags.json"),
+        path.join(tmpDir, ".config", "tags.json"),
         "utf-8"
       );
       const parsed = JSON.parse(raw);

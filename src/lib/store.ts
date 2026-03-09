@@ -47,7 +47,7 @@ export class GnosysStore {
   async init(): Promise<void> {
     // Ensure store directory exists
     await fs.mkdir(this.storePath, { recursive: true });
-    await fs.mkdir(path.join(this.storePath, ".gnosys"), { recursive: true });
+    await fs.mkdir(path.join(this.storePath, ".config"), { recursive: true });
 
     // Init git if not already
     try {
@@ -68,7 +68,7 @@ export class GnosysStore {
   async getAllMemories(): Promise<Memory[]> {
     const files = await glob("**/*.md", {
       cwd: this.storePath,
-      ignore: ["MANIFEST.md", "CHANGELOG.md", ".gnosys/**", "node_modules/**"],
+      ignore: ["MANIFEST.md", "CHANGELOG.md", ".config/**", "node_modules/**"],
     });
 
     const memories: Memory[] = [];

@@ -41,8 +41,8 @@ afterEach(async () => {
 
 describe("GnosysStore", () => {
   describe("init", () => {
-    it("creates .gnosys internal directory", async () => {
-      const stat = await fs.stat(path.join(tmpDir, ".gnosys"));
+    it("creates .config internal directory", async () => {
+      const stat = await fs.stat(path.join(tmpDir, ".config"));
       expect(stat.isDirectory()).toBe(true);
     });
   });
@@ -181,12 +181,12 @@ describe("GnosysStore", () => {
     it("returns only directories, excludes hidden and node_modules", async () => {
       await fs.mkdir(path.join(tmpDir, "decisions"), { recursive: true });
       await fs.mkdir(path.join(tmpDir, "concepts"), { recursive: true });
-      // .gnosys already exists from init
+      // .config already exists from init
 
       const cats = await store.getCategories();
       expect(cats).toContain("decisions");
       expect(cats).toContain("concepts");
-      expect(cats).not.toContain(".gnosys");
+      expect(cats).not.toContain(".config");
     });
   });
 

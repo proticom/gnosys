@@ -281,7 +281,7 @@ program
     }
 
     await fs.mkdir(storePath, { recursive: true });
-    await fs.mkdir(path.join(storePath, ".gnosys"), { recursive: true });
+    await fs.mkdir(path.join(storePath, ".config"), { recursive: true });
 
     const defaultRegistry = {
       domain: [
@@ -296,7 +296,7 @@ program
       status_tag: ["draft", "stable", "deprecated", "experimental"],
     };
     await fs.writeFile(
-      path.join(storePath, ".gnosys", "tags.json"),
+      path.join(storePath, ".config", "tags.json"),
       JSON.stringify(defaultRegistry, null, 2),
       "utf-8"
     );
@@ -318,7 +318,7 @@ program
         execSync('git config user.name "Gnosys"', { cwd: storePath, stdio: "pipe" });
         execSync('git config user.email "gnosys@local"', { cwd: storePath, stdio: "pipe" });
       }
-      execSync("git add -A && git add -f .gnosys/", { cwd: storePath, stdio: "pipe" });
+      execSync("git add -A && git add -f .config/", { cwd: storePath, stdio: "pipe" });
       execSync('git commit -m "Initialize Gnosys store"', {
         cwd: storePath,
         stdio: "pipe",
@@ -329,7 +329,7 @@ program
 
     console.log(`Gnosys store initialized at ${storePath}`);
     console.log(`\nCreated:`);
-    console.log(`  .gnosys/     (internal config)`);
+    console.log(`  .config/     (internal config)`);
     console.log(`  tags.json    (tag registry)`);
     console.log(`  CHANGELOG.md`);
     console.log(`  git repo`);
@@ -513,7 +513,7 @@ program
       }
 
       // Log reinforcement
-      const logDir = path.join(writeTarget.store.getStorePath(), ".gnosys");
+      const logDir = path.join(writeTarget.store.getStorePath(), ".config");
       await fs.mkdir(logDir, { recursive: true });
       const logPath = path.join(logDir, "reinforcement.log");
       const entry = JSON.stringify({

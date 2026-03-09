@@ -25,31 +25,31 @@ describe("gnosys init", () => {
     expect(stat.isDirectory()).toBe(true);
   });
 
-  it("creates .gnosys/.gnosys internal config directory", async () => {
+  it("creates .gnosys/.config internal config directory", async () => {
     execSync(`node ${path.resolve("dist/cli.js")} init --directory ${tmpDir}`, {
       stdio: "pipe",
     });
 
-    const internalDir = path.join(tmpDir, ".gnosys", ".gnosys");
+    const internalDir = path.join(tmpDir, ".gnosys", ".config");
     const stat = await fs.stat(internalDir);
     expect(stat.isDirectory()).toBe(true);
   });
 
-  it("does NOT create a nested .gnosys/.gnosys/.gnosys", async () => {
+  it("does NOT create a nested .gnosys/.gnosys", async () => {
     execSync(`node ${path.resolve("dist/cli.js")} init --directory ${tmpDir}`, {
       stdio: "pipe",
     });
 
-    const badNested = path.join(tmpDir, ".gnosys", ".gnosys", ".gnosys");
+    const badNested = path.join(tmpDir, ".gnosys", ".gnosys");
     await expect(fs.stat(badNested)).rejects.toThrow();
   });
 
-  it("places tags.json inside .gnosys/.gnosys (internal config)", async () => {
+  it("places tags.json inside .gnosys/.config (internal config)", async () => {
     execSync(`node ${path.resolve("dist/cli.js")} init --directory ${tmpDir}`, {
       stdio: "pipe",
     });
 
-    const tagsPath = path.join(tmpDir, ".gnosys", ".gnosys", "tags.json");
+    const tagsPath = path.join(tmpDir, ".gnosys", ".config", "tags.json");
     const raw = await fs.readFile(tagsPath, "utf-8");
     const tags = JSON.parse(raw);
     expect(tags).toHaveProperty("domain");
