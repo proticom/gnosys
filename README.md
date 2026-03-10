@@ -527,26 +527,26 @@ The `gnosys_maintain` MCP tool lets agents trigger maintenance programmatically 
 
 ## Comparison
 
-| Feature | **Gnosys** | NotebookLM | gnosis-mcp | Official MCP Memory |
-|---------|-----------|------------|------------|-------------------|
-| Storage | Markdown files + Git | Google proprietary | SQLite | JSON file |
-| Transparent/editable | ✅ Plain `.md` files | ❌ Opaque | ❌ Binary DB | ✅ But flat JSON |
-| Version history | ✅ Full Git history | ❌ | ❌ | ❌ |
-| Obsidian vault | ✅ Native | ❌ | ❌ | ❌ |
-| Bulk import | ✅ CSV/JSON/JSONL | ❌ Manual | ❌ | ❌ |
-| MCP server | ✅ Native | ❌ | ✅ | ✅ |
-| CLI | ✅ Full-featured | ❌ | ❌ | ❌ |
-| Layered stores | ✅ 4 layers | ❌ | ❌ | ❌ |
-| Wikilinks | ✅ Auto-generated | ❌ | ❌ | ❌ |
-| Search | Hybrid: FTS5 + semantic + RRF | Proprietary | Basic SQL | None |
-| Freeform Q&A | ✅ gnosys_ask with citations | ✅ Built-in | ❌ | ❌ |
-| Self-hosted | ✅ | ❌ | ✅ | ✅ |
-| LLM providers | 5 (Anthropic, Ollama, Groq, OpenAI, LM Studio) | Proprietary | No LLM | No LLM |
-| Wikilink graph | ✅ Persistent JSON graph | ❌ | ❌ | ❌ |
-| System dashboard | ✅ Pretty CLI + MCP tool | ❌ | ❌ | ❌ |
-| Auto maintenance | ✅ Decay, dedup, consolidation | ❌ | ❌ | ❌ |
-| Docker support | ✅ | ❌ | ❌ | ❌ |
-| Price | Free / MIT | Free tier, then paid | Free | Free |
+| Feature | **Gnosys** | NotebookLM | Official MCP Memory |
+|---------|-----------|------------|-------------------|
+| Storage | Markdown files + Git | Google proprietary | JSON file |
+| Transparent/editable | ✅ Plain `.md` files | ❌ Opaque | ✅ But flat JSON |
+| Version history | ✅ Full Git history | ❌ | ❌ |
+| Obsidian vault | ✅ Native | ❌ | ❌ |
+| Bulk import | ✅ CSV/JSON/JSONL | ❌ Manual | ❌ |
+| MCP server | ✅ Native | ❌ | ✅ |
+| CLI | ✅ Full-featured | ❌ | ❌ |
+| Layered stores | ✅ 4 layers | ❌ | ❌ |
+| Wikilinks | ✅ Auto-generated | ❌ | ❌ |
+| Search | Hybrid: FTS5 + semantic + RRF | Proprietary | None |
+| Freeform Q&A | ✅ gnosys_ask with citations | ✅ Built-in | ❌ |
+| Self-hosted | ✅ | ❌ | ✅ |
+| LLM providers | 5 (Anthropic, Ollama, Groq, OpenAI, LM Studio) | Proprietary | No LLM |
+| Wikilink graph | ✅ Persistent JSON graph | ❌ | ❌ |
+| System dashboard | ✅ Pretty CLI + MCP tool | ❌ | ❌ |
+| Auto maintenance | ✅ Decay, dedup, consolidation | ❌ | ❌ |
+| Docker support | ✅ | ❌ | ❌ |
+| Price | Free / MIT | Free tier, then paid | Free |
 
 ---
 
@@ -635,20 +635,20 @@ src/
 
 Real numbers from our demo vault (120 memories — 100 USDA foods + 20 NVD CVEs):
 
-| Metric | Gnosys | NotebookLM | gnosis-mcp |
-|--------|--------|------------|------------|
-| Import 100 records | 0.6s (structured) | Manual upload | N/A |
-| Cold start (first load) | 0.3s | ~5s (cloud) | ~0.1s |
-| Keyword search | <10ms (FTS5) | Cloud-dependent | SQLite |
-| Hybrid search (keyword + semantic) | ~50ms | N/A | N/A |
-| Reindex 120 embeddings | ~8s (first run: model download ~80 MB) | N/A | N/A |
-| Maintenance dry-run (120 memories) | ~2s | N/A | N/A |
-| Graph reindex (120 memories) | <1s | N/A | N/A |
-| Storage per memory | ~1 KB `.md` file | Opaque | SQLite row |
-| Embedding storage | ~0.3 MB for 120 memories | Cloud | N/A |
-| LLM providers | 5 (Anthropic, Ollama, Groq, OpenAI, LM Studio) | 1 (Google) | 0 |
-| Offline capable | ✅ (Ollama / LM Studio) | ❌ | ✅ |
-| Test suite | 143 tests, 0 errors | N/A | N/A |
+| Metric | Gnosys | NotebookLM |
+|--------|--------|------------|
+| Import 100 records | 0.6s (structured) | Manual upload |
+| Cold start (first load) | 0.3s | ~5s (cloud) |
+| Keyword search | <10ms (FTS5) | Cloud-dependent |
+| Hybrid search (keyword + semantic) | ~50ms | N/A |
+| Reindex 120 embeddings | ~8s (first run: model download ~80 MB) | N/A |
+| Maintenance dry-run (120 memories) | ~2s | N/A |
+| Graph reindex (120 memories) | <1s | N/A |
+| Storage per memory | ~1 KB `.md` file | Opaque |
+| Embedding storage | ~0.3 MB for 120 memories | Cloud |
+| LLM providers | 5 (Anthropic, Ollama, Groq, OpenAI, LM Studio) | 1 (Google) |
+| Offline capable | ✅ (Ollama / LM Studio) | ❌ |
+| Test suite | 143 tests, 0 errors | N/A |
 
 All benchmarks on Apple M-series hardware, Node.js 20+. Import speed depends on mode — `structured` bypasses LLM entirely. LLM-enriched imports depend on provider latency.
 
