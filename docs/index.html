@@ -506,6 +506,25 @@ nav .container {
 [data-theme="dark"] .hiw-code pre .string,
 [data-theme="system"].sys-dark .hiw-code pre .string { color: #6BCB77; }
 
+.hiw-section-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+.rule-preview {
+  padding: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+}
+.rule-preview .comment { color: var(--text); font-weight: 600; }
+.rule-preview .key { color: var(--accent-light); }
+.rule-preview .string { color: var(--text-muted); font-style: italic; }
+
 .hiw-steps { display: flex; flex-direction: column; gap: 32px; }
 
 .hiw-step {
@@ -890,16 +909,17 @@ footer a:hover { color: var(--accent-light); }
 
     <div class="hiw-grid">
       <div>
-        <div class="hiw-tabs">
-          <button class="hiw-tab active" onclick="switchTab(this, 'claude-desktop')">Claude Desktop</button>
-          <button class="hiw-tab" onclick="switchTab(this, 'cursor')">Cursor</button>
-          <button class="hiw-tab" onclick="switchTab(this, 'claude-code')">Claude Code</button>
-          <button class="hiw-tab" onclick="switchTab(this, 'codex')">Codex</button>
-          <button class="hiw-tab" onclick="switchTab(this, 'opencode')">OpenCode</button>
+        <h3 class="hiw-section-label">1. MCP Server Config</h3>
+        <div class="hiw-tabs" data-tab-group="config">
+          <button class="hiw-tab active" onclick="switchTab(this, 'claude-desktop', 'config')">Claude Desktop</button>
+          <button class="hiw-tab" onclick="switchTab(this, 'cursor', 'config')">Cursor</button>
+          <button class="hiw-tab" onclick="switchTab(this, 'claude-code', 'config')">Claude Code</button>
+          <button class="hiw-tab" onclick="switchTab(this, 'codex', 'config')">Codex</button>
+          <button class="hiw-tab" onclick="switchTab(this, 'opencode', 'config')">OpenCode</button>
         </div>
 
         <!-- Claude Desktop -->
-        <div class="hiw-config-panel active" id="panel-claude-desktop">
+        <div class="hiw-config-panel active" data-tab-group="config" id="panel-claude-desktop">
           <div class="hiw-code">
             <div class="hiw-code-header">
               <span class="hiw-code-dot"></span>
@@ -926,7 +946,7 @@ footer a:hover { color: var(--accent-light); }
         </div>
 
         <!-- Cursor -->
-        <div class="hiw-config-panel" id="panel-cursor">
+        <div class="hiw-config-panel" data-tab-group="config" id="panel-cursor">
           <div class="hiw-code">
             <div class="hiw-code-header">
               <span class="hiw-code-dot"></span>
@@ -953,7 +973,7 @@ footer a:hover { color: var(--accent-light); }
         </div>
 
         <!-- Claude Code -->
-        <div class="hiw-config-panel" id="panel-claude-code">
+        <div class="hiw-config-panel" data-tab-group="config" id="panel-claude-code">
           <div class="hiw-code">
             <div class="hiw-code-header">
               <span class="hiw-code-dot"></span>
@@ -969,7 +989,7 @@ footer a:hover { color: var(--accent-light); }
         </div>
 
         <!-- Codex -->
-        <div class="hiw-config-panel" id="panel-codex">
+        <div class="hiw-config-panel" data-tab-group="config" id="panel-codex">
           <div class="hiw-code">
             <div class="hiw-code-header">
               <span class="hiw-code-dot"></span>
@@ -991,7 +1011,7 @@ footer a:hover { color: var(--accent-light); }
         </div>
 
         <!-- OpenCode -->
-        <div class="hiw-config-panel" id="panel-opencode">
+        <div class="hiw-config-panel" data-tab-group="config" id="panel-opencode">
           <div class="hiw-code">
             <div class="hiw-code-header">
               <span class="hiw-code-dot"></span>
@@ -1014,6 +1034,126 @@ footer a:hover { color: var(--accent-light); }
 <span class="hl-line" data-group="full inner">    <span class="punct">}</span></span>
 <span class="hl-line" data-group="full">  <span class="punct">}</span></span>
 <span class="hl-line" data-group="full"><span class="punct">}</span></span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 40px;">
+        <h3 class="hiw-section-label">2. Agent Rule <span style="font-weight:400;font-size:13px;color:var(--text-muted)">— teach your AI when to use Gnosys</span></h3>
+        <div class="hiw-tabs" data-tab-group="rules">
+          <button class="hiw-tab active" onclick="switchTab(this, 'rule-cursor', 'rules')">Cursor</button>
+          <button class="hiw-tab" onclick="switchTab(this, 'rule-claude-code', 'rules')">Claude Code</button>
+          <button class="hiw-tab" onclick="switchTab(this, 'rule-windsurf', 'rules')">Windsurf</button>
+        </div>
+
+        <!-- Cursor Rule -->
+        <div class="hiw-config-panel active" data-tab-group="rules" id="panel-rule-cursor">
+          <div class="hiw-code">
+            <div class="hiw-code-header">
+              <span class="hiw-code-dot"></span>
+              <span class="hiw-code-dot"></span>
+              <span class="hiw-code-dot"></span>
+              .cursor/rules/gnosys.mdc
+              <span class="hiw-copy-buttons">
+                <button class="hiw-copy-btn" id="copy-rule-cursor" onclick="copyRule(this)"><svg class="copy-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy rule</button>
+              </span>
+            </div>
+            <pre class="rule-preview"><span class="comment"># Gnosys Memory System</span>
+
+<span class="comment">## When to Retrieve</span>
+At the start of every task, call <span class="key">gnosys_discover</span>
+with keywords describing what you're working on.
+Also retrieve when the user says "remember when…",
+"what did we decide…", "recall…", "check your memory…"
+
+<span class="comment">## When to Write</span>
+Commit to Gnosys when the user says "remember this",
+"memorize", "save this", "note this down"… or when
+they state a decision, preference, spec, or plan.
+After significant work, commit findings automatically.
+
+<span class="comment">## Key Tools</span>
+<span class="key">gnosys_discover</span>  → find relevant memories (call FIRST)
+<span class="key">gnosys_read</span>      → load full content
+<span class="key">gnosys_add</span>       → write memory (LLM-structured)
+<span class="key">gnosys_search</span>    → keyword search
+<span class="key">gnosys_ask</span>       → Q&amp;A with citations
+<span class="key">gnosys_update</span>    → modify existing memory
+<span class="string">… and 25 more tools</span></pre>
+          </div>
+        </div>
+
+        <!-- Claude Code Rule -->
+        <div class="hiw-config-panel" data-tab-group="rules" id="panel-rule-claude-code">
+          <div class="hiw-code">
+            <div class="hiw-code-header">
+              <span class="hiw-code-dot"></span>
+              <span class="hiw-code-dot"></span>
+              <span class="hiw-code-dot"></span>
+              CLAUDE.md
+              <span class="hiw-copy-buttons">
+                <button class="hiw-copy-btn" id="copy-rule-claude-code" onclick="copyRule(this)"><svg class="copy-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy rule</button>
+              </span>
+            </div>
+            <pre class="rule-preview"><span class="comment"># Gnosys Memory System</span>
+
+<span class="comment">## When to Retrieve</span>
+At the start of every task, call <span class="key">gnosys_discover</span>
+with keywords describing what you're working on.
+Also retrieve when the user says "remember when…",
+"what did we decide…", "recall…", "check your memory…"
+
+<span class="comment">## When to Write</span>
+Commit to Gnosys when the user says "remember this",
+"memorize", "save this", "note this down"… or when
+they state a decision, preference, spec, or plan.
+After significant work, commit findings automatically.
+
+<span class="comment">## Key Tools</span>
+<span class="key">gnosys_discover</span>  → find relevant memories (call FIRST)
+<span class="key">gnosys_read</span>      → load full content
+<span class="key">gnosys_add</span>       → write memory (LLM-structured)
+<span class="key">gnosys_search</span>    → keyword search
+<span class="key">gnosys_ask</span>       → Q&amp;A with citations
+<span class="key">gnosys_update</span>    → modify existing memory
+<span class="string">… and 25 more tools</span></pre>
+          </div>
+        </div>
+
+        <!-- Windsurf Rule -->
+        <div class="hiw-config-panel" data-tab-group="rules" id="panel-rule-windsurf">
+          <div class="hiw-code">
+            <div class="hiw-code-header">
+              <span class="hiw-code-dot"></span>
+              <span class="hiw-code-dot"></span>
+              <span class="hiw-code-dot"></span>
+              .windsurfrules
+              <span class="hiw-copy-buttons">
+                <button class="hiw-copy-btn" id="copy-rule-windsurf" onclick="copyRule(this)"><svg class="copy-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy rule</button>
+              </span>
+            </div>
+            <pre class="rule-preview"><span class="comment"># Gnosys Memory System</span>
+
+<span class="comment">## When to Retrieve</span>
+At the start of every task, call <span class="key">gnosys_discover</span>
+with keywords describing what you're working on.
+Also retrieve when the user says "remember when…",
+"what did we decide…", "recall…", "check your memory…"
+
+<span class="comment">## When to Write</span>
+Commit to Gnosys when the user says "remember this",
+"memorize", "save this", "note this down"… or when
+they state a decision, preference, spec, or plan.
+After significant work, commit findings automatically.
+
+<span class="comment">## Key Tools</span>
+<span class="key">gnosys_discover</span>  → find relevant memories (call FIRST)
+<span class="key">gnosys_read</span>      → load full content
+<span class="key">gnosys_add</span>       → write memory (LLM-structured)
+<span class="key">gnosys_search</span>    → keyword search
+<span class="key">gnosys_ask</span>       → Q&amp;A with citations
+<span class="key">gnosys_update</span>    → modify existing memory
+<span class="string">… and 25 more tools</span></pre>
           </div>
         </div>
       </div>
@@ -1131,12 +1271,28 @@ footer a:hover { color: var(--accent-light); }
 </footer>
 
 <script>
-// Tab switching for MCP client configs
-function switchTab(btn, panelId) {
-  document.querySelectorAll('.hiw-tab').forEach(function(t) { t.classList.remove('active'); });
-  document.querySelectorAll('.hiw-config-panel').forEach(function(p) { p.classList.remove('active'); });
+// Tab switching for MCP client configs (scoped by group)
+function switchTab(btn, panelId, group) {
+  var scope = group ? '[data-tab-group="' + group + '"]' : '';
+  // Deactivate tabs in same group
+  var tabContainer = btn.parentElement;
+  tabContainer.querySelectorAll('.hiw-tab').forEach(function(t) { t.classList.remove('active'); });
+  // Deactivate panels in same group
+  document.querySelectorAll('.hiw-config-panel' + scope).forEach(function(p) { p.classList.remove('active'); });
   btn.classList.add('active');
   document.getElementById('panel-' + panelId).classList.add('active');
+}
+
+// Copy full rule to clipboard
+var GNOSYS_RULE = "# Gnosys Memory System\n\nYou have access to a persistent memory system called **Gnosys** via MCP tools. Use it proactively \u2014 don\u2019t wait for explicit instructions. Memory makes you a better collaborator over time.\n\n## When to Retrieve Memories\n\n**At the start of every task**, call `gnosys_discover` with keywords describing what you\u2019re working on. This returns lightweight metadata \u2014 then use `gnosys_read` to load the ones that look relevant.\n\nAlso retrieve memories when the user says things like:\n- \u201Cremember when we\u2026\u201D, \u201Cwhat did we decide about\u2026\u201D, \u201Crecall\u2026\u201D, \u201Cwhat do you know about\u2026\u201D\n- \u201Ccheck your memory\u201D, \u201Clook that up\u201D, \u201Cdo we have notes on\u2026\u201D\n- Any reference to a past conversation, decision, or piece of knowledge\n\nUse `gnosys_search` for keyword search, `gnosys_hybrid_search` for semantic + keyword, or `gnosys_ask` for a natural-language question with a cited answer.\n\n## When to Write Memories\n\nCommit knowledge to Gnosys whenever ANY of these happen:\n\n### Explicit requests\nThe user says: \u201Cremember this\u201D, \u201Cmemorize\u201D, \u201Csave this\u201D, \u201Cnote this down\u201D, \u201Cstore this\u201D, \u201Crecord this\u201D, \u201Ccommit to memory\u201D, \u201Cdon\u2019t forget\u201D, or any variation.\n\n### Decisions and preferences\nWhenever the user states a decision, preference, or opinion \u2014 even casually. Examples: choosing a library, rejecting an approach, setting a convention, expressing how they want something done.\n\n### Specs and plans\nWhen the user provides a spec, plan, feature request, or implementation prompt \u2014 commit it BEFORE starting the work.\n\n### Post-task findings\nAfter completing significant work, commit what was learned: gotchas, key findings, things that worked differently than expected.\n\n## How to Write\n\nUse `gnosys_add` for freeform input (the LLM structures it automatically), or `gnosys_add_structured` for precise control:\n\n```\ngnosys_add_structured({\n  title: \"Descriptive title\",\n  category: \"decisions\",\n  content: \"Markdown content...\",\n  tags: '{\"domain\": [\"tag1\"], \"type\": [\"tag2\"]}',\n  relevance: \"space separated keywords for discovery\",\n  author: \"human+ai\",\n  authority: \"declared\"\n})\n```\n\n## How to Update\n\nUse `gnosys_update` to modify existing memories when information changes. Set `supersedes` when a new memory replaces an old one.\n\nUse `gnosys_reinforce` to signal whether a retrieved memory was `useful`, `not_relevant`, or `outdated`.\n\n## Available MCP Tools (Quick Reference)\n\n| Tool | Purpose |\n|------|---------|\n| `gnosys_discover` | Find relevant memories by keyword (metadata only) \u2014 call FIRST |\n| `gnosys_read` | Load a specific memory\u2019s full content |\n| `gnosys_search` | Full-text keyword search |\n| `gnosys_hybrid_search` | Keyword + semantic search (best results) |\n| `gnosys_semantic_search` | Semantic similarity search only |\n| `gnosys_ask` | Natural-language Q&A with citations |\n| `gnosys_add` | Add memory from freeform text (LLM-structured) |\n| `gnosys_add_structured` | Add memory with explicit fields (no LLM) |\n| `gnosys_update` | Update an existing memory |\n| `gnosys_reinforce` | Signal memory usefulness |\n| `gnosys_list` | List all memories (filterable) |\n| `gnosys_lens` | Filtered view with multiple criteria |\n| `gnosys_tags` | List tag registry |\n| `gnosys_tags_add` | Add a new tag |\n| `gnosys_commit_context` | Extract + commit novel memories from context |\n| `gnosys_stale` | Find memories not updated recently |\n| `gnosys_history` | Version history for a memory |\n| `gnosys_rollback` | Revert a memory to a prior version |\n| `gnosys_timeline` | Show memory creation/modification timeline |\n| `gnosys_stats` | Store statistics |\n| `gnosys_links` | Show wikilinks for a memory |\n| `gnosys_graph` | Full cross-reference graph |\n| `gnosys_dashboard` | System health overview |\n| `gnosys_stores` | Show active stores and layers |\n| `gnosys_maintain` | Run vault maintenance (dedup, decay) |\n| `gnosys_init` | Initialize a new store |\n| `gnosys_bootstrap` | Batch-import existing documents |\n| `gnosys_import` | Bulk import CSV/JSON/JSONL |\n| `gnosys_reindex` | Rebuild semantic embeddings |\n| `gnosys_reindex_graph` | Rebuild wikilink graph |\n";
+
+function copyRule(btn) {
+  var ic = btn.innerHTML;
+  navigator.clipboard.writeText(GNOSYS_RULE).then(function() {
+    btn.innerHTML = 'copied!';
+    btn.classList.add('copied');
+    setTimeout(function() { btn.innerHTML = ic; btn.classList.remove('copied'); }, 2000);
+  });
 }
 
 // Highlight code lines on copy-button hover
