@@ -1,14 +1,16 @@
-# Gnosys v1.2 — Real-World Demo
+# Gnosys v2.0 — Real-World Demo
 
-This document shows Gnosys importing real data from two production APIs: **USDA FoodData Central** and **NVD (National Vulnerability Database)**.
+This document shows Gnosys importing real data from two production APIs: **USDA FoodData Central** and **NVD (National Vulnerability Database)**, then demonstrates the v2.0 features: migration to the unified SQLite core, Dream Mode consolidation, and Obsidian export.
 
 ## What This Proves
 
 - Gnosys handles messy real-world JSON from government APIs
-- Bulk import creates atomic Markdown memories with rich YAML frontmatter
+- Bulk import creates atomic memories with rich YAML frontmatter
 - Wikilinks (`[[vendor/product]]`, `[[Food Category]]`) work out of the box
 - Git auto-commits the entire batch in one shot
-- The resulting `.gnosys/` folder is a fully functional Obsidian vault
+- `gnosys migrate` unifies all data into a single `gnosys.db` for sub-10ms reads
+- Dream Mode discovers relationships and generates summaries across the vault
+- `gnosys export` regenerates a full Obsidian vault from the database
 
 ---
 
@@ -548,3 +550,118 @@ gnosys dashboard
 ```
 
 Concurrent writes are safe — the locking system prevents corruption when multiple agents write simultaneously, and SQLite databases use WAL mode for concurrent read/write access.
+
+---
+
+## Migration to Agent-First SQLite (v2.0)
+
+Unify all data into a single `gnosys.db` for sub-10ms reads:
+
+```bash
+gnosys migrate
+```
+
+```
+Gnosys Migration Report
+========================
+Memories migrated: 120
+  From active (.md): 120
+  From archive.db:   0
+Relationships:       45 (from graph.json)
+Embeddings:          120 (from embeddings.db)
+Audit entries:       342 (from audit.jsonl)
+
+Database: .gnosys/gnosys.db (1.2 MB)
+FTS5 index: synced (120 documents)
+WAL mode: enabled
+```
+
+After migration, all reads go through SQLite. Writes dual-write to both `.md` files and `gnosys.db` for safety.
+
+---
+
+## Dream Mode (v2.0)
+
+Run an idle-time consolidation cycle to organize and analyze the vault:
+
+```bash
+gnosys dream
+```
+
+```
+Dream Mode — Starting 4-phase consolidation
+============================================
+
+Phase 1: Confidence Decay
+  Scanned 120 memories
+  Decayed 15 memories (avg confidence drop: 0.12)
+
+Phase 2: Self-Critique
+  Reviewed 120 memories
+  Flagged 3 for review (low quality / stale)
+
+Phase 3: Summary Generation
+  Generated summaries for 2 categories
+  Stored in summaries table
+
+Phase 4: Relationship Discovery
+  Discovered 8 new relationships
+  Stored in relationships table
+
+Dream Report:
+  Duration: 45s
+  Decay updates: 15
+  Review suggestions: 3
+  Summaries generated: 2
+  Relationships discovered: 8
+```
+
+Dream Mode never deletes — it only suggests reviews and enriches the knowledge graph.
+
+---
+
+## Obsidian Export (v2.0)
+
+Export the entire `gnosys.db` to an Obsidian-compatible vault:
+
+```bash
+gnosys export --to ~/vaults/demo-export --all
+```
+
+```
+Export Report
+=============
+Exported 120 memories to /Users/you/vaults/demo-export
+  Categories: usda-foods (100), nvd-cves (20)
+  Summaries: 2 files in _summaries/
+  Reviews: 3 files in _review/
+  Graph: relationships.md in _graph/
+  Wikilinks embedded: 45
+```
+
+Open the exported folder in Obsidian to get graph view, wikilinks, backlinks, and tag search over the entire vault.
+
+---
+
+## Multi-Project Support (v2.0)
+
+When using multiple Cursor windows or a multi-root workspace, each project routes to its own `.gnosys/` store automatically. The MCP server discovers workspace roots via the MCP roots protocol and every tool call carries an optional `projectRoot` for stateless routing.
+
+Debug with:
+
+```bash
+gnosys stores
+```
+
+```
+Active Stores:
+  project: /Users/you/project-a/.gnosys (120 memories) [write]
+
+MCP Roots:
+  /Users/you/project-a
+  /Users/you/project-b
+
+Detected Stores:
+  /Users/you/project-a/.gnosys (source: mcp-root, active: yes)
+  /Users/you/project-b/.gnosys (source: mcp-root, active: no)
+```

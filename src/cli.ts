@@ -50,7 +50,7 @@ async function getResolver(): Promise<GnosysResolver> {
 
 program
   .name("gnosys")
-  .description("Gnosys — LLM-native persistent memory system")
+  .description("Gnosys — Agent-first persistent memory system (SQLite core + Dream Mode + Obsidian export)")
   .version(pkg.version);
 
 // ─── gnosys read <path> ──────────────────────────────────────────────────

@@ -814,6 +814,9 @@ footer a:hover { color: var(--accent-light); }
       <a href="#cmd-maintain" class="sidebar-link">maintain</a>
       <a href="#cmd-reindex" class="sidebar-link">reindex</a>
       <a href="#cmd-reindex-graph" class="sidebar-link">reindex-graph</a>
+      <a href="#cmd-migrate" class="sidebar-link">migrate</a>
+      <a href="#cmd-dream" class="sidebar-link">dream</a>
+      <a href="#cmd-export" class="sidebar-link">export</a>
     </div>
 
     <div class="sidebar-section">
@@ -1514,6 +1517,84 @@ Options:
           </div>
           <div class="mcp-tool"><strong>MCP Tool:</strong> gnosys_reindex_graph</div>
         </div>
+
+        <!-- v2.0 commands -->
+        <div class="command-card" id="cmd-migrate">
+          <h3 class="command-name">gnosys migrate</h3>
+          <p class="command-description">Migrate v1.x data (Markdown + archive.db) into unified gnosys.db (v2.0). One-shot migration — your .md files remain untouched.</p>
+          <div class="command-block">
+            <div class="block-label">Usage</div>
+            <div class="code-block">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </button>
+              <code>gnosys migrate [--dry-run] [--json]</code>
+            </div>
+          </div>
+          <div class="command-block">
+            <div class="block-label">Options</div>
+            <table class="options-table">
+              <tr><td><code>--dry-run</code></td><td>Preview what would be migrated without making changes</td></tr>
+              <tr><td><code>--json</code></td><td>Output migration report as JSON</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="command-card" id="cmd-dream">
+          <h3 class="command-name">gnosys dream</h3>
+          <p class="command-description">Run a Dream Mode cycle — idle-time consolidation with 4 phases: confidence decay, self-critique, summary generation, and relationship discovery. Never deletes — only suggests reviews.</p>
+          <div class="command-block">
+            <div class="block-label">Usage</div>
+            <div class="code-block">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </button>
+              <code>gnosys dream [--max-runtime &lt;minutes&gt;] [--no-critique] [--no-summaries] [--no-relationships] [--json]</code>
+            </div>
+          </div>
+          <div class="command-block">
+            <div class="block-label">Options</div>
+            <table class="options-table">
+              <tr><td><code>--max-runtime &lt;min&gt;</code></td><td>Maximum runtime in minutes (default: 30)</td></tr>
+              <tr><td><code>--no-critique</code></td><td>Skip self-critique phase</td></tr>
+              <tr><td><code>--no-summaries</code></td><td>Skip summary generation phase</td></tr>
+              <tr><td><code>--no-relationships</code></td><td>Skip relationship discovery phase</td></tr>
+              <tr><td><code>--json</code></td><td>Output dream report as JSON</td></tr>
+            </table>
+          </div>
+          <div class="mcp-tool"><strong>MCP Tool:</strong> gnosys_dream</div>
+        </div>
+
+        <div class="command-card" id="cmd-export">
+          <h3 class="command-name">gnosys export</h3>
+          <p class="command-description">Export gnosys.db to an Obsidian-compatible vault. Creates category folders with YAML frontmatter .md files, [[wikilinks]], summaries, reviews, and graph data.</p>
+          <div class="command-block">
+            <div class="block-label">Usage</div>
+            <div class="code-block">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </button>
+              <code>gnosys export --to &lt;dir&gt; [--all] [--overwrite] [--no-summaries] [--no-reviews] [--no-graph] [--json]</code>
+            </div>
+          </div>
+          <div class="command-block">
+            <div class="block-label">Options</div>
+            <table class="options-table">
+              <tr><td><code>--to &lt;dir&gt;</code></td><td>Target directory for export (required)</td></tr>
+              <tr><td><code>--all</code></td><td>Include summaries, reviews, and graph data</td></tr>
+              <tr><td><code>--overwrite</code></td><td>Overwrite existing files in target directory</td></tr>
+              <tr><td><code>--no-summaries</code></td><td>Exclude Dream Mode summaries</td></tr>
+              <tr><td><code>--no-reviews</code></td><td>Exclude review suggestions</td></tr>
+              <tr><td><code>--no-graph</code></td><td>Exclude relationship graph data</td></tr>
+              <tr><td><code>--json</code></td><td>Output export report as JSON</td></tr>
+            </table>
+          </div>
+          <div class="mcp-tool"><strong>MCP Tool:</strong> gnosys_export</div>
+        </div>
+
       </div>
 
       <!-- Agent Rules -->
