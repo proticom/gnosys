@@ -48,6 +48,7 @@ import { recall, formatRecall, formatRecallCLI } from "./lib/recall.js";
 import { initAudit, readAuditLog, formatAuditTimeline } from "./lib/audit.js";
 import { GnosysDB } from "./lib/db.js";
 import { syncMemoryToDb, syncUpdateToDb, syncArchiveToDb, syncDearchiveToDb, syncReinforcementToDb, auditToDb } from "./lib/dbWrite.js";
+import { GnosysDreamEngine, DreamScheduler, formatDreamReport } from "./lib/dream.js";
 
 // Initialize resolver (discovers all layered stores)
 const resolver = new GnosysResolver();
@@ -67,6 +68,8 @@ let hybridSearch: GnosysHybridSearch | null = null;
 let askEngine: GnosysAsk | null = null;
 /** v2.0: Unified SQLite store (available after migration) */
 let gnosysDb: GnosysDB | null = null;
+/** v2.0: Dream scheduler (idle-time consolidation) */
+let dreamScheduler: DreamScheduler | null = null;
 
 // ─── Tool: gnosys_discover ──────────────────────────────────────────────
 server.tool(
@@ -1905,6 +1908,59 @@ server.tool(
   }
 );
 
+// ─── Tool: gnosys_dream ──────────────────────────────────────────────────
+server.tool(
+  "gnosys_dream",
+  "Run a Dream Mode cycle — idle-time consolidation that decays confidence, generates category summaries, discovers relationships, and creates review suggestions. NEVER deletes memories. Safe to run anytime.",
+  {
+    maxRuntimeMinutes: z.number().int().min(1).max(120).default(30).optional().describe("Max runtime in minutes"),
+    selfCritique: z.boolean().default(true).optional().describe("Enable self-critique scoring"),
+    generateSummaries: z.boolean().default(true).optional().describe("Generate category summaries"),
+    discoverRelationships: z.boolean().default(true).optional().describe("Discover relationships between memories"),
+  },
+  async (params) => {
+    if (!gnosysDb || !gnosysDb.isAvailable() || !gnosysDb.isMigrated()) {
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: "Dream Mode requires gnosys.db (v2.0). Run `gnosys migrate` first.",
+          },
+        ],
+      };
+    }
+
+    // Record activity to reset idle timer (if scheduler is running)
+    dreamScheduler?.recordActivity();
+
+    const dreamConfig = {
+      enabled: true,
+      idleMinutes: 0, // Run immediately (manual trigger)
+      maxRuntimeMinutes: params.maxRuntimeMinutes ?? 30,
+      selfCritique: params.selfCritique ?? true,
+      generateSummaries: params.generateSummaries ?? true,
+      discoverRelationships: params.discoverRelationships ?? true,
+      minMemories: 1, // No minimum for manual trigger
+      provider: config?.dream?.provider || ("ollama" as const),
+      model: config?.dream?.model,
+    };
+
+    const engine = new GnosysDreamEngine(gnosysDb, config || DEFAULT_CONFIG, dreamConfig);
+    const report = await engine.dream((phase, detail) => {
+      console.error(`[dream:${phase}] ${detail}`);
+    });
+
+    return {
+      content: [
+        {
+          type: "text" as const,
+          text: formatDreamReport(report),
+        },
+      ],
+    };
+  }
+);
+
 // ─── Tool: gnosys_dashboard ──────────────────────────────────────────────
 server.tool(
   "gnosys_dashboard",
@@ -1966,6 +2022,9 @@ server.resource(
     },
   },
   async () => {
+    // Record activity for dream scheduler (this fires on every turn)
+    dreamScheduler?.recordActivity();
+
     if (!search) {
       return {
         contents: [
@@ -2149,6 +2208,20 @@ async function main() {
     console.error(
       `Ask engine: ${askEngine.isLLMAvailable ? `ready (${askEngine.providerName}/${askEngine.modelName})` : "disabled (configure LLM provider)"}`
     );
+
+    // v2.0: Initialize Dream Mode (idle-time consolidation)
+    if (gnosysDb && config.dream?.enabled) {
+      const dreamEngine = new GnosysDreamEngine(gnosysDb, config, config.dream);
+      dreamScheduler = new DreamScheduler(dreamEngine, config.dream);
+      dreamScheduler.start();
+      console.error(
+        `Dream Mode: enabled (idle ${config.dream.idleMinutes}min, max ${config.dream.maxRuntimeMinutes}min)`
+      );
+    } else {
+      console.error(
+        `Dream Mode: disabled (enable in gnosys.json: dream.enabled = true)`
+      );
+    }
   }
 
   const transport = new StdioServerTransport();

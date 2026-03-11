@@ -66,6 +66,31 @@ const ArchiveConfigSchema = z.object({
   minConfidence: z.number().min(0).max(1).default(0.3),
 });
 
+// ─── Dream Schema ──────────────────────────────────────────────────────
+
+const DreamConfigSchema = z.object({
+  /** Enable dream mode (default: false — must be explicitly enabled) */
+  enabled: z.boolean().default(false),
+  /** Idle time in minutes before triggering dream cycle */
+  idleMinutes: z.number().int().min(1).default(10),
+  /** Max runtime in minutes for a single dream cycle */
+  maxRuntimeMinutes: z.number().int().min(1).max(120).default(30),
+  /** LLM provider to use for dream operations */
+  provider: LLMProviderEnum.default("ollama"),
+  /** LLM model override for dream (leave empty to use provider default) */
+  model: z.string().optional(),
+  /** Enable self-critique scoring (never deletes, only suggests) */
+  selfCritique: z.boolean().default(true),
+  /** Enable category summary generation */
+  generateSummaries: z.boolean().default(true),
+  /** Enable relationship discovery between memories */
+  discoverRelationships: z.boolean().default(true),
+  /** Min memory count before dream mode activates */
+  minMemories: z.number().int().min(1).default(10),
+});
+
+export type DreamConfig = z.infer<typeof DreamConfigSchema>;
+
 // ─── Recall Schema ─────────────────────────────────────────────────────
 
 const RecallConfigSchema = z.object({
@@ -143,6 +168,18 @@ export const GnosysConfigSchema = z.object({
     aggressive: true,
     maxMemories: 8,
     minRelevance: 0.4,
+  }),
+
+  /** Dream Mode — sleep-time consolidation (off by default) */
+  dream: DreamConfigSchema.default({
+    enabled: false,
+    idleMinutes: 10,
+    maxRuntimeMinutes: 30,
+    provider: "ollama",
+    selfCritique: true,
+    generateSummaries: true,
+    discoverRelationships: true,
+    minMemories: 10,
   }),
 });
 
@@ -364,6 +401,16 @@ export function generateConfigTemplate(): string {
         aggressive: true,
         maxMemories: 8,
         minRelevance: 0.4,
+      },
+      dream: {
+        enabled: false,
+        idleMinutes: 10,
+        maxRuntimeMinutes: 30,
+        provider: "ollama",
+        selfCritique: true,
+        generateSummaries: true,
+        discoverRelationships: true,
+        minMemories: 10,
       },
     },
     null,

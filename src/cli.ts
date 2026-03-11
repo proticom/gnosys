@@ -2138,6 +2138,63 @@ program
     }
   });
 
+// ─── gnosys dream ────────────────────────────────────────────────────────
+program
+  .command("dream")
+  .description("Run a Dream Mode cycle — idle-time consolidation (decay, summaries, self-critique, relationships)")
+  .option("--max-runtime <minutes>", "Max runtime in minutes (default: 30)")
+  .option("--no-critique", "Skip self-critique phase")
+  .option("--no-summaries", "Skip summary generation")
+  .option("--no-relationships", "Skip relationship discovery")
+  .option("--json", "Output raw JSON report")
+  .action(async (opts: { maxRuntime?: string; critique?: boolean; summaries?: boolean; relationships?: boolean; json?: boolean }) => {
+    const resolver = new GnosysResolver();
+    await resolver.resolve();
+    const stores = resolver.getStores();
+    if (stores.length === 0) {
+      console.error("No Gnosys stores found. Run 'gnosys init' first.");
+      process.exit(1);
+    }
+
+    const { GnosysDB: DbClass } = await import("./lib/db.js");
+    const { GnosysDreamEngine, formatDreamReport } = await import("./lib/dream.js");
+
+    const storePath = stores[0].path;
+    const cfg = await loadConfig(storePath);
+    const db = new DbClass(storePath);
+
+    if (!db.isAvailable() || !db.isMigrated()) {
+      console.error("Dream Mode requires gnosys.db (v2.0). Run 'gnosys migrate' first.");
+      process.exit(1);
+    }
+
+    const dreamConfig = {
+      enabled: true,
+      idleMinutes: 0,
+      maxRuntimeMinutes: opts.maxRuntime ? parseInt(opts.maxRuntime, 10) : 30,
+      selfCritique: opts.critique !== false,
+      generateSummaries: opts.summaries !== false,
+      discoverRelationships: opts.relationships !== false,
+      minMemories: 1,
+      provider: cfg.dream?.provider || ("ollama" as const),
+      model: cfg.dream?.model,
+    };
+
+    console.error("Starting Dream Mode cycle...");
+    const engine = new GnosysDreamEngine(db, cfg, dreamConfig);
+    const report = await engine.dream((phase, detail) => {
+      console.error(`  [${phase}] ${detail}`);
+    });
+
+    if (opts.json) {
+      console.log(JSON.stringify(report, null, 2));
+    } else {
+      console.log(formatDreamReport(report));
+    }
+
+    db.close();
+  });
+
 // ─── gnosys serve ────────────────────────────────────────────────────────
 program
   .command("serve")
