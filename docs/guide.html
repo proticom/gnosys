@@ -80,20 +80,25 @@ nav {
   padding: 0 24px;
 }
 
+.nav-logo-wrap { position: relative; display: inline-flex; align-items: center; }
 .nav-logo { height: 28px; width: auto; }
 .nav-logo .logo-text { fill: var(--text); }
 .nav-logo .logo-mark { fill: var(--accent); }
 
 .nav-version {
-  font-size: 11px;
+  position: absolute;
+  bottom: -4px;
+  right: -18px;
+  font-size: 9px;
   font-weight: 600;
   color: var(--accent);
   background: var(--accent-faint);
   border: 1px solid var(--accent-lighter, rgba(99,102,241,0.2));
-  padding: 2px 8px;
-  border-radius: 6px;
+  padding: 1px 4px;
+  border-radius: 4px;
   letter-spacing: 0.02em;
   white-space: nowrap;
+  line-height: 1.2;
 }
 
 .nav-links { display: flex; gap: 28px; align-items: center; }
@@ -715,6 +720,7 @@ footer a:hover { color: var(--accent-light); }
 
 <nav>
   <div class="nav-bar">
+    <div class="nav-logo-wrap">
     <a href="/">
       <svg class="nav-logo" viewBox="0 0 870.84 183.02" xmlns="http://www.w3.org/2000/svg">
         <path class="logo-text" d="M67.71,183.02c-9.4,0-17.95-.23-25.66-.69s-14.33-1.57-19.85-3.32c-5.53-1.75-9.8-4.51-12.81-8.29-3.01-3.78-4.51-8.95-4.51-15.52h17.69c0,4.3,1.67,7.37,5.02,9.21,3.35,1.84,8.37,2.95,15.06,3.32,6.69.37,15.05.55,25.06.55,7.43,0,13.79-.23,19.07-.69,5.28-.46,9.6-1.8,12.94-4.01,3.35-2.21,5.8-5.91,7.37-11.1,1.57-5.19,2.35-12.48,2.35-21.88v-2.49c-4.3,5.53-10.21,9.18-17.73,10.96-7.52,1.78-16.85,2.67-27.96,2.67s-21.28-.66-29.39-1.98c-8.11-1.32-14.69-3.82-19.76-7.51-5.07-3.69-8.77-9.03-11.1-16.03-2.33-7-3.5-16.15-3.5-27.46,0-12.04,1.17-21.68,3.5-28.93,2.33-7.25,6.03-12.7,11.1-16.35,5.07-3.65,11.65-6.08,19.76-7.28,8.11-1.2,17.9-1.8,29.39-1.8s20.44.82,27.96,2.44c7.52,1.63,13.43,5.24,17.73,10.83v-11.24h17.69v94.89c-.25,11.67-1.72,20.96-4.42,27.87-2.7,6.91-6.56,12.07-11.56,15.48-5.01,3.41-11.15,5.65-18.43,6.72-7.28,1.07-15.62,1.61-25.01,1.61ZM109.45,88.77c0-8.78-.54-15.8-1.61-21.05-1.08-5.25-3.16-9.21-6.26-11.88-3.1-2.67-7.68-4.45-13.73-5.34-6.05-.89-14.08-1.34-24.09-1.34-10.57,0-18.93.45-25.11,1.34-6.17.89-10.76,2.67-13.77,5.34-3.01,2.67-4.96,6.63-5.85,11.88-.89,5.25-1.34,12.27-1.34,21.05,0,7.99.45,14.5,1.34,19.53.89,5.04,2.82,8.91,5.8,11.61,2.98,2.7,7.57,4.56,13.77,5.57,6.2,1.01,14.59,1.52,25.15,1.52,10.01,0,18.04-.51,24.09-1.52,6.05-1.01,10.62-2.87,13.73-5.57,3.1-2.7,5.19-6.57,6.26-11.61,1.07-5.04,1.61-11.55,1.61-19.53Z"/>
@@ -729,6 +735,7 @@ footer a:hover { color: var(--accent-light); }
       </svg>
     </a>
     <span class="nav-version">v3.0</span>
+    </div>
 
     <div class="nav-links">
       <a href="/guide.html">Docs</a>
@@ -827,9 +834,26 @@ footer a:hover { color: var(--accent-light); }
       <a href="#cmd-maintain" class="sidebar-link">maintain</a>
       <a href="#cmd-reindex" class="sidebar-link">reindex</a>
       <a href="#cmd-reindex-graph" class="sidebar-link">reindex-graph</a>
+      <a href="#cmd-dearchive" class="sidebar-link">dearchive</a>
       <a href="#cmd-migrate" class="sidebar-link">migrate</a>
       <a href="#cmd-dream" class="sidebar-link">dream</a>
       <a href="#cmd-export" class="sidebar-link">export</a>
+      <a href="#cmd-recall" class="sidebar-link">recall</a>
+      <a href="#cmd-audit" class="sidebar-link">audit</a>
+    </div>
+
+    <div class="sidebar-section">
+      <h3 class="sidebar-title">v3.0: Centralized Brain</h3>
+      <a href="#cmd-projects" class="sidebar-link">projects</a>
+      <a href="#cmd-register" class="sidebar-link">register</a>
+      <a href="#cmd-pref" class="sidebar-link">pref</a>
+      <a href="#cmd-sync" class="sidebar-link">sync</a>
+      <a href="#cmd-backup" class="sidebar-link">backup</a>
+      <a href="#cmd-restore" class="sidebar-link">restore</a>
+      <a href="#cmd-fsearch" class="sidebar-link">fsearch</a>
+      <a href="#cmd-ambiguity" class="sidebar-link">ambiguity</a>
+      <a href="#cmd-briefing" class="sidebar-link">briefing</a>
+      <a href="#cmd-working-set" class="sidebar-link">working-set</a>
     </div>
 
     <div class="sidebar-section">
@@ -1608,6 +1632,78 @@ Options:
           <div class="mcp-tool"><strong>MCP Tool:</strong> gnosys_export</div>
         </div>
 
+        <div class="command-card" id="cmd-dearchive">
+          <h3 class="command-name">gnosys dearchive</h3>
+          <p class="command-description">Force-dearchive memories matching a query from archive.db back to active.</p>
+          <div class="command-block">
+            <div class="block-label">Usage</div>
+            <div class="code-block">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </button>
+              <code>gnosys dearchive &lt;query&gt; [--limit &lt;n&gt;]</code>
+            </div>
+          </div>
+          <div class="command-block">
+            <div class="block-label">Options</div>
+            <table class="options-table">
+              <tr><td><code>--limit &lt;n&gt;</code></td><td>Max memories to dearchive (default: 5)</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="command-card" id="cmd-recall">
+          <h3 class="command-name">gnosys recall</h3>
+          <p class="command-description">Always-on memory recall — injects most relevant memories as context. Sub-50ms, no LLM needed. Used by agent orchestrators for automatic memory injection.</p>
+          <div class="command-block">
+            <div class="block-label">Usage</div>
+            <div class="code-block">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </button>
+              <code>gnosys recall &lt;query&gt; [--limit &lt;n&gt;] [--aggressive] [--no-aggressive] [--trace-id &lt;id&gt;] [--json] [--host]</code>
+            </div>
+          </div>
+          <div class="command-block">
+            <div class="block-label">Options</div>
+            <table class="options-table">
+              <tr><td><code>--limit &lt;n&gt;</code></td><td>Max memories to return (default from config)</td></tr>
+              <tr><td><code>--aggressive</code></td><td>Force aggressive mode (inject even medium-relevance memories)</td></tr>
+              <tr><td><code>--no-aggressive</code></td><td>Force filtered mode (hard cutoff at minRelevance)</td></tr>
+              <tr><td><code>--trace-id &lt;id&gt;</code></td><td>Trace ID for audit correlation</td></tr>
+              <tr><td><code>--json</code></td><td>Output raw JSON instead of formatted text</td></tr>
+              <tr><td><code>--host</code></td><td>Output in host-friendly &lt;gnosys-recall&gt; format (default for MCP)</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="command-card" id="cmd-audit">
+          <h3 class="command-name">gnosys audit</h3>
+          <p class="command-description">View the structured audit trail of memory operations. Shows reads, writes, recalls, maintenance, and more.</p>
+          <div class="command-block">
+            <div class="block-label">Usage</div>
+            <div class="code-block">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </button>
+              <code>gnosys audit [--days &lt;n&gt;] [--operation &lt;op&gt;] [--limit &lt;n&gt;] [--json]</code>
+            </div>
+          </div>
+          <div class="command-block">
+            <div class="block-label">Options</div>
+            <table class="options-table">
+              <tr><td><code>--days &lt;n&gt;</code></td><td>Show entries from the last N days (default: 7)</td></tr>
+              <tr><td><code>--operation &lt;op&gt;</code></td><td>Filter by operation type (read, write, recall, etc.)</td></tr>
+              <tr><td><code>--limit &lt;n&gt;</code></td><td>Max entries to show</td></tr>
+              <tr><td><code>--json</code></td><td>Output raw JSON instead of formatted timeline</td></tr>
+            </table>
+          </div>
+          <div class="mcp-tool"><strong>MCP Tool:</strong> gnosys_audit</div>
+        </div>
+
         <!-- v3.0 commands -->
         <div class="command-card" id="cmd-projects">
           <h3 class="command-name">gnosys projects</h3>
@@ -1673,9 +1769,9 @@ Options:
           <div class="mcp-tool"><strong>MCP Tool:</strong> gnosys_briefing</div>
         </div>
 
-        <div class="command-card" id="cmd-preferences">
-          <h3 class="command-name">gnosys preferences</h3>
-          <p class="command-description">Manage user-level preferences that persist across all projects. Preferences are stored as scope='user' memories.</p>
+        <div class="command-card" id="cmd-pref">
+          <h3 class="command-name">gnosys pref</h3>
+          <p class="command-description">Manage user-level preferences that persist across all projects. Preferences are stored as scope='user' memories in the central DB.</p>
           <div class="command-block">
             <div class="block-label">Usage</div>
             <div class="code-block">
@@ -1683,18 +1779,25 @@ Options:
                 <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                 <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
               </button>
-              <code>gnosys preferences set &lt;key&gt; &lt;value&gt;
-gnosys preferences get &lt;key&gt;
-gnosys preferences delete &lt;key&gt;
-gnosys preferences list [--json]</code>
+              <code>gnosys pref set &lt;key&gt; &lt;value&gt;
+gnosys pref get [key]
+gnosys pref delete &lt;key&gt;</code>
             </div>
+          </div>
+          <div class="command-block">
+            <div class="block-label">Subcommands</div>
+            <table class="options-table">
+              <tr><td><code>set &lt;key&gt; &lt;value&gt;</code></td><td>Set a user preference. Key should be kebab-case (e.g. 'commit-convention')</td></tr>
+              <tr><td><code>get [key]</code></td><td>Get a preference by key, or list all preferences if no key given</td></tr>
+              <tr><td><code>delete &lt;key&gt;</code></td><td>Delete a user preference</td></tr>
+            </table>
           </div>
           <div class="mcp-tool"><strong>MCP Tools:</strong> gnosys_preference_set, gnosys_preference_get, gnosys_preference_delete</div>
         </div>
 
-        <div class="command-card" id="cmd-rules">
-          <h3 class="command-name">gnosys rules</h3>
-          <p class="command-description">Generate agent rules files for your IDE. Outputs Gnosys memory workflow instructions with project context. Supports Cursor (.mdc) and Claude Code (CLAUDE.md).</p>
+        <div class="command-card" id="cmd-sync">
+          <h3 class="command-name">gnosys sync</h3>
+          <p class="command-description">Regenerate agent rules file from user preferences and project conventions. Injects a GNOSYS:START/GNOSYS:END block into your .cursor/rules/gnosys.mdc or CLAUDE.md. User content outside the markers is preserved.</p>
           <div class="command-block">
             <div class="block-label">Usage</div>
             <div class="code-block">
@@ -1702,14 +1805,20 @@ gnosys preferences list [--json]</code>
                 <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                 <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
               </button>
-              <code>gnosys rules [--target cursor|claude] [-d &lt;directory&gt;] [--json]</code>
+              <code>gnosys sync [-d &lt;directory&gt;]</code>
             </div>
+          </div>
+          <div class="command-block">
+            <div class="block-label">Options</div>
+            <table class="options-table">
+              <tr><td><code>-d, --directory &lt;dir&gt;</code></td><td>Project directory (default: cwd)</td></tr>
+            </table>
           </div>
         </div>
 
         <div class="command-card" id="cmd-backup">
-          <h3 class="command-name">gnosys backup / restore</h3>
-          <p class="command-description">Backup and restore the central database. Backups are stored in ~/.gnosys/backups/ with automatic daily snapshots.</p>
+          <h3 class="command-name">gnosys backup</h3>
+          <p class="command-description">Create a backup of the central Gnosys database. Backups are stored in ~/.gnosys/backups/ with automatic daily snapshots.</p>
           <div class="command-block">
             <div class="block-label">Usage</div>
             <div class="code-block">
@@ -1717,11 +1826,26 @@ gnosys preferences list [--json]</code>
                 <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                 <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
               </button>
-              <code>gnosys backup [--json]
-gnosys restore [&lt;backup-file&gt;] [--json]</code>
+              <code>gnosys backup [--json]</code>
             </div>
           </div>
-          <div class="mcp-tool"><strong>MCP Tools:</strong> gnosys_backup, gnosys_restore</div>
+          <div class="mcp-tool"><strong>MCP Tool:</strong> gnosys_backup</div>
+        </div>
+
+        <div class="command-card" id="cmd-restore">
+          <h3 class="command-name">gnosys restore</h3>
+          <p class="command-description">Restore the central Gnosys database from a backup file.</p>
+          <div class="command-block">
+            <div class="block-label">Usage</div>
+            <div class="code-block">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </button>
+              <code>gnosys restore &lt;backupFile&gt; [--json]</code>
+            </div>
+          </div>
+          <div class="mcp-tool"><strong>MCP Tool:</strong> gnosys_restore</div>
         </div>
 
       </div>
@@ -1918,7 +2042,7 @@ Complete CLI & MCP Reference for the Gnosys persistent memory system.
 ## Getting Started
 
 ### gnosys init
-Initialize a new .gnosys store in the current directory
+Initialize Gnosys in the current directory. Creates project identity, registers in central DB, and sets up store.
 
 Usage: \`gnosys init [options]\`
 
@@ -1947,7 +2071,7 @@ Usage: \`gnosys stores\`
 MCP Tool: \`gnosys_stores\`
 
 ### gnosys doctor
-Check system health: stores, LLM connectivity, embeddings
+Check system health: stores, LLM connectivity, embeddings, archive
 
 Usage: \`gnosys doctor\`
 
@@ -2111,6 +2235,19 @@ Options:
 - \`--no-stream\` - Disable streaming output
 
 MCP Tool: \`gnosys_ask\`
+
+### gnosys recall
+Always-on memory recall — injects most relevant memories as context (sub-50ms, no LLM)
+
+Usage: \`gnosys recall [options] <query>\`
+
+Options:
+- \`--limit <n>\` - Max memories to return (default from config)
+- \`--aggressive\` - Force aggressive mode (inject even medium-relevance memories)
+- \`--no-aggressive\` - Force filtered mode (hard cutoff at minRelevance)
+- \`--trace-id <id>\` - Trace ID for audit correlation
+- \`--json\` - Output raw JSON instead of formatted text
+- \`--host\` - Output in host-friendly <gnosys-recall> format (default for MCP)
 
 ## Organization
 
@@ -2280,6 +2417,65 @@ Usage: \`gnosys reindex-graph\`
 
 MCP Tool: \`gnosys_reindex_graph\`
 
+### gnosys dearchive
+Force-dearchive memories matching a query from archive.db back to active
+
+Usage: \`gnosys dearchive <query> [--limit <n>]\`
+
+Options:
+- \`--limit <n>\` - Max memories to dearchive (default: 5)
+
+### gnosys migrate
+Migrate data. Use --to-central to move per-project stores into the central DB.
+
+Usage: \`gnosys migrate [options]\`
+
+Options:
+- \`--dry-run\` - Preview what would be migrated without making changes
+- \`--to-central\` - Migrate per-project data into central DB
+- \`--json\` - Output migration report as JSON
+
+### gnosys dream
+Run a Dream Mode cycle — idle-time consolidation (decay, summaries, self-critique, relationships)
+
+Usage: \`gnosys dream [options]\`
+
+Options:
+- \`--max-runtime <min>\` - Maximum runtime in minutes (default: 30)
+- \`--no-critique\` - Skip self-critique phase
+- \`--no-summaries\` - Skip summary generation phase
+- \`--no-relationships\` - Skip relationship discovery phase
+- \`--json\` - Output dream report as JSON
+
+MCP Tool: \`gnosys_dream\`
+
+### gnosys export
+Export gnosys.db to Obsidian-compatible vault (one-way)
+
+Usage: \`gnosys export --to <dir> [--all] [--overwrite] [--no-summaries] [--no-reviews] [--no-graph] [--json]\`
+
+Options:
+- \`--to <dir>\` - Target directory for export (required)
+- \`--all\` - Include summaries, reviews, and graph data
+- \`--overwrite\` - Overwrite existing files in target directory
+- \`--no-summaries\` - Exclude Dream Mode summaries
+- \`--no-reviews\` - Exclude review suggestions
+- \`--no-graph\` - Exclude relationship graph data
+- \`--json\` - Output export report as JSON
+
+MCP Tool: \`gnosys_export\`
+
+### gnosys audit
+View the structured audit trail of memory operations
+
+Usage: \`gnosys audit [options]\`
+
+Options:
+- \`--days <n>\` - Show entries from the last N days (default: 7)
+- \`--operation <op>\` - Filter by operation type (read, write, recall, etc.)
+- \`--limit <n>\` - Max entries to show
+- \`--json\` - Output raw JSON instead of formatted timeline
+
 ## v3.0: Centralized Brain
 
 ### gnosys projects
@@ -2290,14 +2486,43 @@ Usage: \`gnosys projects [--json]\`
 MCP Tool: \`gnosys_list_projects\`
 
 ### gnosys register
-Register a project directory in the central database
+Register a project directory in the central database. Auto-detects from .git, package.json, etc.
 
 Usage: \`gnosys register [-d <directory>] [--json]\`
 
 MCP Tool: \`gnosys_register_project\`
 
+### gnosys pref
+Manage user-level preferences (stored in central DB, scope='user')
+
+Subcommands:
+- \`gnosys pref set <key> <value>\` - Set a preference (key should be kebab-case)
+- \`gnosys pref get [key]\` - Get a preference, or list all if no key
+- \`gnosys pref delete <key>\` - Delete a preference
+
+MCP Tools: \`gnosys_preference_set\`, \`gnosys_preference_get\`, \`gnosys_preference_delete\`
+
+### gnosys sync
+Regenerate agent rules file from user preferences and project conventions. Injects GNOSYS:START/GNOSYS:END block.
+
+Usage: \`gnosys sync [-d <directory>]\`
+
+### gnosys backup
+Create a backup of the central Gnosys database
+
+Usage: \`gnosys backup [--json]\`
+
+MCP Tool: \`gnosys_backup\`
+
+### gnosys restore
+Restore the central Gnosys database from a backup file
+
+Usage: \`gnosys restore <backupFile> [--json]\`
+
+MCP Tool: \`gnosys_restore\`
+
 ### gnosys fsearch
-Federated search across all scopes with tier boosting
+Federated search across all scopes with tier boosting (project > user > global)
 
 Usage: \`gnosys fsearch <query> [--limit <n>] [-d <directory>] [--no-global] [--json]\`
 
@@ -2311,48 +2536,18 @@ Usage: \`gnosys ambiguity <query> [--json]\`
 MCP Tool: \`gnosys_detect_ambiguity\`
 
 ### gnosys briefing
-Generate a project briefing with categories, activity, and top tags
+Generate project briefing — memory state summary, categories, recent activity, top tags
 
 Usage: \`gnosys briefing [-p <project-id>] [-a|--all] [-d <directory>] [--json]\`
 
 MCP Tool: \`gnosys_briefing\`
 
 ### gnosys working-set
-Show recently modified memories for the current project
+Show the implicit working set — recently modified memories for the current project
 
 Usage: \`gnosys working-set [-d <directory>] [-w <hours>] [--json]\`
 
-MCP Tool: \`gnosys_working_set\`
-
-### gnosys preferences
-Manage user-level preferences across all projects
-
-Usage: \`gnosys preferences set <key> <value>\`
-\`gnosys preferences get <key>\`
-\`gnosys preferences delete <key>\`
-\`gnosys preferences list [--json]\`
-
-MCP Tools: \`gnosys_preference_set\`, \`gnosys_preference_get\`, \`gnosys_preference_delete\`
-
-### gnosys rules
-Generate agent rules files for Cursor or Claude Code
-
-Usage: \`gnosys rules [--target cursor|claude] [-d <directory>] [--json]\`
-
-### gnosys sync
-Migrate per-project .gnosys data into the central database
-
-Usage: \`gnosys sync [-d <directory>] [--json]\`
-
-MCP Tool: \`gnosys_migrate_to_central\`
-
-### gnosys backup / restore
-Backup and restore the central database
-
-Usage: \`gnosys backup [--json]\`
-\`gnosys restore [<backup-file>] [--json]\`
-
-MCP Tools: \`gnosys_backup\`, \`gnosys_restore\``;
+MCP Tool: \`gnosys_working_set\``;
 
   // Append agent rules from DOM (loaded dynamically from /rules/)
   var rulesSection = '\n\n## Agent Rules\n\n';
