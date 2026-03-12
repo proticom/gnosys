@@ -63,6 +63,11 @@ nav {
 .nav-logo { height: 28px; width: auto; }
 .nav-logo .logo-text { fill: var(--text); }
 .nav-logo .logo-mark { fill: var(--accent); }
+.nav-version {
+  font-size: 11px; font-weight: 600; color: var(--accent);
+  background: var(--accent-faint); border: 1px solid var(--accent-lighter, rgba(99,102,241,0.2));
+  padding: 2px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap;
+}
 .nav-links { display: flex; gap: 28px; align-items: center; }
 .nav-links a {
   color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s;
@@ -298,6 +303,7 @@ footer a:hover { color: var(--accent-light); }
         </g>
       </svg>
     </a>
+    <span class="nav-version">v2.0</span>
 
     <div class="nav-links">
       <a href="/">Docs</a>

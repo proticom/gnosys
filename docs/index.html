@@ -100,6 +100,18 @@ nav {
 .nav-logo .logo-text { fill: var(--text); }
 .nav-logo .logo-mark { fill: var(--accent); }
 
+.nav-version {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-faint);
+  border: 1px solid var(--accent-lighter, rgba(99,102,241,0.2));
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
 .nav-links { display: flex; gap: 28px; align-items: center; }
 .nav-links a {
   color: var(--text-secondary);
@@ -339,39 +351,6 @@ nav {
   color: var(--text-secondary);
   line-height: 1.6;
 }
-
-/* ── Architecture Video ── */
-.arch-video-section {
-  margin-top: 48px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.arch-video-window {
-  border-radius: 15px;
-  overflow: hidden;
-  display: inline-block;
-  max-width: 600px;
-  border: 1px solid var(--border);
-}
-
-.arch-video-window video {
-  display: block;
-  width: calc(100% + 2px);
-  margin: -1px;
-}
-
-
-/* Default (light/system-light): show light, hide dark */
-.arch-video-dark { display: none !important; }
-.arch-video-light { display: block !important; }
-
-[data-theme="dark"] .arch-video-light,
-[data-theme="system"].sys-dark .arch-video-light { display: none !important; }
-
-[data-theme="dark"] .arch-video-dark,
-[data-theme="system"].sys-dark .arch-video-dark { display: block !important; }
 
 /* ── How It Works ── */
 .how-it-works {
@@ -911,6 +890,7 @@ footer a:hover { color: var(--accent-light); }
       </g>
     </svg>
     </a>
+    <span class="nav-version">v2.0</span>
 
     <div class="nav-links">
       <a href="/#features" class="hide-mobile">Features</a>
@@ -1386,16 +1366,6 @@ This project uses Gnosys for persistent memory via MCP.
       </div>
     </div>
 
-    <div class="arch-video-section">
-      <div class="arch-video-window">
-        <video class="arch-video-light" autoplay muted loop playsinline>
-          <source src="obsidian-light.mp4" type="video/mp4">
-        </video>
-        <video class="arch-video-dark" autoplay muted loop playsinline>
-          <source src="obsidian-dark.mp4" type="video/mp4">
-        </video>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -1444,8 +1414,8 @@ function switchTab(btn, panelId, group) {
 
 // Copy IDE-specific rule to clipboard
 var RULES = {
-  cursor: "---\ndescription: Gnosys persistent memory \u2014 teaches the agent when to read/write memories via MCP tools\nalwaysApply: true\n---\n\n# Gnosys Memory System\n\nYou have access to persistent memory via Gnosys MCP tools. Use them proactively.\n\n## Retrieve memories\n\n- At the start of every task, call `gnosys_discover` with keywords for what you\u2019re working on\n- Call `gnosys_read` to load any relevant results\n- Trigger on: \u201Cremember when\u2026\u201D, \u201Cwhat did we decide\u2026\u201D, \u201Crecall\u201D, \u201Ccheck your memory\u201D, \u201Cdo we have notes on\u2026\u201D\n- Use `gnosys_hybrid_search` for best search results, `gnosys_ask` for Q&A with citations\n\n## Write memories\n\n- Trigger on: \u201Cremember this\u201D, \u201Cmemorize\u201D, \u201Csave this\u201D, \u201Cnote this down\u201D, \u201Cstore this\u201D, \u201Cdon\u2019t forget\u201D\n- Also write when the user states a decision, preference, or opinion \u2014 even casually\n- Commit specs and plans BEFORE starting implementation\n- After significant work, commit findings (gotchas, what worked, what didn\u2019t)\n\n## Tools\n\n- `gnosys_add` \u2014 write memory from freeform text (LLM structures it)\n- `gnosys_add_structured` \u2014 write with explicit title, category, content, tags, relevance\n- `gnosys_update` \u2014 modify existing memory\n- `gnosys_reinforce` \u2014 signal useful / not_relevant / outdated\n- `gnosys_commit_context` \u2014 extract novel memories from a conversation context\n- `gnosys_discover` \u2014 lightweight metadata search (call FIRST)\n- `gnosys_read` \u2014 load full memory content\n- `gnosys_search` \u2014 keyword search\n- `gnosys_hybrid_search` \u2014 keyword + semantic (best results)\n- `gnosys_ask` \u2014 natural-language Q&A with citations\n- `gnosys_list` \u2014 list all memories\n- `gnosys_lens` \u2014 filtered view (category, tag, status, confidence, date)\n- `gnosys_tags` / `gnosys_tags_add` \u2014 tag registry\n- `gnosys_links` / `gnosys_graph` \u2014 wikilink relationships\n- `gnosys_history` / `gnosys_rollback` \u2014 version control\n- `gnosys_stats` / `gnosys_dashboard` \u2014 system overview\n- `gnosys_maintain` \u2014 vault maintenance (dedup, decay, consolidation)\n- `gnosys_stale` \u2014 find memories not updated recently\n- `gnosys_stores` \u2014 show active store layers\n- `gnosys_init` \u2014 initialize a new store\n- `gnosys_bootstrap` / `gnosys_import` \u2014 bulk import\n- `gnosys_reindex` / `gnosys_reindex_graph` \u2014 rebuild indexes\n\n## Categories\n\nUse these when writing: `architecture`, `decisions`, `requirements`, `concepts`, `roadmap`, `landscape`, `open-questions`\n",
-  claude: "# Gnosys Memory\n\nThis project uses Gnosys for persistent memory via MCP. Follow these rules:\n\n## Read first\n\n- At task start, call `gnosys_discover` with relevant keywords\n- Load results with `gnosys_read`\n- When the user references past decisions, says \u201Crecall\u201D, \u201Cremember when\u201D, \u201Cwhat did we decide\u201D \u2014 search memory first\n\n## Write automatically\n\n- When user says \u201Cremember\u201D, \u201Cmemorize\u201D, \u201Csave this\u201D, \u201Cnote this down\u201D, \u201Cdon\u2019t forget\u201D \u2014 call `gnosys_add`\n- When user states a decision or preference (even casually) \u2014 commit to `decisions/`\n- When user provides a spec or plan \u2014 commit BEFORE starting work\n- After significant implementation \u2014 commit findings and gotchas\n\n## Key tools\n\n| Action | Tool |\n|--------|------|\n| Find memories | `gnosys_discover` (metadata) \u2192 `gnosys_read` (content) |\n| Search | `gnosys_hybrid_search` (best), `gnosys_search` (keyword), `gnosys_ask` (Q&A) |\n| Write | `gnosys_add` (freeform), `gnosys_add_structured` (explicit fields) |\n| Update | `gnosys_update`, `gnosys_reinforce` (useful/not_relevant/outdated) |\n| Browse | `gnosys_list`, `gnosys_lens` (filtered), `gnosys_tags`, `gnosys_graph` |\n| Maintain | `gnosys_maintain`, `gnosys_stale`, `gnosys_history`, `gnosys_dashboard` |\n\n## Categories\n\n`architecture` \u00b7 `decisions` \u00b7 `requirements` \u00b7 `concepts` \u00b7 `roadmap` \u00b7 `landscape` \u00b7 `open-questions`\n"
+  cursor: "---\ndescription: Gnosys persistent memory \u2014 teaches the agent when to read/write memories via MCP tools\nalwaysApply: true\n---\n\n# Gnosys Memory System (v2.0)\n\nYou have access to persistent memory via Gnosys MCP tools. Use them proactively.\n\n## Multi-project\n\nIf you are working in a monorepo or multi-project workspace, pass `projectRoot` (absolute path) to every tool call so Gnosys routes to the correct `.gnosys/` store. If you are working in a single project, you can omit it \u2014 Gnosys will auto-detect from the MCP root.\n\n## Retrieve memories\n\n- At the start of every task, call `gnosys_discover` with keywords for what you\u2019re working on\n- Call `gnosys_read` to load any relevant results\n- Trigger on: \u201Cremember when\u2026\u201D, \u201Cwhat did we decide\u2026\u201D, \u201Crecall\u201D, \u201Ccheck your memory\u201D, \u201Cdo we have notes on\u2026\u201D\n- Use `gnosys_hybrid_search` for best search results, `gnosys_ask` for Q&A with citations\n- Use `gnosys_recall` to get a full context briefing for a topic\n\n## Write memories\n\n- Trigger on: \u201Cremember this\u201D, \u201Cmemorize\u201D, \u201Csave this\u201D, \u201Cnote this down\u201D, \u201Cstore this\u201D, \u201Cdon\u2019t forget\u201D\n- Also write when the user states a decision, preference, or opinion \u2014 even casually\n- Commit specs and plans BEFORE starting implementation\n- After significant work, commit findings (gotchas, what worked, what didn\u2019t)\n\n## Tools\n\n### Core read/write\n- `gnosys_add` \u2014 write memory from freeform text (LLM structures it)\n- `gnosys_add_structured` \u2014 write with explicit title, category, content, tags, relevance\n- `gnosys_update` \u2014 modify existing memory\n- `gnosys_reinforce` \u2014 signal useful / not_relevant / outdated\n- `gnosys_commit_context` \u2014 extract novel memories from a conversation context\n\n### Search & retrieval\n- `gnosys_discover` \u2014 lightweight metadata search (call FIRST)\n- `gnosys_read` \u2014 load full memory content\n- `gnosys_search` \u2014 keyword search\n- `gnosys_hybrid_search` \u2014 keyword + semantic (best results)\n- `gnosys_ask` \u2014 natural-language Q&A with citations\n- `gnosys_recall` \u2014 full context briefing on a topic\n\n### Browse & organize\n- `gnosys_list` \u2014 list all memories\n- `gnosys_lens` \u2014 filtered view (category, tag, status, confidence, date)\n- `gnosys_tags` / `gnosys_tags_add` \u2014 tag registry\n- `gnosys_links` / `gnosys_graph` \u2014 wikilink relationships\n- `gnosys_history` / `gnosys_rollback` \u2014 version control\n- `gnosys_audit` \u2014 view the audit log\n\n### System & maintenance\n- `gnosys_stats` / `gnosys_dashboard` \u2014 system overview\n- `gnosys_maintain` \u2014 vault maintenance (dedup, decay, consolidation)\n- `gnosys_dream` \u2014 idle-time consolidation (decay, self-critique, summaries, relationships)\n- `gnosys_stale` \u2014 find memories not updated recently\n- `gnosys_stores` \u2014 show active store layers\n- `gnosys_export` \u2014 export to Obsidian vault\n- `gnosys_init` \u2014 initialize a new store\n- `gnosys_bootstrap` / `gnosys_import` \u2014 bulk import\n- `gnosys_reindex` / `gnosys_reindex_graph` \u2014 rebuild indexes\n\n## Categories\n\nUse these when writing: `architecture`, `decisions`, `requirements`, `concepts`, `roadmap`, `landscape`, `open-questions`\n",
+  claude: "# Gnosys Memory (v2.0)\n\nThis project uses Gnosys for persistent memory via MCP. Follow these rules:\n\n## Multi-project\n\nIf working in a monorepo, pass `projectRoot` (absolute path) to every tool call. Otherwise omit it \u2014 Gnosys auto-detects from MCP roots.\n\n## Read first\n\n- At task start, call `gnosys_discover` with relevant keywords\n- Load results with `gnosys_read`\n- When the user references past decisions, says \u201Crecall\u201D, \u201Cremember when\u201D, \u201Cwhat did we decide\u201D \u2014 search memory first\n- Use `gnosys_recall` for a full context briefing on a topic\n\n## Write automatically\n\n- When user says \u201Cremember\u201D, \u201Cmemorize\u201D, \u201Csave this\u201D, \u201Cnote this down\u201D, \u201Cdon\u2019t forget\u201D \u2014 call `gnosys_add`\n- When user states a decision or preference (even casually) \u2014 commit to `decisions/`\n- When user provides a spec or plan \u2014 commit BEFORE starting work\n- After significant implementation \u2014 commit findings and gotchas\n\n## Key tools\n\n| Action | Tool |\n|--------|------|\n| Find memories | `gnosys_discover` (metadata) \u2192 `gnosys_read` (content) |\n| Search | `gnosys_hybrid_search` (best), `gnosys_search` (keyword), `gnosys_ask` (Q&A) |\n| Context briefing | `gnosys_recall` |\n| Write | `gnosys_add` (freeform), `gnosys_add_structured` (explicit fields) |\n| Update | `gnosys_update`, `gnosys_reinforce` (useful/not_relevant/outdated) |\n| Browse | `gnosys_list`, `gnosys_lens` (filtered), `gnosys_tags`, `gnosys_graph` |\n| Maintain | `gnosys_maintain`, `gnosys_dream`, `gnosys_stale`, `gnosys_dashboard` |\n| Export | `gnosys_export` (Obsidian), `gnosys_audit` (audit log) |\n\n## Categories\n\n`architecture` \u00b7 `decisions` \u00b7 `requirements` \u00b7 `concepts` \u00b7 `roadmap` \u00b7 `landscape` \u00b7 `open-questions`\n"
 };
 
 function copyRule(btn, variant) {
@@ -1488,21 +1458,6 @@ function copyRule(btn, variant) {
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   }
 
-  var avLight = document.querySelector('.arch-video-light');
-  var avDark = document.querySelector('.arch-video-dark');
-
-  function syncVideos() {
-    var isDark = html.getAttribute('data-theme') === 'dark' ||
-      (html.getAttribute('data-theme') === 'system' && getSystemDark());
-    if (isDark) {
-      if (avLight) avLight.pause();
-      if (avDark) { avDark.play().catch(function(){}); }
-    } else {
-      if (avDark) avDark.pause();
-      if (avLight) { avLight.play().catch(function(){}); }
-    }
-  }
-
   function apply(theme) {
     html.setAttribute('data-theme', theme);
     if (theme === 'system') {
@@ -1513,7 +1468,6 @@ function copyRule(btn, variant) {
     toggle.setAttribute('data-active', posMap[theme]);
     buttons.forEach(b => b.classList.toggle('active', b.dataset.themeBtn === theme));
     localStorage.setItem('gnosys-theme', theme);
-    syncVideos();
   }
 
   buttons.forEach(b => b.addEventListener('click', () => apply(b.dataset.themeBtn)));
