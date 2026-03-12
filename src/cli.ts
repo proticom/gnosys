@@ -27,6 +27,8 @@ import { getLLMProvider, isProviderAvailable, LLMProvider } from "./lib/llm.js";
 import { GnosysDB } from "./lib/db.js";
 import { migrate, formatMigrationReport } from "./lib/migrate.js";
 import { createProjectIdentity, readProjectIdentity, findProjectIdentity } from "./lib/projectIdentity.js";
+import { setPreference, getPreference, getAllPreferences, deletePreference } from "./lib/preferences.js";
+import { syncRules } from "./lib/rulesGen.js";
 
 // Load API keys from ~/.config/gnosys/.env (same as MCP server)
 const home = process.env.HOME || process.env.USERPROFILE || "/tmp";
@@ -2561,6 +2563,164 @@ program
         console.log(`    Created:   ${p.created}`);
         console.log();
       }
+    } catch (err) {
+      console.error(`Error: ${err instanceof Error ? err.message : err}`);
+      process.exit(1);
+    } finally {
+      centralDb?.close();
+    }
+  });
+
+// ─── gnosys pref ─────────────────────────────────────────────────────────
+const prefCmd = program
+  .command("pref")
+  .description("Manage user preferences (stored in central DB, scope='user')");
+
+prefCmd
+  .command("set <key> <value>")
+  .description("Set a user preference. Key should be kebab-case (e.g. 'commit-convention').")
+  .option("-t, --title <title>", "Human-readable title")
+  .option("--tags <tags>", "Comma-separated tags")
+  .action(async (key: string, value: string, opts: { title?: string; tags?: string }) => {
+    let centralDb: GnosysDB | null = null;
+    try {
+      centralDb = GnosysDB.openCentral();
+      if (!centralDb.isAvailable()) {
+        console.error("Central DB not available (better-sqlite3 missing).");
+        process.exit(1);
+      }
+
+      const tags = opts.tags ? opts.tags.split(",").map((t) => t.trim()) : undefined;
+      const pref = setPreference(centralDb, key, value, { title: opts.title, tags });
+      console.log(`Preference set: ${pref.title}`);
+      console.log(`  Key:   ${pref.key}`);
+      console.log(`  Value: ${pref.value}`);
+      console.log(`\nRun 'gnosys sync' to update agent rules files.`);
+    } catch (err) {
+      console.error(`Error: ${err instanceof Error ? err.message : err}`);
+      process.exit(1);
+    } finally {
+      centralDb?.close();
+    }
+  });
+
+prefCmd
+  .command("get [key]")
+  .description("Get a preference by key, or list all preferences if no key given.")
+  .action(async (key?: string) => {
+    let centralDb: GnosysDB | null = null;
+    try {
+      centralDb = GnosysDB.openCentral();
+      if (!centralDb.isAvailable()) {
+        console.error("Central DB not available (better-sqlite3 missing).");
+        process.exit(1);
+      }
+
+      if (key) {
+        const pref = getPreference(centralDb, key);
+        if (!pref) {
+          console.log(`No preference found for key "${key}".`);
+          return;
+        }
+        console.log(`${pref.title} (${pref.key})\n`);
+        console.log(pref.value);
+        console.log(`\nConfidence: ${pref.confidence}`);
+        console.log(`Modified: ${pref.modified}`);
+      } else {
+        const prefs = getAllPreferences(centralDb);
+        if (prefs.length === 0) {
+          console.log("No preferences set. Use 'gnosys pref set <key> <value>' to add some.");
+          return;
+        }
+        console.log(`${prefs.length} user preference(s):\n`);
+        for (const p of prefs) {
+          console.log(`  ${p.title} (${p.key})`);
+          console.log(`    ${p.value.split("\n")[0]}`);
+          console.log();
+        }
+      }
+    } catch (err) {
+      console.error(`Error: ${err instanceof Error ? err.message : err}`);
+      process.exit(1);
+    } finally {
+      centralDb?.close();
+    }
+  });
+
+prefCmd
+  .command("delete <key>")
+  .description("Delete a user preference.")
+  .action(async (key: string) => {
+    let centralDb: GnosysDB | null = null;
+    try {
+      centralDb = GnosysDB.openCentral();
+      if (!centralDb.isAvailable()) {
+        console.error("Central DB not available (better-sqlite3 missing).");
+        process.exit(1);
+      }
+
+      const deleted = deletePreference(centralDb, key);
+      if (!deleted) {
+        console.log(`No preference found for key "${key}".`);
+        return;
+      }
+      console.log(`Preference "${key}" deleted.`);
+      console.log(`Run 'gnosys sync' to update agent rules files.`);
+    } catch (err) {
+      console.error(`Error: ${err instanceof Error ? err.message : err}`);
+      process.exit(1);
+    } finally {
+      centralDb?.close();
+    }
+  });
+
+// ─── gnosys sync ─────────────────────────────────────────────────────────
+program
+  .command("sync")
+  .description("Regenerate agent rules file from user preferences and project conventions. Injects GNOSYS:START/GNOSYS:END block.")
+  .option("-d, --directory <dir>", "Project directory (default: cwd)")
+  .action(async (opts: { directory?: string }) => {
+    const projectDir = opts.directory ? path.resolve(opts.directory) : process.cwd();
+
+    let centralDb: GnosysDB | null = null;
+    try {
+      centralDb = GnosysDB.openCentral();
+      if (!centralDb.isAvailable()) {
+        console.error("Central DB not available (better-sqlite3 missing).");
+        process.exit(1);
+      }
+
+      // Read project identity
+      const identity = await readProjectIdentity(projectDir);
+      if (!identity) {
+        console.error("No project identity found. Run 'gnosys init' first.");
+        process.exit(1);
+      }
+
+      if (!identity.agentRulesTarget) {
+        console.error("No agent rules target detected (no .cursor/ or CLAUDE.md found).");
+        console.error("Create one of these, then run 'gnosys init' to detect it.");
+        process.exit(1);
+      }
+
+      const result = await syncRules(
+        centralDb,
+        projectDir,
+        identity.agentRulesTarget,
+        identity.projectId
+      );
+
+      if (!result) {
+        console.error("Sync failed.");
+        process.exit(1);
+      }
+
+      const action = result.created ? "Created" : "Updated";
+      console.log(`${action} rules file: ${result.filePath}`);
+      console.log(`  Preferences injected: ${result.prefCount}`);
+      console.log(`  Project conventions:  ${result.conventionCount}`);
+      console.log(`\nContent is inside <!-- GNOSYS:START --> / <!-- GNOSYS:END --> markers.`);
+      console.log(`User content outside these markers is preserved.`);
     } catch (err) {
       console.error(`Error: ${err instanceof Error ? err.message : err}`);
       process.exit(1);

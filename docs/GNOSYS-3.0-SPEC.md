@@ -3,7 +3,7 @@
 **Version:** 1.1
 **Date:** March 11, 2026
 **Authors:** Proticom + Claude
-**Status:** Phase 8a Implemented
+**Status:** Phase 8a + 8b Implemented
 
 ---
 
@@ -203,15 +203,18 @@ If `~/.gnosys/gnosys.db` is placed on a network share (Dropbox, NAS, iCloud Driv
 | 8a.7 | `gnosys projects` command | ✅ |
 | 8a.8 | Tests: 145 passing, zero failures | ✅ |
 
-### Phase 8b: Preferences + Rules Generation
+### Phase 8b: Preferences + Rules Generation ✅ COMPLETE
 
-| # | Task | Acceptance Criteria |
-|---|------|---------------------|
-| 8b.1 | Add `preferences` category | Memories with `category='preferences'` and `scope='user'` recognized |
-| 8b.2 | `gnosys init` generates agent rules file | Rules file combines base + user prefs + project conventions |
-| 8b.3 | IDE/agent environment detection | Detects Cursor, Claude Code, or custom |
-| 8b.4 | `gnosys sync` command | Regenerates rules from current preferences |
-| 8b.5 | `GNOSYS:START` / `GNOSYS:END` blocks | User edits outside blocks preserved |
+| # | Task | Status |
+|---|------|--------|
+| 8b.1 | Preferences stored as user-scoped memories (`pref-<key>`, category='preferences', scope='user') | ✅ |
+| 8b.2 | `gnosys_sync` / `gnosys sync` generates agent rules file from prefs + project conventions | ✅ |
+| 8b.3 | IDE/agent environment detection (Cursor, Claude Code) inherited from Phase 8a | ✅ |
+| 8b.4 | CLI: `gnosys pref set/get/delete`, `gnosys sync` | ✅ |
+| 8b.5 | MCP: `gnosys_preference_set`, `gnosys_preference_get`, `gnosys_preference_delete`, `gnosys_sync` | ✅ |
+| 8b.6 | `<!-- GNOSYS:START -->` / `<!-- GNOSYS:END -->` blocks — user edits outside preserved | ✅ |
+| 8b.7 | Preference updates increment reinforcement_count | ✅ |
+| 8b.8 | Tests: 164 passing (19 new for preferences + rules generation) | ✅ |
 
 ### Phase 8c: CLI Parity
 

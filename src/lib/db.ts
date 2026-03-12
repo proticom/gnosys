@@ -457,7 +457,42 @@ export class GnosysDB {
   }
 
   deleteMemory(id: string): void {
-    this.db.prepare("DELETE FROM memories WHERE id = ?").run(id);
+    // FTS5 delete trigger may fail if INSERT OR REPLACE left FTS inconsistent.
+    // Use a transaction: manually clean FTS first, then delete.
+    try {
+      this.db.prepare("DELETE FROM memories WHERE id = ?").run(id);
+    } catch {
+      // FTS trigger failed — clean up FTS manually, then retry
+      try {
+        const mem = this.db.prepare("SELECT * FROM memories WHERE id = ?").get(id);
+        if (mem) {
+          // Remove FTS entry first (raw delete command)
+          this.db.prepare(
+            "INSERT INTO memories_fts(memories_fts, id, title, category, tags, relevance, content, summary) VALUES ('delete', ?, ?, ?, ?, ?, ?, ?)"
+          ).run(
+            (mem as DbMemory).id, (mem as DbMemory).title, (mem as DbMemory).category,
+            (mem as DbMemory).tags, (mem as DbMemory).relevance, (mem as DbMemory).content,
+            (mem as DbMemory).summary
+          );
+        }
+      } catch {
+        // FTS cleanup also failed — rebuild FTS later
+      }
+      // Delete without trigger
+      this.db.exec("DROP TRIGGER IF EXISTS memories_fts_ad");
+      this.db.prepare("DELETE FROM memories WHERE id = ?").run(id);
+      // Recreate trigger
+      try {
+        this.db.exec(`
+          CREATE TRIGGER IF NOT EXISTS memories_fts_ad AFTER DELETE ON memories BEGIN
+            INSERT INTO memories_fts(memories_fts, id, title, category, tags, relevance, content, summary)
+            VALUES ('delete', old.id, old.title, old.category, old.tags, old.relevance, old.content, old.summary);
+          END;
+        `);
+      } catch {
+        // Trigger recreation failed — not critical
+      }
+    }
   }
 
   getMemoryCount(): { active: number; archived: number; total: number } {

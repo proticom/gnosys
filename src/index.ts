@@ -51,6 +51,8 @@ import { syncMemoryToDb, syncUpdateToDb, syncArchiveToDb, syncDearchiveToDb, syn
 import { GnosysDreamEngine, DreamScheduler, formatDreamReport } from "./lib/dream.js";
 import { GnosysExporter, formatExportReport } from "./lib/export.js";
 import { createProjectIdentity, readProjectIdentity, findProjectIdentity, checkDirectoryMismatch } from "./lib/projectIdentity.js";
+import { setPreference, getPreference, getAllPreferences, deletePreference, Preference } from "./lib/preferences.js";
+import { syncRules, generateRulesBlock, removeRulesBlock } from "./lib/rulesGen.js";
 
 // Initialize resolver (discovers all layered stores)
 const resolver = new GnosysResolver();
@@ -2377,6 +2379,199 @@ server.tool(
 
     return {
       content: [{ type: "text" as const, text: formatAuditTimeline(entries) }],
+    };
+  }
+);
+
+// ─── Tool: gnosys_preference_set ─────────────────────────────────────────
+server.tool(
+  "gnosys_preference_set",
+  "Set a user preference. Preferences are stored in the central DB as user-scoped memories. They persist across all projects and are injected into agent rules files on `gnosys sync`. Use this to record workflow conventions, coding standards, tool preferences, etc.",
+  {
+    key: z.string().describe(
+      "Preference key, kebab-case. Examples: 'commit-convention', 'code-style', 'llm-provider', 'testing-approach', 'naming-convention'"
+    ),
+    value: z.string().describe(
+      "The preference value. Can be a sentence or paragraph describing the convention."
+    ),
+    title: z.string().optional().describe("Human-readable title. Auto-generated from key if omitted."),
+    tags: z.array(z.string()).optional().describe("Optional tags for discovery."),
+    projectRoot: projectRootParam,
+  },
+  async ({ key, value, title, tags }) => {
+    if (!centralDb?.isAvailable()) {
+      return {
+        content: [{ type: "text" as const, text: "Central DB not available. Cannot store preferences." }],
+        isError: true,
+      };
+    }
+
+    try {
+      const pref = setPreference(centralDb, key, value, { title, tags });
+      return {
+        content: [{
+          type: "text" as const,
+          text: `Preference set: **${pref.title}**\n  Key: ${pref.key}\n  Value: ${pref.value}\n\nRun \`gnosys_sync\` to regenerate agent rules files with this preference.`,
+        }],
+      };
+    } catch (err) {
+      return {
+        content: [{ type: "text" as const, text: `Error setting preference: ${err instanceof Error ? err.message : String(err)}` }],
+        isError: true,
+      };
+    }
+  }
+);
+
+// ─── Tool: gnosys_preference_get ─────────────────────────────────────────
+server.tool(
+  "gnosys_preference_get",
+  "Get a user preference by key, or list all preferences.",
+  {
+    key: z.string().optional().describe("Preference key to retrieve. Omit to list all preferences."),
+    projectRoot: projectRootParam,
+  },
+  async ({ key }) => {
+    if (!centralDb?.isAvailable()) {
+      return {
+        content: [{ type: "text" as const, text: "Central DB not available." }],
+        isError: true,
+      };
+    }
+
+    if (key) {
+      const pref = getPreference(centralDb, key);
+      if (!pref) {
+        return {
+          content: [{ type: "text" as const, text: `No preference found for key "${key}".` }],
+        };
+      }
+      return {
+        content: [{
+          type: "text" as const,
+          text: `**${pref.title}** (${pref.key})\n\n${pref.value}\n\nConfidence: ${pref.confidence}\nModified: ${pref.modified}`,
+        }],
+      };
+    }
+
+    // List all
+    const prefs = getAllPreferences(centralDb);
+    if (prefs.length === 0) {
+      return {
+        content: [{ type: "text" as const, text: "No preferences set. Use gnosys_preference_set to add some." }],
+      };
+    }
+
+    const formatted = prefs
+      .map((p) => `- **${p.title}** (\`${p.key}\`): ${p.value.split("\n")[0]}`)
+      .join("\n");
+
+    return {
+      content: [{
+        type: "text" as const,
+        text: `${prefs.length} user preference(s):\n\n${formatted}`,
+      }],
+    };
+  }
+);
+
+// ─── Tool: gnosys_preference_delete ──────────────────────────────────────
+server.tool(
+  "gnosys_preference_delete",
+  "Delete a user preference by key.",
+  {
+    key: z.string().describe("Preference key to delete."),
+    projectRoot: projectRootParam,
+  },
+  async ({ key }) => {
+    if (!centralDb?.isAvailable()) {
+      return {
+        content: [{ type: "text" as const, text: "Central DB not available." }],
+        isError: true,
+      };
+    }
+
+    const deleted = deletePreference(centralDb, key);
+    if (!deleted) {
+      return {
+        content: [{ type: "text" as const, text: `No preference found for key "${key}".` }],
+      };
+    }
+
+    return {
+      content: [{
+        type: "text" as const,
+        text: `Preference "${key}" deleted. Run \`gnosys_sync\` to update agent rules files.`,
+      }],
+    };
+  }
+);
+
+// ─── Tool: gnosys_sync ──────────────────────────────────────────────────
+server.tool(
+  "gnosys_sync",
+  "Regenerate agent rules file from current user preferences and project conventions. Injects a GNOSYS:START/GNOSYS:END block into the detected agent rules file (CLAUDE.md, .cursor/rules/gnosys.mdc). User content outside the block is preserved.",
+  {
+    projectRoot: projectRootParam,
+  },
+  async ({ projectRoot }) => {
+    if (!centralDb?.isAvailable()) {
+      return {
+        content: [{ type: "text" as const, text: "Central DB not available. Cannot sync rules." }],
+        isError: true,
+      };
+    }
+
+    const ctx = await resolveToolContext(projectRoot);
+    const writeTarget = ctx.resolver.getWriteTarget();
+    if (!writeTarget) {
+      return {
+        content: [{ type: "text" as const, text: "No writable store found. Run gnosys_init first." }],
+        isError: true,
+      };
+    }
+
+    // Find project identity
+    const storePath = writeTarget.store.getStorePath();
+    const projectDir = path.dirname(storePath);
+    const identity = await readProjectIdentity(projectDir);
+
+    if (!identity) {
+      return {
+        content: [{ type: "text" as const, text: "No project identity found. Run gnosys_init first." }],
+        isError: true,
+      };
+    }
+
+    if (!identity.agentRulesTarget) {
+      return {
+        content: [{
+          type: "text" as const,
+          text: "No agent rules target detected (no .cursor/ or CLAUDE.md found). Create one of these first, then re-run gnosys_init to detect it.",
+        }],
+      };
+    }
+
+    const result = await syncRules(
+      centralDb,
+      projectDir,
+      identity.agentRulesTarget,
+      identity.projectId
+    );
+
+    if (!result) {
+      return {
+        content: [{ type: "text" as const, text: "Sync failed — no agent rules target." }],
+        isError: true,
+      };
+    }
+
+    const action = result.created ? "Created" : "Updated";
+    return {
+      content: [{
+        type: "text" as const,
+        text: `${action} rules file: ${result.filePath}\n\n  Preferences injected: ${result.prefCount}\n  Project conventions: ${result.conventionCount}\n\nContent is inside <!-- GNOSYS:START --> / <!-- GNOSYS:END --> markers.\nUser content outside these markers is preserved.`,
+      }],
     };
   }
 );
