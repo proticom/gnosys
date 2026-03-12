@@ -2992,4 +2992,119 @@ program
     }
   });
 
+// ─── gnosys sandbox start|stop|status ─────────────────────────────────────
+
+const sandboxCmd = program
+  .command("sandbox")
+  .description("Manage the Gnosys sandbox background process");
+
+sandboxCmd
+  .command("start")
+  .description("Start the Gnosys sandbox background process")
+  .option("--persistent", "Keep running across reboots (future use)")
+  .option("--db-path <path>", "Custom database directory")
+  .option("--json", "Output as JSON")
+  .action(async (opts: { persistent?: boolean; dbPath?: string; json?: boolean }) => {
+    try {
+      const { startSandbox } = await import("./sandbox/manager.js");
+      const pid = await startSandbox({
+        persistent: opts.persistent,
+        dbPath: opts.dbPath,
+        wait: true,
+      });
+      if (opts.json) {
+        console.log(JSON.stringify({ ok: true, pid }));
+      } else {
+        console.log(`Gnosys sandbox running (pid: ${pid})`);
+      }
+    } catch (err) {
+      if (opts.json) {
+        console.log(JSON.stringify({ ok: false, error: err instanceof Error ? err.message : String(err) }));
+      } else {
+        console.error(`Failed to start sandbox: ${err instanceof Error ? err.message : err}`);
+      }
+      process.exit(1);
+    }
+  });
+
+sandboxCmd
+  .command("stop")
+  .description("Stop the Gnosys sandbox background process")
+  .option("--json", "Output as JSON")
+  .action(async (opts: { json?: boolean }) => {
+    try {
+      const { stopSandbox } = await import("./sandbox/manager.js");
+      const wasRunning = await stopSandbox();
+      if (opts.json) {
+        console.log(JSON.stringify({ ok: true, wasRunning }));
+      } else {
+        console.log(wasRunning ? "Sandbox stopped." : "Sandbox was not running.");
+      }
+    } catch (err) {
+      if (opts.json) {
+        console.log(JSON.stringify({ ok: false, error: err instanceof Error ? err.message : String(err) }));
+      } else {
+        console.error(`Failed to stop sandbox: ${err instanceof Error ? err.message : err}`);
+      }
+      process.exit(1);
+    }
+  });
+
+sandboxCmd
+  .command("status")
+  .description("Check if the Gnosys sandbox is running")
+  .option("--json", "Output as JSON")
+  .action(async (opts: { json?: boolean }) => {
+    try {
+      const { sandboxStatus } = await import("./sandbox/manager.js");
+      const status = await sandboxStatus();
+      if (opts.json) {
+        console.log(JSON.stringify(status, null, 2));
+      } else if (status.running) {
+        console.log(`Sandbox running (pid: ${status.pid}, socket: ${status.socketPath})`);
+      } else {
+        console.log("Sandbox is not running. Start with: gnosys sandbox start");
+      }
+    } catch (err) {
+      console.error(`Error: ${err instanceof Error ? err.message : err}`);
+      process.exit(1);
+    }
+  });
+
+// ─── gnosys helper generate ───────────────────────────────────────────────
+
+const helperCmd = program
+  .command("helper")
+  .description("Manage the Gnosys helper library for agent integration");
+
+helperCmd
+  .command("generate")
+  .description("Generate a gnosys-helper.ts file in the current directory (or specified directory)")
+  .option("-d, --directory <dir>", "Target directory (default: cwd)")
+  .option("--json", "Output as JSON")
+  .action(async (opts: { directory?: string; json?: boolean }) => {
+    try {
+      const { generateHelper } = await import("./sandbox/helper-template.js");
+      const targetDir = opts.directory || process.cwd();
+      const outputPath = await generateHelper(targetDir);
+      if (opts.json) {
+        console.log(JSON.stringify({ ok: true, path: outputPath }));
+      } else {
+        console.log(`Generated: ${outputPath}`);
+        console.log();
+        console.log("Usage in your agent/script:");
+        console.log('  import { gnosys } from "./gnosys-helper";');
+        console.log('  await gnosys.add("We use conventional commits");');
+        console.log('  const ctx = await gnosys.recall("auth decisions");');
+      }
+    } catch (err) {
+      if (opts.json) {
+        console.log(JSON.stringify({ ok: false, error: err instanceof Error ? err.message : String(err) }));
+      } else {
+        console.error(`Failed to generate helper: ${err instanceof Error ? err.message : err}`);
+      }
+      process.exit(1);
+    }
+  });
+
 program.parse();

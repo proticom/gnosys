@@ -12,13 +12,13 @@
 
 ---
 
-### Gnosys — Persistent Memory for AI Agents (and Universal Transparent Knowledge Engine)
+### Gnosys — One Brain. Zero Context Bloat.
 
-**Gnosys** gives LLMs — and humans — a knowledge layer that survives across sessions and scales to real-world datasets.
+**Gnosys** gives AI agents persistent memory that survives across sessions, projects, and machines.
 
-In v3.0, Gnosys is a **centralized brain**: a single SQLite database at `~/.gnosys/gnosys.db` unifies all projects, user preferences, and global knowledge under one roof. Every memory is scoped (`project`, `user`, or `global`) and tagged with a `project_id`. Federated search ranks results across scopes with tier boosting and recency awareness. Preferences drive automatic agent rules generation. Project briefings give instant status. Dream Mode consolidates knowledge during idle time. One-command export regenerates a full Obsidian vault. Multi-project routing with ambiguity detection keeps parallel workspaces conflict-free.
+In v3.0, Gnosys is **sandbox-first**: a persistent background process holds the database connection while agents import a tiny helper library and call memory operations like normal code — no MCP schemas, no round-trips, near-zero context cost. The central brain at `~/.gnosys/gnosys.db` unifies all projects, user preferences, and global knowledge. Federated search ranks results across scopes with tier boosting and recency awareness. Preferences drive automatic agent rules generation. Dream Mode consolidates knowledge during idle time. One-command export regenerates a full Obsidian vault.
 
-It runs as a CLI and a complete MCP server that drops straight into Cursor, Claude Desktop, Claude Code, Cowork, Codex, or any MCP client.
+It also runs as a CLI and a complete MCP server that drops straight into Cursor, Claude Desktop, Claude Code, Cowork, Codex, or any MCP client.
 
 **Beyond agents**: Gnosys turns any structured dataset into a connected, versioned knowledge graph.
 • NVD/CVE Database: 200k+ vulnerabilities auto-linked to packages, exploits, patches, and supersession history. Ask "which of our dependencies have active unpatched criticals?"
@@ -36,7 +36,8 @@ Gnosys takes a different approach: every memory is a plain Markdown file with YA
 
 **What makes it different:**
 
-- **Centralized brain (v3.0)** — single `~/.gnosys/gnosys.db` unifies all projects with `project_id` + `scope` columns. No more per-project silos.
+- **Sandbox-first (v3.0)** — persistent background process + helper library. Agents call `gnosys.add()` / `gnosys.recall()` like regular code. No MCP overhead, near-zero context cost.
+- **Centralized brain** — single `~/.gnosys/gnosys.db` unifies all projects with `project_id` + `scope` columns. No more per-project silos.
 - **Federated search** — tier-boosted search across project (1.5x) → user (1.0x) → global (0.7x) scopes with recency and reinforcement boosts.
 - **Preferences as memories** — user preferences stored as scoped memories, driving automatic agent rules generation via `gnosys sync`.
 - **Project briefings** — instant project status: categories, recent activity, top tags, summary. Dream Mode pre-computes these.
@@ -128,24 +129,35 @@ See [DEMO.md](DEMO.md) for the full step-by-step walkthrough.
 # Install
 npm install -g gnosys-mcp
 
-# Initialize a store in your project
+# Initialize a project
 cd your-project
 gnosys init
 
-# Add a memory (uses LLM to structure it — needs Anthropic key or Ollama)
+# Start the sandbox (background process — runs once, stays alive)
+gnosys sandbox start
+
+# Add memories via CLI
 gnosys add "We chose PostgreSQL over MySQL for its JSON support and mature ecosystem"
 
-# Or add without an LLM
-gnosys add-structured --title "Use PostgreSQL" --category decisions \
-  --content "Chosen for JSON support and mature ecosystem" \
-  --relevance "database postgres sql json storage"
-
-# Find memories later
-gnosys discover "database selection"
-
-# Full-text search
+# Search memories
+gnosys recall "database selection"
 gnosys search "PostgreSQL"
+
+# Generate a helper library for agent integration
+gnosys helper generate
 ```
+
+### Agent / Helper Library (v3.0)
+
+```ts
+import { gnosys } from "./gnosys-helper";   // generated once, reused forever
+
+await gnosys.add("We use conventional commits");
+const ctx = await gnosys.recall("auth decisions");
+await gnosys.reinforce("payment logic");
+```
+
+The helper auto-starts the sandbox if it's not running. No MCP required.
 
 ---
 
