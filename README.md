@@ -1106,7 +1106,7 @@ Real numbers from our demo vault (120 memories — 100 USDA foods + 20 NVD CVEs)
 | Graph reindex (120 memories) | <1s |
 | Storage per memory | ~1 KB `.md` file |
 | Embedding storage (120 memories) | ~0.3 MB |
-| Test suite | 474+ tests, 0 errors |
+| Test suite | 495 tests, 0 errors |
 
 All benchmarks on Apple M-series hardware, Node.js 20+. Structured imports bypass LLM entirely. LLM-enriched imports depend on provider latency.
 
