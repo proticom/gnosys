@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/gnosys-mcp"><img src="https://img.shields.io/npm/v/gnosys-mcp.svg" alt="npm version"></a>
   <a href="https://github.com/proticom/gnosys/actions"><img src="https://github.com/proticom/gnosys/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <img src="https://img.shields.io/badge/tests-474%20passing-brightgreen" alt="tests">
+  <img src="https://img.shields.io/badge/tests-495%20passing-brightgreen" alt="tests">
   <img src="https://img.shields.io/badge/coverage-lib%2040%25%20|%20sandbox%2045%25-yellow" alt="coverage">
   <a href="https://gnosys.ai"><img src="https://img.shields.io/badge/docs-gnosys.ai-C04C4C" alt="docs"></a>
   <a href="https://gnosys.ai/guide.html"><img src="https://img.shields.io/badge/user%20guide-gnosys.ai%2Fguide-555560" alt="user guide"></a>
@@ -754,6 +754,53 @@ Use `gnosys stores` (CLI) or the `gnosys_stores` MCP tool to see all detected st
 
 ---
 
+## Network Share Support
+
+Gnosys v3.0 supports pointing the central database at a network share — Dropbox, iCloud Drive, NAS, or any mounted network path. This enables multi-machine access to the same knowledge base.
+
+### Setup
+
+```bash
+# Start the sandbox with a network DB path
+gnosys sandbox start --db-path /Volumes/NAS/gnosys
+
+# Or Dropbox
+gnosys sandbox start --db-path ~/Dropbox/gnosys
+
+# Or iCloud Drive
+gnosys sandbox start --db-path ~/Library/Mobile\ Documents/com~apple~CloudDocs/gnosys
+```
+
+The sandbox automatically applies network-safe defaults when a custom `--db-path` is provided: 5 connection retries with 1-second delays, and a 10-second SQLite busy timeout for concurrent multi-machine access.
+
+### Multi-Machine Usage
+
+Multiple machines can share the same database. SQLite's WAL mode handles concurrent reads safely, and the busy timeout prevents lock contention failures. For best results:
+
+- Keep each machine's sandbox running (it holds a connection pool)
+- Ensure the network path is mounted before starting the sandbox
+- If the path becomes unavailable, stop and restart the sandbox after remounting
+
+### Backup & Restore
+
+```bash
+# Backup the central DB (includes DB, helper library, rules, and sandbox log)
+gnosys backup
+gnosys backup --to /backups/gnosys-$(date +%F).db
+
+# Restore from a backup
+gnosys restore latest
+gnosys restore --from /backups/gnosys-2026-03-12.db
+
+# JSON output for scripting
+gnosys backup --json
+gnosys restore latest --json
+```
+
+Backups include the full SQLite database, helper library, rules files, and sandbox diagnostics log. The `--to` and `--from` flags support both local and network paths.
+
+---
+
 ## Comparison
 
 Agent memory is a spectrum — from a single markdown file to full knowledge graphs. Here's an honest look at the trade-offs.
@@ -948,6 +995,11 @@ gnosys sandbox stop          # Stop the sandbox daemon
 gnosys sandbox status        # Show sandbox process status
 gnosys helper generate       # Generate agent helper library
 
+# v3.0: Network Share Support
+gnosys sandbox start --db-path /path/to/network/share  # Use network DB
+gnosys backup --to /backups/gnosys-2026-03-12.db  # Backup to specific path
+gnosys restore --from /backups/gnosys-2026-03-12.db  # Restore from specific path
+
 # v3.0: Centralized Brain
 gnosys projects              # List all registered projects
 gnosys backup                # Backup the central DB
@@ -972,7 +1024,7 @@ gnosys working-set           # Show implicit working set (recent memories)
 ```bash
 npm install          # Install dependencies
 npm run build        # Compile TypeScript
-npm test             # Run test suite (474 tests)
+npm test             # Run test suite (495 tests)
 npm run test:watch   # Run tests in watch mode
 npm run test:coverage # Run tests with v8 coverage report
 npm run dev          # Run MCP server in dev mode (tsx)
@@ -980,7 +1032,7 @@ npm run dev          # Run MCP server in dev mode (tsx)
 
 ### Test Suite
 
-474 tests across 29 files covering the full v3.0 feature set:
+495 tests across 30 files covering the full v3.0 feature set:
 
 | Phase | Tests | Coverage |
 |-------|-------|----------|
@@ -988,6 +1040,7 @@ npm run dev          # Run MCP server in dev mode (tsx)
 | Federation + CLI parity | 100+ | federated.ts 85%, preferences.ts 79% |
 | Sandbox (server, client, helper) | 32 | client.ts 71%, server.ts 53% |
 | Phase 9d coverage overhaul | 74 | audit.ts 92%, lock.ts 72%, dbWrite.ts 64% |
+| Phase 9e network share + polish | 21 | db.ts retry, backup/restore, manager, docs |
 
 CI runs on Node 20 + 22 with multi-project scenario testing, network-share simulation, and TypeScript strict checking. Coverage reports are generated and uploaded as artifacts on every push.
 
@@ -1053,9 +1106,57 @@ Real numbers from our demo vault (120 memories — 100 USDA foods + 20 NVD CVEs)
 | Graph reindex (120 memories) | <1s |
 | Storage per memory | ~1 KB `.md` file |
 | Embedding storage (120 memories) | ~0.3 MB |
-| Test suite | 183 tests, 0 errors |
+| Test suite | 474+ tests, 0 errors |
 
 All benchmarks on Apple M-series hardware, Node.js 20+. Structured imports bypass LLM entirely. LLM-enriched imports depend on provider latency.
+
+---
+
+## Migrating from v2.x to v3.0
+
+v3.0 is a major architectural upgrade. Here's what changed and how to migrate.
+
+### What's New in v3.0
+
+- **Sandbox-first runtime**: persistent background process replaces per-request MCP overhead
+- **Central brain**: single `~/.gnosys/gnosys.db` replaces per-project databases
+- **Federated search**: tier-boosted search across project → user → global scopes
+- **Preferences**: user preferences stored as scoped memories, driving agent rules generation
+- **Network share**: point the central DB at Dropbox, iCloud, NAS for multi-machine access
+- **Helper library**: generated TypeScript/JavaScript library for direct agent integration
+
+### Migration Steps
+
+```bash
+# 1. Install v3.0
+npm install -g gnosys-mcp@3
+
+# 2. Start the sandbox
+gnosys sandbox start
+
+# 3. Migrate each project's data to the central DB
+cd /path/to/project-a
+gnosys migrate --to-central
+
+cd /path/to/project-b
+gnosys migrate --to-central
+
+# 4. Generate a helper library (optional, for agent integration)
+gnosys helper generate
+
+# 5. Verify migration
+gnosys projects        # List all registered projects
+gnosys briefing --all  # Check project data
+```
+
+### Breaking Changes
+
+- **Database location**: The primary database is now `~/.gnosys/gnosys.db`, not `<project>/.gnosys/gnosys.db`. Per-project databases still exist as read fallbacks.
+- **MCP server**: Still works identically. No config changes needed.
+- **CLI**: All commands work as before. New commands added for sandbox, preferences, federation.
+- **Import/export**: Unchanged. Imports go to the central DB by default.
+
+Your `.gnosys/` directories and `.md` files are preserved. v3.0 reads from both the central DB and local stores, so nothing breaks during gradual migration.
 
 ---
 
@@ -1074,7 +1175,7 @@ Gnosys is open source (MIT) and actively developed. Here's how to get involved:
 - PRs welcome — especially for new import connectors, LLM providers, and Obsidian plugins
 
 **What's next:**
-- Multi-machine sync (central DB replication via network shares)
+- Real-time multi-machine sync (automatic conflict resolution)
 - Temporal memory versioning (valid_from / valid_until)
 - Cross-session "deep dream" overnight consolidation
 - Graph visualization in the dashboard

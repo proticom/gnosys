@@ -857,6 +857,14 @@ footer a:hover { color: var(--accent-light); }
     </div>
 
     <div class="sidebar-section">
+      <h3 class="sidebar-title">Guides</h3>
+      <a href="#guide-network-share" class="sidebar-link">Network Share Guide</a>
+      <a href="#guide-backup-restore" class="sidebar-link">Backup & Restore</a>
+      <a href="#guide-migration" class="sidebar-link">Migration from v2.x</a>
+      <a href="#guide-helper-library" class="sidebar-link">Helper Library</a>
+    </div>
+
+    <div class="sidebar-section">
       <h3 class="sidebar-title">Agent Rules</h3>
       <a href="#agent-rules" class="sidebar-link">Agent Rules</a>
     </div>
@@ -1848,6 +1856,329 @@ gnosys pref delete &lt;key&gt;</code>
           <div class="mcp-tool"><strong>MCP Tool:</strong> gnosys_restore</div>
         </div>
 
+      </div>
+
+      <!-- Network Share Guide -->
+      <div class="guide-section" id="guide-network-share">
+        <h2 class="guide-title">Network Share Guide</h2>
+        <p>Gnosys v3.0 supports running your centralized knowledge store on network-mounted paths like Dropbox, iCloud Drive, OneDrive, and NAS volumes. This enables you to access your memory across multiple machines safely.</p>
+
+        <h3>Using Network Paths</h3>
+        <p>Start the sandbox with a network-mounted database path:</p>
+        <div class="command-block">
+          <div class="block-label">Usage</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <code>gnosys sandbox start --db-path ~/Dropbox/.gnosys/gnosys.db</code>
+          </div>
+        </div>
+        <p>Common network paths:</p>
+        <ul style="margin-left: 20px; margin-bottom: 16px;">
+          <li><strong>Dropbox:</strong> <code>~/Dropbox/.gnosys/gnosys.db</code></li>
+          <li><strong>iCloud Drive:</strong> <code>~/Library/Mobile\ Documents/com~apple~CloudDocs/.gnosys/gnosys.db</code></li>
+          <li><strong>OneDrive:</strong> <code>~/OneDrive/.gnosys/gnosys.db</code></li>
+          <li><strong>NAS (mounted):</strong> <code>/mnt/nas/shared/.gnosys/gnosys.db</code></li>
+        </ul>
+
+        <h3>Network-Safe Defaults</h3>
+        <p>Gnosys automatically applies network-safe configuration when detecting a network path:</p>
+        <ul style="margin-left: 20px; margin-bottom: 16px;">
+          <li><strong>Retries:</strong> 5 (handles transient network errors)</li>
+          <li><strong>Retry Delay:</strong> 1s (waits between attempts)</li>
+          <li><strong>Busy Timeout:</strong> 10s (allows other machines to finish writes)</li>
+          <li><strong>WAL Mode:</strong> Auto-enabled for safe concurrent access</li>
+        </ul>
+
+        <h3>Multi-Machine Concurrent Usage</h3>
+        <p>Gnosys uses SQLite's Write-Ahead Logging (WAL) mode to safely handle concurrent access from multiple machines:</p>
+        <ul style="margin-left: 20px; margin-bottom: 16px;">
+          <li>Readers on machine A don't block writers on machine B</li>
+          <li>Each machine sees committed changes from other machines</li>
+          <li>Locks are coordinated via filesystem metadata (no central server needed)</li>
+        </ul>
+
+        <h3>Best Practices</h3>
+        <div style="background: var(--bg-code); border-left: 3px solid var(--accent); padding: 12px; border-radius: 4px; margin: 16px 0;">
+          <p style="margin: 0 0 8px 0;"><strong>Before first use:</strong></p>
+          <ul style="margin-left: 20px; margin-bottom: 8px;">
+            <li>Ensure the network path is fully mounted on your machine</li>
+            <li>Test write access: <code>touch /path/to/network/.gnosys/test.txt && rm /path/to/network/.gnosys/test.txt</code></li>
+          </ul>
+          <p style="margin: 8px 0;"><strong>After remounting or network events:</strong></p>
+          <ul style="margin-left: 20px; margin-bottom: 0;">
+            <li>Stop the sandbox if path becomes unmounted</li>
+            <li>Remount the path</li>
+            <li>Restart the sandbox: <code>gnosys sandbox stop && gnosys sandbox start</code></li>
+          </ul>
+        </div>
+
+        <h3>Monitoring Network Health</h3>
+        <p>Use the dashboard to monitor network store status:</p>
+        <div class="command-block">
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <code>gnosys dashboard</code>
+          </div>
+        </div>
+        <p>Look for store health indicators and retry counts in the dashboard output.</p>
+      </div>
+
+      <!-- Backup & Restore Guide -->
+      <div class="guide-section" id="guide-backup-restore">
+        <h2 class="guide-title">Backup & Restore</h2>
+        <p>Gnosys provides comprehensive backup and restore functionality to protect your knowledge store and enable disaster recovery. Backups are automatic and can be triggered manually or restored on demand.</p>
+
+        <h3>Creating Backups</h3>
+        <p>Create a manual backup of your centralized database:</p>
+        <div class="command-block">
+          <div class="block-label">Create a backup (saved to ~/.gnosys/backups/)</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <code>gnosys backup</code>
+          </div>
+        </div>
+
+        <div class="command-block">
+          <div class="block-label">Save backup to a custom location</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <code>gnosys backup --to ~/backups/my-backup.db</code>
+          </div>
+        </div>
+
+        <div class="command-block">
+          <div class="block-label">Output backup metadata as JSON</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <code>gnosys backup --json</code>
+          </div>
+        </div>
+
+        <h3>Restoring from Backups</h3>
+        <p>Restore your database from a backup file:</p>
+        <div class="command-block">
+          <div class="block-label">Restore from the latest backup</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <code>gnosys restore latest</code>
+          </div>
+        </div>
+
+        <div class="command-block">
+          <div class="block-label">Restore from a specific backup file</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <code>gnosys restore --from ~/backups/my-backup.db</code>
+          </div>
+        </div>
+
+        <div class="command-block">
+          <div class="block-label">Get backup metadata as JSON</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <code>gnosys restore --json</code>
+          </div>
+        </div>
+
+        <h3>What Gets Backed Up</h3>
+        <p>The following components are included in every backup:</p>
+        <ul style="margin-left: 20px; margin-bottom: 16px;">
+          <li><strong>Central Database:</strong> All memories, relationships, and metadata from ~/.gnosys/gnosys.db</li>
+          <li><strong>Helper Library:</strong> Generated helper-*.ts files for agent integration</li>
+          <li><strong>Rules Files:</strong> Agent rules (.cursor/rules/gnosys.mdc, CLAUDE.md)</li>
+          <li><strong>Sandbox Log:</strong> Historical sandbox activity and performance metrics</li>
+        </ul>
+
+        <h3>Automatic Backups</h3>
+        <p>Gnosys automatically creates daily backups in <code>~/.gnosys/backups/</code> using the timestamp format <code>gnosys-YYYY-MM-DD-HH-mm-ss.db</code>. Old backups are automatically pruned after 30 days.</p>
+      </div>
+
+      <!-- Migration Guide -->
+      <div class="guide-section" id="guide-migration">
+        <h2 class="guide-title">Migration from v2.x to v3.0</h2>
+        <p>Gnosys v3.0 introduces a centralized brain architecture with a unified database at <code>~/.gnosys/gnosys.db</code>. This guide walks you through migrating from v2.x per-project databases to the new centralized model.</p>
+
+        <h3>Migration Steps</h3>
+        <ol style="margin-left: 20px; margin-bottom: 16px;">
+          <li><strong>Install v3.0:</strong> <code>npm install -g gnosys@latest</code></li>
+          <li><strong>Verify installation:</strong> <code>gnosys --version</code></li>
+          <li><strong>Start the sandbox:</strong> <code>gnosys sandbox start</code></li>
+          <li><strong>For each project, migrate memories:</strong>
+            <div class="code-block" style="margin: 8px 0;">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </button>
+              <code>cd /path/to/project && gnosys migrate --to-central</code>
+            </div>
+          </li>
+          <li><strong>Generate helper library:</strong>
+            <div class="code-block" style="margin: 8px 0;">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </button>
+              <code>gnosys helper generate</code>
+            </div>
+          </li>
+          <li><strong>Verify migration:</strong> <code>gnosys dashboard</code> — Check that all project memories are listed in the centralized store</li>
+        </ol>
+
+        <h3>Breaking Changes</h3>
+        <p>These changes affect how Gnosys operates in v3.0:</p>
+        <ul style="margin-left: 20px; margin-bottom: 16px;">
+          <li><strong>Database Location:</strong> Central database moved from <code>.gnosys/gnosys.db</code> (per-project) to <code>~/.gnosys/gnosys.db</code> (user-wide)</li>
+          <li><strong>Per-Project Databases:</strong> Old per-project databases (<code>.gnosys/gnosys.db</code>) are kept as fallback references but not actively used</li>
+          <li><strong>Store Initialization:</strong> <code>gnosys init</code> no longer creates per-project stores; it registers the project with the centralized store</li>
+          <li><strong>Configuration:</strong> <code>gnosys.json</code> is now stored at <code>~/.gnosys/gnosys.json</code> instead of per-project</li>
+        </ul>
+
+        <h3>Backward Compatibility</h3>
+        <p>The following remain unchanged for compatibility:</p>
+        <ul style="margin-left: 20px; margin-bottom: 16px;">
+          <li><strong>MCP Server:</strong> The Gnosys MCP server interface is unchanged; agents and IDE tools continue to work without modification</li>
+          <li><strong>Markdown Files:</strong> All .md files in your project remain preserved and intact</li>
+          <li><strong>CLI Commands:</strong> Most CLI commands remain compatible; breaking changes are noted in command help</li>
+          <li><strong>Wikilinks:</strong> All [[wikilink]] references are automatically updated to reference the centralized store</li>
+        </ul>
+
+        <h3>Rollback</h3>
+        <p>If you need to rollback to v2.x after partial migration:</p>
+        <ol style="margin-left: 20px; margin-bottom: 16px;">
+          <li>Your per-project <code>.gnosys/gnosys.db</code> files remain untouched</li>
+          <li>Install the v2.x version: <code>npm install -g gnosys@2</code></li>
+          <li>Gnosys will automatically detect and use the per-project databases</li>
+        </ol>
+      </div>
+
+      <!-- Helper Library Guide -->
+      <div class="guide-section" id="guide-helper-library">
+        <h2 class="guide-title">Helper Library</h2>
+        <p>The Gnosys helper library provides a simple TypeScript/JavaScript API for agents and applications to interact with your centralized knowledge store. Generate the helper library for your project with <code>gnosys helper generate</code>.</p>
+
+        <h3>Generating the Helper</h3>
+        <p>Generate a new helper library file for your project:</p>
+        <div class="command-block">
+          <div class="block-label">Generate helper library</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <code>gnosys helper generate</code>
+          </div>
+        </div>
+        <p>This creates <code>gnosys-helper.ts</code> in your project root (or current directory). The file includes TypeScript types and integrates with your project's MCP server configuration.</p>
+
+        <h3>Using the Helper in Agent Code</h3>
+        <p>Import and use the helper in your agent code:</p>
+        <div class="command-block">
+          <div class="block-label">TypeScript Example</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <code>import { gnosys } from "./gnosys-helper";
+
+// Add a new memory
+await gnosys.add("New memory content");
+
+// Search memories
+const results = await gnosys.recall("search query");
+
+// List all memories
+const all = await gnosys.list();
+
+// Update a memory
+await gnosys.update("memory-id", "Updated content");
+
+// Delete a memory
+await gnosys.delete("memory-id");</code>
+          </div>
+        </div>
+
+        <h3>Core API</h3>
+        <p>The helper provides these main functions:</p>
+        <div class="command-block">
+          <div class="block-label">API Methods</div>
+          <table class="options-table">
+            <tr><td><code>add(content: string)</code></td><td>Add a new memory to the store</td></tr>
+            <tr><td><code>recall(query: string)</code></td><td>Search and recall relevant memories (sub-50ms)</td></tr>
+            <tr><td><code>list(limit?: number)</code></td><td>List all memories (optionally with limit)</td></tr>
+            <tr><td><code>read(id: string)</code></td><td>Read a specific memory by ID</td></tr>
+            <tr><td><code>update(id: string, content: string)</code></td><td>Update an existing memory</td></tr>
+            <tr><td><code>delete(id: string)</code></td><td>Delete a memory by ID</td></tr>
+            <tr><td><code>search(query: string, options?: SearchOptions)</code></td><td>Advanced search with filters</td></tr>
+          </table>
+        </div>
+
+        <h3>Integration with Cursor & Claude Code</h3>
+        <p>Use the helper within agent rules to automatically save context and retrieve relevant memories:</p>
+        <div class="command-block">
+          <div class="block-label">Agent Rules Example (CLAUDE.md)</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <code>## Using Gnosys Helper
+
+When starting work on a task:
+1. Import the helper: \`import { gnosys } from "./gnosys-helper";\`
+2. Recall relevant context: \`const context = await gnosys.recall("task topic");\`
+3. Save decisions: \`await gnosys.add("Decision: choose X because Y");\`
+
+The helper connects you to the centralized knowledge store across all projects.</code>
+          </div>
+        </div>
+
+        <h3>TypeScript Types</h3>
+        <p>The helper includes full TypeScript types for memory objects:</p>
+        <div class="command-block">
+          <div class="block-label">Memory Structure</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg class="copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <code>interface Memory {
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  tags: string[];
+  created: Date;
+  modified: Date;
+  confidence: number;
+  links: string[]; // wikilink references
+}</code>
+          </div>
+        </div>
       </div>
 
       <!-- Agent Rules -->

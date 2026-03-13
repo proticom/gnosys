@@ -268,21 +268,35 @@ export class GnosysDB {
     return new GnosysDB(dir);
   }
 
-  constructor(storePath: string) {
+  constructor(storePath: string, opts?: { retries?: number; retryDelayMs?: number }) {
     this.storePath = storePath;
     this.dbFilePath = path.join(storePath, "gnosys.db");
 
     if (!Database) return;
 
-    try {
-      fs.mkdirSync(storePath, { recursive: true });
-      this.db = new Database(this.dbFilePath);
-      enableWAL(this.db);
-      this.db.pragma("foreign_keys = ON");
-      this.applySchema();
-      this.available = true;
-    } catch {
-      this.db = null;
+    const maxRetries = opts?.retries ?? 3;
+    const retryDelay = opts?.retryDelayMs ?? 500;
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        fs.mkdirSync(storePath, { recursive: true });
+        this.db = new Database(this.dbFilePath);
+        enableWAL(this.db);
+        this.db.pragma("foreign_keys = ON");
+        // Longer busy timeout for network shares (10s)
+        this.db.pragma("busy_timeout = 10000");
+        this.applySchema();
+        this.available = true;
+        return; // Success
+      } catch (err) {
+        this.db = null;
+        if (attempt < maxRetries) {
+          // Synchronous delay for constructor (network share retry)
+          const start = Date.now();
+          while (Date.now() - start < retryDelay) { /* spin wait */ }
+        }
+        // Last attempt fails silently — db stays unavailable
+      }
     }
   }
 
