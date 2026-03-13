@@ -20,6 +20,7 @@ export interface SandboxStatus {
   pid?: number;
   socketPath?: string;
   uptime?: string;
+  dbPath?: string;
 }
 
 /**

@@ -9,7 +9,7 @@ import path from "path";
 import fs from "fs/promises";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync, copyFileSync } from "fs";
 import { GnosysResolver } from "./lib/resolver.js";
 import { GnosysSearch } from "./lib/search.js";
 import { GnosysTagRegistry } from "./lib/tags.js";
@@ -2729,9 +2729,11 @@ program
 // ─── gnosys backup ──────────────────────────────────────────────────────
 program
   .command("backup")
-  .description("Create a backup of the central Gnosys database")
+  .description("Create a backup of the central Gnosys database and config")
   .option("-o, --output <dir>", "Backup output directory (default: ~/.gnosys/)")
-  .action(async (opts: { output?: string }) => {
+  .option("--to <dir>", "Alias for --output")
+  .option("--json", "Output as JSON")
+  .action(async (opts: { output?: string; to?: string; json?: boolean }) => {
     let centralDb: GnosysDB | null = null;
     try {
       centralDb = GnosysDB.openCentral();
@@ -2740,14 +2742,40 @@ program
         process.exit(1);
       }
 
-      const backupPath = await centralDb.backup(opts.output);
-      console.log(`Backup created: ${backupPath}`);
-
+      const outputDir = opts.to || opts.output;
+      const backupPath = await centralDb.backup(outputDir);
       const counts = centralDb.getMemoryCount();
-      console.log(`  Memories: ${counts.total} (${counts.active} active, ${counts.archived} archived)`);
-      console.log(`  Projects: ${centralDb.getAllProjects().length}`);
+      const projectCount = centralDb.getAllProjects().length;
+
+      // Copy sandbox log if it exists
+      const centralDir = GnosysDB.getCentralDbDir();
+      const copiedFiles: string[] = [backupPath];
+      const backupDir = path.dirname(backupPath);
+      const sandboxLog = path.join(centralDir, "sandbox", "sandbox.log");
+      if (existsSync(sandboxLog)) {
+        const logDest = path.join(backupDir, "sandbox.log.bak");
+        copyFileSync(sandboxLog, logDest);
+        copiedFiles.push(logDest);
+      }
+
+      if (opts.json) {
+        console.log(JSON.stringify({
+          ok: true, backupPath, memories: counts.total,
+          active: counts.active, archived: counts.archived,
+          projects: projectCount, files: copiedFiles,
+        }));
+      } else {
+        console.log(`Backup created: ${backupPath}`);
+        console.log(`  Memories: ${counts.total} (${counts.active} active, ${counts.archived} archived)`);
+        console.log(`  Projects: ${projectCount}`);
+        if (copiedFiles.length > 1) console.log(`  Additional files: ${copiedFiles.length - 1}`);
+      }
     } catch (err) {
-      console.error(`Backup failed: ${err instanceof Error ? err.message : err}`);
+      if (opts.json) {
+        console.log(JSON.stringify({ ok: false, error: err instanceof Error ? err.message : String(err) }));
+      } else {
+        console.error(`Backup failed: ${err instanceof Error ? err.message : err}`);
+      }
       process.exit(1);
     } finally {
       centralDb?.close();
@@ -2758,17 +2786,32 @@ program
 program
   .command("restore <backupFile>")
   .description("Restore the central Gnosys database from a backup")
-  .action(async (backupFile: string) => {
-    const resolved = path.resolve(backupFile);
+  .option("--from <file>", "Alias: backup file to restore from")
+  .option("--json", "Output as JSON")
+  .action(async (backupFile: string, opts: { from?: string; json?: boolean }) => {
+    const resolved = path.resolve(opts.from || backupFile);
     try {
       const db = GnosysDB.restore(resolved);
       const counts = db.getMemoryCount();
-      console.log(`Database restored from ${resolved}`);
-      console.log(`  Memories: ${counts.total} (${counts.active} active, ${counts.archived} archived)`);
-      console.log(`  Projects: ${db.getAllProjects().length}`);
+      const projectCount = db.getAllProjects().length;
+
+      if (opts.json) {
+        console.log(JSON.stringify({
+          ok: true, source: resolved, memories: counts.total,
+          active: counts.active, archived: counts.archived, projects: projectCount,
+        }));
+      } else {
+        console.log(`Database restored from ${resolved}`);
+        console.log(`  Memories: ${counts.total} (${counts.active} active, ${counts.archived} archived)`);
+        console.log(`  Projects: ${projectCount}`);
+      }
       db.close();
     } catch (err) {
-      console.error(`Restore failed: ${err instanceof Error ? err.message : err}`);
+      if (opts.json) {
+        console.log(JSON.stringify({ ok: false, error: err instanceof Error ? err.message : String(err) }));
+      } else {
+        console.error(`Restore failed: ${err instanceof Error ? err.message : err}`);
+      }
       process.exit(1);
     }
   });

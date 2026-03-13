@@ -429,13 +429,21 @@ export function startServer(dbPath?: string): net.Server {
     fs.unlinkSync(socketPath);
   }
 
-  // Open database
+  // Open database (with retry for network shares — Dropbox, iCloud, NAS)
   const dbDir = dbPath || GnosysDB.getCentralDbDir();
-  const db = new GnosysDB(dbDir);
+  const isNetworkPath = dbPath ? true : false;
+  const db = new GnosysDB(dbDir, isNetworkPath ? { retries: 5, retryDelayMs: 1000 } : undefined);
 
   if (!db.isAvailable()) {
     console.error("Failed to open GnosysDB. Is better-sqlite3 installed?");
+    if (isNetworkPath) {
+      console.error(`Network path "${dbDir}" may be unavailable. Check the path is mounted and accessible.`);
+    }
     process.exit(1);
+  }
+
+  if (isNetworkPath) {
+    console.log(`Using network DB path: ${dbDir}`);
   }
 
   // ─── Phase 9b: Initialize Dream Mode ─────────────────────────────
