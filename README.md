@@ -24,9 +24,7 @@ Gnosys is **sandbox-first**: a persistent background process holds the database 
 
 It also runs as a CLI and a complete MCP server that drops straight into Cursor, Claude Desktop, Claude Code, Cowork, Codex, or any MCP client.
 
-**Beyond agents**: Gnosys turns any structured dataset into a connected, versioned knowledge graph.
-• NVD/CVE Database: 200k+ vulnerabilities auto-linked to packages, exploits, patches, and supersession history. Ask "which of our dependencies have active unpatched criticals?"
-• USDA FoodData Central: ~8k foods atomized with wikilinks to nutrients and substitutions. Ask "high-protein, low-sodium, high-potassium alternatives to X?"
+**Beyond agents**: Gnosys turns any structured dataset into a connected, versioned knowledge graph — and any website into a searchable knowledge base for AI chatbots. Power your site's chatbot with [Sir Chats-A-Lot](https://sir-chats-a-lot.com), the open-source webchat widget built on Gnosys.
 
 No vector DBs. No black boxes. No external services. Just SQLite, Markdown, and Obsidian — the way knowledge should be.
 
@@ -55,79 +53,13 @@ Gnosys takes a different approach: the central brain is a single SQLite database
 - **Dual-write** — every memory writes to both SQLite and a human-readable `.md` file. The Markdown layer is a safety net and export path, not the primary store.
 - **Obsidian-native** — `gnosys export` generates a full vault with YAML frontmatter, `[[wikilinks]]`, summaries, and graph data.
 - **MCP-compatible** — also runs as a full MCP server that drops into Cursor, Claude Desktop, Claude Code, Cowork, Codex, or any MCP client with one config line.
-- **Bulk import** — CSV, JSON, JSONL. Import entire datasets (USDA, NVD, your internal docs) in seconds.
+- **Bulk import** — CSV, JSON, JSONL. Import entire datasets in seconds.
 - **Backup & restore** — `gnosys backup` + `gnosys restore` for the central DB. Point-in-time recovery.
 - **Reflection API** — `gnosys.reflect(outcome)` updates confidence, adds relationships, and consolidates memories based on real-world outcomes.
 - **Process tracing** — `gnosys trace <dir>` builds call chains from source code and stores them as procedural "how" memories with `leads_to`, `follows_from`, and `requires` relationships.
 - **Relationship traversal** — `gnosys.traverse(id)` walks relationship chains via BFS with depth limiting and type filtering.
-- **Web Knowledge Base (v4.0)** — `gnosys web build` turns any website into a searchable knowledge base for serverless chatbots. Pre-computed JSON index, zero-dependency runtime via `gnosys/web`, works on Vercel/Netlify/Cloudflare Pages without SQLite.
+- **Web Knowledge Base** — `gnosys web build` turns any website into a searchable knowledge base for serverless chatbots. Pre-computed JSON index, zero-dependency runtime via `gnosys/web`, works on Vercel/Netlify/Cloudflare Pages. Powers [Sir Chats-A-Lot](https://sir-chats-a-lot.com).
 - **Zero infrastructure** — no external databases, no Docker (unless you want it), no cloud services. Just `npm install`.
-
----
-
-## Real-World Use Cases
-
-### USDA FoodData Central — 100 foods imported in 0.6s
-
-![USDA import: 100 Foundation Foods with nutrient data, wikilinks to food categories](docs/screenshots/usda-import-result.png)
-
-```bash
-gnosys import usda-foods.json \
-  --format json \
-  --mapping '{"title":"title","category":"category","content":"content","tags":"tags","relevance":"relevance"}' \
-  --mode structured --skip-existing
-```
-
-Each food lands in the central `~/.gnosys/gnosys.db` as an atomic memory with nutrient data and `[[wikilinks]]` to food categories. A dual-write `.md` copy is kept for safety and Obsidian export:
-
-```yaml
----
-title: "Almond butter, creamy"
-category: usda-foods
-tags:
-  domain: [food, nutrition, usda]
-relevance: "almond butter creamy food nutrition usda fdc nutrient diet dietary protein"
----
-# Almond butter, creamy
-
-**Food Category:** [[General]]
-
-## Key Nutrients (per 100g)
-- Protein (g): 20.4 G
-- Total Fat (g): 55.7 G
-- Calcium (mg): 264 MG
-- Potassium (mg): 699 MG
-```
-
-### NVD/CVE Database — 20 vulnerabilities with CVSS scores and affected products
-
-![NVD import: CVEs with CVSS scores, severity tags, wikilinks to affected products](docs/screenshots/nvd-import-result.png)
-
-```bash
-gnosys import nvd-cves.json \
-  --format json \
-  --mapping '{"title":"title","category":"category","content":"content","tags":"tags","relevance":"relevance"}' \
-  --mode structured --skip-existing
-```
-
-Each CVE lands in the central DB and links to affected packages via wikilinks:
-
-```yaml
----
-title: CVE-1999-0095
-tags:
-  domain: [cve, vulnerability, security, high]
-relevance: "cve-1999-0095 cve vulnerability security nvd patch exploit high eric_allman sendmail"
----
-# CVE-1999-0095
-
-The debug command in Sendmail is enabled, allowing attackers to execute commands as root.
-
-**CVSS Score:** 10.0 (HIGH)
-**Affected:** [[eric_allman/sendmail]]
-```
-
-See [DEMO.md](DEMO.md) for the full step-by-step walkthrough.
 
 ---
 
@@ -272,9 +204,25 @@ Add to `gnosys.json`:
 }
 ```
 
-### GEO Integration
+### The `/knowledge/` Directory
 
-The `/knowledge/` directory of markdown files can be served to AI crawlers. YAML frontmatter provides structured metadata that LLMs can extract. Add an `llms.txt` entry pointing to your knowledge directory for AI discoverability.
+`gnosys web build` generates a `/knowledge/` directory containing:
+
+- **Markdown files** — one per page, with YAML frontmatter (title, category, tags, relevance keywords, source URL, content hash)
+- **`gnosys-index.json`** — pre-computed TF-IDF inverted index for sub-5ms in-memory search
+- All files commit to git and deploy with your app — the knowledge base and the site are always in sync
+
+This directory is the bridge between your website content and any AI system. [Sir Chats-A-Lot](https://sir-chats-a-lot.com) uses it to power website chatbots with zero infrastructure.
+
+### Generative Engine Optimization (GEO)
+
+The `/knowledge/` markdown files double as a structured content layer for AI crawlers and LLM-powered search engines. To make your knowledge base discoverable:
+
+1. Add a [`llms.txt`](https://llmstxt.org/) file to your site root pointing to the knowledge directory
+2. Reference individual markdown files in your `llms.txt` for fine-grained content exposure
+3. YAML frontmatter provides structured metadata (title, category, tags) that LLMs can parse directly
+
+This improves your site's visibility in AI-powered search results and enables LLMs to cite your content accurately.
 
 ### SQLite vs Web Mode
 
@@ -616,8 +564,8 @@ Ask natural-language questions and get synthesized answers with citations from t
 # First, build the semantic index (downloads ~80 MB model on first run)
 gnosys reindex
 
-# Ask a question about your USDA data
-gnosys ask "What are the best high-protein low-sodium food alternatives?"
+# Ask a question across your knowledge base
+gnosys ask "What authentication strategy should we use for the API?"
 
 # Ask about CVEs
 gnosys ask "Which vulnerabilities allow remote code execution?"
@@ -1291,7 +1239,7 @@ src/
 
 ## Benchmarks
 
-Real numbers from our demo vault (120 memories — 100 USDA foods + 20 NVD CVEs):
+Real numbers from a 120-memory test vault:
 
 | Metric | Result |
 |--------|--------|
@@ -1304,7 +1252,7 @@ Real numbers from our demo vault (120 memories — 100 USDA foods + 20 NVD CVEs)
 | Graph reindex (120 memories) | <1s |
 | Storage per memory | ~1 KB `.md` file |
 | Embedding storage (120 memories) | ~0.3 MB |
-| Test suite | 495 tests, 0 errors |
+| Test suite | 558 tests, 0 errors |
 
 All benchmarks on Apple M-series hardware, Node.js 20+. Structured imports bypass LLM entirely. LLM-enriched imports depend on provider latency.
 
@@ -1365,7 +1313,7 @@ Gnosys is open source (MIT) and actively developed. Here's how to get involved:
 **Get started fast:**
 - **Cursor template:** Add Gnosys to any Cursor project with one MCP config line (see [MCP Server Setup](#mcp-server-setup))
 - **Docker:** `docker build -t gnosys . && docker compose up` for containerized deployment
-- **Demo vault:** See [DEMO.md](DEMO.md) for a full walkthrough with USDA + NVD data
+- **Demo vault:** See [DEMO.md](DEMO.md) for a full walkthrough
 
 **Contribute:**
 - [GitHub Discussions](https://github.com/proticom/gnosys/discussions) — share ideas, ask questions, show what you've built
