@@ -317,9 +317,9 @@ describe("TC-9e.10: Documentation files exist", () => {
   it("README.md exists and contains key content", () => {
     const readme = fs.readFileSync(path.join(projectRoot, "README.md"), "utf-8");
     expect(readme).toContain("sandbox-first");
-    expect(readme).toContain("Network Share");
     expect(readme).toContain("gnosys sandbox start");
     expect(readme).toContain("Web Knowledge Base");
+    expect(readme).toContain("User Guide");
   });
 
   it("CONTRIBUTING.md exists", () => {
