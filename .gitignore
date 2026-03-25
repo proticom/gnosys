@@ -10,3 +10,5 @@ coverage/
 *.db-wal
 *.tsbuildinfo
 rules/
+.gnosys/
+CLAUDE.md
