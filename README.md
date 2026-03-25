@@ -56,32 +56,32 @@ Gnosys takes a different approach: the central brain is a single SQLite database
 ## Quick Start
 
 ```bash
-# Install globally
+# 1. Install globally
 npm install -g gnosys
 
-# Set up global agent rules (all Claude Code projects get Gnosys instructions)
+# 2. Connect the MCP server to your IDE (one-time)
+claude mcp add --scope user gnosys gnosys serve   # Claude Code
+# For Cursor, Codex, Claude Desktop — see MCP Server Setup below
+
+# 3. Generate global agent rules (teaches your agent when to use Gnosys tools)
 gnosys sync --global
 
-# Initialize a project
+# 4. Initialize a project
 cd your-project
 gnosys init
 
-# Generate agent rules for your IDE
+# 5. Generate project-specific agent rules for your IDE
 gnosys sync --target claude    # → writes CLAUDE.md
 gnosys sync --target cursor    # → writes .cursor/rules/gnosys.mdc
 gnosys sync --target codex     # → writes .codex/gnosys.md
 gnosys sync --target all       # → writes all detected IDEs
 
-# Start the sandbox (background process — runs once, stays alive)
-gnosys sandbox start
-
-# Add memories via CLI
+# 6. Start adding memories
 gnosys add "We chose PostgreSQL over MySQL for its JSON support and mature ecosystem"
-
-# Search memories
 gnosys recall "database selection"
-gnosys search "PostgreSQL"
 ```
+
+> **Multi-machine?** Set `GNOSYS_GLOBAL` to a cloud-synced folder (iCloud Drive, Dropbox, OneDrive) and both machines share the same brain. See the [User Guide — Installation & Setup](https://gnosys.ai/guide.html#guide-installation) for the full walkthrough, memory scopes, and multi-machine setup.
 
 ### Agent / Helper Library
 
@@ -561,7 +561,7 @@ Gnosys is open source (MIT) and actively developed. Here's how to get involved:
 - PRs welcome — especially for new import connectors, LLM providers, and Obsidian plugins
 
 **What's next:**
-- Real-time multi-machine sync (automatic conflict resolution)
+- Real-time multi-machine sync (automatic conflict resolution beyond current iCloud/Dropbox support)
 - Temporal memory versioning (valid_from / valid_until)
 - Cross-session "deep dream" overnight consolidation
 - Graph visualization in the dashboard
