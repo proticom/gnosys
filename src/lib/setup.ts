@@ -755,10 +755,28 @@ export async function runSetup(opts: {
       console.log();
       console.log(`${BOLD}Web Knowledge Base Configuration${RESET}`);
       console.log();
+      console.log(`${DIM}Gnosys crawls your site, converts pages to markdown, and builds`);
+      console.log(`a search index. The /knowledge/ folder deploys with your app.`);
+      console.log();
+      console.log(`Sitemap options:`);
+      console.log(`  \u2022 Deployed site:  https://yoursite.com/sitemap.xml`);
+      console.log(`  \u2022 Local dev:      http://localhost:3000/sitemap.xml`);
+      console.log(`  \u2022 Skip for now:   press Enter (configure later in gnosys.json)${RESET}`);
+      console.log();
 
-      sitemapUrl = await askInput(rl, "Sitemap URL (or Enter to skip)");
+      sitemapUrl = await askInput(rl, "Sitemap URL");
+
+      console.log();
+      console.log(`${DIM}The knowledge folder is created inside your project and should`);
+      console.log(`be committed to git. It deploys with your app \u2014 no database needed.${RESET}`);
+      console.log();
+
       outputDir = await askInput(rl, "Output directory", { default: "./knowledge" });
       llmEnrich = await askYesNo(rl, "Enable LLM enrichment for ingested pages?", true);
+
+      console.log();
+      console.log(`${DIM}Tip: Add "postbuild": "gnosys web build" to package.json`);
+      console.log(`so every deploy automatically re-crawls and rebuilds the index.${RESET}`);
 
       console.log();
       if (sitemapUrl) {
