@@ -194,8 +194,8 @@ server.tool(
   async ({ query, limit, projectRoot }) => {
     const ctx = await resolveToolContext(projectRoot);
     // v2.0 DB-backed fast path
-    if (ctx.gnosysDb?.isAvailable() && ctx.gnosysDb?.isMigrated()) {
-      const results = ctx.gnosysDb.discoverFts(query, limit || 20);
+    if (ctx.centralDb?.isAvailable() && ctx.centralDb?.isMigrated()) {
+      const results = ctx.centralDb.discoverFts(query, limit || 20);
       if (results.length === 0) {
         return {
           content: [{ type: "text", text: `No memories found for "${query}". Try different keywords.` }],
@@ -258,8 +258,8 @@ server.tool(
   async ({ path: memPath, projectRoot }) => {
     const ctx = await resolveToolContext(projectRoot);
     // v2.0 DB-backed fast path: try reading by memory ID from gnosys.db first
-    if (ctx.gnosysDb?.isAvailable() && ctx.gnosysDb?.isMigrated()) {
-      const dbMem = ctx.gnosysDb.getMemory(memPath);
+    if (ctx.centralDb?.isAvailable() && ctx.centralDb?.isMigrated()) {
+      const dbMem = ctx.centralDb.getMemory(memPath);
       if (dbMem) {
         const tags = dbMem.tags || "[]";
         const header = [
@@ -318,8 +318,8 @@ server.tool(
   async ({ query, limit, projectRoot }) => {
     const ctx = await resolveToolContext(projectRoot);
     // v2.0 DB-backed fast path
-    if (ctx.gnosysDb?.isAvailable() && ctx.gnosysDb?.isMigrated()) {
-      const results = ctx.gnosysDb.searchFts(query, limit || 20);
+    if (ctx.centralDb?.isAvailable() && ctx.centralDb?.isMigrated()) {
+      const results = ctx.centralDb.searchFts(query, limit || 20);
       if (results.length === 0) {
         return {
           content: [{ type: "text", text: `No results for "${query}". Try different keywords.` }],
@@ -530,13 +530,13 @@ server.tool(
 
     try {
       const result = await ingestion.ingest(input);
-      if (!ctx.gnosysDb?.isAvailable()) {
+      if (!ctx.centralDb?.isAvailable()) {
         return {
           content: [{ type: "text", text: "Database not available. Cannot write memory." }],
           isError: true,
         };
       }
-      const id = ctx.gnosysDb.getNextId(result.category, ctx.projectId ?? undefined);
+      const id = ctx.centralDb.getNextId(result.category, ctx.projectId ?? undefined);
 
       const today = new Date().toISOString().split("T")[0];
       const frontmatter = {
@@ -558,8 +558,8 @@ server.tool(
       const content = `# ${result.title}\n\n${result.content}`;
 
       // Write to DB only (SQLite is sole source of truth)
-      syncMemoryToDb(ctx.gnosysDb, frontmatter, content, undefined, ctx.projectId, "project");
-      auditToDb(ctx.gnosysDb, "write", id, { tool: "gnosys_add", category: result.category });
+      syncMemoryToDb(ctx.centralDb, frontmatter, content, undefined, ctx.projectId, "project");
+      auditToDb(ctx.centralDb, "write", id, { tool: "gnosys_add", category: result.category });
 
       // Rebuild search index across all stores
       if (ctx.search) {
@@ -641,13 +641,13 @@ server.tool(
       };
     }
 
-    if (!ctx.gnosysDb?.isAvailable()) {
+    if (!ctx.centralDb?.isAvailable()) {
       return {
         content: [{ type: "text", text: "Database not available. Cannot write memory." }],
         isError: true,
       };
     }
-    const id = ctx.gnosysDb.getNextId(category, ctx.projectId ?? undefined);
+    const id = ctx.centralDb.getNextId(category, ctx.projectId ?? undefined);
 
     const today = new Date().toISOString().split("T")[0];
     const frontmatter: MemoryFrontmatter = {
@@ -669,8 +669,8 @@ server.tool(
     const fullContent = `# ${title}\n\n${content}`;
 
     // Write to DB only (SQLite is sole source of truth)
-    syncMemoryToDb(ctx.gnosysDb, frontmatter, fullContent, undefined, ctx.projectId, "project");
-    auditToDb(ctx.gnosysDb, "write", id, { tool: "gnosys_add_structured", category });
+    syncMemoryToDb(ctx.centralDb, frontmatter, fullContent, undefined, ctx.projectId, "project");
+    auditToDb(ctx.centralDb, "write", id, { tool: "gnosys_add_structured", category });
 
     if (ctx.search) await reindexAllStores();
 
@@ -777,9 +777,9 @@ server.tool(
           const count = (memory.frontmatter.reinforcement_count || 0) + 1;
 
           // Write reinforcement to DB only (SQLite is sole source of truth)
-          if (ctx.gnosysDb?.isAvailable()) {
-            syncReinforcementToDb(ctx.gnosysDb, memory_id, count);
-            auditToDb(ctx.gnosysDb, "reinforce", memory_id, { signal, context });
+          if (ctx.centralDb?.isAvailable()) {
+            syncReinforcementToDb(ctx.centralDb, memory_id, count);
+            auditToDb(ctx.centralDb, "reinforce", memory_id, { signal, context });
           }
         }
       }
@@ -1077,7 +1077,7 @@ server.tool(
       };
     }
 
-    if (!ctx.gnosysDb?.isAvailable()) {
+    if (!ctx.centralDb?.isAvailable()) {
       return {
         content: [{ type: "text", text: "Database not available. Cannot update memory." }],
         isError: true,
@@ -1085,12 +1085,12 @@ server.tool(
     }
 
     // Write update to DB only (SQLite is sole source of truth)
-    syncUpdateToDb(ctx.gnosysDb, memoryId, updates, fullContent);
-    auditToDb(ctx.gnosysDb, "write", memoryId, { tool: "gnosys_update", changed: Object.keys(updates) });
+    syncUpdateToDb(ctx.centralDb, memoryId, updates, fullContent);
+    auditToDb(ctx.centralDb, "write", memoryId, { tool: "gnosys_update", changed: Object.keys(updates) });
 
     // Supersession cross-linking: if A supersedes B, mark B as superseded_by A
     if (supersedes) {
-      syncUpdateToDb(ctx.gnosysDb, supersedes, { superseded_by: memoryId, status: "superseded" });
+      syncUpdateToDb(ctx.centralDb, supersedes, { superseded_by: memoryId, status: "superseded" });
     }
 
     // Rebuild search index
@@ -1302,12 +1302,12 @@ Output ONLY the JSON array, no markdown fences.`,
         } else {
           // Actually add via ingestion
           try {
-            if (!ctx.gnosysDb?.isAvailable()) {
+            if (!ctx.centralDb?.isAvailable()) {
               results.push(`❌ FAILED: "${candidate.summary}": Database not available`);
               continue;
             }
             const result = await ingestion.ingest(candidate.summary);
-            const id = ctx.gnosysDb.getNextId(result.category, ctx.projectId ?? undefined);
+            const id = ctx.centralDb.getNextId(result.category, ctx.projectId ?? undefined);
             const today = new Date().toISOString().split("T")[0];
 
             const frontmatter = {
@@ -1329,8 +1329,8 @@ Output ONLY the JSON array, no markdown fences.`,
             const content = `# ${result.title}\n\n${result.content}`;
 
             // Write to DB only (SQLite is sole source of truth)
-            syncMemoryToDb(ctx.gnosysDb, frontmatter, content, undefined, ctx.projectId, "project");
-            auditToDb(ctx.gnosysDb, "write", id, { tool: "gnosys_commit_context", category: result.category });
+            syncMemoryToDb(ctx.centralDb, frontmatter, content, undefined, ctx.projectId, "project");
+            auditToDb(ctx.centralDb, "write", id, { tool: "gnosys_commit_context", category: result.category });
 
             results.push(
               `➕ ADDED: "${result.title}"\n  ID: ${id}`
@@ -2059,8 +2059,8 @@ server.tool(
       });
 
       // v2.0: Log maintenance run to gnosys.db
-      if (ctx.gnosysDb?.isAvailable()) {
-        auditToDb(ctx.gnosysDb, "maintain", undefined, {
+      if (ctx.centralDb?.isAvailable()) {
+        auditToDb(ctx.centralDb, "maintain", undefined, {
           dryRun: dryRun ?? true,
           duplicatesFound: report.duplicates?.length || 0,
           consolidated: report.consolidated || 0,
@@ -2122,11 +2122,11 @@ server.tool(
       archive.close();
 
       // v2.0: Sync dearchive to gnosys.db
-      if (ctx.gnosysDb?.isAvailable()) {
+      if (ctx.centralDb?.isAvailable()) {
         for (const memId of ids) {
-          syncDearchiveToDb(ctx.gnosysDb, memId);
+          syncDearchiveToDb(ctx.centralDb, memId);
         }
-        auditToDb(ctx.gnosysDb, "dearchive", undefined, { query, count: restored.length });
+        auditToDb(ctx.centralDb, "dearchive", undefined, { query, count: restored.length });
       }
 
       const lines = [`Dearchived ${restored.length} memories back to active:`];
@@ -2181,7 +2181,7 @@ server.tool(
   },
   async (params) => {
     const ctx = await resolveToolContext(params.projectRoot);
-    if (!ctx.gnosysDb || !ctx.gnosysDb.isAvailable() || !ctx.gnosysDb.isMigrated()) {
+    if (!ctx.centralDb || !ctx.centralDb.isAvailable() || !ctx.centralDb.isMigrated()) {
       return {
         content: [
           {
@@ -2207,7 +2207,7 @@ server.tool(
       model: ctx.config?.dream?.model,
     };
 
-    const engine = new GnosysDreamEngine(ctx.gnosysDb, ctx.config || DEFAULT_CONFIG, dreamConfig);
+    const engine = new GnosysDreamEngine(ctx.centralDb, ctx.config || DEFAULT_CONFIG, dreamConfig);
     const report = await engine.dream((phase, detail) => {
       console.error(`[dream:${phase}] ${detail}`);
     });
@@ -2238,7 +2238,7 @@ server.tool(
   },
   async (params) => {
     const ctx = await resolveToolContext(params.projectRoot);
-    if (!ctx.gnosysDb || !ctx.gnosysDb.isAvailable() || !ctx.gnosysDb.isMigrated()) {
+    if (!ctx.centralDb || !ctx.centralDb.isAvailable() || !ctx.centralDb.isMigrated()) {
       return {
         content: [
           {
@@ -2249,7 +2249,7 @@ server.tool(
       };
     }
 
-    const exporter = new GnosysExporter(ctx.gnosysDb);
+    const exporter = new GnosysExporter(ctx.centralDb);
     const report = await exporter.export({
       targetDir: params.targetDir,
       activeOnly: params.activeOnly ?? true,
@@ -2279,7 +2279,7 @@ server.tool(
     const ctx = await resolveToolContext(projectRoot);
     try {
       const { collectDashboardData, formatDashboardJSON } = await import("./lib/dashboard.js");
-      const data = await collectDashboardData(ctx.resolver, ctx.config, "1.1.0", ctx.gnosysDb || undefined);
+      const data = await collectDashboardData(ctx.resolver, ctx.config, "1.1.0", ctx.centralDb || undefined);
       return {
         content: [{ type: "text", text: formatDashboardJSON(data) }],
       };
@@ -2452,7 +2452,7 @@ server.tool(
       storePath,
       traceId,
       recallConfig,
-      gnosysDb: ctx.gnosysDb || undefined,
+      gnosysDb: ctx.centralDb || undefined,
     });
 
     return {
