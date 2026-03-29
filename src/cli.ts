@@ -180,39 +180,38 @@ program
       return;
     }
 
-    // Legacy file-based discover path
-    const resolver = await getResolver();
-    const stores = resolver.getStores();
-    if (stores.length === 0) {
-      console.error("No Gnosys stores found.");
-      process.exit(1);
-    }
-
-    const search = new GnosysSearch(stores[0].path);
-    search.clearIndex();
-    for (const s of stores) {
-      await search.addStoreMemories(s.store, s.label);
-    }
-
-    const results = search.discover(query, parseInt(opts.limit));
-    if (results.length === 0) {
-      outputResult(!!opts.json, { query, results: [] }, () => {
-        console.log(`No memories found for "${query}". Try gnosys search for full-text.`);
-      });
-      search.close();
-      return;
-    }
-
-    outputResult(!!opts.json, { query, count: results.length, results }, () => {
-      console.log(`Found ${results.length} relevant memories for "${query}":\n`);
-      for (const r of results) {
-        console.log(`  ${r.title}`);
-        console.log(`  ${r.relative_path}`);
-        if (r.relevance) console.log(`  Relevance: ${r.relevance}`);
-        console.log();
+    // DB-based discover path — uses central DB FTS5
+    let centralDb: GnosysDB | null = null;
+    try {
+      centralDb = GnosysDB.openCentral();
+      if (!centralDb.isAvailable()) {
+        console.error("Central DB not available. Run 'gnosys init' first.");
+        process.exit(1);
       }
-    });
-    search.close();
+
+      const results = centralDb.discoverFts(query, parseInt(opts.limit));
+      if (results.length === 0) {
+        outputResult(!!opts.json, { query, results: [] }, () => {
+          console.log(`No memories found for "${query}". Try gnosys search for full-text.`);
+        });
+        return;
+      }
+
+      outputResult(!!opts.json, { query, count: results.length, results }, () => {
+        console.log(`Found ${results.length} relevant memories for "${query}":\n`);
+        for (const r of results) {
+          console.log(`  ${r.title}`);
+          console.log(`    id: ${r.id}`);
+          if (r.relevance) console.log(`    Relevance: ${r.relevance}`);
+          console.log();
+        }
+      });
+    } catch (err) {
+      console.error(`Error: ${err instanceof Error ? err.message : err}`);
+      process.exit(1);
+    } finally {
+      centralDb?.close();
+    }
   });
 
 // ─── gnosys search <query> ───────────────────────────────────────────────
@@ -261,41 +260,40 @@ program
       return;
     }
 
-    // Legacy file-based search path
-    const resolver = await getResolver();
-    const stores = resolver.getStores();
-    if (stores.length === 0) {
-      console.error("No Gnosys stores found.");
-      process.exit(1);
-    }
-
-    const search = new GnosysSearch(stores[0].path);
-    search.clearIndex();
-    for (const s of stores) {
-      await search.addStoreMemories(s.store, s.label);
-    }
-
-    const results = search.search(query, parseInt(opts.limit));
-    if (results.length === 0) {
-      outputResult(!!opts.json, { query, results: [] }, () => {
-        console.log(`No results for "${query}".`);
-      });
-      search.close();
-      return;
-    }
-
-    outputResult(!!opts.json, { query, count: results.length, results }, () => {
-      console.log(`Found ${results.length} results for "${query}":\n`);
-      for (const r of results) {
-        console.log(`  ${r.title}`);
-        console.log(`  ${r.relative_path}`);
-        console.log(
-          `  ${r.snippet.replace(/>>>/g, "").replace(/<<</g, "")}`
-        );
-        console.log();
+    // DB-based search path — uses central DB FTS5
+    let centralDb: GnosysDB | null = null;
+    try {
+      centralDb = GnosysDB.openCentral();
+      if (!centralDb.isAvailable()) {
+        console.error("Central DB not available. Run 'gnosys init' first.");
+        process.exit(1);
       }
-    });
-    search.close();
+
+      const results = centralDb.searchFts(query, parseInt(opts.limit));
+      if (results.length === 0) {
+        outputResult(!!opts.json, { query, results: [] }, () => {
+          console.log(`No results for "${query}".`);
+        });
+        return;
+      }
+
+      outputResult(!!opts.json, { query, count: results.length, results }, () => {
+        console.log(`Found ${results.length} results for "${query}":\n`);
+        for (const r of results) {
+          console.log(`  ${r.title}`);
+          console.log(`    id: ${r.id}`);
+          console.log(
+            `    ${r.snippet.replace(/>>>/g, "").replace(/<<</g, "")}`
+          );
+          console.log();
+        }
+      });
+    } catch (err) {
+      console.error(`Error: ${err instanceof Error ? err.message : err}`);
+      process.exit(1);
+    } finally {
+      centralDb?.close();
+    }
   });
 
 // ─── gnosys list ─────────────────────────────────────────────────────────
@@ -304,53 +302,74 @@ program
   .description("List all memories across all stores")
   .option("-c, --category <category>", "Filter by category")
   .option("-t, --tag <tag>", "Filter by tag")
-  .option("-s, --store <store>", "Filter by store layer")
+  .option("-s, --store <store>", "Filter by store layer (project|user|global)")
   .option("--json", "Output as JSON")
   .action(
     async (opts: { category?: string; tag?: string; store?: string; json?: boolean }) => {
-      const resolver = await getResolver();
-      let memories = await resolver.getAllMemories();
-
-      if (opts.store) {
-        memories = memories.filter(
-          (m) =>
-            m.sourceLayer === opts.store || m.sourceLabel === opts.store
-        );
-      }
-      if (opts.category) {
-        memories = memories.filter(
-          (m) => m.frontmatter.category === opts.category
-        );
-      }
-      if (opts.tag) {
-        memories = memories.filter((m) => {
-          const tags = Array.isArray(m.frontmatter.tags)
-            ? m.frontmatter.tags
-            : Object.values(m.frontmatter.tags).flat();
-          return tags.includes(opts.tag!);
-        });
-      }
-
-      outputResult(!!opts.json, {
-        count: memories.length,
-        memories: memories.map((m) => ({
-          id: m.frontmatter.id,
-          title: m.frontmatter.title,
-          category: m.frontmatter.category,
-          status: m.frontmatter.status,
-          source: m.sourceLabel,
-          path: `${m.sourceLabel}:${m.relativePath}`,
-        })),
-      }, () => {
-        console.log(`${memories.length} memories:\n`);
-        for (const m of memories) {
-          console.log(
-            `  [${m.sourceLabel}] [${m.frontmatter.status}] ${m.frontmatter.title}`
-          );
-          console.log(`    ${m.sourceLabel}:${m.relativePath}`);
-          console.log();
+      let centralDb: GnosysDB | null = null;
+      try {
+        centralDb = GnosysDB.openCentral();
+        if (!centralDb.isAvailable()) {
+          console.error("Central DB not available. Run 'gnosys init' first.");
+          process.exit(1);
         }
-      });
+
+        // Detect current project to scope the listing
+        const projIdentity = await findProjectIdentity(process.cwd());
+        const projectId = projIdentity?.identity.projectId || null;
+
+        let memories = centralDb.getActiveMemories();
+
+        // Filter to current project's memories (plus user/global scope)
+        if (projectId) {
+          memories = memories.filter(
+            (m) => m.project_id === projectId || m.scope === "user" || m.scope === "global"
+          );
+        }
+
+        if (opts.store) {
+          memories = memories.filter((m) => m.scope === opts.store);
+        }
+        if (opts.category) {
+          memories = memories.filter((m) => m.category === opts.category);
+        }
+        if (opts.tag) {
+          memories = memories.filter((m) => {
+            try {
+              const tags: string[] = JSON.parse(m.tags || "[]");
+              return tags.includes(opts.tag!);
+            } catch {
+              return false;
+            }
+          });
+        }
+
+        outputResult(!!opts.json, {
+          count: memories.length,
+          memories: memories.map((m) => ({
+            id: m.id,
+            title: m.title,
+            category: m.category,
+            status: m.status,
+            scope: m.scope,
+            confidence: m.confidence,
+          })),
+        }, () => {
+          console.log(`${memories.length} memories:\n`);
+          for (const m of memories) {
+            console.log(
+              `  [${m.scope}] [${m.status}] ${m.title}`
+            );
+            console.log(`    id: ${m.id} | category: ${m.category} | confidence: ${m.confidence}`);
+            console.log();
+          }
+        });
+      } catch (err) {
+        console.error(`Error: ${err instanceof Error ? err.message : err}`);
+        process.exit(1);
+      } finally {
+        centralDb?.close();
+      }
     }
   );
 
@@ -1723,40 +1742,81 @@ program
   .description("Show summary statistics for the memory store")
   .option("--json", "Output as JSON")
   .action(async (opts: { json?: boolean }) => {
-    const resolver = await getResolver();
-    const allMemories = await resolver.getAllMemories();
+    let centralDb: GnosysDB | null = null;
+    try {
+      centralDb = GnosysDB.openCentral();
+      if (!centralDb.isAvailable()) {
+        console.error("Central DB not available. Run 'gnosys init' first.");
+        process.exit(1);
+      }
 
-    if (allMemories.length === 0) {
-      outputResult(!!opts.json, { totalCount: 0 }, () => {
-        console.log("No memories found.");
+      const projIdentity = await findProjectIdentity(process.cwd());
+      const projectId = projIdentity?.identity.projectId || null;
+
+      let dbMemories = centralDb.getActiveMemories();
+      if (projectId) {
+        dbMemories = dbMemories.filter(
+          (m) => m.project_id === projectId || m.scope === "user" || m.scope === "global"
+        );
+      }
+
+      if (dbMemories.length === 0) {
+        outputResult(!!opts.json, { totalCount: 0 }, () => {
+          console.log("No memories found.");
+        });
+        return;
+      }
+
+      // Convert DbMemory[] to Memory[] shape for computeStats
+      const allMemories = dbMemories.map((m) => ({
+        frontmatter: {
+          id: m.id,
+          title: m.title,
+          category: m.category,
+          tags: (() => { try { return JSON.parse(m.tags || "[]"); } catch { return []; } })(),
+          relevance: m.relevance,
+          author: m.author as "human" | "ai" | "human+ai",
+          authority: m.authority as "declared" | "observed" | "imported" | "inferred",
+          confidence: m.confidence,
+          created: m.created,
+          modified: m.modified,
+          status: m.status as "active" | "archived" | "superseded",
+        },
+        content: m.content,
+        filePath: "",
+        relativePath: "",
+      }));
+
+      const stats = computeStats(allMemories);
+
+      outputResult(!!opts.json, stats, () => {
+        console.log(`Gnosys Store Statistics:\n`);
+        console.log(`  Total memories: ${stats.totalCount}`);
+        console.log(`  Average confidence: ${stats.averageConfidence}`);
+        console.log(`  Date range: ${stats.oldestCreated} → ${stats.newestCreated}`);
+        console.log(`  Last modified: ${stats.lastModified}`);
+
+        console.log(`\n  By category:`);
+        for (const [cat, count] of Object.entries(stats.byCategory).sort((a, b) => b[1] - a[1])) {
+          console.log(`    ${cat}: ${count}`);
+        }
+
+        console.log(`\n  By status:`);
+        for (const [st, count] of Object.entries(stats.byStatus)) {
+          console.log(`    ${st}: ${count}`);
+        }
+
+        console.log(`\n  By author:`);
+        for (const [author, count] of Object.entries(stats.byAuthor)) {
+          console.log(`    ${author}: ${count}`);
+        }
       });
-      return;
+    } catch (err) {
+      console.error(`Error: ${err instanceof Error ? err.message : err}`);
+      process.exit(1);
+    } finally {
+      centralDb?.close();
     }
-
-    const stats = computeStats(allMemories);
-
-    outputResult(!!opts.json, stats, () => {
-      console.log(`Gnosys Store Statistics:\n`);
-      console.log(`  Total memories: ${stats.totalCount}`);
-      console.log(`  Average confidence: ${stats.averageConfidence}`);
-      console.log(`  Date range: ${stats.oldestCreated} → ${stats.newestCreated}`);
-      console.log(`  Last modified: ${stats.lastModified}`);
-
-      console.log(`\n  By category:`);
-      for (const [cat, count] of Object.entries(stats.byCategory).sort((a, b) => b[1] - a[1])) {
-        console.log(`    ${cat}: ${count}`);
-      }
-
-      console.log(`\n  By status:`);
-      for (const [st, count] of Object.entries(stats.byStatus)) {
-        console.log(`    ${st}: ${count}`);
-      }
-
-      console.log(`\n  By author:`);
-      for (const [author, count] of Object.entries(stats.byAuthor)) {
-        console.log(`    ${author}: ${count}`);
-      }
-    });
   });
 
 // ─── gnosys links <path> ─────────────────────────────────────────────────
@@ -2647,16 +2707,15 @@ program
 
     const cfg = await loadConfig(stores[0].path);
 
-    // v2.0: Try to open GnosysDB for dashboard stats
+    // v5.1: Use central DB for dashboard stats
     let dashDb: import("./lib/db.js").GnosysDB | undefined;
     try {
-      const { GnosysDB: DbClass } = await import("./lib/db.js");
-      const db = new DbClass(stores[0].path);
+      const db = GnosysDB.openCentral();
       if (db.isAvailable() && db.isMigrated()) {
         dashDb = db;
       }
     } catch {
-      // GnosysDB not available — legacy dashboard only
+      // Central DB not available — legacy dashboard only
     }
 
     const data = await collectDashboardData(resolver, cfg, pkg.version, dashDb);
