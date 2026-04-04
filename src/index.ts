@@ -1028,28 +1028,39 @@ server.tool(
     projectRoot,
   }) => {
     const ctx = await resolveToolContext(projectRoot);
-    const memory = await ctx.resolver.readMemory(memPath);
-    if (!memory) {
+
+    if (!ctx.centralDb?.isAvailable()) {
       return {
-        content: [{ type: "text", text: `Memory not found: ${memPath}` }],
+        content: [{ type: "text", text: "Database not available. Cannot update memory." }],
         isError: true,
       };
     }
 
-    // Find the source store and check if writable
-    const sourceStore = ctx.resolver
-      .getStores()
-      .find((s) => s.label === memory.sourceLabel);
-    if (!sourceStore?.writable) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `Cannot update: store [${memory.sourceLabel}] is read-only.`,
-          },
-        ],
-        isError: true,
-      };
+    // DB-first lookup: resolve memory ID from central DB (mirrors gnosys_read pattern)
+    let memoryId: string;
+    let currentTitle: string;
+
+    const dbMem = ctx.centralDb.getMemory(memPath);
+    if (dbMem) {
+      memoryId = dbMem.id;
+      currentTitle = dbMem.title;
+    } else {
+      // Fallback to legacy file resolver
+      const memory = await ctx.resolver.readMemory(memPath);
+      if (!memory) {
+        return {
+          content: [{ type: "text", text: `Memory not found: ${memPath}` }],
+          isError: true,
+        };
+      }
+      if (!memory.frontmatter.id) {
+        return {
+          content: [{ type: "text", text: `Memory has no ID: ${memPath}` }],
+          isError: true,
+        };
+      }
+      memoryId = memory.frontmatter.id;
+      currentTitle = memory.frontmatter.title || memPath;
     }
 
     // Build updates object — only include defined fields
@@ -1062,22 +1073,7 @@ server.tool(
     if (supersedes !== undefined) updates.supersedes = supersedes;
     if (superseded_by !== undefined) updates.superseded_by = superseded_by;
 
-    const fullContent = newContent ? `# ${title || memory.frontmatter.title}\n\n${newContent}` : undefined;
-
-    const memoryId = memory.frontmatter.id;
-    if (!memoryId) {
-      return {
-        content: [{ type: "text", text: `Memory has no ID: ${memPath}` }],
-        isError: true,
-      };
-    }
-
-    if (!ctx.centralDb?.isAvailable()) {
-      return {
-        content: [{ type: "text", text: "Database not available. Cannot update memory." }],
-        isError: true,
-      };
-    }
+    const fullContent = newContent ? `# ${title || currentTitle}\n\n${newContent}` : undefined;
 
     // Write update to DB only (SQLite is sole source of truth)
     syncUpdateToDb(ctx.centralDb, memoryId, updates, fullContent);
@@ -1094,7 +1090,7 @@ server.tool(
     const changedFields = Object.keys(updates);
     if (newContent) changedFields.push("content");
 
-    const updatedTitle = title || memory.frontmatter.title;
+    const updatedTitle = title || currentTitle;
 
     return {
       content: [
@@ -1371,6 +1367,35 @@ server.tool(
   },
   async ({ path: memPath, limit, projectRoot }) => {
     const ctx = await resolveToolContext(projectRoot);
+
+    // DB-first: resolve memory ID and show timestamps
+    if (ctx.centralDb?.isAvailable()) {
+      const dbMem = ctx.centralDb.getMemory(memPath);
+      if (dbMem) {
+        // Query audit_log for this memory
+        const audits = ctx.centralDb.getAuditLog(dbMem.id, limit || 20);
+
+        if (audits.length > 0) {
+          const lines = audits.map(
+            (e) => `- ${e.timestamp.split("T")[0]} — ${e.operation}${e.details ? ` (${e.details})` : ""}`
+          );
+          return {
+            content: [{
+              type: "text",
+              text: `History for **${dbMem.title}** (${dbMem.id}, ${audits.length} entries):\n\nCreated: ${dbMem.created}\nModified: ${dbMem.modified}\n\n${lines.join("\n")}`,
+            }],
+          };
+        }
+        return {
+          content: [{
+            type: "text",
+            text: `Memory found: **${dbMem.title}** (${dbMem.id})\nCreated: ${dbMem.created}\nModified: ${dbMem.modified}\nNo audit history recorded.`,
+          }],
+        };
+      }
+    }
+
+    // Legacy file-based fallback
     const memory = await ctx.resolver.readMemory(memPath);
     if (!memory) {
       return { content: [{ type: "text", text: `Memory not found: ${memPath}` }], isError: true };
@@ -1572,6 +1597,38 @@ server.tool(
   },
   async ({ path: memPath, projectRoot }) => {
     const ctx = await resolveToolContext(projectRoot);
+
+    // DB-first: resolve memory ID and check relationships table
+    if (ctx.centralDb?.isAvailable()) {
+      const dbMem = ctx.centralDb.getMemory(memPath);
+      if (dbMem) {
+        const outRels = ctx.centralDb.getRelationshipsFrom(dbMem.id);
+        const inRels = ctx.centralDb.getRelationshipsTo(dbMem.id);
+
+        if (outRels.length > 0 || inRels.length > 0) {
+          const parts: string[] = [`Links for **${dbMem.title}** (${dbMem.id}):\n`];
+
+          if (outRels.length > 0) {
+            parts.push(`Outgoing (${outRels.length}):`);
+            for (const r of outRels) {
+              const target = ctx.centralDb.getMemory(r.target_id);
+              parts.push(`  → ${r.rel_type} → ${target ? target.title : r.target_id}`);
+            }
+          }
+          if (inRels.length > 0) {
+            parts.push(`\nIncoming (${inRels.length}):`);
+            for (const r of inRels) {
+              const source = ctx.centralDb.getMemory(r.source_id);
+              parts.push(`  ← ${r.rel_type} ← ${source ? source.title : r.source_id}`);
+            }
+          }
+          return { content: [{ type: "text", text: parts.join("\n") }] };
+        }
+        return { content: [{ type: "text", text: `Memory found: **${dbMem.title}** (${dbMem.id})\nNo links or relationships recorded.` }] };
+      }
+    }
+
+    // Legacy file-based fallback
     const memory = await ctx.resolver.readMemory(memPath);
     if (!memory) {
       return { content: [{ type: "text", text: `Memory not found: ${memPath}` }], isError: true };
