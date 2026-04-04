@@ -1003,18 +1003,34 @@ program
         content?: string;
       }
     ) => {
-      const resolver = await getResolver();
-      const memory = await resolver.readMemory(memPath);
-      if (!memory) {
-        console.error(`Memory not found: ${memPath}`);
-        process.exit(1);
-      }
+      // DB-first lookup (mirrors MCP tool fix)
+      let memoryId: string;
+      let currentTitle: string;
 
-      const sourceStore = resolver
-        .getStores()
-        .find((s) => s.label === memory.sourceLabel);
-      if (!sourceStore?.writable) {
-        console.error(`Cannot update: store [${memory.sourceLabel}] is read-only.`);
+      let centralDb: GnosysDB | null = null;
+      try {
+        centralDb = GnosysDB.openCentral();
+      } catch { /* handled below */ }
+
+      if (centralDb?.isAvailable()) {
+        const dbMem = centralDb.getMemory(memPath);
+        if (dbMem) {
+          memoryId = dbMem.id;
+          currentTitle = dbMem.title;
+        } else {
+          // Fallback to legacy resolver
+          const resolver = await getResolver();
+          const memory = await resolver.readMemory(memPath);
+          if (!memory || !memory.frontmatter.id) {
+            console.error(`Memory not found: ${memPath}`);
+            centralDb?.close();
+            process.exit(1);
+          }
+          memoryId = memory.frontmatter.id;
+          currentTitle = memory.frontmatter.title || memPath;
+        }
+      } else {
+        console.error("Central DB not available.");
         process.exit(1);
       }
 
@@ -1027,35 +1043,21 @@ program
       if (opts.supersededBy !== undefined) updates.superseded_by = opts.supersededBy;
 
       const fullContent = opts.content
-        ? `# ${opts.title || memory.frontmatter.title}\n\n${opts.content}`
+        ? `# ${opts.title || currentTitle}\n\n${opts.content}`
         : undefined;
 
-      const memoryId = memory.frontmatter.id;
-      if (!memoryId) {
-        console.error(`Memory has no ID: ${memPath}`);
-        process.exit(1);
-      }
-
-      let centralDb: GnosysDB | null = null;
       try {
-        centralDb = GnosysDB.openCentral();
         const { syncUpdateToDb } = await import("./lib/dbWrite.js");
         syncUpdateToDb(centralDb, memoryId, updates as any, fullContent);
 
         // Supersession cross-linking
-        if (opts.supersedes && memoryId) {
-          const allMemories = await resolver.getAllMemories();
-          const supersededMemory = allMemories.find(
-            (m) => m.frontmatter.id === opts.supersedes
+        if (opts.supersedes) {
+          syncUpdateToDb(
+            centralDb,
+            opts.supersedes,
+            { superseded_by: memoryId, status: "superseded" } as any
           );
-          if (supersededMemory) {
-            syncUpdateToDb(
-              centralDb,
-              supersededMemory.frontmatter.id,
-              { superseded_by: memoryId, status: "superseded" } as any
-            );
-            console.log(`Cross-linked: ${supersededMemory.frontmatter.title} marked as superseded.`);
-          }
+          console.log(`Cross-linked: ${opts.supersedes} marked as superseded.`);
         }
       } finally {
         centralDb?.close();
@@ -1064,7 +1066,7 @@ program
       const changedFields = Object.keys(updates);
       if (opts.content) changedFields.push("content");
 
-      console.log(`Memory updated: ${opts.title || memory.frontmatter.title}`);
+      console.log(`Memory updated: ${opts.title || currentTitle}`);
       console.log(`ID: ${memoryId}`);
       console.log(`Changed: ${changedFields.join(", ")}`);
     }
