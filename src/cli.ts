@@ -5421,4 +5421,30 @@ webCmd
     }
   });
 
+// ─── Post-install upgrade nudge ─────────────────────────────────────────
+// Detects when the CLI version is newer than the last upgrade and shows
+// a one-time message. Clears itself after `gnosys upgrade` stamps the DB.
+try {
+  const centralDb = GnosysDB.openCentral();
+  if (centralDb.isAvailable()) {
+    const lastVersion = centralDb.getMeta("app_version");
+    const currentVersion = pkg.version;
+    // Show nudge if: version changed AND this isn't the upgrade command itself
+    const isUpgradeCmd = process.argv.slice(2).some(a => a === "upgrade");
+    if (lastVersion && lastVersion !== currentVersion && !isUpgradeCmd) {
+      console.log("");
+      console.log(`  Gnosys updated: v${lastVersion} → v${currentVersion}`);
+      console.log("");
+      console.log("  Run now:");
+      console.log("    gnosys upgrade              sync all projects + regenerate dashboard");
+      console.log("    Restart IDE MCP server       Cursor: Cmd+Shift+P > MCP: Restart All Servers");
+      console.log("    gnosys status --web          open the portfolio dashboard");
+      console.log("");
+    }
+    centralDb.close();
+  }
+} catch {
+  // non-critical — don't block CLI startup
+}
+
 program.parse();
