@@ -801,6 +801,12 @@ export class GnosysDB {
     `).run(entry.timestamp, entry.operation, entry.memory_id, entry.details, entry.duration_ms, entry.trace_id);
   }
 
+  getAuditLog(memoryId: string, limit: number = 20): DbAuditEntry[] {
+    return this.db.prepare(
+      "SELECT * FROM audit_log WHERE memory_id = ? ORDER BY timestamp DESC LIMIT ?"
+    ).all(memoryId, limit) as DbAuditEntry[];
+  }
+
   // ─── Embeddings ─────────────────────────────────────────────────────
 
   updateEmbedding(id: string, embedding: Buffer): void {
