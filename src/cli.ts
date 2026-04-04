@@ -2885,6 +2885,11 @@ program
     const failed: string[] = [];
 
     for (const projectDir of projects) {
+      // Skip test projects in /tmp/
+      if (projectDir.startsWith("/tmp/") || projectDir.startsWith("/private/tmp/")) {
+        continue;
+      }
+
       const storePath = path.join(projectDir, ".gnosys");
       try {
         await fs.stat(storePath);
@@ -2985,8 +2990,8 @@ program
       for (const p of upgraded) console.log(`  ✓ ${path.basename(p)} — ${p}`);
     }
     if (skipped.length > 0) {
-      console.log(`\nSkipped — not on this machine (${skipped.length}):`);
-      for (const p of skipped) console.log(`  ○ ${path.basename(p)} — ${p}`);
+      console.log(`\nSkipped — no .gnosys directory (${skipped.length}):`);
+      for (const p of skipped) console.log(`  ○ ${path.basename(p)} — ${p}  (run 'gnosys init' in this directory)`);
     }
     if (failed.length > 0) {
       console.log(`\nFailed (${failed.length}):`);
@@ -3022,8 +3027,8 @@ program
     }
 
     if (skipped.length > 0) {
-      console.log(`\nNote: ${skipped.length} project(s) not found on this machine.`);
-      console.log(`If they exist on another machine, run 'gnosys upgrade' there too.`);
+      console.log(`\nNote: ${skipped.length} project(s) skipped — no .gnosys directory found.`);
+      console.log(`Run 'gnosys init' in each directory to set them up, or remove them from the registry.`);
     }
 
     // 6. Regenerate portfolio dashboard
