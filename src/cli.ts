@@ -3029,71 +3029,25 @@ remoteCmd
 
 remoteCmd
   .command("configure")
-  .description("Configure or change the remote sync location (interactive)")
-  .option("--path <path>", "Set remote path non-interactively")
-  .option("--migrate", "Copy current local DB to remote on first setup")
+  .description("Configure or change the remote sync location (interactive wizard)")
+  .option("--path <path>", "Set remote path non-interactively (skips wizard)")
+  .option("--migrate", "Copy current local DB to remote on first setup (with --path)")
   .action(async (opts: { path?: string; migrate?: boolean }) => {
     let centralDb: GnosysDB | null = null;
     try {
       centralDb = GnosysDB.openCentral();
       if (!centralDb.isAvailable()) { console.error("Central DB not available."); process.exit(1); }
 
-      const { validateLocation, RemoteSync } = await import("./lib/remote.js");
-      let remotePath = opts.path;
+      const { runConfigureWizard, configureFromPath } = await import("./lib/remoteWizard.js");
 
-      if (!remotePath) {
-        const { createInterface } = await import("readline/promises");
-        const rl = createInterface({ input: process.stdin, output: process.stdout });
-        try {
-          const current = centralDb.getMeta("remote_path");
-          if (current) console.log(`Current remote: ${current}`);
-          remotePath = (await rl.question("Remote path (e.g. /Volumes/synology/gnosys): ")).trim();
-        } finally {
-          rl.close();
-        }
-      }
-
-      if (!remotePath) { console.error("No path provided."); process.exit(1); }
-
-      console.log(`\nValidating ${remotePath}...`);
-      const validation = await validateLocation(remotePath);
-
-      console.log(`  Path exists:        ${validation.checks.pathExists ? "✓" : "✗"}`);
-      console.log(`  Writable:           ${validation.checks.writable ? "✓" : "✗"}`);
-      console.log(`  SQLite compatible:  ${validation.checks.sqliteCompatible ? "✓" : "✗"}`);
-      if (validation.checks.latencyMs !== null) {
-        console.log(`  Latency:            ${validation.checks.latencyMs}ms`);
-      }
-      if (validation.checks.existingDb.found) {
-        const c = validation.checks.existingDb;
-        console.log(`  Existing DB found:  ${c.memoryCount ?? "unknown"} memories (last modified ${c.lastModified ?? "unknown"})`);
-      }
-      for (const w of validation.warnings) console.log(`  ⚠ ${w}`);
-      for (const e of validation.errors) console.log(`  ✗ ${e}`);
-
-      if (!validation.ok) {
-        console.error("\nValidation failed. Remote not configured.");
-        process.exit(1);
-      }
-
-      // Save config
-      centralDb.setMeta("remote_path", remotePath);
-      console.log(`\nRemote configured: ${remotePath}`);
-
-      // Optional initial migration
-      if (opts.migrate && !validation.checks.existingDb.found) {
-        console.log("\nMigrating local DB to remote...");
-        const sync = new RemoteSync(centralDb, remotePath);
-        const result = await sync.migrate();
-        sync.closeRemote();
-        if (result.ok) {
-          console.log(`  ✓ Copied ${result.copied} memories to remote.`);
-        } else {
-          console.error(`  ✗ Migration had errors:`);
-          for (const e of result.errors) console.error(`    ${e}`);
-        }
-      } else if (validation.checks.existingDb.found) {
-        console.log("\nExisting DB found at remote. Run 'gnosys remote sync' to merge.");
+      if (opts.path) {
+        // Non-interactive mode
+        const ok = await configureFromPath(centralDb, opts.path, { migrate: opts.migrate });
+        process.exit(ok ? 0 : 1);
+      } else {
+        // Interactive wizard
+        const ok = await runConfigureWizard(centralDb);
+        process.exit(ok ? 0 : 1);
       }
     } catch (err) {
       console.error(`Error: ${err instanceof Error ? err.message : err}`);
