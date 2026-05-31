@@ -125,7 +125,8 @@ describe("rules generation", () => {
         supersedes: null, superseded_by: null, last_reinforced: null,
         created: "2026-01-01", modified: "2026-01-01", embedding: null,
         source_path: null, source_file: null, source_page: null,
-        source_timerange: null, project_id: "proj-1", scope: "project",
+        source_timerange: null, attachment_data: null, attachment_mime: null,
+        attachment_name: null, project_id: "proj-1", scope: "project",
       },
     ];
 

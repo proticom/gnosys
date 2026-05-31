@@ -767,6 +767,26 @@ program
     await runIngestCommand(getResolver, fileOrGlob, opts);
   });
 
+// ─── gnosys attach <file> --memory <id> ──────────────────────────────────
+program
+  .command("attach <file>")
+  .description("Attach a small binary file (logo, diagram, screenshot) inline to a memory. Travels machine-to-machine over normal sync. Limit ~10MB — use 'gnosys ingest' for large media.")
+  .requiredOption("--memory <id>", "Memory ID to attach the file to")
+  .action(async (file: string, opts: { memory: string }) => {
+    const { runAttachCommand } = await import("./lib/attachCommand.js");
+    await runAttachCommand(file, opts);
+  });
+
+// ─── gnosys get-attachment <id> ───────────────────────────────────────────
+program
+  .command("get-attachment <memoryId>")
+  .description("Retrieve the binary attachment stored on a memory. Writes to --out, or prints base64 to stdout.")
+  .option("--out <path>", "Write the attachment to this file path instead of printing base64")
+  .action(async (memoryId: string, opts: { out?: string }) => {
+    const { runGetAttachmentCommand } = await import("./lib/attachCommand.js");
+    await runGetAttachmentCommand(memoryId, opts);
+  });
+
 // ─── gnosys tags-add ────────────────────────────────────────────────────
 program
   .command("tags-add")

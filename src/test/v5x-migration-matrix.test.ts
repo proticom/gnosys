@@ -119,10 +119,11 @@ function seedV2(dbFile: string): void {
   raw.close();
 }
 
-function assertMigratedToV4(dir: string, opts: { projectId?: string | null } = {}): void {
+function assertMigratedToCurrent(dir: string, opts: { projectId?: string | null } = {}): void {
   const dbFile = path.join(dir, "gnosys.db");
   const raw = new Database(dbFile);
-  expect(raw.pragma("user_version", { simple: true })).toBe(4);
+  // v5.12: SCHEMA_VERSION grew 4 → 5 (inline attachment columns).
+  expect(raw.pragma("user_version", { simple: true })).toBe(5);
 
   const mcols = (raw.prepare("PRAGMA table_info(memories)").all() as Array<{ name: string }>).map((c) => c.name);
   expect(mcols).toEqual(expect.arrayContaining([
@@ -131,6 +132,10 @@ function assertMigratedToV4(dir: string, opts: { projectId?: string | null } = {
     "source_file",
     "source_page",
     "source_timerange",
+    // v5.12: inline DB-blob attachment columns
+    "attachment_data",
+    "attachment_mime",
+    "attachment_name",
   ]));
 
   const pcols = (raw.prepare("PRAGMA table_info(projects)").all() as Array<{ name: string }>).map((c) => c.name);
@@ -160,17 +165,17 @@ function assertMigratedToV4(dir: string, opts: { projectId?: string | null } = {
 }
 
 describe("v5.x migration matrix", () => {
-  it("migrates a v1 DB to current (user_version=4)", () => {
+  it("migrates a v1 DB to current (user_version=5)", () => {
     seedV1(path.join(tmp, "gnosys.db"));
     const db = new GnosysDB(tmp);
     db.close();
-    assertMigratedToV4(tmp, { projectId: null });
+    assertMigratedToCurrent(tmp, { projectId: null });
   });
 
-  it("migrates a v2 DB to current (user_version=4)", () => {
+  it("migrates a v2 DB to current (user_version=5)", () => {
     seedV2(path.join(tmp, "gnosys.db"));
     const db = new GnosysDB(tmp);
     db.close();
-    assertMigratedToV4(tmp, { projectId: "proj-1" });
+    assertMigratedToCurrent(tmp, { projectId: "proj-1" });
   });
 });

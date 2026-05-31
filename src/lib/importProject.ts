@@ -59,11 +59,12 @@ export function readBundle(bundlePath: string): ProjectBundle {
   return bundle;
 }
 
-function portableToDbMemory(p: PortableMemory): Omit<DbMemory, "embedding"> & { embedding?: Buffer | null } {
-  const { embedding_b64, ...rest } = p;
+function portableToDbMemory(p: PortableMemory): Omit<DbMemory, "embedding" | "attachment_data"> & { embedding?: Buffer | null; attachment_data?: Buffer | null } {
+  const { embedding_b64, attachment_data_b64, ...rest } = p;
   return {
     ...rest,
     embedding: embedding_b64 ? Buffer.from(embedding_b64, "base64") : null,
+    attachment_data: attachment_data_b64 ? Buffer.from(attachment_data_b64, "base64") : null,
   };
 }
 

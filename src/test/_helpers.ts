@@ -169,6 +169,9 @@ export function makeMemory(overrides: Partial<DbMemory> = {}): DbMemory {
     source_file: overrides.source_file ?? null,
     source_page: overrides.source_page ?? null,
     source_timerange: overrides.source_timerange ?? null,
+    attachment_data: overrides.attachment_data ?? null,
+    attachment_mime: overrides.attachment_mime ?? null,
+    attachment_name: overrides.attachment_name ?? null,
     project_id: overrides.project_id ?? null,
     scope: overrides.scope || "project",
   };

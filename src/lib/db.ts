@@ -53,6 +53,12 @@ export interface DbMemory {
   source_file: string | null;       // Original file name (e.g., "report.pdf")
   source_page: string | null;       // Page/slide number within source
   source_timerange: string | null;  // Timestamp range for audio/video (e.g., "00:01:30-00:02:45")
+  // v5.12: Inline binary attachment carried in the memory row itself, so it
+  // travels over the same row-copy sync rail as `embedding` (works single-machine,
+  // multi-machine push/pull, and a future dockerized MCP without a shared volume).
+  attachment_data: Buffer | null;    // Raw file bytes (small assets: logos, diagrams, screenshots)
+  attachment_mime: string | null;    // MIME type, e.g. "image/svg+xml"
+  attachment_name: string | null;    // Original filename, e.g. "prospero-logo.svg"
   // v3.0: Centralized Brain
   project_id: string | null;  // UUID from gnosys.json — NULL for user/global
   scope: string;              // "project" | "user" | "global"
@@ -128,7 +134,7 @@ export interface MigrationStats {
 
 // ─── Schema ─────────────────────────────────────────────────────────────
 
-const SCHEMA_VERSION = 4;
+const SCHEMA_VERSION = 5;
 
 const SCHEMA_SQL = `
 CREATE TABLE IF NOT EXISTS memories (
@@ -156,6 +162,9 @@ CREATE TABLE IF NOT EXISTS memories (
   source_file         TEXT,
   source_page         TEXT,
   source_timerange    TEXT,
+  attachment_data     BLOB,
+  attachment_mime     TEXT,
+  attachment_name     TEXT,
   project_id          TEXT,
   scope               TEXT DEFAULT 'project' CHECK(scope IN ('project','user','global'))
 );
@@ -306,6 +315,7 @@ const MEMORY_COLUMNS = new Set([
   "status", "tier", "supersedes", "superseded_by", "last_reinforced",
   "created", "modified", "embedding", "source_path",
   "source_file", "source_page", "source_timerange",
+  "attachment_data", "attachment_mime", "attachment_name",
   "project_id", "scope",
 ]);
 
@@ -770,6 +780,28 @@ export class GnosysDB {
       }
     }
 
+    if (fromVersion < 5) {
+      // v4 → v5 (v5.12): inline binary attachments carried in the memory row.
+      // Additive columns only — existing rows get NULLs. These ride the same
+      // row-copy sync path as `embedding`, so attachments travel machine to
+      // machine for free.
+      try {
+        this.db.exec("ALTER TABLE memories ADD COLUMN attachment_data BLOB");
+      } catch {
+        // Column already exists — fine
+      }
+      try {
+        this.db.exec("ALTER TABLE memories ADD COLUMN attachment_mime TEXT");
+      } catch {
+        // Column already exists — fine
+      }
+      try {
+        this.db.exec("ALTER TABLE memories ADD COLUMN attachment_name TEXT");
+      } catch {
+        // Column already exists — fine
+      }
+    }
+
     this.db.pragma(`user_version = ${SCHEMA_VERSION}`);
   }
 
@@ -787,7 +819,7 @@ export class GnosysDB {
 
   // ─── Memory CRUD ────────────────────────────────────────────────────
 
-  insertMemory(mem: Omit<DbMemory, "embedding" | "source_file" | "source_page" | "source_timerange"> & { embedding?: Buffer | null; source_file?: string | null; source_page?: string | null; source_timerange?: string | null }): void {
+  insertMemory(mem: Omit<DbMemory, "embedding" | "source_file" | "source_page" | "source_timerange" | "attachment_data" | "attachment_mime" | "attachment_name"> & { embedding?: Buffer | null; source_file?: string | null; source_page?: string | null; source_timerange?: string | null; attachment_data?: Buffer | null; attachment_mime?: string | null; attachment_name?: string | null }): void {
     return this.withRecovery(() => {
       const stmt = this.db.prepare(`
         INSERT OR REPLACE INTO memories
@@ -795,8 +827,9 @@ export class GnosysDB {
            confidence, reinforcement_count, content_hash, status, tier, supersedes,
            superseded_by, last_reinforced, created, modified, embedding, source_path,
            source_file, source_page, source_timerange,
+           attachment_data, attachment_mime, attachment_name,
            project_id, scope)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
 
       stmt.run(
@@ -807,6 +840,7 @@ export class GnosysDB {
         mem.superseded_by || null, mem.last_reinforced || null,
         mem.created, mem.modified, mem.embedding || null, mem.source_path || null,
         mem.source_file || null, mem.source_page || null, mem.source_timerange || null,
+        mem.attachment_data || null, mem.attachment_mime || null, mem.attachment_name || null,
         mem.project_id || null, mem.scope || "project"
       );
     });

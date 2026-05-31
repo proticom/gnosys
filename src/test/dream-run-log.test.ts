@@ -62,6 +62,9 @@ function memory(id: string, modified: string): DbMemory {
     source_file: null,
     source_page: null,
     source_timerange: null,
+    attachment_data: null,
+    attachment_mime: null,
+    attachment_name: null,
     project_id: null,
     scope: "project",
   };

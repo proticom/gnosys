@@ -3291,6 +3291,118 @@ regTool(
   }
 );
 
+// ─── Tool: gnosys_attach ────────────────────────────────────────────────
+regTool(
+  "gnosys_attach",
+  "Attach a small binary file (logo, diagram, screenshot, small PDF) directly to a memory. The bytes are stored inline in the memory row, so the attachment travels machine-to-machine over the normal sync and works with a remote/dockerized server (no shared filesystem). Limit ~10MB — use gnosys_ingest_file for large media.",
+  {
+    memoryId: z.string().describe("Memory ID to attach the file to (e.g., 'deci-052')"),
+    filePath: z.string().describe("Absolute path to the file to attach"),
+    projectRoot: projectRootParam,
+  },
+  async ({ memoryId, filePath, projectRoot }) => {
+    const ctx = await resolveToolContext(projectRoot);
+    if (!ctx.centralDb?.isAvailable()) {
+      return {
+        content: [{ type: "text" as const, text: "Database not available. Cannot attach file." }],
+        isError: true,
+      };
+    }
+    try {
+      const { attachFileToMemory } = await import("./lib/attachments.js");
+      const result = await attachFileToMemory(ctx.centralDb, memoryId, filePath);
+      auditToDb(ctx.centralDb, "write", memoryId, {
+        tool: "gnosys_attach",
+        name: result.name,
+        mime: result.mime,
+        sizeBytes: result.sizeBytes,
+        unchanged: result.unchanged,
+      });
+      const sizeKb = (result.sizeBytes / 1024).toFixed(1);
+      const verb = result.unchanged ? "already attached (no change)" : "attached";
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: `File ${verb}: ${result.name} (${result.mime}, ${sizeKb} KB)\nMemory: ${memoryId}`,
+          },
+        ],
+      };
+    } catch (err) {
+      return {
+        content: [{ type: "text" as const, text: formatMcpError("attaching file", err) }],
+        isError: true,
+      };
+    }
+  }
+);
+
+// ─── Tool: gnosys_get_attachment ────────────────────────────────────────
+regTool(
+  "gnosys_get_attachment",
+  "Retrieve the binary attachment stored on a memory. By default returns the bytes (base64, plus an inline image when the attachment is an image). Pass outputPath to write the file to disk instead.",
+  {
+    memoryId: z.string().describe("Memory ID that holds the attachment"),
+    outputPath: z.string().optional().describe("If provided, write the attachment to this absolute path instead of returning bytes"),
+    projectRoot: projectRootParam,
+  },
+  async ({ memoryId, outputPath, projectRoot }) => {
+    const ctx = await resolveToolContext(projectRoot);
+    if (!ctx.centralDb?.isAvailable()) {
+      return {
+        content: [{ type: "text" as const, text: "Database not available." }],
+        isError: true,
+      };
+    }
+    try {
+      const { getMemoryAttachment } = await import("./lib/attachments.js");
+      const att = getMemoryAttachment(ctx.centralDb, memoryId);
+      if (!att) {
+        return {
+          content: [{ type: "text" as const, text: `No attachment found on memory: ${memoryId}` }],
+          isError: true,
+        };
+      }
+
+      if (outputPath) {
+        const { writeFile } = await import("fs/promises");
+        await writeFile(outputPath, att.data);
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: `Wrote ${att.name} (${att.mime}, ${att.data.length} bytes) to ${outputPath}`,
+            },
+          ],
+        };
+      }
+
+      const base64 = att.data.toString("base64");
+      if (att.mime.startsWith("image/")) {
+        return {
+          content: [
+            { type: "image" as const, data: base64, mimeType: att.mime },
+            { type: "text" as const, text: `${att.name} (${att.mime}, ${att.data.length} bytes)` },
+          ],
+        };
+      }
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: `${att.name} (${att.mime}, ${att.data.length} bytes)\n\nbase64:\n${base64}`,
+          },
+        ],
+      };
+    } catch (err) {
+      return {
+        content: [{ type: "text" as const, text: formatMcpError("reading attachment", err) }],
+        isError: true,
+      };
+    }
+  }
+);
+
 // ─── Tool: gnosys_update_status ─────────────────────────────────────────
 
 regTool(

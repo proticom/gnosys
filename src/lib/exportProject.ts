@@ -24,9 +24,10 @@ interface BundleManifest {
   gnosys_version: string;
 }
 
-/** A memory row with its embedding base64-encoded for JSON transport. */
-export interface PortableMemory extends Omit<DbMemory, "embedding"> {
+/** A memory row with its binary columns base64-encoded for JSON transport. */
+export interface PortableMemory extends Omit<DbMemory, "embedding" | "attachment_data"> {
   embedding_b64: string | null;
+  attachment_data_b64: string | null;
 }
 
 export interface ProjectBundle {
@@ -86,10 +87,11 @@ export function exportProject(
   const archivedExcluded = opts.includeArchived ? 0 : totalIncludingArchived - rawMemories.length;
 
   const memories: PortableMemory[] = rawMemories.map((m) => {
-    const { embedding: _embedding, ...rest } = m;
+    const { embedding: _embedding, attachment_data: _attachment, ...rest } = m;
     return {
       ...rest,
       embedding_b64: m.embedding ? Buffer.from(m.embedding).toString("base64") : null,
+      attachment_data_b64: m.attachment_data ? Buffer.from(m.attachment_data).toString("base64") : null,
     };
   });
 

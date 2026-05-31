@@ -155,7 +155,7 @@ export async function promoteToMemory(
   const now = new Date().toISOString();
   const today = now.split("T")[0];
 
-  const memory: Omit<DbMemory, "embedding" | "source_file" | "source_page" | "source_timerange"> = {
+  const memory: Omit<DbMemory, "embedding" | "source_file" | "source_page" | "source_timerange" | "attachment_data" | "attachment_mime" | "attachment_name"> = {
     id,
     title: fields.title,
     category: fields.category,
