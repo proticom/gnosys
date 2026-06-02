@@ -1,5 +1,3 @@
-import { GnosysDB } from "./db.js";
-
 export type FsearchCommandOptions = {
   limit: string;
   directory?: string;
@@ -12,21 +10,23 @@ export async function runFsearchCommand(
   query: string,
   opts: FsearchCommandOptions,
 ): Promise<void> {
-      let centralDb: GnosysDB | null = null;
+      const { resolveClientRead } = await import("./clientReadResolve.js");
+      const resolved = resolveClientRead();
+      if (!resolved) {
+        console.error("Central DB not available.");
+        process.exit(1);
+      }
       try {
-        centralDb = GnosysDB.openCentral();
-        if (!centralDb.isAvailable()) { console.error("Central DB not available."); process.exit(1); }
-  
         const { federatedSearch, detectCurrentProject } = await import("./federated.js");
-        const projectId = await detectCurrentProject(centralDb, opts.directory || undefined);
+        const projectId = await detectCurrentProject(resolved.db, opts.directory || undefined);
         const scopeFilter = opts.scope ? opts.scope.split(",").map(s => s.trim()) as any : undefined;
-        const results = federatedSearch(centralDb, query, {
+        const results = federatedSearch(resolved.db, query, {
           limit: parseInt(opts.limit, 10),
           projectId,
           includeGlobal: opts.global,
           scopeFilter,
         });
-  
+
         if (opts.json) {
           console.log(JSON.stringify({ query, projectId, count: results.length, results }, null, 2));
         } else {
@@ -44,6 +44,6 @@ export async function runFsearchCommand(
         console.error(`Error: ${err instanceof Error ? err.message : err}`);
         process.exit(1);
       } finally {
-        centralDb?.close();
+        resolved.release();
       }
 }

@@ -27,14 +27,15 @@ describe("gnosys search command wiring", () => {
     expect(handler).toContain("federatedSearch");
     expect(handler).toContain("detectCurrentProject");
     expect(handler).toContain('opts.scope.split(",")');
-    expect(handler).toContain("centralDb.searchFts(query");
+    expect(handler).toContain("searchWithOverlay(resolved");
     expect(handler).toContain("boosts.join");
     expect(handler).toContain('snippet.replace(/>>>/g, "")');
     expect(handler).toContain("formatMemoryIdHyperlink");
     expect(handler).toContain("buildProjectNameLookup");
     expect(handler).toContain("parseIdFormat(opts.idFormat)");
     expect(handler).toContain('No results for "${query}"');
-    expect(handler).toContain("centralDb?.close()");
+    expect(handler).toContain("resolved.release()");
+    expect(handler).toContain('await import("./clientReadResolve.js")');
     expect(handler).toContain('await import("./federated.js")');
     expect(handler).toContain('await import("./idFormat.js")');
     expect(handler).not.toContain('await import("./lib/federated.js")');

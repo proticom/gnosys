@@ -24,6 +24,8 @@ describe("gnosys recall command wiring", () => {
   it("exports runRecallCommand with federated and legacy audit markers", () => {
     expect(handler).toContain("export async function runRecallCommand");
     expect(handler).toContain("federatedSearch");
+    expect(handler).toContain("resolved.release()");
+    expect(handler).toContain('await import("./clientReadResolve.js")');
     expect(handler).toContain("<gnosys-recall");
     expect(handler).toContain("new GnosysResolver()");
     expect(handler).toContain("initAudit(storePath)");

@@ -3117,14 +3117,16 @@ regTool(
     includeGlobal: z.boolean().optional().describe("Include global-scope memories (default: true)"),
   },
   async ({ query, limit, projectRoot, includeGlobal }) => {
-    if (!centralDb?.isAvailable()) {
+    const ctx = await resolveToolContext(projectRoot);
+    try {
+    if (!ctx.centralDb?.isAvailable()) {
       return { content: [{ type: "text" as const, text: "Central DB not available. Run gnosys_init first." }], isError: true };
     }
 
     // Auto-detect current project
-    const projectId = await detectCurrentProject(centralDb, projectRoot || undefined);
+    const projectId = await detectCurrentProject(ctx.centralDb, projectRoot || undefined);
 
-    const results = federatedSearch(centralDb, query, {
+    const results = federatedSearch(ctx.centralDb, query, {
       limit: limit || 20,
       projectId,
       includeGlobal: includeGlobal !== false,
@@ -3144,6 +3146,9 @@ regTool(
     return {
       content: [{ type: "text" as const, text: `${contextNote}\n\n${lines.join("\n\n")}` }],
     };
+    } finally {
+      releaseClientReadFromContext(ctx);
+    }
   }
 );
 

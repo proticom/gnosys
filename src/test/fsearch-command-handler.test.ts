@@ -31,7 +31,8 @@ describe("gnosys fsearch command wiring", () => {
     );
     expect(handler).toContain("No project detected");
     expect(handler).toContain("boosts.join");
-    expect(handler).toContain("centralDb?.close()");
+    expect(handler).toContain("resolved.release()");
+    expect(handler).toContain('await import("./clientReadResolve.js")');
     expect(handler).toContain('await import("./federated.js")');
     expect(handler).not.toContain('await import("./lib/federated.js")');
   });

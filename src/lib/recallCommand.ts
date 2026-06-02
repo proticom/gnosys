@@ -1,5 +1,4 @@
 import { loadConfig } from "./config.js";
-import { GnosysDB } from "./db.js";
 import { GnosysResolver } from "./resolver.js";
 import { GnosysSearch } from "./search.js";
 
@@ -20,16 +19,18 @@ export async function runRecallCommand(
 ): Promise<void> {
       // Federated recall path — returns tier-boosted results from central DB
       if (opts.federated || opts.scope) {
-        let centralDb: GnosysDB | null = null;
+        const { resolveClientRead } = await import("./clientReadResolve.js");
+        const resolved = resolveClientRead();
+        if (!resolved) {
+          console.error("Central DB not available.");
+          process.exit(1);
+        }
         try {
-          centralDb = GnosysDB.openCentral();
-          if (!centralDb.isAvailable()) { console.error("Central DB not available."); process.exit(1); }
-  
           const { federatedSearch, detectCurrentProject } = await import("./federated.js");
-          const projectId = await detectCurrentProject(centralDb, opts.directory || undefined);
+          const projectId = await detectCurrentProject(resolved.db, opts.directory || undefined);
           const scopeFilter = opts.scope ? opts.scope.split(",").map(s => s.trim()) as any : undefined;
           const limit = opts.limit ? parseInt(opts.limit, 10) : 10;
-          const results = federatedSearch(centralDb, query, { limit, projectId, scopeFilter });
+          const results = federatedSearch(resolved.db, query, { limit, projectId, scopeFilter });
   
           // Format as recall-like output with scope info
           const recallResult = {
@@ -75,7 +76,7 @@ export async function runRecallCommand(
           console.error(`Error: ${err instanceof Error ? err.message : err}`);
           process.exit(1);
         } finally {
-          centralDb?.close();
+          resolved.release();
         }
         return;
       }

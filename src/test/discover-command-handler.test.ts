@@ -27,12 +27,13 @@ describe("gnosys discover command wiring", () => {
     expect(handler).toContain("federatedDiscover");
     expect(handler).toContain("detectCurrentProject");
     expect(handler).toContain('opts.scope.split(",")');
-    expect(handler).toContain("centralDb.discoverFts(query");
+    expect(handler).toContain("discoverWithOverlay(resolved");
     expect(handler).toContain("formatMemoryIdHyperlink");
     expect(handler).toContain("buildProjectNameLookup");
     expect(handler).toContain("parseIdFormat(opts.idFormat)");
     expect(handler).toContain('No memories found for "${query}"');
-    expect(handler).toContain("centralDb?.close()");
+    expect(handler).toContain("resolved.release()");
+    expect(handler).toContain('await import("./clientReadResolve.js")');
     expect(handler).toContain('await import("./federated.js")');
     expect(handler).toContain('await import("./idFormat.js")');
     expect(handler).not.toContain('await import("./lib/federated.js")');

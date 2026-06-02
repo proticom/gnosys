@@ -1,4 +1,3 @@
-import { GnosysDB } from "./db.js";
 import { logError } from "./log.js";
 
 export type DiscoverCommandOptions = {
@@ -24,20 +23,22 @@ export async function runDiscoverCommand(
 ): Promise<void> {
       // Federated discover path
       if (opts.federated || opts.scope) {
-        let centralDb: GnosysDB | null = null;
+        const { resolveClientRead } = await import("./clientReadResolve.js");
+        const resolved = resolveClientRead();
+        if (!resolved) {
+          console.error("Central DB not available.");
+          process.exit(1);
+        }
         try {
-          centralDb = GnosysDB.openCentral();
-          if (!centralDb.isAvailable()) { console.error("Central DB not available."); process.exit(1); }
-  
           const { federatedDiscover, detectCurrentProject } = await import("./federated.js");
-          const projectId = await detectCurrentProject(centralDb, opts.directory || undefined);
+          const projectId = await detectCurrentProject(resolved.db, opts.directory || undefined);
           const scopeFilter = opts.scope ? opts.scope.split(",").map(s => s.trim()) as any : undefined;
-          const results = federatedDiscover(centralDb, query, {
+          const results = federatedDiscover(resolved.db, query, {
             limit: parseInt(opts.limit, 10),
             projectId,
             scopeFilter,
           });
-  
+
           outputResult(!!opts.json, { query, projectId, count: results.length, results }, () => {
             if (results.length === 0) { console.log(`No memories found for "${query}".`); return; }
             for (const [i, r] of results.entries()) {
@@ -50,7 +51,7 @@ export async function runDiscoverCommand(
           logError(err, { module: "cli", op: "discover" });
           process.exit(1);
         } finally {
-          centralDb?.close();
+          resolved.release();
         }
         return;
       }

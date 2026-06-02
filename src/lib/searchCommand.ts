@@ -1,4 +1,3 @@
-import { GnosysDB } from "./db.js";
 import { logError } from "./log.js";
 
 export type SearchCommandOptions = {
@@ -24,20 +23,22 @@ export async function runSearchCommand(
 ): Promise<void> {
       // Federated search path — uses central DB with tier boosting
       if (opts.federated || opts.scope) {
-        let centralDb: GnosysDB | null = null;
+        const { resolveClientRead } = await import("./clientReadResolve.js");
+        const resolved = resolveClientRead();
+        if (!resolved) {
+          console.error("Central DB not available. Run 'gnosys migrate --to-central' first.");
+          process.exit(1);
+        }
         try {
-          centralDb = GnosysDB.openCentral();
-          if (!centralDb.isAvailable()) { console.error("Central DB not available. Run 'gnosys migrate --to-central' first."); process.exit(1); }
-  
           const { federatedSearch, detectCurrentProject } = await import("./federated.js");
-          const projectId = await detectCurrentProject(centralDb, opts.directory || undefined);
+          const projectId = await detectCurrentProject(resolved.db, opts.directory || undefined);
           const scopeFilter = opts.scope ? opts.scope.split(",").map(s => s.trim()) as any : undefined;
-          const results = federatedSearch(centralDb, query, {
+          const results = federatedSearch(resolved.db, query, {
             limit: parseInt(opts.limit, 10),
             projectId,
             scopeFilter,
           });
-  
+
           outputResult(!!opts.json, { query, projectId, count: results.length, results }, () => {
             if (results.length === 0) { console.log(`No results for "${query}".`); return; }
             const ctx = projectId ? `Context: project ${projectId}` : "No project detected";
@@ -53,7 +54,7 @@ export async function runSearchCommand(
           logError(err, { module: "cli", op: "search" });
           process.exit(1);
         } finally {
-          centralDb?.close();
+          resolved.release();
         }
         return;
       }
