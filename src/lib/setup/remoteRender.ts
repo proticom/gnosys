@@ -187,6 +187,70 @@ export interface RemoteDiffInput {
   roleOrMode: string;
 }
 
+// ─── v13 sync status copy (design doc — offline / staging / ingest) ─────
+
+/** Shown when the client cannot verify the master is reachable (~30s heartbeat). */
+export const MASTER_UNREACHABLE_MESSAGE =
+  "Master unreachable; existing memories are unavailable until reconnect.";
+
+export function formatMemoriesWaitingToSync(count: number): string {
+  const n = Math.max(0, Math.floor(count));
+  return `${n} ${n === 1 ? "memory" : "memories"} waiting to sync`;
+}
+
+export function formatFailedToSyncCount(count: number): string {
+  const n = Math.max(0, Math.floor(count));
+  return `${n} failed to sync`;
+}
+
+/** Reconnect banner when offline-staged files are about to push (design doc). */
+export function formatOfflinePushStarting(count: number): string {
+  const n = Math.max(0, Math.floor(count));
+  return `Found ${n} ${n === 1 ? "memory" : "memories"} written while offline. Starting a background task to add them to the master brain.`;
+}
+
+export interface ClientSyncStatusInput {
+  masterReachable: boolean;
+  waitingToSync: number;
+  failedToSync: number;
+  /** Pending offline adds visible while disconnected (read-your-own-writes overlay). */
+  pendingOfflineAdds?: number;
+}
+
+/** Multi-line client sync status for panels, MCP, and CLI (pure strings). */
+export function renderClientSyncStatusLines(input: ClientSyncStatusInput): string[] {
+  const lines: string[] = [];
+  if (!input.masterReachable) {
+    lines.push(Status("warn", MASTER_UNREACHABLE_MESSAGE));
+    if ((input.pendingOfflineAdds ?? 0) > 0) {
+      const n = input.pendingOfflineAdds!;
+      lines.push(
+        Status(
+          "progress",
+          `Offline — ${n} new ${n === 1 ? "memory" : "memories"} queued locally; older memories hidden until reconnect.`,
+        ),
+      );
+    } else {
+      lines.push(
+        Status(
+          "warn",
+          "Offline — only new memories can be added until the master folder is reachable again.",
+        ),
+      );
+    }
+    return lines;
+  }
+  if (input.waitingToSync > 0) {
+    lines.push(Status("progress", formatMemoriesWaitingToSync(input.waitingToSync)));
+  }
+  if (input.failedToSync > 0) {
+    lines.push(
+      Status("fail", formatFailedToSyncCount(input.failedToSync), "gnosys sync doctor"),
+    );
+  }
+  return lines;
+}
+
 export function renderRemoteDiff(d: RemoteDiffInput): string {
   const lines: string[] = [];
   const indent = "   ";
