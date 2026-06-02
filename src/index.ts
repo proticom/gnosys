@@ -3180,13 +3180,22 @@ regTool(
       if (!localDb.isAvailable()) {
         return { content: [{ type: "text" as const, text: "Local DB not available." }], isError: true };
       }
-      const remotePath = localDb.getMeta("remote_path");
+      const { getConfiguredRemotePath } = await import("./lib/remote.js");
+      const remotePath = getConfiguredRemotePath(localDb);
       if (!remotePath) {
         return {
           content: [{
             type: "text" as const,
             text: JSON.stringify({ configured: false, message: "Remote sync not configured." }, null, 2),
           }],
+        };
+      }
+      const { readMachineConfig } = await import("./lib/machineConfig.js");
+      if (readMachineConfig()?.remote.role) {
+        const { getV13SyncStatus } = await import("./lib/syncClient.js");
+        const v13 = getV13SyncStatus(localDb);
+        return {
+          content: [{ type: "text" as const, text: JSON.stringify(v13, null, 2) }],
         };
       }
       const { RemoteSync } = await import("./lib/remote.js");
