@@ -34,6 +34,13 @@ export interface IngestSweepResult {
   errors: string[];
 }
 
+export interface IngestSweepOptions {
+  /** Suppress stdout (for timer / background contexts). */
+  quiet?: boolean;
+  /** Write a single JSON object to stdout with the sweep result. */
+  json?: boolean;
+}
+
 function payloadToMemory(p: StagedMemoryPayload, now: string) {
   const contentHash = fnv1a(`${p.title}\n${p.content}`);
   return {
@@ -92,7 +99,10 @@ function listMachineIds(masterPath: string): string[] {
 /**
  * Always-on cheap ingest sweep (agent start + timer). Single-writer lock on local disk.
  */
-export function runMasterIngestSweep(masterPath: string): IngestSweepResult {
+export function runMasterIngestSweep(
+  masterPath: string,
+  opts?: IngestSweepOptions,
+): IngestSweepResult {
   const result: IngestSweepResult = { ingested: 0, skipped: 0, quarantined: 0, errors: [] };
   const { config: mc } = ensureMachineConfig();
   const lockPath = path.join(getGnosysHome(), INGEST_LOCK_NAME);
@@ -173,5 +183,10 @@ export function runMasterIngestSweep(masterPath: string): IngestSweepResult {
   } finally {
     release?.();
   }
+
+  if (opts?.json) {
+    console.log(JSON.stringify(result));
+  }
+
   return result;
 }

@@ -427,9 +427,29 @@ setupRemoteCmd
   .description("Diagnose v13 multi-machine sync (reachability, staging, failed count)")
   .option("--json", "Output as JSON")
   .option("--ingest", "Run master ingest sweep (master role only)")
-  .action(async (opts: { json?: boolean; ingest?: boolean }) => {
+  .option("--quiet", "Suppress human-readable output (for timer/cron)")
+  .action(async (opts: { json?: boolean; ingest?: boolean; quiet?: boolean }) => {
     const { runSyncDoctorCommand } = await import("./lib/syncDoctorCommand.js");
     await runSyncDoctorCommand(opts);
+  });
+
+setupRemoteCmd
+  .command("timer")
+  .description("Install/uninstall the OS-level ingest timer (macOS/Linux)")
+  .option("--install", "Install the timer")
+  .option("--uninstall", "Uninstall the timer")
+  .option("--status", "Check timer status")
+  .option("--interval <minutes>", "Interval in minutes (default 15)", "15")
+  .option("--json", "Output as JSON")
+  .action(async (opts: {
+    install?: boolean;
+    uninstall?: boolean;
+    status?: boolean;
+    interval?: string;
+    json?: boolean;
+  }) => {
+    const { runSyncIngestTimerCommand } = await import("./lib/syncIngestTimerCommand.js");
+    await runSyncIngestTimerCommand(opts);
   });
 
 // `gnosys setup dream` — configure dream mode (designation, provider, schedule)

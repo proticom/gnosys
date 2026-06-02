@@ -3890,6 +3890,15 @@ export async function startMcpServer() {
   console.error("Active stores:");
   console.error(resolver.getSummary());
 
+  // v13: background ingest sweep on master-role MCP startup (non-blocking).
+  void import("./lib/syncIngestStartup.js")
+    .then(({ maybeRunStartupIngestSweep }) => maybeRunStartupIngestSweep())
+    .catch((err) => {
+      console.error(
+        `[sync] Startup ingest sweep failed: ${err instanceof Error ? err.message : err}`,
+      );
+    });
+
   // Initialize search from the first writable store. Everything in this
   // block is FAST — opening the search index + tag registry + loading
   // gnosys.json. The slow stuff (LLM providers, transformers embeddings,
