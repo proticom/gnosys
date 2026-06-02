@@ -326,6 +326,21 @@ setupCmd
     });
   });
 
+// `gnosys setup providers` — API keys per provider (Keychain / env)
+setupCmd
+  .command("providers")
+  .description("Manage LLM provider API keys (view, rotate, delete)")
+  .action(async () => {
+    const readline = await import("readline/promises");
+    const { runProvidersSetup } = await import("./lib/setup/sections/providers.js");
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    try {
+      await runProvidersSetup({ rl, directory: process.cwd() });
+    } finally {
+      rl.close();
+    }
+  });
+
 // `gnosys setup models` — just configure LLM provider/model/key
 setupCmd
   .command("models")
@@ -405,6 +420,16 @@ setupRemoteCmd
   .action(async (memoryId: string, opts: { keep: string }) => {
     const { runSetupRemoteResolveCommand } = await import("./lib/setupRemoteResolveCommand.js");
     await runSetupRemoteResolveCommand(memoryId, opts);
+  });
+
+setupRemoteCmd
+  .command("doctor")
+  .description("Diagnose v13 multi-machine sync (reachability, staging, failed count)")
+  .option("--json", "Output as JSON")
+  .option("--ingest", "Run master ingest sweep (master role only)")
+  .action(async (opts: { json?: boolean; ingest?: boolean }) => {
+    const { runSyncDoctorCommand } = await import("./lib/syncDoctorCommand.js");
+    await runSyncDoctorCommand(opts);
   });
 
 // `gnosys setup dream` — configure dream mode (designation, provider, schedule)

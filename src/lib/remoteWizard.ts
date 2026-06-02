@@ -26,6 +26,13 @@ import {
 } from "./machineConfig.js";
 import { getGnosysHome } from "./paths.js";
 import { atomicWriteFileSync } from "./atomicWrite.js";
+import { readMasterMarker, writeMasterMarker } from "./masterLease.js";
+import {
+  checkMasterPathLocalDisk,
+  matchesLocalDiskAck,
+  LOCAL_DISK_ACK_PHRASE,
+} from "./localDiskCheck.js";
+import { stagingDirForMachine, clientPresencePath, machineStagingDir } from "./syncStaging.js";
 import { safeQuestion } from "./setup/ui/safePrompt.js";
 import { Spinner } from "./setup/ui/spinner.js";
 import { printStatus } from "./setup/ui/status.js";
@@ -43,25 +50,47 @@ import {
 const REMOTE_PATH_KEY = "remote_path";
 const REMOTE_MODE_KEY = "remote_mode";
 const PRE_MASTER_BACKUP_NAME = ".pre-master-backup";
-const MASTER_MARKER_FILE = "master.json";
 
 export { BACKUP_RISK_PHRASE, TAILSCALE_GUIDE_URL };
+
+const TAILSCALE_INLINE_FALLBACK = `Tailscale lets other machines reach this one as if it were on the same LAN.
+Install Tailscale on each machine, sign in with the same account, then use the master folder path
+that Tailscale exposes (often under /Volumes/ or a synced folder path).`;
+
+export async function showTailscaleClientGuide(rl: Interface): Promise<void> {
+  console.log("");
+  console.log(
+    "You will need a way for this machine to reach the master folder (usually Tailscale).",
+  );
+  console.log("A basic explanation is shown below. For a full walkthrough, visit:");
+  console.log(`  ${TAILSCALE_GUIDE_URL}`);
+  console.log(
+    "(If that page is unavailable, this inline text is the primary source.)",
+  );
+  console.log("");
+  const open = await askConfirm(rl, "Open the guide in your browser now?", false);
+  if (open) {
+    try {
+      const { execSync } = await import("child_process");
+      if (process.platform === "darwin") {
+        execSync(`open "${TAILSCALE_GUIDE_URL}"`, { stdio: "ignore" });
+      } else if (process.platform === "win32") {
+        execSync(`start "" "${TAILSCALE_GUIDE_URL}"`, { stdio: "ignore", shell: "cmd.exe" });
+      } else {
+        execSync(`xdg-open "${TAILSCALE_GUIDE_URL}"`, { stdio: "ignore" });
+      }
+    } catch {
+      console.log(TAILSCALE_INLINE_FALLBACK);
+    }
+  } else {
+    console.log(TAILSCALE_INLINE_FALLBACK);
+  }
+  console.log("");
+}
 
 /** Returns true when the user typed the exact expected phrase (trimmed). */
 export function matchesTypedPhrase(input: string, expected: string): boolean {
   return input.trim() === expected;
-}
-
-/** Staging directory for this machine on the master folder. */
-export function stagingDirForMachine(masterPath: string, machineId: string): string {
-  return path.join(masterPath, ".gnosys-staging", machineId);
-}
-
-const CLIENT_PRESENCE_FILE = ".presence.json";
-
-/** Per-client presence file path under the master staging tree. */
-export function clientPresencePath(masterPath: string, machineId: string): string {
-  return path.join(stagingDirForMachine(masterPath, machineId), CLIENT_PRESENCE_FILE);
 }
 
 /**
@@ -142,34 +171,6 @@ function persistMultiMachineConfig(
   writeMachineConfig(mc);
 }
 
-function readMasterMarker(masterPath: string): { holderMachineId?: string; epoch?: number } | null {
-  const markerPath = path.join(masterPath, MASTER_MARKER_FILE);
-  if (!existsSync(markerPath)) return null;
-  try {
-    const raw = readFileSync(markerPath, "utf-8");
-    const parsed = JSON.parse(raw) as { holderMachineId?: string; epoch?: number };
-    return parsed;
-  } catch {
-    return null;
-  }
-}
-
-function writeMasterMarker(
-  masterPath: string,
-  machineId: string,
-  opts?: { previousEpoch?: number },
-): void {
-  const markerPath = path.join(masterPath, MASTER_MARKER_FILE);
-  const nextEpoch = (opts?.previousEpoch ?? 0) + 1;
-  const payload = {
-    epoch: nextEpoch,
-    holderMachineId: machineId,
-    hostname: ensureMachineConfig().config.hostname,
-    updatedAt: new Date().toISOString(),
-  };
-  atomicWriteFileSync(markerPath, JSON.stringify(payload, null, 2) + "\n");
-}
-
 function archiveLocalDbBeforeMaster(): void {
   const home = getGnosysHome();
   const dbPath = path.join(home, "gnosys.db");
@@ -180,7 +181,7 @@ function archiveLocalDbBeforeMaster(): void {
 }
 
 function writeClientPresenceFile(masterPath: string, machineId: string): void {
-  const dir = stagingDirForMachine(masterPath, machineId);
+  const dir = machineStagingDir(masterPath, machineId);
   mkdirSync(dir, { recursive: true });
   const presencePath = clientPresencePath(masterPath, machineId);
   if (!existsSync(presencePath)) {
@@ -308,9 +309,6 @@ async function runMasterSetupFlow(
   console.log(
     "The master database must live on this machine's local disk (not NAS, iCloud, Dropbox, or a network mount).",
   );
-  console.log(
-    "(Automated local-disk verification is added in a follow-up step; pick a plain local folder for now.)",
-  );
   console.log("");
 
   const defaultMaster = path.join(getGnosysHome(), "master-brain");
@@ -322,6 +320,20 @@ async function runMasterSetupFlow(
   if (!masterPath) {
     printStatus("warn", "no path provided", "setup cancelled");
     return false;
+  }
+
+  const diskCheck = checkMasterPathLocalDisk(masterPath);
+  console.log(`\n${diskCheck.message}`);
+  if (diskCheck.verdict === "network") {
+    printStatus("fail", "master folder must be on local disk, not a network mount");
+    return false;
+  }
+  if (diskCheck.verdict === "unknown") {
+    console.log(`\nType this phrase exactly to continue:\n  ${LOCAL_DISK_ACK_PHRASE}\n`);
+    if (!(await askTypedPhrase(rl, "Phrase: ", LOCAL_DISK_ACK_PHRASE))) {
+      printStatus("warn", "local disk acknowledgement required", "setup cancelled");
+      return false;
+    }
   }
 
   console.log("");
@@ -395,18 +407,7 @@ async function runClientSetupFlow(
   centralDb: GnosysDB,
   localActiveCount: number,
 ): Promise<boolean> {
-  console.log("");
-  console.log(
-    "You will need a way for this machine to reach the master folder (usually Tailscale).",
-  );
-  console.log(
-    "A basic explanation is shown below. For a full walkthrough, see:",
-  );
-  console.log(`  ${TAILSCALE_GUIDE_URL}`);
-  console.log(
-    "(If that page is unavailable, use Tailscale or a VPN so this machine can open the master folder as a normal path.)",
-  );
-  console.log("");
+  await showTailscaleClientGuide(rl);
 
   const masterPath = await pickFolderPath(
     rl,
@@ -656,6 +657,8 @@ export async function configureFromPath(
 
   return true;
 }
+
+export { stagingDirForMachine, clientPresencePath } from "./syncStaging.js";
 
 export const __test = {
   matchesTypedPhrase,
