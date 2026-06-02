@@ -1,13 +1,13 @@
 /**
- * Interactive wizard for `gnosys remote configure`.
+ * Interactive wizard for multi-machine sync (v13 design).
  *
- * Handles three primary scenarios:
- *  1. Fresh setup — local DB only, configuring a remote for the first time
- *  2. Reconfigure — already have a remote, want to change it or disconnect
- *  3. Join existing — second machine joining a remote that already has data
+ * Flows:
+ *  - Fresh setup: explanation → master vs client → role-specific prompts
+ *  - Reconfigure: change path, re-validate, or disconnect (when already configured)
  */
 
-import { readdirSync, statSync } from "fs";
+import { randomUUID } from "crypto";
+import { existsSync, mkdirSync, renameSync, readFileSync } from "fs";
 import * as path from "path";
 import { createInterface, type Interface } from "readline/promises";
 import { GnosysDB } from "./db.js";
@@ -18,6 +18,14 @@ import {
   clearRemoteSyncConfig,
   type RemoteStatus,
 } from "./remote.js";
+import {
+  ensureMachineConfig,
+  writeMachineConfig,
+  readMachineConfig,
+  type MultiMachineRole,
+} from "./machineConfig.js";
+import { getGnosysHome } from "./paths.js";
+import { atomicWriteFileSync } from "./atomicWrite.js";
 import { safeQuestion } from "./setup/ui/safePrompt.js";
 import { Spinner } from "./setup/ui/spinner.js";
 import { printStatus } from "./setup/ui/status.js";
@@ -26,42 +34,45 @@ import {
   renderRemoteIntro,
   renderValidationSummary,
   renderRemoteDiff,
-  SYNC_MODE_LABELS,
-  type SyncMode,
+  renderV13ExplanationScreen,
+  renderMasterBackupWarning,
+  BACKUP_RISK_PHRASE,
+  TAILSCALE_GUIDE_URL,
 } from "./setup/remoteRender.js";
 
 const REMOTE_PATH_KEY = "remote_path";
 const REMOTE_MODE_KEY = "remote_mode";
+const PRE_MASTER_BACKUP_NAME = ".pre-master-backup";
+const MASTER_MARKER_FILE = "master.json";
+
+export { BACKUP_RISK_PHRASE, TAILSCALE_GUIDE_URL };
+
+/** Returns true when the user typed the exact expected phrase (trimmed). */
+export function matchesTypedPhrase(input: string, expected: string): boolean {
+  return input.trim() === expected;
+}
+
+/** Staging directory for this machine on the master folder. */
+export function stagingDirForMachine(masterPath: string, machineId: string): string {
+  return path.join(masterPath, ".gnosys-staging", machineId);
+}
+
+const CLIENT_PRESENCE_FILE = ".presence.json";
+
+/** Per-client presence file path under the master staging tree. */
+export function clientPresencePath(masterPath: string, machineId: string): string {
+  return path.join(stagingDirForMachine(masterPath, machineId), CLIENT_PRESENCE_FILE);
+}
+
+/**
+ * Cloned-install detection: a presence file already exists for this machineId
+ * (typical after VM clone / backup restore).
+ */
+export function detectClonedStagingPresence(masterPath: string, machineId: string): boolean {
+  return existsSync(clientPresencePath(masterPath, machineId));
+}
 
 // ─── Helpers ────────────────────────────────────────────────────────────
-
-/** List likely remote candidates from /Volumes/. Filters out system volumes. */
-function detectVolumeCandidates(): string[] {
-  try {
-    const entries = readdirSync("/Volumes");
-    const skip = new Set([
-      "Macintosh HD",
-      "Macintosh HD - Data",
-      "Recovery",
-      "Update",
-      "Preboot",
-      "VM",
-    ]);
-    return entries
-      .filter((name) => !name.startsWith(".") && !skip.has(name))
-      .filter((name) => !/Backups of /i.test(name))
-      .map((name) => `/Volumes/${name}`)
-      .filter((p) => {
-        try {
-          return statSync(p).isDirectory();
-        } catch {
-          return false;
-        }
-      });
-  } catch {
-    return [];
-  }
-}
 
 async function ask(rl: Interface, prompt: string): Promise<string> {
   return (await safeQuestion(rl, prompt)).trim();
@@ -71,7 +82,7 @@ async function askChoice(
   rl: Interface,
   prompt: string,
   choices: { key: string; label: string }[],
-  defaultKey?: string
+  defaultKey?: string,
 ): Promise<string> {
   const lines = [prompt];
   for (const c of choices) {
@@ -96,9 +107,12 @@ async function askConfirm(rl: Interface, prompt: string, defaultYes: boolean = t
   return answer === "y" || answer === "yes";
 }
 
+async function askTypedPhrase(rl: Interface, prompt: string, expected: string): Promise<boolean> {
+  const typed = await ask(rl, prompt);
+  return matchesTypedPhrase(typed, expected);
+}
+
 function showValidationSummary(validation: Awaited<ReturnType<typeof validateLocation>>): void {
-  // v5.9.3 Screen 6 — route through the renderer so each check renders as
-  // a `✓` / `✗` status line. Identical content, atom-styled output.
   console.log(
     renderValidationSummary({
       pathExists: validation.checks.pathExists,
@@ -116,263 +130,407 @@ function showValidationSummary(validation: Awaited<ReturnType<typeof validateLoc
   );
 }
 
-/**
- * Hierarchical sync-mode picker. Per design §4 Screen 6 the default
- * `read & write` is one keystroke (enter), and the other modes hide
- * behind a `more options` affordance.
- *
- * Returns the chosen mode, or null when the user explicitly cancels.
- */
-async function pickSyncMode(rl: Interface): Promise<SyncMode | null> {
-  console.log("");
-  console.log("  Sync mode");
-  console.log("");
-  console.log(`    1   read & write       ${SYNC_MODE_LABELS["read-write"]}            ◂ recommended`);
-  console.log(`    2   more options       pull-only, push-only`);
-  console.log("");
-  console.log(Footer("1–2 · pick    enter · use recommended"));
-  const answer = (await safeQuestion(rl, " > ")).trim();
-  if (!answer || answer === "1") return "read-write";
-  if (answer !== "2") {
-    printStatus("warn", "invalid choice — using `read & write`");
-    return "read-write";
+function persistMultiMachineConfig(
+  localDb: GnosysDB,
+  masterPath: string,
+  role: MultiMachineRole,
+): void {
+  localDb.setMeta(REMOTE_PATH_KEY, masterPath);
+  localDb.setMeta(REMOTE_MODE_KEY, role);
+  const mc = ensureMachineConfig().config;
+  mc.remote = { enabled: true, path: masterPath, role };
+  writeMachineConfig(mc);
+}
+
+function readMasterMarker(masterPath: string): { holderMachineId?: string; epoch?: number } | null {
+  const markerPath = path.join(masterPath, MASTER_MARKER_FILE);
+  if (!existsSync(markerPath)) return null;
+  try {
+    const raw = readFileSync(markerPath, "utf-8");
+    const parsed = JSON.parse(raw) as { holderMachineId?: string; epoch?: number };
+    return parsed;
+  } catch {
+    return null;
   }
-  // Nested submenu — all three modes + back.
-  console.log("");
-  console.log(`    1   read & write       ${SYNC_MODE_LABELS["read-write"]}            ◂ recommended`);
-  console.log(`    2   pull-only          ${SYNC_MODE_LABELS["pull-only"]}`);
-  console.log(`    3   push-only          ${SYNC_MODE_LABELS["push-only"]}`);
-  console.log(`    4   back`);
-  console.log("");
-  console.log(Footer("1–4 · pick"));
-  const sub = (await safeQuestion(rl, " > ")).trim();
-  switch (sub) {
-    case "1": return "read-write";
-    case "2": return "pull-only";
-    case "3": return "push-only";
-    case "4": return null;
-    default:
-      printStatus("warn", "invalid choice — using `read & write`");
-      return "read-write";
+}
+
+function writeMasterMarker(
+  masterPath: string,
+  machineId: string,
+  opts?: { previousEpoch?: number },
+): void {
+  const markerPath = path.join(masterPath, MASTER_MARKER_FILE);
+  const nextEpoch = (opts?.previousEpoch ?? 0) + 1;
+  const payload = {
+    epoch: nextEpoch,
+    holderMachineId: machineId,
+    hostname: ensureMachineConfig().config.hostname,
+    updatedAt: new Date().toISOString(),
+  };
+  atomicWriteFileSync(markerPath, JSON.stringify(payload, null, 2) + "\n");
+}
+
+function archiveLocalDbBeforeMaster(): void {
+  const home = getGnosysHome();
+  const dbPath = path.join(home, "gnosys.db");
+  const backupPath = path.join(home, PRE_MASTER_BACKUP_NAME);
+  if (existsSync(dbPath) && !existsSync(backupPath)) {
+    renameSync(dbPath, backupPath);
   }
+}
+
+function writeClientPresenceFile(masterPath: string, machineId: string): void {
+  const dir = stagingDirForMachine(masterPath, machineId);
+  mkdirSync(dir, { recursive: true });
+  const presencePath = clientPresencePath(masterPath, machineId);
+  if (!existsSync(presencePath)) {
+    atomicWriteFileSync(
+      presencePath,
+      JSON.stringify({ machineId, firstSeenAt: new Date().toISOString() }, null, 2) + "\n",
+    );
+  }
+}
+
+async function pickFolderPath(
+  rl: Interface,
+  prompt: string,
+  defaultPath?: string,
+): Promise<string | null> {
+  const hint = defaultPath ? ` [${defaultPath}] ` : " ";
+  const raw = await ask(rl, prompt + hint);
+  const chosen = raw || defaultPath || "";
+  if (!chosen) return null;
+  return path.resolve(chosen);
 }
 
 // ─── Main wizard ────────────────────────────────────────────────────────
 
 export async function runConfigureWizard(
   centralDb: GnosysDB,
-  externalRl?: Interface
+  externalRl?: Interface,
 ): Promise<boolean> {
   const ownsRl = !externalRl;
   const rl = externalRl ?? createInterface({ input: process.stdin, output: process.stdout });
   try {
     const localCount = centralDb.getMemoryCount();
-    const currentRemote = centralDb.getMeta(REMOTE_PATH_KEY);
-
-    console.log("");
-    console.log(renderRemoteIntro(localCount.active, localCount.archived, currentRemote || null));
-    console.log("");
+    const currentRemote = getConfiguredRemotePath(centralDb);
 
     if (currentRemote) {
-      // Reconfigure flow
+      console.log("");
+      console.log(renderRemoteIntro(localCount.active, localCount.archived, currentRemote));
+      console.log("");
       const choice = await askChoice(rl, "What would you like to do?", [
-        { key: "1", label: "Change remote location" },
-        { key: "2", label: "Re-validate current remote" },
-        { key: "3", label: "Disconnect remote (local-only — warns if sync is needed)" },
+        { key: "1", label: "Change master folder path" },
+        { key: "2", label: "Re-validate current master folder" },
+        { key: "3", label: "Disconnect multi-machine sync (single-machine only)" },
         { key: "4", label: "Cancel" },
       ], "4");
 
       if (choice === "4") return false;
       if (choice === "3") return await disconnectRemote(rl, centralDb);
       if (choice === "2") return await revalidateRemote(rl, centralDb, currentRemote);
-      // choice === "1": fall through to setup flow
+      // choice 1: fall through to fresh v13 flow with explanation skipped? Use change-path only
+      return await changeMasterPathFlow(rl, centralDb, currentRemote);
     }
 
-    // Setup flow (new or change)
-    return await setupRemoteFlow(rl, centralDb, localCount.active);
+    return await runFreshV13SetupFlow(rl, centralDb, localCount.active);
   } finally {
-    if (ownsRl) {
-      rl.close();
-    }
+    if (ownsRl) rl.close();
   }
 }
 
-// ─── Setup flow ─────────────────────────────────────────────────────────
-
-async function setupRemoteFlow(rl: Interface, centralDb: GnosysDB, localActiveCount: number): Promise<boolean> {
+async function runFreshV13SetupFlow(
+  rl: Interface,
+  centralDb: GnosysDB,
+  localActiveCount: number,
+): Promise<boolean> {
+  console.log(renderV13ExplanationScreen());
   console.log("");
-  console.log("Step 1: Choose remote location");
-  console.log("");
-
-  const candidates = detectVolumeCandidates();
-  let remotePath: string | undefined;
-
-  if (candidates.length > 0) {
-    // askChoice() prints the option list — don't double-print it here.
-    const choices = [
-      ...candidates.map((_, i) => ({ key: String(i + 1), label: candidates[i] })),
-      { key: String(candidates.length + 1), label: "Custom path" },
-      { key: String(candidates.length + 2), label: "Skip" },
-    ];
-    const choice = await askChoice(rl, "Detected mounted volumes — select one:", choices);
-
-    if (choice === String(candidates.length + 2)) return false;
-    if (choice === String(candidates.length + 1)) {
-      remotePath = await ask(rl, "Custom path (e.g. /Volumes/nas/gnosys): ");
-    } else {
-      const idx = parseInt(choice, 10) - 1;
-      const volume = candidates[idx];
-      // Suggest a gnosys subdirectory inside the volume
-      const suggested = path.join(volume, "gnosys");
-      const useSubdir = await askConfirm(rl, `Use ${suggested} (recommended subdirectory)?`);
-      remotePath = useSubdir ? suggested : volume;
-    }
-  } else {
-    console.log("No mounted volumes detected at /Volumes/.");
-    console.log("Common options: NAS via SMB/AFP, external drive, or Tailscale-mounted share.\n");
-    remotePath = await ask(rl, "Enter remote path (e.g. /Volumes/nas/gnosys): ");
-  }
-
-  if (!remotePath) {
-    console.log("No path provided. Cancelling.");
+  const proceed = await askConfirm(rl, "Would you like to set this up?", true);
+  if (!proceed) {
+    printStatus("progress", "staying single-machine", "multi-machine sync not configured");
     return false;
   }
 
-  // Step 2: Validate — v5.9.3 Screen 6: animate the validation under a
-  // Spinner so the path-check feedback lands before the mode picker.
   console.log("");
-  const validateSpinner = Spinner(`checking ${remotePath}…`);
-  const validation = await validateLocation(remotePath);
+  const roleChoice = await askChoice(
+    rl,
+    "Is this machine going to be the master, or a client that joins an existing master?",
+    [
+      { key: "1", label: "This machine is the master (it will hold the main folder)" },
+      { key: "2", label: "This machine is a client (it will connect to a master on another machine)" },
+      { key: "3", label: "Cancel" },
+    ],
+    "3",
+  );
+
+  if (roleChoice === "3") return false;
+  if (roleChoice === "1") {
+    return await runMasterSetupFlow(rl, centralDb, localActiveCount);
+  }
+  return await runClientSetupFlow(rl, centralDb, localActiveCount);
+}
+
+async function runMasterSetupFlow(
+  rl: Interface,
+  centralDb: GnosysDB,
+  localActiveCount: number,
+): Promise<boolean> {
+  console.log(renderMasterBackupWarning());
+  const keepBackups = await askConfirm(
+    rl,
+    "Do you want to keep automatic backups enabled?",
+    true,
+  );
+  if (!keepBackups) {
+    console.log("");
+    console.log(`Type this phrase exactly to continue:\n  ${BACKUP_RISK_PHRASE}\n`);
+    const ok = await askTypedPhrase(rl, "Phrase: ", BACKUP_RISK_PHRASE);
+    if (!ok) {
+      printStatus("warn", "backup acknowledgement required", "setup cancelled");
+      return false;
+    }
+  }
+
+  let moveExisting = false;
+  if (localActiveCount > 0) {
+    console.log("");
+    console.log(`This machine already has a local brain with ${localActiveCount} memories.`);
+    console.log("");
+    const brainChoice = await askChoice(rl, "Do you want to:", [
+      { key: "1", label: "Move the existing brain into the master folder (recommended)" },
+      { key: "2", label: "Start a fresh master folder (existing local memories will be ignored)" },
+    ], "1");
+    moveExisting = brainChoice === "1";
+  }
+
+  console.log("");
+  console.log(
+    "The master database must live on this machine's local disk (not NAS, iCloud, Dropbox, or a network mount).",
+  );
+  console.log(
+    "(Automated local-disk verification is added in a follow-up step; pick a plain local folder for now.)",
+  );
+  console.log("");
+
+  const defaultMaster = path.join(getGnosysHome(), "master-brain");
+  const masterPath = await pickFolderPath(
+    rl,
+    "Master folder path on this machine's local disk:",
+    defaultMaster,
+  );
+  if (!masterPath) {
+    printStatus("warn", "no path provided", "setup cancelled");
+    return false;
+  }
+
+  console.log("");
+  const validateSpinner = Spinner(`checking ${masterPath}…`);
+  const validation = await validateLocation(masterPath);
   if (validation.ok) {
     const latency = validation.checks.latencyMs;
-    validateSpinner.ok("path exists, writable", latency !== null ? `${latency} ms` : undefined);
+    validateSpinner.ok("folder ready", latency !== null ? `${latency} ms` : undefined);
   } else {
     validateSpinner.fail("validation failed");
   }
   showValidationSummary(validation);
-
   if (!validation.ok) {
-    printStatus("fail", "remote not configured");
+    printStatus("fail", "master folder not configured");
     return false;
   }
 
-  if (validation.warnings.length > 0) {
-    const proceed = await askConfirm(rl, "Continue despite warnings?", true);
-    if (!proceed) return false;
+  const { config: mc } = ensureMachineConfig();
+  const existingMarker = readMasterMarker(masterPath);
+  if (existingMarker?.holderMachineId && existingMarker.holderMachineId !== mc.machineId) {
+    printStatus(
+      "fail",
+      "another machine already owns this master folder",
+      `holder: ${existingMarker.holderMachineId}`,
+    );
+    const takeover = await askConfirm(
+      rl,
+      "Attempt stale-takeover (advanced — only if the previous master is gone)?",
+      false,
+    );
+    if (!takeover) return false;
+    writeMasterMarker(masterPath, mc.machineId, { previousEpoch: existingMarker.epoch });
   }
 
-  // v5.9.3 Screen 6 — hierarchical sync-mode picker before data strategy.
-  // Default is read-write (one keystroke). Persisted to remote_mode meta.
-  const syncMode = await pickSyncMode(rl);
-  if (syncMode === null) {
-    printStatus("warn", "cancelled at mode picker — no changes written");
-    return false;
+  const previousRemote = getConfiguredRemotePath(centralDb);
+  persistMultiMachineConfig(centralDb, masterPath, "master");
+  if (!existingMarker?.holderMachineId || existingMarker.holderMachineId === mc.machineId) {
+    writeMasterMarker(masterPath, mc.machineId);
   }
+  mkdirSync(path.join(masterPath, "backups"), { recursive: true });
+  mkdirSync(path.join(masterPath, ".gnosys-staging"), { recursive: true });
 
-  // Step 3: Decide what to do based on existing DB state
-  console.log("\nStep 3: Data strategy");
-  console.log("");
-
-  const remoteHasData = validation.checks.existingDb.found && (validation.checks.existingDb.memoryCount ?? 0) > 0;
-  const localHasData = localActiveCount > 0;
-
-  let strategy: "migrate" | "merge" | "pull" | "configure-only" = "configure-only";
-
-  if (!remoteHasData && !localHasData) {
-    // Both empty — just point at remote
-    console.log("  Both local and remote are empty. Configuring remote without data transfer.");
-    strategy = "configure-only";
-  } else if (!remoteHasData && localHasData) {
-    // Local has data, remote is empty — initial migration
-    console.log(`  Your local DB has ${localActiveCount} memories.`);
-    console.log("  The remote is empty.");
-    const migrate = await askConfirm(rl, "Copy your local memories to the remote now?", true);
-    strategy = migrate ? "migrate" : "configure-only";
-  } else if (remoteHasData && !localHasData) {
-    // Remote has data, local empty — pull from remote (this is the "second machine" scenario)
-    console.log(`  The remote has ${validation.checks.existingDb.memoryCount} memories.`);
-    console.log("  Your local DB is empty.");
-    const pull = await askConfirm(rl, "Pull all memories from remote to local now?", true);
-    strategy = pull ? "pull" : "configure-only";
-  } else {
-    // BOTH have data — the tricky case
-    // Reword to match deci-037: remote is the canonical source of truth,
-    // local is an offline-resilience cache. The two counts shown here are
-    // pre-merge snapshots, not "two co-equal copies".
-    console.log(`  Remote DB (source of truth):   ${validation.checks.existingDb.memoryCount} memories`);
-    console.log(`  Local cache (offline backup):  ${localActiveCount} memories`);
-    console.log("");
-    const choice = await askChoice(rl, "How do you want to combine them?", [
-      { key: "1", label: "Merge — push local-only memories up, pull remote-only down, flag conflicts (recommended)" },
-      { key: "2", label: "Replace remote with local (overwrites remote — destructive)" },
-      { key: "3", label: "Replace local with remote (overwrites local cache)" },
-      { key: "4", label: "Skip — configure remote without touching either DB" },
-    ], "1");
-
-    if (choice === "1") strategy = "merge";
-    else if (choice === "2") strategy = "migrate"; // overwrites
-    else if (choice === "3") strategy = "pull";
-    else strategy = "configure-only"; // "Skip" is configure-only, not cancel
-
-    if (strategy === "migrate" || strategy === "pull") {
-      const confirm = await askConfirm(
-        rl,
-        `\nThis will overwrite the ${strategy === "migrate" ? "remote" : "local"} DB. Are you sure?`,
-        false
-      );
-      if (!confirm) {
-        console.log("Cancelled.");
-        return false;
-      }
-    }
-  }
-
-  // Step 4: Save config and execute strategy. v5.9.3 Screen 6 wraps the
-  // long-running sync calls in Spinners and prints a final Diff() block.
-  const previousRemote = centralDb.getMeta(REMOTE_PATH_KEY) || null;
-  centralDb.setMeta(REMOTE_PATH_KEY, remotePath);
-  centralDb.setMeta(REMOTE_MODE_KEY, syncMode);
-
-  const sync = new RemoteSync(centralDb, remotePath);
-  try {
-    if (strategy === "migrate") {
-      const spin = Spinner(`doing first sync to ${remotePath}…`);
+  if (moveExisting) {
+    const spin = Spinner(`moving local brain into ${masterPath}…`);
+    const sync = new RemoteSync(centralDb, masterPath);
+    try {
       const result = await sync.migrate();
       if (result.ok) {
-        spin.ok("first sync complete", `${result.copied} memories pushed`);
+        spin.ok("brain moved", `${result.copied} memories`);
       } else {
         spin.fail("migration had errors");
         for (const e of result.errors) printStatus("fail", e);
         return false;
       }
-    } else if (strategy === "pull") {
-      const spin = Spinner(`doing first sync from ${remotePath}…`);
-      const result = await sync.pull({ strategy: "newer-wins" });
-      spin.ok("first sync complete", `${result.pulled} memories pulled`);
-      for (const e of result.errors) printStatus("fail", e);
-    } else if (strategy === "merge") {
-      const spin = Spinner(`merging local and remote at ${remotePath}…`);
-      const result = await sync.sync();
-      spin.ok(
-        "merge complete",
-        `pushed ${result.pushed} · pulled ${result.pulled} · conflicts ${result.conflicts.length}`,
-      );
-      if (result.conflicts.length > 0) {
-        printStatus("warn", "conflicts need resolution");
-        for (const c of result.conflicts) console.log(`     ${c.memoryId}: ${c.title}`);
-        printStatus("progress", "resolve with", "gnosys remote resolve <memory-id> --keep <local|remote>");
-      }
-      for (const e of result.errors) printStatus("fail", e);
+    } finally {
+      sync.closeRemote();
     }
-  } finally {
-    sync.closeRemote();
   }
 
-  // Final Diff + save confirmation per the design.
+  archiveLocalDbBeforeMaster();
+
   console.log("");
-  console.log(renderRemoteDiff({ previousRemote, newRemote: remotePath, mode: syncMode }));
-  printStatus("ok", "saved", "~/.gnosys/gnosys.json");
-  console.log(Footer("run `gnosys remote status` anytime to check sync state"));
+  console.log(renderRemoteDiff({ previousRemote, newRemote: masterPath, roleOrMode: "master" }));
+  printStatus("ok", "saved", "machine.json + remote_path");
+  console.log(Footer("run `gnosys remote status` to check sync state"));
+  return true;
+}
+
+async function runClientSetupFlow(
+  rl: Interface,
+  centralDb: GnosysDB,
+  localActiveCount: number,
+): Promise<boolean> {
+  console.log("");
+  console.log(
+    "You will need a way for this machine to reach the master folder (usually Tailscale).",
+  );
+  console.log(
+    "A basic explanation is shown below. For a full walkthrough, see:",
+  );
+  console.log(`  ${TAILSCALE_GUIDE_URL}`);
+  console.log(
+    "(If that page is unavailable, use Tailscale or a VPN so this machine can open the master folder as a normal path.)",
+  );
+  console.log("");
+
+  const masterPath = await pickFolderPath(
+    rl,
+    "Enter the master folder path as it appears on this machine:",
+  );
+  if (!masterPath) {
+    printStatus("warn", "no path provided", "setup cancelled");
+    return false;
+  }
+
+  console.log("");
+  const validateSpinner = Spinner(`checking ${masterPath}…`);
+  const validation = await validateLocation(masterPath);
+  if (validation.ok) {
+    validateSpinner.ok("master folder reachable");
+  } else {
+    validateSpinner.fail("validation failed");
+  }
+  showValidationSummary(validation);
+  if (!validation.ok) {
+    printStatus("fail", "master folder not configured");
+    return false;
+  }
+
+  const marker = readMasterMarker(masterPath);
+  if (!marker?.holderMachineId) {
+    printStatus(
+      "warn",
+      "no master.json found",
+      "the folder may not be set up as a master yet — continue only if you trust this path",
+    );
+    const trust = await askConfirm(rl, "Continue anyway?", false);
+    if (!trust) return false;
+  }
+
+  let { config: mc } = ensureMachineConfig();
+  if (detectClonedStagingPresence(masterPath, mc.machineId)) {
+    console.log("");
+    printStatus(
+      "warn",
+      "presence file already exists for this machineId on the master",
+      "common after VM clone or backup restore",
+    );
+    const remint = await askConfirm(rl, "Re-mint this machine's ID (recommended)?", true);
+    if (remint) {
+      mc = { ...mc, machineId: randomUUID() };
+      writeMachineConfig(mc);
+      printStatus("ok", "new machineId", mc.machineId);
+    }
+  }
+
+  if (localActiveCount > 0) {
+    console.log("");
+    console.log(`This machine already has ${localActiveCount} memories locally.`);
+    console.log("");
+    console.log(
+      "If you choose to keep them, they will be treated as NEW memories and sent to the master.",
+    );
+    console.log(
+      "This may create duplicates if the same memories already exist on the master.",
+    );
+    console.log("");
+    const dupChoice = await askChoice(rl, "Do you want to:", [
+      {
+        key: "1",
+        label: "Keep the local memories and push them later (acknowledged risk of duplicates)",
+      },
+      { key: "2", label: "Start fresh (local memories will be ignored)" },
+    ], "2");
+    if (dupChoice === "1") {
+      const ack = await askConfirm(
+        rl,
+        "Acknowledge duplicate risk and continue?",
+        false,
+      );
+      if (!ack) return false;
+    }
+  }
+
+  const previousRemote = getConfiguredRemotePath(centralDb);
+  persistMultiMachineConfig(centralDb, masterPath, "client");
+  writeClientPresenceFile(masterPath, mc.machineId);
+
+  console.log("");
+  console.log(renderRemoteDiff({ previousRemote, newRemote: masterPath, roleOrMode: "client" }));
+  printStatus("ok", "saved", "machine.json + remote_path");
+  console.log(Footer("client machines stage new memories; ingest runs on the master"));
+  return true;
+}
+
+async function changeMasterPathFlow(
+  rl: Interface,
+  centralDb: GnosysDB,
+  currentRemote: string,
+): Promise<boolean> {
+  const role =
+    (readMachineConfig()?.remote.role as MultiMachineRole | undefined) ??
+    (centralDb.getMeta(REMOTE_MODE_KEY) as MultiMachineRole | undefined) ??
+    "client";
+
+  const newPath = await pickFolderPath(
+    rl,
+    `New master folder path (current: ${currentRemote}):`,
+  );
+  if (!newPath || newPath === currentRemote) {
+    printStatus("warn", "no change", "path unchanged");
+    return false;
+  }
+
+  const validation = await validateLocation(newPath);
+  showValidationSummary(validation);
+  if (!validation.ok) return false;
+
+  persistMultiMachineConfig(centralDb, newPath, role);
+  if (role === "master") {
+    const { config: mc } = ensureMachineConfig();
+    const existing = readMasterMarker(newPath);
+    if (existing?.holderMachineId && existing.holderMachineId !== mc.machineId) {
+      printStatus("fail", "another machine owns the target master folder");
+      return false;
+    }
+    writeMasterMarker(newPath, mc.machineId, { previousEpoch: existing?.epoch });
+  }
+  printStatus("ok", "master folder updated", newPath);
   return true;
 }
 
@@ -381,7 +539,7 @@ async function setupRemoteFlow(rl: Interface, centralDb: GnosysDB, localActiveCo
 async function disconnectRemote(rl: Interface, localDb: GnosysDB): Promise<boolean> {
   const remotePath = getConfiguredRemotePath(localDb);
   if (!remotePath) {
-    printStatus("warn", "remote is not configured");
+    printStatus("warn", "multi-machine sync is not configured");
     return false;
   }
 
@@ -408,114 +566,20 @@ async function disconnectRemote(rl: Interface, localDb: GnosysDB): Promise<boole
   const remoteActive = remoteCounts?.active ?? validation.checks.existingDb.memoryCount ?? null;
 
   console.log("");
-  printStatus("warn", "disconnecting makes this machine local-only");
+  printStatus("warn", "disconnecting returns this machine to single-machine mode");
   console.log(`   local    ~/.gnosys/gnosys.db — ${localCounts.active} active memories`);
   if (remoteReachable && remoteActive !== null) {
-    console.log(`   remote   ${remotePath} — ${remoteActive} active memories`);
+    console.log(`   master   ${remotePath} — ${remoteActive} active memories`);
   } else {
-    printStatus("warn", "remote is not reachable", remotePath);
+    printStatus("warn", "master folder is not reachable", remotePath);
   }
   console.log("");
-  console.log("  The remote folder and gnosys.db are not deleted.");
-  console.log("  After disconnect, this Mac will not read or write that remote,");
-  console.log("  even when the volume is mounted.");
-
-  const pendingPull = syncStatus?.pendingPull ?? 0;
-  const pendingPush = syncStatus?.pendingPush ?? 0;
-  const conflicts = syncStatus?.conflicts.length ?? 0;
-  const countGap =
-    remoteActive !== null && remoteActive > localCounts.active
-      ? remoteActive - localCounts.active
-      : 0;
-  const shouldRecommendSync =
-    remoteReachable &&
-    (pendingPull > 0 || pendingPush > 0 || conflicts > 0 || countGap > 0);
-
-  if (shouldRecommendSync) {
-    console.log("");
-    printStatus("warn", "your local cache may be behind the shared remote brain");
-    if (countGap > 0) {
-      console.log(
-        `   Remote has about ${countGap} more active memor${countGap === 1 ? "y" : "ies"} than local.`,
-      );
-    }
-    if (pendingPull > 0 || pendingPush > 0) {
-      const parts: string[] = [];
-      if (pendingPull > 0) parts.push(`${pendingPull} to pull into local`);
-      if (pendingPush > 0) parts.push(`${pendingPush} to push to remote`);
-      console.log(`   Pending sync: ${parts.join(", ")}.`);
-    }
-    if (conflicts > 0) {
-      console.log(`   ${conflicts} unresolved conflict${conflicts === 1 ? "" : "s"} — resolve before or during sync.`);
-    }
-    printStatus("progress", "recommended", "gnosys setup remote sync");
-  }
-
-  const choice = await askChoice(
-    rl,
-    shouldRecommendSync
-      ? "Sync first so you do not lose access to remote-only memories on this Mac:"
-      : "How do you want to proceed?",
-    remoteReachable
-      ? [
-          { key: "1", label: "Run gnosys setup remote sync, then disconnect (recommended)" },
-          { key: "2", label: "Disconnect now without syncing (keep current local DB only)" },
-          { key: "3", label: "Cancel" },
-        ]
-      : [
-          { key: "2", label: "Disconnect anyway (local DB only; remote not reachable to sync)" },
-          { key: "3", label: "Cancel" },
-        ],
-    "3",
-  );
-
-  if (choice === "3") {
-    console.log("Cancelled.");
-    return false;
-  }
-
-  if (choice === "1" && remoteReachable) {
-    const spin = Spinner("syncing local and remote…");
-    const syncRun = new RemoteSync(localDb, remotePath);
-    try {
-      const result = await syncRun.sync();
-      if (result.errors.length > 0) {
-        spin.fail("sync had errors");
-        for (const e of result.errors) printStatus("fail", e);
-        const proceed = await askConfirm(rl, "Disconnect anyway without a clean sync?", false);
-        if (!proceed) return false;
-      } else {
-        spin.ok(
-          "sync complete",
-          `pushed ${result.pushed} · pulled ${result.pulled} · conflicts ${result.conflicts.length}`,
-        );
-        if (result.conflicts.length > 0) {
-          printStatus("warn", "conflicts still open", "gnosys setup remote resolve <id> --keep <local|remote>");
-        }
-      }
-    } finally {
-      syncRun.closeRemote();
-    }
-  } else if (choice === "1" && !remoteReachable) {
-    printStatus("fail", "cannot sync — mount the remote or cancel");
-    return false;
-  }
-
-  if (choice === "2" && shouldRecommendSync) {
-    const risky = await askConfirm(
-      rl,
-      "Disconnect without syncing? You may only see local memories on this Mac until you reconnect.",
-      false,
-    );
-    if (!risky) {
-      console.log("Cancelled.");
-      return false;
-    }
-  }
+  console.log("  The master folder on disk is not deleted.");
+  console.log("  After disconnect, this machine stops using multi-machine sync.");
 
   const confirm = await askConfirm(
     rl,
-    "Disconnect now? Remote files stay on disk; this machine uses ~/.gnosys/gnosys.db only.",
+    "Disconnect now? (You can re-run setup later.)",
     false,
   );
   if (!confirm) {
@@ -524,18 +588,22 @@ async function disconnectRemote(rl: Interface, localDb: GnosysDB): Promise<boole
   }
 
   clearRemoteSyncConfig(localDb);
-  console.log("✓ Remote disconnected. Gnosys is now local-only on this machine.");
+  printStatus("ok", "disconnected", "multi-machine sync is off on this machine");
   return true;
 }
 
-async function revalidateRemote(_rl: Interface, _centralDb: GnosysDB, currentRemote: string): Promise<boolean> {
+async function revalidateRemote(
+  _rl: Interface,
+  _centralDb: GnosysDB,
+  currentRemote: string,
+): Promise<boolean> {
   console.log("");
   const spin = Spinner(`checking ${currentRemote}…`);
   const validation = await validateLocation(currentRemote);
   if (validation.ok) {
-    spin.ok("remote is healthy");
+    spin.ok("master folder is reachable");
   } else {
-    spin.fail("validation failed", "the remote may be unreachable or the path is wrong");
+    spin.fail("validation failed", "the master may be unreachable or the path is wrong");
   }
   showValidationSummary(validation);
   return validation.ok;
@@ -546,29 +614,36 @@ async function revalidateRemote(_rl: Interface, _centralDb: GnosysDB, currentRem
 export async function configureFromPath(
   centralDb: GnosysDB,
   remotePath: string,
-  opts: { migrate?: boolean } = {}
+  opts: { migrate?: boolean; role?: MultiMachineRole } = {},
 ): Promise<boolean> {
   console.log(`\nValidating ${remotePath}...`);
   const validation = await validateLocation(remotePath);
   showValidationSummary(validation);
 
   if (!validation.ok) {
-    console.log("\nValidation failed. Remote not configured.");
+    console.log("\nValidation failed. Master folder not configured.");
     return false;
   }
 
-  centralDb.setMeta(REMOTE_PATH_KEY, remotePath);
-  console.log(`\n✓ Remote configured: ${remotePath}`);
+  const role = opts.role ?? "client";
+  persistMultiMachineConfig(centralDb, remotePath, role);
+  console.log(`\n✓ Multi-machine sync configured: ${remotePath} (${role})`);
 
-  if (opts.migrate && !validation.checks.existingDb.found) {
-    console.log("\nMigrating local DB to remote...");
+  if (role === "master") {
+    const { config: mc } = ensureMachineConfig();
+    writeMasterMarker(remotePath, mc.machineId);
+  }
+
+  if (opts.migrate && role === "master" && !validation.checks.existingDb.found) {
+    console.log("\nMigrating local DB to master folder...");
     const sync = new RemoteSync(centralDb, remotePath);
     try {
       const result = await sync.migrate();
       if (result.ok) {
-        console.log(`  ✓ Copied ${result.copied} memories to remote.`);
+        console.log(`  ✓ Copied ${result.copied} memories to master folder.`);
+        archiveLocalDbBeforeMaster();
       } else {
-        console.log(`  ✗ Migration had errors:`);
+        console.log("  ✗ Migration had errors:");
         for (const e of result.errors) console.log(`    ${e}`);
         return false;
       }
@@ -576,8 +651,15 @@ export async function configureFromPath(
       sync.closeRemote();
     }
   } else if (validation.checks.existingDb.found) {
-    console.log("\nExisting DB found at remote. Run 'gnosys remote sync' to merge.");
+    console.log("\nExisting DB found at master folder.");
   }
 
   return true;
 }
+
+export const __test = {
+  matchesTypedPhrase,
+  detectClonedStagingPresence,
+  stagingDirForMachine,
+  clientPresencePath,
+};

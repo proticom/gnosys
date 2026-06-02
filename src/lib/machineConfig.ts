@@ -33,11 +33,16 @@ import { atomicWriteFileSync } from "./atomicWrite.js";
 
 const MACHINE_CONFIG_VERSION = 1;
 
+/** v13 multi-machine role for this machine (master writer vs staging client). */
+export type MultiMachineRole = "master" | "client";
+
 interface MachineRemoteConfig {
   /** Whether remote sync is configured/active on this machine. */
   enabled: boolean;
-  /** Absolute path or URL to the remote DB on this machine (NAS mount / Tailscale). */
+  /** Absolute path to the master folder as seen on this machine. */
   path?: string;
+  /** v13: whether this machine hosts the master DB or joins as a client. */
+  role?: MultiMachineRole;
 }
 
 export interface MachineConfig {
@@ -82,9 +87,14 @@ function normalize(parsed: Partial<MachineConfig> | null | undefined): MachineCo
       if (typeof v === "string" && v.length > 0) roots[k] = path.resolve(v);
     }
   }
+  const role =
+    parsed.remote?.role === "master" || parsed.remote?.role === "client"
+      ? parsed.remote.role
+      : undefined;
   const remote: MachineRemoteConfig = {
     enabled: Boolean(parsed.remote?.enabled),
     ...(typeof parsed.remote?.path === "string" ? { path: parsed.remote.path } : {}),
+    ...(role ? { role } : {}),
   };
   const previousHostnames = Array.isArray(parsed.previousHostnames)
     ? parsed.previousHostnames.filter((h): h is string => typeof h === "string" && h.length > 0)

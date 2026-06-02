@@ -57,6 +57,99 @@ export function renderValidationSummary(v: ValidationSummaryInput): string {
   return lines.join("\n");
 }
 
+/** Exact phrase required when declining automatic master backups (v13 design). */
+export const BACKUP_RISK_PHRASE = "I ACCEPT THE RISK OF DATA LOSS WITHOUT BACKUPS";
+
+/** Guide URL for Tailscale setup (inline fallback when unreachable — todo 14). */
+export const TAILSCALE_GUIDE_URL = "https://gnosys.ai/docs/multi-machine-tailscale";
+
+/**
+ * v13 first screen — rules before master vs client (design doc §What Happens When…).
+ */
+export function renderV13ExplanationScreen(): string {
+  const lines: string[] = [];
+  lines.push(Header(["gnosys", "setup", "multi-machine sync"]));
+  lines.push("");
+  lines.push(` ${color(c.text, "Multi-machine sync")}`);
+  lines.push("");
+  lines.push(
+    ` ${color(
+      c.textDim,
+      "Gnosys can share one brain across multiple machines, but only when they can all reach the same master folder.",
+    )}`,
+  );
+  lines.push("");
+  lines.push(
+    ` ${color(
+      c.textDim,
+      "This works best with a fast connection (Tailscale, good VPN, or machines on the same local network). Network shares like NAS or slow Tailscale mounts have caused timeouts and lost connections in practice.",
+    )}`,
+  );
+  lines.push("");
+  lines.push(` ${color(c.text, "When the master folder is reachable:")}`);
+  lines.push(
+    ` ${color(c.textDim, "  • Every machine reads from a published snapshot of the master (copied locally).")}`,
+  );
+  lines.push(
+    ` ${color(
+      c.textDim,
+      "  • New memories from client machines are staged as small files and later processed by the master (usually during idle time, invisibly).",
+    )}`,
+  );
+  lines.push("");
+  lines.push(` ${color(c.text, "When the master folder is NOT reachable:")}`);
+  lines.push(
+    ` ${color(c.textDim, "  • The machine can still write new memories into a small temporary cache.")}`,
+  );
+  lines.push(` ${color(c.textDim, "  • Old memories cannot be read.")}`);
+  lines.push(
+    ` ${color(
+      c.textDim,
+      "  • When the machine reconnects, it will quietly push the staged files so the master can ingest them.",
+    )}`,
+  );
+  return lines.join("\n");
+}
+
+/** Master backup acknowledgement block (v13 design). */
+export function renderMasterBackupWarning(): string {
+  const lines: string[] = [];
+  lines.push("");
+  lines.push(` ${color(c.text, "Master folder backup")}`);
+  lines.push("");
+  lines.push(
+    ` ${color(c.textDim, "The master folder will become the ONLY copy of your brain.")}`,
+  );
+  lines.push(
+    ` ${color(
+      c.textDim,
+      "If this machine's disk fails, your data is lost unless you have a backup.",
+    )}`,
+  );
+  lines.push("");
+  lines.push(
+    ` ${color(
+      c.textDim,
+      "By default, Gnosys will automatically create daily snapshots of the master database (last 7 days) using SQLite's backup API and store them in master-folder/backups/.",
+    )}`,
+  );
+  lines.push("");
+  lines.push(
+    ` ${color(
+      c.textDim,
+      "These are local rollback snapshots for corruption or accidental deletion. They do not protect against disk failure.",
+    )}`,
+  );
+  lines.push("");
+  lines.push(
+    ` ${color(
+      c.textDim,
+      "You may optionally provide an off-disk backup location (e.g., external drive or cloud folder) for an extra copy that survives disk loss.",
+    )}`,
+  );
+  return lines.join("\n");
+}
+
 /**
  * Render the leading Header + current-status line for the remote wizard.
  * Returns a multi-line string the wizard can print as-is.
@@ -70,7 +163,12 @@ export function renderRemoteIntro(
   lines.push(Header(["gnosys", "setup", "remote"]));
   lines.push("");
   lines.push(` ${color(c.text, "Multi-machine sync")}`);
-  lines.push(` ${color(c.textDim, "share your memory store across machines via a path on a NAS, iCloud, Dropbox, etc.")}`);
+  lines.push(
+    ` ${color(
+      c.textDim,
+      "reconfigure or disconnect your master folder (v13 master/client model)",
+    )}`,
+  );
   lines.push("");
   const remoteTxt = currentRemote ?? "not configured";
   lines.push(`   ${color(c.textDim, "local DB")}    ${color(c.text, `~/.gnosys/gnosys.db (${localActive} active, ${localArchived} archived)`)}`);
@@ -85,7 +183,8 @@ export function renderRemoteIntro(
 export interface RemoteDiffInput {
   previousRemote: string | null;
   newRemote: string;
-  mode: SyncMode;
+  /** v13 master/client role, or legacy sync mode label for older configs. */
+  roleOrMode: string;
 }
 
 export function renderRemoteDiff(d: RemoteDiffInput): string {
@@ -93,10 +192,10 @@ export function renderRemoteDiff(d: RemoteDiffInput): string {
   const indent = "   ";
   const arrow = color(c.textGhost, glyph.arrow);
   const fromR = color(c.textMid, (d.previousRemote ?? "not configured").padEnd(20));
-  const labelR = color(c.textDim, "remote".padEnd(8));
+  const labelR = color(c.textDim, "master".padEnd(8));
   lines.push(`${indent}${labelR}   ${fromR}   ${arrow}   ${color(c.accentHi, d.newRemote)}`);
-  const labelM = color(c.textDim, "mode".padEnd(8));
+  const labelM = color(c.textDim, "role".padEnd(8));
   const fromM = color(c.textMid, "—".padEnd(20));
-  lines.push(`${indent}${labelM}   ${fromM}   ${arrow}   ${color(c.accentHi, d.mode)}`);
+  lines.push(`${indent}${labelM}   ${fromM}   ${arrow}   ${color(c.accentHi, d.roleOrMode)}`);
   return lines.join("\n");
 }
