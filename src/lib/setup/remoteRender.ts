@@ -60,6 +60,10 @@ export function renderValidationSummary(v: ValidationSummaryInput): string {
 /** Exact phrase required when declining automatic master backups (v13 design). */
 export const BACKUP_RISK_PHRASE = "I ACCEPT THE RISK OF DATA LOSS WITHOUT BACKUPS";
 
+/** Instruction shown when the user declines automatic master backups (v13 design). */
+export const BACKUP_DECLINE_ACK_INSTRUCTION =
+  "If you answer No, you must type the following phrase to continue:";
+
 /** Guide URL for Tailscale setup (inline fallback when unreachable — todo 14). */
 export const TAILSCALE_GUIDE_URL = "https://gnosys.ai/docs/multi-machine-tailscale";
 
@@ -147,6 +151,15 @@ export function renderMasterBackupWarning(): string {
       "You may optionally provide an off-disk backup location (e.g., external drive or cloud folder) for an extra copy that survives disk loss.",
     )}`,
   );
+  return lines.join("\n");
+}
+
+/** Typed-phrase prompt when the user disables automatic master backups (v13 design). */
+export function renderBackupDeclineAckPrompt(): string {
+  const lines: string[] = [];
+  lines.push("");
+  lines.push(` ${color(c.textDim, BACKUP_DECLINE_ACK_INSTRUCTION)}`);
+  lines.push(` ${color(c.text, BACKUP_RISK_PHRASE)}`);
   return lines.join("\n");
 }
 

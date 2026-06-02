@@ -43,6 +43,7 @@ import {
   renderRemoteDiff,
   renderV13ExplanationScreen,
   renderMasterBackupWarning,
+  renderBackupDeclineAckPrompt,
   BACKUP_RISK_PHRASE,
   TAILSCALE_GUIDE_URL,
 } from "./setup/remoteRender.js";
@@ -284,10 +285,8 @@ async function runMasterSetupFlow(
     true,
   );
   if (!keepBackups) {
-    console.log("");
-    console.log(`Type this phrase exactly to continue:\n  ${BACKUP_RISK_PHRASE}\n`);
-    const ok = await askTypedPhrase(rl, "Phrase: ", BACKUP_RISK_PHRASE);
-    if (!ok) {
+    console.log(renderBackupDeclineAckPrompt());
+    if (!(await askTypedPhrase(rl, "Phrase: ", BACKUP_RISK_PHRASE))) {
       printStatus("warn", "backup acknowledgement required", "setup cancelled");
       return false;
     }

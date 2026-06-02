@@ -16,6 +16,8 @@ import {
 import {
   renderV13ExplanationScreen,
   renderMasterBackupWarning,
+  renderBackupDeclineAckPrompt,
+  BACKUP_DECLINE_ACK_INSTRUCTION,
   BACKUP_RISK_PHRASE as RENDER_PHRASE,
 } from "../lib/setup/remoteRender.js";
 
@@ -61,9 +63,16 @@ describe("remoteWizard v13 render screens", () => {
     expect(out).toContain("Tailscale");
   });
 
-  it("renderMasterBackupWarning includes backup phrase hint and daily snapshots", () => {
+  it("renderMasterBackupWarning includes daily snapshot copy", () => {
     const out = strip(renderMasterBackupWarning());
     expect(out).toContain("ONLY copy of your brain");
     expect(out).toContain("master-folder/backups");
+  });
+
+  it("renderBackupDeclineAckPrompt requires the v13 typed phrase", () => {
+    const out = strip(renderBackupDeclineAckPrompt());
+    expect(out).toContain(BACKUP_DECLINE_ACK_INSTRUCTION);
+    expect(out).toContain("I ACCEPT THE RISK OF DATA LOSS WITHOUT BACKUPS");
+    expect(out).toContain(BACKUP_RISK_PHRASE);
   });
 });
