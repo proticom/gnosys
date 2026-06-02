@@ -1,5 +1,5 @@
 /**
- * v5.x migration matrix — every supported old schema version → current (v4).
+ * v5.x migration matrix — every supported old schema version → current (v5).
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
@@ -119,10 +119,10 @@ function seedV2(dbFile: string): void {
   raw.close();
 }
 
-function assertMigratedToV4(dir: string, opts: { projectId?: string | null } = {}): void {
+function assertMigratedToV5(dir: string, opts: { projectId?: string | null } = {}): void {
   const dbFile = path.join(dir, "gnosys.db");
   const raw = new Database(dbFile);
-  expect(raw.pragma("user_version", { simple: true })).toBe(4);
+  expect(raw.pragma("user_version", { simple: true })).toBe(5);
 
   const mcols = (raw.prepare("PRAGMA table_info(memories)").all() as Array<{ name: string }>).map((c) => c.name);
   expect(mcols).toEqual(expect.arrayContaining([
@@ -139,6 +139,14 @@ function assertMigratedToV4(dir: string, opts: { projectId?: string | null } = {
   const tables = (raw.prepare("SELECT name FROM sqlite_master WHERE type='table'").all() as Array<{ name: string }>)
     .map((r) => r.name);
   expect(tables).toContain("project_locations");
+  expect(tables).toEqual(
+    expect.arrayContaining([
+      "sync_staging_ledger",
+      "sync_processed_ulids",
+      "sync_pending_adds",
+      "sync_snapshot_manifest",
+    ]),
+  );
 
   const mem = raw.prepare("SELECT title, project_id, scope FROM memories WHERE id = ?").get(MEMORY_ROW.id) as {
     title: string;
@@ -160,17 +168,17 @@ function assertMigratedToV4(dir: string, opts: { projectId?: string | null } = {
 }
 
 describe("v5.x migration matrix", () => {
-  it("migrates a v1 DB to current (user_version=4)", () => {
+  it("migrates a v1 DB to current (user_version=5)", () => {
     seedV1(path.join(tmp, "gnosys.db"));
     const db = new GnosysDB(tmp);
     db.close();
-    assertMigratedToV4(tmp, { projectId: null });
+    assertMigratedToV5(tmp, { projectId: null });
   });
 
-  it("migrates a v2 DB to current (user_version=4)", () => {
+  it("migrates a v2 DB to current (user_version=5)", () => {
     seedV2(path.join(tmp, "gnosys.db"));
     const db = new GnosysDB(tmp);
     db.close();
-    assertMigratedToV4(tmp, { projectId: "proj-1" });
+    assertMigratedToV5(tmp, { projectId: "proj-1" });
   });
 });
