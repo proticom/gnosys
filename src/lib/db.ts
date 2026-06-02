@@ -1653,6 +1653,13 @@ export class GnosysDB {
     return row.cnt;
   }
 
+  getStagingLedgerFirstSeenAt(stagingKey: string): string | null {
+    const row = this.db.prepare(
+      "SELECT first_seen_at FROM sync_staging_ledger WHERE staging_key = ?",
+    ).get(stagingKey) as { first_seen_at: string } | undefined;
+    return row?.first_seen_at ?? null;
+  }
+
   insertPendingAdd(row: {
     id: string;
     title: string;
