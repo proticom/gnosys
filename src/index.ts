@@ -59,6 +59,19 @@ import { setPreference, getPreference, getAllPreferences, deletePreference, Pref
 import { syncRules, generateRulesBlock, removeRulesBlock } from "./lib/rulesGen.js";
 import { federatedSearch, federatedDiscover, detectAmbiguity, generateBriefing, generateAllBriefings, getWorkingSet, formatWorkingSet, detectCurrentProject } from "./lib/federated.js";
 import { generatePortfolio, formatPortfolioCompact, formatPortfolioMarkdown, generateStatusPrompt } from "./lib/portfolio.js";
+import {
+  applyPendingOverlay,
+  mergeOverlayDiscoverResults,
+  mergeOverlaySearchResults,
+  pendingAddToDbMemory,
+} from "./lib/clientReadOverlay.js";
+import { readMachineConfig } from "./lib/machineConfig.js";
+import { getConfiguredRemotePath } from "./lib/remote.js";
+import {
+  closeClientReadContext,
+  openClientReadContext,
+  type ClientReadContext,
+} from "./lib/syncClient.js";
 
 // v5.9.1 (#100): heavy modules — pulled in via dynamic import() inside the
 // handlers that actually use them, so the MCP server's cold-start doesn't
@@ -186,6 +199,29 @@ interface ToolContext {
   centralDb: GnosysDB | null;
   /** v3.0: Project identity from .gnosys/gnosys.json */
   projectId: string | null;
+  /** v13: Client read context (snapshot/master + pending overlay). */
+  clientRead?: ClientReadContext | null;
+}
+
+function applyClientReadToCentralDb(localDb: GnosysDB | null): {
+  centralDb: GnosysDB | null;
+  clientRead: ClientReadContext | null;
+} {
+  if (!localDb?.isAvailable()) {
+    return { centralDb: localDb, clientRead: null };
+  }
+  const mc = readMachineConfig();
+  if (!mc?.remote.enabled || mc.remote.role !== "client") {
+    return { centralDb: localDb, clientRead: null };
+  }
+  const masterPath = getConfiguredRemotePath(localDb);
+  if (!masterPath) return { centralDb: localDb, clientRead: null };
+  const clientRead = openClientReadContext(localDb, masterPath, mc.machineId);
+  return { centralDb: clientRead.db, clientRead };
+}
+
+function releaseClientReadFromContext(ctx: ToolContext): void {
+  if (ctx.clientRead) closeClientReadContext(ctx.clientRead);
 }
 
 async function resolveToolContext(projectRoot?: string): Promise<ToolContext> {
@@ -200,6 +236,7 @@ async function resolveToolContext(projectRoot?: string): Promise<ToolContext> {
       projectId = identity?.projectId || null;
     }
 
+    const applied = applyClientReadToCentralDb(centralDb);
     return {
       resolver,
       store: writeTarget?.store || null,
@@ -207,8 +244,9 @@ async function resolveToolContext(projectRoot?: string): Promise<ToolContext> {
       config,
       search,
       gnosysDb,
-      centralDb,
+      centralDb: applied.centralDb,
       projectId,
+      clientRead: applied.clientRead,
     };
   }
 
@@ -242,6 +280,7 @@ async function resolveToolContext(projectRoot?: string): Promise<ToolContext> {
     // gnosys.db in the project's .gnosys/ directory.
   }
 
+  const applied = applyClientReadToCentralDb(centralDb);
   return {
     resolver: scopedResolver,
     store: scopedWriteTarget?.store || null,
@@ -249,8 +288,9 @@ async function resolveToolContext(projectRoot?: string): Promise<ToolContext> {
     config: scopedConfig,
     search: scopedSearch,
     gnosysDb: scopedDb,
-    centralDb,
+    centralDb: applied.centralDb,
     projectId,
+    clientRead: applied.clientRead,
   };
 }
 
@@ -307,9 +347,26 @@ regTool(
   },
   async ({ query, limit, projectRoot }) => {
     const ctx = await resolveToolContext(projectRoot);
+    try {
     // v2.0 DB-backed fast path
     if (ctx.centralDb?.isAvailable() && ctx.centralDb?.isMigrated()) {
-      const results = ctx.centralDb.discoverFts(query, limit || 20);
+      const lim = limit || 20;
+      let results = ctx.centralDb.discoverFts(query, lim);
+      if (ctx.clientRead?.pendingOverlay.length) {
+        results = mergeOverlayDiscoverResults(
+          results,
+          ctx.clientRead.pendingOverlay,
+          query,
+          lim,
+          (p) => ({
+            id: p.id,
+            title: p.title,
+            relevance: "",
+            rank: 0,
+            project_id: p.project_id,
+          }),
+        );
+      }
       if (results.length === 0) {
         return {
           content: [{ type: "text", text: `No memories found for "${query}". Try different keywords.` }],
@@ -358,6 +415,9 @@ regTool(
         },
       ],
     };
+    } finally {
+      releaseClientReadFromContext(ctx);
+    }
   }
 );
 
@@ -371,9 +431,14 @@ regTool(
   },
   async ({ path: memPath, projectRoot }) => {
     const ctx = await resolveToolContext(projectRoot);
+    try {
     // v2.0 DB-backed fast path: try reading by memory ID from gnosys.db first
     if (ctx.centralDb?.isAvailable() && ctx.centralDb?.isMigrated()) {
-      const dbMem = ctx.centralDb.getMemory(memPath);
+      let dbMem = ctx.centralDb.getMemory(memPath);
+      if (!dbMem && ctx.clientRead?.pendingOverlay.length) {
+        const pending = ctx.clientRead.pendingOverlay.find((p) => p.id === memPath);
+        if (pending) dbMem = pendingAddToDbMemory(pending);
+      }
       if (dbMem) {
         const tags = dbMem.tags || "[]";
         const headerLines = [
@@ -429,6 +494,9 @@ regTool(
         },
       ],
     };
+    } finally {
+      releaseClientReadFromContext(ctx);
+    }
   }
 );
 
@@ -443,9 +511,26 @@ regTool(
   },
   async ({ query, limit, projectRoot }) => {
     const ctx = await resolveToolContext(projectRoot);
+    try {
     // v2.0 DB-backed fast path
     if (ctx.centralDb?.isAvailable() && ctx.centralDb?.isMigrated()) {
-      const results = ctx.centralDb.searchFts(query, limit || 20);
+      const lim = limit || 20;
+      let results = ctx.centralDb.searchFts(query, lim);
+      if (ctx.clientRead?.pendingOverlay.length) {
+        results = mergeOverlaySearchResults(
+          results,
+          ctx.clientRead.pendingOverlay,
+          query,
+          lim,
+          (p) => ({
+            id: p.id,
+            title: p.title,
+            snippet: p.content.substring(0, 200),
+            rank: 0,
+            project_id: p.project_id,
+          }),
+        );
+      }
       if (results.length === 0) {
         return {
           content: [{ type: "text", text: `No results for "${query}". Try different keywords.` }],
@@ -494,6 +579,9 @@ regTool(
         },
       ],
     };
+    } finally {
+      releaseClientReadFromContext(ctx);
+    }
   }
 );
 
@@ -510,6 +598,7 @@ regTool(
   },
   async ({ category, tag, store: storeFilter, status, projectRoot }) => {
     const ctx = await resolveToolContext(projectRoot);
+    try {
 
     // DB-first: read from central DB instead of scanning markdown files
     const db = ctx.centralDb;
@@ -517,6 +606,10 @@ regTool(
       let dbMemories = status === "active" || !status
         ? db.getActiveMemories()
         : db.getAllMemories();
+
+      if (ctx.clientRead?.pendingOverlay.length && (status === "active" || !status)) {
+        dbMemories = applyPendingOverlay(dbMemories, ctx.clientRead.pendingOverlay, new Set()).memories;
+      }
 
       // Apply filters on DB results
       if (status && status !== "active") {
@@ -600,6 +693,9 @@ regTool(
         },
       ],
     };
+    } finally {
+      releaseClientReadFromContext(ctx);
+    }
   }
 );
 
@@ -2634,24 +2730,30 @@ regResource(
     }
 
     const storePath = resolver.getWriteTarget()?.store.getStorePath() || "";
-    const result = await recall("*", {
-      limit: config.recall?.maxMemories || 8,
-      search,
-      resolver,
-      storePath,
-      recallConfig: config.recall,
-      gnosysDb: gnosysDb || undefined,
-    });
+    const applied = applyClientReadToCentralDb(centralDb);
+    try {
+      const result = await recall("*", {
+        limit: config.recall?.maxMemories || 8,
+        search,
+        resolver,
+        storePath,
+        recallConfig: config.recall,
+        gnosysDb: applied.centralDb || undefined,
+        pendingOverlay: applied.clientRead?.pendingOverlay,
+      });
 
-    return {
-      contents: [
-        {
-          uri: "gnosys://recall",
-          mimeType: "text/markdown",
-          text: formatRecall(result),
-        },
-      ],
-    };
+      return {
+        contents: [
+          {
+            uri: "gnosys://recall",
+            mimeType: "text/markdown",
+            text: formatRecall(result),
+          },
+        ],
+      };
+    } finally {
+      if (applied.clientRead) closeClientReadContext(applied.clientRead);
+    }
   }
 );
 
@@ -2675,6 +2777,7 @@ regTool(
   async ({ query, limit, traceId, aggressive, projectRoot }) => {
     try {
     const ctx = await resolveToolContext(projectRoot);
+    try {
     if (!ctx.search) {
       return {
         content: [{ type: "text" as const, text: "<gnosys: no-strong-recall-needed>" }],
@@ -2695,11 +2798,15 @@ regTool(
       traceId,
       recallConfig,
       gnosysDb: ctx.centralDb || undefined,
+      pendingOverlay: ctx.clientRead?.pendingOverlay,
     });
 
     return {
       content: [{ type: "text" as const, text: formatRecall(result) }],
     };
+    } finally {
+      releaseClientReadFromContext(ctx);
+    }
     } catch (err) {
       return { content: [{ type: "text", text: formatMcpError("recalling memories", err) }], isError: true };
     }

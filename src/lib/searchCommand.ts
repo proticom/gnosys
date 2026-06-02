@@ -58,16 +58,15 @@ export async function runSearchCommand(
         return;
       }
   
-      // DB-based search path — uses central DB FTS5
-      let centralDb: GnosysDB | null = null;
+      // DB-based search path — uses central DB FTS5 (+ v13 client overlay)
+      const { resolveClientRead, searchWithOverlay } = await import("./clientReadResolve.js");
+      const resolved = resolveClientRead();
+      if (!resolved) {
+        console.error("Central DB not available. Run 'gnosys init' first.");
+        process.exit(1);
+      }
       try {
-        centralDb = GnosysDB.openCentral();
-        if (!centralDb.isAvailable()) {
-          console.error("Central DB not available. Run 'gnosys init' first.");
-          process.exit(1);
-        }
-  
-        const results = centralDb.searchFts(query, parseInt(opts.limit));
+        const results = searchWithOverlay(resolved, query, parseInt(opts.limit, 10));
         if (results.length === 0) {
           outputResult(!!opts.json, { query, results: [] }, () => {
             console.log(`No results for "${query}".`);
@@ -77,7 +76,7 @@ export async function runSearchCommand(
   
         const { formatMemoryIdHyperlink: formatMemoryId, buildProjectNameLookup, parseIdFormat } = await import("./idFormat.js");
         const idFormat = parseIdFormat(opts.idFormat);
-        const projectNames = buildProjectNameLookup(centralDb);
+        const projectNames = buildProjectNameLookup(resolved.localDb);
   
         outputResult(!!opts.json, { query, count: results.length, results }, () => {
           console.log(`Found ${results.length} results for "${query}":\n`);
@@ -96,6 +95,6 @@ export async function runSearchCommand(
         logError(err, { module: "cli", op: "search" });
         process.exit(1);
       } finally {
-        centralDb?.close();
+        resolved.release();
       }
 }

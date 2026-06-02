@@ -5,21 +5,40 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "fs";
 import path from "path";
 import { GnosysDB } from "./db.js";
-import { readMachineConfig, type MultiMachineRole } from "./machineConfig.js";
+import { readMachineConfig, type MultiMachineRole, getMachineId } from "./machineConfig.js";
 import { getConfiguredRemotePath } from "./remote.js";
 import {
   clientSnapshotStore,
   formatSnapshotAge,
   getClientAcceptedManifest,
 } from "./syncSnapshot.js";
-import { countFailedStagingFiles, machineStagingDir } from "./syncStaging.js";
-import { getMachineId } from "./machineConfig.js";
+import { countFailedStagingFiles, machineStagingDir, stagingRoot } from "./syncStaging.js";
 import {
   renderClientSyncStatusLines,
   type ClientSyncStatusInput,
 } from "./setup/remoteRender.js";
+import type { PendingAddRow } from "./clientReadOverlay.js";
 
 const REACHABILITY_TTL_MS = 30_000;
+
+export interface IngestReceipt {
+  ulid: string;
+  outcome: "ingested" | "deduped";
+  at: string;
+}
+
+export interface ClientReadContext {
+  /** The DB to query for base memories (may be master, snapshot, or local). */
+  db: GnosysDB;
+  /** Original local central DB — never closed by closeClientReadContext. */
+  localDb: GnosysDB;
+  /** Pending-adds to overlay (already filtered by receipts). */
+  pendingOverlay: PendingAddRow[];
+  source: "master" | "snapshot" | "pending-only";
+  masterReachable: boolean;
+  /** When true, closeClientReadContext must close db (not localDb). */
+  ownsReadDb: boolean;
+}
 
 export interface V13SyncStatus {
   role: MultiMachineRole | null;
@@ -77,14 +96,103 @@ export function shouldHideSnapshotReads(masterPath: string): boolean {
   return !isMasterReachable(masterPath);
 }
 
-export function openClientReadDb(localDb: GnosysDB, masterPath: string): GnosysDB {
-  if (shouldHideSnapshotReads(masterPath)) {
-    return localDb;
+export function listClientReceipts(masterPath: string, machineId: string): IngestReceipt[] {
+  const dir = path.join(stagingRoot(masterPath), machineId, "receipts");
+  if (!existsSync(dir)) return [];
+  const receipts: IngestReceipt[] = [];
+  for (const file of readdirSync(dir).filter((f) => f.endsWith(".json"))) {
+    try {
+      const raw = readFileSync(path.join(dir, file), "utf-8");
+      receipts.push(JSON.parse(raw) as IngestReceipt);
+    } catch {
+      // skip malformed
+    }
   }
+  return receipts;
+}
+
+export function getIngestedUlids(masterPath: string, machineId: string): Set<string> {
+  return new Set(listClientReceipts(masterPath, machineId).map((r) => r.ulid));
+}
+
+export function openClientReadContext(
+  localDb: GnosysDB,
+  masterPath: string,
+  machineId: string,
+): ClientReadContext {
+  const mc = readMachineConfig();
+  const role = mc?.remote.role;
+
+  if (!role || role === "master") {
+    return {
+      db: localDb,
+      localDb,
+      pendingOverlay: [],
+      source: "master",
+      masterReachable: true,
+      ownsReadDb: false,
+    };
+  }
+
+  const reachable = isMasterReachable(masterPath);
+  const ingestedUlids = getIngestedUlids(masterPath, machineId);
+  const pendingAdds = localDb.listActivePendingAdds().filter((p) => !ingestedUlids.has(p.id));
+
+  if (reachable) {
+    const masterDb = new GnosysDB(masterPath);
+    if (masterDb.isAvailable()) {
+      return {
+        db: masterDb,
+        localDb,
+        pendingOverlay: pendingAdds,
+        source: "master",
+        masterReachable: true,
+        ownsReadDb: true,
+      };
+    }
+    masterDb.close();
+  }
+
   const store = clientSnapshotStore(masterPath);
-  const snap = path.join(store, "gnosys.db");
-  if (!existsSync(snap)) return localDb;
-  return new GnosysDB(store);
+  const snapPath = path.join(store, "gnosys.db");
+  if (existsSync(snapPath)) {
+    const snapDb = new GnosysDB(store);
+    if (snapDb.isAvailable()) {
+      return {
+        db: snapDb,
+        localDb,
+        pendingOverlay: pendingAdds,
+        source: "snapshot",
+        masterReachable: false,
+        ownsReadDb: true,
+      };
+    }
+    snapDb.close();
+  }
+
+  return {
+    db: localDb,
+    localDb,
+    pendingOverlay: pendingAdds,
+    source: "pending-only",
+    masterReachable: false,
+    ownsReadDb: false,
+  };
+}
+
+/** Release snapshot/master DB handles opened by openClientReadContext. */
+export function closeClientReadContext(ctx: ClientReadContext): void {
+  if (ctx.ownsReadDb) {
+    ctx.db.close();
+  }
+}
+
+/**
+ * @deprecated Use openClientReadContext — returns only the read DB without overlay or cleanup.
+ */
+export function openClientReadDb(localDb: GnosysDB, masterPath: string): GnosysDB {
+  const ctx = openClientReadContext(localDb, masterPath, getMachineId());
+  return ctx.db;
 }
 
 export function getV13SyncStatus(localDb: GnosysDB): V13SyncStatus {
