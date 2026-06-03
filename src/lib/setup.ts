@@ -24,7 +24,24 @@ import {
   type GnosysConfig,
   type LLMProviderName,
 } from "./config.js";
-import { validateModel } from "./modelValidation.js";
+import { isApiKeyValidationError, validateModel } from "./modelValidation.js";
+import {
+  buildOpenRouterTiers,
+  OPENROUTER_STATIC_TIERS,
+} from "./openrouterTiers.js";
+import {
+  apiKeyServiceName,
+  buildApiKeyRequirementsFromConfig,
+  ensureApiKeys,
+  getApiKeyForProviderFromConfig,
+  providerNeedsApiKey,
+  readFirstInChain,
+  readStoredSecret,
+  storeApiKeySecret,
+  type ApiKeyRequirement,
+  type ApiKeyScope,
+  type LlmTaskName,
+} from "./apiKeyVault.js";
 import { resolveActiveStorePath, ensureActiveStorePath } from "./setup/storePath.js";
 import { safeQuestion } from "./setup/ui/safePrompt.js";
 import { getClaudeDesktopConfigPath, getApiKeySkipHints } from "./platform.js";
@@ -136,6 +153,7 @@ export const PROVIDER_TIERS: Record<string, ModelTier[]> = {
   lmstudio: [
     { name: "Default", model: "default", input: 0, output: 0, recommended: true },
   ],
+  openrouter: OPENROUTER_STATIC_TIERS,
   custom: [],
 };
 
@@ -167,7 +185,7 @@ interface OpenRouterModel {
  * Fetch models from OpenRouter, cache for 24 hours, fall back to hardcoded.
  * Returns updated PROVIDER_TIERS for cloud providers only.
  */
-async function fetchDynamicModels(): Promise<Record<string, ModelTier[]>> {
+export async function fetchDynamicModels(): Promise<Record<string, ModelTier[]>> {
   // Check cache first
   try {
     const stat = await fs.stat(CACHE_FILE);
@@ -332,6 +350,8 @@ async function fetchDynamicModels(): Promise<Record<string, ModelTier[]>> {
       result[ourProvider] = tiers;
     }
 
+    result.openrouter = buildOpenRouterTiers(data.data);
+
     // Cache the result
     try {
       await fs.mkdir(path.dirname(CACHE_FILE), { recursive: true });
@@ -368,6 +388,7 @@ const PROVIDER_DISPLAY: Record<string, string> = {
   xai: "xAI (Grok)",
   mistral: "Mistral",
   lmstudio: "LM Studio (local, free)",
+  openrouter: "OpenRouter (free + paid models)",
   custom: "Custom (any OpenAI-compatible API)",
 };
 
@@ -377,6 +398,7 @@ const PROVIDER_ENV_VAR: Record<string, string> = {
   groq: "GNOSYS_GROQ_KEY",
   xai: "GNOSYS_XAI_KEY",
   mistral: "GNOSYS_MISTRAL_KEY",
+  openrouter: "GNOSYS_OPENROUTER_KEY",
   custom: "GNOSYS_CUSTOM_KEY",
 };
 
@@ -389,17 +411,51 @@ const PROVIDER_ORDER = [
   "xai",
   "mistral",
   "lmstudio",
+  "openrouter",
   "custom",
 ];
 
 // Task descriptions for display
-const TASK_DESCRIPTIONS: Record<string, string> = {
+export const TASK_DESCRIPTIONS: Record<string, string> = {
   structuring: "adding memories, tagging",
   synthesis: "Q&A answers",
+  chat: "interactive chat TUI",
   vision: "images, PDFs",
   transcription: "audio files",
   dream: "overnight consolidation",
 };
+
+/** Tasks routed via taskModels in gnosys.json */
+const ROUTABLE_TASK_LIST = [
+  "structuring",
+  "synthesis",
+  "vision",
+  "transcription",
+  "chat",
+] as const;
+type RoutableTaskName = (typeof ROUTABLE_TASK_LIST)[number];
+/** Routable tasks plus dream (stored under config.dream) */
+type AssignableTaskName = RoutableTaskName | "dream";
+export const ASSIGNABLE_TASK_LIST: AssignableTaskName[] = [
+  ...ROUTABLE_TASK_LIST,
+  "dream",
+];
+
+export type { AssignableTaskName, RoutableTaskName };
+
+export function getAssignableRouting(
+  cfg: GnosysConfig,
+  task: AssignableTaskName,
+): { provider: LLMProviderName; model: string } {
+  if (task === "dream") {
+    const dreamProvider = (cfg.dream?.provider ?? "ollama") as LLMProviderName;
+    return {
+      provider: dreamProvider,
+      model: cfg.dream?.model ?? getProviderModel(cfg, dreamProvider),
+    };
+  }
+  return resolveTaskModel(cfg, task);
+}
 
 // ─── Exported Helpers ───────────────────────────────────────────────────────
 
@@ -514,6 +570,104 @@ function hasSecretTool(): boolean {
   } catch {
     return false;
   }
+}
+
+/**
+ * Prompt for a replacement API key after validation fails, storing it in the
+ * platform secure store when available (Keychain / GNOME Keyring), else .env.
+ */
+async function promptAndStoreProviderApiKey(
+  rl: ReadlineInterface,
+  provider: string,
+  scope: ApiKeyScope = "provider",
+  task?: LlmTaskName,
+): Promise<string | null> {
+  if (provider === "ollama" || provider === "lmstudio" || provider === "skip") {
+    return null;
+  }
+
+  const service = apiKeyServiceName(provider as LLMProviderName, scope, task);
+
+  console.log();
+  console.log(`  ${WARN} Your API key may be expired or invalid.`);
+  console.log(`  ${DIM}Enter a new key — saved as ${service}${RESET}`);
+  console.log();
+
+  const key = await askInput(rl, `Enter your ${provider} API key`);
+  if (!key) {
+    return null;
+  }
+
+  if (storeApiKeySecret(service, key, provider)) {
+    const store =
+      process.platform === "darwin" ? "macOS Keychain" : "GNOME Keyring";
+    console.log(`  ${CHECK} Key saved to ${store} (${maskKey(key)})`);
+    return key;
+  }
+
+  console.log(`  ${CROSS} Failed to write to secure store. Saving to ~/.config/gnosys/.env instead.`);
+  await writeApiKey(provider, key);
+  console.log(`  ${CHECK} Key saved to ~/.config/gnosys/.env (${maskKey(key)})`);
+  return key;
+}
+
+/**
+ * Run model validation; on API-key auth failures, offer to rotate the key and
+ * retry once before asking whether to save config anyway.
+ */
+async function validateModelWithKeyRotation(opts: {
+  rl: ReadlineInterface;
+  provider: string;
+  model: string;
+  apiKey: string;
+  customBaseUrl?: string;
+  isLocalProvider: boolean;
+  saveAnywayPrompt: string;
+  saveAnywayDefault: boolean;
+  keyScope?: ApiKeyScope;
+  keyTask?: LlmTaskName;
+}): Promise<{ proceed: boolean; apiKey: string }> {
+  const { Spinner } = await import("./setup/ui/spinner.js");
+
+  let apiKey = opts.apiKey;
+  const validateSpin = Spinner(`validating ${opts.provider} / ${opts.model}…`);
+  let result = await validateModel(opts.provider, opts.model, apiKey, {
+    customBaseUrl: opts.customBaseUrl,
+  });
+
+  if (result.ok) {
+    validateSpin.ok("model validated", `${result.latencyMs} ms · ${opts.provider} / ${opts.model}`);
+    return { proceed: true, apiKey };
+  }
+
+  validateSpin.fail("model test failed", result.error);
+
+  if (
+    !opts.isLocalProvider &&
+    isApiKeyValidationError(result.error)
+  ) {
+    const newKey = await promptAndStoreProviderApiKey(
+      opts.rl,
+      opts.provider,
+      opts.keyScope ?? "global",
+      opts.keyTask,
+    );
+    if (newKey) {
+      apiKey = newKey;
+      const retrySpin = Spinner(`re-validating ${opts.provider} / ${opts.model}…`);
+      result = await validateModel(opts.provider, opts.model, apiKey, {
+        customBaseUrl: opts.customBaseUrl,
+      });
+      if (result.ok) {
+        retrySpin.ok("model validated", `${result.latencyMs} ms · ${opts.provider} / ${opts.model}`);
+        return { proceed: true, apiKey };
+      }
+      retrySpin.fail("model test failed", result.error);
+    }
+  }
+
+  const proceed = await askYesNo(opts.rl, opts.saveAnywayPrompt, opts.saveAnywayDefault);
+  return { proceed, apiKey };
 }
 
 /**
@@ -965,6 +1119,40 @@ async function askYesNo(
   return trimmed === "y" || trimmed === "yes";
 }
 
+/** Parse `1,3,5`, `all`, or `none` into 0-based task indices. */
+export function parseCommaSeparatedTaskSelection(
+  input: string,
+  count: number,
+): number[] | "all" | "none" | null {
+  const trimmed = input.trim().toLowerCase();
+  if (!trimmed) return null;
+  if (trimmed === "all" || trimmed === "*") {
+    return "all";
+  }
+  if (trimmed === "none" || trimmed === "-") {
+    return "none";
+  }
+  const indices: number[] = [];
+  for (const part of trimmed.split(/[,;\s]+/)) {
+    const n = parseInt(part.trim(), 10);
+    if (Number.isNaN(n) || n < 1 || n > count) {
+      return null;
+    }
+    if (!indices.includes(n - 1)) {
+      indices.push(n - 1);
+    }
+  }
+  return indices.length > 0 ? indices : null;
+}
+
+export function modelForTaskAssignment(
+  task: string,
+  provider: string,
+  model: string,
+): string {
+  return task === "structuring" ? getStructuringModel(provider, model) : model;
+}
+
 /**
  * Format a price for display: "$0.80" or "free".
  */
@@ -1060,7 +1248,7 @@ async function loadExistingConfig(projectDir: string): Promise<GnosysConfig | nu
  * Returns the provider name or "skip".
  * If currentProvider is given, shows it as the current value.
  */
-async function pickProvider(
+export async function pickProvider(
   rl: ReadlineInterface,
   dynamicModels: Record<string, ModelTier[]>,
   stepLabel: string,
@@ -1091,7 +1279,7 @@ async function pickProvider(
  * Returns the model string. Includes a "Custom (enter model name)"
  * option so users can type any model ID not in the curated list.
  */
-async function pickModel(
+export async function pickModel(
   rl: ReadlineInterface,
   provider: string,
   dynamicModels: Record<string, ModelTier[]>,
@@ -1400,6 +1588,7 @@ export async function runSetup(opts: {
       groq: "GROQ_API_KEY",
       xai: "XAI_API_KEY",
       mistral: "MISTRAL_API_KEY",
+      openrouter: "OPENROUTER_API_KEY",
     };
     const legacyEnvVar = legacyEnvVars[provider] ?? "";
 
@@ -1588,25 +1777,27 @@ export async function runSetup(opts: {
       console.log();
       console.log(`${DIM}Testing ${provider}/${model}...${RESET}`);
       try {
-        const { validateModel } = await import("./modelValidation.js");
         const customBaseUrl = provider === "custom"
           ? process.env.GNOSYS_LLM_BASE_URL
           : undefined;
-        const result = await validateModel(provider, model, capturedApiKey, { customBaseUrl });
-        if (result.ok) {
-          console.log(`  ${CHECK} Model validated (${result.latencyMs}ms)`);
-        } else {
-          console.log(`  ${WARN} Model test failed: ${result.error}`);
-          const proceed = await askYesNo(rl, "  Continue anyway?", true);
-          if (!proceed) {
-            console.log(`  ${DIM}Setup paused. Re-run when ready: gnosys setup${RESET}`);
-            setupCompleted = true;
-            rl.close();
-            return {
-              provider, model, structuringModel: "",
-              apiKeyWritten, ides: [], mode: "agent", upgraded,
-            };
-          }
+        const { proceed } = await validateModelWithKeyRotation({
+          rl,
+          provider,
+          model,
+          apiKey: capturedApiKey,
+          customBaseUrl,
+          isLocalProvider,
+          saveAnywayPrompt: "  Continue anyway?",
+          saveAnywayDefault: true,
+        });
+        if (!proceed) {
+          console.log(`  ${DIM}Setup paused. Re-run when ready: gnosys setup${RESET}`);
+          setupCompleted = true;
+          rl.close();
+          return {
+            provider, model, structuringModel: "",
+            apiKeyWritten, ides: [], mode: "agent", upgraded,
+          };
         }
       } catch (err) {
         console.log(`  ${DIM}Validation skipped: ${err instanceof Error ? err.message : err}${RESET}`);
@@ -1955,6 +2146,19 @@ export async function runSetup(opts: {
         await updateConfig(storePath, configUpdates);
         console.log();
         console.log(`  ${CHECK} Config written to ${storePath}/gnosys.json`);
+
+        const savedCfg = await loadConfig(storePath);
+        const keyReqs = buildApiKeyRequirementsFromConfig(savedCfg);
+        if (keyReqs.length > 0) {
+          await ensureApiKeys(rl, keyReqs, askInput, {
+            warn: WARN,
+            check: CHECK,
+            cross: CROSS,
+            dim: DIM,
+            reset: RESET,
+            maskKey,
+          });
+        }
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         console.log();
@@ -2140,6 +2344,235 @@ export async function runProviderOnlySetup(opts: ProviderOnlySetupOpts = {}): Pr
 
 // ─── Models-only setup (gnosys setup models / gnosys models) ─────────────────
 
+/** Global vs per-task key collection in the task-routing path. */
+export type TaskKeyStrategy = "global" | "task";
+
+/** Where validated keys are persisted (§3.10). */
+export type KeyPersistDestination = "secure" | "dotenv" | "none";
+
+/**
+ * Build API key requirements from the selected task set only (§3.7).
+ * Does not scan all CLOUD_TASKS via effective routing.
+ */
+export function buildInlineKeyRequirements(
+  selectedTasks: AssignableTaskName[],
+  keyStrategy: TaskKeyStrategy,
+  providerForTask: (task: AssignableTaskName) => string,
+): ApiKeyRequirement[] {
+  const cloudTasks = selectedTasks.filter((t) =>
+    providerNeedsApiKey(providerForTask(t)),
+  );
+  if (cloudTasks.length === 0) return [];
+
+  if (keyStrategy === "global") {
+    const providers = [
+      ...new Set(cloudTasks.map((t) => providerForTask(t) as LLMProviderName)),
+    ];
+    return providers.map((provider) => ({ provider, scope: "global" as const }));
+  }
+
+  return cloudTasks.map((task) => ({
+    provider: providerForTask(task) as LLMProviderName,
+    scope: "task" as const,
+    task: (task === "dream" ? "dream" : task) as LlmTaskName,
+  }));
+}
+
+/** Write or replace a single `NAME=value` line in ~/.config/gnosys/.env. */
+export async function writeServiceKeyToEnv(service: string, key: string): Promise<void> {
+  const configDir = path.join(os.homedir(), ".config", "gnosys");
+  await fs.mkdir(configDir, { recursive: true, mode: 0o700 });
+  await fs.chmod(configDir, 0o700);
+  const envPath = path.join(configDir, ".env");
+  let lines: string[] = [];
+  try {
+    lines = (await fs.readFile(envPath, "utf-8")).split("\n");
+  } catch {
+    // fresh file
+  }
+  const prefix = `${service}=`;
+  let replaced = false;
+  lines = lines.map((line) => {
+    if (line.startsWith(prefix)) {
+      replaced = true;
+      return `${service}=${key}`;
+    }
+    return line;
+  });
+  if (!replaced) {
+    if (lines.length > 0 && lines[lines.length - 1] !== "") {
+      lines.push("");
+    }
+    lines.push(`${service}=${key}`);
+  }
+  await fs.writeFile(envPath, lines.join("\n"), { mode: 0o600 });
+  await fs.chmod(envPath, 0o600);
+}
+
+/**
+ * Validate a provider/model/key triple without persisting the key (§3.8).
+ * On auth failure, re-prompt for a replacement key in memory only.
+ */
+export async function validateTaskCombo(opts: {
+  rl: ReadlineInterface;
+  provider: string;
+  model: string;
+  apiKey: string;
+  customBaseUrl?: string;
+  isLocalProvider: boolean;
+  saveAnywayPrompt?: string;
+  saveAnywayDefault?: boolean;
+  repromptKey?: (rl: ReadlineInterface, provider: string) => Promise<string | null>;
+}): Promise<{ proceed: boolean; apiKey: string }> {
+  const { Spinner } = await import("./setup/ui/spinner.js");
+  const reprompt =
+    opts.repromptKey ??
+    (async (rl: ReadlineInterface, provider: string) => {
+      console.log();
+      console.log(`  ${WARN} Your API key may be expired or invalid.`);
+      const key = await askInput(rl, `Enter your ${provider} API key`);
+      return key || null;
+    });
+
+  let apiKey = opts.apiKey;
+  const validateSpin = Spinner(`validating ${opts.provider} / ${opts.model}…`);
+  let result = await validateModel(opts.provider, opts.model, apiKey, {
+    customBaseUrl: opts.customBaseUrl,
+  });
+
+  if (result.ok) {
+    validateSpin.ok(
+      "model validated",
+      `${result.latencyMs} ms · ${opts.provider} / ${opts.model}`,
+    );
+    return { proceed: true, apiKey };
+  }
+
+  validateSpin.fail("model test failed", result.error);
+
+  if (!opts.isLocalProvider && isApiKeyValidationError(result.error)) {
+    const newKey = await reprompt(opts.rl, opts.provider);
+    if (newKey) {
+      apiKey = newKey;
+      const retrySpin = Spinner(`re-validating ${opts.provider} / ${opts.model}…`);
+      result = await validateModel(opts.provider, opts.model, apiKey, {
+        customBaseUrl: opts.customBaseUrl,
+      });
+      if (result.ok) {
+        retrySpin.ok(
+          "model validated",
+          `${result.latencyMs} ms · ${opts.provider} / ${opts.model}`,
+        );
+        return { proceed: true, apiKey };
+      }
+      retrySpin.fail("model test failed", result.error);
+    }
+  }
+
+  const proceed = await askYesNo(
+    opts.rl,
+    opts.saveAnywayPrompt ?? "Save routing anyway?",
+    opts.saveAnywayDefault ?? false,
+  );
+  return { proceed, apiKey };
+}
+
+const LEGACY_PROVIDER_ENV: Record<string, string> = {
+  anthropic: "ANTHROPIC_API_KEY",
+  openai: "OPENAI_API_KEY",
+  groq: "GROQ_API_KEY",
+  xai: "XAI_API_KEY",
+  mistral: "MISTRAL_API_KEY",
+  openrouter: "OPENROUTER_API_KEY",
+};
+
+/** Ask where to store a validated key; persist or print env-var hints (§3.10). */
+export async function promptKeyDestinationAndPersist(opts: {
+  rl: ReadlineInterface;
+  service: string;
+  provider: string;
+  key: string;
+  scope: ApiKeyScope;
+  task?: LlmTaskName;
+  destinationChoice?: number;
+}): Promise<KeyPersistDestination> {
+  const isMac = process.platform === "darwin";
+  const isLinux = process.platform === "linux";
+  const hasSecret = isLinux && hasSecretTool();
+
+  const options: string[] = [];
+  if (isMac) {
+    options.push("OS secure store (macOS Keychain) — recommended");
+  } else if (hasSecret) {
+    options.push("OS secure store (GNOME Keyring) — recommended");
+  } else {
+    options.push("OS secure store — recommended");
+  }
+  options.push("Config file (~/.config/gnosys/.env)");
+  options.push("Don't store — I'll set it as an environment variable myself");
+
+  const choice =
+    opts.destinationChoice ??
+    (await askChoice(opts.rl, "Where should I store this key?", options));
+
+  const secureIdx = 0;
+  const dotenvIdx = 1;
+  const noneIdx = 2;
+
+  if (choice === secureIdx) {
+    if (storeApiKeySecret(opts.service, opts.key, opts.provider)) {
+      const store =
+        process.platform === "darwin" ? "macOS Keychain" : "GNOME Keyring";
+      console.log(`  ${CHECK} Key saved to ${store} (${maskKey(opts.key)})`);
+      return "secure";
+    }
+    console.log(
+      `  ${CROSS} Failed to write to secure store. Saving to ~/.config/gnosys/.env instead.`,
+    );
+    await writeServiceKeyToEnv(opts.service, opts.key);
+    console.log(`  ${CHECK} Key saved to ~/.config/gnosys/.env (${maskKey(opts.key)})`);
+    return "dotenv";
+  }
+
+  if (choice === dotenvIdx) {
+    await writeServiceKeyToEnv(opts.service, opts.key);
+    console.log(`  ${CHECK} Key saved to ~/.config/gnosys/.env (${maskKey(opts.key)})`);
+    return "dotenv";
+  }
+
+  const legacy = LEGACY_PROVIDER_ENV[opts.provider];
+  const providerSvc = apiKeyServiceName(opts.provider as LLMProviderName, "provider");
+  console.log();
+  console.log(`  ${DIM}Set one of these environment variables:${RESET}`);
+  console.log(`  ${GREEN}export ${opts.service}=your-key-here${RESET}`);
+  if (opts.service !== providerSvc) {
+    console.log(`  ${DIM}or provider fallback:${RESET} ${GREEN}export ${providerSvc}=…${RESET}`);
+  }
+  if (legacy) {
+    console.log(`  ${DIM}or legacy:${RESET} ${GREEN}export ${legacy}=…${RESET}`);
+  }
+  return "none";
+}
+
+/** Build taskModels patch — only selected routable tasks that changed. */
+export function buildTaskModelsPatchFromAccepted(
+  accepted: Partial<Record<AssignableTaskName, { provider: LLMProviderName; model: string }>>,
+  currentByTask: Record<AssignableTaskName, { provider: LLMProviderName; model: string }>,
+  selectedSet: Set<AssignableTaskName>,
+): NonNullable<GnosysConfig["taskModels"]> | undefined {
+  const patch: NonNullable<GnosysConfig["taskModels"]> = {};
+  for (const task of ROUTABLE_TASK_LIST) {
+    if (!selectedSet.has(task)) continue;
+    const next = accepted[task];
+    if (!next) continue;
+    const cur = currentByTask[task];
+    if (next.provider !== cur.provider || next.model !== cur.model) {
+      patch[task] = next;
+    }
+  }
+  return Object.keys(patch).length > 0 ? patch : undefined;
+}
+
 export interface ModelsSetupOpts {
   provider?: string;
   model?: string;
@@ -2164,7 +2597,6 @@ export async function runModelsSetup(opts: ModelsSetupOpts = {}): Promise<void> 
   const rl = opts.rl ?? createInterface({ input: stdin, output: stdout });
 
   try {
-    // v5.9.3 Screen 3 — Header + Title at the top.
     const { Header } = await import("./setup/ui/header.js");
     const { Title } = await import("./setup/ui/title.js");
     const { Spinner } = await import("./setup/ui/spinner.js");
@@ -2174,7 +2606,12 @@ export async function runModelsSetup(opts: ModelsSetupOpts = {}): Promise<void> 
     console.log();
     console.log(Header(["gnosys", "setup", "models"]));
     console.log();
-    console.log(Title("Model configuration", "pick a provider and model — we'll validate it before saving"));
+    console.log(
+      Title(
+        "Model configuration",
+        "pick a provider — then default or per-task routing",
+      ),
+    );
     console.log();
 
     const existingConfig = await loadExistingConfig(projectDir);
@@ -2183,9 +2620,6 @@ export async function runModelsSetup(opts: ModelsSetupOpts = {}): Promise<void> 
       ? getProviderModel(existingConfig, existingConfig.llm.defaultProvider)
       : undefined;
 
-    // Step 1: provider (or use --provider flag). v5.9.3: animate the
-    // OpenRouter pricing fetch under a Spinner so the user gets feedback
-    // on what would otherwise feel like a hang.
     const pricingSpin = Spinner("fetching latest pricing from openrouter…");
     const fetchStart = Date.now();
     const dynamicModels = await fetchDynamicModels();
@@ -2194,8 +2628,6 @@ export async function runModelsSetup(opts: ModelsSetupOpts = {}): Promise<void> 
     if (Object.keys(dynamicModels).length > 0) {
       pricingSpin.ok(`pricing loaded · ${modelCount} models cached`, `${fetchMs} ms`);
     } else {
-      // No-op fallback (cache miss + network fail) — keep the hardcoded
-      // tiers but signal that we're running offline.
       pricingSpin.fail("pricing fetch failed", "using bundled tiers");
     }
     console.log();
@@ -2203,119 +2635,504 @@ export async function runModelsSetup(opts: ModelsSetupOpts = {}): Promise<void> 
     let provider: string;
     if (opts.provider) {
       if (!PROVIDER_ORDER.includes(opts.provider)) {
-        printStatus("fail", `unknown provider \`${opts.provider}\``, `valid: ${PROVIDER_ORDER.join(", ")}`);
+        printStatus(
+          "fail",
+          `unknown provider \`${opts.provider}\``,
+          `valid: ${PROVIDER_ORDER.join(", ")}`,
+        );
         return;
       }
       provider = opts.provider;
       printStatus("ok", "provider", provider);
     } else {
-      provider = await pickProvider(rl, dynamicModels, "Choose your LLM provider", currentProvider);
+      provider = await pickProvider(
+        rl,
+        dynamicModels,
+        "Choose your LLM provider",
+        currentProvider,
+      );
     }
 
-    // Step 2: model (or use --model flag)
-    let model: string;
-    if (opts.model) {
-      model = opts.model;
-      printStatus("ok", "model", model);
-    } else {
-      const tiers = dynamicModels[provider] ?? PROVIDER_TIERS[provider];
-      if (provider === "custom" || !tiers || tiers.length === 0) {
-        model = await askInput(rl, "Model name");
-      } else {
-        const showCurrent = currentProvider === provider ? currentModel : undefined;
-        model = await pickModel(rl, provider, dynamicModels, "Choose model", showCurrent);
-      }
-    }
+    const storePath = ensureActiveStorePath(projectDir);
+    const cfgBefore = existingConfig ?? (await loadConfig(storePath));
+    const nonInteractiveDefault = !!(opts.provider || opts.model);
 
-    if (!model) {
-      printStatus("fail", "no model selected · aborting");
+    if (nonInteractiveDefault) {
+      await runModelsDefaultOnlySetup({
+        rl,
+        opts,
+        provider,
+        dynamicModels,
+        storePath,
+        existingConfig,
+        currentProvider,
+        currentModel,
+        printDiff,
+        printStatus,
+      });
       return;
     }
 
-    // Step 3: load API key from existing storage (if available)
-    const envVarName = provider === "custom" ? "GNOSYS_CUSTOM_KEY" :
-      `GNOSYS_${provider.toUpperCase()}_KEY`;
-    const legacyEnvVars: Record<string, string> = {
-      anthropic: "ANTHROPIC_API_KEY",
-      openai: "OPENAI_API_KEY",
-      groq: "GROQ_API_KEY",
-      xai: "XAI_API_KEY",
-      mistral: "MISTRAL_API_KEY",
-    };
-    const legacyEnvVar = legacyEnvVars[provider] ?? "";
-
-    let apiKey = process.env[envVarName] || (legacyEnvVar ? process.env[legacyEnvVar] : "") || "";
-
-    if (!apiKey && process.platform === "darwin") {
-      try {
-        apiKey = execSync(
-          `security find-generic-password -a "$USER" -s "${envVarName}" -w`,
-          { stdio: "pipe", encoding: "utf-8" }
-        ).trim();
-      } catch {
-        // No key in keychain
-      }
-    }
-
-    if (!apiKey && provider !== "ollama" && provider !== "lmstudio") {
-      console.log(`${WARN} No API key found for ${provider}. Run 'gnosys setup' to configure one.`);
-      // Continue anyway — user might just want to update the model in config
-    }
-
-    // Step 4: validate (default: true) — v5.9.3 Screen 3: animated
-    // Spinner with latency reported on success.
-    const shouldValidate = opts.validate !== false;
-    const isLocalProvider = provider === "ollama" || provider === "lmstudio";
-    if (shouldValidate && (apiKey || isLocalProvider)) {
-      console.log();
-      const validateSpin = Spinner(`validating ${provider} / ${model}…`);
-      const customBaseUrl = provider === "custom"
-        ? process.env.GNOSYS_LLM_BASE_URL
-        : undefined;
-      const result = await validateModel(provider, model, apiKey, { customBaseUrl });
-      if (result.ok) {
-        validateSpin.ok("model validated", `${result.latencyMs} ms · ${provider} / ${model}`);
-      } else {
-        validateSpin.fail("model test failed", result.error);
-        const proceed = await askYesNo(rl, "Save config anyway?", false);
-        if (!proceed) {
-          printStatus("warn", "cancelled · no changes written");
-          return;
-        }
-      }
-    }
-
-    // Step 5: write config (v5.9.4 Bug 10 — unified store resolution).
-    const storePath = ensureActiveStorePath(projectDir);
-
-    const existingLlm = existingConfig?.llm;
-    const existingProviderConfig = existingLlm
-      ? (existingLlm as Record<string, unknown>)[provider]
-      : undefined;
-    const providerConfigBase = (typeof existingProviderConfig === "object" && existingProviderConfig !== null)
-      ? existingProviderConfig as Record<string, unknown>
-      : {};
-
-    await updateConfig(storePath, {
-      llm: {
-        ...(existingLlm ?? {}),
-        defaultProvider: provider as LLMProviderName,
-        [provider]: {
-          ...providerConfigBase,
-          model,
-        },
-      },
-    });
-
-    // v5.9.3 Screen 3 — Diff() before the saved confirmation. Shows what
-    // landed in gnosys.json.
-    const { buildModelsDiffRows } = await import("./setup/modelsRender.js");
     console.log();
-    printDiff(buildModelsDiffRows(currentProvider, currentModel, provider, model));
-    printStatus("ok", `saved · ${storePath}/gnosys.json`);
+    const intentChoice = await askChoice(rl, "What do you want to configure?", [
+      "Default only — set default provider and model",
+      "Assign to specific tasks — route selected tasks only (does not change default)",
+    ]);
+
+    if (intentChoice === 0) {
+      await runModelsDefaultOnlySetup({
+        rl,
+        opts,
+        provider,
+        dynamicModels,
+        storePath,
+        existingConfig,
+        currentProvider,
+        currentModel,
+        printDiff,
+        printStatus,
+      });
+      return;
+    }
+
+    await runModelsTaskRoutingSetup({
+      rl,
+      opts,
+      provider,
+      dynamicModels,
+      storePath,
+      cfgBefore,
+      printStatus,
+    });
   } finally {
     if (ownsRl) rl.close();
   }
+}
+
+async function resolveKeyInMemory(opts: {
+  rl: ReadlineInterface;
+  provider: string;
+  task: AssignableTaskName;
+  keyStrategy: TaskKeyStrategy;
+  keyCache: Map<string, string>;
+}): Promise<string> {
+  if (!providerNeedsApiKey(opts.provider)) return "";
+
+  const cacheKey =
+    opts.keyStrategy === "global" ? opts.provider : `${opts.provider}:${opts.task}`;
+
+  const cached = opts.keyCache.get(cacheKey);
+  if (cached) return cached;
+
+  let stored: string | undefined;
+  if (opts.keyStrategy === "global") {
+    stored = readStoredSecret(
+      apiKeyServiceName(opts.provider as LLMProviderName, "global"),
+    );
+  } else {
+    const taskName = (opts.task === "dream" ? "dream" : opts.task) as LlmTaskName;
+    stored = readStoredSecret(
+      apiKeyServiceName(opts.provider as LLMProviderName, "task", taskName),
+    );
+  }
+
+  if (stored) {
+    opts.keyCache.set(cacheKey, stored);
+    return stored;
+  }
+
+  const label =
+    opts.keyStrategy === "global"
+      ? `API key for ${opts.provider} (shared across selected tasks)`
+      : `API key for ${opts.task} → ${opts.provider}`;
+  const key = await askInput(opts.rl, label);
+  opts.keyCache.set(cacheKey, key);
+  return key;
+}
+
+async function runModelsDefaultOnlySetup(ctx: {
+  rl: ReadlineInterface;
+  opts: ModelsSetupOpts;
+  provider: string;
+  dynamicModels: Record<string, ModelTier[]>;
+  storePath: string;
+  existingConfig: GnosysConfig | null;
+  currentProvider: string | undefined;
+  currentModel: string | undefined;
+  printDiff: (rows: { label: string; from: string; to: string }[]) => void;
+  printStatus: (kind: import("./setup/ui/status.js").StatusKind, text: string, meta?: string) => void;
+}): Promise<void> {
+  const { rl, opts, provider, dynamicModels, storePath, printDiff, printStatus } = ctx;
+  const isLocalProvider = provider === "ollama" || provider === "lmstudio";
+
+  let model: string;
+  if (opts.model) {
+    model = opts.model;
+    printStatus("ok", "model", model);
+  } else {
+    const tiers = dynamicModels[provider] ?? PROVIDER_TIERS[provider];
+    if (provider === "custom" || !tiers || tiers.length === 0) {
+      model = await askInput(rl, "Model name");
+    } else {
+      const showCurrent =
+        ctx.currentProvider === provider ? ctx.currentModel : undefined;
+      model = await pickModel(rl, provider, dynamicModels, "Choose model", showCurrent);
+    }
+  }
+
+  if (!model) {
+    printStatus("fail", "no model selected · aborting");
+    return;
+  }
+
+  let apiKey = readFirstInChain(provider as LLMProviderName) ?? "";
+  let keyEnteredThisRun = false;
+  if (!apiKey && !isLocalProvider) {
+    console.log();
+    apiKey = await askInput(rl, `API key for ${provider}`);
+    keyEnteredThisRun = !!apiKey;
+    if (!apiKey) {
+      console.log(
+        `${WARN} No API key found for ${provider}. Validation may be skipped.`,
+      );
+    }
+  }
+
+  const shouldValidate = opts.validate !== false;
+  if (shouldValidate && (apiKey || isLocalProvider)) {
+    console.log();
+    const customBaseUrl =
+      provider === "custom" ? process.env.GNOSYS_LLM_BASE_URL : undefined;
+    const { proceed, apiKey: validatedKey } = await validateModelWithKeyRotation({
+      rl,
+      provider,
+      model,
+      apiKey,
+      customBaseUrl,
+      isLocalProvider,
+      saveAnywayPrompt: "Save config anyway?",
+      saveAnywayDefault: false,
+      keyScope: "provider",
+    });
+    apiKey = validatedKey;
+    if (!proceed) {
+      printStatus("warn", "cancelled · no changes written");
+      return;
+    }
+    if (keyEnteredThisRun && apiKey && !isLocalProvider) {
+      const service = apiKeyServiceName(provider as LLMProviderName, "provider");
+      await promptKeyDestinationAndPersist({
+        rl,
+        service,
+        provider,
+        key: apiKey,
+        scope: "provider",
+      });
+    }
+  }
+
+  const existingLlm = ctx.existingConfig?.llm;
+  const existingProviderConfig = existingLlm
+    ? (existingLlm as Record<string, unknown>)[provider]
+    : undefined;
+  const providerConfigBase =
+    typeof existingProviderConfig === "object" && existingProviderConfig !== null
+      ? (existingProviderConfig as Record<string, unknown>)
+      : {};
+
+  await updateConfig(storePath, {
+    llm: {
+      ...(existingLlm ?? {}),
+      defaultProvider: provider as LLMProviderName,
+      [provider]: {
+        ...providerConfigBase,
+        model,
+      },
+    },
+  });
+
+  const { buildModelsDiffRows } = await import("./setup/modelsRender.js");
+  console.log();
+  printDiff(
+    buildModelsDiffRows(ctx.currentProvider, ctx.currentModel, provider, model),
+  );
+  printStatus("ok", `saved · ${storePath}/gnosys.json`);
+}
+
+async function runModelsTaskRoutingSetup(ctx: {
+  rl: ReadlineInterface;
+  opts: ModelsSetupOpts;
+  provider: string;
+  dynamicModels: Record<string, ModelTier[]>;
+  storePath: string;
+  cfgBefore: GnosysConfig;
+  printStatus: (kind: import("./setup/ui/status.js").StatusKind, text: string, meta?: string) => void;
+}): Promise<void> {
+  const { rl, opts, provider: initialProvider, dynamicModels, storePath, cfgBefore, printStatus } =
+    ctx;
+
+  console.log();
+  const keyStrategyIdx = await askChoice(rl, "How should API keys be scoped?", [
+    "Global key — one key shared by all selected tasks for each provider",
+    "Per-task key — a separate key for each selected task",
+  ]);
+  const keyStrategy: TaskKeyStrategy = keyStrategyIdx === 0 ? "global" : "task";
+
+  const tasks = ASSIGNABLE_TASK_LIST;
+  const currentByTask = {} as Record<
+    AssignableTaskName,
+    { provider: LLMProviderName; model: string }
+  >;
+  for (const task of tasks) {
+    currentByTask[task] = getAssignableRouting(cfgBefore, task);
+  }
+  const dreamEnabledBefore = !!cfgBefore.dream?.enabled;
+
+  console.log();
+  console.log(
+    `${BOLD}Which tasks should use ${initialProvider}?${RESET}`,
+  );
+  console.log(
+    `${DIM}Enter numbers (comma-separated), ${BOLD}all${RESET}${DIM}, or ${BOLD}none${RESET}${DIM}. Unlisted tasks keep their current routing.${RESET}`,
+  );
+  console.log();
+  for (let i = 0; i < tasks.length; i++) {
+    const task = tasks[i]!;
+    const cur = currentByTask[task];
+    const desc = TASK_DESCRIPTIONS[task] ?? "";
+    const off =
+      task === "dream" && !dreamEnabledBefore ? `  ${DIM}[off]${RESET}` : "";
+    console.log(
+      `  ${BOLD}${i + 1}.${RESET} ${task.padEnd(14)} ${DIM}now:${RESET} ${cur.provider} / ${cur.model}  ${DIM}(${desc})${RESET}${off}`,
+    );
+  }
+  console.log();
+
+  let selectedIndices: number[] = [];
+  while (true) {
+    const raw = await askInput(
+      rl,
+      `Tasks for ${initialProvider} (e.g. 5,6 or all)`,
+      { default: "all" },
+    );
+    const parsed = parseCommaSeparatedTaskSelection(raw, tasks.length);
+    if (parsed === "all") {
+      selectedIndices = tasks.map((_, i) => i);
+      break;
+    }
+    if (parsed === "none") {
+      selectedIndices = [];
+      break;
+    }
+    if (parsed && parsed.length > 0) {
+      selectedIndices = parsed;
+      break;
+    }
+    console.log(
+      `${RED}Enter numbers 1-${tasks.length}, comma-separated, or 'all'.${RESET}`,
+    );
+  }
+
+  const selectedSet = new Set(selectedIndices.map((i) => tasks[i]!));
+  if (selectedSet.size === 0) {
+    printStatus("warn", "no tasks selected · no changes written");
+    return;
+  }
+
+  const selectedTasks = [...selectedSet];
+  const keyRequirements = buildInlineKeyRequirements(
+    selectedTasks,
+    keyStrategy,
+    () => initialProvider,
+  );
+  if (keyRequirements.length > 0) {
+    console.log();
+    console.log(`  ${DIM}Keys needed for:${RESET}`);
+    for (const req of keyRequirements) {
+      const svc = apiKeyServiceName(req.provider, req.scope, req.task);
+      const label =
+        req.scope === "task" && req.task
+          ? `${req.task} → ${req.provider}`
+          : `all selected → ${req.provider}`;
+      console.log(`  ${DIM}  ${label} (${svc})${RESET}`);
+    }
+    console.log();
+  }
+
+  const keyCache = new Map<string, string>();
+  const persistedServices = new Set<string>();
+  const accepted: Partial<
+    Record<AssignableTaskName, { provider: LLMProviderName; model: string }>
+  > = {};
+
+  for (const task of selectedTasks) {
+    let taskProvider = initialProvider;
+    const cur = currentByTask[task];
+
+    while (true) {
+      const isLocal = taskProvider === "ollama" || taskProvider === "lmstudio";
+      const showCurrent = cur.provider === taskProvider ? cur.model : undefined;
+      console.log();
+      const model = await pickModel(
+        rl,
+        taskProvider,
+        dynamicModels,
+        `Model for ${task}`,
+        showCurrent,
+      );
+      if (!model) {
+        printStatus("fail", `no model for ${task} · skipping`);
+        accepted[task] = cur;
+        break;
+      }
+
+      const apiKey = await resolveKeyInMemory({
+        rl,
+        provider: taskProvider,
+        task,
+        keyStrategy,
+        keyCache,
+      });
+
+      const shouldValidate = opts.validate !== false;
+      let proceed = true;
+      let validatedKey = apiKey;
+      if (shouldValidate && (apiKey || isLocal)) {
+        const customBaseUrl =
+          taskProvider === "custom" ? process.env.GNOSYS_LLM_BASE_URL : undefined;
+        const result = await validateTaskCombo({
+          rl,
+          provider: taskProvider,
+          model,
+          apiKey,
+          customBaseUrl,
+          isLocalProvider: isLocal,
+          saveAnywayPrompt: `Save ${task} routing anyway?`,
+          saveAnywayDefault: false,
+        });
+        proceed = result.proceed;
+        validatedKey = result.apiKey;
+      }
+
+      if (proceed) {
+        accepted[task] = {
+          provider: taskProvider as LLMProviderName,
+          model,
+        };
+        if (validatedKey && !isLocal) {
+          const scope: ApiKeyScope = keyStrategy === "global" ? "global" : "task";
+          const taskArg =
+            keyStrategy === "task"
+              ? ((task === "dream" ? "dream" : task) as LlmTaskName)
+              : undefined;
+          const service = apiKeyServiceName(
+            taskProvider as LLMProviderName,
+            scope,
+            taskArg,
+          );
+          if (!persistedServices.has(service)) {
+            await promptKeyDestinationAndPersist({
+              rl,
+              service,
+              provider: taskProvider,
+              key: validatedKey,
+              scope,
+              task: taskArg,
+            });
+            persistedServices.add(service);
+          }
+          const cacheKey =
+            keyStrategy === "global" ? taskProvider : `${taskProvider}:${task}`;
+          keyCache.set(cacheKey, validatedKey);
+        }
+        break;
+      }
+
+      const retryChoice = await askChoice(rl, "Validation failed. What next?", [
+        "Pick a different provider + model",
+        "Keep provider, pick a new model",
+        "Skip this task (keep current routing)",
+      ]);
+      if (retryChoice === 0) {
+        const picked = await pickProvider(
+          rl,
+          dynamicModels,
+          `Provider for ${task}`,
+          taskProvider,
+        );
+        if (picked) taskProvider = picked;
+        continue;
+      }
+      if (retryChoice === 1) {
+        continue;
+      }
+      accepted[task] = cur;
+      break;
+    }
+  }
+
+  const planned = { ...currentByTask } as Record<
+    AssignableTaskName,
+    { provider: LLMProviderName; model: string }
+  >;
+  for (const task of selectedTasks) {
+    if (accepted[task]) planned[task] = accepted[task]!;
+  }
+
+  console.log();
+  console.log(`${BOLD}Planned task routing${RESET}`);
+  console.log(`  ${"Task".padEnd(16)}${"Provider / model".padEnd(42)}${RESET}`);
+  console.log(`  ${"\u2500".repeat(56)}`);
+  for (const task of tasks) {
+    const p = planned[task];
+    const marker = selectedSet.has(task) ? `${CYAN}*${RESET} ` : "  ";
+    const off =
+      task === "dream" && !dreamEnabledBefore
+        ? `  ${DIM}(dream off)${RESET}`
+        : "";
+    console.log(`${marker}${task.padEnd(14)}${p.provider} / ${p.model}${off}`);
+  }
+  console.log(`${DIM}  * = changed in this run${RESET}`);
+  console.log();
+
+  const confirmed = await askYesNo(rl, "Save this routing?", true);
+  if (!confirmed) {
+    printStatus("warn", "cancelled · no changes written");
+    return;
+  }
+
+  const taskModelsPatch = buildTaskModelsPatchFromAccepted(
+    accepted,
+    currentByTask,
+    selectedSet,
+  );
+
+  let dreamPatch: GnosysConfig["dream"] | undefined;
+  if (selectedSet.has("dream") && accepted.dream) {
+    dreamPatch = {
+      ...(cfgBefore.dream ?? {}),
+      provider: accepted.dream.provider,
+      model: accepted.dream.model,
+    };
+    if (
+      !dreamEnabledBefore &&
+      (await askYesNo(rl, "Enable dream mode with this routing?", true))
+    ) {
+      dreamPatch.enabled = true;
+    }
+  }
+
+  const updatePayload: Partial<GnosysConfig> = {};
+  if (taskModelsPatch) updatePayload.taskModels = taskModelsPatch;
+  if (dreamPatch) updatePayload.dream = dreamPatch;
+
+  if (!taskModelsPatch && !dreamPatch) {
+    printStatus("warn", "no routing changes to save");
+    return;
+  }
+
+  await updateConfig(storePath, updatePayload);
+  printStatus("ok", `saved task routing · ${storePath}/gnosys.json`);
 }
 
 // ─── Quick `gnosys models` command ───────────────────────────────────────────
@@ -2574,31 +3391,33 @@ export async function runDreamSetup(opts: DreamSetupOpts = {}): Promise<void> {
 
     // Validate — animated Spinner with the model latency reported.
     if (dreamProvider !== "skip") {
-      const apiKey = await getApiKeyForProvider(dreamProvider);
+      const apiKey = await getApiKeyForProvider(dreamProvider, { task: "dream" });
       const isLocalProvider = dreamProvider === "ollama" || dreamProvider === "lmstudio";
       if (apiKey || isLocalProvider) {
         console.log();
-        const validateSpin = Spinner(`validating ${dreamProvider} / ${dreamModel}…`);
         try {
           const customBaseUrl = dreamProvider === "custom" ? process.env.GNOSYS_LLM_BASE_URL : undefined;
-          const result = await validateModel(dreamProvider, dreamModel, apiKey, { customBaseUrl });
-          if (result.ok) {
-            validateSpin.ok("model validated", `${result.latencyMs} ms · ${dreamProvider} / ${dreamModel}`);
-          } else {
-            validateSpin.fail("could not reach model", result.error);
-            const proceed = await askYesNo(rl, "save config anyway?", true);
-            if (!proceed) {
-              printStatus("warn", "setup cancelled · no changes written");
-              localDb.close();
-              remoteDb?.close();
-              return;
-            }
+          const { proceed } = await validateModelWithKeyRotation({
+            rl,
+            provider: dreamProvider,
+            model: dreamModel,
+            apiKey,
+            customBaseUrl,
+            isLocalProvider,
+            saveAnywayPrompt: "save config anyway?",
+            saveAnywayDefault: true,
+          });
+          if (!proceed) {
+            printStatus("warn", "setup cancelled · no changes written");
+            localDb.close();
+            remoteDb?.close();
+            return;
           }
         } catch (err) {
           printStatus("warn", "validation skipped", err instanceof Error ? err.message : String(err));
         }
       } else {
-        printStatus("warn", `no API key for ${dreamProvider}`, "set one via `gnosys setup models`");
+        printStatus("warn", `no API key for ${dreamProvider}`, "set one via `gnosys setup providers`");
       }
     }
 
@@ -2813,26 +3632,25 @@ async function openRemoteDbIfConfigured(
  * Best-effort lookup of the API key for a provider. Used by the dream setup
  * wizard to power the validation step. Mirrors the resolveApiKey precedence.
  */
-export async function getApiKeyForProvider(provider: string): Promise<string> {
-  if (provider === "ollama" || provider === "lmstudio" || provider === "skip") return "";
-  const envVarName = provider === "custom" ? "GNOSYS_CUSTOM_KEY" : `GNOSYS_${provider.toUpperCase()}_KEY`;
-  const legacyVars: Record<string, string> = {
-    anthropic: "ANTHROPIC_API_KEY",
-    openai: "OPENAI_API_KEY",
-    groq: "GROQ_API_KEY",
-    xai: "XAI_API_KEY",
-    mistral: "MISTRAL_API_KEY",
-  };
-  const fromEnv = process.env[envVarName] || (legacyVars[provider] && process.env[legacyVars[provider]]) || "";
-  if (fromEnv) return fromEnv;
-  if (process.platform === "darwin") {
-    try {
-      return execSync(`security find-generic-password -a "$USER" -s "${envVarName}" -w 2>/dev/null`, {
-        stdio: "pipe", encoding: "utf-8", timeout: 2000,
-      }).trim();
-    } catch {
-      // fall through
+export async function getApiKeyForProvider(
+  provider: string,
+  opts?: { task?: LlmTaskName; directory?: string },
+): Promise<string> {
+  if (provider === "ollama" || provider === "lmstudio" || provider === "skip") {
+    return "";
+  }
+  if (opts?.directory) {
+    const cfg = await loadExistingConfig(opts.directory);
+    if (cfg) {
+      const fromCfg = getApiKeyForProviderFromConfig(
+        cfg,
+        provider as LLMProviderName,
+        { task: opts.task },
+      );
+      if (fromCfg) return fromCfg;
     }
   }
-  return "";
+  return readFirstInChain(provider as LLMProviderName, opts?.task) ?? "";
 }
+
+export { getApiKeyForProviderFromConfig } from "./apiKeyVault.js";
