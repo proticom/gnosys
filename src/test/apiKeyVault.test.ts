@@ -40,13 +40,19 @@ describe("apiKeyVault", () => {
     expect(readFirstInChain("xai")).toBe("provider-key");
   });
 
-  it("readFirstInChain falls through to legacy and generic env", () => {
+  it("readFirstInChain falls through to legacy env", () => {
     delete process.env.GNOSYS_GLOBAL_XAI_KEY;
     delete process.env.GNOSYS_XAI_KEY;
     process.env.XAI_API_KEY = "legacy-key";
     expect(readFirstInChain("xai")).toBe("legacy-key");
+  });
+
+  it("readFirstInChain falls through to GNOSYS_LLM_API_KEY for any provider", () => {
+    delete process.env.GNOSYS_GLOBAL_XAI_KEY;
+    delete process.env.GNOSYS_XAI_KEY;
     delete process.env.XAI_API_KEY;
     process.env.GNOSYS_LLM_API_KEY = "generic-key";
+    expect(readFirstInChain("xai")).toBe("generic-key");
     expect(readFirstInChain("custom")).toBe("generic-key");
   });
 

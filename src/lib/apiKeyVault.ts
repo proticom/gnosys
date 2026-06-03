@@ -138,9 +138,7 @@ export function readFirstInChain(provider: LLMProviderName): string | undefined 
   }
   const legacy = LEGACY_ENV[provider];
   if (legacy && process.env[legacy]) return process.env[legacy];
-  if (provider === "custom" && process.env.GNOSYS_LLM_API_KEY) {
-    return process.env.GNOSYS_LLM_API_KEY;
-  }
+  if (process.env.GNOSYS_LLM_API_KEY) return process.env.GNOSYS_LLM_API_KEY;
   return undefined;
 }
 
@@ -255,11 +253,7 @@ export function listStoredKeySlots(
       preview: maskKeySnippet(process.env[legacy]!),
     });
   }
-  if (
-    provider === "custom" &&
-    process.env.GNOSYS_LLM_API_KEY &&
-    !seen.has("GNOSYS_LLM_API_KEY")
-  ) {
+  if (process.env.GNOSYS_LLM_API_KEY && !seen.has("GNOSYS_LLM_API_KEY")) {
     slots.push({
       service: "GNOSYS_LLM_API_KEY",
       scope: "provider",
