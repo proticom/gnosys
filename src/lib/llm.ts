@@ -17,6 +17,8 @@ import {
   getLMStudioBaseUrl,
   getXAIApiKey,
   getMistralApiKey,
+  getOpenRouterApiKey,
+  getOpenRouterBaseUrl,
   getCustomApiKey,
   getProviderModel,
   ALL_PROVIDERS,
@@ -652,7 +654,7 @@ export function getLLMProvider(
     ? resolveTaskModel(config, task)
     : { provider: config.llm.defaultProvider, model: getDefaultModel(config) };
 
-  return createProvider(resolved.provider, resolved.model, config);
+  return createProvider(resolved.provider, resolved.model, config, task);
 }
 
 /**
@@ -661,14 +663,15 @@ export function getLLMProvider(
 export function createProvider(
   provider: LLMProviderName,
   model: string,
-  config: GnosysConfig
+  config: GnosysConfig,
+  task?: "structuring" | "synthesis" | "vision" | "transcription" | "chat" | "dream",
 ): LLMProvider {
   switch (provider) {
     case "anthropic": {
       const apiKey = getAnthropicApiKey(config);
       if (!apiKey) {
         throw new Error(
-          "No Anthropic API key found. Set ANTHROPIC_API_KEY environment variable or add llm.anthropic.apiKey to gnosys.json."
+          "No Anthropic API key found. Set GNOSYS_GLOBAL_ANTHROPIC_KEY, GNOSYS_ANTHROPIC_KEY, or ANTHROPIC_API_KEY."
         );
       }
       return new AnthropicProvider(model, apiKey, config);
@@ -683,7 +686,7 @@ export function createProvider(
       const apiKey = getGroqApiKey(config);
       if (!apiKey) {
         throw new Error(
-          "No Groq API key found. Set GROQ_API_KEY environment variable or add llm.groq.apiKey to gnosys.json."
+          "No Groq API key found. Set GNOSYS_GLOBAL_GROQ_KEY, GNOSYS_GROQ_KEY, or GROQ_API_KEY."
         );
       }
       return new OpenAICompatibleProvider("groq", model, "https://api.groq.com/openai/v1", apiKey, config);
@@ -693,7 +696,7 @@ export function createProvider(
       const apiKey = getOpenAIApiKey(config);
       if (!apiKey) {
         throw new Error(
-          "No OpenAI API key found. Set OPENAI_API_KEY environment variable or add llm.openai.apiKey to gnosys.json."
+          "No OpenAI API key found. Set GNOSYS_GLOBAL_OPENAI_KEY, GNOSYS_OPENAI_KEY, or OPENAI_API_KEY."
         );
       }
       const baseUrl = getOpenAIBaseUrl(config);
@@ -709,7 +712,7 @@ export function createProvider(
       const apiKey = getXAIApiKey(config);
       if (!apiKey) {
         throw new Error(
-          "No xAI API key found. Set XAI_API_KEY environment variable or add llm.xai.apiKey to gnosys.json."
+          "No xAI API key found. Set GNOSYS_GLOBAL_XAI_KEY, GNOSYS_XAI_KEY, or XAI_API_KEY."
         );
       }
       return new OpenAICompatibleProvider("xai", model, "https://api.x.ai/v1", apiKey, config);
@@ -719,10 +722,21 @@ export function createProvider(
       const apiKey = getMistralApiKey(config);
       if (!apiKey) {
         throw new Error(
-          "No Mistral API key found. Set MISTRAL_API_KEY environment variable or add llm.mistral.apiKey to gnosys.json."
+          "No Mistral API key found. Set GNOSYS_GLOBAL_MISTRAL_KEY, GNOSYS_MISTRAL_KEY, or MISTRAL_API_KEY."
         );
       }
       return new OpenAICompatibleProvider("mistral", model, "https://api.mistral.ai/v1", apiKey, config);
+    }
+
+    case "openrouter": {
+      const apiKey = getOpenRouterApiKey(config);
+      if (!apiKey) {
+        throw new Error(
+          "No OpenRouter API key found. Set GNOSYS_GLOBAL_OPENROUTER_KEY, GNOSYS_OPENROUTER_KEY, or OPENROUTER_API_KEY."
+        );
+      }
+      const baseUrl = getOpenRouterBaseUrl(config);
+      return new OpenAICompatibleProvider("openrouter", model, baseUrl, apiKey, config);
     }
 
     case "custom": {
@@ -811,6 +825,17 @@ export function isProviderAvailable(
         return {
           available: false,
           error: "No MISTRAL_API_KEY set. Add to environment or gnosys.json.",
+        };
+      }
+      return { available: true };
+    }
+
+    case "openrouter": {
+      const apiKey = getOpenRouterApiKey(config);
+      if (!apiKey) {
+        return {
+          available: false,
+          error: "No OPENROUTER_API_KEY set. Add to environment or gnosys.json.",
         };
       }
       return { available: true };

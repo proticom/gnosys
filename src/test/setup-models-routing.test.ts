@@ -84,26 +84,28 @@ describe("setup models task routing", () => {
   });
 
   describe("buildInlineKeyRequirements", () => {
-    it("per-task strategy lists only selected cloud tasks", () => {
+    it("lists one global requirement per distinct cloud provider", () => {
       const selected: AssignableTaskName[] = ["chat", "dream"];
-      const reqs = buildInlineKeyRequirements(selected, "task", () => "openrouter");
-      expect(reqs).toHaveLength(2);
-      expect(reqs.map((r) => r.task).sort()).toEqual(["chat", "dream"]);
-      expect(reqs.every((r) => r.scope === "task")).toBe(true);
-      expect(reqs.every((r) => r.provider === "openrouter")).toBe(true);
-    });
-
-    it("global strategy emits one requirement per distinct provider", () => {
-      const reqs = buildInlineKeyRequirements(
-        ["chat", "structuring"],
-        "global",
-        (t) => (t === "chat" ? "openrouter" : "openrouter"),
-      );
+      const reqs = buildInlineKeyRequirements(selected, () => "openrouter");
       expect(reqs).toEqual([{ provider: "openrouter", scope: "global" }]);
     });
 
+    it("emits one requirement per distinct provider", () => {
+      const reqs = buildInlineKeyRequirements(
+        ["chat", "structuring"],
+        (t) => (t === "chat" ? "openrouter" : "anthropic"),
+      );
+      expect(reqs).toHaveLength(2);
+      expect(reqs).toEqual(
+        expect.arrayContaining([
+          { provider: "openrouter", scope: "global" },
+          { provider: "anthropic", scope: "global" },
+        ]),
+      );
+    });
+
     it("skips local providers in requirements", () => {
-      const reqs = buildInlineKeyRequirements(["dream"], "task", () => "ollama");
+      const reqs = buildInlineKeyRequirements(["dream"], () => "ollama");
       expect(reqs).toHaveLength(0);
     });
   });
@@ -209,15 +211,14 @@ describe("setup models task routing", () => {
       const rl = mockRl();
       await promptKeyDestinationAndPersist({
         rl,
-        service: apiKeyServiceName("openrouter", "task", "chat"),
+        service: apiKeyServiceName("openrouter", "global"),
         provider: "openrouter",
         key: "secret",
-        scope: "task",
-        task: "chat",
+        scope: "global",
         destinationChoice: 0,
       });
       expect(storeApiKeySecret).toHaveBeenCalledWith(
-        "GNOSYS_CHAT_OPENROUTER_KEY",
+        "GNOSYS_GLOBAL_OPENROUTER_KEY",
         "secret",
         "openrouter",
       );
@@ -236,15 +237,14 @@ describe("setup models task routing", () => {
       try {
         await promptKeyDestinationAndPersist({
           rl,
-          service: "GNOSYS_CHAT_OPENROUTER_KEY",
+          service: "GNOSYS_GLOBAL_OPENROUTER_KEY",
           provider: "openrouter",
           key: "dotenv-secret",
-          scope: "task",
-          task: "chat",
+          scope: "global",
           destinationChoice: 1,
         });
         const content = await fs.readFile(envPath, "utf-8");
-        expect(content).toContain("GNOSYS_CHAT_OPENROUTER_KEY=dotenv-secret");
+        expect(content).toContain("GNOSYS_GLOBAL_OPENROUTER_KEY=dotenv-secret");
         expect(storeApiKeySecret).not.toHaveBeenCalled();
       } finally {
         process.env.HOME = origHome;
@@ -258,18 +258,17 @@ describe("setup models task routing", () => {
 
       const dest = await promptKeyDestinationAndPersist({
         rl,
-        service: "GNOSYS_CHAT_OPENROUTER_KEY",
+        service: "GNOSYS_GLOBAL_OPENROUTER_KEY",
         provider: "openrouter",
         key: "k",
-        scope: "task",
-        task: "chat",
+        scope: "global",
         destinationChoice: 2,
       });
 
       expect(dest).toBe("none");
       expect(storeApiKeySecret).not.toHaveBeenCalled();
       const joined = logSpy.mock.calls.map((c) => String(c[0])).join("\n");
-      expect(joined).toContain("GNOSYS_CHAT_OPENROUTER_KEY");
+      expect(joined).toContain("GNOSYS_GLOBAL_OPENROUTER_KEY");
       logSpy.mockRestore();
     });
   });
@@ -289,13 +288,13 @@ describe("setup models task routing", () => {
       await fs.rm(tmp, { recursive: true, force: true });
     });
 
-    it("writes task-scoped env var lines", async () => {
-      await writeServiceKeyToEnv("GNOSYS_DREAM_OPENROUTER_KEY", "dream-key");
+    it("writes global-scoped env var lines", async () => {
+      await writeServiceKeyToEnv("GNOSYS_GLOBAL_OPENROUTER_KEY", "global-key");
       const content = await fs.readFile(
         path.join(process.env.HOME!, ".config", "gnosys", ".env"),
         "utf-8",
       );
-      expect(content).toContain("GNOSYS_DREAM_OPENROUTER_KEY=dream-key");
+      expect(content).toContain("GNOSYS_GLOBAL_OPENROUTER_KEY=global-key");
     });
   });
 });

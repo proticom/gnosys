@@ -22,8 +22,10 @@ Project config inherits from global config: missing keys fall through to `~/.gno
 When Gnosys needs an API key (Anthropic, OpenAI, Groq, etc.), it checks sources in this order:
 
 1. **`gnosys.json`** — `llm.<provider>.apiKey`
-2. **`GNOSYS_<PROVIDER>_KEY`** environment variable (e.g. `GNOSYS_ANTHROPIC_KEY`)
-3. **macOS Keychain** — secure storage from setup (macOS only)
+2. **Scoped key names** (env or Keychain service name), tried in order:
+   - `GNOSYS_GLOBAL_<PROVIDER>_KEY` — one key for all tasks using that provider
+   - `GNOSYS_<PROVIDER>_KEY` — provider default (e.g. `GNOSYS_XAI_KEY`)
+3. **macOS Keychain** / **GNOME Keyring** — setup writes the same names as service identifiers
 4. **GNOME Keyring** — via `secret-tool` (Linux, when available)
 5. **Legacy env var** — e.g. `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GROQ_API_KEY`
 6. **`~/.config/gnosys/.env`** — values here are loaded at process startup, so they appear as env vars in steps 2 and 5

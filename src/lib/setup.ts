@@ -580,13 +580,12 @@ async function promptAndStoreProviderApiKey(
   rl: ReadlineInterface,
   provider: string,
   scope: ApiKeyScope = "provider",
-  task?: LlmTaskName,
 ): Promise<string | null> {
   if (provider === "ollama" || provider === "lmstudio" || provider === "skip") {
     return null;
   }
 
-  const service = apiKeyServiceName(provider as LLMProviderName, scope, task);
+  const service = apiKeyServiceName(provider as LLMProviderName, scope);
 
   console.log();
   console.log(`  ${WARN} Your API key may be expired or invalid.`);
@@ -625,7 +624,6 @@ async function validateModelWithKeyRotation(opts: {
   saveAnywayPrompt: string;
   saveAnywayDefault: boolean;
   keyScope?: ApiKeyScope;
-  keyTask?: LlmTaskName;
 }): Promise<{ proceed: boolean; apiKey: string }> {
   const { Spinner } = await import("./setup/ui/spinner.js");
 
@@ -650,7 +648,6 @@ async function validateModelWithKeyRotation(opts: {
       opts.rl,
       opts.provider,
       opts.keyScope ?? "global",
-      opts.keyTask,
     );
     if (newKey) {
       apiKey = newKey;
@@ -2344,38 +2341,26 @@ export async function runProviderOnlySetup(opts: ProviderOnlySetupOpts = {}): Pr
 
 // ─── Models-only setup (gnosys setup models / gnosys models) ─────────────────
 
-/** Global vs per-task key collection in the task-routing path. */
-export type TaskKeyStrategy = "global" | "task";
-
 /** Where validated keys are persisted (§3.10). */
 export type KeyPersistDestination = "secure" | "dotenv" | "none";
 
 /**
  * Build API key requirements from the selected task set only (§3.7).
- * Does not scan all CLOUD_TASKS via effective routing.
+ * One global key per distinct cloud provider in the selection.
  */
 export function buildInlineKeyRequirements(
   selectedTasks: AssignableTaskName[],
-  keyStrategy: TaskKeyStrategy,
   providerForTask: (task: AssignableTaskName) => string,
 ): ApiKeyRequirement[] {
-  const cloudTasks = selectedTasks.filter((t) =>
-    providerNeedsApiKey(providerForTask(t)),
-  );
-  if (cloudTasks.length === 0) return [];
-
-  if (keyStrategy === "global") {
-    const providers = [
-      ...new Set(cloudTasks.map((t) => providerForTask(t) as LLMProviderName)),
-    ];
-    return providers.map((provider) => ({ provider, scope: "global" as const }));
-  }
-
-  return cloudTasks.map((task) => ({
-    provider: providerForTask(task) as LLMProviderName,
-    scope: "task" as const,
-    task: (task === "dream" ? "dream" : task) as LlmTaskName,
-  }));
+  const providers = [
+    ...new Set(
+      selectedTasks
+        .map((t) => providerForTask(t))
+        .filter((p) => providerNeedsApiKey(p))
+        .map((p) => p as LLMProviderName),
+    ),
+  ];
+  return providers.map((provider) => ({ provider, scope: "global" as const }));
 }
 
 /** Write or replace a single `NAME=value` line in ~/.config/gnosys/.env. */
@@ -2493,7 +2478,6 @@ export async function promptKeyDestinationAndPersist(opts: {
   provider: string;
   key: string;
   scope: ApiKeyScope;
-  task?: LlmTaskName;
   destinationChoice?: number;
 }): Promise<KeyPersistDestination> {
   const isMac = process.platform === "darwin";
@@ -2712,41 +2696,27 @@ export async function runModelsSetup(opts: ModelsSetupOpts = {}): Promise<void> 
 async function resolveKeyInMemory(opts: {
   rl: ReadlineInterface;
   provider: string;
-  task: AssignableTaskName;
-  keyStrategy: TaskKeyStrategy;
   keyCache: Map<string, string>;
 }): Promise<string> {
   if (!providerNeedsApiKey(opts.provider)) return "";
 
-  const cacheKey =
-    opts.keyStrategy === "global" ? opts.provider : `${opts.provider}:${opts.task}`;
-
-  const cached = opts.keyCache.get(cacheKey);
+  const cached = opts.keyCache.get(opts.provider);
   if (cached) return cached;
 
-  let stored: string | undefined;
-  if (opts.keyStrategy === "global") {
-    stored = readStoredSecret(
-      apiKeyServiceName(opts.provider as LLMProviderName, "global"),
-    );
-  } else {
-    const taskName = (opts.task === "dream" ? "dream" : opts.task) as LlmTaskName;
-    stored = readStoredSecret(
-      apiKeyServiceName(opts.provider as LLMProviderName, "task", taskName),
-    );
-  }
+  const stored = readStoredSecret(
+    apiKeyServiceName(opts.provider as LLMProviderName, "global"),
+  );
 
   if (stored) {
-    opts.keyCache.set(cacheKey, stored);
+    opts.keyCache.set(opts.provider, stored);
     return stored;
   }
 
-  const label =
-    opts.keyStrategy === "global"
-      ? `API key for ${opts.provider} (shared across selected tasks)`
-      : `API key for ${opts.task} → ${opts.provider}`;
-  const key = await askInput(opts.rl, label);
-  opts.keyCache.set(cacheKey, key);
+  const key = await askInput(
+    opts.rl,
+    `API key for ${opts.provider} (shared across selected tasks)`,
+  );
+  opts.keyCache.set(opts.provider, key);
   return key;
 }
 
@@ -2871,13 +2841,6 @@ async function runModelsTaskRoutingSetup(ctx: {
   const { rl, opts, provider: initialProvider, dynamicModels, storePath, cfgBefore, printStatus } =
     ctx;
 
-  console.log();
-  const keyStrategyIdx = await askChoice(rl, "How should API keys be scoped?", [
-    "Global key — one key shared by all selected tasks for each provider",
-    "Per-task key — a separate key for each selected task",
-  ]);
-  const keyStrategy: TaskKeyStrategy = keyStrategyIdx === 0 ? "global" : "task";
-
   const tasks = ASSIGNABLE_TASK_LIST;
   const currentByTask = {} as Record<
     AssignableTaskName,
@@ -2942,19 +2905,14 @@ async function runModelsTaskRoutingSetup(ctx: {
   const selectedTasks = [...selectedSet];
   const keyRequirements = buildInlineKeyRequirements(
     selectedTasks,
-    keyStrategy,
     () => initialProvider,
   );
   if (keyRequirements.length > 0) {
     console.log();
     console.log(`  ${DIM}Keys needed for:${RESET}`);
     for (const req of keyRequirements) {
-      const svc = apiKeyServiceName(req.provider, req.scope, req.task);
-      const label =
-        req.scope === "task" && req.task
-          ? `${req.task} → ${req.provider}`
-          : `all selected → ${req.provider}`;
-      console.log(`  ${DIM}  ${label} (${svc})${RESET}`);
+      const svc = apiKeyServiceName(req.provider, req.scope);
+      console.log(`  ${DIM}  all selected → ${req.provider} (${svc})${RESET}`);
     }
     console.log();
   }
@@ -2989,8 +2947,6 @@ async function runModelsTaskRoutingSetup(ctx: {
       const apiKey = await resolveKeyInMemory({
         rl,
         provider: taskProvider,
-        task,
-        keyStrategy,
         keyCache,
       });
 
@@ -3020,15 +2976,9 @@ async function runModelsTaskRoutingSetup(ctx: {
           model,
         };
         if (validatedKey && !isLocal) {
-          const scope: ApiKeyScope = keyStrategy === "global" ? "global" : "task";
-          const taskArg =
-            keyStrategy === "task"
-              ? ((task === "dream" ? "dream" : task) as LlmTaskName)
-              : undefined;
           const service = apiKeyServiceName(
             taskProvider as LLMProviderName,
-            scope,
-            taskArg,
+            "global",
           );
           if (!persistedServices.has(service)) {
             await promptKeyDestinationAndPersist({
@@ -3036,14 +2986,11 @@ async function runModelsTaskRoutingSetup(ctx: {
               service,
               provider: taskProvider,
               key: validatedKey,
-              scope,
-              task: taskArg,
+              scope: "global",
             });
             persistedServices.add(service);
           }
-          const cacheKey =
-            keyStrategy === "global" ? taskProvider : `${taskProvider}:${task}`;
-          keyCache.set(cacheKey, validatedKey);
+          keyCache.set(taskProvider, validatedKey);
         }
         break;
       }
@@ -3645,12 +3592,11 @@ export async function getApiKeyForProvider(
       const fromCfg = getApiKeyForProviderFromConfig(
         cfg,
         provider as LLMProviderName,
-        { task: opts.task },
       );
       if (fromCfg) return fromCfg;
     }
   }
-  return readFirstInChain(provider as LLMProviderName, opts?.task) ?? "";
+  return readFirstInChain(provider as LLMProviderName) ?? "";
 }
 
 export { getApiKeyForProviderFromConfig } from "./apiKeyVault.js";
