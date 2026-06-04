@@ -297,7 +297,7 @@ program
 // ─── gnosys setup (parent command) ──────────────────────────────────────
 const setupCmd = program
   .command("setup")
-  .description("Configure Gnosys — LLM provider, models, remote sync, and IDE integration");
+  .description("Configure Gnosys — provider keys, models, remote sync, and IDE integration");
 
 // Bare `gnosys setup` — when config exists, opens the summary-first menu
 // so the user can edit one section without re-running the whole wizard.
@@ -339,6 +339,15 @@ setupCmd
     } finally {
       rl.close();
     }
+  });
+
+// `gnosys setup keys` — provider API key table
+setupCmd
+  .command("keys")
+  .description("Manage provider API keys in a table view")
+  .action(async () => {
+    const { runSetup } = await import("./lib/setup.js");
+    await runSetup({ section: "keys" });
   });
 
 // `gnosys setup models` — just configure LLM provider/model/key

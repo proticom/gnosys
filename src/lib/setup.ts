@@ -55,6 +55,7 @@ import {
   runCli,
   removeTomlSection,
 } from "./ideMcpInstall.js";
+import { runKeysSetup } from "./setupKeys.js";
 
 // ─── ANSI Colors ────────────────────────────────────────────────────────────
 
@@ -1385,9 +1386,24 @@ export async function pickModel(
 // ─── Main Setup Wizard ──────────────────────────────────────────────────────
 
 export async function runSetup(opts: {
+  section: "keys";
   directory?: string;
   nonInteractive?: boolean;
-}): Promise<SetupResult> {
+}): Promise<void>;
+export async function runSetup(opts: {
+  section?: undefined;
+  directory?: string;
+  nonInteractive?: boolean;
+}): Promise<SetupResult>;
+export async function runSetup(opts: {
+  section?: "keys";
+  directory?: string;
+  nonInteractive?: boolean;
+}): Promise<SetupResult | void> {
+  if (opts.section === "keys") {
+    return runKeysSetup();
+  }
+
   const version = getVersion();
   const projectDir = opts.directory ? path.resolve(opts.directory) : process.cwd();
 
