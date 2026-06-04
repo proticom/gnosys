@@ -125,10 +125,15 @@ function readFromKeychain(service: string): string | undefined {
   return undefined;
 }
 
+/** Read a secret directly from the secure store, ignoring env vars. */
+export function readSecureStoreSecret(service: string): string | undefined {
+  return readFromKeychain(service);
+}
+
 /** Read a secret from env or secure store by service name. */
 export function readStoredSecret(service: string): string | undefined {
   if (process.env[service]) return process.env[service];
-  return readFromKeychain(service);
+  return readSecureStoreSecret(service);
 }
 
 function keyLocationChain(provider: string): Array<{

@@ -9,6 +9,7 @@ import {
   deleteStoredSecret,
   detectKeyLocation,
   providerNeedsApiKey,
+  readSecureStoreSecret,
   readStoredSecret,
   storeApiKeySecret,
 } from "./apiKeyVault.js";
@@ -242,7 +243,7 @@ function listKeyLocations(provider: KnownKeyProvider): StoredKeyLocation[] {
     }
 
     if (serviceName) {
-      const secret = readStoredSecret(serviceName)?.trim();
+      const secret = readSecureStoreSecret(serviceName)?.trim();
       if (secret) {
         locations.push({
           location: "keychain",
@@ -710,3 +711,13 @@ export async function runKeysSetup(opts?: KeysSetupOpts): Promise<void> {
     }
   }
 }
+
+export const setupKeysTestHooks = {
+  chooseKeyDestination,
+  copyToKeychain,
+  deleteKey,
+  listKeyLocations,
+  removeDotenvKeys,
+  updateKey,
+  validateProviderKey,
+};
