@@ -481,8 +481,15 @@ export function getStructuringModel(provider: string, chosenModel: string): stri
  * Creates the directory and file if they don't exist.
  * Replaces an existing key line if found, otherwise appends.
  */
-export async function writeApiKey(provider: string, key: string): Promise<void> {
-  const envVar = PROVIDER_ENV_VAR[provider];
+export async function writeApiKey(
+  provider: string,
+  key: string,
+  opts?: { scope?: ApiKeyScope },
+): Promise<void> {
+  const envVar =
+    opts?.scope === "global"
+      ? apiKeyServiceName(provider as LLMProviderName, "global")
+      : PROVIDER_ENV_VAR[provider];
   if (!envVar) return;
 
   const configDir = path.join(os.homedir(), ".config", "gnosys");
@@ -1110,7 +1117,7 @@ export function printInfo(text: string, meta?: string): void {
 /**
  * Y/n prompt. Returns true for yes.
  */
-async function askYesNo(
+export async function askYesNo(
   rl: ReadlineInterface,
   question: string,
   defaultYes = true
@@ -1120,6 +1127,59 @@ async function askYesNo(
   const trimmed = answer.trim().toLowerCase();
   if (trimmed === "") return defaultYes;
   return trimmed === "y" || trimmed === "yes";
+}
+
+/**
+ * Read a password/API key without echoing it back to the terminal.
+ */
+export async function askPassword(
+  rl: ReadlineInterface,
+  prompt: string,
+): Promise<string> {
+  if (!stdin.isTTY || typeof stdin.setRawMode !== "function") {
+    return askInput(rl, prompt);
+  }
+
+  return new Promise((resolve) => {
+    let value = "";
+    stdout.write(`${prompt}: `);
+    stdin.setRawMode(true);
+    stdin.resume();
+
+    const cleanup = () => {
+      stdin.setRawMode(false);
+      stdin.off("data", onData);
+      stdout.write("\n");
+    };
+
+    const onData = (chunk: Buffer) => {
+      const input = chunk.toString("utf-8");
+      for (const char of input) {
+        const code = char.charCodeAt(0);
+        if (code === 3) {
+          cleanup();
+          try {
+            rl.close();
+          } catch {
+            // already closed
+          }
+          process.exit(130);
+        }
+        if (code === 13 || code === 10) {
+          cleanup();
+          resolve(value.trim());
+          return;
+        }
+        if (code === 127 || code === 8) {
+          value = value.slice(0, -1);
+          continue;
+        }
+        value += char;
+      }
+    };
+
+    stdin.on("data", onData);
+  });
 }
 
 /** Parse `1,3,5`, `all`, or `none` into 0-based task indices. */
