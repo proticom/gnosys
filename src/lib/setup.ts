@@ -44,6 +44,7 @@ import {
 } from "./apiKeyVault.js";
 import { resolveActiveStorePath, ensureActiveStorePath } from "./setup/storePath.js";
 import { safeQuestion } from "./setup/ui/safePrompt.js";
+export { printStatus } from "./setup/ui/status.js";
 import { getClaudeDesktopConfigPath, getApiKeySkipHints } from "./platform.js";
 import {
   gnosysStdioMcpEntry,
@@ -1090,7 +1091,7 @@ async function askChoice(
 /**
  * Read a single line of input with an optional default value.
  */
-async function askInput(
+export async function askInput(
   rl: ReadlineInterface,
   prompt: string,
   opts?: { default?: string }
@@ -1099,6 +1100,11 @@ async function askInput(
   const answer = await safeQuestion(rl, `${prompt}${suffix}: `);
   const trimmed = answer.trim();
   return trimmed || opts?.default || "";
+}
+
+export function printInfo(text: string, meta?: string): void {
+  const suffix = meta ? ` ${DIM}${meta}${RESET}` : "";
+  console.log(`  ${text}${suffix}`);
 }
 
 /**
