@@ -7,6 +7,7 @@
  */
 
 import { execSync } from "child_process";
+import dotenv from "dotenv";
 import fsSync from "fs";
 import os from "os";
 import path from "path";
@@ -128,6 +129,96 @@ function readFromKeychain(service: string): string | undefined {
 export function readStoredSecret(service: string): string | undefined {
   if (process.env[service]) return process.env[service];
   return readFromKeychain(service);
+}
+
+function keyLocationChain(provider: string): Array<{
+  envVarName: string;
+  serviceName?: string;
+}> {
+  const slug = provider.toUpperCase();
+  const globalEnvVar = `GNOSYS_GLOBAL_${slug}_KEY`;
+  const providerEnvVar = `GNOSYS_${slug}_KEY`;
+  return [
+    {
+      envVarName: globalEnvVar,
+      serviceName: globalEnvVar,
+    },
+    {
+      envVarName: providerEnvVar,
+      serviceName: providerEnvVar,
+    },
+    { envVarName: `${slug}_API_KEY` },
+    { envVarName: "GNOSYS_LLM_API_KEY" },
+  ];
+}
+
+function maskedLastFour(key: string): string {
+  return `••••${key.trim().slice(-4)}`;
+}
+
+function readDotenvKeys(): Record<string, string> {
+  try {
+    const envPath = path.join(
+      process.env.HOME ?? os.homedir(),
+      ".config",
+      "gnosys",
+      ".env",
+    );
+    return dotenv.parse(fsSync.readFileSync(envPath, "utf-8"));
+  } catch {
+    return {};
+  }
+}
+
+export function detectKeyLocation(provider: string): {
+  found: boolean;
+  location: "keychain" | "env" | "dotenv" | "none";
+  serviceName?: string;
+  envVarName?: string;
+  lastFour?: string;
+} {
+  if (!providerNeedsApiKey(provider)) {
+    return { found: false, location: "none" };
+  }
+
+  const chain = keyLocationChain(provider);
+  const dotenvKeys = readDotenvKeys();
+
+  for (const { envVarName, serviceName } of chain) {
+    const envKey = process.env[envVarName]?.trim();
+    if (envKey) {
+      return {
+        found: true,
+        location: "env",
+        envVarName,
+        lastFour: maskedLastFour(envKey),
+      };
+    }
+
+    if (serviceName) {
+      const storedKey = readStoredSecret(serviceName)?.trim();
+      if (storedKey) {
+        return {
+          found: true,
+          location: "keychain",
+          serviceName,
+          lastFour: maskedLastFour(storedKey),
+        };
+      }
+    }
+
+    const dotenvKey = dotenvKeys[envVarName]?.trim();
+    if (dotenvKey) {
+      return {
+        found: true,
+        location: "dotenv",
+        envVarName,
+        lastFour: maskedLastFour(dotenvKey),
+      };
+    }
+  }
+
+  return { found: false, location: "none" };
 }
 
 /** First non-empty secret in the lookup chain. */
