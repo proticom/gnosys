@@ -9,9 +9,12 @@ describe("gnosys machine show command wiring", () => {
     expect(cli).toContain('.command("machine")');
     expect(cli).toContain("Manage this machine's local config (machine.json");
     // Sub "show" for the ungrouped machine show
-    expect(cli).toContain("machine show");
+    expect(cli).toContain('.command("show")');
+    expect(cli).toContain("Show this machine's machine.json");
     expect(cli).toContain("--json");
-    // The handler is in machineCommand or similar; wiring via dynamic in the machine sub
-    expect(cli).toContain("machine show");
+    // Dynamic imports for the handler logic (machineConfig + paths)
+    expect(cli).toContain('await import("./lib/machineConfig.js")');
+    expect(cli).toContain('await import("./lib/paths.js")');
+    expect(cli).toContain("getMachineConfigPath");
   });
 });
