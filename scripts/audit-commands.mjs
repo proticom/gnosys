@@ -39,7 +39,7 @@ const DEFERRED_IDS = new Set(["config", "dream", "export", "pref"]);
 // ── Edward's approved sidebar grouping (full invocation, minus "gnosys ") ──
 // Commands found in cli.ts but absent here surface in "Ungrouped (not in sidebar)".
 const GROUPS = [
-  ["Getting Started", ["setup", "setup models", "setup ides", "setup routing", "setup preferences", "setup chat", "setup dream", "init", "config", "config show", "config set", "config init", "stores", "doctor", "serve"]],
+  ["Getting Started", ["setup", "setup providers", "setup routing", "setup ides", "setup preferences", "setup chat", "setup dream", "init", "config", "config show", "config set", "config init", "stores", "doctor", "serve"]],
   ["Writing Memories", ["add", "add-structured", "commit-context", "bootstrap", "import", "ingest"]],
   ["Reading & Search", ["read", "discover", "search", "hybrid-search", "semantic-search", "ask", "recall", "fsearch", "chat", "working-set"]],
   ["Organization", ["list", "lens", "tags", "tags-add", "links", "graph"]],

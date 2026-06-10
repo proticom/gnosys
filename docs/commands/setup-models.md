@@ -13,7 +13,7 @@ gnosys setup models -p anthropic -m claude-sonnet-4-20250514
 
 ## Options
 
-- `-p, --provider <name>` — Set provider directly: `anthropic`, `openai`, `xai`, `groq`, `mistral`, `ollama`, `lmstudio`, or `custom`.
+- `-p, --provider <name>` — Set provider directly: `anthropic`, `openai`, `xai`, `groq`, `mistral`, `openrouter`, `ollama`, `lmstudio`, or `custom`.
 - `-m, --model <name>` — Set model name for the chosen provider.
 - `--no-validate` — Skip the test API call after configuration.
 
@@ -28,6 +28,7 @@ gnosys setup models -p anthropic -m claude-sonnet-4-20250514
 
 - Updates LLM provider and model in config.
 - May store or read provider API keys from the platform secure store or `~/.config/gnosys/.env`.
+- **OpenRouter:** provider `openrouter` calls `https://openrouter.ai/api/v1` with your [OpenRouter API key](https://openrouter.ai/keys). The setup wizard lists `:free` models (e.g. `nvidia/nemotron-3-super-120b-a12b:free`) plus paid tiers from the live catalog.
 - May print shell-profile or env-file hints when keys are missing.
 
 ## Platform notes

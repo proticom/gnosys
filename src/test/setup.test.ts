@@ -11,6 +11,7 @@ import {
   getStructuringModel,
   writeApiKey,
   detectIDEs,
+  parseCommaSeparatedTaskSelection,
   type ModelTier,
 } from "../lib/setup.js";
 import {
@@ -23,17 +24,18 @@ import {
 
 describe("Setup Wizard", () => {
   describe("PROVIDER_TIERS", () => {
-    it("has entries for all 8 providers", () => {
+    it("has entries for all 9 providers", () => {
       const providers = Object.keys(PROVIDER_TIERS);
       expect(providers).toContain("anthropic");
       expect(providers).toContain("openai");
       expect(providers).toContain("groq");
       expect(providers).toContain("xai");
       expect(providers).toContain("mistral");
+      expect(providers).toContain("openrouter");
       expect(providers).toContain("ollama");
       expect(providers).toContain("lmstudio");
       expect(providers).toContain("custom");
-      expect(providers).toHaveLength(8);
+      expect(providers).toHaveLength(9);
     });
 
     it("each provider with tiers has exactly one recommended model", () => {
@@ -233,6 +235,21 @@ describe("Setup Wizard", () => {
       expect(getProviderModel(DEFAULT_CONFIG, "groq")).toBe(
         "llama-3.3-70b-versatile"
       );
+    });
+  });
+
+  describe("parseCommaSeparatedTaskSelection", () => {
+    it("parses comma-separated 1-based indices", () => {
+      expect(parseCommaSeparatedTaskSelection("1,3,5", 5)).toEqual([0, 2, 4]);
+    });
+
+    it("accepts all and none", () => {
+      expect(parseCommaSeparatedTaskSelection("all", 5)).toBe("all");
+      expect(parseCommaSeparatedTaskSelection("none", 5)).toBe("none");
+    });
+
+    it("rejects out-of-range values", () => {
+      expect(parseCommaSeparatedTaskSelection("1,9", 5)).toBeNull();
     });
   });
 
