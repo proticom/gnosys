@@ -1274,6 +1274,12 @@ program
       console.log(`\n✓ Already on latest: v${currentVersion}`);
     }
 
+    // UPG polish (from command-coverage-plan UPG track): the makeNpmStderrFilter
+    // (see installOutput.ts) already drops the two known-benign deprecations
+    // (prebuild-install from better-sqlite3, boolean from onnxruntime). This keeps
+    // `gnosys upgrade` and `npm install -g` output clean for users.
+    console.log("  (known-benign deprecation warnings from optional native deps were suppressed)");
+
     // Write the marker so any running MCP servers exit and respawn.
     const { writeUpgradeMarker } = await import("./lib/upgrade.js");
     try {
