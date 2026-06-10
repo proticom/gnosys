@@ -119,18 +119,55 @@ export async function runRoutingSetup(opts: RoutingOptions): Promise<boolean> {
 
   const choice = await askChoice(
     opts.rl,
-    "What would you like to do?",
+    "Task routing — how do you want to use your providers?",
     [
+      "Use one provider + model for everything (simple default for all tasks)",
+      "Configure per-task routing (advanced — different models for structuring, chat, dream, etc.)",
+      "Reset all task overrides to use the default",
       "Keep current routing (no changes)",
-      "Edit tasks — pick by number, then provider + model for each",
-      "Reset all task overrides to use default",
     ],
     0,
   );
 
   if (choice === 0) {
-    console.log(`${DIM}No changes.${RESET}`);
-    return false;
+    // Simple global default path — set one provider+model for everything
+    console.log("");
+    printStatus("progress", "setting a single default for all tasks…");
+    // Re-use the existing "default only" model flow with the current provider pre-selected
+    // For a lightweight experience we just let them (re)pick the model for the current default provider.
+    try {
+      const { fetchDynamicModels } = await import("../../setup.js");
+      const { pickModel } = await import("../../setup.js");
+      const dynamicModels = await fetchDynamicModels();
+      const currentModel = getProviderModel(cfg, provider);
+      const chosenModel = await pickModel(
+        opts.rl,
+        provider,
+        dynamicModels,
+        `Default model for ${provider} (used for all tasks + dream)`,
+        currentModel,
+      );
+      if (chosenModel && chosenModel !== currentModel) {
+        const after = await loadConfig(storePath);
+        await updateConfig(storePath, {
+          llm: {
+            ...after.llm,
+            [provider]: {
+              ...(after.llm[provider] || {}),
+              model: chosenModel,
+            },
+          },
+          // Clear per-task overrides so everything truly uses the single default
+          taskModels: {},
+        });
+        printStatus("ok", `default set for everything · ${provider} / ${chosenModel}`);
+      } else {
+        printStatus("ok", "no change to the global default");
+      }
+    } catch (err) {
+      printStatus("warn", "could not update default model", String(err));
+    }
+    return true;
   }
 
   if (choice === 2) {
@@ -160,6 +197,12 @@ export async function runRoutingSetup(opts: RoutingOptions): Promise<boolean> {
     return true;
   }
 
+  if (choice === 3) {
+    console.log(`${DIM}No changes.${RESET}`);
+    return false;
+  }
+
+  // choice === 1 → advanced per-task editor (the powerful comma-list path)
   const patch = await runCommaListRoutingEditor(opts.rl, storePath, cfg);
   if (!patch) {
     return false;

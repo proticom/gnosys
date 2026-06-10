@@ -173,14 +173,72 @@ async function manageProviderKeys(
       console.log("");
     }
 
+    const defaultAction = slots.length > 0 ? 2 : 0; // when they have a key, default to "make default + model"
     const choice = await askChoice(rl, "Actions", [
       slots.length === 0 ? "Add API key (global)" : "Rotate global API key",
       "Delete one stored key…",
+      "Use this provider as default for everything + pick model",
       "Back",
-    ], 2);
+    ], defaultAction);
+
+    if (choice === 3) {
+      return changed;
+    }
 
     if (choice === 2) {
-      return changed;
+      // "Use this provider as default for everything + pick model"
+      // Set it as the global default provider
+      const current = await loadConfig(storePath);
+      await updateConfig(storePath, {
+        llm: {
+          ...current.llm,
+          defaultProvider: provider,
+        },
+        // Clear per-task overrides so this truly becomes the single default for everything
+        taskModels: {},
+      });
+      printStatus("ok", `default provider set to ${provider} (all tasks now default to it)`);
+
+      // Immediately let them pick a model for it (using the same picker the main flow uses)
+      try {
+        const { fetchDynamicModels } = await import("../../setup.js");
+        const { pickModel } = await import("../../setup.js");
+        const dynamicModels = await fetchDynamicModels();
+        const tiers = dynamicModels[provider] ?? [];
+        let chosenModel: string;
+        if (tiers.length > 0) {
+          chosenModel = await pickModel(
+            rl,
+            provider,
+            dynamicModels,
+            `Default model for ${provider} (used for all tasks)`,
+            current.llm[provider]?.model,
+          );
+        } else {
+          chosenModel = await ask(rl, `Enter default model name for ${provider}: `);
+        }
+        if (chosenModel) {
+          const after = await loadConfig(storePath);
+          await updateConfig(storePath, {
+            llm: {
+              ...after.llm,
+              [provider]: {
+                ...(after.llm[provider] || {}),
+                model: chosenModel,
+              },
+            },
+          });
+          printStatus("ok", `default model set · ${provider} / ${chosenModel}`);
+          printStatus("progress", "all tasks will now default to this provider + model", "use task routing for per-task overrides");
+          changed = true;
+        } else {
+          printStatus("progress", "model left unchanged — you can set it from task routing");
+        }
+      } catch (err) {
+        printStatus("warn", "could not pick model right now", "you can set a default model from the main setup → task routing");
+      }
+      cfg = await loadConfig(storePath);
+      continue;
     }
 
     if (choice === 0) {
@@ -262,7 +320,7 @@ export async function runProvidersSetup(opts: ProvidersSetupOptions): Promise<bo
     console.log(Header(["gnosys", "setup", "providers"]));
     console.log("");
     console.log(
-      Title("Providers", "API keys live here · pick task routing separately for models per task"),
+      Title("Providers", "API keys live here. Set a global default (or per-task models) from the main setup menu."),
     );
     console.log("");
 
