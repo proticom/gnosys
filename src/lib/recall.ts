@@ -25,6 +25,11 @@ import type { GnosysSearch } from "./search.js";
 import type { GnosysResolver } from "./resolver.js";
 import { GnosysArchive } from "./archive.js";
 import type { GnosysDB } from "./db.js";
+import {
+  mergeOverlayDiscoverResults,
+  pendingAddToDbMemory,
+  type PendingAddRow,
+} from "./clientReadOverlay.js";
 import { auditLog } from "./audit.js";
 import type { RecallConfig } from "./config.js";
 
@@ -101,6 +106,8 @@ export async function recall(
     recallConfig?: RecallConfig;
     /** v2.0: When provided, recall uses SQLite directly — no filesystem reads */
     gnosysDb?: GnosysDB;
+    /** v13: Pending offline adds to merge into recall results */
+    pendingOverlay?: PendingAddRow[];
   }
 ): Promise<RecallResult> {
   const start = performance.now();
@@ -109,7 +116,7 @@ export async function recall(
 
   // ─── v2.0 DB-backed fast path ──────────────────────────────────────
   if (options.gnosysDb?.isAvailable() && options.gnosysDb?.isMigrated()) {
-    return recallFromDb(query, options.gnosysDb, limit, cfg, options.traceId);
+    return recallFromDb(query, options.gnosysDb, limit, cfg, options.traceId, options.pendingOverlay);
   }
 
   // ─── v1.x legacy path (filesystem + search.db) ────────────────────
@@ -200,18 +207,38 @@ function recallFromDb(
   db: GnosysDB,
   limit: number,
   cfg: RecallConfig,
-  traceId?: string
+  traceId?: string,
+  pendingOverlay?: PendingAddRow[],
 ): RecallResult {
   const start = performance.now();
   const memories: RecallMemory[] = [];
 
   // Step 1: FTS5 discover on gnosys.db
   const fetchLimit = Math.max(limit * 2, 15);
-  const dbResults = db.discoverFts(query, fetchLimit);
+  let dbResults = db.discoverFts(query, fetchLimit);
+  if (pendingOverlay?.length) {
+    dbResults = mergeOverlayDiscoverResults(
+      dbResults,
+      pendingOverlay,
+      query,
+      fetchLimit,
+      (p) => ({
+        id: p.id,
+        title: p.title,
+        relevance: "",
+        rank: 0,
+        project_id: p.project_id,
+      }),
+    );
+  }
   const allRanks = dbResults.map((r) => r.rank);
 
   for (const r of dbResults) {
-    const mem = db.getMemory(r.id);
+    let mem = db.getMemory(r.id);
+    if (!mem && pendingOverlay?.length) {
+      const pending = pendingOverlay.find((p) => p.id === r.id);
+      if (pending) mem = pendingAddToDbMemory(pending);
+    }
     if (mem && mem.tier === "active" && mem.status === "active") {
       const relevanceScore = normalizeRank(r.rank, allRanks);
       memories.push({

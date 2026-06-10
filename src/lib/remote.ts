@@ -1,7 +1,11 @@
 /**
  * Gnosys Remote Sync — multi-machine database synchronization
  *
- * Hybrid sync strategy:
+ * v13 adds master/client roles, JSON staging, snapshots, and ingest sweeps
+ * (see syncStaging.ts, syncIngest.ts, syncSnapshot.ts, syncClient.ts).
+ * Known limitations: docs/multi-machine-sync-v13.md
+ *
+ * Legacy hybrid sync strategy (pre-v13 configure):
  * - Local DB acts as a fast working cache
  * - Remote DB (typically NAS) is the canonical source of truth
  * - Reads always hit local for speed

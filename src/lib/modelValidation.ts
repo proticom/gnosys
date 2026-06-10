@@ -13,6 +13,21 @@ export interface ValidationResult {
   latencyMs?: number;
 }
 
+/**
+ * True when a validation error likely means the API key is wrong or expired
+ * (as opposed to model name, network, or rate-limit issues).
+ */
+export function isApiKeyValidationError(error?: string): boolean {
+  if (!error) return false;
+  const lower = error.toLowerCase();
+  if (/http\s+(401|403)\b/i.test(error)) return true;
+  if (/incorrect\s+api\s+key|invalid\s+api\s+key|invalid_api_key|authentication\s+failed|unauthorized|permission\s+denied/.test(lower)) {
+    return true;
+  }
+  // Some providers (e.g. xAI) return HTTP 400 with an API-key message.
+  return /http\s+400\b/.test(error) && /api\s+key/.test(lower);
+}
+
 interface ProviderRequest {
   url: string;
   headers: Record<string, string>;
@@ -88,6 +103,18 @@ function buildRequest(
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${apiKey}`,
+        },
+        body: openaiBody,
+      };
+
+    case "openrouter":
+      return {
+        url: "https://openrouter.ai/api/v1/chat/completions",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+          "HTTP-Referer": "https://github.com/proticom/gnosys",
+          "X-Title": "Gnosys",
         },
         body: openaiBody,
       };

@@ -1,4 +1,3 @@
-import { GnosysDB } from "./db.js";
 import { GnosysSearch } from "./search.js";
 import type { GnosysResolver } from "./resolver.js";
 
@@ -28,20 +27,22 @@ export async function runHybridSearchCommand(
 ): Promise<void> {
       // Federated path — uses central DB
       if (opts.federated || opts.scope) {
-        let centralDb: GnosysDB | null = null;
+        const { resolveClientRead } = await import("./clientReadResolve.js");
+        const resolved = resolveClientRead();
+        if (!resolved) {
+          console.error("Central DB not available.");
+          process.exit(1);
+        }
         try {
-          centralDb = GnosysDB.openCentral();
-          if (!centralDb.isAvailable()) { console.error("Central DB not available."); process.exit(1); }
-  
           const { federatedSearch, detectCurrentProject } = await import("./federated.js");
-          const projectId = await detectCurrentProject(centralDb, opts.directory || undefined);
+          const projectId = await detectCurrentProject(resolved.db, opts.directory || undefined);
           const scopeFilter = opts.scope ? opts.scope.split(",").map(s => s.trim()) as any : undefined;
-          const results = federatedSearch(centralDb, query, {
+          const results = federatedSearch(resolved.db, query, {
             limit: parseInt(opts.limit, 10),
             projectId,
             scopeFilter,
           });
-  
+
           outputResult(!!opts.json, { query, projectId, mode: "federated", count: results.length, results }, () => {
             if (results.length === 0) { console.log(`No results for "${query}".`); return; }
             console.log(`Found ${results.length} results for "${query}" (mode: federated):\n`);
@@ -56,7 +57,7 @@ export async function runHybridSearchCommand(
           console.error(`Error: ${err instanceof Error ? err.message : err}`);
           process.exit(1);
         } finally {
-          centralDb?.close();
+          resolved.release();
         }
         return;
       }

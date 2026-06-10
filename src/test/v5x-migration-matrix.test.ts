@@ -1,5 +1,5 @@
 /**
- * v5.x migration matrix — every supported old schema version → current (v4).
+ * v5.x migration matrix — every supported old schema version → current (v5).
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
@@ -144,6 +144,14 @@ function assertMigratedToCurrent(dir: string, opts: { projectId?: string | null 
   const tables = (raw.prepare("SELECT name FROM sqlite_master WHERE type='table'").all() as Array<{ name: string }>)
     .map((r) => r.name);
   expect(tables).toContain("project_locations");
+  expect(tables).toEqual(
+    expect.arrayContaining([
+      "sync_staging_ledger",
+      "sync_processed_ulids",
+      "sync_pending_adds",
+      "sync_snapshot_manifest",
+    ]),
+  );
 
   const mem = raw.prepare("SELECT title, project_id, scope FROM memories WHERE id = ?").get(MEMORY_ROW.id) as {
     title: string;

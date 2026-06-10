@@ -17,7 +17,7 @@ interface LLMStreamCallbacks {
 
 type LLMProviderName =
   | "anthropic" | "ollama" | "groq" | "openai" | "lmstudio"
-  | "xai" | "mistral" | "custom";
+  | "xai" | "mistral" | "openrouter" | "custom";
 ```
 
 ## Methods
@@ -49,7 +49,7 @@ type LLMProviderName =
 |-------|------------------|
 | `AnthropicProvider` | `anthropic` |
 | `OllamaProvider` | `ollama` (local, no API key) |
-| `OpenAICompatibleProvider` | `groq`, `openai`, `lmstudio`, `xai`, `mistral`, `custom` (OpenAI-compatible HTTP API) |
+| `OpenAICompatibleProvider` | `groq`, `openai`, `lmstudio`, `xai`, `mistral`, `openrouter`, `custom` (OpenAI-compatible HTTP API) |
 
 Create instances via `createProvider(name, model, config)` or the higher-level `getLLMProvider(config, task)`.
 

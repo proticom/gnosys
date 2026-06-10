@@ -1,4 +1,3 @@
-import { GnosysDB } from "./db.js";
 import { logError } from "./log.js";
 import { findProjectIdentity } from "./projectIdentity.js";
 
@@ -19,18 +18,17 @@ function outputResult(json: boolean, data: unknown, humanFn: () => void): void {
 }
 
 export async function runListCommand(opts: ListCommandOptions): Promise<void> {
-  let centralDb: GnosysDB | null = null;
+  const { resolveClientRead, listMemoriesWithOverlay } = await import("./clientReadResolve.js");
+  const resolved = resolveClientRead();
+  if (!resolved) {
+    console.error("Central DB not available. Run 'gnosys init' first.");
+    process.exit(1);
+  }
   try {
-    centralDb = GnosysDB.openCentral();
-    if (!centralDb.isAvailable()) {
-      console.error("Central DB not available. Run 'gnosys init' first.");
-      process.exit(1);
-    }
-
     const projIdentity = await findProjectIdentity(process.cwd());
     const projectId = projIdentity?.identity.projectId || null;
 
-    let memories = centralDb.getActiveMemories();
+    let memories = listMemoriesWithOverlay(resolved, (db) => db.getActiveMemories());
 
     if (projectId) {
       memories = memories.filter(
@@ -58,7 +56,7 @@ export async function runListCommand(opts: ListCommandOptions): Promise<void> {
     const { formatMemoryIdHyperlink: formatMemoryId, buildProjectNameLookup, parseIdFormat } =
       await import("./idFormat.js");
     const idFormat = parseIdFormat(opts.idFormat);
-    const projectNames = buildProjectNameLookup(centralDb);
+    const projectNames = buildProjectNameLookup(resolved.localDb);
 
     outputResult(!!opts.json, {
       count: memories.length,
@@ -87,6 +85,6 @@ export async function runListCommand(opts: ListCommandOptions): Promise<void> {
     logError(err, { module: "cli", op: "list" });
     process.exit(1);
   } finally {
-    centralDb?.close();
+    resolved.release();
   }
 }

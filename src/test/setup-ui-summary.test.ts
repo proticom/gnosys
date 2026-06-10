@@ -24,11 +24,23 @@ vi.mock("../lib/setup.js", async () => {
   };
 });
 
+vi.mock("../lib/machineConfig.js", () => ({
+  readMachineConfig: () => null,
+}));
+
 vi.mock("../lib/db.js", async () => {
   const actual = await vi.importActual<typeof import("../lib/db.js")>("../lib/db.js");
   const localStub = {
     isAvailable: () => true,
-    getMeta: (key: string) => (key === "remote_path" ? "/Volumes/Dev/gnosys" : null),
+    getMeta: (key: string) => {
+      const home = process.env.GNOSYS_HOME ?? "";
+      const naTest =
+        home.includes("gnosys-summary-na") || home.includes("gnosys-summary-row-na");
+      if (key === "remote_path") {
+        return naTest ? null : "/Volumes/Dev/gnosys";
+      }
+      return null;
+    },
     close: () => {},
   };
   const centralStub = {
@@ -62,6 +74,57 @@ function cloneCfg(overrides: Partial<GnosysConfig>): GnosysConfig {
 }
 
 describe("Phase C — settings panel (summary)", () => {
+  it("formatMultiMachineSyncSummary shows NA when remote is not configured", async () => {
+    const { formatMultiMachineSyncSummary } = await load();
+    expect(formatMultiMachineSyncSummary(null)).toBe("NA (single-machine only)");
+    expect(formatMultiMachineSyncSummary("/Volumes/Dev/gnosys")).toBe("/Volumes/Dev/gnosys");
+  });
+
+  it("describeMultiMachineSyncPanel shows NA with no remote meta or machine config", async () => {
+    const os = await import("os");
+    const fs = await import("fs");
+    const path = await import("path");
+    const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-summary-na-"));
+    const prevHome = process.env.GNOSYS_HOME;
+    const prevConfig = process.env.GNOSYS_CONFIG_DIR;
+    process.env.GNOSYS_HOME = tmpHome;
+    process.env.GNOSYS_CONFIG_DIR = path.join(tmpHome, "config");
+    fs.mkdirSync(process.env.GNOSYS_CONFIG_DIR, { recursive: true });
+    try {
+      const { describeMultiMachineSyncPanel } = await load();
+      await expect(describeMultiMachineSyncPanel()).resolves.toBe("NA (single-machine only)");
+    } finally {
+      if (prevHome === undefined) delete process.env.GNOSYS_HOME;
+      else process.env.GNOSYS_HOME = prevHome;
+      if (prevConfig === undefined) delete process.env.GNOSYS_CONFIG_DIR;
+      else process.env.GNOSYS_CONFIG_DIR = prevConfig;
+      fs.rmSync(tmpHome, { recursive: true, force: true });
+    }
+  });
+
+  it("renders panel row 4 with NA when multi-machine sync is not configured", async () => {
+    const os = await import("os");
+    const fs = await import("fs");
+    const path = await import("path");
+    const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-summary-row-na-"));
+    const prevHome = process.env.GNOSYS_HOME;
+    const prevConfig = process.env.GNOSYS_CONFIG_DIR;
+    process.env.GNOSYS_HOME = tmpHome;
+    process.env.GNOSYS_CONFIG_DIR = path.join(tmpHome, "config");
+    fs.mkdirSync(process.env.GNOSYS_CONFIG_DIR, { recursive: true });
+    try {
+      const { __test, buildSections } = await load();
+      const rows = await __test.renderPanelRows(cloneCfg({}), buildSections());
+      expect(strip(rows[3])).toBe(" 4   multi-machine sync   NA (single-machine only)");
+    } finally {
+      if (prevHome === undefined) delete process.env.GNOSYS_HOME;
+      else process.env.GNOSYS_HOME = prevHome;
+      if (prevConfig === undefined) delete process.env.GNOSYS_CONFIG_DIR;
+      else process.env.GNOSYS_CONFIG_DIR = prevConfig;
+      fs.rmSync(tmpHome, { recursive: true, force: true });
+    }
+  });
+
   it("renders panel rows for a fresh anthropic config", async () => {
     const { __test, buildSections } = await load();
     const cfg = cloneCfg({});
@@ -79,9 +142,9 @@ describe("Phase C — settings panel (summary)", () => {
       },
     });
     const rows = await __test.renderPanelRows(cfg, buildSections());
-    // Section 1 (provider) should now show xai, not anthropic.
-    expect(strip(rows[0])).toContain("xai");
-    expect(strip(rows[0])).not.toContain("anthropic");
+    // Task routing (row 2) reflects the active provider mix.
+    expect(strip(rows[1])).toContain("xai");
+    expect(strip(rows[1])).not.toContain("anthropic");
     expect(rows.map(strip)).toMatchSnapshot();
   });
 

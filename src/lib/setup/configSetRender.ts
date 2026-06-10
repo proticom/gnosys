@@ -30,6 +30,8 @@ export const KNOWN_CONFIG_KEYS: readonly string[] = [
   "lmstudio-model",
   "xai-model",
   "mistral-model",
+  "openrouter-model",
+  "openrouter-key",
   "custom-url",
   "custom-model",
   "custom-key",

@@ -1,4 +1,3 @@
-import { GnosysDB } from "./db.js";
 import { logError } from "./log.js";
 
 export type DiscoverCommandOptions = {
@@ -24,20 +23,22 @@ export async function runDiscoverCommand(
 ): Promise<void> {
       // Federated discover path
       if (opts.federated || opts.scope) {
-        let centralDb: GnosysDB | null = null;
+        const { resolveClientRead } = await import("./clientReadResolve.js");
+        const resolved = resolveClientRead();
+        if (!resolved) {
+          console.error("Central DB not available.");
+          process.exit(1);
+        }
         try {
-          centralDb = GnosysDB.openCentral();
-          if (!centralDb.isAvailable()) { console.error("Central DB not available."); process.exit(1); }
-  
           const { federatedDiscover, detectCurrentProject } = await import("./federated.js");
-          const projectId = await detectCurrentProject(centralDb, opts.directory || undefined);
+          const projectId = await detectCurrentProject(resolved.db, opts.directory || undefined);
           const scopeFilter = opts.scope ? opts.scope.split(",").map(s => s.trim()) as any : undefined;
-          const results = federatedDiscover(centralDb, query, {
+          const results = federatedDiscover(resolved.db, query, {
             limit: parseInt(opts.limit, 10),
             projectId,
             scopeFilter,
           });
-  
+
           outputResult(!!opts.json, { query, projectId, count: results.length, results }, () => {
             if (results.length === 0) { console.log(`No memories found for "${query}".`); return; }
             for (const [i, r] of results.entries()) {
@@ -50,21 +51,20 @@ export async function runDiscoverCommand(
           logError(err, { module: "cli", op: "discover" });
           process.exit(1);
         } finally {
-          centralDb?.close();
+          resolved.release();
         }
         return;
       }
   
-      // DB-based discover path — uses central DB FTS5
-      let centralDb: GnosysDB | null = null;
+      // DB-based discover path — uses central DB FTS5 (+ v13 client overlay)
+      const { resolveClientRead, discoverWithOverlay } = await import("./clientReadResolve.js");
+      const resolved = resolveClientRead();
+      if (!resolved) {
+        console.error("Central DB not available. Run 'gnosys init' first.");
+        process.exit(1);
+      }
       try {
-        centralDb = GnosysDB.openCentral();
-        if (!centralDb.isAvailable()) {
-          console.error("Central DB not available. Run 'gnosys init' first.");
-          process.exit(1);
-        }
-  
-        const results = centralDb.discoverFts(query, parseInt(opts.limit));
+        const results = discoverWithOverlay(resolved, query, parseInt(opts.limit, 10));
         if (results.length === 0) {
           outputResult(!!opts.json, { query, results: [] }, () => {
             console.log(`No memories found for "${query}". Try gnosys search for full-text.`);
@@ -74,7 +74,7 @@ export async function runDiscoverCommand(
   
         const { formatMemoryIdHyperlink: formatMemoryId, buildProjectNameLookup, parseIdFormat } = await import("./idFormat.js");
         const idFormat = parseIdFormat(opts.idFormat);
-        const projectNames = buildProjectNameLookup(centralDb);
+        const projectNames = buildProjectNameLookup(resolved.localDb);
   
         outputResult(!!opts.json, { query, count: results.length, results }, () => {
           console.log(`Found ${results.length} relevant memories for "${query}":\n`);
@@ -91,6 +91,6 @@ export async function runDiscoverCommand(
         logError(err, { module: "cli", op: "discover" });
         process.exit(1);
       } finally {
-        centralDb?.close();
+        resolved.release();
       }
 }

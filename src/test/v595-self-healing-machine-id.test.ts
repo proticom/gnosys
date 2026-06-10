@@ -12,13 +12,14 @@
  * "still-unknown" branch.
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import * as fs from "fs";
 import * as fsp from "fs/promises";
 import * as os from "os";
 import * as path from "path";
 import { GnosysDB } from "../lib/db.js";
 import { getMachineId } from "../lib/remote.js";
+import * as machineConfigMod from "../lib/machineConfig.js";
 
 const STALE_ID = "unknown-mp9cyh4j";
 const ORIGINAL_HOSTNAME_ENV = process.env.HOSTNAME;
@@ -54,6 +55,7 @@ describe("v5.9.5 — self-healing machine_id", () => {
   });
 
   it("heals a stale `unknown-<rand>` cache when a real hostname is available", async () => {
+    const spy = vi.spyOn(machineConfigMod, "readMachineConfig").mockReturnValue(null);
     const env = await makeDb();
     try {
       env.db.setMeta("machine_id", STALE_ID);
@@ -62,11 +64,13 @@ describe("v5.9.5 — self-healing machine_id", () => {
       expect(id.startsWith("EdsMacStudio-")).toBe(true);
       expect(env.db.getMeta("machine_id")).toBe(id);
     } finally {
+      spy.mockRestore();
       await cleanup(env);
     }
   });
 
   it("heals a stale `dream_machine_id` pointing at the same broken cached id", async () => {
+    const spy = vi.spyOn(machineConfigMod, "readMachineConfig").mockReturnValue(null);
     const env = await makeDb();
     try {
       env.db.setMeta("machine_id", STALE_ID);
@@ -75,11 +79,15 @@ describe("v5.9.5 — self-healing machine_id", () => {
       expect(id.startsWith("EdsMacStudio-")).toBe(true);
       expect(env.db.getDreamMachineId()).toBe(id);
     } finally {
+      spy.mockRestore();
       await cleanup(env);
     }
   });
 
   it("leaves a real cached id untouched (no churn)", async () => {
+    // v5.11+ machine identity prefers machine.json (never synced) over legacy meta.
+    // Force legacy path for this test's "no churn on real meta id" intent.
+    const spy = vi.spyOn(machineConfigMod, "readMachineConfig").mockReturnValue(null);
     const env = await makeDb();
     try {
       const realId = "EdsMacStudio-abc123";
@@ -88,11 +96,13 @@ describe("v5.9.5 — self-healing machine_id", () => {
       expect(id).toBe(realId);
       expect(env.db.getMeta("machine_id")).toBe(realId);
     } finally {
+      spy.mockRestore();
       await cleanup(env);
     }
   });
 
   it("leaves an unrelated `dream_machine_id` alone when machine_id heals", async () => {
+    const spy = vi.spyOn(machineConfigMod, "readMachineConfig").mockReturnValue(null);
     const env = await makeDb();
     try {
       env.db.setMeta("machine_id", STALE_ID);
@@ -102,6 +112,7 @@ describe("v5.9.5 — self-healing machine_id", () => {
       // dream_machine_id pointed at a DIFFERENT machine — don't touch it.
       expect(env.db.getDreamMachineId()).toBe("OtherMachine-xyz789");
     } finally {
+      spy.mockRestore();
       await cleanup(env);
     }
   });

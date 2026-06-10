@@ -5,9 +5,30 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### Historical versions
+## [5.12.0] — 2026-06
 
-Detailed CHANGELOG coverage begins at **5.2.16**. Earlier 5.0.0–5.2.15 releases and a few 5.2.x patches without individual entries (5.2.17, 5.2.18, 5.2.21) are tracked via [git tags](https://github.com/proticom/gnosys/tags). Versions 5.2.13, 5.2.14, and 5.2.15 were CHANGELOG-only and never published to npm.
+### Added
+
+- **Major setup overhaul (keys, providers, routing, OpenRouter)**. New interactive table UI via `gnosys setup keys` (and `setup providers`), OpenRouter provider + dynamic tiers (including :free models), per-task routing editor (`setup routing`), improved keychain integration, global `GNOSYS_*_KEY` scoping with fallbacks, provider detail views, and glyphs. New test + doc coverage for the commands.
+- **Network-hosted MCP foundation (5.12 Phase A/B/C/E)**. `serve --transport http` (Streamable HTTP, stateful sessions, `/health`, token auth, body limits, CORS), `gnosys connect --url`, `gnosys centralize`, machine-local `machine.json` (never synced) for identity, improved remote/machine handling. Dockerfile + launchd examples for peer-as-host (Studio via launchd + Tailscale). Existing sync code preserved for offline/OSS users.
+- **Command coverage & docs improvements (Option B for 5.12.0)**. Reduced to 109 green / 1 amber / 0 red (from earlier baseline of 11 red). Added new handler-level tests and platform-aware docs for high-value new/ungrouped commands (setup keys, setup providers, setup remote doctor, connect). Follows the coverage plan rules (new tests only, full mac/linux/windows platform notes for keychain/config paths).
+
+### Changed
+
+- Version 5.12.0 (minor) for the setup DX + network transport foundation on `feat/network-mcp`.
+- `prepublishOnly` and build:publish path verified clean (sourcemap-free publish build).
+- Postinstall/upgrade UX and GNOSYS_SKIP_POSTINSTALL for dev installs documented.
+
+### Fixed
+
+- Machine-id self-healing test isolation (v5.11 machine.json precedence vs legacy meta heal; supervised test updates only).
+- List command handler test alignment after logging + clientReadResolve changes (supervised).
+
+### Notes
+
+- This release focuses on the setup surface and network MCP client/server basics. Full real-machine Tailscale/Studio validation, Docker image testing (spec ready), and remaining command coverage (last amber + 4 missing docs + ungrouped machine/centralize/scan) can be follow-ups or part of the hybrid Option B work before final publish.
+- gnosys-chat remains the separate TUI utility (v0.1 → 1.0 path independent).
+- Semver roadmap memory and network-mcp build plan updated for 5.12.0.
 
 ## [5.11.4] — 2026-05-27
 

@@ -1,19 +1,41 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Screen 6 — remote render > renders the diff with previous → new 1`] = `
+exports[`Screen 6 — remote render > renderV13ExplanationScreen matches snapshot 1`] = `
 [
-  "   remote     not configured         →   /Volumes/NAS/gnosys",
-  "   mode       —                      →   read-write",
+  " ⬢ gnosys ▸ setup ▸ multi-machine sync                                          ",
+  " ───────────────────────────────────────────────────────────────────────────────",
+  "",
+  " Multi-machine sync",
+  "",
+  " Gnosys can share one brain across multiple machines, but only when they can all reach the same master folder.",
+  "",
+  " This works best with a fast connection (Tailscale, good VPN, or machines on the same local network). Network shares like NAS or slow Tailscale mounts have caused timeouts and lost connections in practice.",
+  "",
+  " When the master folder is reachable:",
+  "   • Every machine reads from a published snapshot of the master (copied locally).",
+  "   • New memories from client machines are staged as small files and later processed by the master (usually during idle time, invisibly).",
+  "",
+  " When the master folder is NOT reachable:",
+  "   • The machine can still write new memories into a small temporary cache.",
+  "   • Old memories cannot be read.",
+  "   • When the machine reconnects, it will quietly push the staged files so the master can ingest them.",
 ]
 `;
 
-exports[`Screen 6 — remote render > renders the intro with \`not configured\` when no remote 1`] = `
+exports[`Screen 6 — remote render > renders the diff with previous → new 1`] = `
+[
+  "   master     not configured         →   /Volumes/NAS/gnosys",
+  "   role       —                      →   master",
+]
+`;
+
+exports[`Screen 6 — remote render > renders the reconfigure intro with \`not configured\` when no remote 1`] = `
 [
   " ⬢ gnosys ▸ setup ▸ remote                                                      ",
   " ───────────────────────────────────────────────────────────────────────────────",
   "",
   " Multi-machine sync",
-  " share your memory store across machines via a path on a NAS, iCloud, Dropbox, etc.",
+  " reconfigure or disconnect your master folder (v13 master/client model)",
   "",
   "   local DB    ~/.gnosys/gnosys.db (120 active, 5 archived)",
   "   current     not configured",

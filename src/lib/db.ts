@@ -285,6 +285,51 @@ CREATE TABLE IF NOT EXISTS sync_conflicts (
 );
 
 CREATE INDEX IF NOT EXISTS idx_sync_conflicts_status ON sync_conflicts(status);
+
+-- v13 multi-machine sync (master DB)
+
+CREATE TABLE IF NOT EXISTS sync_staging_ledger (
+  staging_key       TEXT PRIMARY KEY,
+  machine_id        TEXT NOT NULL,
+  memory_ulid       TEXT,
+  first_seen_at     TEXT NOT NULL,
+  ingest_epoch      INTEGER,
+  status            TEXT NOT NULL DEFAULT 'pending'
+);
+
+CREATE INDEX IF NOT EXISTS idx_sync_staging_status ON sync_staging_ledger(status);
+CREATE INDEX IF NOT EXISTS idx_sync_staging_first_seen ON sync_staging_ledger(first_seen_at);
+
+CREATE TABLE IF NOT EXISTS sync_processed_ulids (
+  ulid              TEXT PRIMARY KEY,
+  ingested_at       TEXT NOT NULL,
+  ingest_epoch      INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS sync_pending_adds (
+  id                TEXT PRIMARY KEY,
+  title             TEXT NOT NULL,
+  category          TEXT NOT NULL,
+  content           TEXT NOT NULL,
+  tags              TEXT DEFAULT '',
+  project_id        TEXT,
+  scope             TEXT DEFAULT 'project',
+  created           TEXT NOT NULL,
+  cleared_at        TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_sync_pending_adds_cleared ON sync_pending_adds(cleared_at);
+
+CREATE TABLE IF NOT EXISTS sync_snapshot_manifest (
+  singleton_id      INTEGER PRIMARY KEY CHECK (singleton_id = 1),
+  epoch             INTEGER NOT NULL,
+  seq               INTEGER NOT NULL,
+  snapshot_path     TEXT NOT NULL,
+  published_at      TEXT NOT NULL,
+  checksum          TEXT,
+  size_bytes        INTEGER,
+  heartbeat_at      TEXT
+);
 `;
 
 // FTS5 sync triggers — created separately (can't use IF NOT EXISTS on triggers)
@@ -799,6 +844,54 @@ export class GnosysDB {
         this.db.exec("ALTER TABLE memories ADD COLUMN attachment_name TEXT");
       } catch {
         // Column already exists — fine
+      }
+
+      // Sync staging / multi-machine ledger tables (from network-mcp work on feat).
+      try {
+        this.db.exec(`
+        CREATE TABLE IF NOT EXISTS sync_staging_ledger (
+          staging_key       TEXT PRIMARY KEY,
+          machine_id        TEXT NOT NULL,
+          memory_ulid       TEXT,
+          first_seen_at     TEXT NOT NULL,
+          ingest_epoch      INTEGER,
+          status            TEXT NOT NULL DEFAULT 'pending'
+        );
+        CREATE INDEX IF NOT EXISTS idx_sync_staging_status ON sync_staging_ledger(status);
+        CREATE INDEX IF NOT EXISTS idx_sync_staging_first_seen ON sync_staging_ledger(first_seen_at);
+
+        CREATE TABLE IF NOT EXISTS sync_processed_ulids (
+          ulid              TEXT PRIMARY KEY,
+          ingested_at       TEXT NOT NULL,
+          ingest_epoch      INTEGER
+        );
+
+        CREATE TABLE IF NOT EXISTS sync_pending_adds (
+          id                TEXT PRIMARY KEY,
+          title             TEXT NOT NULL,
+          category          TEXT NOT NULL,
+          content           TEXT NOT NULL,
+          tags              TEXT DEFAULT '',
+          project_id        TEXT,
+          scope             TEXT DEFAULT 'project',
+          created           TEXT NOT NULL,
+          cleared_at        TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_sync_pending_adds_cleared ON sync_pending_adds(cleared_at);
+
+        CREATE TABLE IF NOT EXISTS sync_snapshot_manifest (
+          singleton_id      INTEGER PRIMARY KEY CHECK (singleton_id = 1),
+          epoch             INTEGER NOT NULL,
+          seq               INTEGER NOT NULL,
+          snapshot_path     TEXT NOT NULL,
+          published_at      TEXT NOT NULL,
+          checksum          TEXT,
+          size_bytes        INTEGER,
+          heartbeat_at      TEXT
+        );
+      `);
+      } catch {
+        // Sync tables/indexes may already exist — fine
       }
     }
 
@@ -1529,6 +1622,192 @@ export class GnosysDB {
 
   resolveConflict(memoryId: string): void {
     this.db.prepare("UPDATE sync_conflicts SET status = 'resolved' WHERE memory_id = ?").run(memoryId);
+  }
+
+  // ─── v13 multi-machine sync (master + client local overlay) ───────────
+
+  recordStagingLedgerEntry(entry: {
+    stagingKey: string;
+    machineId: string;
+    memoryUlid?: string | null;
+    firstSeenAt: string;
+    ingestEpoch?: number | null;
+    status?: string;
+  }): void {
+    if (entry.status === undefined) {
+      this.db.prepare(`
+        INSERT INTO sync_staging_ledger (staging_key, machine_id, memory_ulid, first_seen_at, ingest_epoch, status)
+        VALUES (?, ?, ?, ?, ?, 'pending')
+        ON CONFLICT(staging_key) DO UPDATE SET
+          memory_ulid = COALESCE(excluded.memory_ulid, sync_staging_ledger.memory_ulid),
+          ingest_epoch = COALESCE(excluded.ingest_epoch, sync_staging_ledger.ingest_epoch)
+      `).run(
+        entry.stagingKey,
+        entry.machineId,
+        entry.memoryUlid ?? null,
+        entry.firstSeenAt,
+        entry.ingestEpoch ?? null,
+      );
+      return;
+    }
+    this.db.prepare(`
+      INSERT INTO sync_staging_ledger (staging_key, machine_id, memory_ulid, first_seen_at, ingest_epoch, status)
+      VALUES (?, ?, ?, ?, ?, ?)
+      ON CONFLICT(staging_key) DO UPDATE SET
+        memory_ulid = COALESCE(excluded.memory_ulid, sync_staging_ledger.memory_ulid),
+        ingest_epoch = COALESCE(excluded.ingest_epoch, sync_staging_ledger.ingest_epoch),
+        status = excluded.status
+    `).run(
+      entry.stagingKey,
+      entry.machineId,
+      entry.memoryUlid ?? null,
+      entry.firstSeenAt,
+      entry.ingestEpoch ?? null,
+      entry.status,
+    );
+  }
+
+  isUlidProcessed(ulid: string): boolean {
+    const row = this.db.prepare("SELECT 1 FROM sync_processed_ulids WHERE ulid = ?").get(ulid);
+    return Boolean(row);
+  }
+
+  markUlidProcessed(ulid: string, ingestEpoch?: number | null): void {
+    this.db.prepare(`
+      INSERT OR IGNORE INTO sync_processed_ulids (ulid, ingested_at, ingest_epoch)
+      VALUES (?, ?, ?)
+    `).run(ulid, new Date().toISOString(), ingestEpoch ?? null);
+  }
+
+  countPendingStagingLedger(): number {
+    const row = this.db.prepare(
+      "SELECT COUNT(*) as cnt FROM sync_staging_ledger WHERE status = 'pending'",
+    ).get() as { cnt: number };
+    return row.cnt;
+  }
+
+  getStagingLedgerFirstSeenAt(stagingKey: string): string | null {
+    const row = this.db.prepare(
+      "SELECT first_seen_at FROM sync_staging_ledger WHERE staging_key = ?",
+    ).get(stagingKey) as { first_seen_at: string } | undefined;
+    return row?.first_seen_at ?? null;
+  }
+
+  insertPendingAdd(row: {
+    id: string;
+    title: string;
+    category: string;
+    content: string;
+    tags?: string;
+    project_id?: string | null;
+    scope?: string;
+    created: string;
+  }): void {
+    this.db.prepare(`
+      INSERT OR REPLACE INTO sync_pending_adds
+        (id, title, category, content, tags, project_id, scope, created, cleared_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL)
+    `).run(
+      row.id,
+      row.title,
+      row.category,
+      row.content,
+      row.tags ?? "",
+      row.project_id ?? null,
+      row.scope ?? "project",
+      row.created,
+    );
+  }
+
+  listActivePendingAdds(): Array<{
+    id: string;
+    title: string;
+    category: string;
+    content: string;
+    tags: string;
+    project_id: string | null;
+    scope: string;
+    created: string;
+  }> {
+    return this.db.prepare(
+      "SELECT id, title, category, content, tags, project_id, scope, created FROM sync_pending_adds WHERE cleared_at IS NULL ORDER BY created ASC",
+    ).all() as Array<{
+      id: string;
+      title: string;
+      category: string;
+      content: string;
+      tags: string;
+      project_id: string | null;
+      scope: string;
+      created: string;
+    }>;
+  }
+
+  clearPendingAdd(id: string): void {
+    this.db.prepare(
+      "UPDATE sync_pending_adds SET cleared_at = ? WHERE id = ? AND cleared_at IS NULL",
+    ).run(new Date().toISOString(), id);
+  }
+
+  getSnapshotManifest(): {
+    epoch: number;
+    seq: number;
+    snapshot_path: string;
+    published_at: string;
+    checksum: string | null;
+    size_bytes: number | null;
+    heartbeat_at: string | null;
+  } | null {
+    const row = this.db.prepare(
+      "SELECT epoch, seq, snapshot_path, published_at, checksum, size_bytes, heartbeat_at FROM sync_snapshot_manifest WHERE singleton_id = 1",
+    ).get();
+    return (row as {
+      epoch: number;
+      seq: number;
+      snapshot_path: string;
+      published_at: string;
+      checksum: string | null;
+      size_bytes: number | null;
+      heartbeat_at: string | null;
+    }) ?? null;
+  }
+
+  publishSnapshotManifest(manifest: {
+    epoch: number;
+    seq: number;
+    snapshotPath: string;
+    publishedAt: string;
+    checksum?: string | null;
+    sizeBytes?: number | null;
+    heartbeatAt?: string | null;
+  }): void {
+    this.db.prepare(`
+      INSERT INTO sync_snapshot_manifest
+        (singleton_id, epoch, seq, snapshot_path, published_at, checksum, size_bytes, heartbeat_at)
+      VALUES (1, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(singleton_id) DO UPDATE SET
+        epoch = excluded.epoch,
+        seq = excluded.seq,
+        snapshot_path = excluded.snapshot_path,
+        published_at = excluded.published_at,
+        checksum = excluded.checksum,
+        size_bytes = excluded.size_bytes,
+        heartbeat_at = excluded.heartbeat_at
+    `).run(
+      manifest.epoch,
+      manifest.seq,
+      manifest.snapshotPath,
+      manifest.publishedAt,
+      manifest.checksum ?? null,
+      manifest.sizeBytes ?? null,
+      manifest.heartbeatAt ?? null,
+    );
+  }
+
+  touchSnapshotHeartbeat(at: string): void {
+    this.db.prepare(
+      "UPDATE sync_snapshot_manifest SET heartbeat_at = ? WHERE singleton_id = 1",
+    ).run(at);
   }
 
   // ─── Lifecycle ──────────────────────────────────────────────────────

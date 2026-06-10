@@ -48,6 +48,27 @@ Target exists without `--force`:
 centralize failed: Target already exists: /path/to/central-gnosys/gnosys.db (use --force to overwrite)
 ```
 
+## Platform notes
+
+### macOS
+- Source brain: `~/.gnosys/gnosys.db` (or `$GNOSYS_HOME/gnosys.db`).
+- Target: any dir (Docker volume mount, NAS path, or another host's .gnosys).
+- Use with `gnosys serve --transport http` on the central host (e.g. Studio) and `gnosys connect` from clients.
+
+### Linux
+- Same paths as macOS (usually `~/.gnosys` or XDG-aware).
+- Systemd timers for remote sync can use the centralized brain.
+
+### Windows
+- Source: `%APPDATA%\gnosys\gnosys.db` or `%LOCALAPPDATA%\gnosys\gnosys.db` (see `getMachineConfigPath` / paths.ts).
+- Target: any writable dir for volume or network share (avoid SMB for the live DB; use for seed only).
+- WSL interop: paths may differ; prefer the Windows gnosys for the central if mixing.
+
+## Related (network MCP)
+- `gnosys serve --transport http --host <tailscale>` on the seeded host.
+- `gnosys connect --url http://...` on clients.
+- `gnosys setup remote timer` for automated ingest against the central.
+
 Failures set `process.exitCode = 1`.
 
 ## Platform notes

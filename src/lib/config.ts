@@ -6,13 +6,18 @@
 import { z } from "zod";
 import fs from "fs/promises";
 import path from "path";
-import { execSync } from "child_process";
 import { getGnosysHome } from "./paths.js";
 import { atomicWriteFile } from "./atomicWrite.js";
+import {
+  getApiKeyForProviderFromConfig,
+  type LlmTaskName,
+} from "./apiKeyVault.js";
+
+export type { LlmTaskName } from "./apiKeyVault.js";
 
 // ─── LLM Provider Schemas ───────────────────────────────────────────────
 
-const LLMProviderEnum = z.enum(["anthropic", "ollama", "groq", "openai", "lmstudio", "xai", "mistral", "custom"]);
+const LLMProviderEnum = z.enum(["anthropic", "ollama", "groq", "openai", "lmstudio", "xai", "mistral", "openrouter", "custom"]);
 export type LLMProviderName = z.infer<typeof LLMProviderEnum>;
 
 const AnthropicConfigSchema = z.object({
@@ -51,6 +56,12 @@ const MistralConfigSchema = z.object({
   apiKey: z.string().optional(),
 });
 
+const OpenRouterConfigSchema = z.object({
+  model: z.string().default("nvidia/nemotron-3-super-120b-a12b:free"),
+  baseUrl: z.string().default("https://openrouter.ai/api/v1"),
+  apiKey: z.string().optional(),
+});
+
 const CustomConfigSchema = z.object({
   model: z.string(),
   baseUrl: z.string(),
@@ -71,6 +82,10 @@ const LLMConfigSchema = z.object({
   lmstudio: LMStudioConfigSchema.default({ model: "default", baseUrl: "http://localhost:1234/v1" }),
   xai: XAIConfigSchema.default({ model: "grok-4.20" }),
   mistral: MistralConfigSchema.default({ model: "mistral-small-4" }),
+  openrouter: OpenRouterConfigSchema.default({
+    model: "nvidia/nemotron-3-super-120b-a12b:free",
+    baseUrl: "https://openrouter.ai/api/v1",
+  }),
   custom: CustomConfigSchema.optional(),
 });
 
@@ -229,6 +244,7 @@ export const GnosysConfigSchema = z.object({
     lmstudio: { model: "default", baseUrl: "http://localhost:1234/v1" },
     xai: { model: "grok-4.20" },
     mistral: { model: "mistral-small-4" },
+    openrouter: { model: "nvidia/nemotron-3-super-120b-a12b:free", baseUrl: "https://openrouter.ai/api/v1" },
   }),
 
   /** Task-specific model overrides */
@@ -369,79 +385,24 @@ export function getProviderModel(config: GnosysConfig, provider: LLMProviderName
     case "lmstudio": return config.llm.lmstudio.model;
     case "xai": return config.llm.xai.model;
     case "mistral": return config.llm.mistral.model;
+    case "openrouter": return config.llm.openrouter.model;
     case "custom": return config.llm.custom?.model || "";
     default: return config.llm.anthropic.model;
   }
 }
 
 /**
- * Resolve an API key from multiple sources in priority order:
- * 1. Config (gnosys.json)
- * 2. GNOSYS_<PROVIDER>_KEY env var (new convention)
- * 3. macOS Keychain (if on macOS)
- * 4. Legacy env var (ANTHROPIC_API_KEY, etc.)
- * 5. ~/.config/gnosys/.env (read at startup)
- */
-function resolveApiKey(
-  configKey: string | undefined,
-  gnosysEnvVar: string,
-  legacyEnvVar?: string,
-): string | undefined {
-  // 1. Config value
-  if (configKey) return configKey;
-
-  // 2. New GNOSYS_*_KEY env var
-  if (process.env[gnosysEnvVar]) return process.env[gnosysEnvVar];
-
-  // Skip keychain lookups inside vitest — test env can't differentiate
-  // a real keychain entry from a stubbed env var, so tests asserting "no
-  // key configured" leak the developer's actual keys.
-  const inTest = !!process.env.VITEST;
-
-  // 3. macOS Keychain
-  if (!inTest && process.platform === "darwin") {
-    try {
-      const result = execSync(
-        `security find-generic-password -a "$USER" -s "${gnosysEnvVar}" -w 2>/dev/null`,
-        { stdio: "pipe", encoding: "utf-8", timeout: 2000 }
-      ).trim();
-      if (result) return result;
-    } catch {
-      // Not in keychain — fall through
-    }
-  }
-
-  // 4. Linux GNOME Keyring (secret-tool)
-  if (!inTest && process.platform === "linux") {
-    try {
-      const result = execSync(
-        `secret-tool lookup service gnosys account ${gnosysEnvVar} 2>/dev/null`,
-        { stdio: "pipe", encoding: "utf-8", timeout: 2000 }
-      ).trim();
-      if (result) return result;
-    } catch {
-      // secret-tool not installed or no entry — fall through
-    }
-  }
-
-  // 5. Legacy env var
-  if (legacyEnvVar && process.env[legacyEnvVar]) return process.env[legacyEnvVar];
-
-  return undefined;
-}
-
-/**
- * Get the Groq API key, checking config first then env var.
+ * Get the Groq API key (global → provider → legacy env).
  */
 export function getGroqApiKey(config: GnosysConfig): string | undefined {
-  return resolveApiKey(config.llm.groq.apiKey, "GNOSYS_GROQ_KEY", "GROQ_API_KEY");
+  return getApiKeyForProviderFromConfig(config, "groq");
 }
 
 /**
- * Get the OpenAI API key, checking config first then env var.
+ * Get the OpenAI API key (global → provider → legacy env).
  */
 export function getOpenAIApiKey(config: GnosysConfig): string | undefined {
-  return resolveApiKey(config.llm.openai.apiKey, "GNOSYS_OPENAI_KEY", "OPENAI_API_KEY");
+  return getApiKeyForProviderFromConfig(config, "openai");
 }
 
 /**
@@ -462,7 +423,7 @@ export function getLMStudioBaseUrl(config: GnosysConfig): string {
  * Get the Anthropic API key, checking config first then env var.
  */
 export function getAnthropicApiKey(config: GnosysConfig): string | undefined {
-  return resolveApiKey(config.llm.anthropic.apiKey, "GNOSYS_ANTHROPIC_KEY", "ANTHROPIC_API_KEY");
+  return getApiKeyForProviderFromConfig(config, "anthropic");
 }
 
 /**
@@ -476,21 +437,35 @@ export function getOllamaBaseUrl(config: GnosysConfig): string {
  * Get the xAI API key, checking config first then env var.
  */
 export function getXAIApiKey(config: GnosysConfig): string | undefined {
-  return resolveApiKey(config.llm.xai.apiKey, "GNOSYS_XAI_KEY", "XAI_API_KEY");
+  return getApiKeyForProviderFromConfig(config, "xai");
 }
 
 /**
  * Get the Mistral API key, checking config first then env var.
  */
 export function getMistralApiKey(config: GnosysConfig): string | undefined {
-  return resolveApiKey(config.llm.mistral.apiKey, "GNOSYS_MISTRAL_KEY", "MISTRAL_API_KEY");
+  return getApiKeyForProviderFromConfig(config, "mistral");
+}
+
+/**
+ * Get the OpenRouter API key, checking config first then env var.
+ */
+export function getOpenRouterApiKey(config: GnosysConfig): string | undefined {
+  return getApiKeyForProviderFromConfig(config, "openrouter");
+}
+
+/**
+ * Get the OpenRouter API base URL from config.
+ */
+export function getOpenRouterBaseUrl(config: GnosysConfig): string {
+  return config.llm.openrouter.baseUrl;
 }
 
 /**
  * Get the Custom provider API key, checking config first then env var.
  */
 export function getCustomApiKey(config: GnosysConfig): string | undefined {
-  return resolveApiKey(config.llm.custom?.apiKey, "GNOSYS_CUSTOM_KEY", "GNOSYS_LLM_API_KEY");
+  return getApiKeyForProviderFromConfig(config, "custom");
 }
 
 // ─── Migration ───────────────────────────────────────────────────────────
@@ -706,6 +681,10 @@ export function generateConfigTemplate(): string {
         lmstudio: { model: "default", baseUrl: "http://localhost:1234/v1" },
         xai: { model: "grok-4.20" },
         mistral: { model: "mistral-small-4" },
+        openrouter: {
+          model: "nvidia/nemotron-3-super-120b-a12b:free",
+          baseUrl: "https://openrouter.ai/api/v1",
+        },
       },
       taskModels: {},
       bulkIngestionBatchSize: 500,
@@ -749,4 +728,6 @@ export function generateConfigTemplate(): string {
 /**
  * All supported provider names.
  */
-export const ALL_PROVIDERS: LLMProviderName[] = ["anthropic", "ollama", "groq", "openai", "lmstudio", "xai", "mistral", "custom"];
+export const ALL_PROVIDERS: LLMProviderName[] = [
+  "anthropic", "ollama", "groq", "openai", "lmstudio", "xai", "mistral", "openrouter", "custom",
+];

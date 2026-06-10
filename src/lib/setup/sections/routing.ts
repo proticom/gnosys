@@ -2,20 +2,22 @@
  * Setup: Task Routing.
  *
  * Standalone wizard for configuring per-task LLM routing
- * (structuring / synthesis / vision / transcription / dream).
- * Extracted from the linear `runSetup` flow so it can be invoked
- * directly via `gnosys setup routing` or from the summary-first menu.
+ * (structuring / synthesis / vision / transcription / chat / dream).
  */
 
 import type { Interface as ReadlineInterface } from "readline/promises";
 import {
   loadConfig,
   updateConfig,
-  resolveTaskModel,
   getProviderModel,
   type GnosysConfig,
   type LLMProviderName,
 } from "../../config.js";
+import {
+  buildApiKeyRequirementsFromConfig,
+  buildEffectiveRouting,
+  ensureApiKeys,
+} from "../../apiKeyVault.js";
 import { safeQuestion } from "../ui/safePrompt.js";
 import { Header } from "../ui/header.js";
 import { Title } from "../ui/title.js";
@@ -28,6 +30,8 @@ import {
   type TaskRow,
   type DiffEntry,
 } from "../routingRender.js";
+import { runCommaListRoutingEditor } from "./taskRoutingEditor.js";
+import { resolveActiveStorePath } from "../storePath.js";
 
 const DIM = "\x1b[2m";
 const RESET = "\x1b[0m";
@@ -73,24 +77,6 @@ async function askChoice(
   return defaultIdx;
 }
 
-function buildEffectiveRouting(cfg: GnosysConfig): Record<string, { provider: string; model: string }> {
-  const out: Record<string, { provider: string; model: string }> = {};
-  for (const t of TASKS) {
-    const r = resolveTaskModel(cfg, t);
-    out[t] = { provider: r.provider, model: r.model };
-  }
-  out.dream = {
-    provider: cfg.dream?.provider ?? "ollama",
-    model: cfg.dream?.model ?? getProviderModel(cfg, (cfg.dream?.provider ?? "ollama") as LLMProviderName),
-  };
-  return out;
-}
-
-/**
- * Build the table-row payload from current routing data. Marks any
- * task whose effective provider/model differs from the snapshot as
- * `changed` so the renderer can highlight it (▶ in accent-hi).
- */
 function buildTaskRows(
   routing: Record<string, { provider: string; model: string }>,
   baseline: Record<string, { provider: string; model: string }>,
@@ -109,38 +95,34 @@ function buildTaskRows(
 }
 
 /**
- * Run the task-routing wizard. Reads current config, walks the 3-way choice
- * (keep defaults / customize individual / use same for all), writes any
- * overrides via updateConfig(). Returns true if config was changed.
+ * Run the task-routing wizard.
  */
 export async function runRoutingSetup(opts: RoutingOptions): Promise<boolean> {
-  const cfg = await loadConfig(opts.directory);
+  const storePath = resolveActiveStorePath(opts.directory);
+  const cfg = await loadConfig(storePath);
   const provider = cfg.llm.defaultProvider;
   const model = getProviderModel(cfg, provider);
 
   console.log("");
   console.log(Header(["gnosys", "setup", "routing"]));
   console.log("");
-  console.log(Title("Task routing", "each task can use a different model — overrides the default"));
+  console.log(
+    Title("Task routing", "pick provider + model per task — set API keys under setup providers"),
+  );
   console.log("");
 
   const dreamEnabled = !!cfg.dream?.enabled;
   const baseline = buildEffectiveRouting(cfg);
-  // Initial table: nothing has changed yet, so every row is `changed: false`.
   const initialRows = buildTaskRows(baseline, baseline, dreamEnabled);
   console.log(renderRoutingTable(initialRows));
   console.log("");
 
-  // v5.9.4 Bug 5 — clearer option copy. Option 1 keeps current routing
-  // (skip, no changes). Option 2 customises individual tasks. Option 3
-  // CLEARS all task overrides so every task falls back to the default
-  // provider; we show a Diff() of what's being removed before committing.
   const choice = await askChoice(
     opts.rl,
     "What would you like to do?",
     [
       "Keep current routing (no changes)",
-      "Customize individual tasks",
+      "Edit tasks — pick by number, then provider + model for each",
       "Reset all task overrides to use default",
     ],
     0,
@@ -151,46 +133,7 @@ export async function runRoutingSetup(opts: RoutingOptions): Promise<boolean> {
     return false;
   }
 
-  const newTaskModels: Record<string, { provider: string; model: string }> = {
-    ...(cfg.taskModels ?? {}),
-  };
-  let dreamProvider: LLMProviderName = (cfg.dream?.provider ?? "ollama") as LLMProviderName;
-  let dreamModel = cfg.dream?.model ?? "llama3.2";
-  let dreamEnabledNew = dreamEnabled;
-
-  if (choice === 1) {
-    // Customize each task
-    for (const t of TASKS) {
-      const current = baseline[t];
-      const keep = await askYesNo(
-        opts.rl,
-        `Keep ${t} → ${current.provider} / ${current.model}?`,
-        true,
-      );
-      if (!keep) {
-        const p = await ask(opts.rl, `  Provider for ${t} (e.g. anthropic, openai, xai, ollama): `);
-        const m = await ask(opts.rl, `  Model for ${t}: `);
-        if (p && m) newTaskModels[t] = { provider: p, model: m };
-      }
-    }
-    // Dream
-    dreamEnabledNew = await askYesNo(opts.rl, "Enable dream mode?", dreamEnabled);
-    if (dreamEnabledNew) {
-      const keepDream = await askYesNo(
-        opts.rl,
-        `Keep dream → ${dreamProvider} / ${dreamModel}?`,
-        true,
-      );
-      if (!keepDream) {
-        const p = (await ask(opts.rl, "  Provider for dream: ")) as LLMProviderName | "";
-        if (p) dreamProvider = p as LLMProviderName;
-        dreamModel = (await ask(opts.rl, "  Model for dream: ")) || dreamModel;
-      }
-    }
-  } else {
-    // v5.9.4 Bug 5 — choice === 2 now means "reset all task overrides to use
-    // default". Show the user what's about to be cleared (the rows currently
-    // pinned to non-default providers) before committing.
+  if (choice === 2) {
     const { Diff } = await import("../ui/diff.js");
     const overridesBeingCleared = Object.entries(cfg.taskModels ?? {})
       .filter(([, v]) => v.provider !== provider || v.model !== model)
@@ -211,27 +154,25 @@ export async function runRoutingSetup(opts: RoutingOptions): Promise<boolean> {
       console.log(`${DIM}Cancelled.${RESET}`);
       return false;
     }
-    // Clear every overridden task back to default by deleting the keys.
-    for (const t of TASKS) delete newTaskModels[t];
+    await updateConfig(storePath, { taskModels: {} });
+    printStatus("ok", "routing reset", "all tasks use default provider/model");
+    console.log(Footer("press enter to return"));
+    return true;
   }
 
-  // Persist
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await updateConfig(opts.directory, {
-    taskModels: newTaskModels as GnosysConfig["taskModels"],
-    dream: {
-      ...(cfg.dream ?? {}),
-      enabled: dreamEnabledNew,
-      provider: dreamProvider as LLMProviderName,
-      model: dreamModel,
-    } as any,
-  });
+  const patch = await runCommaListRoutingEditor(opts.rl, storePath, cfg);
+  if (!patch) {
+    return false;
+  }
 
-  // v5.9.3 Screen 4 — re-render the table with `▶` markers on changed rows
-  // followed by a Diff() block summarizing what shipped. Then a final
-  // status line that names the saved file.
-  const updatedCfg = await loadConfig(opts.directory);
+  await updateConfig(storePath, {
+    taskModels: patch.taskModels,
+    dream: patch.dream,
+  } as Partial<GnosysConfig>);
+
+  const updatedCfg = await loadConfig(storePath);
   const updatedRouting = buildEffectiveRouting(updatedCfg);
+  const dreamEnabledNew = !!updatedCfg.dream?.enabled;
   const finalRows = buildTaskRows(updatedRouting, baseline, dreamEnabledNew);
   console.log("");
   console.log(renderRoutingTable(finalRows));
@@ -247,8 +188,18 @@ export async function runRoutingSetup(opts: RoutingOptions): Promise<boolean> {
   }
   console.log(renderRoutingDiff(diffEntries));
   console.log("");
-  printStatus("ok", "routing saved", `${opts.directory}/.gnosys/gnosys.json`);
-  // Footer hint (right-aligned) for any follow-up navigation in the menu flow.
+  printStatus("ok", "routing saved", `${storePath}/gnosys.json`);
+
+  const keyReqs = buildApiKeyRequirementsFromConfig(updatedCfg);
+  if (keyReqs.length > 0) {
+    const askInput = async (r: ReadlineInterface, prompt: string) =>
+      ask(r, `${prompt}: `);
+    await ensureApiKeys(opts.rl, keyReqs, askInput, {
+      dim: DIM,
+      reset: RESET,
+    });
+  }
+
   console.log(Footer("press enter to return"));
   return true;
 }

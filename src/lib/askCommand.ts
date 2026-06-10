@@ -1,6 +1,5 @@
 import { loadConfig, DEFAULT_CONFIG, type GnosysConfig } from "./config.js";
 import { GnosysSearch } from "./search.js";
-import { GnosysDB } from "./db.js";
 import { getSecureStorageSetupHint } from "./platform.js";
 import type { GnosysResolver } from "./resolver.js";
 
@@ -84,28 +83,30 @@ export async function runAskCommand(
       // If --federated, pre-retrieve from central DB and inject as context
       let federatedContext: string | undefined;
       if (opts.federated || opts.scope) {
-        let centralDb: GnosysDB | null = null;
-        try {
-          centralDb = GnosysDB.openCentral();
-          if (centralDb?.isAvailable()) {
-            const { federatedSearch: fSearch, detectCurrentProject } = await import("./federated.js");
-            const projectId = await detectCurrentProject(centralDb, opts.directory || undefined);
-            const scopeFilter = opts.scope ? opts.scope.split(",").map(s => s.trim()) as any : undefined;
-            const fResults = fSearch(centralDb, question, {
-              limit: parseInt(opts.limit, 10),
-              projectId,
-              scopeFilter,
-            });
-            if (fResults.length > 0) {
-              federatedContext = fResults.map(r => {
-                const mem = centralDb!.getMemory(r.id);
-                return `## ${r.title} [scope:${r.scope}, score:${r.score.toFixed(3)}]\n${mem?.content || r.snippet}`;
-              }).join("\n\n");
-              console.error(`[federated] Found ${fResults.length} cross-scope memories as additional context`);
+        const { resolveClientRead } = await import("./clientReadResolve.js");
+        const resolved = resolveClientRead();
+        if (resolved) {
+          try {
+            if (resolved.db.isAvailable()) {
+              const { federatedSearch: fSearch, detectCurrentProject } = await import("./federated.js");
+              const projectId = await detectCurrentProject(resolved.db, opts.directory || undefined);
+              const scopeFilter = opts.scope ? opts.scope.split(",").map(s => s.trim()) as any : undefined;
+              const fResults = fSearch(resolved.db, question, {
+                limit: parseInt(opts.limit, 10),
+                projectId,
+                scopeFilter,
+              });
+              if (fResults.length > 0) {
+                federatedContext = fResults.map(r => {
+                  const mem = resolved.db.getMemory(r.id);
+                  return `## ${r.title} [scope:${r.scope}, score:${r.score.toFixed(3)}]\n${mem?.content || r.snippet}`;
+                }).join("\n\n");
+                console.error(`[federated] Found ${fResults.length} cross-scope memories as additional context`);
+              }
             }
-          }
-        } catch { /* Central DB not available — fall through to normal ask */ }
-        finally { centralDb?.close(); }
+          } catch { /* Central DB not available — fall through to normal ask */ }
+          finally { resolved.release(); }
+        }
       }
   
       const mode = opts.mode as "keyword" | "semantic" | "hybrid";

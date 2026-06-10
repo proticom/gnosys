@@ -26,6 +26,8 @@ describe("gnosys ask command wiring", () => {
     expect(handler).toContain("if (!ask.isLLMAvailable)");
     expect(handler).toContain("getSecureStorageSetupHint");
     expect(handler).toContain("federatedSearch");
+    expect(handler).toContain("resolved.release()");
+    expect(handler).toContain('await import("./clientReadResolve.js")');
     expect(handler).toContain("additionalContext: federatedContext");
     expect(handler).toContain("onToken: (token) => process.stdout.write(token)");
     expect(handler).toContain("GnosysMaintenanceEngine.reinforceBatch");

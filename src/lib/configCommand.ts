@@ -32,6 +32,7 @@ function providerModel(cfg: GnosysConfig, p: LLMProviderName): string | undefine
     case "lmstudio": return cfg.llm.lmstudio.model;
     case "xai": return cfg.llm.xai.model;
     case "mistral": return cfg.llm.mistral.model;
+    case "openrouter": return cfg.llm.openrouter.model;
     case "custom": return cfg.llm.custom?.model;
   }
 }
@@ -67,6 +68,7 @@ export async function runConfigShowCommand(
         console.log(`    LM Studio:  model=${cfg.llm.lmstudio.model}, url=${cfg.llm.lmstudio.baseUrl}`);
         console.log(`    xAI:        model=${cfg.llm.xai.model}, apiKey=${cfg.llm.xai.apiKey ? "config" : (process.env.XAI_API_KEY ? "env" : "—")}`);
         console.log(`    Mistral:    model=${cfg.llm.mistral.model}, apiKey=${cfg.llm.mistral.apiKey ? "config" : (process.env.MISTRAL_API_KEY ? "env" : "—")}`);
+        console.log(`    OpenRouter: model=${cfg.llm.openrouter.model}, apiKey=${cfg.llm.openrouter.apiKey ? "config" : (process.env.OPENROUTER_API_KEY ? "env" : "—")}, url=${cfg.llm.openrouter.baseUrl}`);
         if (cfg.llm.custom) {
           console.log(`    Custom:     model=${cfg.llm.custom.model}, url=${cfg.llm.custom.baseUrl}, apiKey=${cfg.llm.custom.apiKey ? "config" : (process.env.GNOSYS_LLM_API_KEY ? "env" : "—")}`);
         }
@@ -141,6 +143,7 @@ export async function runConfigSetCommand(
             else if (p === "lmstudio") cfg.llm.lmstudio.model = value;
             else if (p === "xai") cfg.llm.xai.model = value;
             else if (p === "mistral") cfg.llm.mistral.model = value;
+            else if (p === "openrouter") cfg.llm.openrouter.model = value;
             else if (p === "custom") {
               if (!cfg.llm.custom) cfg.llm.custom = { model: value, baseUrl: "" };
               else cfg.llm.custom.model = value;
@@ -224,7 +227,17 @@ export async function runConfigSetCommand(
             diffRow = { label: "mistral.model", from: cfg.llm.mistral.model ?? "(unset)", to: value };
             cfg.llm.mistral.model = value;
             break;
-    
+
+          case "openrouter-model":
+            diffRow = { label: "openrouter.model", from: cfg.llm.openrouter.model ?? "(unset)", to: value };
+            cfg.llm.openrouter.model = value;
+            break;
+
+          case "openrouter-key":
+            diffRow = { label: "openrouter.apiKey", from: cfg.llm.openrouter.apiKey ? "(set)" : "(unset)", to: "(set)" };
+            cfg.llm.openrouter.apiKey = value;
+            break;
+
           case "custom-url":
             diffRow = { label: "custom.baseUrl", from: cfg.llm.custom?.baseUrl ?? "(unset)", to: value };
             if (!cfg.llm.custom) cfg.llm.custom = { model: "", baseUrl: value };

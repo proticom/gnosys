@@ -54,7 +54,9 @@ const PKG_VERSION = (() => {
 // Detect the "gnosys.json says anthropic but no Anthropic key exists AND
 // another provider has a key" pattern. Offer one-keystroke repair.
 
-const PROVIDERS_WITH_KEYS: LLMProviderName[] = ["anthropic", "openai", "xai", "groq", "mistral"];
+const PROVIDERS_WITH_KEYS: LLMProviderName[] = [
+  "anthropic", "openai", "xai", "groq", "mistral", "openrouter",
+];
 
 async function maybeOfferProviderRepair(
   cfg: GnosysConfig,
@@ -106,7 +108,7 @@ async function maybeOfferProviderRepair(
     process.stdout.write(`${Status("ok", `default switched · ${suggestion} is now the active provider`)}\n`);
   } catch (err) {
     process.stdout.write(`${Status("warn", `failed to repair: ${err instanceof Error ? err.message : String(err)}`)}\n`);
-    process.stdout.write(`${Status("warn", "run 'gnosys setup models' to change manually", "fallback")}\n`);
+    process.stdout.write(`${Status("warn", "run 'gnosys setup providers' to change manually", "fallback")}\n`);
   }
 }
 
@@ -124,43 +126,31 @@ export function buildSections(): SummarySection[] {
   return [
     {
       key: "1",
-      label: "provider",
-      describe: (cfg) => cfg.llm.defaultProvider,
-      // v5.9.4 Bug 4 — row 1 now changes ONLY the provider; row 2 stays
-      // as the full model picker. Before, both routed to `runModelsSetup`.
+      label: "providers",
+      describe: async (cfg) => {
+        const { describeProvidersSummary } = await import("./sections/providers.js");
+        return describeProvidersSummary(cfg);
+      },
       edit: async (rl, _cfg, projectDir) => {
-        const { runProviderOnlySetup } = await import("../setup.js");
-        await runProviderOnlySetup({ directory: projectDir, rl });
-        return true;
+        const { runProvidersSetup } = await import("./sections/providers.js");
+        return runProvidersSetup({ rl, directory: projectDir });
       },
     },
     {
       key: "2",
-      label: "models",
-      describe: async (cfg) => {
-        const synth = resolveTaskModel(cfg, "synthesis");
-        return `${synth.provider} / ${synth.model}`;
-      },
-      edit: async (rl, _cfg, projectDir) => {
-        const { runModelsSetup } = await import("../setup.js");
-        await runModelsSetup({ directory: projectDir, rl });
-        return true;
-      },
-    },
-    {
-      key: "3",
       label: "task routing",
       describe: async (cfg) => {
         const provs = new Set([
           resolveTaskModel(cfg, "structuring").provider,
           resolveTaskModel(cfg, "synthesis").provider,
+          resolveTaskModel(cfg, "chat").provider,
         ]);
         return provs.size === 1 ? `all ${[...provs][0]}` : `mixed (${[...provs].join(", ")})`;
       },
       edit: async (rl, _cfg, projectDir) => editRouting(rl, projectDir),
     },
     {
-      key: "4",
+      key: "3",
       label: "ide integrations",
       describe: async () => {
         const { detectIDEs } = await import("../setup.js");
@@ -170,18 +160,9 @@ export function buildSections(): SummarySection[] {
       edit: async (rl, _cfg, projectDir) => editIDEs(rl, projectDir),
     },
     {
-      key: "5",
+      key: "4",
       label: "multi-machine sync",
-      describe: () => {
-        try {
-          const db = GnosysDB.openLocal();
-          const remotePath = db.getMeta("remote_path");
-          db.close();
-          return remotePath ?? "not configured";
-        } catch {
-          return "not configured";
-        }
-      },
+      describe: async () => describeMultiMachineSyncPanel(),
       edit: async (rl) => {
         const { runConfigureWizard } = await import("../remoteWizard.js");
         const centralDb = GnosysDB.openLocal();
@@ -193,7 +174,7 @@ export function buildSections(): SummarySection[] {
       },
     },
     {
-      key: "6",
+      key: "5",
       label: "dream mode",
       // v5.9.4 Bug 7 — reconcile config + local-DB so the panel reflects
       // state set elsewhere (e.g. a dream wizard run on this machine).
@@ -223,7 +204,7 @@ export function buildSections(): SummarySection[] {
       },
     },
     {
-      key: "7",
+      key: "6",
       label: "user preferences",
       describe: async () => {
         const { listUserPreferences } = await import("./sections/preferences.js");
@@ -352,5 +333,38 @@ export async function runSummaryWizard(opts: SummaryOptions = {}): Promise<boole
   }
 }
 
+/**
+ * Settings-panel value for multi-machine sync (v13 design).
+ * Shows the configured master folder path, or "NA (single-machine only)" when unset.
+ */
+export function formatMultiMachineSyncSummary(remotePath: string | null): string {
+  return remotePath ?? "NA (single-machine only)";
+}
+
+/** Resolve multi-machine sync status for the summary panel row. */
+export async function describeMultiMachineSyncPanel(): Promise<string> {
+  let db: GnosysDB | null = null;
+  try {
+    db = GnosysDB.openLocal();
+    const { getConfiguredRemotePath } = await import("../remote.js");
+    const remotePath = getConfiguredRemotePath(db);
+    return formatMultiMachineSyncSummary(remotePath);
+  } catch {
+    return formatMultiMachineSyncSummary(null);
+  } finally {
+    try {
+      db?.close();
+    } catch {
+      // ignore
+    }
+  }
+}
+
 // Internal helpers exported for tests.
-export const __test = { resolveActiveStorePath, renderPanelRows, buildTrailingMap };
+export const __test = {
+  resolveActiveStorePath,
+  renderPanelRows,
+  buildTrailingMap,
+  formatMultiMachineSyncSummary,
+  describeMultiMachineSyncPanel,
+};

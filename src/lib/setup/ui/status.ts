@@ -52,3 +52,14 @@ export function Status(kind: StatusKind, text: string, meta?: string): string {
 export function printStatus(kind: StatusKind, text: string, meta?: string): void {
   process.stdout.write(`${Status(kind, text, meta)}\n`);
 }
+
+// ─── v13 multi-machine sync (re-export render helpers for CLI/MCP callers) ─
+
+export {
+  MASTER_UNREACHABLE_MESSAGE,
+  formatMemoriesWaitingToSync,
+  formatFailedToSyncCount,
+  formatOfflinePushStarting,
+  renderClientSyncStatusLines,
+  type ClientSyncStatusInput,
+} from "../remoteRender.js";

@@ -297,7 +297,7 @@ program
 // ─── gnosys setup (parent command) ──────────────────────────────────────
 const setupCmd = program
   .command("setup")
-  .description("Configure Gnosys — LLM provider, models, remote sync, and IDE integration");
+  .description("Configure Gnosys — provider keys, models, remote sync, and IDE integration");
 
 // Bare `gnosys setup` — when config exists, opens the summary-first menu
 // so the user can edit one section without re-running the whole wizard.
@@ -324,6 +324,30 @@ setupCmd
       directory: projectDir,
       nonInteractive: opts.nonInteractive,
     });
+  });
+
+// `gnosys setup providers` — API keys per provider (Keychain / env)
+setupCmd
+  .command("providers")
+  .description("Manage LLM provider API keys (view, rotate, delete)")
+  .action(async () => {
+    const readline = await import("readline/promises");
+    const { runProvidersSetup } = await import("./lib/setup/sections/providers.js");
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    try {
+      await runProvidersSetup({ rl, directory: process.cwd() });
+    } finally {
+      rl.close();
+    }
+  });
+
+// `gnosys setup keys` — provider API key table
+setupCmd
+  .command("keys")
+  .description("Manage provider API keys in a table view")
+  .action(async () => {
+    const { runSetup } = await import("./lib/setup.js");
+    await runSetup({ section: "keys" });
   });
 
 // `gnosys setup models` — just configure LLM provider/model/key
@@ -405,6 +429,36 @@ setupRemoteCmd
   .action(async (memoryId: string, opts: { keep: string }) => {
     const { runSetupRemoteResolveCommand } = await import("./lib/setupRemoteResolveCommand.js");
     await runSetupRemoteResolveCommand(memoryId, opts);
+  });
+
+setupRemoteCmd
+  .command("doctor")
+  .description("Diagnose v13 multi-machine sync (reachability, staging, failed count)")
+  .option("--json", "Output as JSON")
+  .option("--ingest", "Run master ingest sweep (master role only)")
+  .option("--quiet", "Suppress human-readable output (for timer/cron)")
+  .action(async (opts: { json?: boolean; ingest?: boolean; quiet?: boolean }) => {
+    const { runSyncDoctorCommand } = await import("./lib/syncDoctorCommand.js");
+    await runSyncDoctorCommand(opts);
+  });
+
+setupRemoteCmd
+  .command("timer")
+  .description("Install/uninstall the OS-level ingest timer (macOS/Linux)")
+  .option("--install", "Install the timer")
+  .option("--uninstall", "Uninstall the timer")
+  .option("--status", "Check timer status")
+  .option("--interval <minutes>", "Interval in minutes (default 15)", "15")
+  .option("--json", "Output as JSON")
+  .action(async (opts: {
+    install?: boolean;
+    uninstall?: boolean;
+    status?: boolean;
+    interval?: string;
+    json?: boolean;
+  }) => {
+    const { runSyncIngestTimerCommand } = await import("./lib/syncIngestTimerCommand.js");
+    await runSyncIngestTimerCommand(opts);
   });
 
 // `gnosys setup dream` — configure dream mode (designation, provider, schedule)
@@ -1239,6 +1293,12 @@ program
     } else if (newVersion === currentVersion) {
       console.log(`\n✓ Already on latest: v${currentVersion}`);
     }
+
+    // UPG polish (from command-coverage-plan UPG track): the makeNpmStderrFilter
+    // (see installOutput.ts) already drops the two known-benign deprecations
+    // (prebuild-install from better-sqlite3, boolean from onnxruntime). This keeps
+    // `gnosys upgrade` and `npm install -g` output clean for users.
+    console.log("  (known-benign deprecation warnings from optional native deps were suppressed)");
 
     // Write the marker so any running MCP servers exit and respawn.
     const { writeUpgradeMarker } = await import("./lib/upgrade.js");

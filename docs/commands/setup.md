@@ -19,7 +19,7 @@ gnosys setup --non-interactive
 
 - On first run (no config), runs the linear setup wizard via `runSetup`.
 - When config already exists and neither `--full` nor `--non-interactive` is passed, opens the summary-first menu so you can edit one section without re-running the whole wizard.
-- Subcommands such as `gnosys setup models`, `gnosys setup ides`, and `gnosys setup remote` configure individual sections.
+- Subcommands such as `gnosys setup providers`, `gnosys setup routing`, `gnosys setup ides`, and `gnosys setup remote` configure individual sections.
 
 ## Writes and side effects
 

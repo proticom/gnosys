@@ -20,7 +20,7 @@ async function load() {
 }
 
 describe("Screen 6 — remote render", () => {
-  it("renders the intro with `not configured` when no remote", async () => {
+  it("renders the reconfigure intro with `not configured` when no remote", async () => {
     const { renderRemoteIntro } = await load();
     const out = strip(renderRemoteIntro(120, 5, null));
     expect(out).toContain("gnosys");
@@ -28,6 +28,14 @@ describe("Screen 6 — remote render", () => {
     expect(out).toContain("not configured");
     expect(out).toContain("120 active");
     expect(out).toContain("5 archived");
+    expect(out).toContain("v13 master/client");
+    expect(out.split("\n")).toMatchSnapshot();
+  });
+
+  it("renderV13ExplanationScreen matches snapshot", async () => {
+    const { renderV13ExplanationScreen } = await load();
+    const out = strip(renderV13ExplanationScreen());
+    expect(out).toContain("staged as small files");
     expect(out.split("\n")).toMatchSnapshot();
   });
 
@@ -98,14 +106,14 @@ describe("Screen 6 — remote render", () => {
       renderRemoteDiff({
         previousRemote: null,
         newRemote: "/Volumes/NAS/gnosys",
-        mode: "read-write",
+        roleOrMode: "master",
       }),
     );
-    expect(out).toContain("remote");
+    expect(out).toContain("master");
     expect(out).toContain("not configured");
     expect(out).toContain("/Volumes/NAS/gnosys");
-    expect(out).toContain("mode");
-    expect(out).toContain("read-write");
+    expect(out).toContain("role");
+    expect(out).toContain("master");
     expect(out.split("\n")).toMatchSnapshot();
   });
 

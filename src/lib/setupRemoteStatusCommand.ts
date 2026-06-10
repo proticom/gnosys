@@ -17,7 +17,8 @@ export async function runSetupRemoteStatusCommand(
       return;
     }
 
-    const remotePath = centralDb.getMeta("remote_path");
+    const { getConfiguredRemotePath } = await import("./remote.js");
+    const remotePath = getConfiguredRemotePath(centralDb);
     if (!remotePath) {
       if (opts.json) {
         console.log(
@@ -30,6 +31,20 @@ export async function runSetupRemoteStatusCommand(
       } else {
         console.log("Remote sync: not configured.");
         console.log("Run 'gnosys setup remote' to set up multi-machine sync.");
+      }
+      return;
+    }
+
+    const mc = (await import("./machineConfig.js")).readMachineConfig();
+    if (mc?.remote.role) {
+      const { getV13SyncStatus } = await import("./syncClient.js");
+      const v13 = getV13SyncStatus(centralDb);
+      if (opts.json) {
+        console.log(JSON.stringify(v13, null, 2));
+      } else {
+        console.log(`Multi-machine sync (${v13.role}) — ${v13.masterPath}`);
+        for (const line of v13.lines) console.log(line);
+        if (v13.snapshotAge) console.log(`Snapshot as of ${v13.snapshotAge}`);
       }
       return;
     }

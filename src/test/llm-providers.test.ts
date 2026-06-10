@@ -9,6 +9,7 @@ import {
   getProviderModel,
   getXAIApiKey,
   getMistralApiKey,
+  getOpenRouterApiKey,
   getCustomApiKey,
   DEFAULT_CONFIG,
   GnosysConfigSchema,
@@ -21,8 +22,8 @@ import {
 
 describe("LLM Provider System", () => {
   describe("Provider Registry", () => {
-    it("ALL_PROVIDERS includes all 8 providers", () => {
-      expect(ALL_PROVIDERS).toHaveLength(8);
+    it("ALL_PROVIDERS includes all 9 providers", () => {
+      expect(ALL_PROVIDERS).toHaveLength(9);
       expect(ALL_PROVIDERS).toContain("anthropic");
       expect(ALL_PROVIDERS).toContain("ollama");
       expect(ALL_PROVIDERS).toContain("groq");
@@ -30,6 +31,7 @@ describe("LLM Provider System", () => {
       expect(ALL_PROVIDERS).toContain("lmstudio");
       expect(ALL_PROVIDERS).toContain("xai");
       expect(ALL_PROVIDERS).toContain("mistral");
+      expect(ALL_PROVIDERS).toContain("openrouter");
       expect(ALL_PROVIDERS).toContain("custom");
     });
   });
@@ -102,6 +104,15 @@ describe("LLM Provider System", () => {
       expect(getProviderModel(config, "mistral")).toBe("mistral-small-latest");
     });
 
+    it("returns openrouter model from config", () => {
+      const config = GnosysConfigSchema.parse({
+        llm: { openrouter: { model: "nvidia/nemotron-3-super-120b-a12b:free" } },
+      });
+      expect(getProviderModel(config, "openrouter")).toBe(
+        "nvidia/nemotron-3-super-120b-a12b:free",
+      );
+    });
+
     it("returns custom model from config", () => {
       const config = GnosysConfigSchema.parse({
         llm: {
@@ -123,6 +134,7 @@ describe("LLM Provider System", () => {
     beforeEach(() => {
       delete process.env.XAI_API_KEY;
       delete process.env.MISTRAL_API_KEY;
+      delete process.env.OPENROUTER_API_KEY;
       delete process.env.GNOSYS_LLM_API_KEY;
     });
 
@@ -156,6 +168,12 @@ describe("LLM Provider System", () => {
       expect(getMistralApiKey(config)).toBe("mis-from-env");
     });
 
+    it("getOpenRouterApiKey falls back to OPENROUTER_API_KEY", () => {
+      process.env.OPENROUTER_API_KEY = "or-from-env";
+      const config = GnosysConfigSchema.parse({});
+      expect(getOpenRouterApiKey(config)).toBe("or-from-env");
+    });
+
     it("getCustomApiKey reads from config", () => {
       const config = GnosysConfigSchema.parse({
         llm: { custom: { model: "m", baseUrl: "http://x", apiKey: "custom-key" } },
@@ -178,6 +196,24 @@ describe("LLM Provider System", () => {
       const provider = createProvider("xai", "grok-2", config);
       expect(provider.name).toBe("xai");
       expect(provider.model).toBe("grok-2");
+    });
+
+    it("creates OpenRouter provider", () => {
+      const config = GnosysConfigSchema.parse({
+        llm: {
+          openrouter: {
+            model: "nvidia/nemotron-3-super-120b-a12b:free",
+            apiKey: "or-test",
+          },
+        },
+      });
+      const provider = createProvider(
+        "openrouter",
+        "nvidia/nemotron-3-super-120b-a12b:free",
+        config,
+      );
+      expect(provider.name).toBe("openrouter");
+      expect(provider.model).toBe("nvidia/nemotron-3-super-120b-a12b:free");
     });
 
     it("creates Mistral provider with correct baseUrl", () => {
