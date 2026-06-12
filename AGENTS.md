@@ -9,9 +9,11 @@ Gnosys is an open-source persistent memory system for AI agents. It stores struc
 ## Quick Reference
 
 ```bash
-npm run build          # tsc -> dist/
-npm test               # vitest run (738 tests, all should pass)
-npx tsc --noEmit       # type check without emitting
+npm run build          # tsc -> dist/ (tsconfig.build.json — excludes tests)
+npm test               # vitest run (1700+ tests, all should pass)
+npm run typecheck      # tsc --noEmit (covers tests too — CI-gated)
+npm run lint           # biome (zero warnings — CI-gated)
+npm run knip           # dead code / unused exports (zero findings — CI-gated)
 ```
 
 ## Architecture
@@ -28,7 +30,7 @@ npx tsc --noEmit       # type check without emitting
 1. **DB-first lookups**: When resolving a memory by ID (e.g. `road-007`), always check `centralDb.getMemory(id)` before falling back to the legacy file resolver.
 2. **No markdown writes**: All memory writes go to SQLite only. Markdown is generated on-demand via `gnosys export`.
 3. **TypeScript strict**: `strict: true` in tsconfig. Fix all type errors before committing.
-4. **Test before commit**: Run `npm test` — all 738 tests must pass. Tests are in `src/test/`.
+4. **Test before commit**: Run `npm test` — the full suite must pass (1700+ tests in `src/test/`). CI also gates `tsc --noEmit`, biome lint, and knip.
 5. **Path quoting**: The project may live in a path with spaces (iCloud). Always quote paths in shell commands.
 6. **Web subpath isolation**: `src/lib/staticSearch.ts` must not import (only `import type`) from modules that depend on `better-sqlite3` or any native addon.
 7. **CLI-first, MCP-second**: New features are CLI commands first; MCP tools are thin wrappers around CLI logic.

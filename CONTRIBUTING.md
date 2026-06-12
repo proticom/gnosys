@@ -165,7 +165,7 @@ src/
   │   ├── manager.ts         # Lifecycle management
   │   ├── helper-template.ts # Helper library template
   │   └── index.ts           # Exports
-  ├── test/                  # 718 tests across 35+ files
+  ├── test/                  # 1700+ tests across 260 files
   └── prompts/               # System prompts
 ```
 

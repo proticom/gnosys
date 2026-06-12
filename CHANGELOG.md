@@ -7,8 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.12.1] — 2026-06
 
+### Added
+
+- **v13 snapshot flow completed (multi-machine sync)**. Masters now publish immutable, checksummed snapshots after ingesting sweeps (`runMasterIngestSweepAndPublish`, wired into the startup sweep and `setup remote doctor --ingest`). Reachable clients refresh and read a verified local snapshot copy instead of opening the live `gnosys.db` over the network — the concurrent-read hazard the sync design forbids. Offline clients keep reading their last-accepted snapshot (soft offline rule, explicitly signed off). A live-DB fallback remains for masters that have never published, so mixed-version fleets keep working.
+- **`gnosys cleanup --rules [dir]`**. Uninstall counterpart of the rules generator: removes the GNOSYS block from agent rules files (`CLAUDE.md`, `.cursor/rules/gnosys.mdc`, `.codex/gnosys.md`).
+
+### Fixed
+
+- **`gnosys read <id>` now sees pending offline adds** on sync clients, matching list/discover/search (it previously bypassed the client read overlay; the MCP `gnosys_read` tool was already correct).
+- **MCP tool handlers no longer leak client-read DB handles**: contexts are released centrally for all 50+ tools on every return path (previously only 8 handlers released them).
+- **MCP serve mode resilience**: process-level `unhandledRejection`/`uncaughtException` guards (stderr-only) and a last-resort error envelope — a throw escaping any tool handler now returns a proper error result with DB-corruption recovery instructions instead of a raw JSON-RPC error.
+- **CLI error handling**: command failures route through `parseAsync` with gnosys-framed logging instead of surfacing as raw Node `UnhandledPromiseRejection` crashes.
+- **SQLite stale-handle recovery extended to all read paths** (including FTS search/discover), the corruption detector now also matches `SQLITE_NOTADB`, and recovery reopens heal FTS triggers.
+- **Dream Mode crash safety**: analyzed-fingerprints checkpoint at every phase boundary (a crash no longer re-pays LLM analysis), the idle scheduler takes the same cross-process lock as `gnosys dream`, and a corrupt lock file is treated as stale instead of blocking dreaming until manual deletion.
+- Restored a type-clean build on master (missing v5.12 attachment fields in two `DbMemory` literals had turned the CI typecheck red).
+
 ### Changed
 
+- **Performance**: prepared-statement caching on hot DB paths (bulk inserts ~2×, point reads ~3.5×); list-style reads no longer hydrate embedding/attachment BLOBs (a single large `gnosys_attach` blob no longer taxes every recall/list call).
+- **Codebase hygiene at zero**: biome 136→0 warnings, knip 32→0 findings, dead code purged (including the unwired `gnosys models` implementation kept since v5.4.2); stricter `tsconfig` (`noUnusedLocals`, `noImplicitOverride`, `noFallthroughCasesInSwitch`); CI now gates lint + knip so the debt cannot re-accumulate.
+- **Packaging**: builds exclude test compilation (`tsconfig.build.json`; typechecking still covers tests), publish workflow builds with the exact publish config, Docker base image pinned (`node:20.20.2-alpine`).
 - **Task routing menu in setup**. Improved the "What would you like to do?" choices in `gnosys setup routing` (and the path from the main setup summary):
   - Added explicit option: "Edit tasks — set the same provider + model for all tasks (simple global default)".
   - The previous per-task editor is now clearly labeled as the "advanced" path: "Edit tasks — pick different providers/models for specific tasks (advanced)".

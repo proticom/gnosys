@@ -24,7 +24,15 @@ Add a new memory (uses LLM to structure raw input)
 
 ## `gnosys setup`
 
-Configure Gnosys — LLM provider, models, remote sync, and IDE integration
+Configure Gnosys — provider keys, models, remote sync, and IDE integration
+
+## `gnosys providers`
+
+Manage LLM provider API keys (view, rotate, delete)
+
+## `gnosys keys`
+
+Manage provider API keys in a table view
 
 ## `gnosys models`
 
@@ -54,6 +62,14 @@ Two-way sync: push local changes then pull remote changes
 
 Resolve a sync conflict by choosing local, remote, or merged content
 
+## `gnosys doctor`
+
+Diagnose v13 multi-machine sync (reachability, staging, failed count)
+
+## `gnosys timer`
+
+Install/uninstall the OS-level ingest timer (macOS/Linux)
+
 ## `gnosys dream`
 
 Configure Dream Mode — designate this machine, pick provider/model, set schedule
@@ -64,7 +80,7 @@ Configure the chat TUI — provider/model, recall behavior, tools, system-prompt
 
 ## `gnosys ides`
 
-Configure IDE integrations (Claude Code/Desktop, Cursor, Codex, Gemini CLI, Antigravity)
+Configure IDE MCP integrations (Claude Code/Desktop, Cursor, Codex, Grok Build, Gemini CLI, Antigravity)
 
 ## `gnosys routing`
 
@@ -76,7 +92,7 @@ Review and clean up user-scope preferences (incl. legacy imports)
 
 ## `gnosys init`
 
-Initialize Gnosys in the current directory (project store, identity, central DB). Wire IDE MCP servers with `gnosys setup ides`.
+Initialize Gnosys in the current directory (project store, identity, central DB). Wire IDE MCP servers with: gnosys setup ides
 
 ## `gnosys migrate`
 
@@ -109,6 +125,14 @@ Interactive memory-aware terminal chat (TUI)
 ## `gnosys ingest <fileOrGlob>`
 
 Ingest a file (PDF, DOCX, TXT, MD) into Gnosys memory. Extracts text, splits into chunks, and creates atomic memories.
+
+## `gnosys attach <file>`
+
+Attach a small binary file (logo, diagram, screenshot) inline to a memory. Travels machine-to-machine over normal sync. Limit ~10MB — use
+
+## `gnosys get-attachment <memoryId>`
+
+Retrieve the binary attachment stored on a memory. Writes to --out, or prints base64 to stdout.
 
 ## `gnosys tags-add`
 
@@ -234,6 +258,10 @@ Force a dream cycle now (manual trigger)
 
 Show recent dream runs from the audit log (default: last 20)
 
+## `gnosys report`
+
+Generate an HTML dashboard from ~/.gnosys/dream-runs.jsonl
+
 ## `gnosys export`
 
 Export memory to a vault (markdown) or a project bundle (.json.gz)
@@ -289,6 +317,14 @@ Show this machine
 ## `gnosys migrate`
 
 Move machine-local config (machineId, remote) out of the synced DB into machine.json, set roots, and scan
+
+## `gnosys list`
+
+List machines in the connected-machines registry (shared brain)
+
+## `gnosys forget <hostname>`
+
+Remove a machine from the connected-machines registry (e.g. a phantom left by a rename)
 
 ## `gnosys scan`
 
