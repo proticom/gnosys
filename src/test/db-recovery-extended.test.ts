@@ -107,7 +107,6 @@ describe("DB recovery — extended failure modes", () => {
     const originalPrepare = inner.prepare.bind(inner);
     inner.prepare = (...args: unknown[]) => {
       const stmt = originalPrepare(...args) as { run: (...runArgs: unknown[]) => unknown };
-      const _originalRun = stmt.run.bind(stmt);
       stmt.run = (...runArgs: unknown[]) => {
         const err = new Error("database or disk is full") as Error & { code?: string };
         err.code = "SQLITE_FULL";

@@ -154,7 +154,6 @@ export function buildIndexSync(
     const category = typeof fm.category === "string" ? fm.category : "general";
     const created = typeof fm.created === "string" ? fm.created : null;
 
-    const _docIndex = documents.length;
     documents.push({
       id,
       path: relativePath,

@@ -331,7 +331,7 @@ export class GnosysMaintenanceEngine {
 
     for (const memory of memories) {
       const baseConfidence = memory.frontmatter.confidence || 0.8;
-      const lastReinforced = (memory.frontmatter as any).last_reinforced
+      const lastReinforced = memory.frontmatter.last_reinforced
         || memory.frontmatter.modified
         || memory.frontmatter.created;
 
@@ -478,7 +478,7 @@ Merged content:`;
     const memory = await store.readMemory(relativePath);
     if (!memory) return;
 
-    const currentCount = ((memory.frontmatter as any).reinforcement_count as number) || 0;
+    const currentCount = memory.frontmatter.reinforcement_count || 0;
     const newCount = currentCount + 1;
 
     if (db) {
@@ -502,7 +502,7 @@ Merged content:`;
         const memory = await store.readMemory(rp);
         if (!memory) continue;
 
-        const currentCount = ((memory.frontmatter as any).reinforcement_count as number) || 0;
+        const currentCount = memory.frontmatter.reinforcement_count || 0;
         const newCount = currentCount + 1;
 
         if (db) {
@@ -543,7 +543,7 @@ Merged content:`;
 
     if (dryRun) {
       for (const m of eligible) {
-        const action = `[DRY RUN] Would archive: "${m.frontmatter.title}" (confidence: ${m.frontmatter.confidence}, last active: ${(m.frontmatter as any).last_reinforced || m.frontmatter.modified})`;
+        const action = `[DRY RUN] Would archive: "${m.frontmatter.title}" (confidence: ${m.frontmatter.confidence}, last active: ${m.frontmatter.last_reinforced || m.frontmatter.modified})`;
         actions.push(action);
         log("action", action);
       }
@@ -604,7 +604,7 @@ Merged content:`;
     let totalReinforcements = 0;
 
     for (const m of memories) {
-      const count = ((m.frontmatter as any).reinforcement_count as number) || 0;
+      const count = m.frontmatter.reinforcement_count || 0;
       if (count === 0) neverReinforced++;
       totalReinforcements += count;
     }

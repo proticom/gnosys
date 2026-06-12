@@ -2048,7 +2048,7 @@ regTool(
 
     try {
       // v5.9.1 (#100): import.js pulls mammoth + pdf-parse + turndown.
-      const { performImport, formatImportSummary, estimateDuration } = await import(
+      const { performImport, formatImportSummary } = await import(
         "./lib/import.js"
       );
       const result = await performImport(writeTarget.store, ingestion, {
@@ -2081,11 +2081,6 @@ regTool(
         effectiveMode === "llm" &&
         result.totalProcessed > 100
       ) {
-        const _estimate = estimateDuration(
-          result.totalProcessed,
-          "llm",
-          concurrency || 5
-        );
         response += `\n\n💡 Tip: For large LLM imports, the CLI offers progress tracking and resume:\n  gnosys import ${data.length < 100 ? data : "<file>"} --format ${format} --mode llm --skip-existing`;
       }
 

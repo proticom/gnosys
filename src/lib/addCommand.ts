@@ -82,7 +82,6 @@ export async function runAddCommand(
           centralDb = GnosysDB.openCentral();
           const projectId = await resolveProjectId();
           const id = centralDb.getNextId(result.category, projectId || undefined);
-          const _today = new Date().toISOString().split("T")[0];
           const now = new Date().toISOString();
           const content = `# ${result.title}\n\n${result.content}`;
   

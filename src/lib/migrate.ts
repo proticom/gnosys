@@ -12,7 +12,6 @@ import { GnosysStore } from "./store.js";
 import { GnosysArchive } from "./archive.js";
 
 // Dynamic import for embeddings DB
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let Database: any = null;
 try {
   Database = (await import("better-sqlite3")).default;

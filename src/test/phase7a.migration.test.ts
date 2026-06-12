@@ -83,8 +83,8 @@ describe("Phase 7a: GnosysDB + Migration", () => {
       const stats1 = await migrate(env.tmpDir);
       expect(stats1.memoriesMigrated).toBe(1);
 
-      // Migrate again
-      const _stats2 = await migrate(env.tmpDir);
+      // Migrate again (result intentionally unused — only the count matters)
+      await migrate(env.tmpDir);
       // Should not duplicate — either 0 or still 1 total
       const count = env.db.getMemoryCount();
       expect(count.total).toBe(1);

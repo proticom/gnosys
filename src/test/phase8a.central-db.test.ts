@@ -231,8 +231,8 @@ describe("Phase 8a: Central DB + Project Identity", () => {
       fs.mkdirSync(backupDir, { recursive: true });
       const backupPath = await env.db.backup(backupDir);
 
-      // Open backup DB and verify
-      const _backupDb = new GnosysDB(path.dirname(backupPath));
+      // Open backup DB to verify it is loadable (instance intentionally unused)
+      new GnosysDB(path.dirname(backupPath));
       // The backup might be at a different location, let's just verify the file exists and is valid
       expect(fs.existsSync(backupPath)).toBe(true);
     });

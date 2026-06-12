@@ -11,7 +11,6 @@
  */
 
 // Dynamic import — gracefully handles missing native module
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let Database: any = null;
 try {
   Database = (await import("better-sqlite3")).default;
@@ -63,7 +62,6 @@ export interface ArchiveSearchResult {
 // ─── Archive Manager ────────────────────────────────────────────────────
 
 export class GnosysArchive {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private db: any = null;
   private storePath: string;
   private available = false;
@@ -183,7 +181,7 @@ export class GnosysArchive {
         yamlFrontmatter,
         tags,
         memory.frontmatter.confidence || 0.8,
-        (memory.frontmatter as any).last_reinforced || memory.frontmatter.modified,
+        memory.frontmatter.last_reinforced || memory.frontmatter.modified,
         today,
         memory.frontmatter.category,
         memory.relativePath
@@ -397,7 +395,7 @@ export function getArchiveEligible(
     if (m.frontmatter.status !== "active") return false;
 
     const baseConfidence = m.frontmatter.confidence || 0.8;
-    const lastReinforced = (m.frontmatter as any).last_reinforced
+    const lastReinforced = m.frontmatter.last_reinforced
       || m.frontmatter.modified
       || m.frontmatter.created;
 

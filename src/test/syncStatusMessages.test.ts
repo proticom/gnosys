@@ -8,7 +8,6 @@ import {
 } from "../lib/setup/remoteRender.js";
 
 function strip(s: string): string {
-  // eslint-disable-next-line no-control-regex
   return s.replace(/\x1b\[[0-9;]*m/g, "");
 }
 

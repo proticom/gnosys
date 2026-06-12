@@ -527,9 +527,9 @@ setupCmd
   });
 
 // v5.4.2 removal: `gnosys models` (top-level shortcut) was removed in favor
-// of the canonical `gnosys setup models` form. The implementation function
-// runModelsCommand() in setup.ts is no longer wired but kept for now in case
-// we need to revive a top-level shortcut later.
+// of the canonical `gnosys setup models` form. The unwired implementation
+// (runModelsCommand in setup.ts) was deleted in v5.12.1 after eight minor
+// versions without revival — recover from git history if ever needed.
 
 // ─── gnosys init ─────────────────────────────────────────────────────────
 program

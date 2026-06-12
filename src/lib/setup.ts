@@ -368,17 +368,6 @@ export async function fetchDynamicModels(): Promise<Record<string, ModelTier[]>>
   }
 }
 
-/**
- * Get model tiers for a provider — tries dynamic first, falls back to hardcoded.
- */
-async function _getModelTiers(provider: string): Promise<ModelTier[]> {
-  const dynamic = await fetchDynamicModels();
-  if (dynamic[provider] && dynamic[provider].length > 0) {
-    return dynamic[provider];
-  }
-  return PROVIDER_TIERS[provider] ?? [];
-}
-
 // ─── Provider display names and env var mapping ─────────────────────────────
 
 const PROVIDER_DISPLAY: Record<string, string> = {
@@ -1750,8 +1739,7 @@ export async function runSetup(opts: {
         const gnomeIdx = hasSecret ? idx++ : -1;
         const envIdx = idx++;
         const dotenvIdx = idx++;
-        const _skipIdx = idx++;
-        // skipIdx is unused as a variable but documents the last index
+        idx++; // skip entry consumes the last index (value itself unused)
 
         if (keyChoice === keychainIdx) {
           // macOS Keychain — reuse existing key if available, otherwise ask
@@ -2518,7 +2506,6 @@ export async function promptKeyDestinationAndPersist(opts: {
 
   const secureIdx = 0;
   const dotenvIdx = 1;
-  const _noneIdx = 2;
 
   if (choice === secureIdx) {
     if (storeApiKeySecret(opts.service, opts.key, opts.provider)) {
@@ -3097,99 +3084,6 @@ async function runModelsTaskRoutingSetup(ctx: {
 
   await updateConfig(storePath, updatePayload);
   printStatus("ok", `saved task routing · ${storePath}/gnosys.json`);
-}
-
-// ─── Quick `gnosys models` command ───────────────────────────────────────────
-
-interface ModelsCommandOpts {
-  list?: boolean;
-  refresh?: boolean;
-  set?: string;
-  directory?: string;
-}
-
-/**
- * Lightweight model-management command. Supports three operations:
- *   --list:    print available models for the current provider
- *   --refresh: clear the OpenRouter cache and re-fetch
- *   --set X:   update the default model in gnosys.json (no prompts)
- */
-async function _runModelsCommand(opts: ModelsCommandOpts = {}): Promise<void> {
-  const projectDir = opts.directory ? path.resolve(opts.directory) : process.cwd();
-  const existingConfig = await loadExistingConfig(projectDir);
-  const currentProvider = existingConfig?.llm.defaultProvider;
-
-  if (opts.refresh) {
-    const cacheFile = path.join(os.homedir(), ".config", "gnosys", "models-cache.json");
-    try {
-      await fs.unlink(cacheFile);
-      console.log(`${CHECK} Cache cleared.`);
-    } catch {
-      console.log(`${DIM}No cache to clear.${RESET}`);
-    }
-  }
-
-  if (opts.list) {
-    if (!currentProvider) {
-      console.log(`${WARN} No provider configured. Run 'gnosys setup' first.`);
-      return;
-    }
-    console.log();
-    console.log(`${BOLD}Available models for ${currentProvider}:${RESET}`);
-    console.log();
-    const dynamicModels = await fetchDynamicModels();
-    const tiers = dynamicModels[currentProvider] ?? PROVIDER_TIERS[currentProvider] ?? [];
-    if (tiers.length === 0) {
-      console.log(`  ${DIM}No models in catalog. Try '--refresh' or use a custom model name.${RESET}`);
-      return;
-    }
-    for (const t of tiers) {
-      const rec = t.recommended ? `  ${CYAN}<- recommended${RESET}` : "";
-      const price = t.input === 0 && t.output === 0
-        ? "free"
-        : `$${t.input.toFixed(2)}–$${t.output.toFixed(2)}/M`;
-      console.log(`  ${t.name.padEnd(24)} ${t.model.padEnd(40)} ${DIM}${price}${RESET}${rec}`);
-    }
-    return;
-  }
-
-  if (opts.set) {
-    if (!currentProvider) {
-      console.log(`${WARN} No provider configured. Run 'gnosys setup' first.`);
-      return;
-    }
-    // v5.9.4 Bug 10 — unified store resolution.
-    const storePath = ensureActiveStorePath(projectDir);
-
-    const existingProviderConfig = (existingConfig?.llm as Record<string, unknown> | undefined)?.[currentProvider];
-    const providerConfigBase = (typeof existingProviderConfig === "object" && existingProviderConfig !== null)
-      ? existingProviderConfig as Record<string, unknown>
-      : {};
-
-    await updateConfig(storePath, {
-      llm: {
-        ...(existingConfig?.llm ?? {}),
-        defaultProvider: currentProvider,
-        [currentProvider]: { ...providerConfigBase, model: opts.set },
-      },
-    });
-    console.log(`${CHECK} Default model set to ${GREEN}${opts.set}${RESET} for ${currentProvider}.`);
-    return;
-  }
-
-  // No flags: show current config
-  if (!currentProvider) {
-    console.log(`${WARN} No provider configured. Run 'gnosys setup' first.`);
-    return;
-  }
-  const currentModel = existingConfig
-    ? getProviderModel(existingConfig, existingConfig.llm.defaultProvider)
-    : "";
-  console.log();
-  console.log(`Provider: ${GREEN}${currentProvider}${RESET}`);
-  console.log(`Model:    ${GREEN}${currentModel}${RESET}`);
-  console.log();
-  console.log(`${DIM}Use '--list' to see options, '--set <model>' to change, '--refresh' to update catalog.${RESET}`);
 }
 
 // ─── Dream Setup (gnosys setup dream) ────────────────────────────────────

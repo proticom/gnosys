@@ -49,7 +49,6 @@ describe("remoteWizard v13 helpers", () => {
 
 describe("remoteWizard v13 render screens", () => {
   function strip(s: string): string {
-    // eslint-disable-next-line no-control-regex
     return s.replace(/\x1b\[[0-9;]*m/g, "");
   }
 

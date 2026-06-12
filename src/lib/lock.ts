@@ -154,7 +154,6 @@ function isLockStale(lock: LockInfo): boolean {
  * unboundedly until something triggers a manual checkpoint — we observed
  * 4MB+ WAL files in the wild with no checkpoint cadence in v5.4.0.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function enableWAL(db: any): void {
   try {
     db.pragma("journal_mode = WAL");

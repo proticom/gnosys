@@ -50,7 +50,6 @@ export function Header(crumbs: string[], opts: HeaderOptions = {}): string {
 
 /** Strip ANSI escapes so we can measure printable width. Exported for callers/tests that need printable measurement. */
 export function stripAnsi(s: string): string {
-  // eslint-disable-next-line no-control-regex
   return s.replace(/\x1b\[[0-9;]*m/g, "");
 }
 

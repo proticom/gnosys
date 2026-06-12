@@ -4,7 +4,6 @@
  */
 
 // Dynamic import — gracefully handles missing native module (dlopen failures)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let Database: any = null;
 try {
   Database = (await import("better-sqlite3")).default;
@@ -29,7 +28,6 @@ export interface DiscoverResult {
 }
 
 export class GnosysSearch {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private db: any = null;
 
   constructor(storePath: string) {

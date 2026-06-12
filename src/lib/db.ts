@@ -9,7 +9,6 @@
  */
 
 // Dynamic import — gracefully handles missing native module
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let Database: any = null;
 try {
   Database = (await import("better-sqlite3")).default;
@@ -383,7 +382,6 @@ function fnv1a(str: string): string {
 // ─── GnosysDB Class ─────────────────────────────────────────────────────
 
 export class GnosysDB {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private db: any = null;
   private storePath: string;
   private available = false;
@@ -1229,7 +1227,6 @@ export class GnosysDB {
    * The `projectId` parameter is accepted for API compatibility but no longer
    * used for ID generation (ULIDs don't need project scoping for uniqueness).
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getNextId(category: string, projectId?: string): string {
     const prefix = category.substring(0, 4);
     return `${prefix}-${ulid()}`;
@@ -1427,7 +1424,6 @@ export class GnosysDB {
 
   // ─── Transactions ───────────────────────────────────────────────────
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   transaction<T>(fn: () => T): T {
     return this.db.transaction(fn)();
   }

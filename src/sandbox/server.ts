@@ -105,8 +105,6 @@ export function initDreamMode(
   scheduler.start = () => {
     originalStart();
 
-    // Override the internal check interval to track state
-    const _CHECK_INTERVAL = 60_000;
     const origCheckIdle = (scheduler as any).checkIdle;
     if (origCheckIdle) {
       (scheduler as any).checkIdle = async () => {

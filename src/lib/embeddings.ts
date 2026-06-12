@@ -6,7 +6,6 @@
  */
 
 // Dynamic import — gracefully handles missing native module (dlopen failures)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let Database: any = null;
 try {
   Database = (await import("better-sqlite3")).default;
@@ -21,11 +20,9 @@ import { enableWAL } from "./lock.js";
 type Pipeline = (texts: string[], options?: Record<string, unknown>) => Promise<{ tolist(): number[][] }>;
 
 const MODEL_NAME = "Xenova/all-MiniLM-L6-v2";
-const _EMBEDDING_DIM = 384;
 
 export class GnosysEmbeddings {
   private pipeline: Pipeline | null = null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private db: any = null;
   private storePath: string;
   private modelReady = false;
