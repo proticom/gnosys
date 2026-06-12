@@ -36,7 +36,8 @@ describe("gnosys web ingest command wiring", () => {
     expect(handler).toContain("opts.source || webConfig.contentDir");
     expect(handler).toContain("opts.llm ? webConfig.llmEnrich : false");
     expect(handler).toContain("opts.prune || webConfig.prune");
-    expect(handler).toContain("parseInt(opts.concurrency)");
+    // v5.12.1 marker update (approved): production parseInt gained explicit radix 10
+    expect(handler).toContain("parseInt(opts.concurrency, 10)");
     expect(handler).toContain("opts.dryRun");
     expect(handler).toContain("opts.verbose");
     expect(handler).toContain("JSON.stringify(result, null, 2)");

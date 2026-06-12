@@ -114,7 +114,7 @@ export async function runAskCommand(
   
       try {
         const result = await ask.ask(question, {
-          limit: parseInt(opts.limit),
+          limit: parseInt(opts.limit, 10),
           mode,
           stream: useStream,
           additionalContext: federatedContext,

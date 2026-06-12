@@ -14,7 +14,6 @@
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "fs";
-import fsp from "fs/promises";
 import path from "path";
 import os from "os";
 import {
@@ -25,13 +24,11 @@ import {
   makeProject,
   makeFrontmatter,
   seedMultiProjectMemories,
-  CLI,
   cliInit,
   cli,
   cliJson,
   extractJson,
 } from "./_helpers.js";
-import { GnosysDB, DbMemory } from "../lib/db.js";
 import { GnosysDbSearch } from "../lib/dbSearch.js";
 import {
   syncMemoryToDb,

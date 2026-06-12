@@ -3,11 +3,9 @@
  */
 
 import type { Interface as ReadlineInterface } from "readline/promises";
-import {
-  loadConfig,
-  updateConfig,
-  type GnosysConfig,
-  type LLMProviderName,
+import type {
+  GnosysConfig,
+  LLMProviderName,
 } from "../../config.js";
 import {
   ASSIGNABLE_TASK_LIST,
@@ -20,7 +18,6 @@ import {
   TASK_DESCRIPTIONS,
   type AssignableTaskName,
 } from "../../setup.js";
-import { resolveActiveStorePath } from "../storePath.js";
 import { safeQuestion } from "../ui/safePrompt.js";
 import { renderProviderMark } from "../providerGlyphs.js";
 import { c, color, glyph } from "../ui/tokens.js";
@@ -198,19 +195,4 @@ export async function runCommaListRoutingEditor(
   }
 
   return { taskModels, dream };
-}
-
-export async function applyRoutingPatch(
-  projectDir: string,
-  patch: {
-    taskModels: NonNullable<GnosysConfig["taskModels"]>;
-    dream: GnosysConfig["dream"];
-  },
-): Promise<GnosysConfig> {
-  const storePath = resolveActiveStorePath(projectDir);
-  await updateConfig(storePath, {
-    taskModels: patch.taskModels,
-    dream: patch.dream,
-  } as Partial<GnosysConfig>);
-  return loadConfig(storePath);
 }

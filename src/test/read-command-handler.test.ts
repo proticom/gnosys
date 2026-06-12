@@ -20,9 +20,12 @@ describe("gnosys read command wiring", () => {
 
   it("exports runReadCommand with DB-first and resolver fallback markers", () => {
     expect(handler).toContain("export async function runReadCommand");
-    expect(handler).toContain("GnosysDB.openCentral()");
-    expect(handler).toContain("centralDb.getMemory(memoryPath)");
-    expect(handler).toContain("centralDb.close()");
+    // v5.12.1 read-overlay fix (approved marker swap): read-by-id now routes
+    // through the client read overlay like search/list/discover, replacing the
+    // direct GnosysDB.openCentral()/centralDb.getMemory()/centralDb.close() path.
+    expect(handler).toContain("resolveClientRead()");
+    expect(handler).toContain("getMemoryWithOverlay(resolved");
+    expect(handler).toContain("resolved.release()");
     expect(handler).toContain("[Source: gnosys.db]");
     expect(handler).toContain("source_file:");
     expect(handler).toContain("source_path:");

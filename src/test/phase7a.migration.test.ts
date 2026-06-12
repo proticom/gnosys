@@ -9,12 +9,6 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import fs from "fs";
-import fsp from "fs/promises";
-import path from "path";
-import os from "os";
-import { GnosysDB, DbMemory } from "../lib/db.js";
-import { GnosysStore } from "../lib/store.js";
 import {
   createTestEnv,
   cleanupTestEnv,
@@ -90,7 +84,7 @@ describe("Phase 7a: GnosysDB + Migration", () => {
       expect(stats1.memoriesMigrated).toBe(1);
 
       // Migrate again
-      const stats2 = await migrate(env.tmpDir);
+      const _stats2 = await migrate(env.tmpDir);
       // Should not duplicate — either 0 or still 1 total
       const count = env.db.getMemoryCount();
       expect(count.total).toBe(1);

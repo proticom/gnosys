@@ -290,7 +290,7 @@ export async function attachFileToMemory(
 /** Return the inline attachment stored on a memory row, or null if none. */
 export function getMemoryAttachment(db: GnosysDB, memoryId: string): InlineAttachment | null {
   const mem = db.getMemory(memoryId);
-  if (!mem || !mem.attachment_data) return null;
+  if (!mem?.attachment_data) return null;
   const data = Buffer.from(mem.attachment_data);
   return {
     data,
@@ -303,7 +303,7 @@ export function getMemoryAttachment(db: GnosysDB, memoryId: string): InlineAttac
 /** Remove an inline attachment from a memory row (keeps the memory itself). */
 export function detachFromMemory(db: GnosysDB, memoryId: string): boolean {
   const mem = db.getMemory(memoryId);
-  if (!mem || !mem.attachment_data) return false;
+  if (!mem?.attachment_data) return false;
   db.updateMemory(memoryId, {
     attachment_data: null,
     attachment_mime: null,

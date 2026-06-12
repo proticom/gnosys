@@ -26,12 +26,6 @@ interface TraceNode {
   imports: string[];      // imported modules/symbols
 }
 
-interface TraceGraph {
-  nodes: Map<string, TraceNode>;
-  files: string[];
-  rootDir: string;
-}
-
 export interface TraceResult {
   memoriesCreated: number;
   relationshipsCreated: number;

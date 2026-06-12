@@ -39,7 +39,8 @@ describe("gnosys web build command wiring", () => {
     expect(handler).toContain("categories: webConfig.categories");
     expect(handler).toContain("opts.llm ? webConfig.llmEnrich : false");
     expect(handler).toContain("opts.prune || webConfig.prune");
-    expect(handler).toContain("parseInt(opts.concurrency)");
+    // v5.12.1 marker update (approved): production parseInt gained explicit radix 10
+    expect(handler).toContain("parseInt(opts.concurrency, 10)");
     expect(handler).toContain("crawlDelayMs: webConfig.crawlDelayMs");
     expect(handler).toContain("dryRun: opts.dryRun");
     expect(handler).toContain("if (!opts.dryRun)");

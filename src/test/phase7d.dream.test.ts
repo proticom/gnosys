@@ -11,7 +11,6 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
   createTestEnv,
   cleanupTestEnv,
-  makeMemory,
   type TestEnv,
 } from "./_helpers.js";
 

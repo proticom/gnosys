@@ -12,10 +12,8 @@ import {
   writeApiKey,
   detectIDEs,
   parseCommaSeparatedTaskSelection,
-  type ModelTier,
 } from "../lib/setup.js";
 import {
-  ALL_PROVIDERS,
   DEFAULT_CONFIG,
   GnosysConfigSchema,
   getProviderModel,

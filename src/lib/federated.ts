@@ -233,7 +233,7 @@ export function detectAmbiguity(
 
   for (const r of results) {
     const mem = db.getMemory(r.id);
-    if (!mem || !mem.project_id) continue;
+    if (!mem?.project_id) continue;
     projectHits.set(mem.project_id, (projectHits.get(mem.project_id) || 0) + 1);
   }
 

@@ -5,7 +5,7 @@
  * Handles start, stop, status, and auto-start on helper import.
  */
 
-import { spawn, execSync } from "child_process";
+import { spawn, } from "child_process";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -234,7 +234,7 @@ export async function sandboxStatus(): Promise<SandboxStatus> {
  * Ensure the sandbox is running (auto-start if needed).
  * Used by the helper library to transparently start the sandbox.
  */
-async function ensureSandbox(opts?: { dbPath?: string }): Promise<SandboxClient> {
+async function _ensureSandbox(opts?: { dbPath?: string }): Promise<SandboxClient> {
   const client = new SandboxClient();
 
   if (await client.isRunning()) {

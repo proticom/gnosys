@@ -13,19 +13,14 @@
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "fs";
-import fsp from "fs/promises";
 import path from "path";
-import os from "os";
 import net from "net";
-import { GnosysDB } from "../lib/db.js";
 import {
   handleRequest,
-  startServer,
   getSandboxDir,
   getSocketPath,
   getPidPath,
   type SandboxRequest,
-  SandboxResponse,
 } from "../sandbox/server.js";
 import { SandboxClient } from "../sandbox/client.js";
 import { generateHelper } from "../sandbox/helper-template.js";

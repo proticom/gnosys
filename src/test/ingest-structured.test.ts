@@ -224,9 +224,9 @@ describe("GnosysIngestion.ingest (LLM path)", () => {
       const ingestion = new GnosysIngestion(store, tagRegistry);
       const result = await ingestion.ingest("raw");
       expect(result.title).toBe("Safe Title");
-      expect(Object.prototype.hasOwnProperty.call(result as object, "__proto__")).toBe(false);
-      expect(Object.prototype.hasOwnProperty.call(result as object, "constructor")).toBe(false);
-      expect(Object.prototype.hasOwnProperty.call(result as object, "prototype")).toBe(false);
+      expect(Object.hasOwn(result as object, "__proto__")).toBe(false);
+      expect(Object.hasOwn(result as object, "constructor")).toBe(false);
+      expect(Object.hasOwn(result as object, "prototype")).toBe(false);
     });
   });
 

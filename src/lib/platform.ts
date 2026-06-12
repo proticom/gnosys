@@ -14,18 +14,6 @@ export function getOsFamily(): OsFamily {
   return "linux";
 }
 
-/** Primary secure credential store name on this machine. */
-export function getSecureStorageLabel(): string {
-  switch (getOsFamily()) {
-    case "macos":
-      return "macOS Keychain";
-    case "linux":
-      return "GNOME Keyring";
-    case "windows":
-      return "Windows Credential Manager";
-  }
-}
-
 /** Short phrase for error messages (setup may still be required on Windows). */
 export function getSecureStorageSetupHint(): string {
   switch (getOsFamily()) {
@@ -35,18 +23,6 @@ export function getSecureStorageSetupHint(): string {
       return "GNOME Keyring (via gnosys setup, when secret-tool is available)";
     case "windows":
       return "your user environment or ~/.config/gnosys/.env (via gnosys setup)";
-  }
-}
-
-/** Order of API key resolution for user-facing help on the current OS. */
-export function getApiKeyResolutionOrderText(): string {
-  switch (getOsFamily()) {
-    case "macos":
-      return "macOS Keychain, environment variable, then ~/.config/gnosys/.env";
-    case "linux":
-      return "GNOME Keyring (when available), environment variable, then ~/.config/gnosys/.env";
-    case "windows":
-      return "environment variable, then ~/.config/gnosys/.env";
   }
 }
 
@@ -61,13 +37,6 @@ export function getClaudeDesktopConfigPath(): string {
     return path.join(appData, "Claude", "claude_desktop_config.json");
   }
   return path.join(home, ".config", "Claude", "claude_desktop_config.json");
-}
-
-/** Display path with ~ for home (for logs and help). */
-export function displayClaudeDesktopConfigPath(): string {
-  const home = os.homedir();
-  const p = getClaudeDesktopConfigPath();
-  return p.startsWith(home) ? "~" + p.slice(home.length) : p;
 }
 
 /** Shell profile file(s) suggested for env vars on this OS. */

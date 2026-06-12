@@ -125,6 +125,11 @@ describe("syncClientRead v13", () => {
         source_file: null,
         source_page: null,
         source_timerange: null,
+        // v5.12.1 typecheck fix: DbMemory gained attachment fields in the 5.12.0
+        // attachments merge; fixture literal updated to match (no assertion changes)
+        attachment_data: null,
+        attachment_mime: null,
+        attachment_name: null,
         project_id: null,
         scope: "global",
       },

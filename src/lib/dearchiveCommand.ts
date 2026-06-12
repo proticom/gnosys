@@ -37,7 +37,7 @@ export async function runDearchiveCommand(
       process.exit(1);
     }
 
-    const results = archive.searchArchive(query, parseInt(opts.limit));
+    const results = archive.searchArchive(query, parseInt(opts.limit, 10));
     if (results.length === 0) {
       console.log(`No archived memories found matching "${query}".`);
       return;

@@ -25,15 +25,12 @@ import {
   getPreference,
   getAllPreferences,
 } from "../lib/preferences.js";
-import { generateRulesBlock, syncRules } from "../lib/rulesGen.js";
+import { generateRulesBlock, } from "../lib/rulesGen.js";
 import {
   federatedSearch,
-  generateBriefing,
-  getWorkingSet,
 } from "../lib/federated.js";
 import {
   makeMemory,
-  makeProject,
   CLI,
   cliInit,
 } from "./_helpers.js";

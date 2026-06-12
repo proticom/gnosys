@@ -83,7 +83,7 @@ export async function runHybridSearchCommand(
       const hybridSearch = new GnosysHybridSearch(search, embeddings, resolver, storePath);
   
       const mode = opts.mode as "keyword" | "semantic" | "hybrid";
-      const results = await hybridSearch.hybridSearch(query, parseInt(opts.limit), mode);
+      const results = await hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), mode);
   
       if (results.length === 0) {
         outputResult(!!opts.json, { query, mode, results: [] }, () => {

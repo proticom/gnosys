@@ -40,7 +40,7 @@ export async function runSemanticSearchCommand(
       const embeddings = new GnosysEmbeddings(storePath);
       const hybridSearch = new GnosysHybridSearch(search, embeddings, resolver, storePath);
   
-      const results = await hybridSearch.hybridSearch(query, parseInt(opts.limit), "semantic");
+      const results = await hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), "semantic");
   
       outputResult(
         !!opts.json,

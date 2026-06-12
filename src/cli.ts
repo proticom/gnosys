@@ -10,21 +10,16 @@ import fs from "fs/promises";
 import os from "os";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-import { readFileSync, existsSync, copyFileSync } from "fs";
+import { readFileSync, existsSync, } from "fs";
 // v5.8.0 (#4): only the lightweight modules are imported at top-level.
 // Anything that pulls @huggingface/transformers, mammoth/pdf-parse/turndown,
 // large file-walking machinery, or otherwise costs >100ms to load gets
 // `await import(...)` inside its own action handler. This keeps
 // `gnosys --help` and other lightweight commands fast.
 import { GnosysResolver } from "./lib/resolver.js";
-import { GnosysTagRegistry } from "./lib/tags.js";
-import { computeStats, type TimePeriod } from "./lib/timeline.js";
-import { loadConfig, generateConfigTemplate, type GnosysConfig, writeConfig, updateConfig, ALL_PROVIDERS, getProviderModel } from "./lib/config.js";
+import { loadConfig, generateConfigTemplate, } from "./lib/config.js";
 import { GnosysDB } from "./lib/db.js";
-import { logError } from "./lib/log.js";
-import { getSecureStorageSetupHint } from "./lib/platform.js";
-import { createProjectIdentity, readProjectIdentity, findProjectIdentity, migrateProject } from "./lib/projectIdentity.js";
-import { syncRules } from "./lib/rulesGen.js";
+import { createProjectIdentity, findProjectIdentity, } from "./lib/projectIdentity.js";
 // Lazy-loaded inside action handlers (each ~200ms-2.5s on cold cache):
 //   - ./lib/embeddings.js       (@huggingface/transformers — 80MB)
 //   - ./lib/hybridSearch.js     (depends on embeddings)

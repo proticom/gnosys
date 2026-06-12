@@ -9,10 +9,8 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { GnosysDB } from "../lib/db.js";
 import {
   federatedSearch,
-  federatedDiscover,
   detectAmbiguity,
   generateBriefing,
   generateAllBriefings,
@@ -23,8 +21,6 @@ import {
   createTestEnv,
   cleanupTestEnv,
   makeMemory,
-  makeProject,
-  seedMultiProjectMemories,
   type TestEnv,
 } from "./_helpers.js";
 

@@ -187,14 +187,6 @@ export function closeClientReadContext(ctx: ClientReadContext): void {
   }
 }
 
-/**
- * @deprecated Use openClientReadContext — returns only the read DB without overlay or cleanup.
- */
-export function openClientReadDb(localDb: GnosysDB, masterPath: string): GnosysDB {
-  const ctx = openClientReadContext(localDb, masterPath, getMachineId());
-  return ctx.db;
-}
-
 export function getV13SyncStatus(localDb: GnosysDB): V13SyncStatus {
   const mc = readMachineConfig();
   const masterPath = getConfiguredRemotePath(localDb);

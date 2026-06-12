@@ -11,17 +11,13 @@
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "fs";
-import fsp from "fs/promises";
 import path from "path";
-import os from "os";
-import { execSync } from "child_process";
-import { GnosysDB, DbProject } from "../lib/db.js";
+import { GnosysDB, } from "../lib/db.js";
 import {
   createTestEnv,
   cleanupTestEnv,
   makeMemory,
   makeProject,
-  CLI,
   cliInit,
   type TestEnv,
 } from "./_helpers.js";
@@ -236,7 +232,7 @@ describe("Phase 8a: Central DB + Project Identity", () => {
       const backupPath = await env.db.backup(backupDir);
 
       // Open backup DB and verify
-      const backupDb = new GnosysDB(path.dirname(backupPath));
+      const _backupDb = new GnosysDB(path.dirname(backupPath));
       // The backup might be at a different location, let's just verify the file exists and is valid
       expect(fs.existsSync(backupPath)).toBe(true);
     });

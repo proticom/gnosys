@@ -11,7 +11,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fsp from "fs/promises";
 import path from "path";
-import { GnosysDB } from "../lib/db.js";
 import {
   setPreference,
   getPreference,

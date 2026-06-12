@@ -36,7 +36,7 @@ export async function runWebBuildCommand(
       categories: webConfig.categories,
       llmEnrich: opts.llm ? webConfig.llmEnrich : false,
       prune: opts.prune || webConfig.prune,
-      concurrency: parseInt(opts.concurrency) || webConfig.concurrency,
+      concurrency: parseInt(opts.concurrency, 10) || webConfig.concurrency,
       crawlDelayMs: webConfig.crawlDelayMs,
       dryRun: opts.dryRun,
     }, gnosysConfig);

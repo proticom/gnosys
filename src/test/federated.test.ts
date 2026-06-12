@@ -12,7 +12,6 @@ import os from "os";
 import { GnosysDB, type DbMemory } from "../lib/db.js";
 import {
   federatedSearch,
-  federatedDiscover,
   detectAmbiguity,
   generateBriefing,
   generateAllBriefings,

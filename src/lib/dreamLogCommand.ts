@@ -23,7 +23,7 @@ export async function runDreamLogCommand(
       process.exitCode = 1;
       return;
     }
-    const limit = Math.max(1, parseInt(opts.last) || 20);
+    const limit = Math.max(1, parseInt(opts.last, 10) || 20);
     const sinceIso = opts.since ? `${opts.since}T00:00:00Z` : undefined;
     const runs = centralDb.getRecentDreamRuns(limit, {
       failuresOnly: !!opts.failuresOnly,

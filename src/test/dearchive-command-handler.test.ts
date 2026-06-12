@@ -30,7 +30,8 @@ describe("gnosys dearchive command wiring", () => {
     expect(handler).toContain(
       "Archive not available. Install it with: npm install better-sqlite3",
     );
-    expect(handler).toContain("archive.searchArchive(query, parseInt(opts.limit))");
+    // v5.12.1 marker update (approved): production parseInt gained explicit radix 10
+    expect(handler).toContain("archive.searchArchive(query, parseInt(opts.limit, 10))");
     expect(handler).toContain("No archived memories found matching");
     expect(handler).toContain("archive.dearchiveBatch(ids, writeTarget.store)");
     expect(handler).toContain("finally");

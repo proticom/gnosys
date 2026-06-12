@@ -220,7 +220,6 @@ export async function ingestFile(options: MultimodalIngestOptions): Promise<Mult
     author = "human",
     authority = "imported",
     dryRun = false,
-    projectRoot,
     onProgress,
   } = options;
 

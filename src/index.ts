@@ -49,15 +49,15 @@ import { applyLens, type LensFilter } from "./lib/lensing.js";
 import { groupByPeriod, computeStats, type TimePeriod } from "./lib/timeline.js";
 import { buildLinkGraph, getBacklinks, getOutgoingLinks, formatGraphSummary } from "./lib/wikilinks.js";
 import { loadConfig, type GnosysConfig, DEFAULT_CONFIG } from "./lib/config.js";
-import { getLLMProvider, isProviderAvailable, type LLMProvider } from "./lib/llm.js";
-import { recall, formatRecall, formatRecallCLI } from "./lib/recall.js";
+import { getLLMProvider, type LLMProvider } from "./lib/llm.js";
+import { recall, formatRecall, } from "./lib/recall.js";
 import { initAudit, readAuditLog, formatAuditTimeline } from "./lib/audit.js";
 import { GnosysDB } from "./lib/db.js";
-import { syncMemoryToDb, syncUpdateToDb, syncArchiveToDb, syncDearchiveToDb, syncReinforcementToDb, auditToDb } from "./lib/dbWrite.js";
-import { createProjectIdentity, readProjectIdentity, findProjectIdentity, checkDirectoryMismatch } from "./lib/projectIdentity.js";
-import { setPreference, getPreference, getAllPreferences, deletePreference, Preference, KNOWN_PREFERENCE_KEYS, suggestPreferenceKey } from "./lib/preferences.js";
-import { syncRules, generateRulesBlock, removeRulesBlock } from "./lib/rulesGen.js";
-import { federatedSearch, federatedDiscover, detectAmbiguity, generateBriefing, generateAllBriefings, getWorkingSet, formatWorkingSet, detectCurrentProject } from "./lib/federated.js";
+import { syncMemoryToDb, syncUpdateToDb, syncDearchiveToDb, syncReinforcementToDb, auditToDb } from "./lib/dbWrite.js";
+import { createProjectIdentity, readProjectIdentity, } from "./lib/projectIdentity.js";
+import { setPreference, getPreference, getAllPreferences, deletePreference, KNOWN_PREFERENCE_KEYS, suggestPreferenceKey } from "./lib/preferences.js";
+import { syncRules, generateRulesBlock, } from "./lib/rulesGen.js";
+import { federatedSearch, detectAmbiguity, generateBriefing, generateAllBriefings, getWorkingSet, formatWorkingSet, detectCurrentProject } from "./lib/federated.js";
 import { generatePortfolio, formatPortfolioCompact, formatPortfolioMarkdown, generateStatusPrompt } from "./lib/portfolio.js";
 import {
   applyPendingOverlay,
@@ -78,10 +78,8 @@ import {
 // pay the ~3-25s import cost for @huggingface/transformers, mammoth,
 // pdf-parse, etc. These are type-only imports — zero runtime cost.
 import type { GnosysIngestion } from "./lib/ingest.js";
-import type { GnosysEmbeddings } from "./lib/embeddings.js";
 import type { GnosysHybridSearch } from "./lib/hybridSearch.js";
 import type { GnosysAsk } from "./lib/ask.js";
-import type { GnosysDreamEngine } from "./lib/dream.js";
 
 // Initialize resolver (discovers all layered stores)
 const resolver = new GnosysResolver();
@@ -2083,7 +2081,7 @@ regTool(
         effectiveMode === "llm" &&
         result.totalProcessed > 100
       ) {
-        const estimate = estimateDuration(
+        const _estimate = estimateDuration(
           result.totalProcessed,
           "llm",
           concurrency || 5
@@ -2481,7 +2479,7 @@ regTool(
   async (params) => {
     try {
     const ctx = await resolveToolContext(params.projectRoot);
-    if (!ctx.centralDb || !ctx.centralDb.isAvailable() || !ctx.centralDb.isMigrated()) {
+    if (!ctx.centralDb?.isAvailable() || !ctx.centralDb.isMigrated()) {
       return {
         content: [
           {
@@ -2569,7 +2567,7 @@ regTool(
   async (params) => {
     try {
     const ctx = await resolveToolContext(params.projectRoot);
-    if (!ctx.centralDb || !ctx.centralDb.isAvailable() || !ctx.centralDb.isMigrated()) {
+    if (!ctx.centralDb?.isAvailable() || !ctx.centralDb.isMigrated()) {
       return {
         content: [
           {

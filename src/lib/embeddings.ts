@@ -21,7 +21,7 @@ import { enableWAL } from "./lock.js";
 type Pipeline = (texts: string[], options?: Record<string, unknown>) => Promise<{ tolist(): number[][] }>;
 
 const MODEL_NAME = "Xenova/all-MiniLM-L6-v2";
-const EMBEDDING_DIM = 384;
+const _EMBEDDING_DIM = 384;
 
 export class GnosysEmbeddings {
   private pipeline: Pipeline | null = null;

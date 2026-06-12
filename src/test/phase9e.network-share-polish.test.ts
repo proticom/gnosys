@@ -14,12 +14,11 @@
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "fs";
-import fsp from "fs/promises";
 import path from "path";
 import os from "os";
 import { execSync } from "child_process";
 import { GnosysDB } from "../lib/db.js";
-import { handleRequest, SandboxRequest } from "../sandbox/server.js";
+import { handleRequest, } from "../sandbox/server.js";
 import type { SandboxStatus } from "../sandbox/manager.js";
 import {
   createTestEnv,

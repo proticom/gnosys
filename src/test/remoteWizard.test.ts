@@ -9,7 +9,6 @@ import path from "path";
 import {
   matchesTypedPhrase,
   detectClonedStagingPresence,
-  stagingDirForMachine,
   BACKUP_RISK_PHRASE,
   __test,
 } from "../lib/remoteWizard.js";

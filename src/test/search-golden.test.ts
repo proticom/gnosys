@@ -4,7 +4,6 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { GnosysDB } from "../lib/db.js";
 import { GnosysDbSearch } from "../lib/dbSearch.js";
 import { federatedSearch } from "../lib/federated.js";
 import type { SearchMode } from "../lib/hybridSearch.js";

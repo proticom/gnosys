@@ -28,7 +28,8 @@ describe("gnosys dream log command wiring", () => {
     expect(handler).toContain("Central DB not available.");
     expect(handler).toContain("process.exitCode = 1");
     expect(handler).not.toContain("process.exit(1)");
-    expect(handler).toContain("Math.max(1, parseInt(opts.last) || 20)");
+    // v5.12.1 marker update (approved): production parseInt gained explicit radix 10
+    expect(handler).toContain("Math.max(1, parseInt(opts.last, 10) || 20)");
     expect(handler).toContain('`${opts.since}T00:00:00Z`');
     expect(handler).toContain("failuresOnly: !!opts.failuresOnly");
     expect(handler).toContain("context.parentJson");

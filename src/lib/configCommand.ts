@@ -278,7 +278,7 @@ export async function runConfigSetCommand(
                 break;
               case "maxMemories": {
                 const n = parseInt(recallValue, 10);
-                if (isNaN(n) || n < 1 || n > 20) {
+                if (Number.isNaN(n) || n < 1 || n > 20) {
                   printStatus("fail", "maxMemories must be between 1 and 20");
                   process.exit(1);
                 }
@@ -288,7 +288,7 @@ export async function runConfigSetCommand(
               }
               case "minRelevance": {
                 const f = parseFloat(recallValue);
-                if (isNaN(f) || f < 0 || f > 1) {
+                if (Number.isNaN(f) || f < 0 || f > 1) {
                   printStatus("fail", "minRelevance must be between 0 and 1");
                   process.exit(1);
                 }

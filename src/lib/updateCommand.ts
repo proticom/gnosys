@@ -36,7 +36,7 @@ export async function runUpdateCommand(
     } else {
       const resolver = await getResolver();
       const memory = await resolver.readMemory(memoryPath);
-      if (!memory || !memory.frontmatter.id) {
+      if (!memory?.frontmatter.id) {
         console.error(`Memory not found: ${memoryPath}`);
         centralDb?.close();
         process.exit(1);

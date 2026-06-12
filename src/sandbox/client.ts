@@ -39,7 +39,7 @@ export class SandboxClient {
             const res = JSON.parse(line) as SandboxResponse;
             socket.end();
             resolve(res);
-          } catch (err) {
+          } catch (_err) {
             socket.end();
             reject(new Error(`Invalid response from sandbox: ${line}`));
           }

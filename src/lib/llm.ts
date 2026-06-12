@@ -741,7 +741,7 @@ export function createProvider(
 
     case "custom": {
       const customConfig = config.llm.custom;
-      if (!customConfig || !customConfig.baseUrl || !customConfig.model) {
+      if (!customConfig?.baseUrl || !customConfig.model) {
         throw new Error(
           "Custom provider not configured. Set llm.custom.baseUrl and llm.custom.model in gnosys.json, or use: gnosys config set provider custom"
         );

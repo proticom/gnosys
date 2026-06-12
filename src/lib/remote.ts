@@ -45,17 +45,6 @@ export function clearRemoteSyncConfig(localDb: GnosysDB): void {
 
 // ─── Types ──────────────────────────────────────────────────────────────
 
-interface RemoteConfig {
-  /** Path to remote .gnosys directory (e.g., /Volumes/nas/gnosys) */
-  path: string;
-  /** Run sync automatically in background */
-  autoSync?: boolean;
-  /** Auto-sync interval in seconds (default 300) */
-  autoSyncIntervalSeconds?: number;
-  /** Conflict handling: skip-and-flag (safe) or newer-wins (aggressive) */
-  conflictStrategy?: "skip-and-flag" | "newer-wins";
-}
-
 interface ConflictInfo {
   memoryId: string;
   title: string;

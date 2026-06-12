@@ -12,20 +12,16 @@
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "fs";
-import fsp from "fs/promises";
 import path from "path";
-import os from "os";
 import net from "net";
-import { GnosysDB } from "../lib/db.js";
 import {
   handleRequest,
   type SandboxRequest,
-  SandboxResponse,
   initDreamMode,
   type DreamState,
 } from "../sandbox/server.js";
 import { SandboxClient } from "../sandbox/client.js";
-import { setPreference, getPreference, getAllPreferences, type Preference } from "../lib/preferences.js";
+import type { Preference } from "../lib/preferences.js";
 import { injectRules, generateRulesBlock } from "../lib/rulesGen.js";
 import { DEFAULT_DREAM_CONFIG, DreamScheduler, GnosysDreamEngine } from "../lib/dream.js";
 import { DEFAULT_CONFIG } from "../lib/config.js";

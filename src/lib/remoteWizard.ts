@@ -7,7 +7,7 @@
  */
 
 import { randomUUID } from "crypto";
-import { existsSync, mkdirSync, renameSync, readFileSync } from "fs";
+import { existsSync, mkdirSync, renameSync, } from "fs";
 import * as path from "path";
 import { createInterface, type Interface } from "readline/promises";
 import { GnosysDB } from "./db.js";
@@ -29,10 +29,9 @@ import { atomicWriteFileSync } from "./atomicWrite.js";
 import { readMasterMarker, writeMasterMarker } from "./masterLease.js";
 import {
   checkMasterPathLocalDisk,
-  matchesLocalDiskAck,
   LOCAL_DISK_ACK_PHRASE,
 } from "./localDiskCheck.js";
-import { stagingDirForMachine, clientPresencePath, machineStagingDir } from "./syncStaging.js";
+import { clientPresencePath, machineStagingDir } from "./syncStaging.js";
 import { safeQuestion } from "./setup/ui/safePrompt.js";
 import { Spinner } from "./setup/ui/spinner.js";
 import { printStatus } from "./setup/ui/status.js";
@@ -657,11 +656,11 @@ export async function configureFromPath(
   return true;
 }
 
-export { stagingDirForMachine, clientPresencePath } from "./syncStaging.js";
+export { machineStagingDir as stagingDirForMachine, clientPresencePath } from "./syncStaging.js";
 
 export const __test = {
   matchesTypedPhrase,
   detectClonedStagingPresence,
-  stagingDirForMachine,
+  stagingDirForMachine: machineStagingDir,
   clientPresencePath,
 };

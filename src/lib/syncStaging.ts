@@ -56,9 +56,6 @@ export function machineStagingDir(masterPath: string, machineId: string): string
   return path.join(stagingRoot(masterPath), machineId);
 }
 
-/** Alias used by remoteWizard and tests. */
-export const stagingDirForMachine = machineStagingDir;
-
 export function clientPresencePath(masterPath: string, machineId: string): string {
   return path.join(machineStagingDir(masterPath, machineId), PRESENCE_FILE);
 }

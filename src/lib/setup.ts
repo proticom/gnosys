@@ -20,7 +20,6 @@ import {
   updateConfig,
   resolveTaskModel,
   getProviderModel,
-  ALL_PROVIDERS,
   type GnosysConfig,
   type LLMProviderName,
 } from "./config.js";
@@ -372,7 +371,7 @@ export async function fetchDynamicModels(): Promise<Record<string, ModelTier[]>>
 /**
  * Get model tiers for a provider — tries dynamic first, falls back to hardcoded.
  */
-async function getModelTiers(provider: string): Promise<ModelTier[]> {
+async function _getModelTiers(provider: string): Promise<ModelTier[]> {
   const dynamic = await fetchDynamicModels();
   if (dynamic[provider] && dynamic[provider].length > 0) {
     return dynamic[provider];
@@ -832,7 +831,7 @@ export function upsertGrokMcpBlock(
   entry: { command: string; args: string[]; startup_timeout_sec?: number },
 ): string {
   // Drop mistaken v5.9.4 `[mcp.<name>]` sections so we don't leave dead config.
-  let content = removeTomlSection(existing, `[mcp.${name}]`);
+  const content = removeTomlSection(existing, `[mcp.${name}]`);
 
   const sectionHeader = `[mcp_servers.${name}]`;
   const lines = content.split("\n");
@@ -949,7 +948,7 @@ export async function setupIDE(
         // 1. Strip legacy hand-written sections in ~/.codex/config.toml.
         const userCodexConfig = path.join(os.homedir(), ".codex", "config.toml");
         try {
-          let existing = await fs.readFile(userCodexConfig, "utf-8");
+          const existing = await fs.readFile(userCodexConfig, "utf-8");
           const cleaned = removeTomlSection(
             removeTomlSection(existing, "[mcp.gnosys]"),
             "[gnosys]",
@@ -970,7 +969,7 @@ export async function setupIDE(
         let alreadyCorrect = false;
         try {
           const existing = runCli("codex", ["mcp", "get", "gnosys"], { allowFailure: true });
-          if (existing && existing.includes(gnosysCmd) && !existing.includes(" serve")) {
+          if (existing?.includes(gnosysCmd) && !existing.includes(" serve")) {
             alreadyCorrect = true;
           } else if (existing) {
             runCli("codex", ["mcp", "remove", "gnosys"], { allowFailure: true });
@@ -1399,6 +1398,7 @@ export async function runSetup(opts: {
   section?: "keys";
   directory?: string;
   nonInteractive?: boolean;
+  // biome-ignore lint/suspicious/noConfusingVoidType: overload impl must accept the Promise<void> overload's return
 }): Promise<SetupResult | void> {
   if (opts.section === "keys") {
     return runKeysSetup();
@@ -1750,7 +1750,7 @@ export async function runSetup(opts: {
         const gnomeIdx = hasSecret ? idx++ : -1;
         const envIdx = idx++;
         const dotenvIdx = idx++;
-        const skipIdx = idx++;
+        const _skipIdx = idx++;
         // skipIdx is unused as a variable but documents the last index
 
         if (keyChoice === keychainIdx) {
@@ -2356,71 +2356,6 @@ export async function runSetup(opts: {
   }
 }
 
-// ─── Provider-only setup (v5.9.4 — Bug 4) ──────────────────────────────────
-
-export interface ProviderOnlySetupOpts {
-  directory?: string;
-  rl?: ReadlineInterface;
-}
-
-/**
- * Update ONLY `llm.defaultProvider` in gnosys.json. Used by the summary
- * panel row 1 ("provider") so it stops dragging the user into the full
- * model picker — that's row 2's job.
- *
- * v5.9.4 Bug 4 — before this split, both summary rows routed through
- * `runModelsSetup`, leaving no way to swap provider without also choosing
- * a new model. Now row 1 picks a provider, row 2 picks a model.
- */
-export async function runProviderOnlySetup(opts: ProviderOnlySetupOpts = {}): Promise<void> {
-  const projectDir = opts.directory ? path.resolve(opts.directory) : process.cwd();
-  const ownsRl = !opts.rl;
-  const rl = opts.rl ?? createInterface({ input: stdin, output: stdout });
-
-  try {
-    const { Header } = await import("./setup/ui/header.js");
-    const { Title } = await import("./setup/ui/title.js");
-    const { Spinner } = await import("./setup/ui/spinner.js");
-    const { printStatus } = await import("./setup/ui/status.js");
-
-    console.log();
-    console.log(Header(["gnosys", "setup", "provider"]));
-    console.log();
-    console.log(Title("Default provider", "pick the LLM provider — model stays as configured"));
-    console.log();
-
-    const existingConfig = await loadExistingConfig(projectDir);
-    const currentProvider = existingConfig?.llm.defaultProvider;
-
-    const pricingSpin = Spinner("fetching latest pricing from openrouter…");
-    const fetchStart = Date.now();
-    const dynamicModels = await fetchDynamicModels();
-    const fetchMs = Date.now() - fetchStart;
-    if (Object.keys(dynamicModels).length > 0) {
-      pricingSpin.ok("pricing loaded", `${fetchMs} ms`);
-    } else {
-      pricingSpin.fail("pricing fetch failed", "using bundled tiers");
-    }
-    console.log();
-
-    const provider = await pickProvider(rl, dynamicModels, "Choose your LLM provider", currentProvider);
-    if (!provider || provider === currentProvider) {
-      printStatus("warn", "no change · provider unchanged");
-      return;
-    }
-
-    const storePath = ensureActiveStorePath(projectDir);
-    const existingLlm = existingConfig?.llm ?? {};
-    await updateConfig(storePath, {
-      llm: { ...existingLlm, defaultProvider: provider as LLMProviderName },
-    });
-    printStatus("ok", `default provider · ${provider}`, `${storePath}/gnosys.json`);
-    printStatus("progress", "model unchanged", "use row 2 to swap the model");
-  } finally {
-    if (ownsRl) rl.close();
-  }
-}
-
 // ─── Models-only setup (gnosys setup models / gnosys models) ─────────────────
 
 /** Where validated keys are persisted (§3.10). */
@@ -2583,7 +2518,7 @@ export async function promptKeyDestinationAndPersist(opts: {
 
   const secureIdx = 0;
   const dotenvIdx = 1;
-  const noneIdx = 2;
+  const _noneIdx = 2;
 
   if (choice === secureIdx) {
     if (storeApiKeySecret(opts.service, opts.key, opts.provider)) {
@@ -3179,7 +3114,7 @@ interface ModelsCommandOpts {
  *   --refresh: clear the OpenRouter cache and re-fetch
  *   --set X:   update the default model in gnosys.json (no prompts)
  */
-async function runModelsCommand(opts: ModelsCommandOpts = {}): Promise<void> {
+async function _runModelsCommand(opts: ModelsCommandOpts = {}): Promise<void> {
   const projectDir = opts.directory ? path.resolve(opts.directory) : process.cwd();
   const existingConfig = await loadExistingConfig(projectDir);
   const currentProvider = existingConfig?.llm.defaultProvider;
@@ -3497,23 +3432,23 @@ export async function runDreamSetup(opts: DreamSetupOpts = {}): Promise<void> {
 
     if (editChoice === "e") {
       const idleAns = await askInput(rl, "idle minutes before triggering", { default: String(dIdle) });
-      idleMinutes = Math.max(1, parseInt(idleAns) || dIdle);
+      idleMinutes = Math.max(1, parseInt(idleAns, 10) || dIdle);
       const runtimeAns = await askInput(rl, "max runtime minutes", { default: String(dRuntime) });
-      maxRuntimeMinutes = Math.max(1, parseInt(runtimeAns) || dRuntime);
+      maxRuntimeMinutes = Math.max(1, parseInt(runtimeAns, 10) || dRuntime);
       const minMemAns = await askInput(rl, "minimum memories before activating", { default: String(dMinMem) });
-      minMemories = Math.max(1, parseInt(minMemAns) || dMinMem);
+      minMemories = Math.max(1, parseInt(minMemAns, 10) || dMinMem);
       const scheduleStartAns = await askInput(rl, "night window start hour (0-23)", { default: String(dScheduleStart) });
-      scheduleStartHour = Math.min(23, Math.max(0, parseInt(scheduleStartAns) || dScheduleStart));
+      scheduleStartHour = Math.min(23, Math.max(0, parseInt(scheduleStartAns, 10) || dScheduleStart));
       const scheduleEndAns = await askInput(rl, "night window end hour (0-23)", { default: String(dScheduleEnd) });
-      scheduleEndHour = Math.min(23, Math.max(0, parseInt(scheduleEndAns) || dScheduleEnd));
+      scheduleEndHour = Math.min(23, Math.max(0, parseInt(scheduleEndAns, 10) || dScheduleEnd));
       const systemIdleAns = await askInput(rl, "real machine idle minutes required", { default: String(dSystemIdle) });
-      systemIdleMinutes = Math.max(1, parseInt(systemIdleAns) || dSystemIdle);
+      systemIdleMinutes = Math.max(1, parseInt(systemIdleAns, 10) || dSystemIdle);
       const minNewAns = await askInput(rl, "minimum changed memories before dreaming", { default: String(dMinNewMemories) });
-      minNewMemoriesToDream = Math.max(0, parseInt(minNewAns) || dMinNewMemories);
+      minNewMemoriesToDream = Math.max(0, parseInt(minNewAns, 10) || dMinNewMemories);
       const minHoursAns = await askInput(rl, "minimum hours between successful dreams", { default: String(dMinHours) });
-      minHoursBetweenRuns = Math.max(0, parseInt(minHoursAns) || dMinHours);
+      minHoursBetweenRuns = Math.max(0, parseInt(minHoursAns, 10) || dMinHours);
       const maxCallsAns = await askInput(rl, "maximum LLM calls per dream run", { default: String(dMaxCalls) });
-      maxLLMCallsPerRun = Math.max(0, parseInt(maxCallsAns) || dMaxCalls);
+      maxLLMCallsPerRun = Math.max(0, parseInt(maxCallsAns, 10) || dMaxCalls);
       selfCritique = await askYesNo(rl, "self-critique (rule + LLM-based review flagging)", dSelfCritique);
       generateSummaries = await askYesNo(rl, "generate summaries (LLM)", dGenSummaries);
       discoverRelationships = await askYesNo(rl, "discover relationships (LLM)", dDiscover);
@@ -3680,5 +3615,3 @@ export async function getApiKeyForProvider(
   }
   return readFirstInChain(provider as LLMProviderName) ?? "";
 }
-
-export { getApiKeyForProviderFromConfig } from "./apiKeyVault.js";

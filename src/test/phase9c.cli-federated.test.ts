@@ -23,15 +23,11 @@ import {
   CLI,
   cliInit,
   cli,
-  cliJson,
   extractJson,
 } from "./_helpers.js";
-import { GnosysDB, MemoryScope } from "../lib/db.js";
 import {
   federatedSearch,
   federatedDiscover,
-  FederatedResult,
-  FederatedSearchOptions,
 } from "../lib/federated.js";
 
 // ─── TC-9c.1: Federated search ranking with tier boosting ──────────────

@@ -11,7 +11,6 @@ import {
   updateConfig,
   getProviderModel,
   type GnosysConfig,
-  type LLMProviderName,
 } from "../../config.js";
 import {
   buildApiKeyRequirementsFromConfig,

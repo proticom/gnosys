@@ -23,7 +23,7 @@ import {
   touchMasterMarkerHeartbeat,
   validateLeaseEpochBeforeWrite,
 } from "./masterLease.js";
-import { acquireWriteLockSync, releaseWriteLockSync } from "./syncLock.js";
+import { acquireWriteLockSync, } from "./syncLock.js";
 
 const INGEST_LOCK_NAME = "master-ingest.lock";
 

@@ -531,7 +531,7 @@ export class GnosysDB {
         this.applySchema();
         this.available = true;
         return; // Success
-      } catch (err) {
+      } catch (_err) {
         this.db = null;
         if (attempt < maxRetries) {
           // Synchronous delay for constructor (network share retry)

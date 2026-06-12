@@ -10,10 +10,7 @@ import { getGnosysHome } from "./paths.js";
 import { atomicWriteFile } from "./atomicWrite.js";
 import {
   getApiKeyForProviderFromConfig,
-  type LlmTaskName,
 } from "./apiKeyVault.js";
-
-export type { LlmTaskName } from "./apiKeyVault.js";
 
 // ─── LLM Provider Schemas ───────────────────────────────────────────────
 
@@ -177,8 +174,6 @@ const ChatConfigSchema = z.object({
   systemPromptPrefix: z.string().default(""),
 });
 
-export type ChatConfig = z.infer<typeof ChatConfigSchema>;
-
 // ─── Multimodal Ingestion Schema ────────────────────────────────────────
 
 const MultimodalConfigSchema = z.object({
@@ -195,8 +190,6 @@ const MultimodalConfigSchema = z.object({
   /** Maximum file size in MB for ingestion */
   maxFileSizeMb: z.number().min(1).max(500).default(100),
 });
-
-export type MultimodalConfig = z.infer<typeof MultimodalConfigSchema>;
 
 // ─── Web Knowledge Base Schema ──────────────────────────────────────────
 
@@ -228,8 +221,6 @@ const WebConfigSchema = z.object({
   /** Delay in ms between crawl requests (skip for localhost) */
   crawlDelayMs: z.number().min(0).default(200),
 });
-
-export type WebConfig = z.infer<typeof WebConfigSchema>;
 
 // ─── Main Config Schema ─────────────────────────────────────────────────
 

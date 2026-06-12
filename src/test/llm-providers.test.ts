@@ -11,9 +11,7 @@ import {
   getMistralApiKey,
   getOpenRouterApiKey,
   getCustomApiKey,
-  DEFAULT_CONFIG,
   GnosysConfigSchema,
-  LLMProviderName,
 } from "../lib/config.js";
 import {
   createProvider,

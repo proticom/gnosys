@@ -10,7 +10,6 @@ import {
   detectKeyLocation,
   providerNeedsApiKey,
   readSecureStoreSecret,
-  readStoredSecret,
   storeApiKeySecret,
 } from "./apiKeyVault.js";
 import {

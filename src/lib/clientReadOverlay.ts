@@ -47,6 +47,9 @@ export function pendingAddToDbMemory(p: PendingAddRow): DbMemory {
     source_file: null,
     source_page: null,
     source_timerange: null,
+    attachment_data: null,
+    attachment_mime: null,
+    attachment_name: null,
     project_id: p.project_id,
     scope: p.scope,
   };

@@ -10,8 +10,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fsp from "fs/promises";
 import path from "path";
-import { GnosysDB } from "../lib/db.js";
-import { GnosysStore } from "../lib/store.js";
 import { GnosysSearch } from "../lib/search.js";
 import {
   createTestEnv,

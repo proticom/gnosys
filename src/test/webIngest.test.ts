@@ -9,7 +9,6 @@ import fs from "fs";
 import fsp from "fs/promises";
 import path from "path";
 import os from "os";
-import matter from "gray-matter";
 import {
   ingestSite,
   ingestUrl,

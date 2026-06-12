@@ -12,7 +12,6 @@ import {
   validateLocation,
   getMachineId,
   formatStatus,
-  type RemoteStatus,
 } from "../lib/remote.js";
 
 vi.mock("../lib/machineConfig.js", () => ({

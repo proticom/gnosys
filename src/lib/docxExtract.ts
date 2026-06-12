@@ -45,7 +45,7 @@ export async function extractDocxText(filePath: string): Promise<DocxChunk[]> {
   const result = await mammoth.convertToHtml({ buffer });
   const html = result.value;
 
-  if (!html || !html.trim()) {
+  if (!html?.trim()) {
     return [];
   }
 

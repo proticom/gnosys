@@ -28,7 +28,8 @@ describe("gnosys semantic-search command wiring", () => {
     expect(handler).toContain("new GnosysEmbeddings(storePath)");
     expect(handler).toContain("new GnosysHybridSearch");
     expect(handler).toContain(
-      'hybridSearch.hybridSearch(query, parseInt(opts.limit), "semantic")',
+    // v5.12.1 marker update (approved): production parseInt gained explicit radix 10
+      'hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), "semantic")',
     );
     expect(handler).toContain("relativePath: r.relativePath");
     expect(handler).toContain(

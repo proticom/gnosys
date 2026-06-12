@@ -1,11 +1,7 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "entry": [
-    "src/index.ts",
-    "src/cli.ts",
-    "src/postinstall.ts",
-    "src/lib/staticSearch.ts"
-  ],
+  "entry": ["src/postinstall.ts"],
   "project": ["src/**/*.{ts,tsx}"],
-  "ignore": ["extensions/**", "scripts/**"]
+  "ignoreExportsUsedInFile": true,
+  "ignoreBinaries": ["which", "osascript", "notify-send", "ioreg", "systemctl", "ffmpeg", "gnosys"]
 }

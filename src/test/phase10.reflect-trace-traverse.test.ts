@@ -20,9 +20,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "fs";
 import path from "path";
-import os from "os";
-import { GnosysDB } from "../lib/db.js";
-import { handleRequest, SandboxRequest } from "../sandbox/server.js";
+import { handleRequest, } from "../sandbox/server.js";
 import { traceCodebase } from "../lib/trace.js";
 import {
   createTestEnv,

@@ -24,7 +24,7 @@ import { safeQuestion } from "../ui/safePrompt.js";
 import { Header } from "../ui/header.js";
 import { Title } from "../ui/title.js";
 import { Footer } from "../ui/footer.js";
-import { Status, printStatus } from "../ui/status.js";
+import { printStatus } from "../ui/status.js";
 import { c, color, glyph } from "../ui/tokens.js";
 import {
   CLOUD_PROVIDERS_FOR_KEYS,
@@ -234,7 +234,7 @@ async function manageProviderKeys(
         } else {
           printStatus("progress", "model left unchanged — you can set it from task routing");
         }
-      } catch (err) {
+      } catch (_err) {
         printStatus("warn", "could not pick model right now", "you can set a default model from the main setup → task routing");
       }
       cfg = await loadConfig(storePath);
@@ -297,7 +297,6 @@ async function manageProviderKeys(
           printStatus("fail", "delete failed or entry not found");
         }
       }
-      continue;
     }
   }
 }

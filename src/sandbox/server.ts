@@ -12,13 +12,12 @@
 import net from "net";
 import fs from "fs";
 import path from "path";
-import os from "os";
 import { GnosysDB, type DbMemory } from "../lib/db.js";
 import { federatedSearch } from "../lib/federated.js";
-import { setPreference, getPreference, getAllPreferences, deletePreference, searchPreferences, Preference } from "../lib/preferences.js";
+import { setPreference, getPreference, getAllPreferences, deletePreference, searchPreferences, } from "../lib/preferences.js";
 import { GnosysDreamEngine, DreamScheduler, type DreamConfig, type DreamReport, DEFAULT_DREAM_CONFIG } from "../lib/dream.js";
 import { DEFAULT_CONFIG, type GnosysConfig } from "../lib/config.js";
-import { syncRules, generateRulesBlock, RulesGenResult } from "../lib/rulesGen.js";
+import { generateRulesBlock, } from "../lib/rulesGen.js";
 import { getSandboxDir as getSandboxDirImpl } from "../lib/paths.js";
 import { logError, logWarn } from "../lib/log.js";
 
@@ -107,7 +106,7 @@ export function initDreamMode(
     originalStart();
 
     // Override the internal check interval to track state
-    const CHECK_INTERVAL = 60_000;
+    const _CHECK_INTERVAL = 60_000;
     const origCheckIdle = (scheduler as any).checkIdle;
     if (origCheckIdle) {
       (scheduler as any).checkIdle = async () => {
@@ -672,7 +671,7 @@ export function startServer(dbPath?: string): net.Server {
 
   // Open database (with retry for network shares — Dropbox, iCloud, NAS)
   const dbDir = dbPath || GnosysDB.getCentralDbDir();
-  const isNetworkPath = dbPath ? true : false;
+  const isNetworkPath = !!dbPath;
   const db = new GnosysDB(dbDir, isNetworkPath ? { retries: 5, retryDelayMs: 1000 } : undefined);
 
   if (!db.isAvailable()) {

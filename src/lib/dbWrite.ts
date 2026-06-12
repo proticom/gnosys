@@ -15,7 +15,7 @@
  */
 
 import type { GnosysDB, DbMemory } from "./db.js";
-import { type MemoryFrontmatter, Memory } from "./store.js";
+import type { MemoryFrontmatter, } from "./store.js";
 import { fnv1a } from "./db.js";
 
 /** Coerce Date objects (from gray-matter parsing) to ISO date strings. */

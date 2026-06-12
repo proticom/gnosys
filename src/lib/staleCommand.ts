@@ -12,7 +12,7 @@ export async function runStaleCommand(
   opts: StaleCommandOptions,
 ): Promise<void> {
   const resolver = await getResolver();
-  const threshold = parseInt(opts.days);
+  const threshold = parseInt(opts.days, 10);
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - threshold);
   const cutoffStr = cutoff.toISOString().split("T")[0];
@@ -34,7 +34,7 @@ export async function runStaleCommand(
         b.frontmatter.modified;
       return (aDate || "").localeCompare(bDate || "");
     })
-    .slice(0, parseInt(opts.limit));
+    .slice(0, parseInt(opts.limit, 10));
 
   if (stale.length === 0) {
     console.log(`No memories older than ${threshold} days.`);

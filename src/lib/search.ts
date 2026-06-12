@@ -31,11 +31,8 @@ export interface DiscoverResult {
 export class GnosysSearch {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private db: any = null;
-  private storePath: string;
-  private available = false;
 
   constructor(storePath: string) {
-    this.storePath = storePath;
     if (!Database) {
       // Native module not available — search features disabled
       return;
@@ -53,13 +50,11 @@ export class GnosysSearch {
       this.db.exec(
         "CREATE TABLE IF NOT EXISTS _write_test (v INTEGER); INSERT INTO _write_test VALUES (1); DELETE FROM _write_test; DROP TABLE _write_test;"
       );
-      this.available = true;
     } catch {
       // Fallback to in-memory (works everywhere, rebuilt on each start)
       try { this.db?.close(); } catch { /* ignore */ }
       this.db = new Database(":memory:");
       this.initSchema();
-      this.available = true;
     }
   }
 

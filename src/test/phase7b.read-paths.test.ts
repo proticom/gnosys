@@ -8,7 +8,6 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { GnosysDB } from "../lib/db.js";
 import {
   createTestEnv,
   cleanupTestEnv,

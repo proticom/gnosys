@@ -143,7 +143,7 @@ export function parseChooseYaml(yaml: string): ChooseBlock {
     const itemStart = line.match(/^\s*-\s*id:\s*(.+?)\s*$/);
     if (itemStart) {
       // Push previous item if any
-      if (current && current.label) options.push(current);
+      if (current?.label) options.push(current);
       current = { id: itemStart[1], label: "" };
       continue;
     }
@@ -163,7 +163,7 @@ export function parseChooseYaml(yaml: string): ChooseBlock {
   }
 
   // Flush the last option
-  if (current && current.label) options.push(current);
+  if (current?.label) options.push(current);
 
   return { prompt, options };
 }
