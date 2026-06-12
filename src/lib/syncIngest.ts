@@ -190,3 +190,29 @@ export function runMasterIngestSweep(
 
   return result;
 }
+
+/**
+ * v13 completion (5.12.x): sweep, then publish a fresh immutable snapshot
+ * when the sweep changed the DB (or none has ever been published). Clients
+ * read the published snapshot via a verified local copy instead of opening
+ * the live gnosys.db over the network — the hazard the design forbids.
+ *
+ * Kept separate from runMasterIngestSweep: publishMasterSnapshot acquires
+ * the same master-ingest lock, so it must run after the sweep releases it,
+ * and the sweep itself stays synchronous for existing callers.
+ */
+export async function runMasterIngestSweepAndPublish(
+  masterPath: string,
+  opts?: IngestSweepOptions,
+): Promise<IngestSweepResult> {
+  const result = runMasterIngestSweep(masterPath, opts);
+  try {
+    const { getMasterManifest, publishMasterSnapshot } = await import("./syncSnapshot.js");
+    if (result.ingested > 0 || !getMasterManifest(masterPath)) {
+      await publishMasterSnapshot(masterPath);
+    }
+  } catch (err) {
+    result.errors.push(`snapshot publish: ${err instanceof Error ? err.message : String(err)}`);
+  }
+  return result;
+}

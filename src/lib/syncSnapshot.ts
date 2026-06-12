@@ -62,6 +62,11 @@ function readManifestFile(masterPath: string): SnapshotManifestFile | null {
   }
 }
 
+/** Read the master's currently published snapshot manifest (null if none). */
+export function getMasterManifest(masterPath: string): SnapshotManifestFile | null {
+  return readManifestFile(masterPath);
+}
+
 function writeManifestFile(masterPath: string, manifest: SnapshotManifestFile): void {
   const dir = masterSnapshotsDir(masterPath);
   mkdirSync(dir, { recursive: true });

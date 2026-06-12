@@ -1,7 +1,7 @@
 import { GnosysDB } from "./db.js";
 import { readMachineConfig } from "./machineConfig.js";
 import { getConfiguredRemotePath } from "./remote.js";
-import { runMasterIngestSweep } from "./syncIngest.js";
+import { runMasterIngestSweepAndPublish } from "./syncIngest.js";
 
 /**
  * Run one ingest sweep on MCP server startup (master role only).
@@ -21,7 +21,7 @@ export async function maybeRunStartupIngestSweep(): Promise<void> {
   }
   if (!masterPath) return;
 
-  const result = runMasterIngestSweep(masterPath, { quiet: true });
+  const result = await runMasterIngestSweepAndPublish(masterPath, { quiet: true });
   if (result.errors.length > 0) {
     console.error(
       `[sync] Startup ingest sweep: ${result.ingested} ingested, ${result.errors.length} error(s)`,

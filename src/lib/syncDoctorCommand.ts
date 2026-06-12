@@ -2,7 +2,7 @@ import { GnosysDB } from "./db.js";
 import { getConfiguredRemotePath } from "./remote.js";
 import { readMachineConfig } from "./machineConfig.js";
 import { getV13SyncStatus } from "./syncClient.js";
-import { runMasterIngestSweep, type IngestSweepResult } from "./syncIngest.js";
+import { runMasterIngestSweepAndPublish, type IngestSweepResult } from "./syncIngest.js";
 import { getSyncIngestTimerStatus } from "./syncIngestTimer.js";
 import { quarantineStaleTmpFiles, stagingRoot } from "./syncStaging.js";
 import { existsSync, readdirSync } from "fs";
@@ -54,7 +54,7 @@ export async function runSyncDoctorCommand(opts: {
           if (!id.startsWith(".")) quarantineStaleTmpFiles(masterPath, id);
         }
       }
-      ingestResult = runMasterIngestSweep(masterPath, {
+      ingestResult = await runMasterIngestSweepAndPublish(masterPath, {
         quiet: opts.quiet || !!opts.json,
       });
       if (ingestResult.errors.length > 0) {

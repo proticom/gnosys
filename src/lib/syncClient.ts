@@ -8,9 +8,12 @@ import { GnosysDB } from "./db.js";
 import { readMachineConfig, type MultiMachineRole, getMachineId } from "./machineConfig.js";
 import { getConfiguredRemotePath } from "./remote.js";
 import {
+  acceptClientSnapshot,
   clientSnapshotStore,
+  compareSnapshotVersion,
   formatSnapshotAge,
   getClientAcceptedManifest,
+  getMasterManifest,
 } from "./syncSnapshot.js";
 import { countFailedStagingFiles, machineStagingDir, stagingRoot } from "./syncStaging.js";
 import {
@@ -91,11 +94,6 @@ export function countClientWaitingStaging(masterPath: string, machineId: string)
   }
 }
 
-/** Client should hide snapshot reads when master is unreachable (v13 offline rule). */
-export function shouldHideSnapshotReads(masterPath: string): boolean {
-  return !isMasterReachable(masterPath);
-}
-
 export function listClientReceipts(masterPath: string, machineId: string): IngestReceipt[] {
   const dir = path.join(stagingRoot(masterPath), machineId, "receipts");
   if (!existsSync(dir)) return [];
@@ -138,7 +136,41 @@ export function openClientReadContext(
   const ingestedUlids = getIngestedUlids(masterPath, machineId);
   const pendingAdds = localDb.listActivePendingAdds().filter((p) => !ingestedUlids.has(p.id));
 
+  const store = clientSnapshotStore(masterPath);
+  const snapPath = path.join(store, "gnosys.db");
+
   if (reachable) {
+    // v13 completion (5.12.x): clients must not open the live gnosys.db over
+    // the network (concurrent master writes + network FS = torn-page hazard,
+    // DESIGN.md "The Simple Rule"). Refresh the verified local snapshot copy
+    // when the master has published a newer one, then read the local copy.
+    const manifest = getMasterManifest(masterPath);
+    if (manifest) {
+      const accepted = getClientAcceptedManifest(masterPath);
+      if (compareSnapshotVersion(accepted, manifest)) {
+        // Best effort — on checksum/copy failure we fall through to whatever
+        // local snapshot (or live-DB fallback) is still available.
+        acceptClientSnapshot(masterPath, manifest);
+      }
+      if (existsSync(snapPath)) {
+        const snapDb = new GnosysDB(store);
+        if (snapDb.isAvailable()) {
+          return {
+            db: snapDb,
+            localDb,
+            pendingOverlay: pendingAdds,
+            source: "snapshot",
+            masterReachable: true,
+            ownsReadDb: true,
+          };
+        }
+        snapDb.close();
+      }
+    }
+
+    // Compatibility fallback: master has never published a snapshot (older
+    // master version, or first sweep still pending) — open the live DB as
+    // before. Disappears once the master runs one publish-enabled sweep.
     const masterDb = new GnosysDB(masterPath);
     if (masterDb.isAvailable()) {
       return {
@@ -153,8 +185,9 @@ export function openClientReadContext(
     masterDb.close();
   }
 
-  const store = clientSnapshotStore(masterPath);
-  const snapPath = path.join(store, "gnosys.db");
+  // Offline (soft rule, signed off 2026-06-11): the last-accepted snapshot
+  // stays readable — immutable + checksummed, and offline clients are
+  // add-only, so staleness is the only risk. Status surfaces snapshotAge.
   if (existsSync(snapPath)) {
     const snapDb = new GnosysDB(store);
     if (snapDb.isAvailable()) {
