@@ -119,22 +119,25 @@ export async function runRoutingSetup(opts: RoutingOptions): Promise<boolean> {
 
   const choice = await askChoice(
     opts.rl,
-    "Task routing — how do you want to use your providers?",
+    "What would you like to do?",
     [
-      "Use one provider + model for everything (simple default for all tasks)",
-      "Configure per-task routing (advanced — different models for structuring, chat, dream, etc.)",
-      "Reset all task overrides to use the default",
       "Keep current routing (no changes)",
+      "Edit tasks — set the same provider + model for all tasks (simple global default)",
+      "Edit tasks — pick different providers/models for specific tasks (advanced)",
+      "Reset all task overrides to the current default (the one shown in the main setup summary)",
     ],
     0,
   );
 
   if (choice === 0) {
-    // Simple global default path — set one provider+model for everything
+    console.log(`${DIM}No changes.${RESET}`);
+    return false;
+  }
+
+  if (choice === 1) {
+    // Edit tasks — set the same provider + model for all tasks (simple global default)
     console.log("");
     printStatus("progress", "setting a single default for all tasks…");
-    // Re-use the existing "default only" model flow with the current provider pre-selected
-    // For a lightweight experience we just let them (re)pick the model for the current default provider.
     try {
       const { fetchDynamicModels } = await import("../../setup.js");
       const { pickModel } = await import("../../setup.js");
@@ -170,7 +173,7 @@ export async function runRoutingSetup(opts: RoutingOptions): Promise<boolean> {
     return true;
   }
 
-  if (choice === 2) {
+  if (choice === 3) {
     const { Diff } = await import("../ui/diff.js");
     const overridesBeingCleared = Object.entries(cfg.taskModels ?? {})
       .filter(([, v]) => v.provider !== provider || v.model !== model)
@@ -186,23 +189,19 @@ export async function runRoutingSetup(opts: RoutingOptions): Promise<boolean> {
     } else {
       console.log(`${DIM}No overrides to clear — already using default everywhere.${RESET}`);
     }
-    const confirmReset = await askYesNo(opts.rl, "Reset all task overrides?", true);
+    console.log(`${DIM}The current default is ${provider} / ${model} (set via the main setup "Default provider" or the simple global option above).${RESET}`);
+    const confirmReset = await askYesNo(opts.rl, "Reset all task overrides to the current default?", true);
     if (!confirmReset) {
       console.log(`${DIM}Cancelled.${RESET}`);
       return false;
     }
     await updateConfig(storePath, { taskModels: {} });
-    printStatus("ok", "routing reset", "all tasks use default provider/model");
+    printStatus("ok", "routing reset", "all tasks now use the global default provider/model");
     console.log(Footer("press enter to return"));
     return true;
   }
 
-  if (choice === 3) {
-    console.log(`${DIM}No changes.${RESET}`);
-    return false;
-  }
-
-  // choice === 1 → advanced per-task editor (the powerful comma-list path)
+  // choice === 2 → advanced per-task editor (the powerful comma-list path)
   const patch = await runCommaListRoutingEditor(opts.rl, storePath, cfg);
   if (!patch) {
     return false;
