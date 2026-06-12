@@ -5,6 +5,17 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.12.1] — 2026-06
+
+### Changed
+
+- **Task routing menu in setup**. Improved the "What would you like to do?" choices in `gnosys setup routing` (and the path from the main setup summary):
+  - Added explicit option: "Edit tasks — set the same provider + model for all tasks (simple global default)".
+  - The previous per-task editor is now clearly labeled as the "advanced" path: "Edit tasks — pick different providers/models for specific tasks (advanced)".
+  - Clarified the reset option to "Reset all task overrides to the current default (the one shown in the main setup summary)", with an explicit line printed before confirmation showing the current default provider/model.
+- In the providers detail screen (after selecting a provider with a key), the default action is now "Use this provider as default for everything + pick model" (press Enter to take the global default path directly). Header subtitle updated for clarity.
+- These changes make setting a single global default provider+model much more discoverable and require fewer steps, while preserving the powerful per-task routing editor.
+
 ## [5.12.0] — 2026-06
 
 ### Added
