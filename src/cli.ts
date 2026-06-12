@@ -2200,4 +2200,12 @@ if (!isTestEnv()) {
   }
 }
 
-program.parse();
+// v5.12.x observability: all 100+ command actions are async — with bare
+// program.parse() a thrown action error surfaced as a raw Node
+// UnhandledPromiseRejection (full engine stack, no gnosys framing).
+// parseAsync routes every action failure through one clean exit path.
+program.parseAsync().catch(async (err: unknown) => {
+  const { logError } = await import("./lib/log.js");
+  logError(err, { module: "cli" });
+  process.exitCode = 1;
+});

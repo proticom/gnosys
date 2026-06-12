@@ -53,6 +53,7 @@ import { loadConfig, type GnosysConfig, DEFAULT_CONFIG } from "./lib/config.js";
 import { getLLMProvider, type LLMProvider } from "./lib/llm.js";
 import { recall, formatRecall, } from "./lib/recall.js";
 import { initAudit, readAuditLog, formatAuditTimeline } from "./lib/audit.js";
+import { logError } from "./lib/log.js";
 import { GnosysDB } from "./lib/db.js";
 import { syncMemoryToDb, syncUpdateToDb, syncDearchiveToDb, syncReinforcementToDb, auditToDb } from "./lib/dbWrite.js";
 import { createProjectIdentity, readProjectIdentity, } from "./lib/projectIdentity.js";
@@ -111,12 +112,24 @@ const activeToolContexts = new AsyncLocalStorage<ToolContext[]>();
 
 function withContextRelease(
   handler: (...a: unknown[]) => unknown,
+  toolName: string,
 ): (...a: unknown[]) => Promise<unknown> {
   return (...hargs: unknown[]) => {
     const opened: ToolContext[] = [];
     return activeToolContexts.run(opened, async () => {
       try {
         return await handler(...hargs);
+      } catch (err) {
+        // v5.12.x observability: last-resort error envelope. 19 of 52 tools
+        // had no catch at all — a throw reached the SDK as a raw JSON-RPC
+        // error with no corruption-recovery guidance. Per-tool catches with
+        // more specific messages still take precedence; this only sees what
+        // they let through. Logged to stderr (stdout is JSON-RPC).
+        logError(err, { module: "mcp", op: toolName });
+        return {
+          content: [{ type: "text" as const, text: formatMcpError(`in ${toolName}`, err) }],
+          isError: true,
+        };
       } finally {
         for (const c of opened) releaseClientReadFromContext(c);
       }
@@ -129,7 +142,10 @@ function withContextRelease(
 const regTool: typeof server.tool = ((...args: unknown[]) => {
   const last = args.length - 1;
   if (typeof args[last] === "function") {
-    args[last] = withContextRelease(args[last] as (...a: unknown[]) => unknown);
+    args[last] = withContextRelease(
+      args[last] as (...a: unknown[]) => unknown,
+      typeof args[0] === "string" ? args[0] : "tool",
+    );
   }
   _registrations.push((s) => (s.tool as (...a: unknown[]) => unknown)(...args));
 }) as typeof server.tool;

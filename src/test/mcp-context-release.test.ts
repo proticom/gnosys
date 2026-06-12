@@ -22,10 +22,19 @@ describe("MCP central ToolContext release", () => {
   it("wraps every tool handler with withContextRelease at registration", () => {
     expect(src).toContain("const activeToolContexts = new AsyncLocalStorage<ToolContext[]>()");
     expect(src).toContain("function withContextRelease(");
-    // regTool must wrap the trailing handler argument before collecting the thunk
-    expect(src).toContain("args[last] = withContextRelease(args[last]");
+    // regTool must wrap the trailing handler argument before collecting the
+    // thunk (marker updated for Phase 5: the call gained a toolName arg)
+    expect(src).toContain("args[last] = withContextRelease(");
     // the wrapper must release every opened context in a finally
     expect(src).toMatch(/finally \{\s*for \(const c of opened\) releaseClientReadFromContext\(c\);/);
+  });
+
+  it("provides a last-resort error envelope for handlers without their own catch", () => {
+    // v5.12.x Phase 5: throws that escape a handler become isError content
+    // with corruption-recovery formatting, logged to stderr — never a raw
+    // JSON-RPC error and never stdout.
+    expect(src).toContain('logError(err, { module: "mcp", op: toolName })');
+    expect(src).toContain("formatMcpError(`in ${toolName}`, err)");
   });
 
   it("registers contexts from BOTH resolveToolContext return paths", () => {
