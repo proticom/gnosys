@@ -368,6 +368,21 @@ const PROJECT_COLUMNS = new Set([
   "agent_rules_target", "obsidian_vault", "created", "modified",
 ]);
 
+/**
+ * v5.12.x perf: full DbMemory shape with the two BLOB columns projected as
+ * NULL. List-style reads (recall, federation, list) never consume embedding
+ * or attachment bytes. Measured win on embedding-only rows is modest (~4%
+ * plus avoided Buffer churn), but attachments are the real reason: a single
+ * ~10MB gnosys_attach blob would otherwise be hydrated on EVERY list call.
+ * Blob consumers use getAllEmbeddings/getEmbedding/getMemoryAttachment, and
+ * getAllMemories/getMemoriesByProject still return full rows (remote sync
+ * and project export push them verbatim).
+ */
+const LEAN_MEMORY_PROJECTION = [
+  "id", ...[...MEMORY_COLUMNS].filter((c) => c !== "embedding" && c !== "attachment_data"),
+  "NULL AS embedding", "NULL AS attachment_data",
+].join(", ");
+
 // ─── FNV-1a hash (same as embeddings.ts) ────────────────────────────────
 
 function fnv1a(str: string): string {
@@ -383,6 +398,9 @@ function fnv1a(str: string): string {
 
 export class GnosysDB {
   private db: any = null;
+  /** v5.12.x perf: prepared-statement cache, keyed by SQL. Invalidated on
+   *  reopen()/close() — statements are bound to their connection handle. */
+  private stmtCache = new Map<string, any>();
   private storePath: string;
   private available = false;
   private dbFilePath: string;
@@ -601,6 +619,7 @@ export class GnosysDB {
    * file handles after a WAL checkpoint or remount.
    */
   reopen(): void {
+    this.stmtCache.clear();
     try {
       this.db?.close();
     } catch {
@@ -645,6 +664,20 @@ export class GnosysDB {
    * Read methods are also wrapped because reads against stale pages can
    * surface the same error.
    */
+  /**
+   * Prepare-with-cache for fixed-SQL hot paths. Dynamic SQL (e.g. the
+   * field-built UPDATE in updateMemory) must keep using db.prepare directly
+   * so the cache stays bounded. Cache is invalidated on reopen()/close().
+   */
+  private prep(sql: string): any {
+    let stmt = this.stmtCache.get(sql);
+    if (!stmt) {
+      stmt = this.db.prepare(sql);
+      this.stmtCache.set(sql, stmt);
+    }
+    return stmt;
+  }
+
   private withRecovery<T>(fn: () => T): T {
     try {
       return fn();
@@ -919,7 +952,7 @@ export class GnosysDB {
 
   insertMemory(mem: Omit<DbMemory, "embedding" | "source_file" | "source_page" | "source_timerange" | "attachment_data" | "attachment_mime" | "attachment_name"> & { embedding?: Buffer | null; source_file?: string | null; source_page?: string | null; source_timerange?: string | null; attachment_data?: Buffer | null; attachment_mime?: string | null; attachment_name?: string | null }): void {
     return this.withRecovery(() => {
-      const stmt = this.db.prepare(`
+      const stmt = this.prep(`
         INSERT OR REPLACE INTO memories
           (id, title, category, content, summary, tags, relevance, author, authority,
            confidence, reinforcement_count, content_hash, status, tier, supersedes,
@@ -946,13 +979,15 @@ export class GnosysDB {
 
   getMemory(id: string): DbMemory | null {
     return this.withRecovery(() =>
-      (this.db.prepare("SELECT * FROM memories WHERE id = ?").get(id) as DbMemory) || null,
+      (this.prep("SELECT * FROM memories WHERE id = ?").get(id) as DbMemory) || null,
     );
   }
 
   getActiveMemories(): DbMemory[] {
+    // v5.12.x perf: project NULL for the two BLOB columns — see
+    // LEAN_MEMORY_PROJECTION for the rationale and measured numbers.
     return this.withRecovery(() =>
-      this.db.prepare("SELECT * FROM memories WHERE tier = 'active' AND status = 'active'").all() as DbMemory[],
+      this.prep(`SELECT ${LEAN_MEMORY_PROJECTION} FROM memories WHERE tier = 'active' AND status = 'active'`).all() as DbMemory[],
     );
   }
 
@@ -989,7 +1024,7 @@ export class GnosysDB {
 
   getMemoriesByCategory(category: string): DbMemory[] {
     return this.withRecovery(() =>
-      this.db.prepare("SELECT * FROM memories WHERE category = ? AND tier = 'active'").all(category) as DbMemory[],
+      this.prep("SELECT * FROM memories WHERE category = ? AND tier = 'active'").all(category) as DbMemory[],
     );
   }
 
@@ -1130,7 +1165,7 @@ export class GnosysDB {
     const sql = includeArchived
       ? "SELECT * FROM memories WHERE project_id = ?"
       : "SELECT * FROM memories WHERE project_id = ? AND tier = 'active' AND status = 'active'";
-    return this.withRecovery(() => this.db.prepare(sql).all(projectId) as DbMemory[]);
+    return this.withRecovery(() => this.prep(sql).all(projectId) as DbMemory[]);
   }
 
   /**
@@ -1138,7 +1173,7 @@ export class GnosysDB {
    */
   getMemoriesByScope(scope: MemoryScope): DbMemory[] {
     return this.withRecovery(() =>
-      this.db.prepare(
+      this.prep(
         "SELECT * FROM memories WHERE scope = ? AND tier = 'active' AND status = 'active'"
       ).all(scope) as DbMemory[],
     );
@@ -1271,7 +1306,7 @@ export class GnosysDB {
     // v5.8.0 (#7): join memories so callers can render project-prefixed IDs.
     return this.withRecovery(() => {
     try {
-      return this.db.prepare(`
+      return this.prep(`
         SELECT m.id AS id, m.title AS title,
                snippet(memories_fts, 5, '>>>', '<<<', '...', 40) as snippet,
                fts.rank AS rank,
@@ -1287,7 +1322,7 @@ export class GnosysDB {
     } catch {
       // FTS5 syntax error — fallback to LIKE
       const pattern = `%${safeQuery}%`;
-      return this.db.prepare(`
+      return this.prep(`
         SELECT id, title, substr(content, 1, 200) as snippet, 0 as rank, project_id
         FROM memories WHERE content LIKE ? OR title LIKE ? OR tags LIKE ?
         LIMIT ?
@@ -1318,17 +1353,17 @@ export class GnosysDB {
     return this.withRecovery(() => {
     try {
       const colQuery = `{relevance title tags} : ${safeQuery}`;
-      const results = this.db.prepare(select).all(colQuery, limit) as Array<{
+      const results = this.prep(select).all(colQuery, limit) as Array<{
         id: string; title: string; relevance: string; rank: number; project_id: string | null;
       }>;
       if (results.length > 0) return results;
 
-      return this.db.prepare(select).all(safeQuery, limit) as Array<{
+      return this.prep(select).all(safeQuery, limit) as Array<{
         id: string; title: string; relevance: string; rank: number; project_id: string | null;
       }>;
     } catch {
       try {
-        return this.db.prepare(select).all(safeQuery, limit) as Array<{
+        return this.prep(select).all(safeQuery, limit) as Array<{
           id: string; title: string; relevance: string; rank: number; project_id: string | null;
         }>;
       } catch (err) {
@@ -1861,6 +1896,7 @@ export class GnosysDB {
   // ─── Lifecycle ──────────────────────────────────────────────────────
 
   close(): void {
+    this.stmtCache.clear();
     this.db?.close();
   }
 

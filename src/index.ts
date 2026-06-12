@@ -229,6 +229,10 @@ interface ToolContext {
   projectId: string | null;
   /** v13: Client read context (snapshot/master + pending overlay). */
   clientRead?: ClientReadContext | null;
+  /** True when `search` was created for this call (projectRoot-scoped) and
+   *  must be closed on release. The default context shares the module-global
+   *  search instance, which must NOT be closed. */
+  ownsSearch?: boolean;
 }
 
 function applyClientReadToCentralDb(localDb: GnosysDB | null): {
@@ -254,6 +258,17 @@ function releaseClientReadFromContext(ctx: ToolContext): void {
   if (ctx.clientRead) {
     closeClientReadContext(ctx.clientRead);
     ctx.clientRead = null;
+  }
+  // v5.12.x perf/leak: projectRoot-scoped contexts open their own
+  // GnosysSearch (SQLite handle to <store>/.config/search.db) per call.
+  if (ctx.ownsSearch && ctx.search) {
+    try {
+      ctx.search.close();
+    } catch {
+      // already closed / never opened — fine
+    }
+    ctx.search = null;
+    ctx.ownsSearch = false;
   }
 }
 
@@ -326,6 +341,7 @@ async function resolveToolContext(projectRoot?: string): Promise<ToolContext> {
     centralDb: applied.centralDb,
     projectId,
     clientRead: applied.clientRead,
+    ownsSearch: scopedSearch !== null,
   };
   activeToolContexts.getStore()?.push(ctx);
   return ctx;
