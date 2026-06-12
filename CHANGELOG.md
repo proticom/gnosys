@@ -5,7 +5,12 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [5.12.1] — 2026-06
+## [5.12.2] — 2026-06
+
+Production-readiness overhaul. Note: v5.12.1 was tagged but never reached npm —
+its publish failed on a type error (missing v5.12 attachment fields in two
+`DbMemory` literals) fixed here; 5.12.2 is the first published release since
+5.12.0 and includes everything below plus the 5.12.1 notes.
 
 ### Added
 
@@ -27,6 +32,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Performance**: prepared-statement caching on hot DB paths (bulk inserts ~2×, point reads ~3.5×); list-style reads no longer hydrate embedding/attachment BLOBs (a single large `gnosys_attach` blob no longer taxes every recall/list call).
 - **Codebase hygiene at zero**: biome 136→0 warnings, knip 32→0 findings, dead code purged (including the unwired `gnosys models` implementation kept since v5.4.2); stricter `tsconfig` (`noUnusedLocals`, `noImplicitOverride`, `noFallthroughCasesInSwitch`); CI now gates lint + knip so the debt cannot re-accumulate.
 - **Packaging**: builds exclude test compilation (`tsconfig.build.json`; typechecking still covers tests), publish workflow builds with the exact publish config, Docker base image pinned (`node:20.20.2-alpine`).
+
+## [5.12.1] — 2026-06 (tagged, not published — see 5.12.2)
+
+### Changed
+
 - **Task routing menu in setup**. Improved the "What would you like to do?" choices in `gnosys setup routing` (and the path from the main setup summary):
   - Added explicit option: "Edit tasks — set the same provider + model for all tasks (simple global default)".
   - The previous per-task editor is now clearly labeled as the "advanced" path: "Edit tasks — pick different providers/models for specific tasks (advanced)".
