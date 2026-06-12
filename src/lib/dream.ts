@@ -33,6 +33,7 @@ import {
   type DreamState,
   type DreamTrigger,
   estimateCost,
+  acquireDreamLock,
   estimateTokens,
   fingerprintMemories,
   memoryWatermark,
@@ -205,6 +206,29 @@ export class GnosysDreamEngine {
     phase.durationMs = Date.now() - startedAtMs;
     phase.memoryIdsTouched = Array.from(new Set(phase.memoryIdsTouched));
     phase.estimatedCostUsd = Math.round(phase.estimatedCostUsd * 1_000_000) / 1_000_000;
+    this.checkpointFingerprints();
+  }
+
+  /**
+   * v5.12.1 crash safety: persist analyzed fingerprints at every phase
+   * boundary, not only in finalize(). A crash mid-run previously lost all
+   * pendingFingerprints, so the next run re-analyzed (and re-paid for) the
+   * same memory sets and could double-create summaries. Checkpointing only
+   * merges fingerprints — lastRunAt / watermarks remain finalize()'s job.
+   */
+  private checkpointFingerprints(): void {
+    if (Object.keys(this.pendingFingerprints).length === 0) return;
+    try {
+      writeDreamState({
+        ...this.dreamState,
+        analyzedFingerprints: {
+          ...this.dreamState.analyzedFingerprints,
+          ...this.pendingFingerprints,
+        },
+      });
+    } catch {
+      // Best-effort: a failed checkpoint only costs re-analysis on resume.
+    }
   }
 
   private addTouched(phase: DreamRunPhaseRecord, memoryIds: string[]): void {
@@ -1204,6 +1228,15 @@ export class DreamScheduler {
     const idleMinutes = idleMs / 60_000;
 
     if (idleMinutes >= this.config.idleMinutes) {
+      // v5.12.1: the in-memory `running` flag does not survive a sandbox
+      // restart and cannot see a concurrent manual `gnosys dream`. Tie the
+      // scheduler to the same cross-process file lock the CLI uses.
+      const lock = acquireDreamLock();
+      if (!lock.acquired) {
+        console.error(`[dream] scheduler skipped: ${lock.reason}`);
+        this.lastActivity = Date.now(); // back off a full idle window
+        return;
+      }
       this.running = true;
       try {
         this.currentDream = this.engine.dream((phase, detail) => {
@@ -1220,6 +1253,7 @@ export class DreamScheduler {
         this.running = false;
         this.currentDream = null;
         this.lastActivity = Date.now(); // Reset idle timer after dream
+        lock.release();
       }
     }
   }

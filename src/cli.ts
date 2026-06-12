@@ -1210,7 +1210,23 @@ program
   .description("Remove dead and temp-dir entries from the project registry")
   .option("--yes", "Non-interactive, remove without prompting")
   .option("--dry-run", "Show what would be removed without writing")
-  .action(async (opts: { yes?: boolean; dryRun?: boolean }) => {
+  .option(
+    "--rules [dir]",
+    "Remove the GNOSYS block from agent rules files (CLAUDE.md, .cursor, .codex) in the given directory (default: cwd)",
+  )
+  .action(async (opts: { yes?: boolean; dryRun?: boolean; rules?: string | boolean }) => {
+    // v5.12.1: uninstall counterpart of `gnosys setup ides` rules generation.
+    if (opts.rules !== undefined) {
+      const { removeRulesFromProject } = await import("./lib/rulesGen.js");
+      const dir = typeof opts.rules === "string" ? path.resolve(opts.rules) : process.cwd();
+      const cleaned = await removeRulesFromProject(dir);
+      if (cleaned.length === 0) {
+        console.log(`No GNOSYS rules blocks found in ${dir}`);
+      } else {
+        for (const rel of cleaned) console.log(`Removed GNOSYS block: ${rel}`);
+      }
+      return;
+    }
     const { cleanupRegistry } = await import("./lib/cleanup.js");
     const result = await cleanupRegistry({
       interactive: !opts.yes && !opts.dryRun,

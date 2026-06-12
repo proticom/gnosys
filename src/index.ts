@@ -11,6 +11,7 @@
 // MCP stdio JSON protocol. parse() is a pure function with no side effects.
 import dotenv from "dotenv";
 import path from "path";
+import { AsyncLocalStorage } from "async_hooks";
 import { readFileSync, realpathSync } from "fs";
 import { fileURLToPath } from "url";
 const home = process.env.HOME || process.env.USERPROFILE || "/tmp";
@@ -98,9 +99,38 @@ const server = new McpServer({
 // state — only the registrations are replayed. See registerCapabilities().
 type Registrar = (s: McpServer) => void;
 const _registrations: Registrar[] = [];
+
+// v5.12.1 reliability: every tool handler resolves a ToolContext whose
+// clientRead (v13 sync) may own a DB handle. Historically only 8 of 52
+// handlers released it, leaking handles on every early return. Enforce
+// release centrally: resolveToolContext() registers each context in the
+// per-call AsyncLocalStorage store, and withContextRelease() (wrapped around
+// every tool handler at registration) releases them when the handler settles
+// — every return path, every throw, every future tool, no per-handler code.
+const activeToolContexts = new AsyncLocalStorage<ToolContext[]>();
+
+function withContextRelease(
+  handler: (...a: unknown[]) => unknown,
+): (...a: unknown[]) => Promise<unknown> {
+  return (...hargs: unknown[]) => {
+    const opened: ToolContext[] = [];
+    return activeToolContexts.run(opened, async () => {
+      try {
+        return await handler(...hargs);
+      } finally {
+        for (const c of opened) releaseClientReadFromContext(c);
+      }
+    });
+  };
+}
+
 // Typed to the McpServer methods so call-site generic inference (Zod schema →
 // handler arg types) is preserved; the body just collects a replay thunk.
 const regTool: typeof server.tool = ((...args: unknown[]) => {
+  const last = args.length - 1;
+  if (typeof args[last] === "function") {
+    args[last] = withContextRelease(args[last] as (...a: unknown[]) => unknown);
+  }
   _registrations.push((s) => (s.tool as (...a: unknown[]) => unknown)(...args));
 }) as typeof server.tool;
 const regPrompt: typeof server.prompt = ((...args: unknown[]) => {
@@ -218,8 +248,13 @@ function applyClientReadToCentralDb(localDb: GnosysDB | null): {
   return { centralDb: clientRead.db, clientRead };
 }
 
+/** Idempotent: safe to call from both a handler's own finally and the central
+ *  withContextRelease wrapper. */
 function releaseClientReadFromContext(ctx: ToolContext): void {
-  if (ctx.clientRead) closeClientReadContext(ctx.clientRead);
+  if (ctx.clientRead) {
+    closeClientReadContext(ctx.clientRead);
+    ctx.clientRead = null;
+  }
 }
 
 async function resolveToolContext(projectRoot?: string): Promise<ToolContext> {
@@ -235,7 +270,7 @@ async function resolveToolContext(projectRoot?: string): Promise<ToolContext> {
     }
 
     const applied = applyClientReadToCentralDb(centralDb);
-    return {
+    const ctx: ToolContext = {
       resolver,
       store: writeTarget?.store || null,
       storePath: writeTarget?.store.getStorePath() || "",
@@ -246,6 +281,8 @@ async function resolveToolContext(projectRoot?: string): Promise<ToolContext> {
       projectId,
       clientRead: applied.clientRead,
     };
+    activeToolContexts.getStore()?.push(ctx);
+    return ctx;
   }
 
   // Scoped context — resolve for this specific project
@@ -279,7 +316,7 @@ async function resolveToolContext(projectRoot?: string): Promise<ToolContext> {
   }
 
   const applied = applyClientReadToCentralDb(centralDb);
-  return {
+  const ctx: ToolContext = {
     resolver: scopedResolver,
     store: scopedWriteTarget?.store || null,
     storePath: scopedStorePath,
@@ -290,6 +327,8 @@ async function resolveToolContext(projectRoot?: string): Promise<ToolContext> {
     projectId,
     clientRead: applied.clientRead,
   };
+  activeToolContexts.getStore()?.push(ctx);
+  return ctx;
 }
 
 /**
@@ -3962,6 +4001,18 @@ async function initHeavyDeps(): Promise<void> {
 // ─── Start the server ────────────────────────────────────────────────────
 /** Start the MCP server (stdio or http). Called by `gnosys serve` and when invoked as `gnosys-mcp`. */
 export async function startMcpServer() {
+  // v5.12.1 reliability: an escaped async error must not kill the server.
+  // Log to stderr (stdout is JSON-RPC in stdio mode) and keep serving —
+  // all persistent state is transactional SQLite, so survivors are safe.
+  process.on("unhandledRejection", (reason) => {
+    console.error(
+      `Gnosys MCP: unhandled rejection — ${reason instanceof Error ? reason.stack || reason.message : String(reason)}`,
+    );
+  });
+  process.on("uncaughtException", (err) => {
+    console.error(`Gnosys MCP: uncaught exception — ${err.stack || err.message}`);
+  });
+
   // v5.7.1 (#15): start the upgrade-marker watcher BEFORE anything else.
   // If `gnosys upgrade` was run on this machine while the MCP was idle,
   // pick that up immediately instead of serving stale tool handlers.

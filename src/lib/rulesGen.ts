@@ -336,6 +336,22 @@ export async function syncToTarget(
 }
 
 /**
+ * Remove the GNOSYS block from every known agent rules file in a project —
+ * the uninstall counterpart of syncToTarget (v5.12.1: wired into
+ * `gnosys cleanup --rules`). Checks every known target rather than only
+ * detected ones, so leftovers survive even if the agent dir was removed.
+ * Returns the relative paths actually cleaned.
+ */
+export async function removeRulesFromProject(projectDir: string): Promise<string[]> {
+  const cleaned: string[] = [];
+  for (const relPath of Object.values(TARGET_PATHS)) {
+    const filePath = path.join(projectDir, relPath);
+    if (await removeRulesBlock(filePath)) cleaned.push(relPath);
+  }
+  return cleaned;
+}
+
+/**
  * Remove the GNOSYS block from a rules file (cleanup).
  */
 export async function removeRulesBlock(filePath: string): Promise<boolean> {

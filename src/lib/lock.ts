@@ -154,10 +154,13 @@ function isLockStale(lock: LockInfo): boolean {
  * unboundedly until something triggers a manual checkpoint — we observed
  * 4MB+ WAL files in the wild with no checkpoint cadence in v5.4.0.
  */
-export function enableWAL(db: any): void {
+export function enableWAL(db: any, busyTimeoutMs: number = 5000): void {
   try {
     db.pragma("journal_mode = WAL");
-    db.pragma("busy_timeout = 5000"); // Wait up to 5s if DB is busy
+    // Single source of truth for the connection's busy timeout — callers on
+    // network shares (central DB) pass a longer value (10s) instead of
+    // overriding with a second pragma afterwards.
+    db.pragma(`busy_timeout = ${Math.max(0, Math.floor(busyTimeoutMs))}`);
     // Auto-checkpoint after every 1000 frames written to WAL. Default is
     // 1000 anyway in newer SQLite, but set explicitly so behavior is
     // predictable across SQLite versions.

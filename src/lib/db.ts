@@ -510,7 +510,8 @@ export class GnosysDB {
       try {
         fs.mkdirSync(storePath, { recursive: true, mode: 0o700 });
         this.db = new Database(this.dbFilePath);
-        enableWAL(this.db);
+        // Longer busy timeout for network shares (10s)
+        enableWAL(this.db, 10000);
         try {
           fs.chmodSync(storePath, 0o700);
           fs.chmodSync(this.dbFilePath, 0o600);
@@ -524,8 +525,6 @@ export class GnosysDB {
           // best-effort (Windows / network FS)
         }
         this.db.pragma("foreign_keys = ON");
-        // Longer busy timeout for network shares (10s)
-        this.db.pragma("busy_timeout = 10000");
         this.applySchema();
         this.available = true;
         return; // Success
@@ -612,9 +611,18 @@ export class GnosysDB {
     if (!Database) return;
     try {
       this.db = new Database(this.dbFilePath);
-      enableWAL(this.db);
+      // Longer busy timeout for network shares (10s)
+      enableWAL(this.db, 10000);
       this.db.pragma("foreign_keys = ON");
-      this.db.pragma("busy_timeout = 10000");
+      // v5.12.1: heal FTS triggers on recovery. updateMemory/deleteMemory may
+      // drop a trigger in their inconsistency fallback; recreating here
+      // (idempotent CREATE TRIGGER IF NOT EXISTS) means recovery restores
+      // them instead of waiting for the next process start.
+      try {
+        this.db.exec(FTS_TRIGGERS_SQL);
+      } catch {
+        // non-fatal — applySchema() heals at next open
+      }
       this.available = true;
     } catch {
       // reopen failed — leave unavailable; caller surfaces error
@@ -641,11 +649,10 @@ export class GnosysDB {
     try {
       return fn();
     } catch (err) {
-      const errAny = err as { code?: string; message?: string };
-      const isCorrupt =
-        errAny?.code === "SQLITE_CORRUPT" ||
-        /database disk image is malformed/i.test(errAny?.message ?? "");
-      if (!isCorrupt) throw err;
+      // v5.12.1: use the shared corruption detector — it also matches
+      // SQLITE_NOTADB ("file is not a database"), which surfaces on network
+      // shares when a sync layer swaps the file under a live handle.
+      if (!GnosysDB.isCorruptionError(err)) throw err;
 
       // One-shot recovery: reopen and retry. If the reopen itself fails or
       // the retry surfaces the same error, that's a real corruption case —
@@ -981,25 +988,31 @@ export class GnosysDB {
   }
 
   getMemoriesByCategory(category: string): DbMemory[] {
-    return this.db.prepare("SELECT * FROM memories WHERE category = ? AND tier = 'active'").all(category) as DbMemory[];
+    return this.withRecovery(() =>
+      this.db.prepare("SELECT * FROM memories WHERE category = ? AND tier = 'active'").all(category) as DbMemory[],
+    );
   }
 
   getRelationshipsForMemoryIds(ids: string[]): DbRelationship[] {
     if (ids.length === 0) return [];
     const placeholders = ids.map(() => "?").join(",");
-    return this.db
-      .prepare(
-        `SELECT * FROM relationships WHERE source_id IN (${placeholders}) OR target_id IN (${placeholders})`,
-      )
-      .all(...ids, ...ids) as DbRelationship[];
+    return this.withRecovery(() =>
+      this.db
+        .prepare(
+          `SELECT * FROM relationships WHERE source_id IN (${placeholders}) OR target_id IN (${placeholders})`,
+        )
+        .all(...ids, ...ids) as DbRelationship[],
+    );
   }
 
   getAuditEntriesByProject(projectId: string): DbAuditEntry[] {
-    return this.db
-      .prepare(
-        "SELECT * FROM audit_log WHERE memory_id IN (SELECT id FROM memories WHERE project_id = ?) ORDER BY id",
-      )
-      .all(projectId) as DbAuditEntry[];
+    return this.withRecovery(() =>
+      this.db
+        .prepare(
+          "SELECT * FROM audit_log WHERE memory_id IN (SELECT id FROM memories WHERE project_id = ?) ORDER BY id",
+        )
+        .all(projectId) as DbAuditEntry[],
+    );
   }
 
   updateMemory(id: string, updates: Partial<DbMemory>): void {
@@ -1018,6 +1031,7 @@ export class GnosysDB {
 
     const sql = `UPDATE memories SET ${fields.join(", ")} WHERE id = ?`;
 
+    return this.withRecovery(() => {
     try {
       this.db.prepare(sql).run(...values);
     } catch {
@@ -1058,9 +1072,11 @@ export class GnosysDB {
         // FTS insert may fail — not critical
       }
     }
+    });
   }
 
   deleteMemory(id: string): void {
+    return this.withRecovery(() => {
     // FTS5 delete trigger may fail if INSERT OR REPLACE left FTS inconsistent.
     try {
       this.db.prepare("DELETE FROM memories WHERE id = ?").run(id);
@@ -1087,17 +1103,22 @@ export class GnosysDB {
     } catch {
       // FTS entry may not exist — that's OK
     }
+    });
   }
 
   getMemoryCount(): { active: number; archived: number; total: number } {
-    const active = (this.db.prepare("SELECT COUNT(*) as cnt FROM memories WHERE tier = 'active'").get() as { cnt: number }).cnt;
-    const archived = (this.db.prepare("SELECT COUNT(*) as cnt FROM memories WHERE tier = 'archive'").get() as { cnt: number }).cnt;
-    return { active, archived, total: active + archived };
+    return this.withRecovery(() => {
+      const active = (this.db.prepare("SELECT COUNT(*) as cnt FROM memories WHERE tier = 'active'").get() as { cnt: number }).cnt;
+      const archived = (this.db.prepare("SELECT COUNT(*) as cnt FROM memories WHERE tier = 'archive'").get() as { cnt: number }).cnt;
+      return { active, archived, total: active + archived };
+    });
   }
 
   getCategories(): string[] {
-    const rows = this.db.prepare("SELECT DISTINCT category FROM memories WHERE tier = 'active' ORDER BY category").all() as { category: string }[];
-    return rows.map((r) => r.category);
+    return this.withRecovery(() => {
+      const rows = this.db.prepare("SELECT DISTINCT category FROM memories WHERE tier = 'active' ORDER BY category").all() as { category: string }[];
+      return rows.map((r) => r.category);
+    });
   }
 
   // ─── Scoped Queries (v3.0) ──────────────────────────────────────────
@@ -1109,16 +1130,18 @@ export class GnosysDB {
     const sql = includeArchived
       ? "SELECT * FROM memories WHERE project_id = ?"
       : "SELECT * FROM memories WHERE project_id = ? AND tier = 'active' AND status = 'active'";
-    return this.db.prepare(sql).all(projectId) as DbMemory[];
+    return this.withRecovery(() => this.db.prepare(sql).all(projectId) as DbMemory[]);
   }
 
   /**
    * Get memories by scope (project, user, global).
    */
   getMemoriesByScope(scope: MemoryScope): DbMemory[] {
-    return this.db.prepare(
-      "SELECT * FROM memories WHERE scope = ? AND tier = 'active' AND status = 'active'"
-    ).all(scope) as DbMemory[];
+    return this.withRecovery(() =>
+      this.db.prepare(
+        "SELECT * FROM memories WHERE scope = ? AND tier = 'active' AND status = 'active'"
+      ).all(scope) as DbMemory[],
+    );
   }
 
   // ─── Project Identity (v3.0) ──────────────────────────────────────
@@ -1205,11 +1228,15 @@ export class GnosysDB {
     }
     if (fields.length === 0) return;
     values.push(id);
-    this.db.prepare(`UPDATE projects SET ${fields.join(", ")} WHERE id = ?`).run(...values);
+    this.withRecovery(() => {
+      this.db.prepare(`UPDATE projects SET ${fields.join(", ")} WHERE id = ?`).run(...values);
+    });
   }
 
   deleteProject(id: string): void {
-    this.db.prepare("DELETE FROM projects WHERE id = ?").run(id);
+    this.withRecovery(() => {
+      this.db.prepare("DELETE FROM projects WHERE id = ?").run(id);
+    });
   }
 
   /**
@@ -1242,6 +1269,7 @@ export class GnosysDB {
     if (!safeQuery) return [];
 
     // v5.8.0 (#7): join memories so callers can render project-prefixed IDs.
+    return this.withRecovery(() => {
     try {
       return this.db.prepare(`
         SELECT m.id AS id, m.title AS title,
@@ -1267,6 +1295,7 @@ export class GnosysDB {
         id: string; title: string; snippet: string; rank: number; project_id: string | null;
       }>;
     }
+    });
   }
 
   discoverFts(
@@ -1286,6 +1315,7 @@ export class GnosysDB {
       LIMIT ?
     `;
 
+    return this.withRecovery(() => {
     try {
       const colQuery = `{relevance title tags} : ${safeQuery}`;
       const results = this.db.prepare(select).all(colQuery, limit) as Array<{
@@ -1301,48 +1331,62 @@ export class GnosysDB {
         return this.db.prepare(select).all(safeQuery, limit) as Array<{
           id: string; title: string; relevance: string; rank: number; project_id: string | null;
         }>;
-      } catch {
+      } catch (err) {
+        // Let corruption escape to withRecovery (reopen + retry); plain FTS
+        // syntax failures still degrade gracefully to "no results".
+        if (GnosysDB.isCorruptionError(err)) throw err;
         return [];
       }
     }
+    });
   }
 
   // ─── Relationships ──────────────────────────────────────────────────
 
   insertRelationship(rel: DbRelationship): void {
-    this.db.prepare(`
-      INSERT OR IGNORE INTO relationships (source_id, target_id, rel_type, label, confidence, created)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(rel.source_id, rel.target_id, rel.rel_type, rel.label, rel.confidence, rel.created);
+    this.withRecovery(() => {
+      this.db.prepare(`
+        INSERT OR IGNORE INTO relationships (source_id, target_id, rel_type, label, confidence, created)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `).run(rel.source_id, rel.target_id, rel.rel_type, rel.label, rel.confidence, rel.created);
+    });
   }
 
   getRelationshipsFrom(id: string): DbRelationship[] {
-    return this.db.prepare("SELECT * FROM relationships WHERE source_id = ?").all(id) as DbRelationship[];
+    return this.withRecovery(() =>
+      this.db.prepare("SELECT * FROM relationships WHERE source_id = ?").all(id) as DbRelationship[],
+    );
   }
 
   getRelationshipsTo(id: string): DbRelationship[] {
-    return this.db.prepare("SELECT * FROM relationships WHERE target_id = ?").all(id) as DbRelationship[];
+    return this.withRecovery(() =>
+      this.db.prepare("SELECT * FROM relationships WHERE target_id = ?").all(id) as DbRelationship[],
+    );
   }
 
   // ─── Summaries ──────────────────────────────────────────────────────
 
   upsertSummary(summary: DbSummary): void {
-    this.db.prepare(`
-      INSERT INTO summaries (id, scope, scope_key, content, source_ids, created, modified)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT(scope, scope_key) DO UPDATE SET
-        content = excluded.content,
-        source_ids = excluded.source_ids,
-        modified = excluded.modified
-    `).run(summary.id, summary.scope, summary.scope_key, summary.content, summary.source_ids, summary.created, summary.modified);
+    this.withRecovery(() => {
+      this.db.prepare(`
+        INSERT INTO summaries (id, scope, scope_key, content, source_ids, created, modified)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(scope, scope_key) DO UPDATE SET
+          content = excluded.content,
+          source_ids = excluded.source_ids,
+          modified = excluded.modified
+      `).run(summary.id, summary.scope, summary.scope_key, summary.content, summary.source_ids, summary.created, summary.modified);
+    });
   }
 
   getSummary(scope: string, scopeKey: string): DbSummary | null {
-    return (this.db.prepare("SELECT * FROM summaries WHERE scope = ? AND scope_key = ?").get(scope, scopeKey) as DbSummary) || null;
+    return this.withRecovery(() =>
+      (this.db.prepare("SELECT * FROM summaries WHERE scope = ? AND scope_key = ?").get(scope, scopeKey) as DbSummary) || null,
+    );
   }
 
   getAllSummaries(): DbSummary[] {
-    return this.db.prepare("SELECT * FROM summaries").all() as DbSummary[];
+    return this.withRecovery(() => this.db.prepare("SELECT * FROM summaries").all() as DbSummary[]);
   }
 
   // ─── Audit ──────────────────────────────────────────────────────────
@@ -1405,21 +1449,29 @@ export class GnosysDB {
   // ─── Embeddings ─────────────────────────────────────────────────────
 
   updateEmbedding(id: string, embedding: Buffer): void {
-    this.db.prepare("UPDATE memories SET embedding = ? WHERE id = ?").run(embedding, id);
+    this.withRecovery(() => {
+      this.db.prepare("UPDATE memories SET embedding = ? WHERE id = ?").run(embedding, id);
+    });
   }
 
   getEmbedding(id: string): Buffer | null {
-    const row = this.db.prepare("SELECT embedding FROM memories WHERE id = ?").get(id) as { embedding: Buffer | null } | undefined;
-    return row?.embedding || null;
+    return this.withRecovery(() => {
+      const row = this.db.prepare("SELECT embedding FROM memories WHERE id = ?").get(id) as { embedding: Buffer | null } | undefined;
+      return row?.embedding || null;
+    });
   }
 
   getAllEmbeddings(): Array<{ id: string; embedding: Buffer }> {
-    return this.db.prepare("SELECT id, embedding FROM memories WHERE embedding IS NOT NULL").all() as Array<{ id: string; embedding: Buffer }>;
+    return this.withRecovery(() =>
+      this.db.prepare("SELECT id, embedding FROM memories WHERE embedding IS NOT NULL").all() as Array<{ id: string; embedding: Buffer }>,
+    );
   }
 
   getEmbeddingCount(): number {
-    const row = this.db.prepare("SELECT COUNT(*) as cnt FROM memories WHERE embedding IS NOT NULL").get() as { cnt: number };
-    return row.cnt;
+    return this.withRecovery(() => {
+      const row = this.db.prepare("SELECT COUNT(*) as cnt FROM memories WHERE embedding IS NOT NULL").get() as { cnt: number };
+      return row.cnt;
+    });
   }
 
   // ─── Transactions ───────────────────────────────────────────────────

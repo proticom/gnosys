@@ -127,7 +127,7 @@ export function getDreamLockPath(): string {
   return path.join(getGnosysHome(), "dream.lock");
 }
 
-export function acquireDreamLock(): { acquired: true; release: () => void } | { acquired: false; reason: string } {
+export function acquireDreamLock(depth: number = 0): { acquired: true; release: () => void } | { acquired: false; reason: string } {
   const lockPath = getDreamLockPath();
   fs.mkdirSync(path.dirname(lockPath), { recursive: true });
   try {
@@ -145,16 +145,36 @@ export function acquireDreamLock(): { acquired: true; release: () => void } | { 
       },
     };
   } catch {
+    // Bounded retries so stale-lock cleanup can't recurse forever under
+    // genuine contention (two processes racing to re-acquire).
+    if (depth >= 3) {
+      return { acquired: false, reason: "dream lock contention" };
+    }
+    let raw: string;
     try {
-      const raw = fs.readFileSync(lockPath, "utf8");
+      raw = fs.readFileSync(lockPath, "utf8");
+    } catch {
+      // Lock vanished between our create attempt and this read — retry.
+      return acquireDreamLock(depth + 1);
+    }
+    try {
       const parsed = JSON.parse(raw) as { pid?: number; startedAt?: string };
       if (parsed.pid && !isProcessRunning(parsed.pid)) {
         fs.unlinkSync(lockPath);
-        return acquireDreamLock();
+        return acquireDreamLock(depth + 1);
       }
       return { acquired: false, reason: `dream already running (pid ${parsed.pid || "unknown"})` };
     } catch {
-      return { acquired: false, reason: "dream already running (lock exists)" };
+      // v5.12.1: unreadable/corrupt lock (crash mid-write) previously blocked
+      // dreaming forever until manual deletion. Treat it as stale: the lock
+      // payload is a single tiny write, so a live owner with a corrupt lock
+      // is implausible.
+      try {
+        fs.unlinkSync(lockPath);
+      } catch {
+        // ignore — next acquire retries
+      }
+      return acquireDreamLock(depth + 1);
     }
   }
 }
