@@ -1,5 +1,5 @@
 # ─── Stage 1: Build ──────────────────────────────────────────────────────
-FROM node:20-alpine AS builder
+FROM node:20.20.2-alpine AS builder
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ RUN apk add --no-cache python3 make g++ git
 COPY package.json package-lock.json ./
 RUN npm ci
 
-COPY tsconfig.json ./
+COPY tsconfig.json tsconfig.build.json ./
 COPY src/ ./src/
 RUN npm run build
 
@@ -17,7 +17,7 @@ RUN npm run build
 RUN npm prune --production
 
 # ─── Stage 2: Runtime ────────────────────────────────────────────────────
-FROM node:20-alpine
+FROM node:20.20.2-alpine
 
 WORKDIR /app
 

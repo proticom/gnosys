@@ -27,8 +27,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      # Build with the exact publish config so the artifacts CI tests are the
+      # artifacts that ship (prepublishOnly re-runs this — kept explicit so
+      # the workflow doesn't silently depend on the hook).
+      - name: Build (publish config — no sourcemaps)
+        run: npm run build:publish
 
       - name: Run tests
         run: npm test

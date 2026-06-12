@@ -103,6 +103,12 @@ jobs:
       - name: TypeScript strict check
         run: npx tsc --noEmit
 
+      - name: Lint (biome)
+        run: npm run lint
+
+      - name: Dead code / unused exports (knip)
+        run: npm run knip
+
   multi-project-test:
     runs-on: ubuntu-latest
     needs: build-and-test

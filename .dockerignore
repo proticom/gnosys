@@ -3,4 +3,3 @@ dist
 .gnosys
 .git
 *.md
-!README.md
