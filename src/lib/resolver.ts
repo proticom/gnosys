@@ -99,8 +99,14 @@ export class GnosysResolver {
         });
       }
     } catch {
-      // Store doesn't exist at projectRoot — fall through to empty resolver
+      // No project store at projectRoot — still load the env tiers below.
     }
+
+    // Even when scoped to a projectRoot, load the personal/global/optional
+    // tiers so cross-project + global memories stay reachable (write store:
+    // "global"/"personal", and read them back from any project). Without this,
+    // the universal "always pass projectRoot" guidance silently disabled them.
+    await resolver.loadEnvTiers();
 
     return resolver;
   }
@@ -128,7 +134,32 @@ export class GnosysResolver {
       });
     }
 
-    // 2. Optional stores (GNOSYS_STORES — colon-separated)
+    // 2-4. Env-configured tiers (optional, personal, global). Shared with
+    //       resolveForProject so passing a projectRoot does NOT strip the
+    //       cross-project tiers.
+    await this.loadEnvTiers();
+
+    return this.stores;
+  }
+
+  /**
+   * Load the env-configured store tiers (optional `GNOSYS_STORES`, personal
+   * `GNOSYS_PERSONAL`, global `GNOSYS_GLOBAL`) onto `this.stores`.
+   *
+   * Shared by {@link resolve} and {@link resolveForProject}: a per-tool
+   * `projectRoot` call must STILL see personal/global, otherwise cross-project
+   * and global memories are unreachable — you couldn't write `store: "global"`
+   * / `"personal"` nor read them back from another project. Since every tool
+   * is told to always pass `projectRoot`, omitting these here silently
+   * disabled the entire cross-project tier system.
+   *
+   * Global is loaded whenever `GNOSYS_GLOBAL` is set, creating its directory on
+   * demand (parity with personal) so a configured-but-empty global store still
+   * works. It remains write-only-when-explicitly-targeted: {@link getWriteTarget}
+   * never auto-selects it.
+   */
+  private async loadEnvTiers(): Promise<void> {
+    // Optional stores (GNOSYS_STORES — colon-separated, read-only)
     const optionalPaths = process.env.GNOSYS_STORES;
     if (optionalPaths) {
       const paths = optionalPaths.split(":").filter(Boolean);
@@ -149,7 +180,7 @@ export class GnosysResolver {
       }
     }
 
-    // 3. Personal store (GNOSYS_PERSONAL)
+    // Personal store (GNOSYS_PERSONAL — writable fallback target)
     const personalPath = process.env.GNOSYS_PERSONAL;
     if (personalPath) {
       const p = path.resolve(personalPath);
@@ -164,25 +195,22 @@ export class GnosysResolver {
       });
     }
 
-    // 4. Global store (GNOSYS_GLOBAL)
-    //    Writable, but only when explicitly targeted — never auto-selected.
+    // Global store (GNOSYS_GLOBAL — writable, but never auto-selected). Loaded
+    // whenever set; store.init() creates the dir on demand (parity with
+    // personal), so a configured-but-empty GNOSYS_GLOBAL still works.
     const globalPath = process.env.GNOSYS_GLOBAL;
     if (globalPath) {
       const p = path.resolve(globalPath);
-      if (await this.isValidStore(p)) {
-        const store = new GnosysStore(p);
-        await store.init();
-        this.stores.push({
-          layer: "global",
-          label: "global",
-          store,
-          writable: true,
-          path: p,
-        });
-      }
+      const store = new GnosysStore(p);
+      await store.init();
+      this.stores.push({
+        layer: "global",
+        label: "global",
+        store,
+        writable: true,
+        path: p,
+      });
     }
-
-    return this.stores;
   }
 
   /**
