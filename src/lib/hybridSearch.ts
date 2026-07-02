@@ -354,6 +354,21 @@ export class GnosysHybridSearch {
   }
 
   /**
+   * True when hybrid/semantic search can actually run its semantic leg.
+   * In DB mode this requires BOTH stored vectors in the central DB and the
+   * store-local embeddings.db used to embed the query text — the central
+   * count alone can be non-zero on a machine that only syncs gnosys.db,
+   * in which case hybridSearch() silently runs keyword-only (embedQuery
+   * is never constructed).
+   */
+  canRunSemantic(): boolean {
+    if (this.dbSearch) {
+      return this.dbSearch.hasEmbeddings() && this.embeddings.hasEmbeddings();
+    }
+    return this.embeddings.hasEmbeddings();
+  }
+
+  /**
    * Get embedding count.
    */
   embeddingCount(): number {

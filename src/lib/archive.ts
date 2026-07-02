@@ -27,6 +27,7 @@ import { syncMemoryToDb, syncDearchiveToDb } from "./dbWrite.js";
 import type { GnosysConfig } from "./config.js";
 import { enableWAL } from "./lock.js";
 import { auditLog } from "./audit.js";
+import { ftsTerms, ftsAndQuery, ftsOrQuery } from "./ftsQuery.js";
 
 // ─── Types ──────────────────────────────────────────────────────────────
 
@@ -305,8 +306,8 @@ export class GnosysArchive {
   searchArchive(query: string, limit: number = 20): ArchiveSearchResult[] {
     if (!this.db) return [];
 
-    const safeQuery = query.replace(/['"]/g, "").trim();
-    if (!safeQuery) return [];
+    const terms = ftsTerms(query);
+    if (terms.length === 0) return [];
 
     const stmt = this.db.prepare(`
       SELECT
@@ -324,7 +325,11 @@ export class GnosysArchive {
     `);
 
     try {
-      return stmt.all(safeQuery, limit) as ArchiveSearchResult[];
+      // v5.12.3: AND first (precision), OR retry when AND finds nothing —
+      // multi-word queries previously required every term to match.
+      const results = stmt.all(ftsAndQuery(terms), limit) as ArchiveSearchResult[];
+      if (results.length > 0 || terms.length === 1) return results;
+      return stmt.all(ftsOrQuery(terms), limit) as ArchiveSearchResult[];
     } catch {
       // FTS5 query syntax failed — try LIKE fallback
       const likeStmt = this.db.prepare(`
@@ -339,7 +344,7 @@ export class GnosysArchive {
         WHERE content LIKE ? OR title LIKE ? OR tags LIKE ?
         LIMIT ?
       `);
-      const pattern = `%${safeQuery}%`;
+      const pattern = `%${terms.join(" ")}%`;
       return likeStmt.all(pattern, pattern, pattern, limit) as ArchiveSearchResult[];
     }
   }

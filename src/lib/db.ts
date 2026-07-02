@@ -22,6 +22,7 @@ import { enableWAL } from "./lock.js";
 import { getGnosysHome as getGnosysHomeImpl, getCentralDbPath as getCentralDbPathImpl } from "./paths.js";
 import { readMachineConfig } from "./machineConfig.js";
 import { logError } from "./log.js";
+import { ftsTerms, ftsAndQuery, ftsOrQuery } from "./ftsQuery.js";
 import { ulid } from "ulidx";
 
 // ─── Types ──────────────────────────────────────────────────────────────
@@ -1300,28 +1301,35 @@ export class GnosysDB {
     query: string,
     limit: number = 20,
   ): Array<{ id: string; title: string; snippet: string; rank: number; project_id: string | null }> {
-    const safeQuery = query.replace(/['"]/g, "").trim();
-    if (!safeQuery) return [];
+    const terms = ftsTerms(query);
+    if (terms.length === 0) return [];
 
     // v5.8.0 (#7): join memories so callers can render project-prefixed IDs.
     return this.withRecovery(() => {
     try {
-      return this.prep(`
-        SELECT m.id AS id, m.title AS title,
-               snippet(memories_fts, 5, '>>>', '<<<', '...', 40) as snippet,
-               fts.rank AS rank,
-               m.project_id AS project_id
-        FROM memories_fts fts
-        JOIN memories m ON m.id = fts.id
-        WHERE memories_fts MATCH ?
-        ORDER BY fts.rank
-        LIMIT ?
-      `).all(safeQuery, limit) as Array<{
-        id: string; title: string; snippet: string; rank: number; project_id: string | null;
-      }>;
+      const run = (match: string) =>
+        this.prep(`
+          SELECT m.id AS id, m.title AS title,
+                 snippet(memories_fts, 5, '>>>', '<<<', '...', 40) as snippet,
+                 fts.rank AS rank,
+                 m.project_id AS project_id
+          FROM memories_fts fts
+          JOIN memories m ON m.id = fts.id
+          WHERE memories_fts MATCH ?
+          ORDER BY fts.rank
+          LIMIT ?
+        `).all(match, limit) as Array<{
+          id: string; title: string; snippet: string; rank: number; project_id: string | null;
+        }>;
+
+      // v5.12.3: AND first (precision), OR retry when AND finds nothing —
+      // multi-word queries previously required every term to match.
+      const results = run(ftsAndQuery(terms));
+      if (results.length > 0 || terms.length === 1) return results;
+      return run(ftsOrQuery(terms));
     } catch {
       // FTS5 syntax error — fallback to LIKE
-      const pattern = `%${safeQuery}%`;
+      const pattern = `%${terms.join(" ")}%`;
       return this.prep(`
         SELECT id, title, substr(content, 1, 200) as snippet, 0 as rank, project_id
         FROM memories WHERE content LIKE ? OR title LIKE ? OR tags LIKE ?
@@ -1337,8 +1345,8 @@ export class GnosysDB {
     query: string,
     limit: number = 20,
   ): Array<{ id: string; title: string; relevance: string; rank: number; project_id: string | null }> {
-    const safeQuery = query.replace(/['"]/g, "").trim();
-    if (!safeQuery) return [];
+    const terms = ftsTerms(query);
+    if (terms.length === 0) return [];
 
     // v5.7.1 (#14): join `memories` so callers can render project-prefixed IDs.
     const select = `
@@ -1350,29 +1358,39 @@ export class GnosysDB {
       LIMIT ?
     `;
 
-    return this.withRecovery(() => {
-    try {
-      const colQuery = `{relevance title tags} : ${safeQuery}`;
-      const results = this.prep(select).all(colQuery, limit) as Array<{
-        id: string; title: string; relevance: string; rank: number; project_id: string | null;
-      }>;
-      if (results.length > 0) return results;
-
-      return this.prep(select).all(safeQuery, limit) as Array<{
-        id: string; title: string; relevance: string; rank: number; project_id: string | null;
-      }>;
-    } catch {
+    // Let corruption escape to withRecovery (reopen + retry); plain FTS
+    // syntax failures still degrade gracefully to "no results".
+    const tryRun = (match: string) => {
       try {
-        return this.prep(select).all(safeQuery, limit) as Array<{
+        return this.prep(select).all(match, limit) as Array<{
           id: string; title: string; relevance: string; rank: number; project_id: string | null;
         }>;
       } catch (err) {
-        // Let corruption escape to withRecovery (reopen + retry); plain FTS
-        // syntax failures still degrade gracefully to "no results".
         if (GnosysDB.isCorruptionError(err)) throw err;
         return [];
       }
-    }
+    };
+
+    // v5.12.3: precision-to-recall ladder. AND on the metadata columns,
+    // AND anywhere, then OR retries — multi-word queries previously
+    // required every term to match, so long queries returned nothing.
+    // Parens scope the column filter to the whole expression (a bare
+    // `{cols} : a b` only filtered the first term).
+    const colScoped = (expr: string) => `{relevance title tags} : (${expr})`;
+    const andExpr = ftsAndQuery(terms);
+
+    return this.withRecovery(() => {
+      let results = tryRun(colScoped(andExpr));
+      if (results.length > 0) return results;
+
+      results = tryRun(andExpr);
+      if (results.length > 0 || terms.length === 1) return results;
+
+      const orExpr = ftsOrQuery(terms);
+      results = tryRun(colScoped(orExpr));
+      if (results.length > 0) return results;
+
+      return tryRun(orExpr);
     });
   }
 

@@ -83,6 +83,15 @@ export async function runHybridSearchCommand(
       const hybridSearch = new GnosysHybridSearch(search, embeddings, resolver, storePath);
   
       const mode = opts.mode as "keyword" | "semantic" | "hybrid";
+
+      // v5.12.3: hybrid used to degrade to keyword-only silently when the
+      // semantic leg can't run. Warn on stderr so --json stdout stays clean.
+      if (mode !== "keyword" && !hybridSearch.canRunSemantic()) {
+        console.error(
+          `⚠ Semantic embeddings unavailable — ${mode} search will run keyword-only. Run 'gnosys reindex' to build embeddings.`
+        );
+      }
+
       const results = await hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), mode);
   
       if (results.length === 0) {

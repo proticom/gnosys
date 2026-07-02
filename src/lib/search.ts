@@ -12,6 +12,7 @@ try {
 }
 import path from "path";
 import type { GnosysStore } from "./store.js";
+import { ftsTerms, ftsAndQuery, ftsOrQuery } from "./ftsQuery.js";
 
 export interface SearchResult {
   relative_path: string;
@@ -177,9 +178,8 @@ export class GnosysSearch {
    */
   search(query: string, limit: number = 20): SearchResult[] {
     if (!this.db) return [];
-    // FTS5 query — escape special characters
-    const safeQuery = query.replace(/['"]/g, "").trim();
-    if (!safeQuery) return [];
+    const terms = ftsTerms(query);
+    if (terms.length === 0) return [];
 
     const stmt = this.db.prepare(`
       SELECT
@@ -194,7 +194,11 @@ export class GnosysSearch {
     `);
 
     try {
-      return stmt.all(safeQuery, limit) as SearchResult[];
+      // v5.12.3: AND first (precision), OR retry when AND finds nothing —
+      // multi-word queries previously required every term to match.
+      const results = stmt.all(ftsAndQuery(terms), limit) as SearchResult[];
+      if (results.length > 0 || terms.length === 1) return results;
+      return stmt.all(ftsOrQuery(terms), limit) as SearchResult[];
     } catch {
       // If FTS5 query fails, fall back to simple LIKE search
       const likeStmt = this.db.prepare(`
@@ -207,7 +211,7 @@ export class GnosysSearch {
         WHERE content LIKE ? OR title LIKE ? OR tags LIKE ?
         LIMIT ?
       `);
-      const pattern = `%${safeQuery}%`;
+      const pattern = `%${terms.join(" ")}%`;
       return likeStmt.all(pattern, pattern, pattern, limit) as SearchResult[];
     }
   }
@@ -219,8 +223,8 @@ export class GnosysSearch {
    */
   discover(query: string, limit: number = 20): DiscoverResult[] {
     if (!this.db) return [];
-    const safeQuery = query.replace(/['"]/g, "").trim();
-    if (!safeQuery) return [];
+    const terms = ftsTerms(query);
+    if (terms.length === 0) return [];
 
     // Search primarily on relevance + title + tags (not content body)
     // FTS5 column filter: {relevance title tags}
@@ -236,22 +240,33 @@ export class GnosysSearch {
       LIMIT ?
     `);
 
-    try {
-      // Try column-filtered search on relevance/title/tags first
-      const colQuery = `{relevance title tags} : ${safeQuery}`;
-      const results = stmt.all(colQuery, limit) as DiscoverResult[];
-      if (results.length > 0) return results;
-
-      // Fall back to full-text search if column filter finds nothing
-      return stmt.all(safeQuery, limit) as DiscoverResult[];
-    } catch {
-      // If FTS5 column filter syntax fails, fall back to full search
+    const tryRun = (match: string): DiscoverResult[] => {
       try {
-        return stmt.all(safeQuery, limit) as DiscoverResult[];
+        return stmt.all(match, limit) as DiscoverResult[];
       } catch {
         return [];
       }
-    }
+    };
+
+    // v5.12.3: precision-to-recall ladder. AND on the metadata columns,
+    // AND anywhere, then OR retries — multi-word queries previously
+    // required every term to match, so long queries returned nothing.
+    // Parens scope the column filter to the whole expression (a bare
+    // `{cols} : a b` only filtered the first term).
+    const colScoped = (expr: string) => `{relevance title tags} : (${expr})`;
+    const andExpr = ftsAndQuery(terms);
+
+    let results = tryRun(colScoped(andExpr));
+    if (results.length > 0) return results;
+
+    results = tryRun(andExpr);
+    if (results.length > 0 || terms.length === 1) return results;
+
+    const orExpr = ftsOrQuery(terms);
+    results = tryRun(colScoped(orExpr));
+    if (results.length > 0) return results;
+
+    return tryRun(orExpr);
   }
 
   close(): void {

@@ -2193,15 +2193,20 @@ regTool(
     }
 
     try {
-      const results = await hybridSearch.hybridSearch(
-        query,
-        limit || 15,
-        (mode as "keyword" | "semantic" | "hybrid") || "hybrid"
-      );
+      const requestedMode = (mode as "keyword" | "semantic" | "hybrid") || "hybrid";
+      const results = await hybridSearch.hybridSearch(query, limit || 15, requestedMode);
+
+      // v5.12.3: hybrid used to degrade to keyword-only silently when the
+      // semantic leg can't run (embeddings are only built by gnosys_reindex,
+      // and DB mode also needs the store-local query embedder). Say so loudly.
+      const degradeWarning =
+        requestedMode !== "keyword" && !hybridSearch.canRunSemantic()
+          ? `⚠️ Semantic embeddings unavailable — ${requestedMode} search ran keyword-only. Run gnosys_reindex to build embeddings and enable semantic recall.\n\n`
+          : "";
 
       if (results.length === 0) {
         return {
-          content: [{ type: "text", text: `No results for "${query}". Try gnosys_reindex to build embeddings, or different keywords.` }],
+          content: [{ type: "text", text: `${degradeWarning}No results for "${query}". Try different keywords.` }],
         };
       }
 
@@ -2229,7 +2234,7 @@ regTool(
         content: [
           {
             type: "text",
-            text: `Found ${results.length} results for "${query}" (${embCount} embeddings indexed):\n\n${formatted}`,
+            text: `${degradeWarning}Found ${results.length} results for "${query}" (${embCount} embeddings indexed):\n\n${formatted}`,
           },
         ],
       };
@@ -2263,11 +2268,21 @@ regTool(
     }
 
     try {
+      // v5.12.3: semantic search without a working semantic leg either
+      // returns nothing or (in DB mode) keyword hits mislabeled as semantic —
+      // refuse with the exact reason instead.
+      if (!hybridSearch.canRunSemantic()) {
+        return {
+          content: [{ type: "text", text: `⚠️ Semantic embeddings unavailable — semantic search cannot run. Run gnosys_reindex to build embeddings, then retry.` }],
+          isError: true,
+        };
+      }
+
       const results = await hybridSearch.hybridSearch(query, limit || 15, "semantic");
 
       if (results.length === 0) {
         return {
-          content: [{ type: "text", text: `No semantic results for "${query}". Run gnosys_reindex first to build embeddings.` }],
+          content: [{ type: "text", text: `No semantic results for "${query}". Try a broader query.` }],
         };
       }
 
