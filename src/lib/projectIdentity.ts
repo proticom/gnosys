@@ -263,33 +263,73 @@ export async function configureClaudeCode(projectDir: string): Promise<IdeHookRe
     // No settings yet
   }
 
-  // Build the Gnosys SessionStart hook
+  // v5.14.0: the hook command is `gnosys recall-hook` — it reads the hook
+  // event JSON from stdin (per the Claude Code hooks contract) and prints
+  // a <gnosys-recall> block, which Claude Code adds to the model context.
+  // Pre-5.14 installs wrote `gnosys recall --query ... --projectRoot ...`,
+  // options that never existed — the hook failed silently on every
+  // session start. Detect and heal that shape below.
+  const hookCommand = "gnosys recall-hook 2>/dev/null || true";
   const gnosysHook = {
     type: "command",
-    command: "gnosys recall --query \"session start\" --projectRoot \"$CLAUDE_PROJECT_DIR\" 2>/dev/null || true",
+    command: hookCommand,
     timeout: 10,
   };
 
-  // Merge into existing hooks without clobbering other SessionStart hooks
+  const isGnosysHookCmd = (h: Record<string, unknown>): boolean =>
+    typeof h.command === "string" &&
+    ((h.command as string).includes("gnosys recall-hook") ||
+      // the exact broken pre-5.14 shape only — a user's own `gnosys recall
+      // <topic>` hook must not count as "already configured"
+      (h.command as string).includes("gnosys recall --query"));
+  const isBrokenLegacyCmd = (h: Record<string, unknown>): boolean =>
+    typeof h.command === "string" && (h.command as string).includes("gnosys recall --query");
+
+  // Merge into existing hooks without clobbering other entries
   const hooks = (settings.hooks || {}) as Record<string, unknown[]>;
+  let changed = false;
+
+  // Heal the broken legacy command wherever it appears
+  for (const eventName of Object.keys(hooks)) {
+    for (const entry of (hooks[eventName] || []) as Array<Record<string, unknown>>) {
+      const entryHooks = (entry.hooks || []) as Array<Record<string, unknown>>;
+      for (const h of entryHooks) {
+        if (isBrokenLegacyCmd(h)) {
+          h.command = hookCommand;
+          changed = true;
+        }
+      }
+    }
+  }
+
+  // SessionStart: top memories at startup/resume/compact
   const sessionStartEntries = (hooks.SessionStart || []) as Array<Record<string, unknown>>;
-
-  // Check if a Gnosys hook already exists
-  const hasGnosysHook = sessionStartEntries.some((entry) => {
-    const entryHooks = (entry.hooks || []) as Array<Record<string, unknown>>;
-    return entryHooks.some((h) => typeof h.command === "string" && (h.command as string).includes("gnosys recall"));
-  });
-
-  if (!hasGnosysHook) {
-    sessionStartEntries.push({
-      matcher: "startup|resume|compact",
-      hooks: [gnosysHook],
-    });
+  const hasSessionHook = sessionStartEntries.some((entry) =>
+    ((entry.hooks || []) as Array<Record<string, unknown>>).some(isGnosysHookCmd)
+  );
+  if (!hasSessionHook) {
+    sessionStartEntries.push({ matcher: "startup|resume|compact", hooks: [gnosysHook] });
     hooks.SessionStart = sessionStartEntries;
-    settings.hooks = hooks;
+    changed = true;
+  }
 
+  // UserPromptSubmit: per-prompt recall with the prompt text as the query —
+  // this is the "automatic memory injection" path (no matcher: always fires)
+  const promptEntries = (hooks.UserPromptSubmit || []) as Array<Record<string, unknown>>;
+  const hasPromptHook = promptEntries.some((entry) =>
+    ((entry.hooks || []) as Array<Record<string, unknown>>).some(isGnosysHookCmd)
+  );
+  if (!hasPromptHook) {
+    promptEntries.push({ hooks: [gnosysHook] });
+    hooks.UserPromptSubmit = promptEntries;
+    changed = true;
+  }
+
+  if (changed) {
+    settings.hooks = hooks;
     await fs.writeFile(settingsPath, JSON.stringify(settings, null, 2) + "\n", "utf-8");
   }
+  const hasGnosysHook = !changed;
 
   // v5.8.4: also register the MCP server itself (not just the recall hook),
   // so `gnosys init` is a one-stop shop. Previously the user had to ALSO
@@ -301,7 +341,9 @@ export async function configureClaudeCode(projectDir: string): Promise<IdeHookRe
     configured: true,
     filePath: settingsPath,
     details: [
-      hasGnosysHook ? "SessionStart hook already configured" : "Added SessionStart hook",
+      hasGnosysHook
+        ? "Recall hooks already configured"
+        : "Recall hooks configured (SessionStart + UserPromptSubmit → gnosys recall-hook)",
       mcpResult.success ? mcpResult.message : `MCP register skipped: ${mcpResult.message}`,
     ].join("; "),
   };

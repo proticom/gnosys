@@ -100,9 +100,10 @@ export async function recall(
   query: string,
   options: {
     limit?: number;
-    search: GnosysSearch;
-    resolver: GnosysResolver;
-    storePath: string;
+    /** Optional in v5.14: callers on the DB fast path (hooks) skip the file-store deps. */
+    search?: GnosysSearch;
+    resolver?: GnosysResolver;
+    storePath?: string;
     traceId?: string;
     recallConfig?: RecallConfig;
     /** v2.0: When provided, recall uses SQLite directly — no filesystem reads */
@@ -121,6 +122,18 @@ export async function recall(
   }
 
   // ─── v1.x legacy path (filesystem + search.db) ────────────────────
+  // v5.14: DB-only callers (recall-hook) pass no file-store deps; without
+  // them and without a central DB there is nothing to search.
+  if (!options.search || !options.resolver) {
+    return {
+      memories: [],
+      totalActive: 0,
+      totalArchived: 0,
+      recallTimeMs: Math.round((performance.now() - start) * 100) / 100,
+      aggressive: cfg.aggressive,
+    };
+  }
+
   const memories: RecallMemory[] = [];
 
   // Step 1: Fast keyword search on active memories (FTS5 — sub-10ms)
@@ -148,7 +161,7 @@ export async function recall(
 
   // Step 2: Archive fallback if active results are thin
   let totalArchived = 0;
-  if (memories.length < limit) {
+  if (memories.length < limit && options.storePath) {
     try {
       const archive = new GnosysArchive(options.storePath);
       if (archive.isAvailable()) {

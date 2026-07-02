@@ -2797,7 +2797,7 @@ regResource(
   "gnosys://recall",
   {
     description:
-      "Automatic memory injection. Hosts read this resource on every turn to inject the most relevant memories as context. Returns a <gnosys-recall> block with [[wikilinks]] and relevance scores. Priority 1 (highest) — designed for always-on context injection without any tool call. Configure aggressiveness in gnosys.json: recall.aggressive (default: true).",
+      "Top-memory injection block for hosts that read MCP resources. Returns a <gnosys-recall> block with [[wikilinks]] and relevance scores. NOTE: most hosts (Claude Code, Cursor) do NOT auto-read MCP resources per turn — for true automatic injection use the hooks `gnosys init` installs (UserPromptSubmit/SessionStart → `gnosys recall-hook`). Configure aggressiveness in gnosys.json: recall.aggressive (default: true).",
     mimeType: "text/markdown",
     annotations: {
       audience: ["assistant"],
@@ -2850,7 +2850,7 @@ regResource(
 // recall memories for a specific query. The resource above is preferred.
 regTool(
   "gnosys_recall",
-  "Fast memory recall — inject relevant memories as context. Returns <gnosys-recall> block. In aggressive mode (default), always returns top memories even at medium relevance. Prefer the gnosys://recall MCP Resource for automatic injection (no tool call needed).",
+  "Fast memory recall — inject relevant memories as context. Returns <gnosys-recall> block. In aggressive mode (default), always returns top memories even at medium relevance. A wildcard query ('*') returns the top memories by reinforcement/confidence/recency. Hosts with gnosys hooks installed (via gnosys init) already get this automatically per prompt.",
   {
     query: z
       .string()

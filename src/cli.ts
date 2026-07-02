@@ -1566,6 +1566,16 @@ program
     await runRecallCommand(query, opts);
   });
 
+// ─── gnosys recall-hook ──────────────────────────────────────────────────
+program
+  .command("recall-hook")
+  .description("Claude Code hook entry — reads the hook event JSON from stdin and prints a <gnosys-recall> context block. Wired automatically by gnosys init into UserPromptSubmit + SessionStart.")
+  .option("--limit <n>", "Max memories to inject (default from config)")
+  .action(async (opts: { limit?: string }) => {
+    const { runRecallHookCommand } = await import("./lib/recallHookCommand.js");
+    await runRecallHookCommand(opts);
+  });
+
 // ─── gnosys audit ────────────────────────────────────────────────────────
 program
   .command("audit")
@@ -2171,11 +2181,14 @@ if (!isTestEnv()) {
       // console.log during boot corrupts the protocol and the host (Grok, Codex,
       // etc.) sees the server as [unavailable]. Suppress the nag in serve mode.
       const isServeCmd = process.argv.slice(2).some(a => a === "serve");
+      // v5.14.0: recall-hook runs on every Claude Code prompt — keep its
+      // stderr quiet too so hook error logs stay clean.
+      const isHookCmd = process.argv.slice(2).some(a => a === "recall-hook");
       // v5.9.3 Phase H: fire on any mismatch (upgrade OR downgrade).
       const mismatch =
         lastVersion !== null && lastVersion !== undefined &&
         compareSemver(currentVersion, lastVersion) !== 0;
-      if (mismatch && !isUpgradeCmd && !isSetupSyncCmd && !isServeCmd) {
+      if (mismatch && !isUpgradeCmd && !isSetupSyncCmd && !isServeCmd && !isHookCmd) {
         // v5.9.3 Phase H: emit on STDERR (was stdout). Safer invariant per
         // deci-045 — stdout is reserved for command output.
         const isMajorOrMinor = (() => {

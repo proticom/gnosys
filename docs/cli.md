@@ -282,6 +282,10 @@ Start the MCP server (stdio mode). Used by IDE integrations — Claude Code/Desk
 
 Always-on memory recall — injects most relevant memories as context. Use --federated for cross-scope.
 
+## `gnosys recall-hook`
+
+Claude Code hook entry — reads the hook event JSON from stdin and prints a <gnosys-recall> context block. Wired automatically by gnosys init into UserPromptSubmit + SessionStart.
+
 ## `gnosys audit`
 
 View the structured audit trail of memory operations from the central DB

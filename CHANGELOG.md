@@ -5,6 +5,48 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.14.0] — 2026-07
+
+Automatic memory injection, for real this time. Claude Code does not
+auto-read MCP resources (no host does per-turn), so the gnosys://recall
+resource could never deliver "memories on every turn" even after v5.13.1
+fixed its wildcard. This release delivers the feature through the
+mechanism Claude Code actually supports: hooks.
+
+### Added
+
+- **`gnosys recall-hook`** — Claude Code hook entry point. Reads the hook
+  event JSON from stdin (UserPromptSubmit → the user's prompt becomes the
+  recall query; SessionStart → wildcard/top memories), recalls from the
+  central DB, and prints a `<gnosys-recall>` block on stdout, which
+  Claude Code adds to the model context. ~120 ms per prompt, always exits
+  0, empty output when there's nothing to inject, capped under the 10k
+  hook-output limit.
+- **`gnosys init` now wires true auto-recall**: installs both a
+  SessionStart hook (matcher startup|resume|compact) and a per-prompt
+  UserPromptSubmit hook running `gnosys recall-hook`, merging into
+  existing `.claude/settings.json` without touching foreign hooks.
+
+### Fixed
+
+- **The pre-5.14 SessionStart hook never worked.** `gnosys init` wrote
+  `gnosys recall --query ... --projectRoot ...` — options that don't
+  exist — silenced by `2>/dev/null || true`, so it failed on every
+  session start since it shipped. Re-running `gnosys init` (or any flow
+  that calls configureIdeHooks) heals the broken command in place.
+- **CLI `gnosys recall` now reads the central DB.** The default
+  (non-federated) path only searched the project file store, returning
+  nothing on DB-only installs; it now passes the central DB
+  (snapshot-aware on sync clients) like the MCP tool does.
+- **Docs corrected**: the gnosys://recall resource and gnosys_recall tool
+  descriptions no longer claim hosts read the resource per turn — they
+  point at the hook mechanism instead.
+
+### Internal
+
+- `recall()`'s file-store dependencies (search/resolver/storePath) are
+  now optional for DB-only callers.
+
 ## [5.13.1] — 2026-07
 
 Recall-and-Dream repair release: the automatic memory-injection resource

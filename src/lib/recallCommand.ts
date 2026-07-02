@@ -81,7 +81,7 @@ export async function runRecallCommand(
         return;
       }
   
-      // Legacy file-based recall
+      // Default recall path
       const resolver = new GnosysResolver();
       await resolver.resolve();
       const stores = resolver.getStores();
@@ -89,32 +89,47 @@ export async function runRecallCommand(
         console.error("No Gnosys stores found. Run 'gnosys init' first.");
         process.exit(1);
       }
-  
+
       const { recall, formatRecall, formatRecallCLI } = await import("./recall.js");
       const { initAudit, closeAudit } = await import("./audit.js");
-  
+
       const storePath = stores[0].path;
       initAudit(storePath);
-  
+
       // Load config for recall settings
       const cfg = await loadConfig(storePath);
       const recallConfig = {
         ...cfg.recall,
         ...(opts.aggressive !== undefined ? { aggressive: opts.aggressive } : {}),
       };
-  
+
       // Build search index
       const search = new GnosysSearch(storePath);
       await search.addStoreMemories(stores[0].store);
-  
-      const result = await recall(query, {
-        limit: opts.limit ? parseInt(opts.limit, 10) : undefined,
-        search,
-        resolver,
-        storePath,
-        traceId: opts.traceId,
-        recallConfig,
-      });
+
+      // v5.14.0: recall from the central DB (the brain) like the MCP tool
+      // does — the CLI previously only searched the project file store, so
+      // `gnosys recall` (and the SessionStart hook built on it) returned
+      // nothing on DB-only installs. Snapshot-aware via clientReadResolve;
+      // falls back to the file-store path when no central DB exists.
+      const { resolveClientRead } = await import("./clientReadResolve.js");
+      const clientRead = resolveClientRead();
+
+      let result;
+      try {
+        result = await recall(query, {
+          limit: opts.limit ? parseInt(opts.limit, 10) : undefined,
+          search,
+          resolver,
+          storePath,
+          traceId: opts.traceId,
+          recallConfig,
+          gnosysDb: clientRead?.db,
+          pendingOverlay: clientRead?.pendingOverlay,
+        });
+      } finally {
+        clientRead?.release();
+      }
   
       if (opts.json) {
         console.log(JSON.stringify(result, null, 2));
