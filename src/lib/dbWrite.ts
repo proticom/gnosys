@@ -17,6 +17,7 @@
 import type { GnosysDB, DbMemory } from "./db.js";
 import type { MemoryFrontmatter, } from "./store.js";
 import { fnv1a } from "./db.js";
+import { queueMemoryEmbedding } from "./embedQueue.js";
 
 /** Coerce Date objects (from gray-matter parsing) to ISO date strings. */
 function toDateStr(value: unknown): string | null {
@@ -72,6 +73,10 @@ export function syncMemoryToDb(
     project_id: projectId || null,
     scope: scope || "project",
   });
+
+  // v5.13.0: best-effort write-time embedding (no-op unless the MCP server
+  // enabled the queue). Never blocks or fails the write.
+  queueMemoryEmbedding(frontmatter.id);
 }
 
 /**
@@ -121,6 +126,17 @@ export function syncUpdateToDb(
   dbUpdates.modified = new Date().toISOString().split("T")[0];
 
   db.updateMemory(id, dbUpdates);
+
+  // v5.13.0: re-embed when searchable text changed (title/content/tags/
+  // relevance feed the embedding recipe). No-op unless the queue is enabled.
+  if (
+    newContent !== undefined ||
+    updates.title !== undefined ||
+    updates.tags !== undefined ||
+    updates.relevance !== undefined
+  ) {
+    queueMemoryEmbedding(id);
+  }
 }
 
 /**

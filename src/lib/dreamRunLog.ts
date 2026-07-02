@@ -18,7 +18,8 @@ export interface DreamRunGateResult {
 }
 
 export interface DreamRunPhaseRecord {
-  name: "decay" | "critique" | "summaries" | "relationships";
+  // v5.13.0: "embedding-health" added — coverage check + missing-vector backfill
+  name: "decay" | "embedding-health" | "critique" | "summaries" | "relationships";
   status: "ran" | "skipped";
   reason?: string;
   durationMs: number;
@@ -119,8 +120,11 @@ export function getDreamRunsPath(): string {
   return path.join(getGnosysHome(), "dream-runs.jsonl");
 }
 
-export function getDreamStatePath(): string {
-  return path.join(getGnosysHome(), "dream-state.json");
+// v5.13.0: baseDir injection (defense in depth against test pollution) —
+// in-process engines can target an explicit state dir instead of the
+// developer's real ~/.gnosys.
+export function getDreamStatePath(baseDir?: string): string {
+  return path.join(baseDir || getGnosysHome(), "dream-state.json");
 }
 
 export function getDreamLockPath(): string {
@@ -201,9 +205,9 @@ export function estimateCost(model: string | undefined, inputTokens: number, out
   return Math.round(cost * 1_000_000) / 1_000_000;
 }
 
-export function readDreamState(): DreamState {
+export function readDreamState(baseDir?: string): DreamState {
   try {
-    const raw = fs.readFileSync(getDreamStatePath(), "utf8");
+    const raw = fs.readFileSync(getDreamStatePath(baseDir), "utf8");
     const parsed = JSON.parse(raw) as Partial<DreamState>;
     return {
       ...DEFAULT_STATE,
@@ -215,8 +219,8 @@ export function readDreamState(): DreamState {
   }
 }
 
-export function writeDreamState(state: DreamState): void {
-  const file = getDreamStatePath();
+export function writeDreamState(state: DreamState, baseDir?: string): void {
+  const file = getDreamStatePath(baseDir);
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, `${JSON.stringify(state, null, 2)}\n`, "utf8");
 }

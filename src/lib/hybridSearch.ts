@@ -28,6 +28,8 @@ export class GnosysHybridSearch {
   private storePath: string;
   /** v2.0: When set, hybrid search uses SQLite directly */
   private dbSearch: GnosysDbSearch | null = null;
+  /** v5.13.0: kept for central-DB embedding backfill (reindexCentralDb) */
+  private gnosysDb: GnosysDB | null = null;
 
   constructor(
     search: GnosysSearch,
@@ -44,6 +46,7 @@ export class GnosysHybridSearch {
     // v2.0: If GnosysDB is migrated, create a DB search adapter
     if (gnosysDb?.isAvailable() && gnosysDb?.isMigrated()) {
       this.dbSearch = new GnosysDbSearch(gnosysDb);
+      this.gnosysDb = gnosysDb;
     }
   }
 
@@ -58,7 +61,11 @@ export class GnosysHybridSearch {
   ): Promise<HybridSearchResult[]> {
     // v2.0 DB-backed fast path: run entirely from gnosys.db
     if (this.dbSearch) {
-      const embedQuery = this.embeddings.hasEmbeddings()
+      // v5.13.0: gate the semantic leg on stored central-DB vectors — the
+      // query embedder loads the local model on demand, so the store-local
+      // embeddings.db (the old gate) is irrelevant in DB mode. A machine
+      // that only syncs gnosys.db gets semantic search once vectors exist.
+      const embedQuery = this.dbSearch.hasEmbeddings()
         ? (text: string) => this.embeddings.embed(text)
         : undefined;
       return this.dbSearch.hybridSearch(query, limit, mode, embedQuery);
@@ -298,6 +305,24 @@ export class GnosysHybridSearch {
   }
 
   /**
+   * v5.13.0: (re)build the central-DB memories.embedding column — the
+   * vectors GnosysDbSearch actually reads. Before this, reindex only
+   * embedded file-store memories into the store-local embeddings.db, so
+   * DB-mode semantic search could never activate. Returns counts; no-op
+   * ({0,0}) when no migrated central DB is attached.
+   */
+  async reindexCentralDb(
+    onProgress?: (current: number, total: number, id: string) => void
+  ): Promise<{ embedded: number; total: number }> {
+    if (!this.gnosysDb) return { embedded: 0, total: 0 };
+    const { backfillCentralDbEmbeddings } = await import("./embedDb.js");
+    return backfillCentralDbEmbeddings(this.gnosysDb, this.embeddings, {
+      mode: "all",
+      onProgress,
+    });
+  }
+
+  /**
    * Load full content for search results (used by Ask engine).
    * Handles both active memories and archived memories.
    */
@@ -355,15 +380,14 @@ export class GnosysHybridSearch {
 
   /**
    * True when hybrid/semantic search can actually run its semantic leg.
-   * In DB mode this requires BOTH stored vectors in the central DB and the
-   * store-local embeddings.db used to embed the query text — the central
-   * count alone can be non-zero on a machine that only syncs gnosys.db,
-   * in which case hybridSearch() silently runs keyword-only (embedQuery
-   * is never constructed).
+   * Mirrors the embedQuery gate in hybridSearch(): in DB mode, stored
+   * central-DB vectors are what matter (the query embedder loads the
+   * local model on demand); in legacy file mode, the store-local
+   * embeddings.db must be populated.
    */
   canRunSemantic(): boolean {
     if (this.dbSearch) {
-      return this.dbSearch.hasEmbeddings() && this.embeddings.hasEmbeddings();
+      return this.dbSearch.hasEmbeddings();
     }
     return this.embeddings.hasEmbeddings();
   }

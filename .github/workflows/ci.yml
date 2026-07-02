@@ -48,8 +48,13 @@ jobs:
         if: matrix.os == 'ubuntu-latest' && matrix.node-version == 24
         run: npm run test:coverage
 
+      # v5.13.0: !cancelled() on the reporting/guardrail steps — vitest
+      # writes coverage-summary.json before its threshold check exits
+      # non-zero, so the per-file diagnostics below stay available exactly
+      # when the gate fails (previously they were skipped, hiding the
+      # actionable message).
       - name: Upload coverage report
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == 24
+        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.node-version == 24 }}
         uses: actions/upload-artifact@v5
         with:
           name: coverage-report
@@ -57,7 +62,7 @@ jobs:
           retention-days: 14
 
       - name: Check coverage thresholds
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == 24
+        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.node-version == 24 }}
         run: |
           if [ -f coverage/coverage-summary.json ]; then
             echo "Coverage summary:"
@@ -77,7 +82,7 @@ jobs:
       # failures (new modules without tests dropping the global average
       # under the 50% threshold).
       - name: Check coverage of newly-added files
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == 24
+        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.node-version == 24 }}
         run: |
           git fetch --depth=50 origin master:refs/remotes/origin/master 2>/dev/null || true
           COVERAGE_BASE_REF=origin/master node scripts/check-new-file-coverage.mjs

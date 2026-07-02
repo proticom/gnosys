@@ -25,6 +25,7 @@ import { type LLMProvider, createProvider } from "./llm.js";
 import { notifyDesktop } from "./desktopNotify.js";
 import { syncConfidenceToDb, auditToDb } from "./dbWrite.js";
 import { logError } from "./log.js";
+import { getGnosysHome } from "./paths.js";
 import {
   type DreamEffectivenessRecord,
   type DreamLLMCallRecord,
@@ -118,6 +119,8 @@ export interface DreamReport {
   llmCalls?: DreamLLMCallRecord[];
   totals?: DreamRunRecord["totals"];
   effectiveness?: DreamEffectivenessRecord;
+  /** v5.13.0: embedding coverage found/repaired by the embedding-health phase. */
+  embeddingHealth?: { total: number; missingBefore: number; embedded: number };
 }
 
 export interface ReviewSuggestion {
@@ -131,6 +134,10 @@ export interface ReviewSuggestion {
 // ─── Decay Constants ─────────────────────────────────────────────────────
 
 const DECAY_LAMBDA = 0.005;
+
+// v5.13.0: embedding-health backfill cap per dream run. Bounds idle-time
+// work (~128-row batches, local model) — large gaps close over a few runs.
+const EMBEDDING_BACKFILL_MAX_PER_RUN = 512;
 const STALE_THRESHOLD = 0.3;
 
 // ─── Dream Engine ────────────────────────────────────────────────────────
@@ -144,15 +151,17 @@ export class GnosysDreamEngine {
   private startTime = 0;
   private trigger: DreamTrigger;
   private machineId?: string;
-  private dreamState: DreamState = readDreamState();
+  private dreamState: DreamState;
   private pendingFingerprints: DreamState["analyzedFingerprints"] = {};
   private llmCallsMade = 0;
+  /** v5.13.0: explicit dream-state dir (defense against test pollution of ~/.gnosys). */
+  private stateDir?: string;
 
   constructor(
     db: GnosysDB,
     config: GnosysConfig,
     dreamConfig?: Partial<DreamConfig>,
-    options?: { trigger?: DreamTrigger; machineId?: string }
+    options?: { trigger?: DreamTrigger; machineId?: string; stateDir?: string }
   ) {
     this.db = db;
     this.config = config;
@@ -163,6 +172,8 @@ export class GnosysDreamEngine {
     };
     this.trigger = options?.trigger ?? "manual";
     this.machineId = options?.machineId;
+    this.stateDir = options?.stateDir;
+    this.dreamState = readDreamState(this.stateDir);
 
     // Initialize LLM provider for dream operations.
     // v5.4.2: Failure here is no longer silent — when dream tries to actually
@@ -225,7 +236,7 @@ export class GnosysDreamEngine {
           ...this.dreamState.analyzedFingerprints,
           ...this.pendingFingerprints,
         },
-      });
+      }, this.stateDir);
     } catch {
       // Best-effort: a failed checkpoint only costs re-analysis on resume.
     }
@@ -377,7 +388,7 @@ export class GnosysDreamEngine {
     this.llmCallsMade = 0;
     this.llmCalls = [];
     this.pendingFingerprints = {};
-    this.dreamState = readDreamState();
+    this.dreamState = readDreamState(this.stateDir);
     const log = onProgress || (() => {});
     const startedAt = new Date().toISOString();
 
@@ -492,6 +503,87 @@ export class GnosysDreamEngine {
       report.aborted = true;
       report.abortReason = check.reason;
       return this.finalize(report);
+    }
+
+    // ─── Phase 1.5: Embedding Health (v5.13.0) ───────────────────────────
+    // Semantic search reads memories.embedding; writes only best-effort
+    // embed. Dream is the safety net: report coverage and backfill missing
+    // vectors during idle time. No LLM involved — local embedding model.
+    {
+      log("embedding-health", "Phase 1.5: Embedding health check...");
+      const embedPhase = this.createPhase("embedding-health");
+      const embedStart = Date.now();
+      report.phases!.push(embedPhase);
+      try {
+        const total = this.db.getMemoryCount().total;
+        const missingBefore = this.db.countMemoriesMissingEmbedding();
+        const embeddedCount = this.db.getEmbeddingCount();
+        if (missingBefore === 0) {
+          embedPhase.status = "skipped";
+          embedPhase.reason = "all memories embedded";
+          report.embeddingHealth = { total, missingBefore: 0, embedded: 0 };
+          log("embedding-health", `All ${total} memories embedded`);
+        } else if (embeddedCount === 0) {
+          // Embeddings never initialized on this install — that's an explicit
+          // user choice (reindex downloads the 80 MB model); Dream repairs
+          // drift, it doesn't opt users in. Report it loudly and move on.
+          embedPhase.status = "skipped";
+          embedPhase.reason = "embeddings not initialized — run gnosys_reindex";
+          report.embeddingHealth = { total, missingBefore, embedded: 0 };
+          auditToDb(this.db, "dream_embedding_health", undefined, {
+            missing: missingBefore,
+            total,
+            initialized: false,
+          });
+          log("embedding-health", `${missingBefore}/${total} memories lack embeddings — run gnosys_reindex to enable semantic search`);
+        } else {
+          auditToDb(this.db, "dream_embedding_health", undefined, {
+            missing: missingBefore,
+            total,
+            initialized: true,
+          });
+          const { backfillCentralDbEmbeddings } = await import("./embedDb.js");
+          const { GnosysEmbeddings } = await import("./embeddings.js");
+          // Model-only use — we never touch the embedder's store-local db.
+          const embedder = new GnosysEmbeddings(getGnosysHome());
+          let embedded = 0;
+          try {
+            // Chunked so shouldStop() (abort / max-runtime) is honored
+            // between batches; capped per run to bound idle-time work.
+            while (embedded < EMBEDDING_BACKFILL_MAX_PER_RUN) {
+              if (this.shouldStop().stop) break;
+              const chunk = Math.min(128, EMBEDDING_BACKFILL_MAX_PER_RUN - embedded);
+              const result = await backfillCentralDbEmbeddings(this.db, embedder, {
+                mode: "missing",
+                limit: chunk,
+              });
+              embedded += result.embedded;
+              if (result.embedded === 0) break;
+            }
+          } finally {
+            embedder.close();
+          }
+          report.embeddingHealth = { total, missingBefore, embedded };
+          if (embedded > 0) {
+            auditToDb(this.db, "dream_embedding_backfill", undefined, {
+              embedded,
+              remaining: missingBefore - embedded,
+            });
+          }
+          log("embedding-health", `Embedded ${embedded}/${missingBefore} missing (${total} total)`);
+        }
+      } catch (err) {
+        report.errors.push(`Embedding health: ${err instanceof Error ? err.message : String(err)}`);
+      } finally {
+        this.finishPhase(embedPhase, embedStart);
+      }
+
+      check = this.shouldStop();
+      if (check.stop) {
+        report.aborted = true;
+        report.abortReason = check.reason;
+        return this.finalize(report);
+      }
     }
 
     // ─── Phase 2: Self-Critique (Review Suggestions) ─────────────────────
@@ -616,7 +708,7 @@ export class GnosysDreamEngine {
         ...this.dreamState.analyzedFingerprints,
         ...this.pendingFingerprints,
       },
-    });
+    }, this.stateDir);
 
     // v5.4.2: A run is considered "successful with LLM work" if any of the
     // LLM-dependent counters moved. Resetting the consecutive-failure count

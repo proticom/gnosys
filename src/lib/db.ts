@@ -1501,9 +1501,58 @@ export class GnosysDB {
 
   // ─── Embeddings ─────────────────────────────────────────────────────
 
+  /**
+   * v5.13.0: rows needed to (re)build the embedding column. All tiers and
+   * statuses are included — matching FTS, which indexes every row and
+   * filters at query time. Newest-first so capped backfills prioritize
+   * recent memories.
+   */
+  getMemoriesForEmbedding(
+    mode: "missing" | "all",
+    limit?: number,
+  ): Array<{ id: string; title: string; relevance: string | null; tags: string; content: string }> {
+    const where = mode === "missing" ? "WHERE embedding IS NULL" : "";
+    const lim = limit && limit > 0 ? ` LIMIT ${Math.floor(limit)}` : "";
+    return this.withRecovery(() =>
+      this.prep(
+        `SELECT id, title, relevance, tags, content FROM memories ${where} ORDER BY modified DESC${lim}`,
+      ).all() as Array<{ id: string; title: string; relevance: string | null; tags: string; content: string }>,
+    );
+  }
+
+  /** v5.13.0: memories whose embedding column is NULL (embedding-health check). */
+  countMemoriesMissingEmbedding(): number {
+    return this.withRecovery(() => {
+      const row = this.prep("SELECT COUNT(*) as cnt FROM memories WHERE embedding IS NULL").get() as { cnt: number };
+      return row.cnt;
+    });
+  }
+
   updateEmbedding(id: string, embedding: Buffer): void {
     this.withRecovery(() => {
-      this.db.prepare("UPDATE memories SET embedding = ? WHERE id = ?").run(embedding, id);
+      const sql = "UPDATE memories SET embedding = ? WHERE id = ?";
+      try {
+        this.db.prepare(sql).run(embedding, id);
+      } catch {
+        // v5.13.0: same failure mode updateMemory works around — the FTS5
+        // AFTER UPDATE trigger's 'delete' command errors on standalone FTS5
+        // tables. embedding isn't an FTS column, so drop the trigger,
+        // update, recreate; the FTS entry itself needs no rebuild.
+        this.db.exec("DROP TRIGGER IF EXISTS memories_fts_au");
+        this.db.prepare(sql).run(embedding, id);
+        try {
+          this.db.exec(`
+            CREATE TRIGGER IF NOT EXISTS memories_fts_au AFTER UPDATE ON memories BEGIN
+              INSERT INTO memories_fts(memories_fts, id, title, category, tags, relevance, content, summary)
+              VALUES ('delete', old.id, old.title, old.category, old.tags, old.relevance, old.content, old.summary);
+              INSERT INTO memories_fts(id, title, category, tags, relevance, content, summary)
+              VALUES (new.id, new.title, new.category, new.tags, new.relevance, new.content, new.summary);
+            END;
+          `);
+        } catch {
+          // Trigger recreation failed — not critical
+        }
+      }
     });
   }
 

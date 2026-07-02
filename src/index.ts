@@ -2326,11 +2326,20 @@ regTool(
       await reindexAllStores();
 
       const count = await hybridSearch.reindex();
+
+      // v5.13.0: also (re)build the central-DB embedding column — the
+      // vectors DB-mode hybrid/semantic search actually reads.
+      const dbResult = await hybridSearch.reindexCentralDb();
+
+      const parts = [`${count} file-store memories embedded`];
+      if (dbResult.total > 0) {
+        parts.push(`${dbResult.embedded}/${dbResult.total} central-DB memories embedded`);
+      }
       return {
         content: [
           {
             type: "text",
-            text: `Reindex complete: ${count} memories embedded. Hybrid search is now available.`,
+            text: `Reindex complete: ${parts.join(", ")}. Hybrid search is now available.`,
           },
         ],
       };
@@ -3967,6 +3976,16 @@ async function initHeavyDeps(): Promise<void> {
     gnosysDb || undefined,
   );
   askEngine = new GnosysAsk(hybridSearch, config, resolver, writeTarget.store.getStorePath());
+
+  // v5.13.0: write-time embeddings (serve mode only) — new and updated
+  // memories get vectors without waiting for a manual reindex. Best-effort:
+  // queued writes drain on an unref'd timer and never block a tool call.
+  if (centralDb?.isAvailable() && centralDb.isMigrated()) {
+    const { enableWriteTimeEmbedding } = await import("./lib/embedQueue.js");
+    enableWriteTimeEmbedding(() => centralDb, embeddings);
+    console.error("Write-time embeddings: enabled (central DB)");
+  }
+
   const embCount = embeddings.hasEmbeddings() ? embeddings.count() : 0;
   console.error(
     `Hybrid search: ${embCount > 0 ? `ready (${embCount} embeddings)` : "available (run gnosys_reindex to build embeddings)"}`,

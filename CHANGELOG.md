@@ -5,6 +5,70 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.13.0] — 2026-07
+
+Embeddings actually work in DB mode now. v5.12.3 made the silent semantic
+degrade loud; this release makes it stop happening: vectors are written to
+the place DB-mode search reads, at reindex time, at write time, and as a
+Dream safety net. Also fixes a test-pollution bug that chronically
+suppressed scheduled Dream on dev machines, and repairs the CI coverage
+gate that has been red since May 30.
+
+### Fixed
+
+- **Reindex now builds the embeddings DB-mode search actually reads.**
+  `gnosys_reindex` / `gnosys reindex` only embedded file-store memories
+  into the store-local `embeddings.db`, but DB-mode hybrid/semantic search
+  reads the `memories.embedding` column of `gnosys.db` — which nothing
+  ever wrote, so semantic search could never activate (on a 1,236-memory
+  brain, reindex embedded 1 memory and reported success). Reindex now also
+  (re)builds the central-DB embedding column (new `embedDb.ts`, shared
+  batch backfill) and reports both counts. The semantic-leg gate
+  (`embedQuery`/`canRunSemantic`) now keys on stored central-DB vectors —
+  the query embedder loads the local model on demand — so a machine that
+  only syncs `gnosys.db` gets semantic search too. Note: the
+  `gnosys_reindex` success text changed ("N file-store memories embedded,
+  M/T central-DB memories embedded") — don't string-match the old form.
+- **`updateEmbedding` no longer fails on the FTS `AFTER UPDATE` trigger.**
+  Latent since v2.0 (the method was dead code until now): embedding-only
+  updates now use the same trigger workaround `updateMemory` has always
+  needed. No schema change.
+- **Test runs no longer pollute the developer's real `~/.gnosys`.** The
+  Dream engine run in-process by the test suite wrote its 5-fixture
+  watermark into the real `dream-state.json` on every `npm test`, making
+  the scheduled-run "dreamworthiness" gate see a fresh watermark and skip
+  dreaming over the real brain indefinitely (the "Dream only sees 5
+  memories" symptom — Dream's actual selection has no cap). Every vitest
+  worker now gets a throwaway `GNOSYS_HOME` (global setup file), and the
+  engine accepts an explicit `stateDir` as defense in depth. If you run
+  the test suite from a dev checkout, delete `~/.gnosys/dream-state.json`
+  once so the scheduler sees real change again.
+- **CI coverage gate repaired (red on every master push since 2026-05-30).**
+  The 5.11 command-coverage sprint moved ~3,600 statements out of the
+  coverage-excluded `cli.ts` into 79 `src/lib/*Command.ts` modules that no
+  test imports in-process (they're exercised via `node dist/cli.js`
+  subprocesses, invisible to V8 coverage), deflating global coverage
+  63% → 46%. The command wrappers are now excluded with the same rationale
+  as `cli.ts`/`setup/**` (burn-down: convert wiring tests to
+  import-and-invoke, then drop the exclusion). Coverage diagnostics steps
+  run under `!cancelled()` so per-file reports survive a gate failure.
+  Not a Node 24 issue — that was simply the only cell running coverage.
+
+### Added
+
+- **Write-time embeddings (MCP serve mode).** New and updated memories are
+  embedded automatically via a best-effort background queue
+  (`embedQueue.ts`) hooked into the central-DB write path: a write never
+  blocks on or fails because of embedding; failures log one stderr warning
+  and defer to the next reindex/Dream backfill. CLI one-shot adds rely on
+  the backfills (the process exits before a model could load).
+- **Dream Mode embedding-health phase.** Each dream run reports embedding
+  coverage (`report.embeddingHealth`, audit event
+  `dream_embedding_health`) and backfills missing vectors during idle time
+  (capped at 512/run, abort-aware). If embeddings were never initialized
+  on the install, it reports the gap loudly but does not auto-download the
+  model — opting in stays an explicit `gnosys_reindex` choice.
+
 ## [5.12.3] — 2026-07
 
 Search-recall bugfix release: long multi-word queries no longer return zero

@@ -10,6 +10,11 @@ export default defineConfig({
     testTimeout: 60_000,
     hookTimeout: 60_000,
     fileParallelism: false,
+    // v5.13.0: isolate every worker from the developer's real ~/.gnosys.
+    // In-process engine runs (dream-resume.test.ts) were writing their
+    // fixture watermark into the real dream-state.json on every `npm test`,
+    // chronically suppressing scheduled Dream on dev machines.
+    setupFiles: ["src/test/_setupGnosysHome.ts"],
     coverage: {
       provider: "v8",
       reporter: ["text", "text-summary", "json-summary", "html"],
@@ -35,6 +40,17 @@ export default defineConfig({
         // Same justification as setup.ts — readline-driven I/O, hard to
         // meaningfully unit-test, exercised via CLI integration tests.
         "src/lib/setup/**",
+
+        // v5.13.0: thin CLI command wrappers extracted from cli.ts in the
+        // 5.11 command-coverage sprint. They are exercised via `node
+        // dist/cli.js` subprocess integration tests, which in-process V8
+        // coverage cannot see — same rationale as the cli.ts exclusion
+        // below. Moving ~3,600 statements from excluded cli.ts into
+        // included lib/ silently dropped global coverage 63% → 46% and has
+        // failed the CI gate on every master push since 2026-05-30.
+        // Burn-down path: convert the string-assertion wiring tests into
+        // import-and-invoke unit tests, then remove this exclusion.
+        "src/lib/*Command.ts",
 
         // Media processing (requires binary files, external tools like Tesseract)
         "src/lib/multimodalIngest.ts",

@@ -50,14 +50,20 @@ describe("hybrid search degrade warnings (v5.12.3)", () => {
     expect(handler).toContain("Run 'gnosys reindex' to build embeddings");
   });
 
-  it("canRunSemantic requires BOTH central-DB vectors and the store-local query embedder in DB mode", () => {
+  // v5.13.0: assertion updated alongside the gate redesign — in DB mode the
+  // semantic leg is now gated on stored central-DB vectors alone (the query
+  // embedder loads the local model on demand), so canRunSemantic mirrors
+  // the new embedQuery gate instead of ANDing the store-local embeddings.db.
+  it("canRunSemantic mirrors the DB-mode embedQuery gate (central-DB vectors)", () => {
     const hybrid = readFileSync(
       join(process.cwd(), "src/lib/hybridSearch.ts"),
       "utf-8",
     );
     expect(hybrid).toContain("canRunSemantic(): boolean {");
+    expect(hybrid).toContain("return this.dbSearch.hasEmbeddings();");
+    // hybridSearch() itself must use the same predicate for embedQuery
     expect(hybrid).toContain(
-      "this.dbSearch.hasEmbeddings() && this.embeddings.hasEmbeddings()",
+      "const embedQuery = this.dbSearch.hasEmbeddings()",
     );
   });
 });
