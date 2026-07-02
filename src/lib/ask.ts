@@ -384,7 +384,11 @@ export class GnosysAsk {
       }
 
       return usedArchiveIds;
-    } catch {
+    } catch (err) {
+      // Degrade gracefully, but leave a trace on stderr — a hard dearchive
+      // failure previously looked identical to "no archive hits"
+      // (sprint 2026-07-02).
+      console.error(`gnosys: dearchive failed: ${err instanceof Error ? err.message : String(err)}`);
       return [];
     }
   }

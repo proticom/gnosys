@@ -167,7 +167,10 @@ export async function runAskCommand(
             await GnosysMaintenanceEngine.reinforceBatch(
               writeTarget.store,
               result.sources.map((s) => s.relativePath)
-            ).catch(() => {});
+            ).catch((err) => {
+              // Best-effort, but don't be fully silent (sprint 2026-07-02).
+              console.error(`gnosys: reinforcement skipped: ${err instanceof Error ? err.message : String(err)}`);
+            });
           }
         }
       } catch (err) {

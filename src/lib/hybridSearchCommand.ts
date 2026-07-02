@@ -116,7 +116,10 @@ export async function runHybridSearchCommand(
           await GnosysMaintenanceEngine.reinforceBatch(
             writeTarget.store,
             results.map((r) => r.relativePath)
-          ).catch(() => {});
+          ).catch((err) => {
+            // Best-effort, but don't be fully silent (sprint 2026-07-02).
+            console.error(`gnosys: reinforcement skipped: ${err instanceof Error ? err.message : String(err)}`);
+          });
         }
       }
       search.close();
