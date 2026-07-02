@@ -15,6 +15,7 @@ import fsSync from "fs";
 import path from "path";
 import os from "os";
 import { execSync } from "child_process";
+import { guardInteractiveStdin } from "./interactiveGuard.js";
 import {
   loadConfig,
   updateConfig,
@@ -1423,6 +1424,7 @@ export async function runSetup(opts: {
 
   // ─── Interactive mode ─────────────────────────────────────────────────
 
+  guardInteractiveStdin("setup");
   const rl = createInterface({ input: stdin, output: stdout });
 
   let setupCompleted = false;
@@ -2582,6 +2584,7 @@ export interface ModelsSetupOpts {
 export async function runModelsSetup(opts: ModelsSetupOpts = {}): Promise<void> {
   const projectDir = opts.directory ? path.resolve(opts.directory) : process.cwd();
   const ownsRl = !opts.rl;
+  if (ownsRl) guardInteractiveStdin("setup models");
   const rl = opts.rl ?? createInterface({ input: stdin, output: stdout });
 
   try {
@@ -3108,6 +3111,7 @@ export interface DreamSetupOpts {
 export async function runDreamSetup(opts: DreamSetupOpts = {}): Promise<void> {
   const projectDir = opts.directory ? path.resolve(opts.directory) : process.cwd();
   const ownsRl = !opts.rl;
+  if (ownsRl) guardInteractiveStdin("setup dream");
   const rl = opts.rl ?? createInterface({ input: stdin, output: stdout });
 
   try {
@@ -3372,8 +3376,11 @@ export async function runDreamSetup(opts: DreamSetupOpts = {}): Promise<void> {
     // Reset consecutive failure counter on a fresh setup so Layer 4
     // doesn't fire immediately based on stale history.
     localDb.resetDreamConsecutiveFailures();
-    const { installDreamLaunchAgent } = await import("./dreamLaunchd.js");
+    const { installDreamLaunchAgent, loadDreamLaunchAgent } = await import("./dreamLaunchd.js");
     const launchdPath = installDreamLaunchAgent();
+    // Best-effort immediate activation so the schedule doesn't wait for the
+    // next login (v5.14.x sprint, pre-approved).
+    const launchdLoad = launchdPath ? loadDreamLaunchAgent(launchdPath) : null;
     localDb.close();
     remoteDb?.close();
 
@@ -3409,6 +3416,7 @@ export async function runDreamSetup(opts: DreamSetupOpts = {}): Promise<void> {
     const dreamerName = designate ? localMachine : (designatedMachine ?? "the designated machine");
     printStatus("progress", `scheduled dream checks run nightly (${scheduleStartHour}:00-${scheduleEndHour}:00) on ${dreamerName}`);
     if (launchdPath) printStatus("ok", "launchd agent installed", launchdPath);
+    if (launchdLoad) printStatus(launchdLoad.ok ? "ok" : "warn", launchdLoad.message);
     printStatus("progress", "check status anytime with `gnosys status --system`");
   } finally {
     if (ownsRl) rl.close();

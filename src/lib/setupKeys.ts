@@ -1,5 +1,6 @@
 import { createInterface, type Interface as ReadlineInterface } from "readline/promises";
 import { stdin, stdout } from "process";
+import { guardInteractiveStdin } from "./interactiveGuard.js";
 import fs from "fs/promises";
 import fsSync from "fs";
 import os from "os";
@@ -673,6 +674,7 @@ export function renderProviderTable(providers: ProviderKeyStatus[]): string {
 
 export async function runKeysSetup(opts?: KeysSetupOpts): Promise<void> {
   const ownReadline = !opts?.rl;
+  if (ownReadline) guardInteractiveStdin("setup keys");
   const rl = opts?.rl ?? createInterface({ input: stdin, output: stdout });
 
   try {
