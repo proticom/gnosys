@@ -35,7 +35,10 @@ describe("gnosys dream run command wiring", () => {
     expect(handler).toContain("acquireDreamLock");
     expect(handler).toContain("isInsideNightWindow");
     expect(handler).toContain("getSystemIdleMinutes");
-    expect(handler).toContain("countChangedMemoriesSince");
+    // v5.13.1: gate now uses countDreamworthyChanges (date watermark + count
+    // delta) so stale/polluted dream-state files self-heal — marker updated
+    // alongside the intentional rename.
+    expect(handler).toContain("countDreamworthyChanges");
     expect(handler).toContain("appendDreamRun");
     expect(handler).toContain("GnosysDreamEngine");
     expect(handler).toContain("engine.dream");

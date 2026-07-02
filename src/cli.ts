@@ -1421,9 +1421,16 @@ dreamCmd
   .option("--force", "Run even if this machine is not the designated dream node")
   .option("--scheduled", "Run as the machine-level scheduler (applies night/idle/cooldown gates)")
   .option("--json", "Output raw JSON report")
-  .action(async (opts: DreamRunOpts) => {
+  .action(async function (this: import("commander").Command, opts: DreamRunOpts) {
+    // v5.13.1: the bare `gnosys dream` parent declares the same flags, and
+    // commander resolves parent-declared options onto the PARENT during
+    // `dream run --scheduled` — so run's opts arrived empty and every
+    // scheduled invocation (the launchd agent's exact command line) ran as
+    // a MANUAL dream, bypassing the night/idle/dreamworthiness gates.
+    // Merge parent opts (same pattern as `dream log` below).
+    const merged = { ...(this.parent?.opts() ?? {}), ...opts } as DreamRunOpts;
     const { runDreamCommand } = await import("./lib/dreamCommand.js");
-    await runDreamCommand(opts);
+    await runDreamCommand(merged);
   });
 
 // `gnosys dream log` — view recent dream runs from audit_log

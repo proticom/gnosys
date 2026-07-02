@@ -31,6 +31,7 @@ import {
   type PendingAddRow,
 } from "./clientReadOverlay.js";
 import { auditLog } from "./audit.js";
+import { ftsTerms } from "./ftsQuery.js";
 import type { RecallConfig } from "./config.js";
 
 export interface RecallResult {
@@ -215,6 +216,49 @@ function recallFromDb(
 
   // Step 1: FTS5 discover on gnosys.db
   const fetchLimit = Math.max(limit * 2, 15);
+
+  // v5.13.1: wildcard recall. The gnosys://recall resource passes "*"
+  // meaning "inject the top memories, no specific query" — but "*" was
+  // never a valid FTS5 match-all (it's a syntax error), so the resource
+  // returned zero memories since it shipped in v4.0.0. Any query with no
+  // searchable terms now serves top active memories ranked by
+  // reinforcement, confidence, and recency.
+  if (ftsTerms(query).length === 0) {
+    const top = db.getTopActiveMemories(fetchLimit);
+    for (let i = 0; i < top.length; i++) {
+      const mem = top[i];
+      memories.push({
+        id: mem.id,
+        title: mem.title,
+        category: mem.category,
+        relevance: mem.relevance || "",
+        confidence: mem.confidence,
+        path: mem.id,
+        fromArchive: false,
+        snippet: mem.content.substring(0, 300),
+        // Rank-derived score, floored above minRelevance (0.4 default) so
+        // non-aggressive mode keeps top memories too.
+        relevanceScore: Math.max(0.9 - i * 0.02, 0.5),
+      });
+    }
+    const wildcardCounts = db.getMemoryCount();
+    const result = applyRecallFiltering(memories, top.length, wildcardCounts.archived, limit, cfg, start);
+    db.logAudit({
+      timestamp: new Date().toISOString(),
+      operation: "recall",
+      memory_id: null,
+      details: JSON.stringify({
+        query,
+        wildcard: true,
+        aggressive: cfg.aggressive,
+        totalCandidates: memories.length,
+        filtered: result.memories.length,
+      }),
+      duration_ms: Math.round(result.recallTimeMs),
+      trace_id: traceId || null,
+    });
+    return result;
+  }
   let dbResults = db.discoverFts(query, fetchLimit);
   if (pendingOverlay?.length) {
     dbResults = mergeOverlayDiscoverResults(

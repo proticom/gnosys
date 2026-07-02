@@ -4,7 +4,7 @@ import { loadConfig } from "./config.js";
 import {
   acquireDreamLock,
   appendDreamRun,
-  countChangedMemoriesSince,
+  countDreamworthyChanges,
   createSkipRunRecord,
   getSystemIdleMinutes,
   isInsideNightWindow,
@@ -38,7 +38,14 @@ export async function runDreamCommand(opts: DreamCommandOptions): Promise<void> 
 
   const storePath = stores[0].path;
   const cfg = await loadConfig(storePath);
-  const db = new DbClass(storePath);
+  // v5.13.1: Dream operates on the brain — the central DB — not the
+  // project store the command happened to be run from. Opening
+  // stores[0].path meant `gnosys dream run` failed with "run gnosys
+  // migrate" from any project directory whose local .gnosys has no
+  // migrated DB, even though the central DB was fine (and the designation
+  // check below already used openCentral). DbClass alias keeps the lazy
+  // import pattern.
+  const db = DbClass.openCentral();
 
   if (!db.isAvailable() || !db.isMigrated()) {
     console.error("Dream Mode requires gnosys.db (v2.0). Run 'gnosys migrate' first.");
@@ -140,7 +147,9 @@ export async function runDreamCommand(opts: DreamCommandOptions): Promise<void> 
 
       const state = readDreamState();
       const memories = db.getActiveMemories();
-      const changed = countChangedMemoriesSince(memories, state.lastMemoryMaxModified);
+      // v5.13.1: max(date-watermark changes, count delta) — self-heals
+      // stale/polluted state files and catches bulk imports/deletions.
+      const changed = countDreamworthyChanges(memories, state);
       const lastRunMs = state.lastSuccessfulRunAt ? Date.parse(state.lastSuccessfulRunAt) : 0;
       const hoursSince = lastRunMs ? (Date.now() - lastRunMs) / 3_600_000 : Infinity;
       const enoughMemories = changed >= cfg.dream.minNewMemoriesToDream;

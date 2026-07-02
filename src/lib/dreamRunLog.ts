@@ -276,6 +276,22 @@ export function countChangedMemoriesSince(memories: DbMemory[], sinceIso?: strin
   return memories.filter((m) => Date.parse(m.modified || m.created) > sinceMs).length;
 }
 
+/**
+ * v5.13.1: total change signal for the dreamworthiness gate. The date-only
+ * watermark misses bulk imports, deletions, and stale/polluted state files
+ * (a test-suite bug wrote lastMemoryCount=5 against 1,200+ memory brains,
+ * suppressing scheduled dreaming indefinitely — fixed in v5.13.0, but
+ * already-polluted machines need the gate itself to self-heal). A mismatch
+ * between the stored memory count and reality IS change — take the max of
+ * both signals.
+ */
+export function countDreamworthyChanges(memories: DbMemory[], state: DreamState): number {
+  const byDate = countChangedMemoriesSince(memories, state.lastMemoryMaxModified);
+  const countDelta =
+    state.lastMemoryCount == null ? 0 : Math.abs(memories.length - state.lastMemoryCount);
+  return Math.max(byDate, countDelta);
+}
+
 export function isInsideNightWindow(now: Date, schedule: DreamConfig["schedule"]): boolean {
   const start = schedule.startHour;
   const end = schedule.endHour;

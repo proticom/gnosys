@@ -1520,6 +1520,20 @@ export class GnosysDB {
     );
   }
 
+  /**
+   * v5.13.1: top active memories for wildcard recall. The gnosys://recall
+   * resource asks for "the best memories, no query" — rank by how often a
+   * memory proved useful (reinforcement), then confidence, then recency.
+   */
+  getTopActiveMemories(limit: number = 15): DbMemory[] {
+    return this.withRecovery(() =>
+      this.prep(
+        `SELECT ${LEAN_MEMORY_PROJECTION} FROM memories WHERE tier = 'active' AND status = 'active'
+         ORDER BY reinforcement_count DESC, confidence DESC, modified DESC LIMIT ?`,
+      ).all(limit) as DbMemory[],
+    );
+  }
+
   /** v5.13.0: memories whose embedding column is NULL (embedding-health check). */
   countMemoriesMissingEmbedding(): number {
     return this.withRecovery(() => {

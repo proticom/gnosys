@@ -5,6 +5,52 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.13.1] — 2026-07
+
+Recall-and-Dream repair release: the automatic memory-injection resource
+returned zero memories since it shipped, and three separate defects meant
+scheduled Dream had likely never executed correctly on any machine.
+
+### Fixed
+
+- **`gnosys://recall` (automatic memory injection) returned nothing —
+  since v4.0.0.** The resource called `recall("*")`, but `*` was never a
+  valid FTS5 match-all (it's a syntax error, silently caught into an empty
+  result), so every read produced `<gnosys: no-strong-recall-needed>`
+  regardless of what the brain contained. Wildcard and term-less queries
+  now serve top active memories ranked by reinforcement count, confidence,
+  and recency (new `getTopActiveMemories`), audited with `wildcard: true`.
+  The explicit `gnosys_recall` tool (real keyword queries) was always fine.
+- **`gnosys dream run --scheduled` silently ran as a MANUAL dream.** The
+  bare `gnosys dream` parent declares the same flags as the `run`
+  subcommand, and commander resolves parent-declared options onto the
+  parent — so the exact command line the launchd agent uses arrived with
+  `scheduled` (and `--force`/`--json`/`--max-runtime`) undefined,
+  bypassing the night-window / idle / dreamworthiness gates. The run
+  action now merges parent opts.
+- **`gnosys dream run` failed from project directories.** The engine
+  opened `stores[0].path` (the project store) instead of the central DB —
+  from any project without a migrated local `.gnosys` it exited with "run
+  gnosys migrate" even though the brain was fine (the designation check
+  three lines later already used `openCentral`). Dream now operates on the
+  central DB.
+- **Dreamworthiness gate self-heals stale or polluted state.** The gate
+  only counted memories modified after the stored date watermark; it now
+  also treats a mismatch between the stored memory count and reality as
+  change (`countDreamworthyChanges`). Machines whose `dream-state.json`
+  was polluted by the pre-5.13.0 test-suite bug (count 5 vs a 1,200+
+  memory brain) become dreamworthy again automatically — no manual file
+  deletion needed. Also catches bulk imports and deletions the date check
+  missed.
+
+### Known issue (needs `gnosys setup dream` once)
+
+- A dream designation created before the v5.11 machine-identity rework
+  can point at a legacy `unknown-*` id while `getMachineId()` now reports
+  the `machine.json` id — the designation gate then never passes on the
+  intended machine. Re-run `gnosys setup dream` (or redesignate) once;
+  automatic healing is unsafe to guess on shared brains.
+
 ## [5.13.0] — 2026-07
 
 Embeddings actually work in DB mode now. v5.12.3 made the silent semantic
