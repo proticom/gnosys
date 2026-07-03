@@ -62,7 +62,11 @@ export async function runImportCommand(
   
         const format = opts.format as "csv" | "json" | "jsonl";
         const mode = opts.mode as "llm" | "structured";
-        const concurrency = opts.concurrency || 5;
+        // v5.15: --concurrency CLI flag wins; otherwise the config's
+        // importConcurrency (schema default 5) applies.
+        const { loadConfig } = await import("./config.js");
+        const config = await loadConfig(writeTarget.store.getStorePath());
+        const concurrency = opts.concurrency || config.importConcurrency;
   
         // Show estimate for LLM mode
         if (mode === "llm") {

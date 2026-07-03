@@ -114,6 +114,22 @@ export async function runStatusCommand(
       }
       const data = await collectDashboardData(resolver, cfg, deps.pkgVersion, dashDb ?? undefined);
       console.log(opts.json ? formatDashboardJSON(data) : formatDashboard(data));
+
+      // v5.15: dream launchd agent health (read-only — repair happens in
+      // `gnosys upgrade`). macOS + dream enabled only; skip in JSON mode
+      // to keep the JSON payload shape stable.
+      if (!opts.json && process.platform === "darwin" && cfg.dream?.enabled) {
+        const { checkDreamLaunchAgent } = await import("./dreamLaunchd.js");
+        const health = checkDreamLaunchAgent();
+        console.log("\nDream launchd agent:");
+        if (health.healthy) {
+          console.log("  ✓ healthy (installed, loaded, node + cli paths valid)");
+        } else {
+          for (const problem of health.problems) {
+            console.log(`  ⚠ ${problem}`);
+          }
+        }
+      }
     } catch (err) {
       console.error(`Error: ${err instanceof Error ? err.message : err}`);
       process.exitCode = 1;

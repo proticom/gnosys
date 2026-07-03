@@ -2131,7 +2131,8 @@ regTool(
         skipExisting,
         limit,
         offset,
-        concurrency,
+        // v5.15: explicit param wins; otherwise config importConcurrency.
+        concurrency: concurrency ?? ctx.config?.importConcurrency,
         batchCommit: true,
       });
 

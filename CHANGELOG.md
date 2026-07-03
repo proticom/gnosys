@@ -5,6 +5,47 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.15.0] — 2026-07
+
+Config truthfulness + scheduler resilience, plus the cleanup-sprint pass.
+Every config knob now either works or is gone.
+
+### Added
+
+- **`chat.systemPromptPrefix` and `chat.toolsEnabled` now work.** Both were
+  documented (setup even prompted for the prefix) but never read.
+  The prefix is prepended to the chat system prompt; `toolsEnabled: false`
+  removes the tools addendum and disables tool-fence execution.
+- **`importConcurrency` now works** — feeds the parallel LLM-structuring
+  batch size in bulk imports (CLI `--concurrency` still wins).
+- **Dream scheduler health-check.** The launchd plist pins absolute node/CLI
+  paths, so a Node upgrade could silently kill the nightly scheduler.
+  `gnosys status --system` now reports agent health (installed/loaded/paths),
+  and `gnosys upgrade` auto-repairs a broken agent (rewrites the plist with
+  current paths and reloads it).
+- **`gnosys setup dream` now activates the schedule immediately**
+  (launchctl load after writing the plist; unload on disable) — no more
+  waiting for the next login. *(sprint)*
+- **63 new tests**, including in-process invoke tests for 22 CLI command
+  handlers that previously had only string-assertion coverage. *(sprint)*
+
+### Removed
+
+- **`bulkIngestionBatchSize`** — a fossil of the removed git-batch-commit
+  design; nothing left for it to control. Old configs still load; a one-time
+  stderr deprecation notice is printed if the key is present.
+- **`chat.autoSummarizeAfterTurns`** — the auto-summarize feature was never
+  built; the knob returns if/when it ships. Same deprecation handling.
+
+### Fixed
+
+- **Interactive setup flows no longer crash with `ERR_USE_AFTER_CLOSE`**
+  when run without a TTY (e.g. from an agent shell) — they exit with a
+  friendly one-liner instead. *(sprint)*
+- **Silenced failures now leave traces**: ask's dearchive step and the
+  fire-and-forget reinforcement calls log one stderr line on failure
+  instead of vanishing. *(sprint)*
+
 ## [5.14.0] — 2026-07
 
 Automatic memory injection, for real this time. Claude Code does not

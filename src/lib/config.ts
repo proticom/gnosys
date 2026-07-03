@@ -167,9 +167,6 @@ export type RecallConfig = z.infer<typeof RecallConfigSchema>;
 const ChatConfigSchema = z.object({
   /** Allow LLM to call gnosys tools via gnosys-tool fences (default: true). */
   toolsEnabled: z.boolean().default(true),
-  /** Suggest /save-turn after N consecutive turns where no memory was written.
-   *  0 disables the nudge. Heuristic only — never writes without consent. */
-  autoSummarizeAfterTurns: z.number().int().min(0).default(0),
   /** Prepended to the chat system prompt. Use for persona / style / domain hints. */
   systemPromptPrefix: z.string().default(""),
 });
@@ -250,9 +247,6 @@ export const GnosysConfigSchema = z.object({
   /** @deprecated Use llm.anthropic.model or llm.ollama.model instead */
   defaultModel: z.string().optional(),
 
-  /** Max records per batch commit during bulk import */
-  bulkIngestionBatchSize: z.number().int().min(1).max(10000).default(500),
-
   /** Parallel LLM calls during import */
   importConcurrency: z.number().int().min(1).max(20).default(5),
 
@@ -311,7 +305,6 @@ export const GnosysConfigSchema = z.object({
   /** Chat TUI — interactive chat configuration (v5.8.0) */
   chat: ChatConfigSchema.default({
     toolsEnabled: true,
-    autoSummarizeAfterTurns: 0,
     systemPromptPrefix: "",
   }),
 
@@ -570,6 +563,35 @@ function deepMergeConfig(
   return result;
 }
 
+// ─── Removed-knob deprecation warnings (v5.15) ──────────────────────────
+//
+// These knobs were documented but never read by any code ("settings that
+// lie"), so v5.15 removed them from the schema. Zod strips unknown keys on
+// parse, so old config files keep loading — but warn once per process (on
+// stderr only; MCP serve stdout must stay clean for JSON-RPC).
+
+const warnedRemovedKeys = new Set<string>();
+
+function warnRemovedConfigKeys(raw: Record<string, unknown>): void {
+  const found: string[] = [];
+  if ("bulkIngestionBatchSize" in raw) found.push("bulkIngestionBatchSize");
+  const chat = raw.chat;
+  if (
+    typeof chat === "object" &&
+    chat !== null &&
+    "autoSummarizeAfterTurns" in (chat as Record<string, unknown>)
+  ) {
+    found.push("chat.autoSummarizeAfterTurns");
+  }
+  for (const key of found) {
+    if (warnedRemovedKeys.has(key)) continue;
+    warnedRemovedKeys.add(key);
+    console.error(
+      `gnosys: config option "${key}" was removed in v5.15 and is ignored`
+    );
+  }
+}
+
 export async function loadConfig(storePath: string): Promise<GnosysConfig> {
   const configPath = path.join(storePath, "gnosys.json");
   const globalPath = path.join(getGnosysHome(), "gnosys.json");
@@ -597,6 +619,8 @@ export async function loadConfig(storePath: string): Promise<GnosysConfig> {
     if (raw === null) {
       return DEFAULT_CONFIG;
     }
+
+    warnRemovedConfigKeys(raw);
 
     const migrated = migrateConfig(raw);
     const parsed = GnosysConfigSchema.parse(migrated);
@@ -678,7 +702,6 @@ export function generateConfigTemplate(): string {
         },
       },
       taskModels: {},
-      bulkIngestionBatchSize: 500,
       importConcurrency: 5,
       autoCommit: true,
       llmRetryAttempts: 3,
@@ -707,7 +730,6 @@ export function generateConfigTemplate(): string {
       },
       chat: {
         toolsEnabled: true,
-        autoSummarizeAfterTurns: 0,
         systemPromptPrefix: "",
       },
     },

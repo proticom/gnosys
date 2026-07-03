@@ -135,6 +135,164 @@ export function installDreamLaunchAgent(): string | null {
   return file;
 }
 
+function xmlUnescape(value: string): string {
+  return value
+    .replace(/&quot;/g, '"')
+    .replace(/&gt;/g, ">")
+    .replace(/&lt;/g, "<")
+    .replace(/&amp;/g, "&");
+}
+
+/**
+ * Pure helper: extract the node and cli paths from a dream LaunchAgent
+ * plist body. Template shape (installDreamLaunchAgent): the first
+ * `<string>` is the Label, the second is the node binary path, the third
+ * is the cli path. Exported for tests.
+ */
+export function parseDreamPlistPaths(body: string): {
+  nodePath?: string;
+  cliPath?: string;
+} {
+  const strings = [...body.matchAll(/<string>([^<]*)<\/string>/g)].map((m) =>
+    xmlUnescape(m[1]),
+  );
+  return {
+    nodePath: strings.length > 1 ? strings[1] : undefined,
+    cliPath: strings.length > 2 ? strings[2] : undefined,
+  };
+}
+
+export interface DreamLaunchAgentHealth {
+  installed: boolean;
+  loaded: boolean;
+  nodeExists: boolean;
+  cliExists: boolean;
+  healthy: boolean;
+  problems: string[];
+  plistFile: string | null;
+}
+
+/**
+ * Health-check the dream LaunchAgent. The plist hardcodes absolute node +
+ * cli paths (e.g. ~/.nvm/versions/node/vX.Y.Z/bin/node), so a Node upgrade
+ * silently kills the scheduler — this detects that. Never throws.
+ */
+export function checkDreamLaunchAgent(): DreamLaunchAgentHealth {
+  if (process.platform !== "darwin") {
+    return {
+      installed: false,
+      loaded: false,
+      nodeExists: false,
+      cliExists: false,
+      healthy: false,
+      problems: ["launchd unavailable (not macOS)"],
+      plistFile: null,
+    };
+  }
+  const file = plistPath();
+  if (!fs.existsSync(file)) {
+    return {
+      installed: false,
+      loaded: false,
+      nodeExists: false,
+      cliExists: false,
+      healthy: false,
+      problems: ["launchd agent not installed"],
+      plistFile: file,
+    };
+  }
+
+  const problems: string[] = [];
+  let nodeExists = false;
+  let cliExists = false;
+  try {
+    const body = fs.readFileSync(file, "utf8");
+    const { nodePath, cliPath } = parseDreamPlistPaths(body);
+    nodeExists = nodePath !== undefined && fs.existsSync(nodePath);
+    if (!nodeExists) {
+      problems.push(
+        `node binary missing at ${nodePath ?? "(unknown)"} — a Node upgrade likely moved it; run repair to rewrite the agent`,
+      );
+    }
+    // "gnosys" (bare command) counts as existing — resolved via PATH.
+    cliExists =
+      cliPath !== undefined && (cliPath === "gnosys" || fs.existsSync(cliPath));
+    if (!cliExists) {
+      problems.push(`gnosys cli missing at ${cliPath ?? "(unknown)"}`);
+    }
+  } catch (err) {
+    problems.push(
+      `could not read plist: ${err instanceof Error ? err.message : String(err)}`,
+    );
+  }
+
+  let loaded = false;
+  try {
+    execFileSync("launchctl", ["list", LABEL], {
+      stdio: ["ignore", "pipe", "pipe"],
+      timeout: 10_000,
+    });
+    loaded = true;
+  } catch {
+    problems.push("launchd agent not loaded");
+  }
+
+  return {
+    installed: true,
+    loaded,
+    nodeExists,
+    cliExists,
+    healthy: loaded && nodeExists && cliExists,
+    problems,
+    plistFile: file,
+  };
+}
+
+/**
+ * Repair the dream LaunchAgent: rewrite the plist with the current
+ * process's node + cli paths, then reload it. Best-effort — never throws.
+ */
+export function repairDreamLaunchAgent(): { ok: boolean; message: string } {
+  const file = installDreamLaunchAgent();
+  if (!file) {
+    return { ok: false, message: "launchd unavailable (not macOS)" };
+  }
+  unloadDreamLaunchAgent(file);
+  const load = loadDreamLaunchAgent(file);
+  if (!load.ok) {
+    return {
+      ok: false,
+      message: `agent reinstalled but reload failed: ${load.message}`,
+    };
+  }
+  return { ok: true, message: "dream launchd agent repaired and reloaded" };
+}
+
+/**
+ * Post-upgrade hook: when Dream Mode is enabled and the LaunchAgent is
+ * installed but unhealthy (typically because a Node upgrade moved the
+ * hardcoded node path), repair it. Returns a printable status line, or
+ * null when nothing applies (non-darwin, dream disabled, agent healthy
+ * or not installed). Never throws.
+ */
+export async function repairDreamLaunchAgentAfterUpgrade(): Promise<string | null> {
+  if (process.platform !== "darwin") return null;
+  try {
+    const { loadConfig } = await import("./config.js");
+    const { getGnosysHome } = await import("./paths.js");
+    const config = await loadConfig(getGnosysHome());
+    if (!config.dream?.enabled) return null;
+    const health = checkDreamLaunchAgent();
+    if (!health.installed || health.healthy) return null;
+    const repair = repairDreamLaunchAgent();
+    return repair.ok
+      ? "✓ dream launchd agent repaired (node path had changed)"
+      : `⚠ dream launchd agent unhealthy and repair failed: ${repair.message}`;
+  } catch {
+    return null;
+  }
+}
+
 export function uninstallDreamLaunchAgent(): string | null {
   if (process.platform !== "darwin") return null;
   const file = plistPath();

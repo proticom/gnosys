@@ -3,5 +3,5 @@
   "entry": ["src/postinstall.ts"],
   "project": ["src/**/*.{ts,tsx}"],
   "ignoreExportsUsedInFile": true,
-  "ignoreBinaries": ["which", "osascript", "notify-send", "ioreg", "systemctl", "ffmpeg", "gnosys"]
+  "ignoreBinaries": ["which", "osascript", "notify-send", "ioreg", "systemctl", "launchctl", "ffmpeg", "gnosys"]
 }

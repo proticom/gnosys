@@ -42,9 +42,26 @@ export interface LLMTurnResult {
 
 const BASE_SYSTEM_PROMPT = `You are an assistant inside the Gnosys terminal chat — a memory-aware REPL. The user has persistent memory across sessions; relevant memories are injected as <memory id="..."> blocks before their question. Cite memory IDs in square brackets like [deci-037] when you use them. Be concise and direct. Markdown renders.${CHOOSE_SYSTEM_PROMPT_ADDENDUM}`;
 
-function composeSystemPrompt(recalled: RecalledMemory[] | undefined): string {
-  const toolsAddendum = buildToolsSystemPrompt();
-  const base = `${BASE_SYSTEM_PROMPT}\n${toolsAddendum}`;
+/**
+ * Build the system prompt for a chat turn.
+ *
+ * v5.15: wires two previously-unread config knobs —
+ * `chat.systemPromptPrefix` (prepended before the base prompt) and
+ * `chat.toolsEnabled` (false omits the gnosys-tool addendum entirely).
+ * Exported for tests.
+ */
+export function composeSystemPrompt(
+  config: GnosysConfig,
+  recalled: RecalledMemory[] | undefined,
+): string {
+  const toolsEnabled = config.chat?.toolsEnabled !== false;
+  let base = toolsEnabled
+    ? `${BASE_SYSTEM_PROMPT}\n${buildToolsSystemPrompt()}`
+    : BASE_SYSTEM_PROMPT;
+  const prefix = config.chat?.systemPromptPrefix;
+  if (typeof prefix === "string" && prefix.trim().length > 0) {
+    base = `${prefix.trim()}\n\n${base}`;
+  }
   if (!recalled || recalled.length === 0) return base;
   return `${base}\n\n${formatRecallForPrompt(recalled)}`;
 }
@@ -78,8 +95,11 @@ export async function runTurn(
   // falls back to defaultProvider when no chat override is set, so existing
   // installs keep working without a chat-specific config.
   const provider: LLMProvider = getLLMProvider(config, "chat");
-  const system = composeSystemPrompt(opts.recalled);
-  const maxIterations = opts.maxToolIterations ?? 4;
+  const system = composeSystemPrompt(config, opts.recalled);
+  // v5.15: when chat.toolsEnabled === false the first response is final —
+  // no tool-fence execution loop.
+  const toolsEnabled = config.chat?.toolsEnabled !== false;
+  const maxIterations = toolsEnabled ? (opts.maxToolIterations ?? 4) : 1;
 
   const toolCalls: Array<{ tool: string; args: Record<string, string>; result: string }> = [];
   let toolPreamble: string | undefined;
@@ -103,7 +123,7 @@ export async function runTurn(
 
     // Look for tool fences; if none, this iteration's chunk IS the answer.
     const extraction = extractToolFences(chunk);
-    if (!extraction || extraction.calls.length === 0) {
+    if (!toolsEnabled || !extraction || extraction.calls.length === 0) {
       break;
     }
 

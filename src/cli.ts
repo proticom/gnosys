@@ -1325,6 +1325,12 @@ program
       console.error(`Running MCP servers will need to be restarted manually.`);
     }
 
+    // v5.15: a Node upgrade moves the node path hardcoded in the dream
+    // LaunchAgent plist, silently killing the scheduler. Repair it here.
+    const { repairDreamLaunchAgentAfterUpgrade } = await import("./lib/dreamLaunchd.js");
+    const dreamRepairLine = await repairDreamLaunchAgentAfterUpgrade();
+    if (dreamRepairLine) console.log(`\n${dreamRepairLine}`);
+
     if (opts.sync === false || opts.yes) {
       console.log(`\nDone. Run 'gnosys setup sync-projects' when you're ready to refresh registered projects.`);
       return;
