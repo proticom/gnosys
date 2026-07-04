@@ -13,7 +13,8 @@ This project uses **Gnosys** for persistent memory via MCP. Gnosys uses a centra
 
 ### Write automatically
 
-- When user says "remember", "memorize", "save this", "note this down", "don't forget" — call `gnosys_add`
+- **Always write with `gnosys_add_structured`** — you are an LLM, so structure the memory yourself (title, category, tags, content, relevance) and pass the explicit fields. Do NOT use the freeform `gnosys_add`: it makes the Gnosys server run a *second, redundant* LLM call to structure your text and adds an external provider-key dependency that can fail silently. `gnosys_add_structured` makes no server-side model call. (Freeform `gnosys_add` exists only for non-agent callers — cron jobs, scripts — that cannot structure text themselves.)
+- When user says "remember", "memorize", "save this", "note this down", "don't forget" — call `gnosys_add_structured`
 - When user states a decision or preference (even casually) — commit to `decisions` category
 - When user provides a spec or plan — commit BEFORE starting work
 - After significant implementation — commit findings and gotchas
@@ -25,7 +26,7 @@ This project uses **Gnosys** for persistent memory via MCP. Gnosys uses a centra
 |--------|------|
 | Find memories | `gnosys_discover` (metadata) → `gnosys_read` (content) |
 | Search | `gnosys_hybrid_search` (best), `gnosys_federated_search` (cross-project), `gnosys_search` (keyword), `gnosys_ask` (Q&A) |
-| Write | `gnosys_add` (freeform), `gnosys_add_structured` (explicit fields) |
+| Write | `gnosys_add_structured` (explicit fields — **always use this as an agent**; no server-side LLM call). `gnosys_add` (freeform) is for non-agent callers only. |
 | Update | `gnosys_update`, `gnosys_reinforce` (useful/not_relevant/outdated) |
 | Browse | `gnosys_list`, `gnosys_lens` (filtered), `gnosys_tags`, `gnosys_graph` |
 | Maintain | `gnosys_maintain`, `gnosys_stale`, `gnosys_history`, `gnosys_dashboard` |
