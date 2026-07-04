@@ -27,7 +27,10 @@ describe("gnosys sync command wiring", () => {
     expect(handler).toContain("GnosysDB.openCentral()");
     expect(handler).toContain("syncToTarget");
     expect(handler).toContain("readProjectIdentity(projectDir)");
-    expect(handler).toContain('identity.agentRulesTarget || "all"');
+    // Bare `gnosys sync` defaults to "all" present rule files (not the single
+    // agentRulesTarget) so multi-IDE projects stay in sync.
+    expect(handler).toContain('const resolvedTarget = target || "all"');
+    expect(handler).not.toContain("identity.agentRulesTarget");
     expect(handler).toContain("No targets found.");
     expect(handler).toContain("GNOSYS:START");
     expect(handler).toContain("process.exitCode = 1");

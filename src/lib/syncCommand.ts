@@ -41,7 +41,14 @@ export async function runSyncCommand(opts: SyncCommandOptions): Promise<void> {
       return;
     }
 
-    const resolvedTarget = target || identity.agentRulesTarget || "all";
+    // Default to "all": refresh every IDE rules file actually present in the
+    // project (detectAllTargets only touches existing files, never creating
+    // configs for unused IDEs). A project accumulates multiple IDEs over its
+    // life — bare `gnosys sync` must keep all of them current, not just the one
+    // recorded in agentRulesTarget at first setup. This matches the upgrade-time
+    // "sync registered projects" path, which already uses "all". Use
+    // `--target <ide>` to refresh a single file.
+    const resolvedTarget = target || "all";
 
     const results = await syncToTarget(
       centralDb,
