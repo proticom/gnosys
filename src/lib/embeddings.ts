@@ -47,8 +47,10 @@ export class GnosysEmbeddings {
         "gnosys"
       );
     await fs.mkdir(cacheDir, { recursive: true });
-    // HF_HOME is the canonical env var in @huggingface/transformers v3+;
-    // keep TRANSFORMERS_CACHE set too for any tooling that still reads it.
+    // NOTE: @huggingface/transformers does NOT honor HF_HOME/TRANSFORMERS_CACHE
+    // for its Node file cache (that's the Python huggingface_hub convention).
+    // It caches under its own `env.cacheDir`, which we set below after import.
+    // We still export the env vars for any adjacent tooling that reads them.
     process.env.HF_HOME = cacheDir;
     process.env.TRANSFORMERS_CACHE = cacheDir;
 
@@ -58,14 +60,22 @@ export class GnosysEmbeddings {
     // Use `any` here so `tsc` succeeds even when the optional dep is not installed
     // (CI network-share-simulation job, fresh checkouts, etc.). The real type
     // is only needed at runtime when the package is present.
-    let pipeline: any;
+    // `any`: the optional dep may be absent at type-check time (see note above).
+    let transformers: any;
     try {
-      ({ pipeline } = await import("@huggingface/transformers"));
+      transformers = await import("@huggingface/transformers");
     } catch {
       throw new Error(
         "Local embeddings require @huggingface/transformers. Install it with: npm install @huggingface/transformers"
       );
     }
+    // `env.cacheDir` is the actual knob transformers.js uses for its on-disk
+    // model cache. Without it the model lands in the package's own
+    // node_modules/.cache (wiped on reinstall) and GNOSYS_CACHE_DIR is silently
+    // ignored — it does NOT honor HF_HOME/TRANSFORMERS_CACHE. Access by property
+    // (not destructuring) so a mocked module without `env` doesn't throw.
+    if (transformers.env) transformers.env.cacheDir = cacheDir;
+    const pipeline = transformers.pipeline;
     this.pipeline = (await pipeline("feature-extraction", MODEL_NAME, {
       dtype: "q8",
     })) as unknown as Pipeline;

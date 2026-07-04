@@ -36,6 +36,10 @@ describe("embeddings optional dep (@huggingface/transformers)", () => {
     });
     vi.doMock("@huggingface/transformers", () => ({
       pipeline: vi.fn().mockResolvedValue(mockPipelineFn),
+      // The real module exports `env`; embeddings.ts sets env.cacheDir to route
+      // the model cache to GNOSYS_CACHE_DIR. Mirror that export or the strict
+      // mock namespace throws on access.
+      env: {},
     }));
 
     const { GnosysEmbeddings } = await import("../lib/embeddings.js");
