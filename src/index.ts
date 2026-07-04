@@ -771,7 +771,7 @@ regTool(
 // ─── Tool: gnosys_add ────────────────────────────────────────────────────
 regTool(
   "gnosys_add",
-  "Add a new memory. Accepts raw text — an LLM structures it into an atomic memory. Writes to the project store by default. Use store='personal' for cross-project knowledge, or store='global' to explicitly write to shared org knowledge.",
+  "Add a new memory from raw text — the server's LLM structures it into an atomic memory. For non-agent callers (scripts, cron); if you are an LLM agent, use gnosys_add_structured instead to avoid a redundant server-side LLM call. Writes to the project store by default. Use store='personal' for cross-project knowledge, or store='global' to explicitly write to shared org knowledge.",
   {
     input: z
       .string()
@@ -918,7 +918,7 @@ regTool(
 // ─── Tool: gnosys_add_structured ─────────────────────────────────────────
 regTool(
   "gnosys_add_structured",
-  "Add a memory with structured input (no LLM needed). Writes to the project store by default. Use store='global' to explicitly write to shared org knowledge.",
+  "Preferred for LLM agents: add a memory with structured fields you supply (title, category, tags, content) — makes no server-side LLM call. Writes to the project store by default. Use store='global' to explicitly write to shared org knowledge.",
   {
     title: z.string().describe("Memory title"),
     category: z.string().describe("Category directory name"),

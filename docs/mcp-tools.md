@@ -4,8 +4,8 @@ _Generated from `src/index.ts` by `scripts/gen-mcp-tools.mjs`. Do not edit by ha
 
 | Tool | Description |
 |------|-------------|
-| `gnosys_add` | Add a new memory. Accepts raw text — an LLM structures it into an atomic memory. Writes to the project store by default. Use store='personal' for cross-project knowledge, or store='global' to explicitly write to shared org knowledge. |
-| `gnosys_add_structured` | Add a memory with structured input (no LLM needed). Writes to the project store by default. Use store='global' to explicitly write to shared org knowledge. |
+| `gnosys_add` | Add a new memory from raw text — the server's LLM structures it into an atomic memory. For non-agent callers (scripts, cron); if you are an LLM agent, use gnosys_add_structured instead to avoid a redundant server-side LLM call. Writes to the project store by default. Use store='personal' for cross-project knowledge, or store='global' to explicitly write to shared org knowledge. |
+| `gnosys_add_structured` | Preferred for LLM agents: add a memory with structured fields you supply (title, category, tags, content) — makes no server-side LLM call. Writes to the project store by default. Use store='global' to explicitly write to shared org knowledge. |
 | `gnosys_ask` | Ask a natural-language question and get a synthesized answer with citations from the entire vault. Uses hybrid search to find relevant memories, then LLM to synthesize a cited response. Citations are Obsidian wikilinks [[filename.md]]. Requires an LLM provider (Anthropic or Ollama) and embeddings (run gnosys_reindex first). |
 | `gnosys_attach` | Attach a small binary file (logo, diagram, screenshot, small PDF) directly to a memory. The bytes are stored inline in the memory row, so the attachment travels machine-to-machine over the normal sync and works with a remote/dockerized server (no shared filesystem). Limit ~10MB — use gnosys_ingest_file for large media. |
 | `gnosys_audit` | View the audit trail of all memory operations (reads, writes, reinforcements, dearchives, maintenance). Shows a timeline of what happened and when. Useful for debugging 'why did the agent forget X?' |

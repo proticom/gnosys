@@ -71,8 +71,8 @@ This package installs two binaries:
 | `gnosys_read` | Read a specific memory. |
 | `gnosys_search` | Search memories by keyword across all stores. |
 | `gnosys_list` | List memories across all stores, optionally filtered by category, tag, or store layer. |
-| `gnosys_add` | Add a new memory. |
-| `gnosys_add_structured` | Add a memory with structured input (no LLM needed). |
+| `gnosys_add_structured` | **Preferred for LLM agents.** Add a memory with structured fields you supply (title, category, tags, content) — makes no server-side LLM call. |
+| `gnosys_add` | Add a memory from raw text; the server's LLM structures it. For non-agent callers (scripts, cron) — agents should use `gnosys_add_structured`. |
 | `gnosys_tags` | List all tags in the registry, grouped by category. |
 | `gnosys_tags_add` | Add a new tag to the registry. |
 | `gnosys_reinforce` | Signal whether a memory was useful. |
