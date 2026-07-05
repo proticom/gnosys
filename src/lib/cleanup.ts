@@ -22,10 +22,9 @@
 import fs from "fs/promises";
 import fsSync from "fs";
 import path from "path";
-import os from "os";
 import { createInterface } from "readline/promises";
 import { stdin, stdout } from "process";
-import { getProjectRegistryPath } from "./paths.js";
+import { getProjectRegistryPath, isTempProjectPath } from "./paths.js";
 import { safeQuestion } from "./setup/ui/safePrompt.js";
 import { Header } from "./setup/ui/header.js";
 import { Status } from "./setup/ui/status.js";
@@ -35,21 +34,6 @@ export interface ClassifiedRegistry {
   alive: string[];
   dead: string[];
   temp: string[];
-}
-
-const TEMP_PREFIXES = [
-  "/tmp/",
-  "/private/tmp/",
-  "/var/folders/",
-  "/private/var/folders/",
-];
-
-function isTempPath(p: string): boolean {
-  const resolved = path.resolve(p);
-  if (TEMP_PREFIXES.some((prefix) => resolved.startsWith(prefix))) return true;
-  // Honor the system tmpdir too (covers $TMPDIR overrides on CI etc.).
-  const sysTmp = path.resolve(os.tmpdir()) + path.sep;
-  return resolved.startsWith(sysTmp);
 }
 
 function isAlive(p: string): boolean {
@@ -83,7 +67,7 @@ export async function classifyRegistryEntries(): Promise<ClassifiedRegistry> {
   const dead: string[] = [];
   const temp: string[] = [];
   for (const e of entries) {
-    if (isTempPath(e)) {
+    if (isTempProjectPath(e)) {
       temp.push(e);
     } else if (isAlive(e)) {
       alive.push(e);

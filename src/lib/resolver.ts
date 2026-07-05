@@ -10,7 +10,7 @@
 
 import fs from "fs/promises";
 import path from "path";
-import { getProjectRegistryPath } from "./paths.js";
+import { getProjectRegistryPath, isTempProjectPath } from "./paths.js";
 import { GnosysStore, type Memory } from "./store.js";
 
 /**
@@ -316,6 +316,19 @@ export class GnosysResolver {
    */
   async registerProject(projectDir: string): Promise<void> {
     const configPath = this.getRegistryPath();
+
+    // Never register temp-dir projects (/tmp, /var/folders, os.tmpdir())
+    // in the user's REAL registry — those are test scaffolding or scratch
+    // dirs that vanish, then linger as stale entries `gnosys setup
+    // sync-projects` counts forever. When GNOSYS_HOME / GNOSYS_CONFIG_DIR
+    // redirects the registry (tests, sandboxes), temp paths are allowed,
+    // since the whole registry is itself transient.
+    const registryIsIsolated =
+      Boolean(process.env.GNOSYS_HOME) || Boolean(process.env.GNOSYS_CONFIG_DIR);
+    if (!registryIsIsolated && isTempProjectPath(projectDir)) {
+      return;
+    }
+
     let projects: string[] = [];
 
     try {

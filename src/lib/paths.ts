@@ -24,6 +24,7 @@
  */
 
 import path from "path";
+import os from "os";
 
 export function getGnosysHome(): string {
   if (process.env.GNOSYS_HOME) return process.env.GNOSYS_HOME;
@@ -48,6 +49,13 @@ export function getSandboxDir(): string {
  */
 function getConfigDir(): string {
   if (process.env.GNOSYS_CONFIG_DIR) return process.env.GNOSYS_CONFIG_DIR;
+  // GNOSYS_HOME redirects "everything gnosys-owned" (see header comment).
+  // Before this, tests that set GNOSYS_HOME still wrote the project
+  // registry into the user's REAL ~/.config/gnosys/projects.json — every
+  // test run leaked hundreds of /var/folders/... temp entries into it.
+  if (process.env.GNOSYS_HOME) {
+    return path.join(process.env.GNOSYS_HOME, "config");
+  }
   const home = process.env.HOME || process.env.USERPROFILE || "/tmp";
   return path.join(home, ".config", "gnosys");
 }
@@ -69,4 +77,27 @@ export function getProjectRegistryPath(): string {
  */
 export function getMachineConfigPath(): string {
   return path.join(getConfigDir(), "machine.json");
+}
+
+/**
+ * True when a project path lives under a system temp location (/tmp,
+ * /var/folders, or os.tmpdir()). Such paths are transient — test
+ * scaffolding, throwaway scratch dirs — and must never be treated as
+ * durable registered projects. Shared by cleanup, registration, and
+ * sync-projects so all three agree on what "temp" means.
+ */
+const TEMP_PATH_PREFIXES = [
+  "/tmp/",
+  "/private/tmp/",
+  "/var/folders/",
+  "/private/var/folders/",
+];
+
+export function isTempProjectPath(p: string): boolean {
+  const resolved = path.resolve(p);
+  if (TEMP_PATH_PREFIXES.some((prefix) => resolved.startsWith(prefix))) {
+    return true;
+  }
+  const sysTmp = path.resolve(os.tmpdir()) + path.sep;
+  return resolved.startsWith(sysTmp);
 }

@@ -42,7 +42,11 @@ export async function runSetupSyncProjectsCommand(
 
   // 1. Read registered projects from file registry AND central DB
   const home = process.env.HOME || process.env.USERPROFILE || "/tmp";
-  const registryPath = path.join(home, ".config", "gnosys", "projects.json");
+  const { getProjectRegistryPath, isTempProjectPath } = await import("./paths.js");
+  // Registry lives at ~/.config/gnosys/projects.json (or under
+  // GNOSYS_HOME/GNOSYS_CONFIG_DIR when isolated) — always resolved via
+  // the shared helper, never hand-rolled from HOME.
+  const registryPath = getProjectRegistryPath();
   let fileProjects: string[] = [];
   try {
     fileProjects = JSON.parse(await fs.readFile(registryPath, "utf-8"));
@@ -59,23 +63,44 @@ export async function runSetupSyncProjectsCommand(
     const centralDb = GnosysDB.openCentral();
     if (centralDb.isAvailable()) {
       const allProjects = centralDb.getAllProjects();
-      dbProjects = allProjects.map((p) => p.working_directory);
-      for (const p of allProjects) titleByDir.set(p.working_directory, p.name);
+      // Purge temp-dir ghosts (leaked by test runs) from the central DB
+      // so they stop resurfacing in every future sync.
+      for (const p of allProjects) {
+        if (isTempProjectPath(p.working_directory)) {
+          try {
+            centralDb.deleteProject(p.id);
+          } catch {
+            // non-critical
+          }
+          continue;
+        }
+        dbProjects.push(p.working_directory);
+        titleByDir.set(p.working_directory, p.name);
+      }
       centralDb.close();
     }
   } catch {
     // non-critical
   }
 
-  // Merge: deduplicate by resolved path
+  // Merge: deduplicate by resolved path. Temp-dir entries (/tmp,
+  // /var/folders — leaked by old versions' test runs) are dropped here,
+  // BEFORE the count and the registry write-back. Previously they were
+  // only skipped inside the upgrade loop, so "syncing N registered
+  // projects" reported hundreds of ghosts and the write-back on line
+  // below re-persisted them forever.
   const seen = new Set<string>();
   const projects: string[] = [];
+  let droppedTemp = 0;
   for (const p of [...fileProjects, ...dbProjects]) {
     const resolved = path.resolve(p);
-    if (!seen.has(resolved)) {
-      seen.add(resolved);
-      projects.push(resolved);
+    if (seen.has(resolved)) continue;
+    seen.add(resolved);
+    if (isTempProjectPath(resolved)) {
+      droppedTemp++;
+      continue;
     }
+    projects.push(resolved);
   }
 
   if (projects.length === 0) {
@@ -102,11 +127,7 @@ export async function runSetupSyncProjectsCommand(
   const failed: string[] = [];
 
   for (const projectDir of projects) {
-    // Skip test/temp directories
-    if (projectDir.startsWith("/tmp/") || projectDir.startsWith("/private/tmp/") || projectDir.startsWith("/var/folders/") || projectDir.startsWith("/private/var/folders/")) {
-      continue;
-    }
-
+    // Temp/test directories were already filtered out of `projects`.
     const storePath = path.join(projectDir, ".gnosys");
     try {
       await fs.stat(storePath);
@@ -161,7 +182,8 @@ export async function runSetupSyncProjectsCommand(
   // before any per-section output so the cursor is on a fresh line.
   syncSpinner.ok(
     `synced ${projects.length} registered projects`,
-    `${upgraded.length} upgraded · ${skipped.length} skipped · ${failed.length} failed`,
+    `${upgraded.length} upgraded · ${skipped.length} skipped · ${failed.length} failed` +
+      (droppedTemp > 0 ? ` · ${droppedTemp} temp entries pruned` : ""),
   );
 
   // 3. Update global agent rules
