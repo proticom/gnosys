@@ -5,6 +5,37 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.16.0] — 2026-07-05
+
+Registry hygiene + agent write-path enforcement.
+
+### Changed
+
+- **MCP `gnosys_add` now hard-rejects by default.** Every MCP caller is in
+  practice an LLM agent, and agents must use `gnosys_add_structured`
+  (no redundant server-side LLM call, no silent provider-key dependency).
+  The freeform tool returns an actionable error redirecting the agent to
+  retry with `gnosys_add_structured` and the required fields. Genuine
+  non-agent MCP scripts can opt back in with `GNOSYS_ALLOW_FREEFORM_ADD=1`.
+  The CLI `gnosys add` is unaffected. Generated IDE rules, tool
+  descriptions, and docs updated to match; two server messages that still
+  recommended `gnosys_add` (init success text, stores usage example) now
+  point to `gnosys_add_structured`.
+
+### Fixed
+
+- **Test runs no longer pollute the real project registry.** Tests set
+  `GNOSYS_HOME` (isolating `~/.gnosys`) but the project registry at
+  `~/.config/gnosys/projects.json` only honored `GNOSYS_CONFIG_DIR`, so
+  every test run leaked hundreds of `/var/folders/...` temp entries —
+  the cause of `gnosys upgrade` reporting "syncing 543 registered
+  projects". `getConfigDir()` now honors `GNOSYS_HOME`
+  (`$GNOSYS_HOME/config`), `registerProject()` refuses temp paths when
+  writing to the real registry, and `setup sync-projects` filters temp
+  entries before the count and the registry write-back (previously the
+  write-back resurrected them) and purges temp ghosts from the central
+  DB projects table.
+
 ## [5.15.0] — 2026-07
 
 Config truthfulness + scheduler resilience, plus the cleanup-sprint pass.
