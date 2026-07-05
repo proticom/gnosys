@@ -771,7 +771,7 @@ regTool(
 // ─── Tool: gnosys_add ────────────────────────────────────────────────────
 regTool(
   "gnosys_add",
-  "Add a new memory from raw text — the server's LLM structures it into an atomic memory. For non-agent callers (scripts, cron); if you are an LLM agent, use gnosys_add_structured instead to avoid a redundant server-side LLM call. Writes to the project store by default. Use store='personal' for cross-project knowledge, or store='global' to explicitly write to shared org knowledge.",
+  "DO NOT USE if you are an LLM agent — call gnosys_add_structured instead (you structure the memory yourself; no redundant server-side LLM call). This freeform tool is REJECTED by default over MCP and only works when the operator sets GNOSYS_ALLOW_FREEFORM_ADD=1 for genuine non-agent callers (scripts, cron). Writes to the project store by default. Use store='personal' for cross-project knowledge, or store='global' to explicitly write to shared org knowledge.",
   {
     input: z
       .string()
@@ -793,6 +793,30 @@ regTool(
     projectRoot: projectRootParam,
   },
   async ({ input, store: targetStore, author, authority, projectRoot }) => {
+    // Hard gate (2026-07-04 decision): every MCP caller in practice is an
+    // LLM agent, and agents must use gnosys_add_structured — the freeform
+    // path burns a second server-side LLM call and silently fails without
+    // a provider key. Reject by default with a redirect the agent can act
+    // on immediately. Genuine non-agent MCP callers opt in via env.
+    if (process.env.GNOSYS_ALLOW_FREEFORM_ADD !== "1") {
+      return {
+        content: [
+          {
+            type: "text",
+            text:
+              "gnosys_add is disabled for LLM agents. Call gnosys_add_structured instead — " +
+              "structure the memory yourself and pass: title (string), category " +
+              "(architecture|decisions|requirements|concepts|roadmap|landscape|open-questions), " +
+              "tags (object of string arrays, e.g. { domain: ['auth'], type: ['decision'] }), " +
+              "content (markdown body), relevance (space-separated keyword cloud for discovery), " +
+              "plus the same store/author/authority/projectRoot values you passed here. " +
+              "Retry now with gnosys_add_structured using the same input. " +
+              "(Non-agent scripts can re-enable this tool with GNOSYS_ALLOW_FREEFORM_ADD=1.)",
+          },
+        ],
+        isError: true,
+      };
+    }
     const ctx = await resolveToolContext(projectRoot);
     const writeTarget = ctx.resolver.getWriteTarget(
       (targetStore as "project" | "personal" | "global") || undefined
@@ -1220,7 +1244,7 @@ regTool(
       content: [
         {
           type: "text",
-          text: `Gnosys store ${action} at ${storePath}\n\nProject Identity:\n- ID: ${identity.projectId}\n- Name: ${identity.projectName}\n- Directory: ${identity.workingDirectory}\n- Agent rules target: ${identity.agentRulesTarget || "none detected"}\n- Central DB: ${centralDb?.isAvailable() ? "registered ✓" : "not available"}\n\n${isResync ? "Identity re-synced." : "Created:\n- gnosys.json (project identity)\n- .config/ (internal config)\n- tags.json (tag registry)"}${hookInfo}\n\nThe store is ready. Use gnosys_discover to find existing memories or gnosys_add to create new ones.`,
+          text: `Gnosys store ${action} at ${storePath}\n\nProject Identity:\n- ID: ${identity.projectId}\n- Name: ${identity.projectName}\n- Directory: ${identity.workingDirectory}\n- Agent rules target: ${identity.agentRulesTarget || "none detected"}\n- Central DB: ${centralDb?.isAvailable() ? "registered ✓" : "not available"}\n\n${isResync ? "Identity re-synced." : "Created:\n- gnosys.json (project identity)\n- .config/ (internal config)\n- tags.json (tag registry)"}${hookInfo}\n\nThe store is ready. Use gnosys_discover to find existing memories or gnosys_add_structured to create new ones.`,
         },
       ],
     };
@@ -2759,7 +2783,7 @@ regTool(
     // Usage hint
     lines.push("USAGE:");
     lines.push("  Pass projectRoot to any tool to target a specific project:");
-    lines.push('  e.g. gnosys_add({ projectRoot: "/path/to/my-project", ... })');
+    lines.push('  e.g. gnosys_add_structured({ projectRoot: "/path/to/my-project", ... })');
 
     return { content: [{ type: "text" as const, text: lines.join("\n") }] };
     } catch (err) {
