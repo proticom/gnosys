@@ -18,6 +18,7 @@ export interface GnosysWebIndex {
   documentCount: number;
   documents: DocumentManifest[];
   invertedIndex: Record<string, IndexEntry[]>;
+  expansions?: Record<string, string[]>;
 }
 
 // Mirrors the gnosys-vectors.json format emitted by webVectors.ts. Keep this
@@ -60,6 +61,7 @@ export interface SearchOptions {
   queryVector?: number[];
   vectors?: GnosysWebVectors;
   expectedModel?: string;
+  expandQuery?: boolean;
 }
 
 export interface SearchResult {
@@ -77,6 +79,8 @@ let cachedVectors: GnosysWebVectors | null = null;
 let cachedVectorsSource: string | null = null;
 
 const RRF_K = 60;
+/** Expanded (concept-related) tokens contribute at half weight — plan §3. */
+const EXPANSION_DISCOUNT = 0.5;
 
 // ─── Stop words (same list used by webIndex.ts at build time) ────────────
 
@@ -138,7 +142,7 @@ export function loadIndex(pathOrJson: string): GnosysWebIndex {
     throw new Error("Invalid Gnosys web index: missing or invalid version field");
   }
 
-  if (index.version > 1) {
+  if (index.version > 2) {
     throw new Error(
       `Gnosys web index version ${index.version} is not supported by this version of gnosys/web. ` +
         `Please update the gnosys package.`
@@ -237,12 +241,13 @@ export function search(
     queryVector,
     vectors,
     expectedModel,
+    expandQuery = true,
   } = options;
 
   const queryTokens = tokenize(query);
   if (queryTokens.length === 0) return [];
 
-  const lexicalOptions = { limit, minScore, category, tags, boostRecent };
+  const lexicalOptions = { limit, minScore, category, tags, boostRecent, expandQuery };
 
   if (!queryVector || !vectors) {
     return stripDocIndexes(buildLexicalResults(index, queryTokens, lexicalOptions));
@@ -272,6 +277,7 @@ export function search(
     category,
     tags,
     boostRecent,
+    expandQuery,
   });
   const semanticRanking = buildSemanticRanking(index, queryVector, vectors, category, tags);
 
@@ -284,6 +290,7 @@ interface LexicalSearchOptions {
   category?: string;
   tags?: string[];
   boostRecent: boolean;
+  expandQuery: boolean;
 }
 
 interface LexicalSearchResult extends SearchResult {
@@ -301,25 +308,25 @@ function buildLexicalResults(
   queryTokens: string[],
   options: LexicalSearchOptions
 ): LexicalSearchResult[] {
-  const { limit, minScore, category, tags, boostRecent } = options;
+  const { limit, minScore, category, tags, boostRecent, expandQuery } = options;
 
   // Accumulate scores per document
   const docScores = new Map<number, { score: number; matchedTokens: string[] }>();
 
-  for (const token of queryTokens) {
+  for (const { token, weight } of buildWeightedQueryTokens(index, queryTokens, expandQuery)) {
     const entries = index.invertedIndex[token];
     if (!entries) continue;
 
     for (const entry of entries) {
       const existing = docScores.get(entry.docIndex);
       if (existing) {
-        existing.score += entry.score;
+        existing.score += entry.score * weight;
         if (!existing.matchedTokens.includes(token)) {
           existing.matchedTokens.push(token);
         }
       } else {
         docScores.set(entry.docIndex, {
-          score: entry.score,
+          score: entry.score * weight,
           matchedTokens: [token],
         });
       }
@@ -358,6 +365,40 @@ function buildLexicalResults(
   results.sort((a, b) => b.score - a.score);
 
   return results.slice(0, limit);
+}
+
+function buildWeightedQueryTokens(
+  index: GnosysWebIndex,
+  queryTokens: string[],
+  expandQuery: boolean
+): Array<{ token: string; weight: number }> {
+  if (!expandQuery || !index.expansions) {
+    return queryTokens.map((token) => ({ token, weight: 1 }));
+  }
+
+  const directTokens = new Set(queryTokens);
+  const expandedTokens = new Set<string>();
+  const weightedTokens = queryTokens.map((token) => ({ token, weight: 1 }));
+
+  for (const token of queryTokens) {
+    const related = index.expansions[token];
+    if (!Array.isArray(related)) continue;
+
+    for (const relatedToken of related) {
+      if (
+        typeof relatedToken !== "string" ||
+        directTokens.has(relatedToken) ||
+        expandedTokens.has(relatedToken)
+      ) {
+        continue;
+      }
+
+      expandedTokens.add(relatedToken);
+      weightedTokens.push({ token: relatedToken, weight: EXPANSION_DISCOUNT });
+    }
+  }
+
+  return weightedTokens;
 }
 
 function buildSemanticRanking(

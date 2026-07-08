@@ -25,6 +25,11 @@ export interface BuildIndexOptions {
   minTokenLength?: number;
   maxTokensPerDoc?: number;
   includeArchived?: boolean;
+  expansions?: Record<string, string[]>;
+}
+
+export interface ExpansionProvider {
+  generate(prompt: string, options?: unknown): Promise<string>;
 }
 
 // ─── Stop words ──────────────────────────────────────────────────────────
@@ -42,6 +47,9 @@ const STOP_WORDS = new Set([
   "re", "same", "some", "such", "up", "us", "we", "what", "when",
   "where", "which", "who", "whom", "why", "you", "your",
 ]);
+
+const DEFAULT_EXPANSION_CANDIDATES = 100;
+const MIN_EXPANSION_TOKEN_LENGTH = 3;
 
 // ─── Tokenization ────────────────────────────────────────────────────────
 
@@ -237,13 +245,17 @@ export function buildIndexSync(
     sortedIndex[token] = invertedIndex[token];
   }
 
-  return {
+  const index: GnosysWebIndex = {
     version: 1,
     generated: new Date().toISOString(),
     documentCount: documents.length,
     documents,
     invertedIndex: sortedIndex,
   };
+
+  // Default builds intentionally remain v1; only indexes with a non-empty
+  // expansion map become v2 so older gnosys/web runtimes can still load them.
+  return attachExpansions(index, options.expansions);
 }
 
 /**
@@ -254,6 +266,155 @@ export async function buildIndex(
   options?: BuildIndexOptions
 ): Promise<GnosysWebIndex> {
   return buildIndexSync(knowledgeDir, options);
+}
+
+/**
+ * Generate a token expansion map from an existing index using an injected LLM.
+ * The provider is resolved by callers so this build module remains easy to test
+ * and does not depend on runtime config or provider wiring.
+ */
+export async function generateExpansions(
+  index: GnosysWebIndex,
+  llmProvider: ExpansionProvider,
+  options: { maxTokens?: number } = {}
+): Promise<Record<string, string[]>> {
+  const maxTokens = options.maxTokens ?? DEFAULT_EXPANSION_CANDIDATES;
+  if (maxTokens <= 0) return {};
+
+  const candidates = selectExpansionCandidates(index, maxTokens);
+  if (candidates.length === 0) return {};
+
+  const prompt = [
+    "Return strict JSON only: an object mapping each provided token to an array of related search tokens.",
+    "Use lowercase single-word domain concepts. Do not include explanations, markdown, or tokens not in the input list.",
+    "Input tokens:",
+    candidates.join(", "),
+  ].join("\n");
+
+  let raw: string;
+  try {
+    raw = await llmProvider.generate(prompt);
+  } catch (error) {
+    console.warn(
+      `[gnosys/web] concept expansion generation failed: ${formatErrorMessage(error)}`
+    );
+    return {};
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw.trim());
+  } catch {
+    console.warn("[gnosys/web] concept expansion provider returned invalid JSON; skipping expansions");
+    return {};
+  }
+
+  if (!isRecord(parsed)) return {};
+
+  const candidateSet = new Set(candidates);
+  const expansions: Record<string, string[]> = {};
+
+  for (const [rawKey, rawRelated] of Object.entries(parsed)) {
+    const key = tokenize(rawKey, MIN_EXPANSION_TOKEN_LENGTH)[0];
+    if (!key || !candidateSet.has(key) || !Array.isArray(rawRelated)) continue;
+
+    const relatedTokens = normalizeExpansionTokens(rawRelated, key);
+    if (relatedTokens.length > 0) {
+      expansions[key] = relatedTokens;
+    }
+  }
+
+  return sortExpansionMap(expansions);
+}
+
+/**
+ * Attach a non-empty concept expansion map to an index and bump it to v2.
+ * Empty maps are ignored so default/no-enrichment builds keep emitting v1.
+ */
+export function attachExpansions(
+  index: GnosysWebIndex,
+  expansions?: Record<string, string[]>
+): GnosysWebIndex {
+  const normalized = normalizeExpansionMap(expansions);
+  if (Object.keys(normalized).length === 0) {
+    const { expansions: _ignored, ...withoutExpansions } = index;
+    return { ...withoutExpansions, version: 1 };
+  }
+
+  return {
+    ...index,
+    version: 2,
+    expansions: normalized,
+  };
+}
+
+function selectExpansionCandidates(index: GnosysWebIndex, maxTokens: number): string[] {
+  return Object.entries(index.invertedIndex)
+    .filter(([token, entries]) =>
+      token.length >= MIN_EXPANSION_TOKEN_LENGTH &&
+      !STOP_WORDS.has(token) &&
+      Array.isArray(entries) &&
+      entries.length > 0
+    )
+    .sort(([tokenA, entriesA], [tokenB, entriesB]) => {
+      const frequencyDelta = entriesB.length - entriesA.length;
+      return frequencyDelta || tokenA.localeCompare(tokenB);
+    })
+    .slice(0, maxTokens)
+    .map(([token]) => token);
+}
+
+function normalizeExpansionMap(
+  expansions?: Record<string, string[]>
+): Record<string, string[]> {
+  if (!expansions) return {};
+
+  const normalized: Record<string, string[]> = {};
+  for (const [rawKey, rawRelated] of Object.entries(expansions)) {
+    const key = tokenize(rawKey, MIN_EXPANSION_TOKEN_LENGTH)[0];
+    if (!key || STOP_WORDS.has(key) || !Array.isArray(rawRelated)) continue;
+
+    const relatedTokens = normalizeExpansionTokens(rawRelated, key);
+    if (relatedTokens.length > 0) {
+      normalized[key] = relatedTokens;
+    }
+  }
+
+  return sortExpansionMap(normalized);
+}
+
+function normalizeExpansionTokens(values: unknown[], key: string): string[] {
+  const tokens: string[] = [];
+
+  for (const value of values) {
+    if (typeof value !== "string") continue;
+
+    let relatedTokens = tokenize(value, MIN_EXPANSION_TOKEN_LENGTH);
+    relatedTokens = filterStopWords(relatedTokens);
+
+    for (const token of relatedTokens) {
+      if (token === key || tokens.includes(token)) continue;
+      tokens.push(token);
+    }
+  }
+
+  return tokens.sort();
+}
+
+function sortExpansionMap(expansions: Record<string, string[]>): Record<string, string[]> {
+  const sorted: Record<string, string[]> = {};
+  for (const key of Object.keys(expansions).sort()) {
+    sorted[key] = expansions[key];
+  }
+  return sorted;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function formatErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }
 
 /**
