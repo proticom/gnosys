@@ -1,0 +1,36 @@
+#!/usr/bin/expect -f
+# Interactive `gnosys setup` wizard: the first screen must render a real
+# prompt (header + provider/step content), and Ctrl+C must exit gracefully
+# with the documented "cancelled · no changes written" message — never a
+# stack trace.
+set timeout 120
+
+exec mkdir -p /home/tester/proj-wizard
+cd /home/tester/proj-wizard
+
+spawn gnosys setup --full
+set saw_screen 0
+expect {
+    -re {(?i)(provider|setup|step)} { set saw_screen 1 }
+    timeout { puts "TIMEOUT waiting for wizard first screen"; exit 1 }
+    eof { puts "wizard exited before rendering a screen"; exit 1 }
+}
+if {!$saw_screen} { puts "no wizard screen detected"; exit 1 }
+
+# Give the prompt a beat, then cancel.
+sleep 1
+send "\x03"
+
+set graceful 0
+expect {
+    -re {cancelled .*no changes written} { set graceful 1 }
+    -re {(?i)(unhandled|traceback|at .*\.js:[0-9]+)} {
+        puts "stack trace on Ctrl+C"; exit 1
+    }
+    timeout { puts "TIMEOUT waiting for graceful cancel"; exit 1 }
+    eof {}
+}
+expect eof
+if {!$graceful} { puts "no graceful cancel message"; exit 1 }
+puts "wizard renders and cancels gracefully"
+exit 0

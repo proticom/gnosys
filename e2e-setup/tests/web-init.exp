@@ -1,0 +1,45 @@
+#!/usr/bin/expect -f
+# `gnosys web init` wizard: answer the three questions (sitemap URL, LLM
+# enrichment, CI env var) and verify the knowledge dir + web config exist.
+set timeout 120
+
+exec mkdir -p /home/tester/proj-web
+cd /home/tester/proj-web
+
+# web init needs a store; init first (non-fatal if it chats).
+exec gnosys init
+
+spawn gnosys web init
+# NOTE: expect's gate-keeper glob is case-SENSITIVE even when the regex has
+# (?i) — patterns below must use the wizard's exact casing or they never gate.
+expect {
+    -re {Sitemap URL:} {}
+    timeout { puts "TIMEOUT waiting for web init wizard"; exit 1 }
+    eof { puts "web init exited before prompting"; exit 1 }
+}
+sleep 1
+send "https://example.com/sitemap.xml\r"
+expect {
+    -re {enrichment\? \[Y/n\]} { sleep 1; send "n\r" }
+    timeout { puts "TIMEOUT waiting for LLM question"; exit 1 }
+}
+# Remaining prompts vary by answers (output dir, postbuild hook, CI env).
+# Answer generically until the wizard finishes.
+for {set i 0} {$i < 6} {incr i} {
+    expect {
+        -re {Output directory[^\r\n]*:} { sleep 1; send "\r" }
+        -re {\[Y/n\]} { sleep 1; send "n\r" }
+        -re {\[y/N\]} { sleep 1; send "\r" }
+        eof { break }
+        timeout { puts "TIMEOUT mid-wizard at prompt $i"; exit 1 }
+    }
+}
+catch wait result
+set exitcode [lindex $result 3]
+if {$exitcode != 0} { puts "web init exited $exitcode"; exit 1 }
+
+if {![file isdirectory /home/tester/proj-web/knowledge]} {
+    puts "knowledge/ directory missing"; exit 1
+}
+puts "web init wizard OK"
+exit 0

@@ -1,7 +1,7 @@
 {
   "name": "gnosys",
   "version": "5.17.0",
-  "description": "Gnosys — Persistent Memory for AI Agents. Sandbox-first runtime, central SQLite brain, federated search, Dream Mode, Web Knowledge Base, Obsidian export.",
+  "description": "Gnosys \u2014 Persistent Memory for AI Agents. Sandbox-first runtime, central SQLite brain, federated search, Dream Mode, Web Knowledge Base, Obsidian export.",
   "type": "module",
   "main": "dist/index.js",
   "exports": {
@@ -37,7 +37,8 @@
     "docs:mcp-tools": "node scripts/gen-mcp-tools.mjs --write",
     "docs:cli": "node scripts/gen-cli-docs.mjs --write",
     "postinstall": "node dist/postinstall.js || true",
-    "prepublishOnly": "npm run build:publish && node -e \"const fs=require('fs');for (const f of ['dist/cli.js','dist/index.js']) fs.chmodSync(f,0o755)\""
+    "prepublishOnly": "npm run build:publish && node -e \"const fs=require('fs');for (const f of ['dist/cli.js','dist/index.js']) fs.chmodSync(f,0o755)\"",
+    "test:e2e-setup": "bash e2e-setup/run.sh"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",

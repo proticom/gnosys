@@ -1,0 +1,27 @@
+#!/usr/bin/expect -f
+# gnosys init in a fresh project dir: must create .gnosys/ and register the
+# project, entirely inside the container home.
+set timeout 120
+exp_internal 0
+
+exec mkdir -p /home/tester/proj-init
+cd /home/tester/proj-init
+
+spawn gnosys init
+expect {
+    -re {(ready|created|Identity|identity|registered)} {}
+    timeout { puts "TIMEOUT waiting for init output"; exit 1 }
+    eof {}
+}
+# Drain until exit.
+expect eof
+catch wait result
+set exitcode [lindex $result 3]
+if {$exitcode != 0} { puts "init exited $exitcode"; exit 1 }
+
+# Store must exist.
+if {![file isdirectory /home/tester/proj-init/.gnosys]} {
+    puts ".gnosys directory missing"; exit 1
+}
+puts "init OK: .gnosys created"
+exit 0
