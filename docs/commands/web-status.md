@@ -1,6 +1,6 @@
 # gnosys web status
 
-Show the current state of the web knowledge base: directory path, markdown file counts by category, and search index metadata.
+Show the current state of the web knowledge base: directory path, markdown file counts by category, search index metadata, and optional vector metadata.
 
 ## Usage
 
@@ -21,7 +21,8 @@ gnosys web status --json
 2. If the directory is missing, reports that state and suggests `gnosys web init`.
 3. Otherwise recursively scans for `.md` files and counts them by category subdirectory.
 4. Reads `gnosys-index.json` when present for document count, file size, and `generated` timestamp.
-5. If index JSON is invalid, reports size only.
+5. Reads `gnosys-vectors.json` when present for model, dimensions, vector count, file size, and `generated` timestamp.
+6. If index or vector JSON is invalid, reports size only.
 
 ## Missing directory
 
@@ -53,12 +54,25 @@ Web Knowledge Base Status:
     docs: 4
   Index: 12 docs, 45.2KB
   Last built: 2026-05-26T12:00:00.000Z
+  Vectors: 12 docs, text-embedding-3-small (1536d), 18.7KB
 ```
 
 When the index has not been built:
 
 ```text
   Index: not built (run 'gnosys web build-index')
+```
+
+When vectors have not been built:
+
+```text
+  Vectors: not built (run 'gnosys web build-index --embeddings <provider>')
+```
+
+When `gnosys-vectors.json` exists but cannot be parsed:
+
+```text
+  Vectors: present, 18.7KB (unreadable)
 ```
 
 ## JSON output
@@ -77,7 +91,32 @@ When the index has not been built:
     "documentCount": 12,
     "size": 46284,
     "generated": "2026-05-26T12:00:00.000Z"
+  },
+  "vectors": {
+    "exists": true,
+    "model": "text-embedding-3-small",
+    "dims": 1536,
+    "count": 12,
+    "size": 19148,
+    "generated": "2026-05-26T12:00:00.000Z"
   }
+}
+```
+
+If vectors have not been built, JSON includes:
+
+```json
+"vectors": {
+  "exists": false
+}
+```
+
+If the vectors file is present but unreadable, JSON includes only `exists` and `size`:
+
+```json
+"vectors": {
+  "exists": true,
+  "size": 19148
 }
 ```
 
@@ -97,3 +136,4 @@ npx vitest run src/test/web-status-command-handler.test.ts
 
 - `gnosys web init` — create knowledge directory and config.
 - `gnosys web build-index` — build or rebuild the search index.
+- [`Web semantic search`](../web-semantic-search.md) — optional build-time vectors and runtime hybrid search.

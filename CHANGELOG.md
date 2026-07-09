@@ -5,6 +5,34 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.0] — Unreleased
+
+### Added
+
+- **Web semantic search builds.** `gnosys web build` and
+  `gnosys web build-index` can now emit `gnosys-vectors.json` with
+  `--embeddings openai|voyage|local`, plus `--embed-model <id>` for model
+  overrides.
+- **Zero-dependency hybrid search in `gnosys/web`.** The runtime adds
+  `loadVectors()` and optional `search(..., { queryVector, vectors,
+  expectedModel })` support, fusing cosine semantic ranking with TF-IDF via
+  Reciprocal Rank Fusion while preserving the zero-dependency runtime export.
+- **Concept expansion for web indexes.** Build-time LLM concept maps are
+  stored in index version 2 when available; expanded query tokens score at
+  `0.5x`, and `--no-expansions` opts out.
+- **Vector status reporting.** `gnosys web status` reports vector file
+  presence, model, dimensions, count, size, and generated timestamp in human
+  and JSON output.
+- **Web semantic search docs.** Command docs, README, and the new
+  `docs/web-semantic-search.md` explain build-time providers, vector format,
+  fallback behavior, and caller-supplied query embeddings.
+
+### Compatibility
+
+- Version 1 web indexes keep working, and the `search()` signature remains
+  backward compatible. Missing vectors, missing query vectors, or model/dims
+  mismatches fall back to lexical search.
+
 ## [5.16.0] — 2026-07-05
 
 Registry hygiene + agent write-path enforcement.

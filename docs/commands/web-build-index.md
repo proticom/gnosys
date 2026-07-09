@@ -7,6 +7,7 @@ Generate search index JSON from the knowledge directory.
 ```bash
 gnosys web build-index
 gnosys web build-index --input ./knowledge --output ./public/gnosys-index.json
+gnosys web build-index --embeddings openai
 gnosys web build-index --no-stop-words --json
 ```
 
@@ -17,6 +18,9 @@ gnosys web build-index --no-stop-words --json
 | `--input <dir>` | Override knowledge directory |
 | `--output <path>` | Override generated index file path |
 | `--no-stop-words` | Disable stop-word filtering |
+| `--embeddings <provider>` | Also build `gnosys-vectors.json` with `openai`, `voyage`, or `local` |
+| `--embed-model <id>` | Override the embedding model used with `--embeddings` |
+| `--no-expansions` | Skip LLM-generated concept expansions in `gnosys-index.json` |
 | `--json` | Output index stats as JSON |
 
 ## Behavior
@@ -25,7 +29,9 @@ gnosys web build-index --no-stop-words --json
 2. Resolves knowledge directory: `--input` → `web.outputDir` → `./knowledge`.
 3. Resolves output path: `--output` → `<knowledgeDir>/gnosys-index.json`.
 4. Builds index via `buildIndex` with `stopWords: opts.stopWords`.
-5. Writes index via `writeIndex`.
+5. When a structuring LLM provider resolves, adds concept expansions unless `--no-expansions` is set.
+6. Writes index via `writeIndex`.
+7. When `--embeddings <provider>` is set, writes `gnosys-vectors.json` in the knowledge directory. With the default output path this sits next to `gnosys-index.json`; if `--output` points elsewhere, the vectors file still stays in the knowledge directory.
 
 ## Human output
 
@@ -34,6 +40,8 @@ Search index built:
   Documents: 42
   Tokens:    1200
   Output:    ./knowledge/gnosys-index.json
+  Vectors:   42 docs, text-embedding-3-small (1536d)
+  Vector output: ./knowledge/gnosys-vectors.json
 ```
 
 ## JSON output
@@ -43,7 +51,13 @@ Search index built:
   "ok": true,
   "documentCount": 42,
   "tokenCount": 1200,
-  "outputPath": "./knowledge/gnosys-index.json"
+  "outputPath": "./knowledge/gnosys-index.json",
+  "vectors": {
+    "model": "text-embedding-3-small",
+    "dims": 1536,
+    "count": 42,
+    "outputPath": "./knowledge/gnosys-vectors.json"
+  }
 }
 ```
 
@@ -70,3 +84,4 @@ npx vitest run src/test/web-build-index-command-handler.test.ts
 
 - `gnosys web ingest` — crawl source and generate knowledge markdown files.
 - `gnosys web build` — run ingest + build-index in one shot.
+- [`Web semantic search`](../web-semantic-search.md) — optional build-time vectors and runtime hybrid search.

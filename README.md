@@ -51,7 +51,7 @@ That's the 60-second tour. **Everything else lives on [gnosys.ai](https://gnosys
 - **Central brain** — one `~/.gnosys/gnosys.db` unifies every project (project / user / global scopes). Sub-10ms reads, SQLite as the sole source of truth.
 - **Federated search** — tier-boosted hybrid (FTS5 keyword + semantic) search across scopes, with recency and reinforcement.
 - **MCP server** — `gnosys serve` exposes 50+ memory tools to any MCP client. Sandbox-first runtime keeps context cost near zero.
-- **Web Knowledge Base** — `gnosys web build` turns any site into a searchable index for serverless chatbots. Zero runtime deps.
+- **Web Knowledge Base** — `gnosys web build` turns any site into a searchable index for serverless chatbots, with optional build-time vectors for serverless-safe hybrid semantic search. Zero runtime deps.
 - **Dream Mode** — idle-time consolidation: confidence decay, summaries, relationship discovery. Never deletes — only suggests.
 - **Multi-machine sync** — share your brain across machines; conflict detection with skip-and-flag resolution.
 - **Obsidian export** — `gnosys export` regenerates a full vault with frontmatter, `[[wikilinks]]`, and graph data.

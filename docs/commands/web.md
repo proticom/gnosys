@@ -1,6 +1,6 @@
 # gnosys web
 
-Parent command for the Gnosys web knowledge base — crawl websites or local content, generate searchable markdown knowledge files, and build a search index.
+Parent command for the Gnosys web knowledge base — crawl websites or local content, generate searchable markdown knowledge files, build a search index, and optionally add build-time vectors for hybrid semantic search.
 
 ## Usage
 
@@ -13,6 +13,8 @@ gnosys web status
 ```
 
 Bare `gnosys web` (no subcommand) prints Commander help for the available subcommands. The parent command has no runtime `.action(...)` — all behavior lives in the leaf subcommands below.
+
+The generated `gnosys-index.json` works as a zero-dependency lexical index in `gnosys/web`. For hybrid semantic search, build `gnosys-vectors.json` with `gnosys web build --embeddings <provider>` and pass a caller-supplied query vector to the runtime search API. See [`Web semantic search`](../web-semantic-search.md).
 
 ## Subcommands
 
