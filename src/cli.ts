@@ -2099,8 +2099,11 @@ webCmd
   .option("--input <dir>", "Override knowledge directory")
   .option("--output <path>", "Override output file path")
   .option("--no-stop-words", "Disable stop-word filtering")
+  .option("--embeddings <provider>", "Also build gnosys-vectors.json (openai|voyage|local)")
+  .option("--embed-model <id>", "Override the embedding model")
+  .option("--no-expansions", "Skip LLM concept-expansion generation")
   .option("--json", "Output index stats as JSON")
-  .action(async (opts: { input?: string; output?: string; stopWords: boolean; json?: boolean }) => {
+  .action(async (opts: { input?: string; output?: string; stopWords: boolean; embeddings?: string; embedModel?: string; expansions: boolean; json?: boolean }) => {
     const { runWebBuildIndexCommand } = await import("./lib/webBuildIndexCommand.js");
     await runWebBuildIndexCommand(getWebStorePath, opts);
   });
@@ -2113,8 +2116,11 @@ webCmd
   .option("--no-llm", "Force structured mode (no LLM)")
   .option("--concurrency <n>", "Parallel processing limit", "3")
   .option("--dry-run", "Show what would change without writing files")
+  .option("--embeddings <provider>", "Also build gnosys-vectors.json (openai|voyage|local)")
+  .option("--embed-model <id>", "Override the embedding model")
+  .option("--no-expansions", "Skip LLM concept-expansion generation")
   .option("--json", "Output results as JSON")
-  .action(async (opts: { source?: string; prune?: boolean; llm: boolean; concurrency: string; dryRun?: boolean; json?: boolean }) => {
+  .action(async (opts: { source?: string; prune?: boolean; llm: boolean; concurrency: string; dryRun?: boolean; embeddings?: string; embedModel?: string; expansions: boolean; json?: boolean }) => {
     const { runWebBuildCommand } = await import("./lib/webBuildCommand.js");
     await runWebBuildCommand(getWebStorePath, opts);
   });

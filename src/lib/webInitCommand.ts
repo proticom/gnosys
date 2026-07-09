@@ -178,6 +178,7 @@ export async function runWebInitCommand(
       console.log(`  ${!sitemapUrl && envVarName ? "4" : envVarName || !sitemapUrl ? "3" : "2"}. Add to package.json: ${CYAN}"postbuild": "npx gnosys web build"${RESET}`);
       console.log();
       console.log(`${DIM}Every deploy will re-crawl and rebuild the search index automatically.${RESET}`);
+      console.log(`${DIM}Tip: add semantic search with ${CYAN}gnosys web build --embeddings openai${RESET}${DIM} (see docs/web-semantic-search.md).${RESET}`);
     }
   } catch (err) {
     if (opts.json) {
