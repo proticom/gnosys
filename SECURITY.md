@@ -46,6 +46,8 @@ Report privately via GitHub's security advisory flow:
 1. Go to <https://github.com/proticom/gnosys/security/advisories/new>
 2. Describe the issue, affected version(s), and reproduction steps.
 
+Or email **security@gnosys.ai**.
+
 If you cannot use GitHub advisories, you may instead open a minimal public
 issue that says only "security report — please open a private channel"
 (no details) and we will follow up.
