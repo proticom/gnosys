@@ -3696,7 +3696,7 @@ regTool(
 // ─── Tool: gnosys_ingest_file ────────────────────────────────────────────
 regTool(
   "gnosys_ingest_file",
-  "Ingest a file (PDF, DOCX, TXT, MD) into Gnosys memory. Extracts text, splits into chunks, and creates atomic memories. Supports LLM-powered structuring or fast structured mode.",
+  "Ingest a file (PDF, DOCX, TXT, MD, images via vision LLM, audio/video via Whisper transcription) into Gnosys memory. Extracts text, splits into chunks, and creates atomic memories. Supports LLM-powered structuring or fast structured mode.",
   {
     filePath: z.string().describe("Absolute path to the file to ingest"),
     mode: z.enum(["llm", "structured"]).default("llm").optional()

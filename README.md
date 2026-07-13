@@ -116,7 +116,7 @@ This package installs two binaries:
 | `gnosys_remote_resolve` | Resolve a sync conflict by choosing which version to keep. |
 | `gnosys_update_status` | Get the prompt/template for writing a dashboard-compatible status memory for this project. |
 | `gnosys_working_set` | Get the implicit working set — recently modified memories for the current project. |
-| `gnosys_ingest_file` | Ingest a file (PDF, DOCX, TXT, MD) into Gnosys memory. |
+| `gnosys_ingest_file` | Ingest a file (PDF, DOCX, TXT, MD, images via vision LLM, audio/video via Whisper transcription) into Gnosys memory. |
 | `gnosys_attach` | Attach a small binary file (logo, diagram, screenshot, small PDF) inline to a memory (~10MB limit; syncs machine-to-machine). |
 | `gnosys_get_attachment` | Retrieve the binary attachment stored on a memory (base64 bytes, or write to disk via outputPath). |
 
