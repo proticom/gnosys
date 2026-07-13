@@ -50,7 +50,10 @@ export async function createTestEnv(
  */
 export async function cleanupTestEnv(env: TestEnv): Promise<void> {
   env.db.close();
-  await fsp.rm(env.tmpDir, { recursive: true, force: true });
+  // maxRetries/retryDelay: background git processes (object packing) can
+  // still hold files when teardown runs, racing rm into ENOTEMPTY on
+  // .git/objects/pack — seen flaking on macOS + Node 24 in CI.
+  await fsp.rm(env.tmpDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 }
 
 // ─── CLI Helpers ────────────────────────────────────────────────────────
