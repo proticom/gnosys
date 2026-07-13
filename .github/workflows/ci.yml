@@ -236,3 +236,19 @@ jobs:
           rm -rf "$SHARE_DIR"
 
           echo "Network share simulation passed"
+
+  setup-ui-e2e:
+    # Isolated Docker suite driving the interactive wizards with expect
+    # (e2e-setup/). Ubuntu runners ship Docker; ~3-4 min.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Setup UI e2e (Docker, no network)
+        run: npm run test:e2e-setup
