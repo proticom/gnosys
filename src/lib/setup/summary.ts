@@ -140,11 +140,18 @@ export function buildSections(): SummarySection[] {
       key: "2",
       label: "task routing",
       describe: async (cfg) => {
-        const provs = new Set([
-          resolveTaskModel(cfg, "structuring").provider,
-          resolveTaskModel(cfg, "synthesis").provider,
-        ]);
-        return provs.size === 1 ? `all ${[...provs][0]}` : `mixed (${[...provs].join(", ")})`;
+        // v6.0.0 (deci-049): resolveTaskModel throws when no default
+        // provider is configured — this settings panel is a display path,
+        // and the providers section (row 1) is what sets the provider.
+        try {
+          const provs = new Set([
+            resolveTaskModel(cfg, "structuring").provider,
+            resolveTaskModel(cfg, "synthesis").provider,
+          ]);
+          return provs.size === 1 ? `all ${[...provs][0]}` : `mixed (${[...provs].join(", ")})`;
+        } catch {
+          return "not set — configure providers first";
+        }
       },
       edit: async (rl, _cfg, projectDir) => editRouting(rl, projectDir),
     },

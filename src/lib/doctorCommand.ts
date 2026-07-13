@@ -171,12 +171,19 @@ export async function runDoctorCommand(
         console.log("");
     
         console.log("System of Cognition (SOC):");
-        console.log(`  Default provider: ${cfg.llm.defaultProvider}`);
-    
-        const structuring = resolveTaskModel(cfg, "structuring");
-        const synthesis = resolveTaskModel(cfg, "synthesis");
-        console.log(`  Structuring → ${structuring.provider}/${structuring.model}`);
-        console.log(`  Synthesis   → ${synthesis.provider}/${synthesis.model}`);
+        // v6.0.0 (deci-049): no implicit anthropic default — display "not set"
+        console.log(`  Default provider: ${cfg.llm.defaultProvider ?? "not set — run gnosys setup"}`);
+
+        const fmtTask = (task: "structuring" | "synthesis"): string => {
+          try {
+            const t = resolveTaskModel(cfg, task);
+            return `${t.provider}/${t.model}`;
+          } catch {
+            return "not set — run gnosys setup";
+          }
+        };
+        console.log(`  Structuring → ${fmtTask("structuring")}`);
+        console.log(`  Synthesis   → ${fmtTask("synthesis")}`);
         console.log("");
     
         // Check all LLM providers

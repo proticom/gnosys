@@ -94,7 +94,9 @@ describe("GnosysIngestion.ingest (LLM path)", () => {
     });
 
     async function expectMissingProvider(
-      providerName: GnosysConfig["llm"]["defaultProvider"] | string,
+      // v6.0.0 anthropic default removed — defaultProvider is now optional in
+      // the schema, so the union would include undefined; tests pass names.
+      providerName: string,
       snippet: string,
     ) {
       const cfg = configWithProvider("anthropic");

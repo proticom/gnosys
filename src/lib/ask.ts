@@ -167,6 +167,12 @@ export class GnosysAsk {
       // configured and what env var / config key to set for it — instead of
       // hardcoding ANTHROPIC_API_KEY regardless of the actual default.
       const providerName = this.config.llm.defaultProvider;
+      if (!providerName) {
+        // v6.0.0 (deci-049): no implicit anthropic default
+        throw new Error(
+          "No default LLM provider configured. Run 'gnosys setup' (or set llm.defaultProvider in gnosys.json).",
+        );
+      }
       const envVarMap: Record<string, string> = {
         anthropic: "ANTHROPIC_API_KEY",
         openai: "OPENAI_API_KEY",

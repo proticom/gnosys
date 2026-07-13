@@ -124,7 +124,10 @@ describe("Phase C — settings panel (summary)", () => {
     }
   });
 
-  it("renders panel rows for a fresh anthropic config", async () => {
+  // v6.0.0 anthropic default removed — a fresh config no longer has a
+  // default provider, so task routing renders "not set" (title + snapshot
+  // updated accordingly).
+  it("renders panel rows for a fresh config (no default provider)", async () => {
     const { __test, buildSections } = await load();
     const cfg = cloneCfg({});
     const rows = await __test.renderPanelRows(cfg, buildSections());

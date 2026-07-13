@@ -71,7 +71,9 @@ const TaskModelSchema = z.object({
 });
 
 const LLMConfigSchema = z.object({
-  defaultProvider: LLMProviderEnum.default("anthropic"),
+  // v6.0.0 (deci-049): no implicit default provider. The field is optional;
+  // LLM-requiring paths must go through requireDefaultProvider().
+  defaultProvider: LLMProviderEnum.optional(),
   anthropic: AnthropicConfigSchema.default({ model: "claude-sonnet-4-6" }),
   ollama: OllamaConfigSchema.default({ model: "llama3.2", baseUrl: "http://localhost:11434" }),
   groq: GroqConfigSchema.default({ model: "llama-3.3-70b-versatile" }),
@@ -206,7 +208,6 @@ const WebConfigSchema = z.object({
 export const GnosysConfigSchema = z.object({
   /** LLM configuration */
   llm: LLMConfigSchema.default({
-    defaultProvider: "anthropic",
     anthropic: { model: "claude-sonnet-4-6" },
     ollama: { model: "llama3.2", baseUrl: "http://localhost:11434" },
     groq: { model: "llama-3.3-70b-versatile" },
@@ -305,6 +306,22 @@ export const DEFAULT_CONFIG: GnosysConfig = GnosysConfigSchema.parse({});
 // ─── Helpers ─────────────────────────────────────────────────────────────
 
 /**
+ * Return the configured default LLM provider, or throw a clear error when
+ * none is set. v6.0.0 (deci-049): "anthropic" is never silently assumed —
+ * every code path that NEEDS an LLM goes through this helper; display
+ * paths handle `config.llm.defaultProvider === undefined` gracefully.
+ */
+export function requireDefaultProvider(config: GnosysConfig): LLMProviderName {
+  const provider = config.llm.defaultProvider;
+  if (!provider) {
+    throw new Error(
+      "No default LLM provider configured. Run 'gnosys setup' (or set llm.defaultProvider in gnosys.json)."
+    );
+  }
+  return provider;
+}
+
+/**
  * Resolve the effective LLM provider and model for a given task.
  * Priority: taskModels override > llm config > legacy fields > defaults.
  */
@@ -318,8 +335,8 @@ export function resolveTaskModel(
     return { provider: taskOverride.provider, model: taskOverride.model };
   }
 
-  // 2. Default provider from llm config
-  const provider = config.llm.defaultProvider;
+  // 2. Default provider from llm config (throws if unset — v6.0.0)
+  const provider = requireDefaultProvider(config);
 
   // 3. For structuring tasks, prefer a cheaper model (bulk imports don't need flagship)
   if (task === "structuring") {
@@ -511,7 +528,8 @@ function applyDreamProviderInheritance(
   if (rawDreamProviderSet) return parsed;
   if (parsed.dream.provider !== "ollama") return parsed;
   const defaultProvider = parsed.llm.defaultProvider;
-  if (defaultProvider === "ollama") return parsed;
+  // v6.0.0: defaultProvider may be unset — nothing to inherit from.
+  if (!defaultProvider || defaultProvider === "ollama") return parsed;
   const rawLlm = raw.llm as Record<string, unknown> | undefined;
   if (rawLlm && rawLlm.ollama !== undefined) return parsed; // user opted into ollama
   return {
@@ -659,12 +677,12 @@ export async function updateConfig(
 /**
  * Generate a default gnosys.json with the new llm config structure.
  *
- * v5.9.3 (design handoff §14.2 / deci-049 follow-on): the template no
- * longer hard-codes `defaultProvider: "anthropic"`. The key is omitted
- * so the first `gnosys setup` run is the source of truth. Until the
- * v6.0 Zod-default removal lands, the schema's `.default("anthropic")`
- * still applies on load — but the template-as-shipped no longer
- * commits to a choice.
+ * v5.9.3 (design handoff §14.2 / deci-049): the template does not emit
+ * `defaultProvider` — the first `gnosys setup` run is the source of truth.
+ * As of v6.0.0 the Zod schema default is gone too: an absent
+ * `llm.defaultProvider` stays `undefined` on load, and LLM-requiring
+ * paths surface a clear "run gnosys setup" error via
+ * requireDefaultProvider().
  */
 export function generateConfigTemplate(): string {
   return JSON.stringify(

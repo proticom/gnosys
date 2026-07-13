@@ -9,6 +9,7 @@ import {
   DEFAULT_CONFIG,
   type LLMProviderName,
   resolveTaskModel,
+  requireDefaultProvider,
   getAnthropicApiKey,
   getOllamaBaseUrl,
   getGroqApiKey,
@@ -652,7 +653,7 @@ export function getLLMProvider(
 ): LLMProvider {
   const resolved = task
     ? resolveTaskModel(config, task)
-    : { provider: config.llm.defaultProvider, model: getDefaultModel(config) };
+    : { provider: requireDefaultProvider(config), model: getDefaultModel(config) };
 
   return createProvider(resolved.provider, resolved.model, config, task);
 }
@@ -761,7 +762,7 @@ export function createProvider(
  * Get the default model for the default provider.
  */
 function getDefaultModel(config: GnosysConfig): string {
-  return getProviderModel(config, config.llm.defaultProvider);
+  return getProviderModel(config, requireDefaultProvider(config));
 }
 
 /**
@@ -773,6 +774,13 @@ export function isProviderAvailable(
   provider?: LLMProviderName
 ): { available: boolean; error?: string } {
   const target = provider || config.llm.defaultProvider;
+  if (!target) {
+    // v6.0.0 (deci-049): no implicit anthropic default
+    return {
+      available: false,
+      error: "No default LLM provider configured. Run 'gnosys setup' (or set llm.defaultProvider in gnosys.json).",
+    };
+  }
 
   switch (target) {
     case "anthropic": {

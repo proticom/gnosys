@@ -58,7 +58,7 @@ export async function runConfigShowCommand(
         }
     
         console.log("System of Cognition (SOC) — LLM Configuration:");
-        console.log(`  Default provider: ${cfg.llm.defaultProvider}`);
+        console.log(`  Default provider: ${cfg.llm.defaultProvider ?? "not set — run gnosys setup"}`);
         console.log("");
         console.log("  Providers:");
         console.log(`    Anthropic:  model=${cfg.llm.anthropic.model}, apiKey=${cfg.llm.anthropic.apiKey ? "config" : (process.env.ANTHROPIC_API_KEY ? "env" : "—")}`);
@@ -128,13 +128,18 @@ export async function runConfigSetCommand(
               printStatus("fail", `invalid provider \`${value}\``, `supported: ${validProviders}`);
               process.exit(1);
             }
-            diffRow = { label: "provider", from: cfg.llm.defaultProvider, to: value };
+            diffRow = { label: "provider", from: cfg.llm.defaultProvider ?? "(unset)", to: value };
             cfg.llm.defaultProvider = value as LLMProviderName;
             break;
     
           case "model": {
             // Set model for current default provider
             const p = cfg.llm.defaultProvider;
+            if (!p) {
+              // v6.0.0 (deci-049): no implicit anthropic default
+              printStatus("fail", "no default provider set", "run 'gnosys setup' or 'gnosys config set provider <name>' first");
+              process.exit(1);
+            }
             const fromModel = providerModel(cfg, p) ?? "(unset)";
             if (p === "anthropic") cfg.llm.anthropic.model = value;
             else if (p === "ollama") cfg.llm.ollama.model = value;

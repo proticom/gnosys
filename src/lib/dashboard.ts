@@ -56,9 +56,9 @@ export interface DashboardData {
     mostConnected: string | null;
   } | null;
   soc: {
-    defaultProvider: LLMProviderName;
-    structuring: { provider: LLMProviderName; model: string };
-    synthesis: { provider: LLMProviderName; model: string };
+    defaultProvider: LLMProviderName | undefined;
+    structuring: { provider: LLMProviderName; model: string } | null;
+    synthesis: { provider: LLMProviderName; model: string } | null;
     providerStatus: Array<{
       name: LLMProviderName;
       available: boolean;
@@ -250,9 +250,13 @@ export async function collectDashboardData(
     }
   }
 
-  // SOC status
-  const structuring = resolveTaskModel(config, "structuring");
-  const synthesis = resolveTaskModel(config, "synthesis");
+  // SOC status — v6.0.0: resolveTaskModel throws when no default provider
+  // is configured and no task override exists; the dashboard is a display
+  // path so it shows "not set" instead of crashing.
+  let structuring: { provider: LLMProviderName; model: string } | null = null;
+  let synthesis: { provider: LLMProviderName; model: string } | null = null;
+  try { structuring = resolveTaskModel(config, "structuring"); } catch { /* not set */ }
+  try { synthesis = resolveTaskModel(config, "synthesis"); } catch { /* not set */ }
   const providerStatus: DashboardData["soc"]["providerStatus"] = [];
 
   for (const p of ALL_PROVIDERS) {
@@ -472,9 +476,9 @@ export function formatDashboard(data: DashboardData): string {
   lines.push(BOX_DIV);
   lines.push(header("SYSTEM OF COGNITION (SOC)"));
   lines.push(BOX_DIV);
-  lines.push(row(`  Default: ${data.soc.defaultProvider}`));
-  lines.push(row(`  Structuring → ${data.soc.structuring.provider}/${data.soc.structuring.model}`));
-  lines.push(row(`  Synthesis   → ${data.soc.synthesis.provider}/${data.soc.synthesis.model}`));
+  lines.push(row(`  Default: ${data.soc.defaultProvider ?? "not set — run gnosys setup"}`));
+  lines.push(row(`  Structuring → ${data.soc.structuring ? `${data.soc.structuring.provider}/${data.soc.structuring.model}` : "not set — run gnosys setup"}`));
+  lines.push(row(`  Synthesis   → ${data.soc.synthesis ? `${data.soc.synthesis.provider}/${data.soc.synthesis.model}` : "not set — run gnosys setup"}`));
   lines.push(row(""));
   for (const p of data.soc.providerStatus) {
     const icon = p.available ? "✓" : "—";

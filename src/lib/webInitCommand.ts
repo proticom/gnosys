@@ -35,10 +35,12 @@ export async function runWebInitCommand(
     let agentModel = "";
     try {
       const cfg = await loadConfig(storePath);
-      agentProvider = cfg.llm.defaultProvider;
+      // v6.0.0 (deci-049): defaultProvider may be unset — keep the display
+      // fallback rather than crashing; resolveTaskModel throws when unset.
+      agentProvider = cfg.llm.defaultProvider ?? agentProvider;
       const taskModel = resolveTaskModel(cfg, "structuring");
       agentModel = taskModel.model;
-    } catch { /* no config yet */ }
+    } catch { /* no config yet, or no default provider configured */ }
 
     // Map provider to env var name
     const providerEnvVars: Record<string, string> = {

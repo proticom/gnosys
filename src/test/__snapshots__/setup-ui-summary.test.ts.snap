@@ -11,10 +11,10 @@ exports[`Phase C — settings panel (summary) > renders panel rows after a switc
 ]
 `;
 
-exports[`Phase C — settings panel (summary) > renders panel rows for a fresh anthropic config 1`] = `
+exports[`Phase C — settings panel (summary) > renders panel rows for a fresh config (no default provider) 1`] = `
 [
   " 1   providers            no keys stored",
-  " 2   task routing         all anthropic",
+  " 2   task routing         not set — configure providers first",
   " 3   ide integrations     6 configured",
   " 4   multi-machine sync   /Volumes/Dev/gnosys",
   " 5   dream mode           disabled",

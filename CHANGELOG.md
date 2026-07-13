@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.0.0] — Unreleased
 
+### Changed (BREAKING)
+
+- **No implicit `anthropic` LLM default.** The `llm.defaultProvider` config
+  field no longer silently defaults to `"anthropic"` (deci-049). Configs
+  without `llm.defaultProvider` now get a clear
+  `No default LLM provider configured. Run 'gnosys setup' (or set
+  llm.defaultProvider in gnosys.json).` error on commands that require an
+  LLM; display commands (`doctor`, `dashboard`, `config`, `check`) show
+  "not set — run gnosys setup" instead of crashing.
+
 ### Removed (BREAKING)
 
 - **Chat feature removed.** `gnosys chat` (the interactive terminal chat TUI)

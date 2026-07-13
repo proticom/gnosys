@@ -99,7 +99,14 @@ function buildTaskRows(
 export async function runRoutingSetup(opts: RoutingOptions): Promise<boolean> {
   const storePath = resolveActiveStorePath(opts.directory);
   const cfg = await loadConfig(storePath);
+  // v6.0.0 (deci-049): routing presupposes a default provider — direct the
+  // user to the providers section instead of silently assuming anthropic.
   const provider = cfg.llm.defaultProvider;
+  if (!provider) {
+    console.log("");
+    console.log("No default LLM provider configured. Run 'gnosys setup' (or 'gnosys setup providers') first.");
+    return false;
+  }
   const model = getProviderModel(cfg, provider);
 
   console.log("");

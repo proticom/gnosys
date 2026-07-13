@@ -1448,8 +1448,10 @@ export async function runSetup(opts: {
     // ─── Load existing config for defaults ───────────────────────────
     const existingConfig = await loadExistingConfig(projectDir);
     const currentProvider = existingConfig?.llm.defaultProvider;
-    const currentModel = existingConfig
-      ? getProviderModel(existingConfig, existingConfig.llm.defaultProvider)
+    // v6.0.0: defaultProvider may be unset on fresh installs — the wizard
+    // is what sets it, so treat "no provider yet" as "no current model".
+    const currentModel = existingConfig && currentProvider
+      ? getProviderModel(existingConfig, currentProvider)
       : undefined;
 
     // ─── Pre-check: Upgrade detection ─────────────────────────────────
@@ -2605,8 +2607,9 @@ export async function runModelsSetup(opts: ModelsSetupOpts = {}): Promise<void> 
 
     const existingConfig = await loadExistingConfig(projectDir);
     const currentProvider = existingConfig?.llm.defaultProvider;
-    const currentModel = existingConfig
-      ? getProviderModel(existingConfig, existingConfig.llm.defaultProvider)
+    // v6.0.0: defaultProvider may be unset — this wizard section sets it.
+    const currentModel = existingConfig && currentProvider
+      ? getProviderModel(existingConfig, currentProvider)
       : undefined;
 
     const pricingSpin = Spinner("fetching latest pricing from openrouter…");

@@ -59,6 +59,13 @@ export async function runAskCommand(
       if (!ask.isLLMAvailable) {
         // v5.8.0 (#8): provider-aware error instead of hardcoded ANTHROPIC_API_KEY.
         const providerName = cliConfig.llm.defaultProvider;
+        if (!providerName) {
+          // v6.0.0 (deci-049): no implicit anthropic default
+          console.error(
+            "No default LLM provider configured. Run 'gnosys setup' (or set llm.defaultProvider in gnosys.json).",
+          );
+          process.exit(1);
+        }
         const envVarMap: Record<string, string> = {
           anthropic: "ANTHROPIC_API_KEY",
           openai: "OPENAI_API_KEY",

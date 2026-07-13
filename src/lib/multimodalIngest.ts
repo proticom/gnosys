@@ -20,7 +20,7 @@ import { GnosysIngestion } from "./ingest.js";
 import { GnosysTagRegistry } from "./tags.js";
 import { GnosysStore } from "./store.js";
 import { createProvider } from "./llm.js";
-import { loadConfig, DEFAULT_CONFIG, getProviderModel, type GnosysConfig } from "./config.js";
+import { loadConfig, DEFAULT_CONFIG, getProviderModel, requireDefaultProvider, type GnosysConfig } from "./config.js";
 import { syncMemoryToDb } from "./dbWrite.js";
 import { GnosysDB } from "./db.js";
 import { findProjectIdentity } from "./projectIdentity.js";
@@ -511,7 +511,8 @@ async function ingestImage(
   }
 
   // Resolve vision provider: config.multimodal.visionProvider > config.llm.defaultProvider
-  const visionProviderName = config.multimodal?.visionProvider || config.llm.defaultProvider;
+  // (throws a clear "run gnosys setup" error when neither is set — v6.0.0)
+  const visionProviderName = config.multimodal?.visionProvider || requireDefaultProvider(config);
   const visionModel = config.multimodal?.visionModel || getProviderModel(config, visionProviderName);
   const provider = createProvider(visionProviderName, visionModel, config);
 
