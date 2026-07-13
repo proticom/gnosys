@@ -11,7 +11,7 @@ gnosys setup routing
 ## Behavior
 
 - Opens the interactive task-routing wizard.
-- Shows effective routing for structuring, synthesis, chat, vision, transcription, and dream.
+- Shows effective routing for structuring, synthesis, vision, transcription, and dream.
 - Lets you keep current routing, customize individual tasks, or reset task overrides to the default provider/model.
 - Updates Dream Mode routing when dream routing is enabled or changed.
 

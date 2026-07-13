@@ -74,10 +74,6 @@ Install/uninstall the OS-level ingest timer (macOS/Linux)
 
 Configure Dream Mode — designate this machine, pick provider/model, set schedule
 
-## `gnosys chat`
-
-Configure the chat TUI — provider/model, recall behavior, tools, system-prompt prefix
-
 ## `gnosys ides`
 
 Configure IDE MCP integrations (Claude Code/Desktop, Cursor, Codex, Grok Build, Gemini CLI, Antigravity)
@@ -117,10 +113,6 @@ Signal whether a memory was useful, not relevant, or outdated
 ## `gnosys add-structured`
 
 Add a memory with structured input (no LLM needed)
-
-## `gnosys chat`
-
-Interactive memory-aware terminal chat (TUI)
 
 ## `gnosys ingest <fileOrGlob>`
 
@@ -244,7 +236,7 @@ Check system health: stores, LLM connectivity, embeddings, archive
 
 ## `gnosys check`
 
-Test LLM connectivity for each configured task (structuring, synthesis, chat, vision, transcription, dream)
+Test LLM connectivity for each configured task (structuring, synthesis, vision, transcription, dream)
 
 ## `gnosys dream`
 

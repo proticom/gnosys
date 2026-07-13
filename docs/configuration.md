@@ -38,14 +38,14 @@ First match wins. Keys in `.env` are never printed to stdout.
 
 ## Provider / model resolution
 
-For each task (`structuring`, `synthesis`, `vision`, `transcription`, `chat`, `dream`):
+For each task (`structuring`, `synthesis`, `vision`, `transcription`, `dream`):
 
 1. **`taskModels.<task>`** — per-task override (`provider` + `model`)
 2. **`llm.defaultProvider`** + **`llm.<provider>.model`** — default provider block in `gnosys.json`
 3. **Task-specific defaults** — e.g. structuring prefers a cheaper model for Anthropic/OpenAI when no override is set
 4. **Schema defaults** — built-in fallbacks when nothing is configured
 
-Use `taskModels` when one task needs a different model than the rest (e.g. cheap model for bulk import, flagship for chat).
+Use `taskModels` when one task needs a different model than the rest (e.g. cheap model for bulk import, flagship for synthesis).
 
 ---
 

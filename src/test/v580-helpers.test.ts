@@ -25,8 +25,7 @@ import {
   memoryUri,
   osc8Wrap,
 } from "../lib/idFormat.js";
-import { filterCommands } from "../lib/chat/SlashPalette.js";
-import type { CommandSpec } from "../lib/chat/commands.js";
+// v6.0.0 chat removed: SlashPalette/commands imports and their tests deleted
 import {
   getMarkerPath,
   writeUpgradeMarker,
@@ -183,55 +182,6 @@ describe("idFormat", () => {
       const lookup = buildProjectNameLookup(db);
       expect(lookup.size).toBe(0);
     });
-  });
-});
-
-// ─── SlashPalette.filterCommands ─────────────────────────────────────────
-
-describe("SlashPalette.filterCommands", () => {
-  const cmds: CommandSpec[] = [
-    { name: "/help", summary: "Show available commands", handler: async () => ({ kind: "ok" }) },
-    { name: "/quit", summary: "Exit the chat session", aliases: ["/exit"], handler: async () => ({ kind: "ok" }) },
-    { name: "/recall", summary: "Run a federated recall against memory", handler: async () => ({ kind: "ok" }) },
-    { name: "/remember", summary: "Save the last exchange as a memory", handler: async () => ({ kind: "ok" }) },
-    { name: "/pin", summary: "Pin a memory by id", handler: async () => ({ kind: "ok" }) },
-  ];
-
-  it("returns all commands when the filter is empty or just a slash", () => {
-    expect(filterCommands(cmds, "").length).toBe(cmds.length);
-    expect(filterCommands(cmds, "/").length).toBe(cmds.length);
-  });
-
-  it("matches name prefix (the most common case)", () => {
-    const matches = filterCommands(cmds, "/re");
-    const names = matches.map((c) => c.name);
-    expect(names).toContain("/recall");
-    expect(names).toContain("/remember");
-    expect(names).not.toContain("/help");
-  });
-
-  it("matches name substring", () => {
-    const matches = filterCommands(cmds, "call");
-    expect(matches.map((c) => c.name)).toContain("/recall");
-  });
-
-  it("falls back to summary text", () => {
-    const matches = filterCommands(cmds, "session");
-    expect(matches.map((c) => c.name)).toContain("/quit");
-  });
-
-  it("matches aliases", () => {
-    const matches = filterCommands(cmds, "exit");
-    expect(matches.map((c) => c.name)).toContain("/quit");
-  });
-
-  it("returns empty when nothing matches", () => {
-    expect(filterCommands(cmds, "zzz-nope")).toEqual([]);
-  });
-
-  it("is case-insensitive", () => {
-    expect(filterCommands(cmds, "HELP").map((c) => c.name)).toContain("/help");
-    expect(filterCommands(cmds, "Recall").map((c) => c.name)).toContain("/recall");
   });
 });
 

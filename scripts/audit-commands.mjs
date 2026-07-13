@@ -39,9 +39,9 @@ const DEFERRED_IDS = new Set(["config", "dream", "export", "pref"]);
 // ── Edward's approved sidebar grouping (full invocation, minus "gnosys ") ──
 // Commands found in cli.ts but absent here surface in "Ungrouped (not in sidebar)".
 const GROUPS = [
-  ["Getting Started", ["setup", "setup providers", "setup routing", "setup ides", "setup preferences", "setup chat", "setup dream", "init", "config", "config show", "config set", "config init", "stores", "doctor", "serve"]],
+  ["Getting Started", ["setup", "setup providers", "setup routing", "setup ides", "setup preferences", "setup dream", "init", "config", "config show", "config set", "config init", "stores", "doctor", "serve"]],
   ["Writing Memories", ["add", "add-structured", "commit-context", "bootstrap", "import", "ingest"]],
-  ["Reading & Search", ["read", "discover", "search", "hybrid-search", "semantic-search", "ask", "recall", "fsearch", "chat", "working-set"]],
+  ["Reading & Search", ["read", "discover", "search", "hybrid-search", "semantic-search", "ask", "recall", "fsearch", "working-set"]],
   ["Organization", ["list", "lens", "tags", "tags-add", "links", "graph"]],
   ["History & Updates", ["update", "reinforce", "stale", "history", "rollback", "timeline", "stats"]],
   ["Web Knowledge Base", ["web init", "web ingest", "web build-index", "web build", "web add", "web remove", "web update", "web status"]],
@@ -145,7 +145,7 @@ for (let m; (m = cmdRe.exec(src)); ) {
   cmds.push({ full, leaf, parent: parentPath.join(" ") || null, line, description, options: optionCount, handlers, specificHandlers });
 }
 
-// De-dupe (a leaf like "chat" appears as both top-level and setup chat).
+// De-dupe (a leaf can appear both top-level and under setup).
 const seen = new Set();
 const commands = cmds.filter((c) => {
   const key = c.full + "@" + c.line;

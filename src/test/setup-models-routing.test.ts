@@ -67,7 +67,7 @@ function sampleConfig(): GnosysConfig {
     },
     taskModels: {
       synthesis: { provider: "groq", model: "llama-3.3-70b-versatile" },
-      chat: { provider: "anthropic", model: "claude-haiku-4-5" },
+      vision: { provider: "anthropic", model: "claude-haiku-4-5" }, // v6.0.0 chat removed
     },
     dream: {
       enabled: true,
@@ -85,15 +85,15 @@ describe("setup models task routing", () => {
 
   describe("buildInlineKeyRequirements", () => {
     it("lists one global requirement per distinct cloud provider", () => {
-      const selected: AssignableTaskName[] = ["chat", "dream"];
+      const selected: AssignableTaskName[] = ["vision", "dream"]; // v6.0.0 chat removed
       const reqs = buildInlineKeyRequirements(selected, () => "openrouter");
       expect(reqs).toEqual([{ provider: "openrouter", scope: "global" }]);
     });
 
     it("emits one requirement per distinct provider", () => {
       const reqs = buildInlineKeyRequirements(
-        ["chat", "structuring"],
-        (t) => (t === "chat" ? "openrouter" : "anthropic"),
+        ["vision", "structuring"], // v6.0.0 chat removed
+        (t) => (t === "vision" ? "openrouter" : "anthropic"),
       );
       expect(reqs).toHaveLength(2);
       expect(reqs).toEqual(
@@ -111,7 +111,7 @@ describe("setup models task routing", () => {
   });
 
   describe("buildTaskModelsPatchFromAccepted", () => {
-    it("regression: chat+dream only — patch touches only those tasks", () => {
+    it("regression: vision+dream only — patch touches only those tasks", () => { // v6.0.0 chat removed
       const cfg = sampleConfig();
       const currentByTask = Object.fromEntries(
         ASSIGNABLE_TASK_LIST.map((t) => [
@@ -125,9 +125,9 @@ describe("setup models task routing", () => {
         { provider: LLMProviderName; model: string }
       >;
 
-      const selectedSet = new Set<AssignableTaskName>(["chat", "dream"]);
+      const selectedSet = new Set<AssignableTaskName>(["vision", "dream"]); // v6.0.0 chat removed
       const accepted = {
-        chat: { provider: "openrouter" as LLMProviderName, model: "nemotron" },
+        vision: { provider: "openrouter" as LLMProviderName, model: "nemotron" },
         dream: { provider: "openrouter" as LLMProviderName, model: "nemotron" },
       };
 
@@ -138,11 +138,10 @@ describe("setup models task routing", () => {
       );
 
       expect(patch).toEqual({
-        chat: { provider: "openrouter", model: "nemotron" },
+        vision: { provider: "openrouter", model: "nemotron" }, // v6.0.0 chat removed
       });
       expect(patch).not.toHaveProperty("structuring");
       expect(patch).not.toHaveProperty("synthesis");
-      expect(patch).not.toHaveProperty("vision");
       expect(patch).not.toHaveProperty("transcription");
 
       const merged = GnosysConfigSchema.parse({
@@ -157,7 +156,7 @@ describe("setup models task routing", () => {
       expect(merged.llm.defaultProvider).toBe("anthropic");
       expect(getProviderModel(merged, "openrouter")).toBe("old-openrouter-default");
       expect(resolveTaskModel(merged, "synthesis").provider).toBe("groq");
-      expect(resolveTaskModel(merged, "chat").provider).toBe("openrouter");
+      expect(resolveTaskModel(merged, "vision").provider).toBe("openrouter"); // v6.0.0 chat removed
     });
   });
 

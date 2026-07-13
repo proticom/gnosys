@@ -150,7 +150,6 @@ Commands by group (alphabetical within group):
                      fsearch · briefing · lens
   Project mgmt:      init · projects · list · stats · timeline · graph · tags · tags-add
                      stale · history · rollback · audit · links
-  Chat (TUI):        chat
   Maintenance:       maintain · reindex · reindex-graph · dearchive · dream · backup · restore · prune
   Multi-machine:     setup remote (configure | status | push | pull | sync | resolve)
   Agent runtime:     serve · sandbox · helper · pref · sync · update-status · working-set
@@ -465,15 +464,6 @@ setupCmd
     await runDreamSetup({ directory: process.cwd() });
   });
 
-// `gnosys setup chat` — configure chat TUI (provider, recall, tools, prefix)
-setupCmd
-  .command("chat")
-  .description("Configure the chat TUI — provider/model, recall behavior, tools, system-prompt prefix")
-  .action(async () => {
-    const { runChatSetup } = await import("./lib/setup.js");
-    await runChatSetup({ directory: process.cwd() });
-  });
-
 // `gnosys setup ides` — configure IDE / MCP integrations standalone
 setupCmd
   .command("ides")
@@ -776,21 +766,6 @@ program
       await runAddStructuredCommand(opts, resolveProjectId);
     }
   );
-
-// ─── gnosys chat (TUI) ───────────────────────────────────────────────────
-program
-  .command("chat")
-  .description("Interactive memory-aware terminal chat (TUI)")
-  .option("--resume <sessionId>", "Resume an existing chat session")
-  .option("--list", "List recent chat sessions and exit")
-  .option("--search <query>", "Full-text search across session logs")
-  .option("--provider <name>", "Override LLM provider (anthropic, openai, groq, ollama, …)")
-  .option("--model <name>", "Override LLM model name")
-  .option("--limit <n>", "Limit for --list / --search (default 20)", "20")
-  .action(async (opts: { resume?: string; list?: boolean; search?: string; provider?: string; model?: string; limit: string }) => {
-    const { runChatCommand } = await import("./lib/chatCommand.js");
-    await runChatCommand(getResolver, opts);
-  });
 
 // ─── gnosys ingest <file> ─────────────────────────────────────────────────
 program
@@ -1378,8 +1353,8 @@ program
 // ─── gnosys check ─────────────────────────────────────────────────────────
 program
   .command("check")
-  .description("Test LLM connectivity for each configured task (structuring, synthesis, chat, vision, transcription, dream)")
-  .option("-t, --task <name>", "Test only one task (structuring | synthesis | chat | vision | transcription | dream)")
+  .description("Test LLM connectivity for each configured task (structuring, synthesis, vision, transcription, dream)")
+  .option("-t, --task <name>", "Test only one task (structuring | synthesis | vision | transcription | dream)")
   .action(async (opts: { task?: string }) => {
     const { runCheckCommand } = await import("./lib/checkCommand.js");
     await runCheckCommand(opts);

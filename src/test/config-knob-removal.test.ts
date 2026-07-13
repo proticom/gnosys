@@ -49,28 +49,26 @@ describe("v5.15 removed config knobs", () => {
 
     // Removed keys absent from the parsed config.
     expect((config as Record<string, unknown>).bulkIngestionBatchSize).toBeUndefined();
-    expect(
-      (config.chat as Record<string, unknown>).autoSummarizeAfterTurns,
-    ).toBeUndefined();
+    // v6.0.0 chat removed: the whole chat section is now stripped.
+    expect((config as Record<string, unknown>).chat).toBeUndefined();
 
     // Deprecation warning emitted for each removed key found (stderr only).
     const messages = errSpy.mock.calls.map((c) => String(c[0]));
     expect(
       messages.some((m) =>
-        m.includes('config option "bulkIngestionBatchSize" was removed in v5.15'),
+        m.includes('config option "bulkIngestionBatchSize" was removed'),
       ),
     ).toBe(true);
+    // v6.0.0 chat removed: the whole `chat` section now warns.
     expect(
-      messages.some((m) =>
-        m.includes('config option "chat.autoSummarizeAfterTurns" was removed in v5.15'),
-      ),
+      messages.some((m) => m.includes('config option "chat" was removed')),
     ).toBe(true);
 
     // Once per process: a second load must not re-warn.
     errSpy.mockClear();
     await loadConfig(storeDir);
     const secondMessages = errSpy.mock.calls.map((c) => String(c[0]));
-    expect(secondMessages.some((m) => m.includes("was removed in v5.15"))).toBe(false);
+    expect(secondMessages.some((m) => m.includes("was removed"))).toBe(false);
   });
 
   it("removed keys are stripped by schema parse and importConcurrency default is 5", () => {
@@ -79,9 +77,8 @@ describe("v5.15 removed config knobs", () => {
       chat: { autoSummarizeAfterTurns: 7 },
     });
     expect((parsed as Record<string, unknown>).bulkIngestionBatchSize).toBeUndefined();
-    expect(
-      (parsed.chat as Record<string, unknown>).autoSummarizeAfterTurns,
-    ).toBeUndefined();
+    // v6.0.0 chat removed: whole section stripped by schema parse.
+    expect((parsed as Record<string, unknown>).chat).toBeUndefined();
     expect(parsed.importConcurrency).toBe(5);
     expect(DEFAULT_CONFIG.importConcurrency).toBe(5);
   });

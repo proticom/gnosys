@@ -24,8 +24,7 @@ export type RoutableTask =
   | "structuring"
   | "synthesis"
   | "vision"
-  | "transcription"
-  | "chat";
+  | "transcription";
 
 export type LlmTaskName = RoutableTask | "dream";
 
@@ -48,7 +47,6 @@ const CLOUD_TASKS: RoutableTask[] = [
   "synthesis",
   "vision",
   "transcription",
-  "chat",
 ];
 
 export function providerNeedsApiKey(provider: string): boolean {

@@ -2,7 +2,7 @@
  * Setup: Task Routing.
  *
  * Standalone wizard for configuring per-task LLM routing
- * (structuring / synthesis / vision / transcription / chat / dream).
+ * (structuring / synthesis / vision / transcription / dream).
  */
 
 import type { Interface as ReadlineInterface } from "readline/promises";
@@ -35,8 +35,8 @@ import { resolveActiveStorePath } from "../storePath.js";
 const DIM = "\x1b[2m";
 const RESET = "\x1b[0m";
 
-type TaskName = "structuring" | "synthesis" | "chat" | "vision" | "transcription";
-const TASKS: TaskName[] = ["structuring", "synthesis", "chat", "vision", "transcription"];
+type TaskName = "structuring" | "synthesis" | "vision" | "transcription";
+const TASKS: TaskName[] = ["structuring", "synthesis", "vision", "transcription"];
 
 export interface RoutingOptions {
   rl: ReadlineInterface;

@@ -36,22 +36,23 @@ describe("updateConfig — v5.8.4 anthropic-revert regression", () => {
   }
 
   it("writes only the keys the caller supplied + any that were already in the file (no defaults seeded)", async () => {
-    // No existing gnosys.json. updateConfig writes only the chat section.
+    // v6.0.0 chat removed: use the recall section for the same raw-merge check.
+    // No existing gnosys.json. updateConfig writes only the recall section.
     await updateConfig(scratch, {
-      chat: { toolsEnabled: false, autoSummarizeAfterTurns: 5, systemPromptPrefix: "" },
+      recall: { aggressive: false, maxMemories: 5, minRelevance: 0.6 },
     });
 
     const raw = await readJSON(path.join(scratch, "gnosys.json"));
 
-    // The chat section should be present.
-    expect(raw.chat).toEqual({
-      toolsEnabled: false,
-      autoSummarizeAfterTurns: 5,
-      systemPromptPrefix: "",
+    // The recall section should be present.
+    expect(raw.recall).toEqual({
+      aggressive: false,
+      maxMemories: 5,
+      minRelevance: 0.6,
     });
 
     // CRITICAL: llm / llm.defaultProvider must NOT have been seeded with
-    // the schema default. If this regresses, future setup-chat-from-fresh
+    // the schema default. If this regresses, future setup-section-from-fresh
     // runs will silently revert the user's provider to "anthropic".
     expect(raw.llm).toBeUndefined();
     expect(raw.defaultProvider).toBeUndefined();
@@ -72,9 +73,9 @@ describe("updateConfig — v5.8.4 anthropic-revert regression", () => {
       "utf8",
     );
 
-    // Now add a chat section (the v5.8.0 setup-chat flow).
+    // Now add a recall section. // v6.0.0 chat removed
     await updateConfig(scratch, {
-      chat: { toolsEnabled: true, autoSummarizeAfterTurns: 0, systemPromptPrefix: "" },
+      recall: { aggressive: true, maxMemories: 8, minRelevance: 0.4 },
     });
 
     const raw = await readJSON(path.join(scratch, "gnosys.json"));
@@ -82,8 +83,8 @@ describe("updateConfig — v5.8.4 anthropic-revert regression", () => {
     // The xai provider must survive — the bug we're regression-testing.
     expect((raw.llm as Record<string, unknown>)?.defaultProvider).toBe("xai");
     expect((raw.llm as Record<string, unknown>)?.xai).toEqual({ model: "grok-4.20" });
-    // And the new chat section landed.
-    expect((raw.chat as Record<string, unknown>)?.toolsEnabled).toBe(true);
+    // And the new recall section landed. // v6.0.0 chat removed
+    expect((raw.recall as Record<string, unknown>)?.aggressive).toBe(true);
   });
 
   it("deep-merges nested objects rather than replacing them outright", async () => {

@@ -143,7 +143,6 @@ export function buildSections(): SummarySection[] {
         const provs = new Set([
           resolveTaskModel(cfg, "structuring").provider,
           resolveTaskModel(cfg, "synthesis").provider,
-          resolveTaskModel(cfg, "chat").provider,
         ]);
         return provs.size === 1 ? `all ${[...provs][0]}` : `mixed (${[...provs].join(", ")})`;
       },

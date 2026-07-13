@@ -41,7 +41,6 @@ cd your-project
 gnosys init                                              # register the project
 gnosys add "We chose PostgreSQL over MySQL for JSON support"
 gnosys recall "database selection"                       # what's relevant right now
-gnosys chat                                              # memory-aware terminal chat
 ```
 
 That's the 60-second tour. **Everything else lives on [gnosys.ai](https://gnosys.ai).**

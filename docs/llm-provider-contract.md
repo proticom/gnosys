@@ -1,6 +1,6 @@
 # LLMProvider Contract
 
-All LLM backends implement the `LLMProvider` interface defined in `src/lib/llm.ts`. Use the factory `getLLMProvider(config, task?)` to obtain a configured instance for a task (structuring, synthesis, vision, transcription, chat).
+All LLM backends implement the `LLMProvider` interface defined in `src/lib/llm.ts`. Use the factory `getLLMProvider(config, task?)` to obtain a configured instance for a task (structuring, synthesis, vision, transcription).
 
 ## Types
 

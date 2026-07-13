@@ -8,7 +8,7 @@ Test LLM connectivity for each configured task route.
 gnosys check
 gnosys check --task structuring
 gnosys check --task synthesis
-gnosys check --task chat
+gnosys check --task synthesis
 gnosys check --task vision
 gnosys check --task transcription
 gnosys check --task dream
@@ -26,7 +26,6 @@ gnosys check --task dream
 |------|---------|
 | `structuring` | Adding memories, tagging |
 | `synthesis` | Q&A answers (`gnosys ask`) |
-| `chat` | Interactive chat (`gnosys chat`; uses synthesis model) |
 | `vision` | Images, PDFs |
 | `transcription` | Audio files |
 | `dream` | Overnight consolidation |
@@ -66,7 +65,7 @@ Fix: Run 'gnosys setup' to configure providers and API keys.
 Unknown `--task` name:
 
 ```text
-Unknown task: foo. Pick one of: structuring, synthesis, chat, vision, transcription, dream
+Unknown task: foo. Pick one of: structuring, synthesis, vision, transcription, dream
 ```
 
 Exits with code 1.

@@ -70,13 +70,6 @@ export async function runCheckCommand(opts: CheckCommandOptions): Promise<void> 
       resolve: () => resolveTaskModel(cfg, "synthesis"),
     },
     {
-      name: "chat",
-      description: "interactive chat (gnosys chat)",
-      // Chat reuses the synthesis task's model — surface it under its own name
-      // so users can see exactly what their TUI will use.
-      resolve: () => resolveTaskModel(cfg, "synthesis"),
-    },
-    {
       name: "vision",
       description: "images, PDFs",
       resolve: () => resolveTaskModel(cfg, "vision"),

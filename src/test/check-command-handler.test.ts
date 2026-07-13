@@ -25,7 +25,7 @@ describe("gnosys check command wiring", () => {
     expect(handler).toContain("getGnosysHome()");
     expect(handler).toContain('name: "structuring"');
     expect(handler).toContain('name: "synthesis"');
-    expect(handler).toContain('name: "chat"');
+    expect(handler).not.toContain('name: "chat"'); // v6.0.0 chat removed
     expect(handler).toContain('name: "vision"');
     expect(handler).toContain('name: "transcription"');
     expect(handler).toContain('name: "dream"');

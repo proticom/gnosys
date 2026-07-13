@@ -648,7 +648,7 @@ class OpenAICompatibleProvider implements LLMProvider {
  */
 export function getLLMProvider(
   config: GnosysConfig,
-  task?: "structuring" | "synthesis" | "vision" | "transcription" | "chat"
+  task?: "structuring" | "synthesis" | "vision" | "transcription"
 ): LLMProvider {
   const resolved = task
     ? resolveTaskModel(config, task)
@@ -664,7 +664,7 @@ export function createProvider(
   provider: LLMProviderName,
   model: string,
   config: GnosysConfig,
-  task?: "structuring" | "synthesis" | "vision" | "transcription" | "chat" | "dream",
+  task?: "structuring" | "synthesis" | "vision" | "transcription" | "dream",
 ): LLMProvider {
   switch (provider) {
     case "anthropic": {

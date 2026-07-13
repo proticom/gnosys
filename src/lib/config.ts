@@ -91,10 +91,6 @@ const TaskModelsSchema = z.object({
   synthesis: TaskModelSchema.optional(),
   vision: TaskModelSchema.optional(),
   transcription: TaskModelSchema.optional(),
-  // v5.8.0 (#2): chat is a first-class task. Previously the chat TUI fell
-  // through to the synthesis fallback chain; now you can route chat
-  // independently (e.g. fast/cheap model for chat, flagship for synthesis).
-  chat: TaskModelSchema.optional(),
 });
 
 // ─── Archive Schema ─────────────────────────────────────────────────────
@@ -156,20 +152,6 @@ const RecallConfigSchema = z.object({
 });
 
 export type RecallConfig = z.infer<typeof RecallConfigSchema>;
-
-// ─── Chat Schema ───────────────────────────────────────────────────────
-//
-// v5.8.0 (#1): config for the interactive chat TUI. Provider/model live in
-// `taskModels.chat` (so chat can route to a different LLM than synthesis).
-// Recall settings still come from `recall.*` (shared with `gnosys recall`).
-// This section is for chat-only knobs that don't fit either bucket.
-
-const ChatConfigSchema = z.object({
-  /** Allow LLM to call gnosys tools via gnosys-tool fences (default: true). */
-  toolsEnabled: z.boolean().default(true),
-  /** Prepended to the chat system prompt. Use for persona / style / domain hints. */
-  systemPromptPrefix: z.string().default(""),
-});
 
 // ─── Multimodal Ingestion Schema ────────────────────────────────────────
 
@@ -302,12 +284,6 @@ export const GnosysConfigSchema = z.object({
     maxLLMCallsPerRun: 12,
   }),
 
-  /** Chat TUI — interactive chat configuration (v5.8.0) */
-  chat: ChatConfigSchema.default({
-    toolsEnabled: true,
-    systemPromptPrefix: "",
-  }),
-
   /** Multimodal ingestion — PDF, audio, image, video processing */
   multimodal: MultimodalConfigSchema.default({
     transcriptionProvider: "groq",
@@ -334,7 +310,7 @@ export const DEFAULT_CONFIG: GnosysConfig = GnosysConfigSchema.parse({});
  */
 export function resolveTaskModel(
   config: GnosysConfig,
-  task: "structuring" | "synthesis" | "vision" | "transcription" | "chat"
+  task: "structuring" | "synthesis" | "vision" | "transcription"
 ): { provider: LLMProviderName; model: string } {
   // 1. Task-specific override
   const taskOverride = config.taskModels?.[task];
@@ -575,19 +551,24 @@ const warnedRemovedKeys = new Set<string>();
 function warnRemovedConfigKeys(raw: Record<string, unknown>): void {
   const found: string[] = [];
   if ("bulkIngestionBatchSize" in raw) found.push("bulkIngestionBatchSize");
-  const chat = raw.chat;
+  // v6.0.0: the chat feature was removed entirely (chat lives in the apps
+  // and Gnosys Enterprise now). Old config files may still carry `chat` /
+  // `taskModels.chat` sections — Zod strips them on parse, so they load
+  // fine; we just warn once.
+  if ("chat" in raw) found.push("chat");
+  const taskModels = raw.taskModels;
   if (
-    typeof chat === "object" &&
-    chat !== null &&
-    "autoSummarizeAfterTurns" in (chat as Record<string, unknown>)
+    typeof taskModels === "object" &&
+    taskModels !== null &&
+    "chat" in (taskModels as Record<string, unknown>)
   ) {
-    found.push("chat.autoSummarizeAfterTurns");
+    found.push("taskModels.chat");
   }
   for (const key of found) {
     if (warnedRemovedKeys.has(key)) continue;
     warnedRemovedKeys.add(key);
     console.error(
-      `gnosys: config option "${key}" was removed in v5.15 and is ignored`
+      `gnosys: config option "${key}" was removed and is ignored`
     );
   }
 }
@@ -727,10 +708,6 @@ export function generateConfigTemplate(): string {
         generateSummaries: true,
         discoverRelationships: true,
         minMemories: 10,
-      },
-      chat: {
-        toolsEnabled: true,
-        systemPromptPrefix: "",
       },
     },
     null,

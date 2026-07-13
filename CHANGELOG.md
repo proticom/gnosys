@@ -5,7 +5,25 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [5.17.0] — Unreleased
+## [6.0.0] — Unreleased
+
+### Removed (BREAKING)
+
+- **Chat feature removed.** `gnosys chat` (the interactive terminal chat TUI)
+  and `gnosys setup chat` are gone, along with the `chat` config section,
+  `taskModels.chat` routing, and the `chat` task in `gnosys check`.
+  Existing `gnosys.json` files containing `chat` / `taskModels.chat` keys
+  keep loading — the keys are ignored with a one-time stderr warning.
+- **Dependencies dropped.** `ink` (+ `ink-select-input`, `ink-spinner`,
+  `ink-text-input`), `react`, and `@types/react` were only used by the chat
+  TUI and have been removed.
+
+### Direction
+
+- Interactive chat lives in the Gnosys apps and Gnosys Enterprise going
+  forward; the OSS package focuses on the memory engine, CLI, and MCP server.
+
+## [5.17.0] — 2026-07-08
 
 ### Added
 

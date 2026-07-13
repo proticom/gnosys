@@ -410,7 +410,6 @@ const PROVIDER_ORDER = [
 export const TASK_DESCRIPTIONS: Record<string, string> = {
   structuring: "adding memories, tagging",
   synthesis: "Q&A answers",
-  chat: "interactive chat TUI",
   vision: "images, PDFs",
   transcription: "audio files",
   dream: "overnight consolidation",
@@ -422,7 +421,6 @@ const ROUTABLE_TASK_LIST = [
   "synthesis",
   "vision",
   "transcription",
-  "chat",
 ] as const;
 type RoutableTaskName = (typeof ROUTABLE_TASK_LIST)[number];
 /** Routable tasks plus dream (stored under config.dream) */
@@ -3422,57 +3420,6 @@ export async function runDreamSetup(opts: DreamSetupOpts = {}): Promise<void> {
     if (ownsRl) rl.close();
   }
 }
-
-// ─── Chat Setup ────────────────────────────────────────────────────────
-//
-// v5.8.0 (#1): `gnosys setup chat` wizard. Mirrors the dream / remote /
-// routing patterns. Configures:
-//   - Chat-specific provider/model (via taskModels.chat)
-//   - Recall settings used during chat turns (aggressive, max, threshold)
-//   - Chat-only knobs: tools fence on/off, auto-summarize nudge, custom
-//     system-prompt prefix
-//
-// Writes to the merged config chain — project gnosys.json if present,
-// else the global one (same rule as setup dream).
-
-interface ChatSetupOpts {
-  directory?: string;
-  /** v5.8.4: reuse the caller's readline (e.g. summary wizard) to avoid stdin races. */
-  rl?: ReadlineInterface;
-}
-
-/**
- * v5.9.3 (deci-050): `gnosys setup chat` is deprecated. Chat config
- * moves into the chat TUI's own settings panel in v6.0 (road-014). This
- * stub renders a deprecation notice and exits. The function signature
- * is preserved so existing callers (cli.ts subcommand registration)
- * continue to compile.
- */
-export async function runChatSetup(opts: ChatSetupOpts = {}): Promise<void> {
-  void opts; // signature preserved; opts unused in deprecation notice
-  // Use atom-based render so the notice matches the rest of v5.9.3.
-  const { Header } = await import("./setup/ui/header.js");
-  const { Status } = await import("./setup/ui/status.js");
-  const { Footer } = await import("./setup/ui/footer.js");
-  const { c, color } = await import("./setup/ui/tokens.js");
-  const v = `v${getVersion()}`;
-
-  console.log();
-  console.log(Header(["gnosys", "setup", "chat"], { version: v }));
-  console.log();
-  console.log(Status("warn", "chat settings have moved"));
-  console.log();
-  console.log(`   ${color(c.text, "chat is now configured from inside the TUI itself.")}`);
-  console.log(`   ${color(c.textDim, "open it with")}                            ${color(c.text, "gnosys chat")}`);
-  console.log(`   ${color(c.textDim, "then press")}                              ${color(c.text, "⌃, (settings)")}`);
-  console.log();
-  console.log(Footer("v6.0 will retire this command entirely"));
-}
-
-// ─── runChatSetup body removed in v5.9.3 (deci-050) ─────────────────
-// Provider/model override + recall tuning + tools fence + auto-summarize
-// + system prompt prefix all move to the v6.0 chat TUI's settings panel
-// (road-014). The exported stub above renders a deprecation notice.
 
 /**
  * Open the remote central DB ONLY when sync is configured AND the share
