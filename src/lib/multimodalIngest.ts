@@ -2,8 +2,8 @@
  * Gnosys Multimodal Ingestion Orchestrator — Ties together file detection,
  * extraction, chunking, attachment management, and memory creation.
  *
- * Supports PDF and DOCX in Phase 2. Image, audio, and video ingestion
- * will be added in Phase 3/4.
+ * Supports PDF, DOCX, images (vision-LLM description), audio (Whisper
+ * transcription), and video (ffmpeg audio extraction + transcription).
  */
 
 import * as fs from "fs/promises";
