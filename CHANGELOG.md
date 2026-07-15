@@ -5,6 +5,27 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.2.0] — Unreleased
+
+### Added
+
+- **`gnosys_toolset` MCP tool (core tier, never disabled).** Called without
+  arguments it returns the active tier plus a compact catalog of what the
+  `standard` and `full` tiers add (name + one-line purpose); called with
+  `set: core|standard|full` it switches tiers up or down in-session. All
+  tools are now registered on every server and enabled/disabled per tier,
+  so switching emits `notifications/tools/list_changed` and MCP clients
+  refresh automatically. In HTTP mode each session keeps its own tier state.
+
+### Changed
+
+- **Default MCP toolset is now `core` with in-session self-escalation via
+  `gnosys_toolset` (was `full`).** A fresh session exposes 19 tools
+  (~3.7k tokens of tools/list payload) instead of 56 (~10.2k); agents expand
+  on demand. `GNOSYS_MCP_TOOLSET` still overrides the starting tier; unknown
+  values now warn and fall back to `core` (was `full`). Server instructions
+  and generated IDE rules mention the escalation path.
+
 ## [6.1.0] — 2026-07-14
 
 ### Added

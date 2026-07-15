@@ -54,6 +54,7 @@ _Generated from `src/index.ts` by `scripts/gen-mcp-tools.mjs`. Do not edit by ha
 | `gnosys_tags` | List all tags in the registry, grouped by category. |
 | `gnosys_tags_add` | Add a new tag to the registry. |
 | `gnosys_timeline` | View memory creation and modification activity over time. Shows how knowledge evolves by grouping memories into time periods. |
+| `gnosys_toolset` | Gnosys starts with a core toolset. Call without args to list tools available in higher tiers; call with set (core\|standard\|full) to expand or shrink the active toolset. |
 | `gnosys_trace` | Trace a codebase directory and store procedural 'how' memories with call-chain relationships. |
 | `gnosys_traverse` | Walk relationship chains from a memory id (BFS, depth-limited), optionally filtered by direction or relationship types. |
 | `gnosys_update` | Update an existing memory's fields and/or content by id or path. |

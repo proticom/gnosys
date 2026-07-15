@@ -34,6 +34,7 @@ describe("MCP toolset budgets", () => {
     expect(JSON.stringify(tools).length).toBeLessThanOrEqual(20_000);
     const names = tools.map((t) => t.name);
     for (const expected of [
+      "gnosys_toolset", // v6.2.0 gnosys_toolset — always-on tier switcher joins the core tier
       "gnosys_add_structured",
       "gnosys_recall",
       "gnosys_hybrid_search",
@@ -55,7 +56,7 @@ describe("MCP toolset budgets", () => {
 
   it("full tier registers everything, ≤ 60 tools", async () => {
     const tools = await listTools("full");
-    expect(tools.length).toBeGreaterThanOrEqual(55);
+    expect(tools.length).toBeGreaterThanOrEqual(56); // v6.2.0 gnosys_toolset: 55 + gnosys_toolset
     expect(tools.length).toBeLessThanOrEqual(60);
   });
 
@@ -74,12 +75,12 @@ describe("MCP toolset budgets", () => {
     expect(toolTier("gnosys_import")).toBe("full");
   });
 
-  it("resolveToolset falls back to full (with a stderr warning) on unknown values", () => {
+  it("resolveToolset falls back to core (with a stderr warning) on unknown values", () => {
     const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    expect(resolveToolset("bogus")).toBe("full");
+    expect(resolveToolset("bogus")).toBe("core"); // v6.2.0 gnosys_toolset: default/fallback flipped full → core
     expect(errSpy).toHaveBeenCalled();
     errSpy.mockRestore();
-    expect(resolveToolset(undefined)).toBe("full");
+    expect(resolveToolset(undefined)).toBe("core"); // v6.2.0 gnosys_toolset: default flipped full → core
     expect(resolveToolset("CORE")).toBe("core");
     expect(resolveToolset("standard")).toBe("standard");
   });

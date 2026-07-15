@@ -124,15 +124,15 @@ This package installs two binaries:
 
 ### Toolset tiers
 
-The full 55-tool list costs an agent roughly 10k tokens of context per session. Set `GNOSYS_MCP_TOOLSET` to register a smaller tier (unknown values warn on stderr and fall back to `full`):
+The full tool list costs an agent roughly 10k tokens of context per session, so since v6.2.0 every session **starts on the `core` tier** and agents self-escalate in-session: calling `gnosys_toolset` without arguments lists what the higher tiers add, and `gnosys_toolset {"set": "standard"|"full"}` enables them at runtime (and `"core"` shrinks back). The switch emits `notifications/tools/list_changed`, so MCP clients pick up the new tools automatically.
 
 | Tier | Tools | Approx. context cost |
 |------|-------|----------------------|
-| `core` | 18 | ~3.6k tokens — the proven "Core 15" + trace/reflect/traverse |
-| `standard` | 33 | ~6.2k tokens — core + list/stats/tags/timeline/working_set/semantic_search/ask/lens/links/graph/attach/get_attachment/ingest_file/update_status/preference_delete |
-| `full` (default) | 55 | ~10k tokens — everything |
+| `core` (default) | 19 | ~3.7k tokens — the proven "Core 15" + trace/reflect/traverse + `gnosys_toolset` |
+| `standard` | 34 | ~6.3k tokens — core + list/stats/tags/timeline/working_set/semantic_search/ask/lens/links/graph/attach/get_attachment/ingest_file/update_status/preference_delete |
+| `full` | 56 | ~10.2k tokens — everything |
 
-The active toolset is announced in the MCP server instructions so agents know when tools are hidden. See [docs/mcp-toolsets.md](./docs/mcp-toolsets.md).
+`GNOSYS_MCP_TOOLSET=core|standard|full` overrides the starting tier (unknown values warn on stderr and fall back to `core`). The starting toolset and escalation hint are announced in the MCP server instructions. See [docs/mcp-toolsets.md](./docs/mcp-toolsets.md).
 
 ## Documentation
 

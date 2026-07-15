@@ -12,7 +12,9 @@ const CALL_TIMEOUT_MS = 5_000;
 
 async function connect() {
   const server = new McpServer({ name: "fuzz", version: "0.0.0" });
-  registerCapabilities(server);
+  // v6.2.0 gnosys_toolset: default tier is now core; this test fuzzes EVERY
+  // tool with required fields, so pin the full tier.
+  registerCapabilities(server, "full");
   const client = new Client({ name: "fuzz-client", version: "0.0.0" });
   const [serverTransport, clientTransport] = InMemoryTransport.createLinkedPair();
   await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);

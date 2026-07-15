@@ -10,6 +10,7 @@ This project uses **Gnosys** for persistent memory via MCP. Gnosys uses a centra
 - When the user references past decisions, says "recall", "remember when", "what did we decide" — search memory first
 - Use `gnosys_federated_search` for cross-project search with scope boosting
 - Use `gnosys_working_set` to see recently modified memories for context
+- Gnosys starts on a reduced core toolset — if a gnosys tool you need is missing, call `gnosys_toolset` (set: standard or full) to expand it
 
 ### Write automatically
 

@@ -11,9 +11,10 @@ const REPO_ROOT = path.resolve(new URL(".", import.meta.url).pathname, "..");
 const INDEX = path.join(REPO_ROOT, "src", "index.ts");
 const OUT = path.join(REPO_ROOT, "docs", "mcp-tools.md");
 
-/** regTool("gnosys_*", "description", { schema }) — first arg only, not audit refs. */
+/** regTool("gnosys_*", "description", { schema }) — first arg only, not audit refs.
+ *  v6.2: also matches s.tool(...) for gnosys_toolset (registered per-server). */
 const REG_TOOL_RE =
-  /regTool\(\s*\n\s*"(gnosys_[^"]+)"\s*,\s*\n\s*"((?:[^"\\]|\\.)*)"/g;
+  /(?:regTool|s\.tool)\(\s*\n\s*"(gnosys_[^"]+)"\s*,\s*\n\s*"((?:[^"\\]|\\.)*)"/g;
 
 function collapseWhitespace(s) {
   return s.replace(/\s+/g, " ").trim();

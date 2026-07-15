@@ -39,7 +39,9 @@ describe("MCP HTTP registration replay", () => {
       port: 0,
       makeServer: () => {
         const server = new McpServer({ name: "gnosys", version: "test" });
-        registerCapabilities(server);
+        // v6.2.0 gnosys_toolset: default tier is now core; this test verifies
+        // the FULL surface replays per-session, so pin the full tier.
+        registerCapabilities(server, "full");
         return server;
       },
     });

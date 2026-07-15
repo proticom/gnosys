@@ -38,7 +38,7 @@ const RUNNING_VERSION: string = (() => {
   }
 })();
 
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { McpServer, type RegisteredTool } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import fs from "fs/promises";
@@ -101,39 +101,42 @@ const server = new McpServer(
 // stdio keeps reusing the singleton `server`. Handlers reference module-global
 // state (the shared brain/search/resolver), so sessions need no per-client
 // state — only the registrations are replayed. See registerCapabilities().
-type Registrar = (s: McpServer) => void;
+type Registrar = (s: McpServer) => unknown;
 /** v6.1: tool registrations carry their name so registerCapabilities can
  *  filter by the active toolset tier. Prompts/resources have name=null and
  *  always register. */
 const _registrations: Array<{ name: string | null; register: Registrar }> = [];
 
-// ─── v6.1: MCP toolset tiers (context-bloat reduction) ───────────────────
-// GNOSYS_MCP_TOOLSET=core|standard|full (default full). Smaller tiers cut
-// the tools/list payload an agent must carry in context (~3.6k tokens for
-// core vs ~10k for full). Tier membership sets (CORE_TOOLS,
+// ─── v6.1/v6.2: MCP toolset tiers (context-bloat reduction) ──────────────
+// GNOSYS_MCP_TOOLSET=core|standard|full (v6.2 default: core). Smaller tiers
+// cut the tools/list payload an agent must carry in context (~3.6k tokens
+// for core vs ~10k for full). v6.2: ALL tools are registered on every
+// server; tiers are applied by enabling/disabling RegisteredTool entries at
+// runtime, and the always-on core tool `gnosys_toolset` lets an agent
+// self-promote (or shrink) mid-session. Tier membership sets (CORE_TOOLS,
 // STANDARD_EXTRA_TOOLS) and helpers live near the end of this file, after
 // the tool registrations.
 export type McpToolset = "core" | "standard" | "full";
 
-/** Resolve the active toolset from GNOSYS_MCP_TOOLSET (unknown → warn, full). */
+/** Resolve the active toolset from GNOSYS_MCP_TOOLSET (unknown → warn, core). */
 export function resolveToolset(
   raw: string | undefined = process.env.GNOSYS_MCP_TOOLSET,
 ): McpToolset {
-  if (!raw) return "full";
+  if (!raw) return "core"; // v6.2: default flipped from full → core
   const v = raw.trim().toLowerCase();
   if (v === "core" || v === "standard" || v === "full") return v;
   console.error(
-    `gnosys MCP: unknown GNOSYS_MCP_TOOLSET="${raw}" (expected core|standard|full) — falling back to full`,
+    `gnosys MCP: unknown GNOSYS_MCP_TOOLSET="${raw}" (expected core|standard|full) — falling back to core`,
   );
-  return "full";
+  return "core";
 }
 
 /** One-line summary for server instructions so agents know tools may be hidden. */
 export function toolsetInstructions(toolset: McpToolset): string {
   if (toolset === "full") {
-    return "Toolset: full (all Gnosys tools registered). Set GNOSYS_MCP_TOOLSET=core|standard to reduce context usage.";
+    return "Toolset: full (all Gnosys tools active). Call gnosys_toolset (set: core|standard) to shrink context usage, or set GNOSYS_MCP_TOOLSET.";
   }
-  return `Toolset: ${toolset} (a reduced Gnosys tool tier — some tools are hidden). Set GNOSYS_MCP_TOOLSET=full to expose everything.`;
+  return `Toolset: ${toolset} (a reduced Gnosys tool tier — more tools exist). Call gnosys_toolset without args to see what higher tiers add, or with set: standard|full to expand in-session.`;
 }
 
 /** Server-level instructions surfaced in the MCP initialize response. */
@@ -198,13 +201,36 @@ const regPrompt: typeof server.prompt = ((...args: unknown[]) => {
 const regResource: typeof server.resource = ((...args: unknown[]) => {
   _registrations.push({ name: null, register: (s) => (s.resource as (...a: unknown[]) => unknown)(...args) });
 }) as typeof server.resource;
-/** Replay collected capability registrations onto a server instance,
- *  filtering tools by the active toolset tier (v6.1). */
-export function registerCapabilities(s: McpServer, toolset: McpToolset = resolveToolset()): void {
-  for (const r of _registrations) {
-    if (r.name !== null && !toolInToolset(r.name, toolset)) continue;
-    r.register(s);
+/** Per-server dynamic toolset state (v6.2). Each McpServer instance (stdio
+ *  singleton or per-HTTP-session) owns its own map of RegisteredTool handles
+ *  and its own active tier, so sessions switch tiers independently. */
+interface ToolsetState {
+  tier: McpToolset;
+  tools: Map<string, RegisteredTool>;
+}
+
+/** Enable/disable registered tools to match `tier`. The SDK emits
+ *  notifications/tools/list_changed automatically once connected. */
+function applyToolset(state: ToolsetState, tier: McpToolset): void {
+  for (const [name, rt] of state.tools) {
+    const want = toolInToolset(name, tier);
+    if (rt.enabled !== want) (want ? rt.enable : rt.disable).call(rt);
   }
+  state.tier = tier;
+}
+
+/** Replay collected capability registrations onto a server instance.
+ *  v6.2: ALL tools are registered; those outside the active tier are
+ *  disabled (not omitted), so the agent can switch tiers at runtime via
+ *  the always-enabled `gnosys_toolset` tool. */
+export function registerCapabilities(s: McpServer, toolset: McpToolset = resolveToolset()): void {
+  const state: ToolsetState = { tier: toolset, tools: new Map() };
+  for (const r of _registrations) {
+    const rt = r.register(s);
+    if (r.name !== null) state.tools.set(r.name, rt as RegisteredTool);
+  }
+  registerToolsetTool(s, state);
+  applyToolset(state, toolset);
 }
 
 /**
@@ -3968,6 +3994,7 @@ const CORE_TOOLS = new Set(
     "search", "hybrid_search", "federated_search", "reinforce",
     "preference_set", "preference_get", "briefing", "dashboard",
     "trace", "reflect", "traverse",
+    "toolset", // v6.2: gnosys_toolset — the tier switcher, never disabled
   ].map((t) => `gnosys_${t}`),
 );
 
@@ -3989,10 +4016,112 @@ export function toolTier(name: string): McpToolset {
 
 /** Is `name` visible under the given toolset? */
 export function toolInToolset(name: string, toolset: McpToolset): boolean {
+  if (name === "gnosys_toolset") return true; // v6.2: never disabled
   const tier = toolTier(name);
   if (toolset === "full") return true;
   if (toolset === "standard") return tier !== "full";
   return tier === "core";
+}
+
+// ─── v6.2: gnosys_toolset — runtime tier switching ───────────────────────
+
+/** One-line purposes for tools outside the core tier, used by the
+ *  gnosys_toolset catalog so agents can decide whether to expand. */
+const TOOL_SUMMARIES: Record<string, string> = {
+  // standard tier additions
+  gnosys_list: "list memories with filters",
+  gnosys_stats: "store statistics and counts",
+  gnosys_tags: "browse the categorized tag registry",
+  gnosys_timeline: "chronological memory activity view",
+  gnosys_working_set: "recently modified memories for context",
+  gnosys_semantic_search: "embedding-only similarity search",
+  gnosys_ask: "LLM Q&A over the memory store",
+  gnosys_lens: "filtered browse by category/tag/status",
+  gnosys_links: "wikilink connections for a memory",
+  gnosys_graph: "knowledge-graph neighborhood queries",
+  gnosys_attach: "attach a file to a memory",
+  gnosys_get_attachment: "retrieve a stored attachment",
+  gnosys_ingest_file: "ingest a document into memories",
+  gnosys_update_status: "guided project-status checklist writer",
+  gnosys_preference_delete: "delete a stored user preference",
+  // full tier additions
+  gnosys_tags_add: "register new tags in the registry",
+  gnosys_migrate: "migrate legacy stores into the central DB",
+  gnosys_stale: "list decayed/stale memories for review",
+  gnosys_commit_context: "pre-compaction context snapshot",
+  gnosys_history: "memory change/supersession history",
+  gnosys_bootstrap: "bootstrap a store from existing docs",
+  gnosys_import: "import external markdown memories",
+  gnosys_reindex: "rebuild search/embedding indexes",
+  gnosys_maintain: "duplicate-detection and decay maintenance",
+  gnosys_dearchive: "restore archived memories",
+  gnosys_reindex_graph: "rebuild the wikilink graph index",
+  gnosys_dream: "idle-time consolidation (Dream Mode)",
+  gnosys_export: "export memories to an Obsidian vault",
+  gnosys_stores: "debug layered store discovery",
+  gnosys_audit: "operation audit trail",
+  gnosys_sync: "regenerate generated IDE rules files",
+  gnosys_detect_ambiguity: "detect conflicting/ambiguous memories",
+  gnosys_portfolio: "cross-project HTML portfolio dashboard",
+  gnosys_remote_status: "NAS remote sync status",
+  gnosys_remote_push: "push local brain to NAS remote",
+  gnosys_remote_pull: "pull NAS remote into local brain",
+  gnosys_remote_resolve: "resolve remote sync conflicts",
+};
+
+/** Compact per-tier catalog of what expanding the toolset would add. */
+function toolsetCatalog(state: ToolsetState): string {
+  const byTier: Record<"standard" | "full", string[]> = { standard: [], full: [] };
+  for (const name of state.tools.keys()) {
+    const tier = toolTier(name);
+    if (tier === "core") continue;
+    byTier[tier].push(`- ${name} — ${TOOL_SUMMARIES[name] ?? "(no summary)"}`);
+  }
+  return [
+    `Active toolset: ${state.tier}.`,
+    "",
+    "Tools added by `standard` (includes core):",
+    ...byTier.standard.sort(),
+    "",
+    "Tools added by `full` (includes standard):",
+    ...byTier.full.sort(),
+    "",
+    'Call gnosys_toolset with { "set": "standard" } or { "set": "full" } to enable them (or "core" to shrink back).',
+  ].join("\n");
+}
+
+/** Register the always-enabled gnosys_toolset tool bound to one server's
+ *  ToolsetState. Registered per-server (not via regTool) so each HTTP
+ *  session and the stdio singleton switch tiers independently. */
+function registerToolsetTool(s: McpServer, state: ToolsetState): void {
+  s.tool(
+    "gnosys_toolset",
+    "Gnosys starts with a core toolset. Call without args to list tools available in higher tiers; call with set (core|standard|full) to expand or shrink the active toolset.",
+    { set: z.enum(["core", "standard", "full"]).optional().describe("Target tier to switch to. Omit to see the current tier and what higher tiers add.") },
+    async ({ set }) => {
+      if (!set) {
+        return { content: [{ type: "text" as const, text: toolsetCatalog(state) }] };
+      }
+      const before = state.tier;
+      const delta = { added: [] as string[], removed: [] as string[] };
+      for (const name of state.tools.keys()) {
+        const was = toolInToolset(name, before);
+        const now = toolInToolset(name, set);
+        if (!was && now) delta.added.push(name);
+        if (was && !now) delta.removed.push(name);
+      }
+      applyToolset(state, set);
+      const visible = [...state.tools.keys()].filter((n) => toolInToolset(n, set)).length + 1;
+      const lines = [
+        before === set
+          ? `Toolset already ${set} (${visible} tools visible).`
+          : `Toolset switched: ${before} → ${set} (${visible} tools now visible).`,
+      ];
+      if (delta.added.length) lines.push(`Now available: ${delta.added.sort().join(", ")}`);
+      if (delta.removed.length) lines.push(`Removed: ${delta.removed.sort().join(", ")}`);
+      return { content: [{ type: "text" as const, text: lines.join("\n") }] };
+    },
+  );
 }
 
 // ─── MCP Prompts (slash commands) ────────────────────────────────────────
