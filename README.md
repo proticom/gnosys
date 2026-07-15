@@ -118,6 +118,21 @@ This package installs two binaries:
 | `gnosys_ingest_file` | Ingest a file (PDF, DOCX, TXT, MD, images via vision LLM, audio/video via Whisper transcription) into Gnosys memory. |
 | `gnosys_attach` | Attach a small binary file (logo, diagram, screenshot, small PDF) inline to a memory (~10MB limit; syncs machine-to-machine). |
 | `gnosys_get_attachment` | Retrieve the binary attachment stored on a memory (base64 bytes, or write to disk via outputPath). |
+| `gnosys_trace` | Trace a codebase directory and store procedural "how" memories with call-chain relationships. |
+| `gnosys_reflect` | Record a real-world outcome against related memories, adjusting their confidence and linking them. |
+| `gnosys_traverse` | Walk relationship chains from a memory id (BFS, depth-limited), optionally filtered by direction or relationship types. |
+
+### Toolset tiers
+
+The full 55-tool list costs an agent roughly 10k tokens of context per session. Set `GNOSYS_MCP_TOOLSET` to register a smaller tier (unknown values warn on stderr and fall back to `full`):
+
+| Tier | Tools | Approx. context cost |
+|------|-------|----------------------|
+| `core` | 18 | ~3.6k tokens — the proven "Core 15" + trace/reflect/traverse |
+| `standard` | 33 | ~6.2k tokens — core + list/stats/tags/timeline/working_set/semantic_search/ask/lens/links/graph/attach/get_attachment/ingest_file/update_status/preference_delete |
+| `full` (default) | 55 | ~10k tokens — everything |
+
+The active toolset is announced in the MCP server instructions so agents know when tools are hidden. See [docs/mcp-toolsets.md](./docs/mcp-toolsets.md).
 
 ## Documentation
 

@@ -541,6 +541,7 @@ export function handleRequest(db: GnosysDB, req: SandboxRequest): SandboxRespons
           id: startId,
           depth = 3,
           rel_types,
+          direction = "both", // v6.1: "out" | "in" | "both"
         } = req.params as Record<string, any>;
 
         if (!startId) return { id: req.id, ok: false, error: "id is required" };
@@ -587,8 +588,8 @@ export function handleRequest(db: GnosysDB, req: SandboxRequest): SandboxRespons
           if (current.depth >= maxDepth) continue;
 
           // Get outgoing relationships
-          const outgoing = db.getRelationshipsFrom(current.id);
-          const incoming = db.getRelationshipsTo(current.id);
+          const outgoing = direction === "in" ? [] : db.getRelationshipsFrom(current.id);
+          const incoming = direction === "out" ? [] : db.getRelationshipsTo(current.id);
           const allRels = [
             ...outgoing.map((r) => ({ targetId: r.target_id, rel_type: r.rel_type })),
             ...incoming.map((r) => ({ targetId: r.source_id, rel_type: r.rel_type })),

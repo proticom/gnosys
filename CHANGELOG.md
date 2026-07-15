@@ -5,6 +5,30 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.1.0] — Unreleased
+
+### Added
+
+- **MCP trace/reflect/traverse tools.** The Phase-10 CLI commands are now
+  first-class MCP tools calling the same lib functions (no CLI shell-out):
+  `gnosys_trace` (build process-trace chains from a source directory),
+  `gnosys_reflect` (record a real-world outcome against related memories,
+  adjusting confidence), and `gnosys_traverse` (BFS walk of relationship
+  chains from a memory id, with optional `direction` and `relTypes` filters).
+- **MCP toolset tiers** (`GNOSYS_MCP_TOOLSET=core|standard|full`, default
+  `full`). `core` registers 18 tools (~3.6k tokens of tools/list payload),
+  `standard` 33 (~6.2k), `full` all 55 (~10k). Unknown values warn on stderr
+  and fall back to `full`. The active toolset is announced in the MCP server
+  instructions. See `docs/mcp-toolsets.md`.
+
+### Changed
+
+- **Context-bloat reduction.** The shared `projectRoot` parameter description
+  and the five largest tool definitions (`gnosys_import`, `gnosys_lens`,
+  `gnosys_add_structured`, `gnosys_update`, `gnosys_add`) were trimmed without
+  losing meaning (the `gnosys_add` agent-rejection gate is unchanged). A new
+  budget test guards against future re-bloat.
+
 ## [6.0.0] — 2026-07-12
 
 ### Changed (BREAKING)

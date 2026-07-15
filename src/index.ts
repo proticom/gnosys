@@ -88,10 +88,13 @@ const resolver = new GnosysResolver();
 let config: GnosysConfig = DEFAULT_CONFIG;
 
 // Create MCP server
-const server = new McpServer({
-  name: "gnosys",
-  version: "2.0.0",
-});
+const server = new McpServer(
+  {
+    name: "gnosys",
+    version: "2.0.0",
+  },
+  { instructions: makeServerInstructions() },
+);
 
 // v5.12: capability registrations (tool/prompt/resource) are collected as
 // replayable thunks so a fresh McpServer can be built per HTTP session, while
@@ -99,7 +102,44 @@ const server = new McpServer({
 // state (the shared brain/search/resolver), so sessions need no per-client
 // state — only the registrations are replayed. See registerCapabilities().
 type Registrar = (s: McpServer) => void;
-const _registrations: Registrar[] = [];
+/** v6.1: tool registrations carry their name so registerCapabilities can
+ *  filter by the active toolset tier. Prompts/resources have name=null and
+ *  always register. */
+const _registrations: Array<{ name: string | null; register: Registrar }> = [];
+
+// ─── v6.1: MCP toolset tiers (context-bloat reduction) ───────────────────
+// GNOSYS_MCP_TOOLSET=core|standard|full (default full). Smaller tiers cut
+// the tools/list payload an agent must carry in context (~3.6k tokens for
+// core vs ~10k for full). Tier membership sets (CORE_TOOLS,
+// STANDARD_EXTRA_TOOLS) and helpers live near the end of this file, after
+// the tool registrations.
+export type McpToolset = "core" | "standard" | "full";
+
+/** Resolve the active toolset from GNOSYS_MCP_TOOLSET (unknown → warn, full). */
+export function resolveToolset(
+  raw: string | undefined = process.env.GNOSYS_MCP_TOOLSET,
+): McpToolset {
+  if (!raw) return "full";
+  const v = raw.trim().toLowerCase();
+  if (v === "core" || v === "standard" || v === "full") return v;
+  console.error(
+    `gnosys MCP: unknown GNOSYS_MCP_TOOLSET="${raw}" (expected core|standard|full) — falling back to full`,
+  );
+  return "full";
+}
+
+/** One-line summary for server instructions so agents know tools may be hidden. */
+export function toolsetInstructions(toolset: McpToolset): string {
+  if (toolset === "full") {
+    return "Toolset: full (all Gnosys tools registered). Set GNOSYS_MCP_TOOLSET=core|standard to reduce context usage.";
+  }
+  return `Toolset: ${toolset} (a reduced Gnosys tool tier — some tools are hidden). Set GNOSYS_MCP_TOOLSET=full to expose everything.`;
+}
+
+/** Server-level instructions surfaced in the MCP initialize response. */
+function makeServerInstructions(): string {
+  return `Gnosys — persistent memory for AI agents. ${toolsetInstructions(resolveToolset())}`;
+}
 
 // v5.12.1 reliability: every tool handler resolves a ToolContext whose
 // clientRead (v13 sync) may own a DB handle. Historically only 8 of 52
@@ -147,17 +187,24 @@ const regTool: typeof server.tool = ((...args: unknown[]) => {
       typeof args[0] === "string" ? args[0] : "tool",
     );
   }
-  _registrations.push((s) => (s.tool as (...a: unknown[]) => unknown)(...args));
+  _registrations.push({
+    name: typeof args[0] === "string" ? args[0] : null,
+    register: (s) => (s.tool as (...a: unknown[]) => unknown)(...args),
+  });
 }) as typeof server.tool;
 const regPrompt: typeof server.prompt = ((...args: unknown[]) => {
-  _registrations.push((s) => (s.prompt as (...a: unknown[]) => unknown)(...args));
+  _registrations.push({ name: null, register: (s) => (s.prompt as (...a: unknown[]) => unknown)(...args) });
 }) as typeof server.prompt;
 const regResource: typeof server.resource = ((...args: unknown[]) => {
-  _registrations.push((s) => (s.resource as (...a: unknown[]) => unknown)(...args));
+  _registrations.push({ name: null, register: (s) => (s.resource as (...a: unknown[]) => unknown)(...args) });
 }) as typeof server.resource;
-/** Replay all collected capability registrations onto a server instance. */
-export function registerCapabilities(s: McpServer): void {
-  for (const r of _registrations) r(s);
+/** Replay collected capability registrations onto a server instance,
+ *  filtering tools by the active toolset tier (v6.1). */
+export function registerCapabilities(s: McpServer, toolset: McpToolset = resolveToolset()): void {
+  for (const r of _registrations) {
+    if (r.name !== null && !toolInToolset(r.name, toolset)) continue;
+    r.register(s);
+  }
 }
 
 /**
@@ -224,7 +271,7 @@ let centralDb: GnosysDB | null = null;
 
 /** Common Zod schema fragment for projectRoot parameter */
 const projectRootParam = z.string().optional().describe(
-  "Optional project root path for multi-project support. When provided, this tool operates on projectRoot/.gnosys instead of the default store. Use gnosys_stores to see all available stores."
+  "Project root path; routes the call to that project's store."
 );
 
 /**
@@ -771,17 +818,13 @@ regTool(
 // ─── Tool: gnosys_add ────────────────────────────────────────────────────
 regTool(
   "gnosys_add",
-  "DO NOT USE if you are an LLM agent — call gnosys_add_structured instead (you structure the memory yourself; no redundant server-side LLM call). This freeform tool is REJECTED by default over MCP and only works when the operator sets GNOSYS_ALLOW_FREEFORM_ADD=1 for genuine non-agent callers (scripts, cron). Writes to the project store by default. Use store='personal' for cross-project knowledge, or store='global' to explicitly write to shared org knowledge.",
+  "DO NOT USE if you are an LLM agent — call gnosys_add_structured instead. This freeform tool is REJECTED by default over MCP; only works when the operator sets GNOSYS_ALLOW_FREEFORM_ADD=1 for genuine non-agent callers (scripts, cron).",
   {
-    input: z
-      .string()
-      .describe(
-        "Raw text input. Can be a decision, concept, fact, observation, or any knowledge."
-      ),
+    input: z.string().describe("Raw text to remember"),
     store: z
       .enum(["project", "personal", "global"])
       .optional()
-      .describe("Which store to write to (default: project). Global requires explicit intent."),
+      .describe("Target store (default: project)"),
     author: z
       .enum(["human", "ai", "human+ai"])
       .optional()
@@ -942,19 +985,19 @@ regTool(
 // ─── Tool: gnosys_add_structured ─────────────────────────────────────────
 regTool(
   "gnosys_add_structured",
-  "Preferred for LLM agents: add a memory with structured fields you supply (title, category, tags, content) — makes no server-side LLM call. Writes to the project store by default. Use store='global' to explicitly write to shared org knowledge.",
+  "Preferred for LLM agents: add a memory with structured fields you supply (title, category, tags, content) — no server-side LLM call.",
   {
     title: z.string().describe("Memory title"),
-    category: z.string().describe("Category directory name"),
+    category: z.string().describe("Category name"),
     tags: z
       .record(z.string(), z.array(z.string()))
       .describe("Tags object, e.g. { domain: ['auth'], type: ['decision'] }"),
     relevance: z
       .string()
       .optional()
-      .describe("Keyword cloud for discovery search. Space-separated terms describing contexts where this memory is useful."),
+      .describe("Space-separated keyword cloud for discovery search"),
     content: z.string().describe("Memory content as markdown"),
-    store: z.enum(["project", "personal", "global"]).optional().describe("Target store (default: project). Global requires explicit intent."),
+    store: z.enum(["project", "personal", "global"]).optional().describe("Target store (default: project)"),
     author: z.enum(["human", "ai", "human+ai"]).optional(),
     authority: z
       .enum(["declared", "observed", "imported", "inferred"])
@@ -1348,13 +1391,9 @@ regTool(
 // ─── Tool: gnosys_update ─────────────────────────────────────────────────
 regTool(
   "gnosys_update",
-  "Update an existing memory's frontmatter and/or content. Specify the memory path and the fields to change.",
+  "Update an existing memory's fields and/or content by id or path.",
   {
-    path: z
-      .string()
-      .describe(
-        "Path to memory, optionally prefixed with store layer (e.g., 'project:decisions/auth.md')"
-      ),
+    path: z.string().describe("Memory id or path"),
     title: z.string().optional().describe("New title"),
     tags: z
       .record(z.string(), z.array(z.string()))
@@ -1365,22 +1404,10 @@ regTool(
       .optional()
       .describe("New status"),
     confidence: z.number().min(0).max(1).optional().describe("New confidence"),
-    supersedes: z
-      .string()
-      .optional()
-      .describe("ID of memory this supersedes"),
-    relevance: z
-      .string()
-      .optional()
-      .describe("Updated relevance keyword cloud for discovery"),
-    superseded_by: z
-      .string()
-      .optional()
-      .describe("ID of memory that supersedes this one"),
-    content: z
-      .string()
-      .optional()
-      .describe("New markdown content (replaces existing body)"),
+    supersedes: z.string().optional().describe("ID this memory supersedes"),
+    relevance: z.string().optional().describe("New relevance keyword cloud"),
+    superseded_by: z.string().optional().describe("ID that supersedes this one"),
+    content: z.string().optional().describe("New markdown content (replaces body)"),
     projectRoot: projectRootParam,
   },
   async ({
@@ -1777,11 +1804,11 @@ regTool(
 // ─── Tool: gnosys_lens ──────────────────────────────────────────────────
 regTool(
   "gnosys_lens",
-  "Filtered view of memories. Combine criteria to focus on specific subsets — e.g., 'active decisions about auth with confidence > 0.8'. Use AND (default) to require all criteria, or OR to match any.",
+  "Filtered view of memories — combine category/tag/status/confidence/date criteria.",
   {
     category: z.string().optional().describe("Filter by category"),
     tags: z.array(z.string()).optional().describe("Filter by tags"),
-    tagMatchMode: z.enum(["any", "all"]).optional().describe("'any' = has any listed tag (default), 'all' = must have every listed tag"),
+    tagMatchMode: z.enum(["any", "all"]).optional().describe("Match any (default) or all listed tags"),
     status: z.array(z.enum(["active", "archived", "superseded"])).optional().describe("Filter by status"),
     author: z.array(z.enum(["human", "ai", "human+ai"])).optional().describe("Filter by author"),
     authority: z.array(z.enum(["declared", "observed", "imported", "inferred"])).optional().describe("Filter by authority"),
@@ -1791,7 +1818,7 @@ regTool(
     createdBefore: z.string().optional().describe("Created before ISO date"),
     modifiedAfter: z.string().optional().describe("Modified after ISO date"),
     modifiedBefore: z.string().optional().describe("Modified before ISO date"),
-    operator: z.enum(["AND", "OR"]).optional().describe("Compound operator when multiple filter groups are provided (default: AND)"),
+    operator: z.enum(["AND", "OR"]).optional().describe("Combine filter groups with AND (default) or OR"),
     projectRoot: projectRootParam,
   },
   async ({ category, tags, tagMatchMode, status, author, authority, minConfidence, maxConfidence, createdAfter, createdBefore, modifiedAfter, modifiedBefore, projectRoot }) => {
@@ -2084,19 +2111,19 @@ regTool(
 // ─── Tool: gnosys_import ─────────────────────────────────────────────────
 regTool(
   "gnosys_import",
-  "Bulk import structured data (CSV, JSON, JSONL) into Gnosys memories. Map source fields to title/category/content/tags/relevance. Use mode='llm' for smart ingestion with keyword clouds, or 'structured' for fast direct mapping. For large datasets (>100 records with LLM), the CLI is recommended: gnosys import <file>",
+  "Bulk import structured data (CSV, JSON, JSONL) into memories via a field mapping. For large LLM-mode datasets prefer the CLI: gnosys import <file>",
   {
     format: z.enum(["csv", "json", "jsonl"]).describe("Data format"),
     data: z.string().describe("File path, URL, or inline data"),
     mapping: z
       .record(z.string(), z.string())
       .describe(
-        "Map source fields to Gnosys fields. Keys are source field names, values are: title, category, content, tags, relevance. Example: {\"name\":\"title\", \"group\":\"category\", \"description\":\"content\"}"
+        "Source field → Gnosys field (title, category, content, tags, relevance), e.g. {\"name\":\"title\"}"
       ),
     mode: z
       .enum(["llm", "structured"])
       .optional()
-      .describe("Processing mode. 'llm' uses AI for keyword clouds and smart tagging (slower). 'structured' maps directly (fast). Default: structured"),
+      .describe("'llm' = AI keyword clouds (slow); 'structured' = direct mapping (default)"),
     dryRun: z.boolean().optional().describe("Preview without writing"),
     skipExisting: z.boolean().optional().describe("Skip records whose titles already exist"),
     limit: z.number().optional().describe("Max records to import"),
@@ -3777,6 +3804,197 @@ regTool(
   }
 );
 
+// ─── v6.1: Process tracing / reflection / traversal ─────────────────────
+// Same lib functions as the CLI `gnosys trace|reflect|traverse` commands —
+// never shells out to the CLI.
+
+/** Open the central DB for the trace/reflect/traverse tools (CLI parity). */
+async function openCentralDbForTrace(): Promise<GnosysDB> {
+  const db = new GnosysDB(GnosysDB.getCentralDbDir());
+  if (!db.isAvailable()) {
+    db.close();
+    throw new Error("GnosysDB not available. Install it with: npm install better-sqlite3");
+  }
+  return db;
+}
+
+regTool(
+  "gnosys_trace",
+  "Trace a codebase directory and store procedural 'how' memories with call-chain relationships.",
+  {
+    directory: z.string().describe("Source directory to trace"),
+    maxFiles: z.number().int().positive().optional().describe("Max source files to scan (default: 500)"),
+    projectRoot: projectRootParam,
+  },
+  async ({ directory, maxFiles, projectRoot }) => {
+    let db: GnosysDB | undefined;
+    try {
+      const ctx = await resolveToolContext(projectRoot);
+      const { traceCodebase } = await import("./lib/trace.js");
+      db = await openCentralDbForTrace();
+      const result = traceCodebase(db, directory, {
+        projectId: ctx.projectId || undefined,
+        maxFiles: maxFiles ?? 500,
+      });
+      return {
+        content: [{
+          type: "text" as const,
+          text: [
+            "Trace complete:",
+            `  Files scanned:         ${result.filesScanned}`,
+            `  Functions found:       ${result.functionsFound}`,
+            `  Memories created:      ${result.memoriesCreated}`,
+            `  Relationships created: ${result.relationshipsCreated}`,
+          ].join("\n"),
+        }],
+      };
+    } catch (err) {
+      return {
+        content: [{ type: "text" as const, text: formatMcpError("tracing codebase", err) }],
+        isError: true,
+      };
+    } finally {
+      db?.close();
+    }
+  }
+);
+
+regTool(
+  "gnosys_reflect",
+  "Record a real-world outcome against related memories, adjusting their confidence and linking them.",
+  {
+    outcome: z.string().describe("What happened (the outcome to reflect on)"),
+    memoryIds: z.array(z.string()).optional().describe("Memory IDs to relate to (default: FTS match on outcome)"),
+    success: z.boolean().optional().describe("Was it a success? (default: true)"),
+    notes: z.string().optional().describe("Additional notes"),
+    confidenceDelta: z.number().optional().describe("Custom confidence delta (e.g. 0.1 or -0.2)"),
+    projectRoot: projectRootParam,
+  },
+  async ({ outcome, memoryIds, success, notes, confidenceDelta }) => {
+    let db: GnosysDB | undefined;
+    try {
+      const { handleRequest } = await import("./sandbox/server.js");
+      db = await openCentralDbForTrace();
+      const params: Record<string, unknown> = { outcome, success: success !== false };
+      if (memoryIds?.length) params.memory_ids = memoryIds;
+      if (notes) params.notes = notes;
+      if (confidenceDelta != null) params.confidence_delta = confidenceDelta;
+      const res = handleRequest(db, { id: "mcp-reflect", method: "reflect", params });
+      if (!res.ok) {
+        return { content: [{ type: "text" as const, text: `Reflect failed: ${res.error}` }], isError: true };
+      }
+      const r = res.result as {
+        reflection_id: string;
+        outcome: string;
+        memories_updated: Array<{ id: string; confidence: number }>;
+        relationships_created: number;
+        confidence_delta: number;
+      };
+      const lines = [
+        `Reflection recorded: ${r.reflection_id} (${r.outcome})`,
+        `  Confidence delta:      ${r.confidence_delta > 0 ? "+" : ""}${r.confidence_delta.toFixed(2)}`,
+        `  Relationships created: ${r.relationships_created}`,
+        `  Memories updated:      ${r.memories_updated.length}`,
+        ...r.memories_updated.map((m) => `    - ${m.id} → confidence ${m.confidence.toFixed(2)}`),
+      ];
+      return { content: [{ type: "text" as const, text: lines.join("\n") }] };
+    } catch (err) {
+      return {
+        content: [{ type: "text" as const, text: formatMcpError("recording reflection", err) }],
+        isError: true,
+      };
+    } finally {
+      db?.close();
+    }
+  }
+);
+
+regTool(
+  "gnosys_traverse",
+  "Walk relationship chains from a memory id (BFS, depth-limited), optionally filtered by direction or relationship types.",
+  {
+    memoryId: z.string().describe("Starting memory ID"),
+    direction: z.enum(["out", "in", "both"]).optional().describe("Edge direction to follow (default: both)"),
+    depth: z.number().int().min(1).max(10).optional().describe("Max traversal depth (default: 3, max: 10)"),
+    relTypes: z.array(z.string()).optional().describe("Relationship types to follow, e.g. ['leads_to','requires']"),
+    projectRoot: projectRootParam,
+  },
+  async ({ memoryId, direction, depth, relTypes }) => {
+    let db: GnosysDB | undefined;
+    try {
+      const { handleRequest } = await import("./sandbox/server.js");
+      db = await openCentralDbForTrace();
+      const params: Record<string, unknown> = { id: memoryId, depth: depth ?? 3 };
+      if (direction) params.direction = direction;
+      if (relTypes?.length) params.rel_types = relTypes;
+      const res = handleRequest(db, { id: "mcp-traverse", method: "traverse", params });
+      if (!res.ok) {
+        return { content: [{ type: "text" as const, text: `Traverse failed: ${res.error}` }], isError: true };
+      }
+      const r = res.result as {
+        depth: number;
+        total: number;
+        nodes: Array<{ id: string; title: string; confidence: number; depth: number; via_rel?: string | null; via_from?: string | null }>;
+      };
+      const lines = [
+        `Traversal from ${memoryId} (depth: ${r.depth}, nodes: ${r.total}):`,
+        ...r.nodes.map((n) => {
+          const indent = "  ".repeat(n.depth + 1);
+          const via = n.via_rel ? ` ← [${n.via_rel}] from ${n.via_from}` : " (root)";
+          return `${indent}${n.id} — ${n.title} (${n.confidence.toFixed(2)})${via}`;
+        }),
+      ];
+      return { content: [{ type: "text" as const, text: lines.join("\n") }] };
+    } catch (err) {
+      return {
+        content: [{ type: "text" as const, text: formatMcpError("traversing memory chain", err) }],
+        isError: true,
+      };
+    } finally {
+      db?.close();
+    }
+  }
+);
+
+// ─── v6.1: Toolset tier membership (see McpToolset near top of file) ─────
+// Defined after all registrations so source-inspection tests that slice
+// from the first occurrence of a quoted tool name still hit the regTool
+// call. Only consulted at registerCapabilities() replay time.
+
+/** The proven Apple "Core 15" + the three process-trace tools. */
+const CORE_TOOLS = new Set(
+  [
+    "init", "add_structured", "add", "read", "update", "discover", "recall",
+    "search", "hybrid_search", "federated_search", "reinforce",
+    "preference_set", "preference_get", "briefing", "dashboard",
+    "trace", "reflect", "traverse",
+  ].map((t) => `gnosys_${t}`),
+);
+
+/** Additional tools available in the standard tier (core + these). */
+const STANDARD_EXTRA_TOOLS = new Set(
+  [
+    "list", "stats", "tags", "timeline", "working_set", "semantic_search",
+    "ask", "lens", "links", "graph", "attach", "get_attachment",
+    "ingest_file", "update_status", "preference_delete",
+  ].map((t) => `gnosys_${t}`),
+);
+
+/** Tier a tool belongs to (the smallest tier that includes it). */
+export function toolTier(name: string): McpToolset {
+  if (CORE_TOOLS.has(name)) return "core";
+  if (STANDARD_EXTRA_TOOLS.has(name)) return "standard";
+  return "full";
+}
+
+/** Is `name` visible under the given toolset? */
+export function toolInToolset(name: string, toolset: McpToolset): boolean {
+  const tier = toolTier(name);
+  if (toolset === "full") return true;
+  if (toolset === "standard") return tier !== "full";
+  return tier === "core";
+}
+
 // ─── MCP Prompts (slash commands) ────────────────────────────────────────
 // These appear as /gnosys-recall, /gnosys-discover, /gnosys-memorize in
 // Cursor, Claude Code, and Codex.
@@ -4199,7 +4417,10 @@ export async function startMcpServer() {
         authToken,
         log: (m) => console.error(`Gnosys MCP[http]: ${m}`),
         makeServer: () => {
-          const s = new McpServer({ name: "gnosys", version: "2.0.0" });
+          const s = new McpServer(
+            { name: "gnosys", version: "2.0.0" },
+            { instructions: makeServerInstructions() },
+          );
           registerCapabilities(s);
           return s;
         },

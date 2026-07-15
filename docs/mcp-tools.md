@@ -4,8 +4,8 @@ _Generated from `src/index.ts` by `scripts/gen-mcp-tools.mjs`. Do not edit by ha
 
 | Tool | Description |
 |------|-------------|
-| `gnosys_add` | DO NOT USE if you are an LLM agent — call gnosys_add_structured instead (you structure the memory yourself; no redundant server-side LLM call). This freeform tool is REJECTED by default over MCP and only works when the operator sets GNOSYS_ALLOW_FREEFORM_ADD=1 for genuine non-agent callers (scripts, cron). Writes to the project store by default. Use store='personal' for cross-project knowledge, or store='global' to explicitly write to shared org knowledge. |
-| `gnosys_add_structured` | Preferred for LLM agents: add a memory with structured fields you supply (title, category, tags, content) — makes no server-side LLM call. Writes to the project store by default. Use store='global' to explicitly write to shared org knowledge. |
+| `gnosys_add` | DO NOT USE if you are an LLM agent — call gnosys_add_structured instead. This freeform tool is REJECTED by default over MCP; only works when the operator sets GNOSYS_ALLOW_FREEFORM_ADD=1 for genuine non-agent callers (scripts, cron). |
+| `gnosys_add_structured` | Preferred for LLM agents: add a memory with structured fields you supply (title, category, tags, content) — no server-side LLM call. |
 | `gnosys_ask` | Ask a natural-language question and get a synthesized answer with citations from the entire vault. Uses hybrid search to find relevant memories, then LLM to synthesize a cited response. Citations are Obsidian wikilinks [[filename.md]]. Requires an LLM provider (Anthropic or Ollama) and embeddings (run gnosys_reindex first). |
 | `gnosys_attach` | Attach a small binary file (logo, diagram, screenshot, small PDF) directly to a memory. The bytes are stored inline in the memory row, so the attachment travels machine-to-machine over the normal sync and works with a remote/dockerized server (no shared filesystem). Limit ~10MB — use gnosys_ingest_file for large media. |
 | `gnosys_audit` | View the audit trail of all memory operations (reads, writes, reinforcements, dearchives, maintenance). Shows a timeline of what happened and when. Useful for debugging 'why did the agent forget X?' |
@@ -23,10 +23,10 @@ _Generated from `src/index.ts` by `scripts/gen-mcp-tools.mjs`. Do not edit by ha
 | `gnosys_graph` | Show the full cross-reference graph across all memories. Reveals clusters, orphaned links, and the most-connected memories. |
 | `gnosys_history` | View audit history for a memory. Shows what changed and when based on the audit log. |
 | `gnosys_hybrid_search` | Search memories using hybrid keyword + semantic search with Reciprocal Rank Fusion. Combines FTS5 keyword matching with embedding-based semantic similarity for best results. Run gnosys_reindex first if embeddings don't exist yet. |
-| `gnosys_import` | Bulk import structured data (CSV, JSON, JSONL) into Gnosys memories. Map source fields to title/category/content/tags/relevance. Use mode='llm' for smart ingestion with keyword clouds, or 'structured' for fast direct mapping. For large datasets (>100 records with LLM), the CLI is recommended: gnosys import <file> |
+| `gnosys_import` | Bulk import structured data (CSV, JSON, JSONL) into memories via a field mapping. For large LLM-mode datasets prefer the CLI: gnosys import <file> |
 | `gnosys_ingest_file` | Ingest a file (PDF, DOCX, TXT, MD, images via vision LLM, audio/video via Whisper transcription) into Gnosys memory. Extracts text, splits into chunks, and creates atomic memories. Supports LLM-powered structuring or fast structured mode. |
 | `gnosys_init` | Initialize Gnosys in a project directory. Creates .gnosys/ with project identity (gnosys.json), registers the project in the central DB (~/.gnosys/gnosys.db), and sets up tag registry. You MUST run this before any other Gnosys tool in a new project. Pass the full absolute path to the project root. |
-| `gnosys_lens` | Filtered view of memories. Combine criteria to focus on specific subsets — e.g., 'active decisions about auth with confidence > 0.8'. Use AND (default) to require all criteria, or OR to match any. |
+| `gnosys_lens` | Filtered view of memories — combine category/tag/status/confidence/date criteria. |
 | `gnosys_links` | Show wikilinks for a specific memory — outgoing [[links]] and backlinks from other memories. Obsidian-compatible [[Title]] and [[path\|display]] syntax. |
 | `gnosys_list` | List memories across all stores, optionally filtered by category, tag, or store layer. |
 | `gnosys_maintain` | Run vault maintenance: detect duplicate memories, apply confidence decay, consolidate similar memories. Use --dry-run mode first to see what would change. Requires embeddings (run gnosys_reindex first). |
@@ -37,6 +37,7 @@ _Generated from `src/index.ts` by `scripts/gen-mcp-tools.mjs`. Do not edit by ha
 | `gnosys_preference_set` | Set a user preference. Preferences are stored in the central DB as user-scoped memories. They persist across all projects and are injected into agent rules files on `gnosys sync`. Use this to record workflow conventions, coding standards, tool preferences, etc. |
 | `gnosys_read` | Read a specific memory. Accepts a memory ID (e.g., 'arch-012') or layer-prefixed path (e.g., 'project:decisions/why-not-rag.md'). Without a prefix, searches all stores in precedence order. |
 | `gnosys_recall` | Fast memory recall — inject relevant memories as context. Returns <gnosys-recall> block. In aggressive mode (default), always returns top memories even at medium relevance. A wildcard query ('*') returns the top memories by reinforcement/confidence/recency. Hosts with gnosys hooks installed (via gnosys init) already get this automatically per prompt. |
+| `gnosys_reflect` | Record a real-world outcome against related memories, adjusting their confidence and linking them. |
 | `gnosys_reindex` | Rebuild all semantic embeddings from every memory file. Downloads the embedding model (~80 MB) on first run. Required before hybrid/semantic search can be used. Safe to re-run — fully regenerates the index. |
 | `gnosys_reindex_graph` | Build or rebuild the wikilink graph (.gnosys/graph.json). Parses all [[wikilinks]] across memories and generates a persistent JSON graph with nodes, edges, and stats. |
 | `gnosys_reinforce` | Signal whether a memory was useful. 'useful' reinforces it (resets decay). 'not_relevant' means routing was wrong, not the memory (memory unchanged). 'outdated' flags for review. |
@@ -53,6 +54,8 @@ _Generated from `src/index.ts` by `scripts/gen-mcp-tools.mjs`. Do not edit by ha
 | `gnosys_tags` | List all tags in the registry, grouped by category. |
 | `gnosys_tags_add` | Add a new tag to the registry. |
 | `gnosys_timeline` | View memory creation and modification activity over time. Shows how knowledge evolves by grouping memories into time periods. |
-| `gnosys_update` | Update an existing memory's frontmatter and/or content. Specify the memory path and the fields to change. |
+| `gnosys_trace` | Trace a codebase directory and store procedural 'how' memories with call-chain relationships. |
+| `gnosys_traverse` | Walk relationship chains from a memory id (BFS, depth-limited), optionally filtered by direction or relationship types. |
+| `gnosys_update` | Update an existing memory's fields and/or content by id or path. |
 | `gnosys_update_status` | Get the prompt/template for writing a dashboard-compatible status memory for this project. Returns instructions for creating a landscape memory with the correct heading format so the portfolio dashboard can parse it. Run this, then follow the instructions to analyze and write the status. |
 | `gnosys_working_set` | Get the implicit working set — recently modified memories for the current project. These represent the active context and get boosted in federated search. |
