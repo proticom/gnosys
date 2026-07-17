@@ -12,6 +12,7 @@
 import { describe, it, expect } from "vitest";
 import fs from "fs";
 import path from "path";
+import { readCliSource } from "./_helpers.js"; // v6.2.1 cli split
 
 const ROOT = path.resolve(__dirname, "..");
 
@@ -28,7 +29,7 @@ describe("v5.15 importConcurrency wiring markers", () => {
   });
 
   it("the --concurrency CLI flag still exists so it can win over config", () => {
-    const src = fs.readFileSync(path.join(ROOT, "cli.ts"), "utf8");
+    const src = readCliSource(); // v6.2.1 cli split: read src/cli.ts + src/cli/*.ts
     expect(src).toContain('--concurrency <n>');
   });
 });

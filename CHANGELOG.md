@@ -5,6 +5,16 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.2.1] — 2026-07-16
+
+### Changed
+
+- **Internal: cli.ts split into per-domain modules.** The 2,218-line command
+  monolith is now a 278-line entry point composing 16 modules under
+  `src/cli/`. Zero behavior change — verified byte-identical `--help`
+  output for all 111 commands, unchanged generated docs, and a new runtime
+  wiring test guarding that every declared command stays registered.
+
 ## [6.2.0] — 2026-07-14
 
 ### Added

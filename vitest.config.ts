@@ -69,6 +69,7 @@ export default defineConfig({
 
         // Large entry points tested via CLI integration, not unit tests
         "src/cli.ts",
+        "src/cli/**", // v6.2.1 cli split: registrations moved out of cli.ts, same rationale
         "src/index.ts",
       ],
       thresholds: {

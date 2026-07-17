@@ -11,13 +11,12 @@
  * action (the pattern `dream log` already used).
  */
 
-import { readFileSync } from "fs";
-import { join } from "path";
 import { describe, expect, it } from "vitest";
 import { Command } from "commander";
+import { readCliSource } from "./_helpers.js"; // v6.2.1 cli split
 
 describe("dream run --scheduled flag handling (v5.13.1)", () => {
-  const cli = readFileSync(join(process.cwd(), "src/cli.ts"), "utf-8");
+  const cli = readCliSource(); // v6.2.1 cli split: read src/cli.ts + src/cli/*.ts
 
   it("run action merges parent opts before calling runDreamCommand", () => {
     expect(cli).toContain(

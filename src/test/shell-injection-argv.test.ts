@@ -7,6 +7,7 @@ import { mkdirSync, writeFileSync, rmSync, existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { tmpdir } from "os";
 import { migrateProject, writeProjectIdentity } from "../lib/projectIdentity.js";
+import { readCliSource } from "./_helpers.js"; // v6.2.1 cli split
 
 describe("shell injection argv form", () => {
   let base: string;
@@ -54,7 +55,7 @@ describe("shell injection argv form", () => {
       join(process.cwd(), "src/lib/projectIdentity.ts"),
       "utf-8",
     );
-    const cli = readFileSync(join(process.cwd(), "src/cli.ts"), "utf-8");
+    const cli = readCliSource(); // v6.2.1 cli split: read src/cli.ts + src/cli/*.ts
     const statusCommand = readFileSync(
       join(process.cwd(), "src/lib/statusCommand.ts"),
       "utf-8",

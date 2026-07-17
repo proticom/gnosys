@@ -8,9 +8,9 @@
 import fs from "fs";
 import os from "os";
 import path from "path";
-import { readFileSync } from "fs";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { removeRulesBlock, removeRulesFromProject } from "../lib/rulesGen.js";
+import { readCliSource } from "./_helpers.js"; // v6.2.1 cli split
 
 const START = "<!-- GNOSYS:START -->";
 const END = "<!-- GNOSYS:END -->";
@@ -63,7 +63,7 @@ describe("removeRulesFromProject", () => {
 });
 
 describe("gnosys cleanup --rules wiring", () => {
-  const cli = readFileSync(path.join(process.cwd(), "src/cli.ts"), "utf-8");
+  const cli = readCliSource(); // v6.2.1 cli split: read src/cli.ts + src/cli/*.ts
 
   it("exposes --rules on the cleanup command and routes to removeRulesFromProject", () => {
     expect(cli).toContain('.option(\n    "--rules [dir]"');

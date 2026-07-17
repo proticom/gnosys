@@ -8,7 +8,17 @@ import fs from "fs";
 import path from "path";
 
 const REPO_ROOT = path.resolve(new URL(".", import.meta.url).pathname, "..");
-const CLI = path.join(REPO_ROOT, "src", "cli.ts");
+// v6.2.1 cli split: registrations live in src/cli/*.ts; concatenate the
+// sources in registration order (see the register* calls in src/cli.ts)
+// so the generated docs keep the original command ordering.
+const CLI_SOURCES = [
+  path.join(REPO_ROOT, "src", "cli.ts"),
+  ...[
+    "core.ts", "setup.ts", "project.ts", "memory.ts", "browse.ts",
+    "data.ts", "maintenance.ts", "dream.ts", "exportCmds.ts", "runtime.ts",
+    "remote.ts", "agent.ts", "sandbox.ts", "trace.ts", "web.ts",
+  ].map((f) => path.join(REPO_ROOT, "src", "cli", f)),
+];
 const OUT = path.join(REPO_ROOT, "docs", "cli.md");
 
 function collapseWhitespace(s) {
@@ -73,7 +83,7 @@ ${sections}
 }
 
 function main() {
-  const source = fs.readFileSync(CLI, "utf8");
+  const source = CLI_SOURCES.map((f) => fs.readFileSync(f, "utf8")).join("\n");
   const commands = extractCommands(source);
   if (commands.length === 0) {
     console.error("No CLI commands found in src/cli.ts");

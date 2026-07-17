@@ -29,7 +29,16 @@ import fs from "fs";
 import path from "path";
 
 const REPO_ROOT = path.resolve(new URL(".", import.meta.url).pathname, "..");
-const CLI = path.join(REPO_ROOT, "src", "cli.ts");
+// v6.2.1 cli split: registrations live in src/cli/*.ts; concatenate the
+// sources in registration order (see the register* calls in src/cli.ts).
+const CLI_SOURCES = [
+  path.join(REPO_ROOT, "src", "cli.ts"),
+  ...[
+    "core.ts", "setup.ts", "project.ts", "memory.ts", "browse.ts",
+    "data.ts", "maintenance.ts", "dream.ts", "exportCmds.ts", "runtime.ts",
+    "remote.ts", "agent.ts", "sandbox.ts", "trace.ts", "web.ts",
+  ].map((f) => path.join(REPO_ROOT, "src", "cli", f)),
+];
 const TEST_DIR = path.join(REPO_ROOT, "src", "test");
 const DOCS_DIR = path.join(REPO_ROOT, "docs", "commands");
 const OUT = path.resolve(REPO_ROOT, "..", "command-coverage-dashboard.data.json");
@@ -85,7 +94,23 @@ const GENERIC_HANDLERS = new Set([
 ]);
 
 // ── Parse cli.ts ──────────────────────────────────────────────────────────
-const src = fs.readFileSync(CLI, "utf8");
+// v6.2.1 cli split: concatenated parts + offsets so evidence lines can
+// point at the real file:line instead of a blob offset.
+const cliParts = CLI_SOURCES.map((f) => ({
+  file: path.relative(REPO_ROOT, f),
+  text: fs.readFileSync(f, "utf8"),
+}));
+const src = cliParts.map((p) => p.text).join("\n");
+
+function fileLineAt(idx) {
+  let offset = 0;
+  for (const part of cliParts) {
+    const len = part.text.length + 1; // +1 for the join("\n")
+    if (idx < offset + len) return `${part.file}:${lineAt(part.text, idx - offset)}`;
+    offset += len;
+  }
+  return `src/cli.ts:?`;
+}
 
 // Pass 1: variable → command name + receiver var (for full-path resolution).
 // Matches: const X = <receiver>.command("Y" ...)
@@ -114,7 +139,7 @@ for (let m; (m = cmdRe.exec(src)); ) {
   const fullArr = [...parentPath, leaf];
   const full = fullArr.join(" ");
   const idx = m.index;
-  const line = lineAt(src, idx);
+  const line = fileLineAt(idx); // v6.2.1 cli split: file:line across src/cli.ts + src/cli/*.ts
 
   // Window from this command to the next .command( or .action( for desc/options.
   const rest = src.slice(idx + m[0].length);
@@ -220,7 +245,7 @@ records.sort((a, b) => {
 const data = {
   generated: new Date().toISOString().slice(0, 10),
   repo: "gnosys-public",
-  cli_file: "src/cli.ts",
+  cli_file: "src/cli.ts + src/cli/*.ts", // v6.2.1 cli split
   snapshot_policy: "Local sprint visibility artifact only. Do not stage, commit, or push this dashboard.",
   note: "Coverage is a conservative static heuristic. green = a test references the command's handler function. amber = a domain test file exists but no handler-level test. red = no test reference at all. Amber/red flags command-level test gaps, not necessarily untested logic.",
   summary: {
@@ -253,7 +278,7 @@ function groupSlug(title) {
 function buildEvidence(cmd) {
   const handlers = (cmd.handlers || []).join(", ");
   const testFiles = (cmd.tests || []).map((t) => t.file).join(", ");
-  return `src/cli.ts:${cmd.line || "?"} · handlers: ${handlers} · tests: ${testFiles}`;
+  return `${cmd.line || "src/cli.ts:?"} · handlers: ${handlers} · tests: ${testFiles}`;
 }
 
 function buildReviewerGuidance(cmd, taskId) {

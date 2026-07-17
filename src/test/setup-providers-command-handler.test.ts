@@ -1,9 +1,8 @@
-import { readFileSync } from "fs";
-import { join } from "path";
 import { describe, expect, it } from "vitest";
+import { readCliSource } from "./_helpers.js"; // v6.2.1 cli split
 
 describe("gnosys setup providers command wiring", () => {
-  const cli = readFileSync(join(process.cwd(), "src/cli.ts"), "utf-8");
+  const cli = readCliSource(); // v6.2.1 cli split: read src/cli.ts + src/cli/*.ts
 
   it("wires setup providers to runProvidersSetup", () => {
     expect(cli).toContain('.command("providers")');

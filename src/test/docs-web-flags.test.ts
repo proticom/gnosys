@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "fs";
 import path from "path";
+import { readCliSource } from "./_helpers.js"; // v6.2.1 cli split
 
 /**
  * Doc-drift guard for `gnosys web` command docs (v5.17.0 semantic search).
@@ -12,7 +13,7 @@ import path from "path";
  */
 
 const root = path.resolve(__dirname, "..", "..");
-const cliSource = readFileSync(path.join(root, "src", "cli.ts"), "utf-8");
+const cliSource = readCliSource(); // v6.2.1 cli split: read src/cli.ts + src/cli/*.ts
 
 const docFiles = [
   "docs/commands/web-build-index.md",
