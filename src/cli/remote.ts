@@ -161,7 +161,7 @@ program
     if (Object.keys(machine.roots).length === 0) {
       console.error("No project roots configured for this machine.");
       console.error(`Add roots to ${getMachineConfigPath()}, e.g.`);
-      console.error('  { "roots": { "dev": "/Users/edward/MSDev/projects" } }');
+      console.error('  { "roots": { "dev": "/Users/you/dev/projects" } }');
       process.exit(1);
     }
 

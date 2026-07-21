@@ -48,13 +48,13 @@ describe("Screen 13 — config set helpers", () => {
 
   it("classifyStore returns 'global' for ~/.gnosys", async () => {
     const { classifyStore } = await load();
-    expect(classifyStore("/Users/edward/.gnosys", "/Users/edward")).toBe("global");
+    expect(classifyStore("/Users/dev/.gnosys", "/Users/dev")).toBe("global");
   });
 
   it("classifyStore returns 'project' for any other path", async () => {
     const { classifyStore } = await load();
-    expect(classifyStore("/Volumes/Dev/proj/.gnosys", "/Users/edward")).toBe("project");
-    expect(classifyStore(path.join("/tmp/work", ".gnosys"), "/Users/edward")).toBe("project");
+    expect(classifyStore("/Volumes/Dev/proj/.gnosys", "/Users/dev")).toBe("project");
+    expect(classifyStore(path.join("/tmp/work", ".gnosys"), "/Users/dev")).toBe("project");
   });
 
   it("levenshtein computes edit distance correctly", async () => {

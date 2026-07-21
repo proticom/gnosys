@@ -1,0 +1,10 @@
+# Default owner for all paths. Last matching pattern wins.
+# Require a maintainer review when CODEOWNERS is enforced on PRs.
+* @edtadros
+
+# Protect ownership and security surfaces themselves.
+/.github/CODEOWNERS @edtadros
+/.github/dependabot.yml @edtadros
+/.github/workflows/ @edtadros
+/SECURITY.md @edtadros
+/docs/threat-model.md @edtadros

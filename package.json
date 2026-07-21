@@ -1,7 +1,7 @@
 {
   "name": "gnosys",
   "version": "6.2.1",
-  "description": "Gnosys — Persistent Memory for AI Agents. Sandbox-first runtime, central SQLite brain, federated search, Dream Mode, Web Knowledge Base, Obsidian export.",
+  "description": "Gnosys \u2014 Persistent Memory for AI Agents. Sandbox-first runtime, central SQLite brain, federated search, Dream Mode, Web Knowledge Base, Obsidian export.",
   "type": "module",
   "main": "dist/index.js",
   "exports": {
@@ -130,6 +130,7 @@
   },
   "overrides": {
     "prebuild-install": "^7.1.3",
-    "node-domexception": "null"
+    "node-domexception": "null",
+    "adm-zip": ">=0.6.0"
   }
 }

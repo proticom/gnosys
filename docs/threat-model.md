@@ -1,6 +1,6 @@
 # Gnosys Threat Model
 
-_Last reviewed: 2026-05-25. Scope: the `gnosys` npm package (CLI + MCP server). Companion: [SECURITY.md](../SECURITY.md)._
+_Last reviewed: 2026-07-20. Scope: the `gnosys` npm package (CLI + MCP server). Companion: [SECURITY.md](../SECURITY.md)._
 
 Gnosys is a **single-user, local-first** memory tool: a CLI and an MCP server that
 read/write a central SQLite brain on the user's own machine. This document lists the
@@ -20,7 +20,7 @@ explicitly accepted as user-owned.
 |---|---|---|
 | Dependency CVEs | `npm audit` in CI (`--audit-level=high`); `audit-ci --moderate` clean; 0 advisories | A.1 |
 | Supply-chain tampering | Committed `package-lock.json`; all deps caret-pinned (no `*`/`latest`); optional native deps guarded (not load-bearing) | A.2 |
-| Secrets committed to the repo | `secretlint` clean; git history clean; keys never hard-coded | A.3 |
+| Secrets committed to the repo | GitHub secret scanning + push protection; `.gitignore` for `.env`/`*.db`; keys never hard-coded; PR checklist; Dependabot | A.3 |
 | Secrets leaked in logs | `redactKey()` masks the configured key + known prefixes (`sk-ant-`,`sk-`,`gsk_`,`xai-`,`Bearer`); keys never placed in LLM context; provider-config logs show *source* not value | A.4 |
 | SSRF via user-supplied URLs (import / web ingest) | `safeFetch`/`isSafeUrl` block loopback, `localhost`, RFC1918, link-local/cloud-metadata (169.254.169.254), IPv6 `::1`, `0.0.0.0`, and integer-encoded IPs; redirects re-checked per hop | A.7 |
 | Path traversal on export | Memory `category`/`title` slugified before path join; `assertWithin()` resolves + verifies every write stays under the export dir (blocks prefix-confusion) | A.5 |

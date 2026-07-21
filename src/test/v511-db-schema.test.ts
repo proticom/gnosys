@@ -42,7 +42,7 @@ describe("v5.11 schema: fresh DB", () => {
   it("persists root_id/rel_path on projects", () => {
     const db = new GnosysDB(tmp);
     db.insertProject(project({
-      id: "p1", name: "gnosys-ai", working_directory: "/Users/edward/MSDev/projects/gnosys-ai",
+      id: "p1", name: "gnosys-ai", working_directory: "/Users/dev/projects/gnosys-ai",
       root_id: "dev", rel_path: "gnosys-ai",
     }));
     const got = db.getProject("p1");
@@ -64,18 +64,18 @@ describe("v5.11 schema: fresh DB", () => {
   it("supports per-machine project_locations CRUD", () => {
     const db = new GnosysDB(tmp);
     const now = new Date().toISOString();
-    db.setProjectLocation({ project_id: "p1", machine_id: "studio", abs_path: "/Users/edward/MSDev/projects/p1", modified: now });
-    db.setProjectLocation({ project_id: "p1", machine_id: "mbp", abs_path: "/Users/edward/MBPDev/projects/p1", modified: now });
+    db.setProjectLocation({ project_id: "p1", machine_id: "studio", abs_path: "/Users/dev/projects/p1", modified: now });
+    db.setProjectLocation({ project_id: "p1", machine_id: "mbp", abs_path: "/Users/dev/mbp-projects/p1", modified: now });
 
-    expect(db.getProjectLocation("p1", "studio")?.abs_path).toBe("/Users/edward/MSDev/projects/p1");
-    expect(db.getProjectLocation("p1", "mbp")?.abs_path).toBe("/Users/edward/MBPDev/projects/p1");
+    expect(db.getProjectLocation("p1", "studio")?.abs_path).toBe("/Users/dev/projects/p1");
+    expect(db.getProjectLocation("p1", "mbp")?.abs_path).toBe("/Users/dev/mbp-projects/p1");
     expect(db.getProjectLocation("p1", "absent")).toBeNull();
     expect(db.getProjectLocations("p1").length).toBe(2);
 
     // Each machine owns its row — re-setting one does not touch the other.
     db.setProjectLocation({ project_id: "p1", machine_id: "studio", abs_path: "/new/studio/path", modified: now });
     expect(db.getProjectLocation("p1", "studio")?.abs_path).toBe("/new/studio/path");
-    expect(db.getProjectLocation("p1", "mbp")?.abs_path).toBe("/Users/edward/MBPDev/projects/p1");
+    expect(db.getProjectLocation("p1", "mbp")?.abs_path).toBe("/Users/dev/mbp-projects/p1");
 
     db.deleteProjectLocation("p1", "studio");
     expect(db.getProjectLocation("p1", "studio")).toBeNull();
@@ -124,15 +124,15 @@ describe("v5.11 schema: migration from v3", () => {
 
     // New columns are writable.
     db.insertProject(project({
-      id: "new1", name: "New", working_directory: "/Users/edward/MSDev/projects/new",
+      id: "new1", name: "New", working_directory: "/Users/dev/projects/new",
       root_id: "dev", rel_path: "new",
     }));
     expect(db.getProject("new1")?.rel_path).toBe("new");
 
     // project_locations table exists and works.
     const now = new Date().toISOString();
-    db.setProjectLocation({ project_id: "legacy1", machine_id: "studio", abs_path: "/Users/edward/MSDev/projects/legacy", modified: now });
-    expect(db.getProjectLocation("legacy1", "studio")?.abs_path).toBe("/Users/edward/MSDev/projects/legacy");
+    db.setProjectLocation({ project_id: "legacy1", machine_id: "studio", abs_path: "/Users/dev/projects/legacy", modified: now });
+    expect(db.getProjectLocation("legacy1", "studio")?.abs_path).toBe("/Users/dev/projects/legacy");
 
     db.close();
   });

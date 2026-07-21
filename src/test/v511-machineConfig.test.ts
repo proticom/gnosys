@@ -140,8 +140,8 @@ describe("v5.11 machineConfig: root <-> relative path helpers", () => {
     machineId: "m",
     hostname: "h",
     roots: {
-      dev: "/Users/edward/MSDev/projects",
-      docs: "/Users/edward/MSDev/projects/docs-area",
+      dev: "/Users/dev/projects",
+      docs: "/Users/dev/projects/docs-area",
     },
     remote: { enabled: false },
     schemaVersion: 1,
@@ -149,7 +149,7 @@ describe("v5.11 machineConfig: root <-> relative path helpers", () => {
 
   it("absPathFromRoot joins root + rel, returns null when root/rel missing", () => {
     expect(absPathFromRoot(cfg, "dev", "gnosys-ai/gnosys-public")).toBe(
-      "/Users/edward/MSDev/projects/gnosys-ai/gnosys-public",
+      "/Users/dev/projects/gnosys-ai/gnosys-public",
     );
     expect(absPathFromRoot(cfg, "nope", "x")).toBeNull();
     expect(absPathFromRoot(cfg, null, "x")).toBeNull();
@@ -157,16 +157,16 @@ describe("v5.11 machineConfig: root <-> relative path helpers", () => {
   });
 
   it("relPathUnderRoot picks the deepest matching root", () => {
-    const r = relPathUnderRoot(cfg, "/Users/edward/MSDev/projects/gnosys-ai/gnosys-public");
+    const r = relPathUnderRoot(cfg, "/Users/dev/projects/gnosys-ai/gnosys-public");
     expect(r).toEqual({ rootId: "dev", relPath: "gnosys-ai/gnosys-public" });
 
     // A path under the nested docs root should prefer the deeper root.
-    const d = relPathUnderRoot(cfg, "/Users/edward/MSDev/projects/docs-area/guide");
+    const d = relPathUnderRoot(cfg, "/Users/dev/projects/docs-area/guide");
     expect(d).toEqual({ rootId: "docs", relPath: "guide" });
   });
 
   it("relPathUnderRoot returns null for a path outside every root", () => {
     expect(relPathUnderRoot(cfg, "/Volumes/Dev/projects/gnosys-ai")).toBeNull();
-    expect(relPathUnderRoot(cfg, "/Users/edward")).toBeNull();
+    expect(relPathUnderRoot(cfg, "/Users/dev")).toBeNull();
   });
 });
