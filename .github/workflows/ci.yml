@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main, master]
 
+# Least privilege: jobs only need the checkout + read tree.
+permissions:
+  contents: read
+
 jobs:
   build-and-test:
     runs-on: ${{ matrix.os }}
@@ -24,10 +28,10 @@ jobs:
             node-version: 20
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
@@ -55,7 +59,7 @@ jobs:
       # actionable message).
       - name: Upload coverage report
         if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.node-version == 24 }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: coverage-report
           path: coverage/
@@ -96,9 +100,9 @@ jobs:
   typecheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: 24
           cache: npm
@@ -119,9 +123,9 @@ jobs:
     needs: build-and-test
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: 24
           cache: npm
@@ -194,9 +198,9 @@ jobs:
     needs: build-and-test
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: 24
           cache: npm
@@ -242,9 +246,9 @@ jobs:
     # (e2e-setup/). Ubuntu runners ship Docker; ~3-4 min.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
       - name: Use Node.js 22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: npm
@@ -252,3 +256,40 @@ jobs:
         run: npm ci
       - name: Setup UI e2e (Docker, no network)
         run: npm run test:e2e-setup
+
+  # Single required status check for branch protection / rulesets.
+  # Aggregates the critical CI jobs so merge gates stay stable as the
+  # matrix evolves (OpenClaw-style gate pattern for small OSS).
+  ci-gate:
+    name: ci-gate
+    runs-on: ubuntu-latest
+    needs:
+      - build-and-test
+      - typecheck
+      - multi-project-test
+      - network-share-simulation
+      - setup-ui-e2e
+    if: always()
+    steps:
+      - name: Require all CI jobs to succeed
+        run: |
+          set -euo pipefail
+          echo "build-and-test: ${{ needs.build-and-test.result }}"
+          echo "typecheck: ${{ needs.typecheck.result }}"
+          echo "multi-project-test: ${{ needs.multi-project-test.result }}"
+          echo "network-share-simulation: ${{ needs.network-share-simulation.result }}"
+          echo "setup-ui-e2e: ${{ needs.setup-ui-e2e.result }}"
+          for r in \
+            "${{ needs.build-and-test.result }}" \
+            "${{ needs.typecheck.result }}" \
+            "${{ needs.multi-project-test.result }}" \
+            "${{ needs.network-share-simulation.result }}" \
+            "${{ needs.setup-ui-e2e.result }}"
+          do
+            if [ "$r" != "success" ]; then
+              echo "CI gate failed: a required job result was '$r'"
+              exit 1
+            fi
+          done
+          echo "CI gate passed."
+

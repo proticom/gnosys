@@ -69,7 +69,7 @@ No roots configured:
 ```text
 No project roots configured for this machine.
 Add roots to /Users/you/.gnosys/machine.json, e.g.
-  { "roots": { "dev": "/Users/edward/MSDev/projects" } }
+  { "roots": { "dev": "/Users/you/dev/projects" } }
 ```
 
 Central DB unavailable:

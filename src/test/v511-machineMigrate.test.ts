@@ -91,16 +91,16 @@ describe("v5.11 deriveCommonRoot", () => {
     fs.writeFileSync(
       getProjectRegistryPath(),
       JSON.stringify([
-        "/Users/edward/MSDev/projects/gnosys-ai",
-        "/Users/edward/MSDev/projects/mavenn",
-        "/Users/edward/MSDev/projects/paperboy",
-        "/Users/edward/Documents/outlier",
+        "/Users/dev/projects/gnosys-ai",
+        "/Users/dev/projects/mavenn",
+        "/Users/dev/projects/paperboy",
+        "/Users/dev/Documents/outlier",
         "/tmp/should-be-ignored",
         "/var/folders/xx/tmpproj",
       ]),
       "utf-8",
     );
-    expect(deriveCommonRoot()).toBe("/Users/edward/MSDev/projects");
+    expect(deriveCommonRoot()).toBe("/Users/dev/projects");
   });
 
   it("returns null when the registry has no usable entries", () => {

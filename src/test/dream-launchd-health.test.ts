@@ -20,8 +20,8 @@ const TEMPLATE_BODY = `<?xml version="1.0" encoding="UTF-8"?>
   <string>com.gnosys.dream</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/Users/edward/.nvm/versions/node/v22.17.1/bin/node</string>
-    <string>/Users/edward/.nvm/versions/node/v22.17.1/bin/gnosys</string>
+    <string>/Users/dev/.nvm/versions/node/v22.17.1/bin/node</string>
+    <string>/Users/dev/.nvm/versions/node/v22.17.1/bin/gnosys</string>
     <string>dream</string>
     <string>run</string>
     <string>--scheduled</string>
@@ -33,9 +33,9 @@ const TEMPLATE_BODY = `<?xml version="1.0" encoding="UTF-8"?>
   <key>EnvironmentVariables</key>
   <dict>
     <key>HOME</key>
-    <string>/Users/edward</string>
+    <string>/Users/dev</string>
     <key>PATH</key>
-    <string>/Users/edward/.nvm/versions/node/v22.17.1/bin:/usr/local/bin:/usr/bin:/bin</string>
+    <string>/Users/dev/.nvm/versions/node/v22.17.1/bin:/usr/local/bin:/usr/bin:/bin</string>
   </dict>
 </dict>
 </plist>
@@ -44,8 +44,8 @@ const TEMPLATE_BODY = `<?xml version="1.0" encoding="UTF-8"?>
 describe("parseDreamPlistPaths", () => {
   it("extracts node + cli paths from the exact template shape", () => {
     const { nodePath, cliPath } = parseDreamPlistPaths(TEMPLATE_BODY);
-    expect(nodePath).toBe("/Users/edward/.nvm/versions/node/v22.17.1/bin/node");
-    expect(cliPath).toBe("/Users/edward/.nvm/versions/node/v22.17.1/bin/gnosys");
+    expect(nodePath).toBe("/Users/dev/.nvm/versions/node/v22.17.1/bin/node");
+    expect(cliPath).toBe("/Users/dev/.nvm/versions/node/v22.17.1/bin/gnosys");
   });
 
   it("unescapes XML entities in paths", () => {

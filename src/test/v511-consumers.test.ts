@@ -15,7 +15,7 @@ import { createTestEnv, cleanupTestEnv, makeMemory, type TestEnv } from "./_help
 const STUDIO: MachineConfig = {
   machineId: "studio-id",
   hostname: "studio",
-  roots: { dev: "/Users/edward/MSDev/projects" },
+  roots: { dev: "/Users/dev/projects" },
   remote: { enabled: false },
   schemaVersion: 1,
 };
@@ -43,7 +43,7 @@ describe("v5.11 effectiveProjectPath fallback", () => {
   it("resolves via root when machine is present", () => {
     const p = mkProj({ id: "p1", working_directory: "/stale/path", root_id: "dev", rel_path: "x" });
     env.db.insertProject(p);
-    expect(effectiveProjectPath(env.db, p, STUDIO)).toBe("/Users/edward/MSDev/projects/x");
+    expect(effectiveProjectPath(env.db, p, STUDIO)).toBe("/Users/dev/projects/x");
   });
 
   it("prefers an override over root resolution", () => {
@@ -72,7 +72,7 @@ describe("v5.11 generateBriefing uses machine-aware path", () => {
     env.db.insertProject(mkProj({ id: "p1", name: "gnosys-ai", working_directory: "/stale", root_id: "dev", rel_path: "gnosys-ai" }));
     env.db.insertMemory(makeMemory({ id: "m1", project_id: "p1", scope: "project" }));
     const b = generateBriefing(env.db, "p1", STUDIO);
-    expect(b?.workingDirectory).toBe("/Users/edward/MSDev/projects/gnosys-ai");
+    expect(b?.workingDirectory).toBe("/Users/dev/projects/gnosys-ai");
   });
 
   it("reports '(not on this machine)' when unresolvable here", () => {

@@ -19,7 +19,7 @@ import { createTestEnv, cleanupTestEnv, type TestEnv } from "./_helpers.js";
 const STUDIO: MachineConfig = {
   machineId: "studio-id",
   hostname: "studio",
-  roots: { dev: "/Users/edward/MSDev/projects" },
+  roots: { dev: "/Users/dev/projects" },
   remote: { enabled: false },
   schemaVersion: 1,
 };
@@ -46,7 +46,7 @@ afterEach(async () => {
 describe("v5.11 resolveProjectPath", () => {
   it("resolves via root_id + rel_path against this machine's root", () => {
     env.db.insertProject(mkProj({ id: "p1", name: "gnosys-ai", root_id: "dev", rel_path: "gnosys-ai" }));
-    expect(resolveProjectPath(env.db, STUDIO, "p1")).toBe("/Users/edward/MSDev/projects/gnosys-ai");
+    expect(resolveProjectPath(env.db, STUDIO, "p1")).toBe("/Users/dev/projects/gnosys-ai");
   });
 
   it("prefers a per-machine override over the root resolution", () => {
@@ -88,7 +88,7 @@ describe("v5.11 resolveProject / resolveAllProjects", () => {
 describe("v5.11 recordLocation", () => {
   it("stores machine-independent root_id+rel_path when path is under a root", () => {
     env.db.insertProject(mkProj({ id: "p1", name: "gnosys-ai" }));
-    const res = recordLocation(env.db, STUDIO, "p1", "/Users/edward/MSDev/projects/gnosys-ai/gnosys-public");
+    const res = recordLocation(env.db, STUDIO, "p1", "/Users/dev/projects/gnosys-ai/gnosys-public");
     expect(res.mode).toBe("root");
     expect(res.rootId).toBe("dev");
     expect(res.relPath).toBe("gnosys-ai/gnosys-public");
@@ -101,17 +101,17 @@ describe("v5.11 recordLocation", () => {
 
   it("stores a per-machine override when path is outside every root", () => {
     env.db.insertProject(mkProj({ id: "p2", name: "outlier" }));
-    const res = recordLocation(env.db, STUDIO, "p2", "/Users/edward/Documents/outlier");
+    const res = recordLocation(env.db, STUDIO, "p2", "/Users/dev/Documents/outlier");
     expect(res.mode).toBe("override");
-    expect(env.db.getProjectLocation("p2", "studio-id")?.abs_path).toBe("/Users/edward/Documents/outlier");
-    expect(resolveProjectPath(env.db, STUDIO, "p2")).toBe("/Users/edward/Documents/outlier");
+    expect(env.db.getProjectLocation("p2", "studio-id")?.abs_path).toBe("/Users/dev/Documents/outlier");
+    expect(resolveProjectPath(env.db, STUDIO, "p2")).toBe("/Users/dev/Documents/outlier");
   });
 
   it("clears a redundant override once a project moves under a root", () => {
     env.db.insertProject(mkProj({ id: "p3", name: "moved" }));
     recordLocation(env.db, STUDIO, "p3", "/tmp/elsewhere/moved");
     expect(env.db.getProjectLocation("p3", "studio-id")).not.toBeNull();
-    const res = recordLocation(env.db, STUDIO, "p3", "/Users/edward/MSDev/projects/moved");
+    const res = recordLocation(env.db, STUDIO, "p3", "/Users/dev/projects/moved");
     expect(res.mode).toBe("root");
     expect(env.db.getProjectLocation("p3", "studio-id")).toBeNull();
   });

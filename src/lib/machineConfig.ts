@@ -8,8 +8,8 @@
  *                    key per-machine rows (e.g. project_locations) so two
  *                    machines never clobber each other's data.
  *   - `roots`      — named project roots whose ABSOLUTE paths differ per
- *                    machine (e.g. { dev: "/Users/edward/MSDev/projects" } on
- *                    the Studio, "/Users/edward/MBPDev/projects" on the MBP).
+ *                    machine (e.g. { dev: "/Users/you/dev/projects" } on
+ *                    the Studio, "/Users/you/mbp/projects" on the MBP).
  *                    A project stores a machine-INDEPENDENT `rel_path` + the
  *                    `root_id`; its absolute path is reconstructed at runtime.
  *   - `remote`     — the per-machine remote-sync connection (NAS mount path on

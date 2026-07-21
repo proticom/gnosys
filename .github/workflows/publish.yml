@@ -8,16 +8,19 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    # Deployment environment: restricts which refs can publish (see repo Environments).
+    # No required reviewers — tag push by maintainers remains the release trigger (OIDC).
+    environment: npm
 
     permissions:
       contents: read
       id-token: write
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Use Node.js 24
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: 24
           cache: npm
