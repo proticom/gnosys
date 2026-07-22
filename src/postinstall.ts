@@ -16,6 +16,7 @@ import { createInterface } from "readline/promises";
 import { stdin, stdout } from "process";
 import { execSync } from "child_process";
 import { GnosysDB } from "./lib/db.js";
+import { runOptionalPostinstall } from "./lib/postinstallRunner.js";
 
 /** Write a line to stderr — npm shows this even when stdout is suppressed. */
 function out(line: string = ""): void {
@@ -72,7 +73,7 @@ async function main() {
         const answer = await rl.question("  Run gnosys upgrade now? [Y/n] ");
         rl.close();
 
-        if (!answer || answer.trim().toLowerCase() !== "n") {
+        if (answer?.trim().toLowerCase() !== "n") {
           out();
           execSync("gnosys upgrade", { stdio: "inherit" });
         }
@@ -99,7 +100,7 @@ async function main() {
         const answer = await rl.question("  Run setup wizard? [Y/n] ");
         rl.close();
 
-        if (!answer || answer.trim().toLowerCase() !== "n") {
+        if (answer?.trim().toLowerCase() !== "n") {
           out();
           execSync("gnosys setup", { stdio: "inherit" });
         }
@@ -110,4 +111,6 @@ async function main() {
   }
 }
 
-main();
+// Keep this guard here as well as in package.json so both imported and directly
+// executed builds suppress synchronous and asynchronous guidance failures.
+void runOptionalPostinstall(main);
