@@ -41,7 +41,7 @@
     "test:e2e-setup": "bash e2e-setup/run.sh"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.78.0",
+    "@anthropic-ai/sdk": "^0.117.1",
     "@modelcontextprotocol/sdk": "^1.12.1",
     "commander": "^13.1.0",
     "csv-parse": "^6.1.0",
