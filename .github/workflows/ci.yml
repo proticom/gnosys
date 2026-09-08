@@ -18,7 +18,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        node-version: [20, 22, 24]
+        # Node 24 temporarily removed: better-sqlite3 native cleanup hooks crash
+        # in vitest workers (Assertion failed: (env) != nullptr). Track upstream
+        # fix in better-sqlite3 or Node.js N-API, re-enable when resolved.
+        node-version: [20, 22]
         exclude:
           # macOS Node 20 truncates `gnosys --help` mid-output when stdout is a
           # pipe (Node 20.x macOS stdout-flush-on-exit quirk). Affects only
@@ -51,7 +54,7 @@ jobs:
         run: npm test
 
       - name: Run tests with coverage
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == 24
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == 22
         run: npm run test:coverage
 
       # v5.13.0: !cancelled() on the reporting/guardrail steps — vitest
@@ -60,7 +63,7 @@ jobs:
       # when the gate fails (previously they were skipped, hiding the
       # actionable message).
       - name: Upload coverage report
-        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.node-version == 24 }}
+        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.node-version == 22 }}
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: coverage-report
@@ -68,7 +71,7 @@ jobs:
           retention-days: 14
 
       - name: Check coverage thresholds
-        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.node-version == 24 }}
+        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.node-version == 22 }}
         run: |
           if [ -f coverage/coverage-summary.json ]; then
             echo "Coverage summary:"
@@ -88,7 +91,7 @@ jobs:
       # failures (new modules without tests dropping the global average
       # under the 50% threshold).
       - name: Check coverage of newly-added files
-        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.node-version == 24 }}
+        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.node-version == 22 }}
         run: |
           git fetch --depth=50 origin master:refs/remotes/origin/master 2>/dev/null || true
           COVERAGE_BASE_REF=origin/master node scripts/check-new-file-coverage.mjs

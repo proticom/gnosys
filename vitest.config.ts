@@ -10,9 +10,9 @@ export default defineConfig({
     testTimeout: 60_000,
     hookTimeout: 60_000,
     fileParallelism: false,
-    // Node 24 workaround: better-sqlite3 cleanup hooks crash on worker exit
-    // (Assertion failed: (env) != nullptr in RemoveEnvironmentCleanupHook).
-    // Use vmThreads pool which runs in-process and avoids fork cleanup.
+    // Node 24 workaround for local dev: better-sqlite3 cleanup hooks crash
+    // in workers (Assertion failed: (env) != nullptr). Node 24 excluded from
+    // CI until upstream fix. Local vmThreads pool avoids the fork cleanup.
     ...(process.version.startsWith("v24.") && {
       pool: "vmThreads",
       maxWorkers: 1,
