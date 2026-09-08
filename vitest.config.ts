@@ -12,10 +12,11 @@ export default defineConfig({
     fileParallelism: false,
     // Node 24 workaround: better-sqlite3 cleanup hooks crash on worker exit
     // (Assertion failed: (env) != nullptr in RemoveEnvironmentCleanupHook).
-    // Use forks pool with single worker (Vitest 4 syntax).
+    // Use vmThreads pool which runs in-process and avoids fork cleanup.
     ...(process.version.startsWith("v24.") && {
-      pool: "forks",
+      pool: "vmThreads",
       maxWorkers: 1,
+      minWorkers: 1,
     }),
     // v5.13.0: isolate every worker from the developer's real ~/.gnosys.
     // In-process engine runs (dream-resume.test.ts) were writing their
