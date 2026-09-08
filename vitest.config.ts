@@ -12,10 +12,10 @@ export default defineConfig({
     fileParallelism: false,
     // Node 24 workaround: better-sqlite3 cleanup hooks crash on worker exit
     // (Assertion failed: (env) != nullptr in RemoveEnvironmentCleanupHook).
-    // Use forks pool with single fork to isolate native cleanup.
+    // Use threads pool with single thread to avoid cleanup crash.
     ...(process.version.startsWith("v24.") && {
-      pool: "forks",
-      poolOptions: { forks: { singleFork: true } },
+      pool: "threads",
+      poolOptions: { threads: { singleThread: true } },
     }),
     // v5.13.0: isolate every worker from the developer's real ~/.gnosys.
     // In-process engine runs (dream-resume.test.ts) were writing their
