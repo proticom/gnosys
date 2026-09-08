@@ -36,9 +36,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
 
-      - name: Drop optional local-embeddings stack before install
-        run: npm pkg delete optionalDependencies.@huggingface/transformers
-
       - name: Install dependencies
         run: npm ci
 
@@ -47,6 +44,11 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Drop optional local-embeddings stack after build
+        run: |
+          npm uninstall @huggingface/transformers --no-save || true
+          rm -rf node_modules/@huggingface node_modules/onnxruntime-node node_modules/onnxruntime-web node_modules/onnxruntime-common
 
       - name: Run tests
         run: npm test
