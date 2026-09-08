@@ -10,6 +10,14 @@ export default defineConfig({
     testTimeout: 60_000,
     hookTimeout: 60_000,
     fileParallelism: false,
+    // Node 24 workaround for local dev: better-sqlite3 cleanup hooks crash
+    // in workers (Assertion failed: (env) != nullptr). Node 24 excluded from
+    // CI until upstream fix. Local vmThreads pool avoids the fork cleanup.
+    ...(process.version.startsWith("v24.") && {
+      pool: "vmThreads",
+      maxWorkers: 1,
+      minWorkers: 1,
+    }),
     // v5.13.0: isolate every worker from the developer's real ~/.gnosys.
     // In-process engine runs (dream-resume.test.ts) were writing their
     // fixture watermark into the real dream-state.json on every `npm test`,
