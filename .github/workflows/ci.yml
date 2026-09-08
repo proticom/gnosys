@@ -46,7 +46,9 @@ jobs:
         run: npm run build
 
       - name: Drop optional local-embeddings stack in CI
-        run: npm uninstall @huggingface/transformers --no-save
+        run: |
+          npm uninstall @huggingface/transformers --no-save || true
+          rm -rf node_modules/@huggingface node_modules/onnxruntime-node node_modules/onnxruntime-web node_modules/onnxruntime-common
 
       - name: Run tests
         run: npm test
