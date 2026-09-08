@@ -42,11 +42,11 @@ jobs:
       - name: Audit dependencies
         run: npm audit --audit-level=high
 
-      - name: Drop optional local-embeddings stack in CI
-        run: npm uninstall @huggingface/transformers --no-save
-
       - name: Build
         run: npm run build
+
+      - name: Drop optional local-embeddings stack in CI
+        run: npm uninstall @huggingface/transformers --no-save
 
       - name: Run tests
         run: npm test
