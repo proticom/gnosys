@@ -63,6 +63,7 @@ export class GnosysEmbeddings {
     // `any`: the optional dep may be absent at type-check time (see note above).
     let transformers: any;
     try {
+      // @ts-ignore — optional dep may not be installed at type-check time
       transformers = await import("@huggingface/transformers");
     } catch {
       throw new Error(
