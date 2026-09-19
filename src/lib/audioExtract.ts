@@ -154,7 +154,7 @@ async function transcribeWithLocal(
     // Cast to any so TypeScript does not require the module's type declarations
     // at compile time (the package is optional; CI and clean checkouts may not
     // have it installed when running `tsc` / `npm run build`).
-    // @ts-expect-error — optional dep may not be installed at type-check time
+    // @ts-ignore — optional dep may not be installed at type-check time
     const transformers: any = await import("@huggingface/transformers");
     pipeline = transformers.pipeline;
   } catch {
