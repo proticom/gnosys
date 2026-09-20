@@ -82,7 +82,7 @@
   {
     "id": "DEF-G1-001",
     "title": "Task routing reset reports success but retains persisted overrides",
-    "module": "src/lib/setup/models.ts",
+    "module": "src/lib/setup/sections/routing.ts:204",
     "expected": "taskModels is empty after reset.",
     "actual": "The structuring override remains xai/grok-4.20 despite routing reset success.",
     "evidence": "The real summary wizard receives 2,4,y,done and its project config is reloaded. updateConfig recursively merges the empty taskModels object, retaining previous keys. A temporary clear-overrides repair makes the expected-failure test unexpectedly pass.",
@@ -92,6 +92,38 @@
     "evidenceFiles": [
       "test-audit/mutations/group1.checkpoint2.results.json",
       "test-audit/evidence/DEF-G1-001.reproduced.json"
+    ]
+  },
+  {
+    "id": "G2-D001",
+    "title": "Main setup cancellation returns success instead of interrupt status",
+    "module": "src/lib/setup.ts:1434",
+    "test": "src/test/setup-ctrlc.test.ts",
+    "testName": "gnosys setup exits cleanly on SIGINT",
+    "expected": "Exit code130 after Ctrl+C at the real provider prompt.",
+    "actual": "The cancellation message appears but the process exits0.",
+    "evidence": "A Python POSIX PTY waits for the real prompt and sends the Ctrl+C byte. The main setup close listener exits0 before safeQuestion can exit130. Models and IDE setup return130 through the same PTY.",
+    "reproduction": "node scripts/test-audit-defect.mjs G2-D001",
+    "status": "Confirmed. Retained as it.fails. Application code unchanged.",
+    "evidenceFiles": [
+      "test-audit/mutations/group2.checkpoint2.results.json",
+      "test-audit/evidence/G2-D001.reproduced.json"
+    ]
+  },
+  {
+    "id": "G2-D002",
+    "title": "Writing the same memory twice duplicates full-text search results",
+    "module": "src/lib/db.ts",
+    "test": "src/test/lifecycle-invariants.test.ts",
+    "testName": "writing the same memory twice keeps one searchable result",
+    "expected": "One stored memory and one search result after repeated syncMemoryToDb writes.",
+    "actual": "One stored memory but two search results with the same ID.",
+    "evidence": "Two public syncMemoryToDb writes followed by getAllMemories and searchFts reproduce the mismatch. A temporary FTS-row replacement repair makes the expected-failure test unexpectedly pass.",
+    "reproduction": "node scripts/test-audit-defect.mjs G2-D002",
+    "status": "Confirmed. Retained as it.fails. Application code unchanged.",
+    "evidenceFiles": [
+      "test-audit/mutations/group2.checkpoint2.results.json",
+      "test-audit/evidence/G2-D002.reproduced.json"
     ]
   }
 ]

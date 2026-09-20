@@ -16,8 +16,6 @@ import path from "path";
 import os from "os";
 import fs from "fs";
 
-void spawnSync; // explicit reference so the import isn't pruned by some setups.
-
 const CLI = path.resolve("dist/cli.js");
 
 function run(args: string[], home: string): { stdout: string; stderr: string; code: number | null } {
@@ -45,7 +43,9 @@ describe("Phase E — Screen 14 — config init", () => {
       expect(out).toMatch(/gnosys setup/);
       expect(out).toMatch(/blank template/);
       // Must not have written gnosys.json (we exit before the write).
+      expect(r.code, out).toBe(0);
       expect(fs.existsSync(path.join(tmp, "gnosys.json"))).toBe(false);
+      expect(fs.existsSync(path.join(tmp, ".gnosys", "gnosys.json"))).toBe(false);
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }
@@ -70,23 +70,27 @@ describe("Phase E — Screen 14 — config init", () => {
       // `config init --force` is the one creating the file under test.
       const initJson = path.join(tmp, ".gnosys", "gnosys.json");
       if (fs.existsSync(initJson)) fs.rmSync(initJson);
-      void initResult;
+      expect(initResult.status).toBe(0);
 
       const r = run(["config", "init", "--force"], tmp);
       const out = `${r.stdout}\n${r.stderr}`;
-      const candidates = [
-        path.join(tmp, "gnosys.json"),
-        path.join(tmp, ".gnosys", "gnosys.json"),
-        path.join(tmp, ".gnosys", "gnosys.json"),
-      ];
-      const written = candidates.find((p) => fs.existsSync(p));
-      expect(written, `expected a template file to exist (stdout=${out.slice(0, 400)})`).toBeTruthy();
-      if (!written) return;
-      const raw = fs.readFileSync(written, "utf-8");
-      const parsed = JSON.parse(raw) as { llm?: Record<string, unknown> };
-      expect(parsed.llm).toBeDefined();
-      // Per design §14.2, defaultProvider must NOT be in the written template.
-      expect(Object.hasOwn(parsed.llm ?? {}, "defaultProvider")).toBe(false);
+      expect(r.code, out).toBe(0);
+      const parsed: unknown = JSON.parse(fs.readFileSync(initJson, "utf-8"));
+      expect(parsed).toMatchObject({
+        llm: {
+          anthropic: { model: "claude-sonnet-4-6" },
+          ollama: { model: "llama3.2", baseUrl: "http://localhost:11434" },
+          groq: { model: "llama-3.3-70b-versatile" },
+          openai: { model: "gpt-5.4-mini", baseUrl: "https://api.openai.com/v1" },
+          lmstudio: { model: "default", baseUrl: "http://localhost:1234/v1" },
+          xai: { model: "grok-4.20" },
+          mistral: { model: "mistral-small-4" },
+          openrouter: { model: "nvidia/nemotron-3-super-120b-a12b:free", baseUrl: "https://openrouter.ai/api/v1" },
+        },
+        taskModels: {},
+        importConcurrency: 5,
+      });
+      expect(parsed).not.toHaveProperty("llm.defaultProvider");
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }

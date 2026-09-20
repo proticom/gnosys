@@ -2428,6 +2428,823 @@
       "mutationIds": [],
       "action": "kept",
       "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/embed-queue.test.ts:52",
+      "beforeName": "embedQueue is a no-op when disabled (the CLI / test default)",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "embedQueue is a no-op when disabled (the CLI / test default)"
+      ],
+      "evidence": "Disabled public queue leaves seeded memory embedding null after flush.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/embed-queue.test.ts:63",
+      "beforeName": "embedQueue embeds queued memories once enabled",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "embedQueue embeds queued memories once enabled"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-queue-vector",
+      "mutationIds": [
+        "g2-queue-vector"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/embed-queue.test.ts:80",
+      "beforeName": "embedQueue never throws when the embedder fails — warns on stderr instead",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "embedQueue never throws when the embedder fails — warns on stderr instead"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-queue-warning",
+      "mutationIds": [
+        "g2-queue-warning"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/embed-queue.test.ts:96",
+      "beforeName": "embedQueue syncMemoryToDb feeds the queue — a plain DB write gets a vector",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "embedQueue syncMemoryToDb feeds the queue — a plain DB write gets a vector"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-queue-vector",
+      "mutationIds": [
+        "g2-queue-vector"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/embed-queue.test.ts:111",
+      "beforeName": "embedQueue disable clears pending work",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "embedQueue disable clears pending work"
+      ],
+      "evidence": "Disabling after enqueue leaves real DB embedding null after flush.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/lifecycle-invariants.test.ts:57",
+      "beforeName": "lifecycle invariants — one primary row, ≤1 sidecar row per id holds after every lifecycle op",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "memory lifecycle through database reads and search preserves current content, visibility and reinforcement across lifecycle operations"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-lifecycle-update-content",
+      "mutationIds": [
+        "g2-lifecycle-update-content"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-http-replay.test.ts:36",
+      "beforeName": "MCP HTTP registration replay two concurrent sessions both see the full real tool list",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "MCP HTTP registration replay two concurrent sessions both see the full real tool list"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-toolset-dream-name",
+      "mutationIds": [
+        "g2-toolset-dream-name"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-toolset-dynamic.test.ts:46",
+      "beforeName": "MCP dynamic toolset switching (v6.2) a fresh default server starts on core: 19 tools (core 18 + gnosys_toolset)",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "MCP dynamic toolset switching (v6.2) a fresh default server starts on core: 19 tools (core 18 + gnosys_toolset)"
+      ],
+      "evidence": "Actual MCP default list has exact 19 count, core names, and excludes standard/full representatives.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-toolset-dynamic.test.ts:59",
+      "beforeName": "MCP dynamic toolset switching (v6.2) gnosys_toolset without args lists standard and full additions",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "MCP dynamic toolset switching (v6.2) gnosys_toolset without args lists standard and full additions"
+      ],
+      "evidence": "Actual toolset query reports core state and literal standard/full additions.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-toolset-dynamic.test.ts:72",
+      "beforeName": "MCP dynamic toolset switching (v6.2) set:\"full\" expands to 56 tools and emits notifications/tools/list_changed",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "MCP dynamic toolset switching (v6.2) set:\"full\" expands to 56 tools and emits notifications/tools/list_changed"
+      ],
+      "evidence": "Actual switch emits list_changed notification and returns 56 listed tools with transition output.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-toolset-dynamic.test.ts:90",
+      "beforeName": "MCP dynamic toolset switching (v6.2) set:\"core\" shrinks back down",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "MCP dynamic toolset switching (v6.2) set:\"core\" shrinks back down"
+      ],
+      "evidence": "Full-to-core switch changes real list from 56 to 19 and retains callable switch tool.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-toolset-dynamic.test.ts:103",
+      "beforeName": "MCP dynamic toolset switching (v6.2) gnosys_toolset is present and callable in every tier",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "MCP dynamic toolset switching (v6.2) gnosys_toolset is present and callable in every tier"
+      ],
+      "evidence": "Every actual tier exposes/calls toolset and reports its literal tier.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-toolset-dynamic.test.ts:115",
+      "beforeName": "MCP dynamic toolset switching (v6.2) GNOSYS_MCP_TOOLSET=full env override starts on the full tier",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "MCP dynamic toolset switching (v6.2) GNOSYS_MCP_TOOLSET=full env override starts on the full tier"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-toolset-dream-name",
+      "mutationIds": [
+        "g2-toolset-dream-name"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:88",
+      "beforeName": "validateLocation returns ok for a writable directory",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "validateLocation returns ok for a writable directory"
+      ],
+      "evidence": "Writable real directory reports all three location/SQLite checks true and no errors.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:102",
+      "beforeName": "validateLocation creates the directory if it does not exist",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "validateLocation creates the directory if it does not exist"
+      ],
+      "evidence": "Location validation creates a previously absent real subdirectory and succeeds.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:114",
+      "beforeName": "validateLocation detects existing gnosys.db at path",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "validateLocation detects existing gnosys.db at path"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-remote-count",
+      "mutationIds": [
+        "g2-remote-count"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:136",
+      "beforeName": "RemoteSync.getStatus reports reachable when remote exists",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "RemoteSync.getStatus reports reachable when remote exists"
+      ],
+      "evidence": "Empty reachable remote reports configured/reachable true, zero pending work and no conflicts.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:145",
+      "beforeName": "RemoteSync.getStatus reports unreachable when remote path missing",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "RemoteSync.getStatus reports unreachable when remote path missing"
+      ],
+      "evidence": "Missing remote directory reports unreachable false with literal unreachable message.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:153",
+      "beforeName": "RemoteSync.getStatus counts pending push when local has new memories",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "RemoteSync.getStatus counts pending push when local has new memories"
+      ],
+      "evidence": "Two local-only records produce exactly two pending push and zero pull.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:161",
+      "beforeName": "RemoteSync.getStatus counts pending pull when remote has new memories",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "RemoteSync.getStatus counts pending pull when remote has new memories"
+      ],
+      "evidence": "One remote-only record produces exactly one pending pull and zero push.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:174",
+      "beforeName": "RemoteSync.push pushes new local memories to remote",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "RemoteSync.push pushes new local memories to remote"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-remote-push",
+      "mutationIds": [
+        "g2-remote-push"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:184",
+      "beforeName": "RemoteSync.push pushes locally-modified memory when remote unchanged",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "RemoteSync.push pushes locally-modified memory when remote unchanged"
+      ],
+      "evidence": "Local modification propagates literal Updated title to real remote DB.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:205",
+      "beforeName": "RemoteSync.pull pulls new remote memories to local",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "RemoteSync.pull pulls new remote memories to local"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-remote-pull",
+      "mutationIds": [
+        "g2-remote-pull"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:214",
+      "beforeName": "RemoteSync.pull pulls remotely-modified memory when local unchanged",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "RemoteSync.pull pulls remotely-modified memory when local unchanged"
+      ],
+      "evidence": "Remote modification propagates literal Remote Updated title into local DB.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:234",
+      "beforeName": "RemoteSync conflict detection flags conflict when both sides modified the same memory",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "RemoteSync conflict detection flags conflict when both sides modified the same memory"
+      ],
+      "evidence": "Concurrent edits produce one identified conflict and a persisted unresolved conflict.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:253",
+      "beforeName": "RemoteSync conflict detection newer-wins strategy auto-resolves conflicts",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "RemoteSync conflict detection newer-wins strategy auto-resolves conflicts"
+      ],
+      "evidence": "Newer-wins synchronization clears conflict result and persists literal later Remote Edit title locally.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:274",
+      "beforeName": "RemoteSync.resolve keeps local version on resolve(local)",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "RemoteSync.resolve keeps local version on resolve(local)"
+      ],
+      "evidence": "Local resolution writes literal Local title to both DBs and clears unresolved conflict.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:287",
+      "beforeName": "RemoteSync.resolve keeps remote version on resolve(remote)",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "RemoteSync.resolve keeps remote version on resolve(remote)"
+      ],
+      "evidence": "Remote resolution writes literal Remote title to both actual DBs.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:305",
+      "beforeName": "RemoteSync.migrate copies all local memories to a fresh remote",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "RemoteSync.migrate copies all local memories to a fresh remote"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-remote-migrate",
+      "mutationIds": [
+        "g2-remote-migrate"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:323",
+      "beforeName": "RemoteSync.sync (full cycle) two-way sync: local push and remote pull happen in one call",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "RemoteSync.sync (full cycle) two-way sync: local push and remote pull happen in one call"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-remote-push",
+      "mutationIds": [
+        "g2-remote-push"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:341",
+      "beforeName": "getMachineId generates and persists a stable machine ID",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "getMachineId generates and persists a stable machine ID"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-machine-identity",
+      "mutationIds": [
+        "g2-machine-identity"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:357",
+      "beforeName": "formatStatus formats unconfigured status",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "formatStatus formats unconfigured status"
+      ],
+      "evidence": "Unconfigured status formatter prints literal not configured state.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:370",
+      "beforeName": "formatStatus formats unreachable status",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "formatStatus formats unreachable status"
+      ],
+      "evidence": "Unreachable status formatter prints literal unreachable state.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:384",
+      "beforeName": "formatStatus formats normal status with counts",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "formatStatus formats normal status with counts"
+      ],
+      "evidence": "Normal formatter renders literal Pending push: 3 and Pending pull: 1.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:422",
+      "beforeName": "remote config helpers getConfiguredRemotePath prefers machine.json over legacy meta",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "remote config helpers getConfiguredRemotePath prefers machine.json over legacy meta"
+      ],
+      "evidence": "Configured machine path wins over competing literal legacy meta path.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:430",
+      "beforeName": "remote config helpers clearRemoteSyncConfig clears meta and machine.json remote",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "remote config helpers clearRemoteSyncConfig clears meta and machine.json remote"
+      ],
+      "evidence": "Clear operation removes legacy meta and actual machine JSON remote path/enabled setting.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/setup-ctrlc.test.ts:75",
+      "beforeName": "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT"
+      ],
+      "evidence": "Actual PTY Ctrl+C at the visible provider prompt returns exit0. Expected exit130 retained with it.fails; temporary close-listener repair makes the case unexpectedly pass.",
+      "mutationIds": [
+        "g2-pty-setup-repair-witness"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "defectId": "G2-D001"
+    },
+    {
+      "beforeId": "src/test/setup-ctrlc.test.ts:92",
+      "beforeName": "Phase B — Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "Phase B — Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-pty-cancel-status",
+      "mutationIds": [
+        "g2-pty-cancel-status"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/setup-ctrlc.test.ts:107",
+      "beforeName": "Phase B — Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "Phase B — Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-pty-cancel-status",
+      "mutationIds": [
+        "g2-pty-cancel-status"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:87",
+      "beforeName": "setup models task routing buildInlineKeyRequirements lists one global requirement per distinct cloud provider",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "setup models task routing buildInlineKeyRequirements lists one global requirement per distinct cloud provider"
+      ],
+      "evidence": "Two tasks using same cloud provider yield one literal OpenRouter/global key requirement.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:93",
+      "beforeName": "setup models task routing buildInlineKeyRequirements emits one requirement per distinct provider",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "setup models task routing buildInlineKeyRequirements emits one requirement per distinct provider"
+      ],
+      "evidence": "Distinct cloud providers yield exactly literal OpenRouter and Anthropic global requirements.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:107",
+      "beforeName": "setup models task routing buildInlineKeyRequirements skips local providers in requirements",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "setup models task routing buildInlineKeyRequirements skips local providers in requirements"
+      ],
+      "evidence": "Ollama-only routing yields zero required keys.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:114",
+      "beforeName": "setup models task routing buildTaskModelsPatchFromAccepted regression: vision+dream only — patch touches only those tasks",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "setup models task routing buildTaskModelsPatchFromAccepted regression: vision+dream only — patch touches only those tasks"
+      ],
+      "evidence": "Accepted vision/dream selection yields exact vision-only task patch and preserves unrelated provider/model routing after merge.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:164",
+      "beforeName": "setup models task routing validateTaskCombo does not persist keys on validation failure",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "setup models task routing validateTaskCombo does not persist keys on validation failure"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-setup-validation-failure",
+      "mutationIds": [
+        "g2-setup-validation-failure"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:187",
+      "beforeName": "setup models task routing validateTaskCombo returns proceed true when validation succeeds",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "setup models task routing validateTaskCombo returns proceed true when validation succeeds"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-setup-validation-success",
+      "mutationIds": [
+        "g2-setup-validation-success"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:209",
+      "beforeName": "setup models task routing promptKeyDestinationAndPersist secure store (default choice) calls storeApiKeySecret",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "setup models task routing promptKeyDestinationAndPersist secure store choice writes the scoped key through the OS boundary"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-setup-secure-service",
+      "mutationIds": [
+        "g2-setup-secure-service"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:226",
+      "beforeName": "setup models task routing promptKeyDestinationAndPersist dotenv choice writes scoped service line",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "setup models task routing promptKeyDestinationAndPersist dotenv choice writes scoped service line"
+      ],
+      "evidence": "Dotenv choice writes exact service=dotenv-secret line into real temporary .env file.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:254",
+      "beforeName": "setup models task routing promptKeyDestinationAndPersist don't store prints env var names and persists nothing",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "setup models task routing promptKeyDestinationAndPersist don't store prints env var names and persists nothing"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-setup-no-store",
+      "mutationIds": [
+        "g2-setup-no-store"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:290",
+      "beforeName": "setup models task routing writeServiceKeyToEnv writes global-scoped env var lines",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "setup models task routing writeServiceKeyToEnv writes global-scoped env var lines"
+      ],
+      "evidence": "Direct environment writer persists literal GNOSYS_GLOBAL_OPENROUTER_KEY=global-key line.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/setup-ui-config-init.test.ts:40",
+      "beforeName": "Phase E — Screen 14 — config init without --force prints deprecation warning and does NOT write template",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "Phase E — Screen 14 — config init without --force prints deprecation warning and does NOT write template"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-config-unforced-write",
+      "mutationIds": [
+        "g2-config-unforced-write"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/setup-ui-config-init.test.ts:54",
+      "beforeName": "Phase E — Screen 14 — config init with --force writes a template without defaultProvider hardcoded",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Phase E — Screen 14 — config init with --force writes a template without defaultProvider hardcoded"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-config-template",
+      "mutationIds": [
+        "g2-config-template"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/store.test.ts:44",
+      "beforeName": "GnosysStore init creates .config internal directory",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "GnosysStore init creates .config internal directory"
+      ],
+      "evidence": "Actual store initialization creates .config directory.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/store.test.ts:51",
+      "beforeName": "GnosysStore writeMemory + readMemory writes and reads a memory with correct frontmatter",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "GnosysStore writeMemory + readMemory writes and reads a memory with correct frontmatter"
+      ],
+      "evidence": "Public write/read roundtrip preserves literal path, ID, title, relevance, status and body.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/store.test.ts:67",
+      "beforeName": "GnosysStore writeMemory + readMemory returns null for non-existent memory",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "GnosysStore writeMemory + readMemory returns null for non-existent memory"
+      ],
+      "evidence": "Reading nonexistent memory path yields null.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/store.test.ts:72",
+      "beforeName": "GnosysStore writeMemory + readMemory returns null for files without id frontmatter",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "GnosysStore writeMemory + readMemory returns null for files without id frontmatter"
+      ],
+      "evidence": "Reading file without required ID yields null.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/store.test.ts:81",
+      "beforeName": "GnosysStore getAllMemories returns all valid memories, ignores non-memory files",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "GnosysStore getAllMemories returns all valid memories, ignores non-memory files"
+      ],
+      "evidence": "Enumeration excludes invalid markdown and returns exact Concept B/Decision A titles.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/store.test.ts:110",
+      "beforeName": "GnosysStore getAllMemories ignores CHANGELOG.md and MANIFEST.md",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "GnosysStore getAllMemories ignores CHANGELOG.md and MANIFEST.md"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-store-manifest",
+      "mutationIds": [
+        "g2-store-manifest"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/store.test.ts:130",
+      "beforeName": "GnosysStore updateMemory updates frontmatter fields and preserves content",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "GnosysStore updateMemory updates frontmatter fields and preserves content"
+      ],
+      "evidence": "Update returns literal changed title/confidence/status while preserving body and setting current modified date.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/store.test.ts:155",
+      "beforeName": "GnosysStore updateMemory can replace content",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "GnosysStore updateMemory can replace content"
+      ],
+      "evidence": "Content replacement returns New content and excludes Old content.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/store.test.ts:174",
+      "beforeName": "GnosysStore updateMemory returns null for non-existent memory",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "GnosysStore updateMemory returns null for non-existent memory"
+      ],
+      "evidence": "Updating absent memory returns null.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/store.test.ts:181",
+      "beforeName": "GnosysStore getCategories returns only directories, excludes hidden and node_modules",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "GnosysStore getCategories returns only directories, excludes hidden and node_modules"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-store-category",
+      "mutationIds": [
+        "g2-store-category"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/store.test.ts:194",
+      "beforeName": "GnosysStore generateId generates ULID-based IDs with category prefix (v5.4.1+)",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "GnosysStore generateId generates ULID-based IDs with category prefix (v5.4.1+)"
+      ],
+      "evidence": "Generated IDs match category/ULID syntax, differ across writes and retain monotonic ordering.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/store.test.ts:216",
+      "beforeName": "GnosysStore supersession fields writes and reads supersedes/superseded_by fields",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "GnosysStore supersession fields writes and reads supersedes/superseded_by fields"
+      ],
+      "evidence": "Actual write/read preserves literal supersedes ID and null superseded_by.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    }
+  ],
+  "additionalTests": [
+    {
+      "afterNames": [
+        "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result"
+      ],
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "G2-D002",
+      "mutationIds": [
+        "g2-fts-upsert-repair-witness"
+      ],
+      "evidence": "Ordinary test fails because repeated upsert duplicates the FTS hit; temporary FTS replacement repair makes it unexpectedly pass, then restored expected-failure test passes."
     }
   ]
 }

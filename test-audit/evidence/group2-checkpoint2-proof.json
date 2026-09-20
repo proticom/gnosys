@@ -1,0 +1,2482 @@
+{
+  "actions": 254,
+  "missingKills": [],
+  "missingSurvival": [],
+  "rows": [
+    {
+      "beforeId": "src/test/atomic-config-write.test.ts:26",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/atomic-config-write.test.ts:37",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-atomic-destination-first"
+      ]
+    },
+    {
+      "beforeId": "src/test/atomic-config-write.test.ts:48",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/attachments-inline.test.ts:45",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/attachments-inline.test.ts:64",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/attachments-inline.test.ts:69",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/attachments-inline.test.ts:84",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-attachment-cap"
+      ]
+    },
+    {
+      "beforeId": "src/test/attachments-inline.test.ts:91",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/attachments-inline.test.ts:102",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/attachments-inline.test.ts:109",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:25",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:36",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:45",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-bootstrap-discovery"
+      ]
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:53",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:58",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-bootstrap-discovery"
+      ]
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:73",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:78",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:83",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:88",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:93",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:114",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:127",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:142",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-bootstrap-content"
+      ]
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:164",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:199",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:217",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:226",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-bootstrap-pattern"
+      ]
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:242",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/centralize-network.test.ts:13",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-centralize-cli-force"
+      ]
+    },
+    {
+      "beforeId": "src/test/docs-web-flags.test.ts:32",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-docs-build",
+        "g2-docs-build-index",
+        "g2-docs-status"
+      ]
+    },
+    {
+      "beforeId": "src/test/export-archive-flag.test.ts:83",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-export-bundle-content"
+      ]
+    },
+    {
+      "beforeId": "src/test/export-archive-flag.test.ts:102",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-export-bundle-content"
+      ]
+    },
+    {
+      "beforeId": "src/test/export-archive-flag.test.ts:123",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-export-vault-write"
+      ]
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:71",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:100",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-federated-recency"
+      ]
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:127",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-federated-global"
+      ]
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:146",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:151",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-federated-reinforcement"
+      ]
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:179",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:196",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:230",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:269",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:276",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:296",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:320",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:335",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:340",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/freeform-add-gate.test.ts:26",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-freeform-gate"
+      ]
+    },
+    {
+      "beforeId": "src/test/freeform-add-gate.test.ts:36",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-freeform-guidance"
+      ]
+    },
+    {
+      "beforeId": "src/test/freeform-add-gate.test.ts:48",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-freeform-rules"
+      ]
+    },
+    {
+      "beforeId": "src/test/graph-invoke.test.ts:79",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/graph-invoke.test.ts:85",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-graph-nodes"
+      ]
+    },
+    {
+      "beforeId": "src/test/list-invoke.test.ts:78",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/list-invoke.test.ts:85",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-list-tag"
+      ]
+    },
+    {
+      "beforeId": "src/test/list-invoke.test.ts:92",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/list-invoke.test.ts:99",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:23",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-provider-schema"
+      ]
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:38",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:55",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:61",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:67",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:84",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:91",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:98",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:105",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:114",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:123",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:143",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-key-xai"
+      ]
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:150",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:156",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-key-mistral"
+      ]
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:163",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:169",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:175",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:182",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:190",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-xai-url"
+      ]
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:199",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:217",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-mistral-url"
+      ]
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:226",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-custom-url"
+      ]
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:241",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:247",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:253",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:258",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-custom-no-key"
+      ]
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:273",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:280",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:287",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:293",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/openrouterTiers.test.ts:9",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-openrouter-catalog"
+      ]
+    },
+    {
+      "beforeId": "src/test/openrouterTiers.test.ts:28",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-openrouter-fallback"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:41",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:73",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:101",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-federated-recency"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:136",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-federated-reinforcement"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:170",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-federated-global"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:195",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:204",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:229",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:282",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:324",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:329",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:364",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-federated-cross-project"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:389",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:417",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:422",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/stores-invoke.test.ts:41",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-stores-output"
+      ]
+    },
+    {
+      "beforeId": "src/test/stores-invoke.test.ts:49",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-stores-output"
+      ]
+    },
+    {
+      "beforeId": "src/test/syncClientRead.test.ts:101",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/syncClientRead.test.ts:164",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/syncClientRead.test.ts:176",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/syncClientRead.test.ts:186",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/syncClientRead.test.ts:196",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-snapshot-read"
+      ]
+    },
+    {
+      "beforeId": "src/test/syncClientRead.test.ts:220",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-pending-content"
+      ]
+    },
+    {
+      "beforeId": "src/test/syncClientRead.test.ts:237",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-pending-receipt"
+      ]
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:39",
+      "action": "deleted",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-quiet-noop"
+      ]
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:44",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-ingest-json"
+      ]
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:56",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:62",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-ingest-body",
+        "g2-quiet-noop"
+      ]
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:78",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-startup-client"
+      ]
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:101",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-startup-disabled"
+      ]
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:121",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:136",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:144",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/syncStaging.test.ts:31",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-staging-checksum"
+      ]
+    },
+    {
+      "beforeId": "src/test/syncStaging.test.ts:50",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-staging-quarantine"
+      ]
+    },
+    {
+      "beforeId": "src/test/syncStaging.test.ts:97",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-staging-copy"
+      ]
+    },
+    {
+      "beforeId": "src/test/syncStaging.test.ts:105",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/timeline-invoke.test.ts:47",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/timeline-invoke.test.ts:53",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-timeline-period"
+      ]
+    },
+    {
+      "beforeId": "src/test/timeline-invoke.test.ts:92",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v512-centralize.test.ts:37",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v512-centralize.test.ts:57",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v512-centralize.test.ts:62",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-centralize-force"
+      ]
+    },
+    {
+      "beforeId": "src/test/v512-centralize.test.ts:67",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v512-http-cors.test.ts:33",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v512-http-cors.test.ts:43",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-cors-no-origin"
+      ]
+    },
+    {
+      "beforeId": "src/test/v512-http-cors.test.ts:49",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-cors-allowed"
+      ]
+    },
+    {
+      "beforeId": "src/test/v512-mcpHttp.test.ts:46",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v512-mcpHttp.test.ts:53",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v512-mcpHttp.test.ts:60",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-http-session-isolation"
+      ]
+    },
+    {
+      "beforeId": "src/test/v512-mcpHttp.test.ts:68",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v512-mcpHttp.test.ts:74",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v512-mcpHttp.test.ts:86",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v512-mcpHttp.test.ts:96",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v512-mcpHttp.test.ts:108",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v592-serve-stdout-clean.test.ts:42",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-serve-exit"
+      ]
+    },
+    {
+      "beforeId": "src/test/v594-panel-edges.test.ts:27",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-panel-width"
+      ]
+    },
+    {
+      "beforeId": "src/test/v594-panel-edges.test.ts:43",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-panel-title"
+      ]
+    },
+    {
+      "beforeId": "src/test/v594-panel-edges.test.ts:51",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-panel-clamp"
+      ]
+    },
+    {
+      "beforeId": "src/test/v594-panel-edges.test.ts:63",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-panel-color"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-remove-invoke.test.ts:59",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-web-remove-index"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-remove-invoke.test.ts:68",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/web-remove-invoke.test.ts:77",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:59",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-web-load-title"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:66",
+      "action": "deleted",
+      "beforeClassification": "HOLLOW",
+      "survivingMutation": false,
+      "structuralReason": "Reads static fixture contents or directory entries and asserts only fixture structure; never calls application code.",
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:81",
+      "action": "deleted",
+      "beforeClassification": "HOLLOW",
+      "survivingMutation": false,
+      "structuralReason": "Reads static fixture contents or directory entries and asserts only fixture structure; never calls application code.",
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:93",
+      "action": "deleted",
+      "beforeClassification": "HOLLOW",
+      "survivingMutation": false,
+      "structuralReason": "Reads static fixture contents or directory entries and asserts only fixture structure; never calls application code.",
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:103",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:117",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-web-category"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:129",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-web-tags"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:139",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-web-getdoc"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:150",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-web-list-category"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:166",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:179",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:192",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:205",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-web-tfidf"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:222",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:244",
+      "action": "deleted",
+      "beforeClassification": "HOLLOW",
+      "survivingMutation": false,
+      "structuralReason": "Reads static fixture contents or directory entries and asserts only fixture structure; never calls application code.",
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:255",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-web-determinism",
+        "g2-web-deterministic-corruption",
+        "g2-web-deterministic-corruption"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:274",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-web-native-isolation"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:292",
+      "action": "deleted",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:67",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:75",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:82",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:87",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:95",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-wiki-exact-title"
+      ]
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:100",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:105",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:110",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:115",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-wiki-id"
+      ]
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:120",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:127",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:132",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-wiki-graph-outgoing"
+      ]
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:138",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:148",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:155",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:163",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:172",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-wiki-backlinks"
+      ]
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:177",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:184",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-wiki-outgoing"
+      ]
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:189",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:196",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:205",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/embed-queue.test.ts:52",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/embed-queue.test.ts:63",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-queue-vector"
+      ]
+    },
+    {
+      "beforeId": "src/test/embed-queue.test.ts:80",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-queue-warning"
+      ]
+    },
+    {
+      "beforeId": "src/test/embed-queue.test.ts:96",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-queue-vector"
+      ]
+    },
+    {
+      "beforeId": "src/test/embed-queue.test.ts:111",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/lifecycle-invariants.test.ts:57",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-lifecycle-update-content"
+      ]
+    },
+    {
+      "beforeId": "src/test/mcp-http-replay.test.ts:36",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-toolset-dream-name"
+      ]
+    },
+    {
+      "beforeId": "src/test/mcp-toolset-dynamic.test.ts:46",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/mcp-toolset-dynamic.test.ts:59",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/mcp-toolset-dynamic.test.ts:72",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/mcp-toolset-dynamic.test.ts:90",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/mcp-toolset-dynamic.test.ts:103",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/mcp-toolset-dynamic.test.ts:115",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-toolset-dream-name"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:88",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:102",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:114",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-remote-count"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:136",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:145",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:153",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:161",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:174",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-remote-push"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:184",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:205",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-remote-pull"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:214",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:234",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:253",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:274",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:287",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:305",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-remote-migrate"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:323",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-remote-push"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:341",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-machine-identity"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:357",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:370",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:384",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:422",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remote.test.ts:430",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ctrlc.test.ts:75",
+      "action": "expected_failure",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-pty-setup-repair-witness"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-ctrlc.test.ts:92",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-pty-cancel-status"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-ctrlc.test.ts:107",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-pty-cancel-status"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:87",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:93",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:107",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:114",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:164",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-setup-validation-failure"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:187",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-setup-validation-success"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:209",
+      "action": "rewritten",
+      "beforeClassification": "COUPLED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-setup-secure-service"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:226",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:254",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-setup-no-store"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-models-routing.test.ts:290",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-config-init.test.ts:40",
+      "action": "rewritten",
+      "beforeClassification": "WEAK",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-config-unforced-write"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-ui-config-init.test.ts:54",
+      "action": "rewritten",
+      "beforeClassification": "STRONG",
+      "survivingMutation": true,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-config-template"
+      ]
+    },
+    {
+      "beforeId": "src/test/store.test.ts:44",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/store.test.ts:51",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/store.test.ts:67",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/store.test.ts:72",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/store.test.ts:81",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/store.test.ts:110",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-store-manifest"
+      ]
+    },
+    {
+      "beforeId": "src/test/store.test.ts:130",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/store.test.ts:155",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/store.test.ts:174",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/store.test.ts:181",
+      "action": "rewritten",
+      "beforeClassification": "MISLABELED",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": [
+        "g2-store-category"
+      ]
+    },
+    {
+      "beforeId": "src/test/store.test.ts:194",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/store.test.ts:216",
+      "action": "kept",
+      "beforeClassification": "STRONG",
+      "survivingMutation": false,
+      "structuralReason": null,
+      "missingKillNames": [],
+      "mutationIds": []
+    }
+  ]
+}

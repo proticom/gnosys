@@ -5,7 +5,7 @@
  * offline queue replay, and the migrate flow.
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import * as fs from "fs";
 import * as fsp from "fs/promises";
 import * as os from "os";
@@ -121,7 +121,7 @@ describe("validateLocation", () => {
       const result = await validateLocation(tmp);
       expect(result.ok).toBe(true);
       expect(result.checks.existingDb.found).toBe(true);
-      expect(result.checks.existingDb.memoryCount).toBeGreaterThanOrEqual(1);
+      expect(result.checks.existingDb.memoryCount).toBe(1);
     } finally {
       await fsp.rm(tmp, { recursive: true, force: true });
     }
@@ -177,8 +177,8 @@ describe("RemoteSync.push", () => {
     const result = await env.sync.push();
     expect(result.pushed).toBe(2);
     expect(result.errors).toEqual([]);
-    expect(env.remoteDb.getMemory("new-001")).not.toBeNull();
-    expect(env.remoteDb.getMemory("new-002")).not.toBeNull();
+    expect(env.remoteDb.getMemory("new-001")).toMatchObject({ id: "new-001", title: "Memory new-001", content: "Content of new-001" });
+    expect(env.remoteDb.getMemory("new-002")).toMatchObject({ id: "new-002", title: "Memory new-002", content: "Content of new-002" });
   });
 
   it("pushes locally-modified memory when remote unchanged", async () => {
@@ -207,8 +207,8 @@ describe("RemoteSync.pull", () => {
     env.remoteDb.insertMemory(makeMemory("rem-002"));
     const result = await env.sync.pull();
     expect(result.pulled).toBe(2);
-    expect(env.localDb.getMemory("rem-001")).not.toBeNull();
-    expect(env.localDb.getMemory("rem-002")).not.toBeNull();
+    expect(env.localDb.getMemory("rem-001")).toMatchObject({ id: "rem-001", title: "Memory rem-001", content: "Content of rem-001" });
+    expect(env.localDb.getMemory("rem-002")).toMatchObject({ id: "rem-002", title: "Memory rem-002", content: "Content of rem-002" });
   });
 
   it("pulls remotely-modified memory when local unchanged", async () => {
@@ -310,8 +310,9 @@ describe("RemoteSync.migrate", () => {
     const result = await env.sync.migrate();
     expect(result.ok).toBe(true);
     expect(result.copied).toBe(3);
-    expect(env.remoteDb.getMemory("m-001")).not.toBeNull();
-    expect(env.remoteDb.getMemory("m-003")).not.toBeNull();
+    expect(env.remoteDb.getMemory("m-001")).toMatchObject({ id: "m-001", title: "Memory m-001", content: "Content of m-001" });
+    expect(env.remoteDb.getMemory("m-002")).toMatchObject({ id: "m-002", title: "Memory m-002", content: "Content of m-002" });
+    expect(env.remoteDb.getMemory("m-003")).toMatchObject({ id: "m-003", title: "Memory m-003", content: "Content of m-003" });
   });
 });
 
@@ -325,12 +326,12 @@ describe("RemoteSync.sync (full cycle)", () => {
     env.remoteDb.insertMemory(makeMemory("remote-only"));
 
     const result = await env.sync.sync();
-    expect(result.pushed).toBeGreaterThanOrEqual(1);
-    expect(result.pulled).toBeGreaterThanOrEqual(1);
+    expect(result.pushed).toBe(1);
+    expect(result.pulled).toBe(1);
 
     // After sync, both sides have both memories
-    expect(env.localDb.getMemory("remote-only")).not.toBeNull();
-    expect(env.remoteDb.getMemory("local-only")).not.toBeNull();
+    expect(env.localDb.getMemory("remote-only")).toMatchObject({ id: "remote-only", title: "Memory remote-only", content: "Content of remote-only" });
+    expect(env.remoteDb.getMemory("local-only")).toMatchObject({ id: "local-only", title: "Memory local-only", content: "Content of local-only" });
 
     // Last sync timestamp updated
     expect(env.localDb.getMeta("remote_last_synced_at")).not.toBeNull();
@@ -341,13 +342,27 @@ describe("getMachineId", () => {
   it("generates and persists a stable machine ID", async () => {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-machine-"));
     try {
+      vi.stubEnv("GNOSYS_HOME", tmp);
+      vi.stubEnv("GNOSYS_CONFIG_DIR", tmp);
+      vi.stubEnv("HOSTNAME", "audit-host");
+      vi.spyOn(Date, "now").mockReturnValue(36);
       const db = new GnosysDB(tmp);
-      const id1 = getMachineId(db);
-      const id2 = getMachineId(db);
-      expect(id1).toBe(id2);
-      expect(id1.length).toBeGreaterThan(0);
-      db.close();
+      try {
+        expect(getMachineId(db)).toBe("audit-host-10");
+      } finally {
+        db.close();
+      }
+      const reopened = new GnosysDB(tmp);
+      try {
+        expect(reopened.getMeta("machine_id")).toBe("audit-host-10");
+        vi.mocked(Date.now).mockReturnValue(72);
+        expect(getMachineId(reopened)).toBe("audit-host-10");
+      } finally {
+        reopened.close();
+      }
     } finally {
+      vi.restoreAllMocks();
+      vi.unstubAllEnvs();
       await fsp.rm(tmp, { recursive: true, force: true });
     }
   });

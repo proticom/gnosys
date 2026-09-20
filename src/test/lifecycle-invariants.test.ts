@@ -1,8 +1,3 @@
-/**
- * Lifecycle invariant test — after each op, every memory ID has exactly one
- * row in memories (0 after delete) and 0 or 1 synced row in memories_fts.
- */
-
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
   createTestEnv,
@@ -29,52 +24,38 @@ afterEach(async () => {
   await cleanupTestEnv(env);
 });
 
-function raw(db: TestEnv["db"]) {
-  return (db as unknown as {
-    db: {
-      prepare: (s: string) => {
-        get: (...args: unknown[]) => { c: number };
-        all: () => Array<{ id: string; c: number }>;
-      };
-    };
-  }).db;
-}
+describe("memory lifecycle through database reads and search", () => {
+  it("preserves current content, visibility and reinforcement across lifecycle operations", () => {
+    const fm = makeFrontmatter({ id: "inv-001", title: "First version", category: "decisions" });
+    syncMemoryToDb(env.db, fm, "originalword", "decisions/inv.md");
+    expect(env.db.getAllMemories().map(memory => memory.id)).toEqual(["inv-001"]);
+    expect(env.db.searchFts("originalword").map(memory => memory.id)).toEqual(["inv-001"]);
 
-function assertInvariants(testEnv: TestEnv, id: string, expectPresent: boolean) {
-  const r = raw(testEnv.db);
-  const memCount = r.prepare("SELECT COUNT(*) AS c FROM memories WHERE id = ?").get(id).c;
-  const ftsCount = r.prepare("SELECT COUNT(*) AS c FROM memories_fts WHERE id = ?").get(id).c;
+    syncUpdateToDb(env.db, "inv-001", { title: "Second version" }, "replacementword");
+    expect(env.db.getMemory("inv-001")).toMatchObject({ title: "Second version", content: "replacementword" });
+    expect(env.db.searchFts("originalword")).toEqual([]);
+    expect(env.db.searchFts("replacementword").map(memory => [memory.id, memory.title])).toEqual([["inv-001", "Second version"]]);
 
-  expect(memCount).toBe(expectPresent ? 1 : 0);
-  expect(ftsCount).toBeLessThanOrEqual(1);
-  expect(ftsCount).toBe(memCount);
+    syncArchiveToDb(env.db, "inv-001");
+    expect(env.db.getActiveMemories()).toEqual([]);
+    expect(env.db.getMemory("inv-001")).toMatchObject({ tier: "archive", status: "archived", content: "replacementword" });
+    syncDearchiveToDb(env.db, "inv-001");
+    expect(env.db.getActiveMemories().map(memory => memory.id)).toEqual(["inv-001"]);
+    expect(env.db.getMemory("inv-001")).toMatchObject({ tier: "active", status: "active", content: "replacementword" });
 
-  const dupes = r.prepare("SELECT id, COUNT(*) AS c FROM memories GROUP BY id HAVING c > 1").all();
-  expect(dupes.length).toBe(0);
-}
-
-describe("lifecycle invariants — one primary row, ≤1 sidecar row per id", () => {
-  it("holds after every lifecycle op", async () => {
-    const id = "inv-001";
-    const rel = "decisions/inv.md";
-    const fm = makeFrontmatter({ id, title: "Inv", category: "decisions" });
-
-    syncMemoryToDb(env.db, fm, "body", rel);
-    assertInvariants(env, id, true);
-
-    syncUpdateToDb(env.db, id, { title: "Inv2" }, "body2");
-    assertInvariants(env, id, true);
-
-    syncArchiveToDb(env.db, id);
-    assertInvariants(env, id, true);
-
-    syncDearchiveToDb(env.db, id);
-    assertInvariants(env, id, true);
-
-    syncReinforcementToDb(env.db, id, 1);
-    assertInvariants(env, id, true);
-
-    syncDeleteToDb(env.db, id);
-    assertInvariants(env, id, false);
+    syncReinforcementToDb(env.db, "inv-001", 1);
+    expect(env.db.getMemory("inv-001")).toMatchObject({ reinforcement_count: 1, content: "replacementword" });
+    expect(env.db.searchFts("replacementword").map(memory => memory.id)).toEqual(["inv-001"]);
+    syncDeleteToDb(env.db, "inv-001");
+    expect(env.db.getMemory("inv-001")).toBeNull();
+    expect(env.db.searchFts("replacementword")).toEqual([]);
+    expect(env.db.getAllMemories()).toEqual([]);
+  });
+  it.fails("writing the same memory twice keeps one searchable result", () => {
+    const fm = makeFrontmatter({ id: "repeat-001", title: "Repeat write" });
+    syncMemoryToDb(env.db, fm, "uniqueword");
+    syncMemoryToDb(env.db, fm, "uniqueword");
+    expect(env.db.getAllMemories().map(memory => memory.id)).toEqual(["repeat-001"]);
+    expect(env.db.searchFts("uniqueword").map(memory => memory.id)).toEqual(["repeat-001"]);
   });
 });

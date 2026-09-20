@@ -1,0 +1,285 @@
+[
+  {
+    "id": "g2-remote-count",
+    "file": "src/lib/remote.ts",
+    "search": "        memoryCount: counts.total,",
+    "replace": "        memoryCount: counts.total + 100,",
+    "tests": [
+      "src/test/remote.test.ts"
+    ],
+    "testName": "detects existing gnosys.db at path",
+    "description": "remote-count",
+    "artifact": "batch7.before.spec.json"
+  },
+  {
+    "id": "g2-remote-push",
+    "file": "src/lib/remote.ts",
+    "search": "          remoteDb.insertMemory(local);\n          result.pushed++;",
+    "replace": "          remoteDb.insertMemory({ ...local, content: \"WRONG\" });\n          result.pushed++;",
+    "tests": [
+      "src/test/remote.test.ts"
+    ],
+    "testName": "pushes new local memories to remote|two-way sync: local push and remote pull happen in one call",
+    "description": "remote-push",
+    "artifact": "batch7.before.spec.json"
+  },
+  {
+    "id": "g2-remote-pull",
+    "file": "src/lib/remote.ts",
+    "search": "// Memory only exists on remote — pull\n        try {\n          this.localDb.insertMemory(remote);",
+    "replace": "// Memory only exists on remote — pull\n        try {\n          this.localDb.insertMemory({ ...remote, content: \"WRONG\" });",
+    "tests": [
+      "src/test/remote.test.ts"
+    ],
+    "testName": "pulls new remote memories to local",
+    "description": "remote-pull",
+    "artifact": "batch7.before.spec.json"
+  },
+  {
+    "id": "g2-remote-migrate",
+    "file": "src/lib/remote.ts",
+    "search": "        remoteDb.insertMemory(mem);",
+    "replace": "        remoteDb.insertMemory({ ...mem, content: \"WRONG\" });",
+    "tests": [
+      "src/test/remote.test.ts"
+    ],
+    "testName": "copies all local memories to a fresh remote",
+    "description": "remote-migrate",
+    "artifact": "batch7.before.spec.json"
+  },
+  {
+    "id": "g2-machine-identity",
+    "file": "src/lib/remote.ts",
+    "search": "export function getMachineId(localDb: GnosysDB): string {",
+    "replace": "export function getMachineId(localDb: GnosysDB): string {\n  if (localDb.isAvailable()) return \"constant-machine\";",
+    "tests": [
+      "src/test/remote.test.ts"
+    ],
+    "testName": "generates and persists a stable machine ID",
+    "description": "machine-identity",
+    "artifact": "batch7.before.spec.json"
+  },
+  {
+    "id": "g2-config-unforced-write",
+    "file": "src/lib/configCommand.ts",
+    "search": "        if (!opts.force) {\n          const { Header }",
+    "replace": "        if (!opts.force) {\n          await fs.mkdir(path.join(process.cwd(), \".gnosys\"), { recursive: true });\n          await fs.writeFile(path.join(process.cwd(), \".gnosys\", \"gnosys.json\"), generateConfigTemplate());\n          const { Header }",
+    "tests": [
+      "src/test/setup-ui-config-init.test.ts"
+    ],
+    "testName": "without --force prints deprecation warning and does NOT write template",
+    "description": "Write a project config template before issuing the deprecation warning without --force.",
+    "build": true,
+    "artifact": "config-unforced.before.spec.json"
+  },
+  {
+    "id": "g2-config-template",
+    "file": "src/lib/configCommand.ts",
+    "search": "generateConfigTemplate() + \"\\n\"",
+    "replace": "JSON.stringify({ ...JSON.parse(generateConfigTemplate()), llm: {} }) + \"\\n\"",
+    "tests": [
+      "src/test/setup-ui-config-init.test.ts"
+    ],
+    "testName": "with --force writes a template",
+    "description": "Drop every provider model from the written template while retaining an empty llm object.",
+    "build": true,
+    "artifact": "config.before.spec.json"
+  },
+  {
+    "id": "g2-queue-vector",
+    "file": "src/lib/embedDb.ts",
+    "search": "  db.updateEmbedding(id, float32ToBuffer(vec));",
+    "replace": "  db.updateEmbedding(id, float32ToBuffer(new Float32Array(vec.length)));",
+    "tests": [
+      "src/test/embed-queue.test.ts"
+    ],
+    "testName": "embeds queued memories once enabled|syncMemoryToDb feeds the queue",
+    "description": "Discard the model output and persist zeroes of the same dimension.",
+    "artifact": "embed.before.spec.json"
+  },
+  {
+    "id": "g2-fts-upsert-repair-witness",
+    "kind": "defect-repair-probe",
+    "file": "src/lib/db.ts",
+    "search": "      const stmt = this.prep(`\n        INSERT OR REPLACE INTO memories",
+    "replace": "      this.prep(\"DELETE FROM memories_fts WHERE id = ?\").run(mem.id);\n      const stmt = this.prep(`\n        INSERT OR REPLACE INTO memories",
+    "tests": [
+      "src/test/lifecycle-invariants.test.ts"
+    ],
+    "testName": "writing the same memory twice",
+    "description": "Temporary repair witness for G2-D002: remove stale FTS record before replacement, causing expected-failure case to unexpectedly pass.",
+    "artifact": "lifecycle-repair.spec.json"
+  },
+  {
+    "id": "g2-lifecycle-update-content",
+    "file": "src/lib/dbWrite.ts",
+    "search": "    dbUpdates.content = newContent;",
+    "replace": "    dbUpdates.content = \"WRONG\";",
+    "tests": [
+      "src/test/lifecycle-invariants.test.ts"
+    ],
+    "testName": "preserves current content",
+    "description": "Persist wrong replacement content during lifecycle update.",
+    "artifact": "lifecycle.spec.json"
+  },
+  {
+    "id": "g2-toolset-dream-name",
+    "file": "src/index.ts",
+    "search": "regTool(\n  \"gnosys_dream\",",
+    "replace": "regTool(\n  \"gnosys_dream_wrong\",",
+    "tests": [
+      "src/test/mcp-http-replay.test.ts",
+      "src/test/mcp-toolset-dynamic.test.ts"
+    ],
+    "testName": "two concurrent sessions both see the full real tool list|GNOSYS_MCP_TOOLSET=full env override starts on the full tier",
+    "description": "Rename the Dream tool while preserving tool counts and identical session lists.",
+    "artifact": "mcp-list.before.spec.json"
+  },
+  {
+    "id": "g2-setup-validation-success",
+    "file": "src/lib/setup.ts",
+    "search": "    validateSpin.ok(\n      \"model validated\",\n      `${result.latencyMs} ms · ${opts.provider} / ${opts.model}`,\n    );\n    return { proceed: true, apiKey };",
+    "replace": "    validateSpin.ok(\n      \"model validated\",\n      `${result.latencyMs} ms · ${opts.provider} / ${opts.model}`,\n    );\n    return { proceed: false, apiKey };",
+    "tests": [
+      "src/test/setup-models-routing.test.ts"
+    ],
+    "testName": "returns proceed true when validation succeeds",
+    "description": "Reject validated provider/model/key triple.",
+    "artifact": "models-remaining.spec.json"
+  },
+  {
+    "id": "g2-setup-secure-service",
+    "file": "src/lib/setup.ts",
+    "search": "if (storeApiKeySecret(opts.service, opts.key, opts.provider)) {",
+    "replace": "if (storeApiKeySecret(\"WRONG_SERVICE\", opts.key, opts.provider)) {",
+    "tests": [
+      "src/test/setup-models-routing.test.ts"
+    ],
+    "testName": "secure store choice writes the scoped key through the OS boundary",
+    "description": "Persist the selected key under the wrong keychain service name.",
+    "artifact": "models-remaining.spec.json"
+  },
+  {
+    "id": "g2-setup-no-store",
+    "file": "src/lib/setup.ts",
+    "search": "  const legacy = LEGACY_PROVIDER_ENV[opts.provider];\n  const providerSvc =",
+    "replace": "  await writeServiceKeyToEnv(opts.service, opts.key);\n  const legacy = LEGACY_PROVIDER_ENV[opts.provider];\n  const providerSvc =",
+    "tests": [
+      "src/test/setup-models-routing.test.ts"
+    ],
+    "testName": "don't store prints env var names and persists nothing",
+    "description": "Persist the provided key to dotenv despite the do-not-store choice.",
+    "artifact": "models.after.spec.json"
+  },
+  {
+    "id": "g2-setup-validation-failure",
+    "file": "src/lib/modelValidation.ts",
+    "search": "    if (!response.ok) {",
+    "replace": "    if (false && !response.ok) {",
+    "tests": [
+      "src/test/setup-models-routing.test.ts"
+    ],
+    "testName": "does not persist keys on validation failure",
+    "description": "Accept a provider HTTP401 response as successful validation.",
+    "artifact": "models.after.spec.json"
+  },
+  {
+    "id": "g2-setup-validation-success",
+    "file": "src/lib/setup.ts",
+    "search": "    validateSpin.ok(\n      \"model validated\",\n      `${result.latencyMs} ms · ${opts.provider} / ${opts.model}`,\n    );\n    return { proceed: true, apiKey };",
+    "replace": "    validateSpin.ok(\n      \"model validated\",\n      `${result.latencyMs} ms · ${opts.provider} / ${opts.model}`,\n    );\n    return { proceed: false, apiKey };",
+    "tests": [
+      "src/test/setup-models-routing.test.ts"
+    ],
+    "testName": "returns proceed true when validation succeeds",
+    "description": "Reject validated provider/model/key triple.",
+    "artifact": "models.after.spec.json"
+  },
+  {
+    "id": "g2-setup-secure-service",
+    "file": "src/lib/setup.ts",
+    "search": "if (storeApiKeySecret(opts.service, opts.key, opts.provider)) {",
+    "replace": "if (storeApiKeySecret(\"WRONG_SERVICE\", opts.key, opts.provider)) {",
+    "tests": [
+      "src/test/setup-models-routing.test.ts"
+    ],
+    "testName": "secure store choice writes the scoped key through the OS boundary",
+    "description": "Persist the selected key under the wrong keychain service name.",
+    "artifact": "models.after.spec.json"
+  },
+  {
+    "id": "g2-setup-no-store",
+    "file": "src/lib/setup.ts",
+    "search": "  const legacy = LEGACY_PROVIDER_ENV[opts.provider];\n  const providerSvc =",
+    "replace": "  await writeServiceKeyToEnv(opts.service, opts.key);\n  const legacy = LEGACY_PROVIDER_ENV[opts.provider];\n  const providerSvc =",
+    "tests": [
+      "src/test/setup-models-routing.test.ts"
+    ],
+    "testName": "don't store prints env var names and persists nothing",
+    "description": "Persist the provided key to dotenv despite the do-not-store choice.",
+    "artifact": "models.before.spec.json"
+  },
+  {
+    "id": "g2-pty-cancel-status",
+    "file": "src/lib/setup/ui/safePrompt.ts",
+    "search": "    if (!skipExit) {\n      process.exit(130);\n    }",
+    "replace": "    if (!skipExit) {\n      process.exit(0);\n    }",
+    "tests": [
+      "src/test/setup-ctrlc.test.ts"
+    ],
+    "testName": "gnosys setup models exits|gnosys setup ides exits",
+    "description": "Return success instead of SIGINT status after cancelling a models or IDE prompt.",
+    "build": true,
+    "artifact": "pty.spec.json"
+  },
+  {
+    "id": "g2-pty-setup-repair-witness",
+    "file": "src/lib/setup.ts",
+    "search": "      console.log(\"\\n\\nSetup cancelled.\");\n      process.exit(0);",
+    "replace": "      console.log(\"\\n\\nSetup cancelled.\");\n      process.exit(130);",
+    "tests": [
+      "src/test/setup-ctrlc.test.ts"
+    ],
+    "testName": "gnosys setup exits cleanly on SIGINT",
+    "description": "Temporary repair witness for G2-D001: close listener uses interrupt exit status, making expected-failure case unexpectedly pass.",
+    "build": true,
+    "kind": "defect-repair-probe",
+    "artifact": "pty.spec.json"
+  },
+  {
+    "id": "g2-queue-warning",
+    "file": "src/lib/embedQueue.ts",
+    "search": "`Gnosys: write-time embedding failed (${err instanceof Error ? err.message : err}). `",
+    "replace": "`Gnosys: embedding status (${err instanceof Error ? err.message : err}). `",
+    "tests": [
+      "src/test/embed-queue.test.ts"
+    ],
+    "testName": "warns on stderr instead",
+    "description": "Lose the failure label in the stderr warning.",
+    "artifact": "unit7-new.spec.json"
+  },
+  {
+    "id": "g2-store-manifest",
+    "file": "src/lib/store.ts",
+    "search": "ignore: [\"MANIFEST.md\", \"CHANGELOG.md\", \".config/**\", \"node_modules/**\"]",
+    "replace": "ignore: [\"CHANGELOG.md\", \".config/**\", \"node_modules/**\"]",
+    "tests": [
+      "src/test/store.test.ts"
+    ],
+    "testName": "ignores CHANGELOG.md and MANIFEST.md",
+    "description": "Include MANIFEST.md as user memory.",
+    "artifact": "unit7-new.spec.json"
+  },
+  {
+    "id": "g2-store-category",
+    "file": "src/lib/store.ts",
+    "search": "!e.name.startsWith(\".\") &&\n          e.name !== \"node_modules\"",
+    "replace": "!e.name.startsWith(\".\")",
+    "tests": [
+      "src/test/store.test.ts"
+    ],
+    "testName": "returns only directories, excludes hidden and node_modules",
+    "description": "Expose node_modules as a memory category.",
+    "artifact": "unit7-new.spec.json"
+  }
+]

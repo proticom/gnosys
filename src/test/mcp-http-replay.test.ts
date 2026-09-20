@@ -52,11 +52,64 @@ describe("MCP HTTP registration replay", () => {
     const names1 = list1.tools.map((t) => t.name).sort();
     const names2 = list2.tools.map((t) => t.name).sort();
 
-    expect(names1.length).toBeGreaterThanOrEqual(50); // v5.x: 50 after gnosys_rollback removed (git-backed history/rollback legacy)
-    expect(names1).toEqual(names2);
-
-    for (const expected of ["gnosys_discover", "gnosys_recall", "gnosys_add", "gnosys_ingest_file"]) {
-      expect(names1).toContain(expected);
-    }
+    expect(names1).toEqual([
+      "gnosys_add",
+      "gnosys_add_structured",
+      "gnosys_ask",
+      "gnosys_attach",
+      "gnosys_audit",
+      "gnosys_bootstrap",
+      "gnosys_briefing",
+      "gnosys_commit_context",
+      "gnosys_dashboard",
+      "gnosys_dearchive",
+      "gnosys_detect_ambiguity",
+      "gnosys_discover",
+      "gnosys_dream",
+      "gnosys_export",
+      "gnosys_federated_search",
+      "gnosys_get_attachment",
+      "gnosys_graph",
+      "gnosys_history",
+      "gnosys_hybrid_search",
+      "gnosys_import",
+      "gnosys_ingest_file",
+      "gnosys_init",
+      "gnosys_lens",
+      "gnosys_links",
+      "gnosys_list",
+      "gnosys_maintain",
+      "gnosys_migrate",
+      "gnosys_portfolio",
+      "gnosys_preference_delete",
+      "gnosys_preference_get",
+      "gnosys_preference_set",
+      "gnosys_read",
+      "gnosys_recall",
+      "gnosys_reflect",
+      "gnosys_reindex",
+      "gnosys_reindex_graph",
+      "gnosys_reinforce",
+      "gnosys_remote_pull",
+      "gnosys_remote_push",
+      "gnosys_remote_resolve",
+      "gnosys_remote_status",
+      "gnosys_search",
+      "gnosys_semantic_search",
+      "gnosys_stale",
+      "gnosys_stats",
+      "gnosys_stores",
+      "gnosys_sync",
+      "gnosys_tags",
+      "gnosys_tags_add",
+      "gnosys_timeline",
+      "gnosys_toolset",
+      "gnosys_trace",
+      "gnosys_traverse",
+      "gnosys_update",
+      "gnosys_update_status",
+      "gnosys_working_set",
+    ]);
+    expect(names2).toEqual(names1);
   }, 60_000);
 });

@@ -1,0 +1,63 @@
+{
+  "base": "203c4e7e488cea66bfd9a3ad687d9d1dda309d16",
+  "files": [
+    {
+      "path": "src/test/embed-queue.test.ts",
+      "sha256": "c4cc55b6d65f55b224f28047a81b250f03f7f0126de47f5f8be39b4d0f22ddf4"
+    },
+    {
+      "path": "src/test/lifecycle-invariants.test.ts",
+      "sha256": "65c0a2c9db1724c1a70c3e6cc7fe669a3416aef1f476e92b3c9c40250fd5a202"
+    },
+    {
+      "path": "src/test/mcp-http-replay.test.ts",
+      "sha256": "a3b8adee8f37e4887fa4959441ec1cc07e6a55bffb490a4125ffb978281e96d2"
+    },
+    {
+      "path": "src/test/mcp-toolset-dynamic.test.ts",
+      "sha256": "45773ef5271f666f11045fdca58cbeb1fee3cac0bf5c60a5b7efb16e09758184"
+    },
+    {
+      "path": "src/test/remote.test.ts",
+      "sha256": "da9fe936cb72d462592293bbd3338056cba827f797586f8d5889860426817b9b"
+    },
+    {
+      "path": "src/test/setup-ctrlc.test.ts",
+      "sha256": "98e75d2359d5c46343a9c983286896b3b922a793d13d669a7a0a499788feaa73"
+    },
+    {
+      "path": "src/test/setup-models-routing.test.ts",
+      "sha256": "103861e49f864bb4f0e5b84611549d23020f8bbf9d25ae618400fdc92d8a4d9f"
+    },
+    {
+      "path": "src/test/setup-ui-config-init.test.ts",
+      "sha256": "c351a43606535b0d0fbbe698bb8d68b7a243e7c2e0f9cbf81a7804f05d3f6940"
+    },
+    {
+      "path": "src/test/store.test.ts",
+      "sha256": "414d19476405b85d499699ed066e773629a0b0bd4a26ca02194b7b681696e1ba"
+    }
+  ],
+  "originalDeclarations": 63,
+  "newTests": 1,
+  "actions": {
+    "kept": 40,
+    "rewritten": 22,
+    "expected_failure": 1
+  },
+  "runtimeCases": 64,
+  "validation": [
+    "unit7 and unit8 whole-file runs passed including expected failures",
+    "tsc --noEmit passed",
+    "Biome all 9 files passed",
+    "No modified tracked production files"
+  ],
+  "patchSha256": "bb2b5d67355ff0f3fc5c111306719d3e1de4e5c677f24ce99562561855991be3",
+  "requirements": [
+    "setup-ctrlc uses python3 POSIX pty, present on current macOS host; Linux CI needs python3"
+  ],
+  "defects": [
+    "G2-D001 setup cancellation exits0",
+    "G2-D002 repeated memory upsert duplicates FTS results"
+  ]
+}

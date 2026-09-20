@@ -1,0 +1,1736 @@
+{
+  "results": [
+    {
+      "id": "g2-remote-count",
+      "file": "src/lib/remote.ts",
+      "description": "remote-count",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 408,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "validateLocation detects existing gnosys.db at path",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 412,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "validateLocation detects existing gnosys.db at path",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 101 to be 1 // Object.is equality\n    at <repo>/src/test/remote.test.ts:124:52\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 420,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "validateLocation detects existing gnosys.db at path",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote.test.ts",
+          "name": "validateLocation detects existing gnosys.db at path"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "batch7.after.results.json"
+    },
+    {
+      "id": "g2-remote-push",
+      "file": "src/lib/remote.ts",
+      "description": "remote-push",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 417,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.push pushes new local memories to remote",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.sync (full cycle) two-way sync: local push and remote pull happen in one call",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 418,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.push pushes new local memories to remote",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { id: 'new-001', …(28) } to match object { id: 'new-001', …(2) }\n(26 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/remote.test.ts:180:47\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          },
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.sync (full cycle) two-way sync: local push and remote pull happen in one call",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { id: 'local-only', …(28) } to match object { id: 'local-only', …(2) }\n(26 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/remote.test.ts:334:50\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 408,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.push pushes new local memories to remote",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.sync (full cycle) two-way sync: local push and remote pull happen in one call",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote.test.ts",
+          "name": "RemoteSync.push pushes new local memories to remote"
+        },
+        {
+          "file": "src/test/remote.test.ts",
+          "name": "RemoteSync.sync (full cycle) two-way sync: local push and remote pull happen in one call"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "batch7.after.results.json"
+    },
+    {
+      "id": "g2-remote-pull",
+      "file": "src/lib/remote.ts",
+      "description": "remote-pull",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 457,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.pull pulls new remote memories to local",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 436,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.pull pulls new remote memories to local",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { id: 'rem-001', …(28) } to match object { id: 'rem-001', …(2) }\n(26 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/remote.test.ts:210:46\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 423,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.pull pulls new remote memories to local",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote.test.ts",
+          "name": "RemoteSync.pull pulls new remote memories to local"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "batch7.after.results.json"
+    },
+    {
+      "id": "g2-remote-migrate",
+      "file": "src/lib/remote.ts",
+      "description": "remote-migrate",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 418,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.migrate copies all local memories to a fresh remote",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 437,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.migrate copies all local memories to a fresh remote",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { id: 'm-001', …(28) } to match object { id: 'm-001', …(2) }\n(26 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/remote.test.ts:313:45\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 457,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.migrate copies all local memories to a fresh remote",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote.test.ts",
+          "name": "RemoteSync.migrate copies all local memories to a fresh remote"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "batch7.after.results.json"
+    },
+    {
+      "id": "g2-machine-identity",
+      "file": "src/lib/remote.ts",
+      "description": "machine-identity",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 457,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "getMachineId generates and persists a stable machine ID",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 444,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "getMachineId generates and persists a stable machine ID",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'constant-machine' to be 'audit-host-10' // Object.is equality\n    at <repo>/src/test/remote.test.ts:351:34\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 446,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "getMachineId generates and persists a stable machine ID",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote.test.ts",
+          "name": "getMachineId generates and persists a stable machine ID"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "batch7.after.results.json"
+    },
+    {
+      "id": "g2-remote-count",
+      "file": "src/lib/remote.ts",
+      "description": "remote-count",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 401,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "validateLocation detects existing gnosys.db at path",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 404,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "validateLocation detects existing gnosys.db at path",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 401,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "validateLocation detects existing gnosys.db at path",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "batch7.before.results.json"
+    },
+    {
+      "id": "g2-remote-push",
+      "file": "src/lib/remote.ts",
+      "description": "remote-push",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 398,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.push pushes new local memories to remote",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.sync (full cycle) two-way sync: local push and remote pull happen in one call",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 422,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.push pushes new local memories to remote",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.sync (full cycle) two-way sync: local push and remote pull happen in one call",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 604,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.push pushes new local memories to remote",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.sync (full cycle) two-way sync: local push and remote pull happen in one call",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "batch7.before.results.json"
+    },
+    {
+      "id": "g2-remote-pull",
+      "file": "src/lib/remote.ts",
+      "description": "remote-pull",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 415,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.pull pulls new remote memories to local",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 403,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.pull pulls new remote memories to local",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 404,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.pull pulls new remote memories to local",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "batch7.before.results.json"
+    },
+    {
+      "id": "g2-remote-migrate",
+      "file": "src/lib/remote.ts",
+      "description": "remote-migrate",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 403,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.migrate copies all local memories to a fresh remote",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 408,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.migrate copies all local memories to a fresh remote",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 406,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.migrate copies all local memories to a fresh remote",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "batch7.before.results.json"
+    },
+    {
+      "id": "g2-machine-identity",
+      "file": "src/lib/remote.ts",
+      "description": "machine-identity",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 400,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "getMachineId generates and persists a stable machine ID",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 409,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "getMachineId generates and persists a stable machine ID",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 420,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "getMachineId generates and persists a stable machine ID",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "batch7.before.results.json"
+    },
+    {
+      "id": "g2-config-unforced-write",
+      "file": "src/lib/configCommand.ts",
+      "description": "Write a project config template before issuing the deprecation warning without --force.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 486,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-config-init.test.ts",
+            "name": "Phase E — Screen 14 — config init without --force prints deprecation warning and does NOT write template",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 459,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-config-init.test.ts",
+            "name": "Phase E — Screen 14 — config init without --force prints deprecation warning and does NOT write template",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected true to be false // Object.is equality\n    at <repo>/src/test/setup-ui-config-init.test.ts:48:71\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 431,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-config-init.test.ts",
+            "name": "Phase E — Screen 14 — config init without --force prints deprecation warning and does NOT write template",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-ui-config-init.test.ts",
+          "name": "Phase E — Screen 14 — config init without --force prints deprecation warning and does NOT write template"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "config-unforced.after.results.json"
+    },
+    {
+      "id": "g2-config-unforced-write",
+      "file": "src/lib/configCommand.ts",
+      "description": "Write a project config template before issuing the deprecation warning without --force.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 407,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-config-init.test.ts",
+            "name": "Phase E — Screen 14 — config init without --force prints deprecation warning and does NOT write template",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 433,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-config-init.test.ts",
+            "name": "Phase E — Screen 14 — config init without --force prints deprecation warning and does NOT write template",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 414,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-config-init.test.ts",
+            "name": "Phase E — Screen 14 — config init without --force prints deprecation warning and does NOT write template",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "config-unforced.before.results.json"
+    },
+    {
+      "id": "g2-config-template",
+      "file": "src/lib/configCommand.ts",
+      "description": "Drop every provider model from the written template while retaining an empty llm object.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 762,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-config-init.test.ts",
+            "name": "Phase E — Screen 14 — config init with --force writes a template without defaultProvider hardcoded",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 651,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-config-init.test.ts",
+            "name": "Phase E — Screen 14 — config init with --force writes a template without defaultProvider hardcoded",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { llm: {}, taskModels: {}, …(10) } to match object { …(3) }\n(22 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/setup-ui-config-init.test.ts:77:22\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 612,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-config-init.test.ts",
+            "name": "Phase E — Screen 14 — config init with --force writes a template without defaultProvider hardcoded",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-ui-config-init.test.ts",
+          "name": "Phase E — Screen 14 — config init with --force writes a template without defaultProvider hardcoded"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "config.after.results.json"
+    },
+    {
+      "id": "g2-config-template",
+      "file": "src/lib/configCommand.ts",
+      "description": "Drop every provider model from the written template while retaining an empty llm object.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 784,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-config-init.test.ts",
+            "name": "Phase E — Screen 14 — config init with --force writes a template without defaultProvider hardcoded",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 628,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-config-init.test.ts",
+            "name": "Phase E — Screen 14 — config init with --force writes a template without defaultProvider hardcoded",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 620,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-config-init.test.ts",
+            "name": "Phase E — Screen 14 — config init with --force writes a template without defaultProvider hardcoded",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "config.before.results.json"
+    },
+    {
+      "id": "g2-queue-vector",
+      "file": "src/lib/embedDb.ts",
+      "description": "Discard the model output and persist zeroes of the same dimension.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 512,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue embeds queued memories once enabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue syncMemoryToDb feeds the queue — a plain DB write gets a vector",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 511,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue embeds queued memories once enabled",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected Buffer[ 0, 0, 0, 0, 0, 0, 0, 0, …(17) ] to deeply equal Buffer[ 0, 0, 128, 63, 0, 0, 0, …(-47) ]\n    at <repo>/src/test/embed-queue.test.ts:75:39\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue syncMemoryToDb feeds the queue — a plain DB write gets a vector",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected Buffer[ 0, 0, 0, 0, 0, 0, 0, 0, …(17) ] to deeply equal Buffer[ 0, 0, 128, 63, 0, 0, 0, …(-47) ]\n    at <repo>/src/test/embed-queue.test.ts:115:41\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 490,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue embeds queued memories once enabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue syncMemoryToDb feeds the queue — a plain DB write gets a vector",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/embed-queue.test.ts",
+          "name": "embedQueue embeds queued memories once enabled"
+        },
+        {
+          "file": "src/test/embed-queue.test.ts",
+          "name": "embedQueue syncMemoryToDb feeds the queue — a plain DB write gets a vector"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "embed.after.results.json"
+    },
+    {
+      "id": "g2-queue-vector",
+      "file": "src/lib/embedDb.ts",
+      "description": "Discard the model output and persist zeroes of the same dimension.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 603,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue embeds queued memories once enabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue syncMemoryToDb feeds the queue — a plain DB write gets a vector",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 528,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue embeds queued memories once enabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue syncMemoryToDb feeds the queue — a plain DB write gets a vector",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 488,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue embeds queued memories once enabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue syncMemoryToDb feeds the queue — a plain DB write gets a vector",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "embed.before.results.json"
+    },
+    {
+      "id": "g2-fts-upsert-repair-witness",
+      "file": "src/lib/db.ts",
+      "description": "Temporary repair witness for G2-D002: remove stale FTS record before replacement, causing expected-failure case to unexpectedly pass.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 437,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/lifecycle-invariants.test.ts",
+            "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 425,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/lifecycle-invariants.test.ts",
+            "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result",
+            "status": "failed",
+            "failures": [
+              "Error: Expect test to fail\n    at runTest (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3041:31)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)\n    at runFiles (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3240:3)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 433,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/lifecycle-invariants.test.ts",
+            "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/lifecycle-invariants.test.ts",
+          "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result"
+        }
+      ],
+      "applicationRestored": true,
+      "kind": "defect-repair-probe",
+      "artifact": "lifecycle-repair.results.json"
+    },
+    {
+      "id": "g2-lifecycle-update-content",
+      "file": "src/lib/dbWrite.ts",
+      "description": "Persist wrong replacement content during lifecycle update.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 415,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/lifecycle-invariants.test.ts",
+            "name": "memory lifecycle through database reads and search preserves current content, visibility and reinforcement across lifecycle operations",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 408,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/lifecycle-invariants.test.ts",
+            "name": "memory lifecycle through database reads and search preserves current content, visibility and reinforcement across lifecycle operations",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { id: 'inv-001', …(28) } to match object { title: 'Second version', …(1) }\n(27 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/lifecycle-invariants.test.ts:35:41\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 423,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/lifecycle-invariants.test.ts",
+            "name": "memory lifecycle through database reads and search preserves current content, visibility and reinforcement across lifecycle operations",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/lifecycle-invariants.test.ts",
+          "name": "memory lifecycle through database reads and search preserves current content, visibility and reinforcement across lifecycle operations"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "lifecycle.results.json"
+    },
+    {
+      "id": "g2-toolset-dream-name",
+      "file": "src/index.ts",
+      "description": "Rename the Dream tool while preserving tool counts and identical session lists.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1057,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-http-replay.test.ts",
+            "name": "MCP HTTP registration replay two concurrent sessions both see the full real tool list",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/mcp-toolset-dynamic.test.ts",
+            "name": "MCP dynamic toolset switching (v6.2) GNOSYS_MCP_TOOLSET=full env override starts on the full tier",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1022,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-http-replay.test.ts",
+            "name": "MCP HTTP registration replay two concurrent sessions both see the full real tool list",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'gnosys_add', …(55) ] to deeply equal [ 'gnosys_add', …(55) ]\n    at <repo>/src/test/mcp-http-replay.test.ts:55:20\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/mcp-toolset-dynamic.test.ts",
+            "name": "MCP dynamic toolset switching (v6.2) GNOSYS_MCP_TOOLSET=full env override starts on the full tier",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'gnosys_add', …(55) ] to deeply equal [ 'gnosys_add', …(55) ]\n    at <repo>/src/test/mcp-toolset-dynamic.test.ts:118:46\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1031,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-http-replay.test.ts",
+            "name": "MCP HTTP registration replay two concurrent sessions both see the full real tool list",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/mcp-toolset-dynamic.test.ts",
+            "name": "MCP dynamic toolset switching (v6.2) GNOSYS_MCP_TOOLSET=full env override starts on the full tier",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/mcp-http-replay.test.ts",
+          "name": "MCP HTTP registration replay two concurrent sessions both see the full real tool list"
+        },
+        {
+          "file": "src/test/mcp-toolset-dynamic.test.ts",
+          "name": "MCP dynamic toolset switching (v6.2) GNOSYS_MCP_TOOLSET=full env override starts on the full tier"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "mcp-list.after.results.json"
+    },
+    {
+      "id": "g2-toolset-dream-name",
+      "file": "src/index.ts",
+      "description": "Rename the Dream tool while preserving tool counts and identical session lists.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1551,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-http-replay.test.ts",
+            "name": "MCP HTTP registration replay two concurrent sessions both see the full real tool list",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/mcp-toolset-dynamic.test.ts",
+            "name": "MCP dynamic toolset switching (v6.2) GNOSYS_MCP_TOOLSET=full env override starts on the full tier",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 1172,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-http-replay.test.ts",
+            "name": "MCP HTTP registration replay two concurrent sessions both see the full real tool list",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/mcp-toolset-dynamic.test.ts",
+            "name": "MCP dynamic toolset switching (v6.2) GNOSYS_MCP_TOOLSET=full env override starts on the full tier",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1261,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-http-replay.test.ts",
+            "name": "MCP HTTP registration replay two concurrent sessions both see the full real tool list",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/mcp-toolset-dynamic.test.ts",
+            "name": "MCP dynamic toolset switching (v6.2) GNOSYS_MCP_TOOLSET=full env override starts on the full tier",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "mcp-list.before.results.json"
+    },
+    {
+      "id": "g2-setup-validation-success",
+      "file": "src/lib/setup.ts",
+      "description": "Reject validated provider/model/key triple.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 558,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing validateTaskCombo returns proceed true when validation succeeds",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 552,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing validateTaskCombo returns proceed true when validation succeeds",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected false to be true // Object.is equality\n    at <repo>/src/test/setup-models-routing.test.ts:199:23\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 553,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing validateTaskCombo returns proceed true when validation succeeds",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-models-routing.test.ts",
+          "name": "setup models task routing validateTaskCombo returns proceed true when validation succeeds"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "models-remaining.results.json"
+    },
+    {
+      "id": "g2-setup-secure-service",
+      "file": "src/lib/setup.ts",
+      "description": "Persist the selected key under the wrong keychain service name.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 537,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing promptKeyDestinationAndPersist secure store choice writes the scoped key through the OS boundary",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 538,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing promptKeyDestinationAndPersist secure store choice writes the scoped key through the OS boundary",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ [ …(2) ] ] to deeply equal [ [ …(2) ] ]\n    at <repo>/src/test/setup-models-routing.test.ts:221:22"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 555,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing promptKeyDestinationAndPersist secure store choice writes the scoped key through the OS boundary",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-models-routing.test.ts",
+          "name": "setup models task routing promptKeyDestinationAndPersist secure store choice writes the scoped key through the OS boundary"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "models-remaining.results.json"
+    },
+    {
+      "id": "g2-setup-no-store",
+      "file": "src/lib/setup.ts",
+      "description": "Persist the provided key to dotenv despite the do-not-store choice.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 509,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing promptKeyDestinationAndPersist don't store prints env var names and persists nothing",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 519,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing promptKeyDestinationAndPersist don't store prints env var names and persists nothing",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'EXISTING=preserved\\n\\nGNOSYS_GLOBAL_O…' to be 'EXISTING=preserved\\n' // Object.is equality\n    at <repo>/src/test/setup-models-routing.test.ts:273:51\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 518,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing promptKeyDestinationAndPersist don't store prints env var names and persists nothing",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-models-routing.test.ts",
+          "name": "setup models task routing promptKeyDestinationAndPersist don't store prints env var names and persists nothing"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "models.after.results.json"
+    },
+    {
+      "id": "g2-setup-validation-failure",
+      "file": "src/lib/modelValidation.ts",
+      "description": "Accept a provider HTTP401 response as successful validation.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 554,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing validateTaskCombo does not persist keys on validation failure",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 543,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing validateTaskCombo does not persist keys on validation failure",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected true to be false // Object.is equality\n    at <repo>/src/test/setup-models-routing.test.ts:178:23\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 552,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing validateTaskCombo does not persist keys on validation failure",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-models-routing.test.ts",
+          "name": "setup models task routing validateTaskCombo does not persist keys on validation failure"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "models.after.results.json"
+    },
+    {
+      "id": "g2-setup-no-store",
+      "file": "src/lib/setup.ts",
+      "description": "Persist the provided key to dotenv despite the do-not-store choice.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 524,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing promptKeyDestinationAndPersist don't store prints env var names and persists nothing",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 506,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing promptKeyDestinationAndPersist don't store prints env var names and persists nothing",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 505,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing promptKeyDestinationAndPersist don't store prints env var names and persists nothing",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "models.before.results.json"
+    },
+    {
+      "id": "g2-pty-cancel-status",
+      "file": "src/lib/setup/ui/safePrompt.ts",
+      "description": "Return success instead of SIGINT status after cancelling a models or IDE prompt.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1095,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ctrlc.test.ts",
+            "name": "Phase B — Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/setup-ctrlc.test.ts",
+            "name": "Phase B — Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1158,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ctrlc.test.ts",
+            "name": "Phase B — Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT",
+            "status": "failed",
+            "failures": [
+              "AssertionError: \r\n \u001b[38;5;167m⬢\u001b[0m \u001b[1mgnosys\u001b[0m \u001b[38;5;242m▸\u001b[0m \u001b[38;5;242msetup\u001b[0m \u001b[38;5;242m▸\u001b[0m \u001b[38;5;242mmodels\u001b[0m                                                      \r\n \u001b[38;5;238m───────────────────────────────────────────────────────────────────────────────\u001b[0m\r\n\r\n \u001b[1mModel configuration\u001b[0m\r\n \u001b[38;5;246mpick a provider — then default or per-task routing\u001b[0m\r\n\r\n\r \u001b[38;5;167m◌\u001b[0m \u001b[38;5;252mfetching latest pricing from openrouter…\u001b[0m\r\u001b[2K \u001b[38;5;167m✗\u001b[0m \u001b[38;5;252mpricing fetch failed\u001b[0m                                     \u001b[38;5;242musing bundled tiers\u001b[0m\r\n\r\n\r\nChoose your LLM provider\r\n\r\n  \u001b[1m1.\u001b[0m Anthropic (Claude)      \u001b[2m$0.80–$25.00/M tokens\u001b[0m\r\n  \u001b[1m2.\u001b[0m OpenAI (GPT-5.4)      \u001b[2m$0.20–$15.00/M tokens\u001b[0m\r\n  \u001b[1m3.\u001b[0m Ollama (local, free)\r\n  \u001b[1m4.\u001b[0m Groq (fast, cheap)      \u001b[2m$0.05–$0.79/M tokens\u001b[0m\r\n  \u001b[1m5.\u001b[0m xAI (Grok)      \u001b[2m$0.10–$3.20/M tokens\u001b[0m\r\n  \u001b[1m6.\u001b[0m Mistral      \u001b[2m$0.05–$8.00/M tokens\u001b[0m\r\n  \u001b[1m7.\u001b[0m LM Studio (local, free)\r\n  \u001b[1m8.\u001b[0m OpenRouter (free + paid models)\r\n  \u001b[1m9.\u001b[0m Custom (any OpenAI-compatible API)\r\n\r\n\u001b[2m>\u001b[0m \r\n \u001b[38;5;242mcancelled · no changes written\u001b[0m\r\n: expected +0 to be 130 // Object.is equality\n    at <repo>/src/test/setup-ctrlc.test.ts:105:52\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:"
+            ]
+          },
+          {
+            "file": "src/test/setup-ctrlc.test.ts",
+            "name": "Phase B — Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT",
+            "status": "failed",
+            "failures": [
+              "AssertionError: \r\n \u001b[38;5;167m⬢\u001b[0m \u001b[1mgnosys\u001b[0m \u001b[38;5;242m▸\u001b[0m \u001b[38;5;242msetup\u001b[0m \u001b[38;5;242m▸\u001b[0m \u001b[38;5;242mides\u001b[0m                                                        \r\n \u001b[38;5;238m───────────────────────────────────────────────────────────────────────────────\u001b[0m\r\n\r\n \u001b[1mIDE integrations\u001b[0m\r\n \u001b[38;5;246mwe'll write the MCP server config so gnosys is available from each\u001b[0m\r\n\r\n   \u001b[38;5;242mide                  \u001b[0m  \u001b[38;5;242mstatus    \u001b[0m  \u001b[38;5;242mtarget                                    \u001b[0m\r\n   \u001b[38;5;238m─────────────────────────────────────────────────────────────────────────────\u001b[0m\r\n   \u001b[38;5;242m 1\u001b[0m  \u001b[38;5;167m●\u001b[0m \u001b[38;5;252mClaude Code + Desktop\u001b[0m  \u001b[38;5;242mdetected  \u001b[0m  \u001b[38;5;242mclaude mcp add (CLI)\u001b[0m\r\n   \u001b[38;5;242m 2\u001b[0m  \u001b[38;5;167m●\u001b[0m \u001b[38;5;252mClaude Desktop       \u001b[0m  \u001b[38;5;242mdetected  \u001b[0m  \u001b[38;5;242m~/Library/.../claude_desktop_config.json\u001b[0m\r\n   \u001b[38;5;242m 3\u001b[0m  \u001b[38;5;167m●\u001b[0m \u001b[38;5;252mCursor               \u001b[0m  \u001b[38;5;242mdetected  \u001b[0m  \u001b[38;5;242m.cursor/mcp.json\u001b[0m\r\n   \u001b[38;5;242m 4\u001b[0m  \u001b[38;5;167m●\u001b[0m \u001b[38;5;252mCodex                \u001b[0m  \u001b[38;5;242mdetected  \u001b[0m  \u001b[38;5;242mcodex mcp add (CLI registry)\u001b[0m\r\n   \u001b[38;5;242m 5\u001b[0m  \u001b[38;5;167m●\u001b[0m \u001b[38;5;252mGemini CLI           \u001b[0m  \u001b[38;5;242mdetected  \u001b[0m  \u001b[38;5;242m~/.gemini/settings.json\u001b[0m\r\n   \u001b[38;5;242m 6\u001b[0m  \u001b[38;5;242m○\u001b[0m \u001b[38;5;252mAntigravity          \u001b[0m  \u001b[38;5;242muser-level\u001b[0m  \u001b[38;5;242m~/.gemini/antigravity/mcp_config.json\u001b[0m\r\n   \u001b[38;5;242m 7\u001b[0m  \u001b[38;5;242m○\u001b[0m \u001b[38;5;252mGrok Build           \u001b[0m  \u001b[38;5;242muser-level\u001b[0m  \u001b[38;5;242m~/.grok/config.toml ([mcp_servers.gnosys])\u001b[0m\r\n\r\n                                 \u001b[38;5;242m1–7 · pick    a · all detected    enter · skip\u001b[0m\r\n  1. Claude Code + Desktop  \u001b[2m(default)\u001b[0m\r\n  2. Claude Desktop\r\n  3. Cursor\r\n  4. Codex\r\n  5. Gemini CLI\r\n  6. Antigravity\r\n  7. Grok Build\r\n  8. All detected\r\n  9. Skip\r\n> \r\n \u001b[38;5;242mcancelled · no changes written\u001b[0m\r\n: e"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1199,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ctrlc.test.ts",
+            "name": "Phase B — Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/setup-ctrlc.test.ts",
+            "name": "Phase B — Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-ctrlc.test.ts",
+          "name": "Phase B — Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT"
+        },
+        {
+          "file": "src/test/setup-ctrlc.test.ts",
+          "name": "Phase B — Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "pty.results.json"
+    },
+    {
+      "id": "g2-pty-setup-repair-witness",
+      "file": "src/lib/setup.ts",
+      "description": "Temporary repair witness for G2-D001: close listener uses interrupt exit status, making expected-failure case unexpectedly pass.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1187,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ctrlc.test.ts",
+            "name": "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1105,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ctrlc.test.ts",
+            "name": "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT",
+            "status": "failed",
+            "failures": [
+              "Error: Expect test to fail\n    at runTest (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3041:31)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)\n    at runFiles (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3240:3)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1171,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ctrlc.test.ts",
+            "name": "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-ctrlc.test.ts",
+          "name": "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT"
+        }
+      ],
+      "applicationRestored": true,
+      "kind": "defect-repair-probe",
+      "artifact": "pty.results.json"
+    },
+    {
+      "id": "g2-queue-warning",
+      "file": "src/lib/embedQueue.ts",
+      "description": "Lose the failure label in the stderr warning.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 563,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue never throws when the embedder fails — warns on stderr instead",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 505,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue never throws when the embedder fails — warns on stderr instead",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ Array(1) ] to deeply equal [ Array(1) ]\n    at <repo>/src/test/embed-queue.test.ts:96:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 523,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue never throws when the embedder fails — warns on stderr instead",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/embed-queue.test.ts",
+          "name": "embedQueue never throws when the embedder fails — warns on stderr instead"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "unit7-new.results.json"
+    },
+    {
+      "id": "g2-store-manifest",
+      "file": "src/lib/store.ts",
+      "description": "Include MANIFEST.md as user memory.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 455,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/store.test.ts",
+            "name": "GnosysStore getAllMemories ignores CHANGELOG.md and MANIFEST.md",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 425,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/store.test.ts",
+            "name": "GnosysStore getAllMemories ignores CHANGELOG.md and MANIFEST.md",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 2 to be 1 // Object.is equality\n    at <repo>/src/test/store.test.ts:125:31\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 418,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/store.test.ts",
+            "name": "GnosysStore getAllMemories ignores CHANGELOG.md and MANIFEST.md",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/store.test.ts",
+          "name": "GnosysStore getAllMemories ignores CHANGELOG.md and MANIFEST.md"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "unit7-new.results.json"
+    },
+    {
+      "id": "g2-store-category",
+      "file": "src/lib/store.ts",
+      "description": "Expose node_modules as a memory category.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 368,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/store.test.ts",
+            "name": "GnosysStore getCategories returns only directories, excludes hidden and node_modules",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 370,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/store.test.ts",
+            "name": "GnosysStore getCategories returns only directories, excludes hidden and node_modules",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'concepts', 'decisions', …(1) ] to deeply equal [ 'concepts', 'decisions' ]\n    at <repo>/src/test/store.test.ts:190:20\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 366,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/store.test.ts",
+            "name": "GnosysStore getCategories returns only directories, excludes hidden and node_modules",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/store.test.ts",
+          "name": "GnosysStore getCategories returns only directories, excludes hidden and node_modules"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "unit7-new.results.json"
+    }
+  ]
+}

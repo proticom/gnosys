@@ -113,6 +113,7 @@ describe("GnosysStore", () => {
         "---\nid: skip\n---\nShould be ignored",
         "utf-8"
       );
+      await fs.writeFile(path.join(tmpDir, "MANIFEST.md"), "---\nid: skip-manifest\ntitle: Not a memory\n---\nShould be ignored");
       await store.writeMemory(
         "decisions",
         "real.md",
@@ -181,12 +182,12 @@ describe("GnosysStore", () => {
     it("returns only directories, excludes hidden and node_modules", async () => {
       await fs.mkdir(path.join(tmpDir, "decisions"), { recursive: true });
       await fs.mkdir(path.join(tmpDir, "concepts"), { recursive: true });
-      // .config already exists from init
+      await fs.mkdir(path.join(tmpDir, "node_modules"));
+      await fs.mkdir(path.join(tmpDir, ".private"));
+      await fs.writeFile(path.join(tmpDir, "README.md"), "Not a category");
 
       const cats = await store.getCategories();
-      expect(cats).toContain("decisions");
-      expect(cats).toContain("concepts");
-      expect(cats).not.toContain(".config");
+      expect(cats).toEqual(["concepts", "decisions"]);
     });
   });
 
