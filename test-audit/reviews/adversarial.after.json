@@ -1,0 +1,546 @@
+{
+  "tests": [],
+  "additionalTests": [
+    {
+      "file": "src/test/config-display-adversarial.test.ts",
+      "name": "adversarial config display human config output names the key source without exposing stored key bytes",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "ADV-CTX-human-key-leak-f4b9135"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-human-key-leak-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/config-display-adversarial.test.ts",
+      "name": "adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "ADV-CTX-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces ADV-CTX-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": "D-CTX-001",
+      "mutationIds": [
+        "ADV-CTX-D001-provider-f4b9135"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-D001-provider-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing custom-provider MCP context commits the same journal decision",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "ADV-CTX-mcp-content-f4b9135"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-mcp-content-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": "G2-D003",
+      "mutationIds": [
+        "ADV-CTX-G2D003-provider-f4b9135"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-G2D003-provider-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "ADV-CTX-import-concurrency-f4b9135"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-import-concurrency-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "ADV-CTX-002",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces ADV-CTX-002; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "ADV-CTX-002",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces ADV-CTX-002; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": "D-CTX-001",
+      "mutationIds": [
+        "ADV-CTX-D001-guidance-f4b9135"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-D001-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing CLI import without a provider fails with setup guidance",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "ADV-CTX-import-setup-guidance-f4b9135"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-import-setup-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing MCP context without a provider fails with setup guidance",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "ADV-CTX-context-setup-guidance-f4b9135"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-context-setup-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing MCP import without a provider fails with setup guidance",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "ADV-CTX-import-setup-guidance-f4b9135"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-import-setup-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial project selection the same context is saved independently in projects A and B",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "ADV-CTX-project-scope-f4b9135",
+        "ADV-CTX-D002-cross-project-f4b9135"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-project-scope-f4b9135, ADV-CTX-D002-cross-project-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": "D-CTX-002",
+      "mutationIds": [
+        "ADV-CTX-D002-lookup-f4b9135"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-D002-lookup-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial project selection startup-project context skips its already saved journal",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "ADV-CTX-startup-dedup-f4b9135"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-startup-dedup-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial project selection explicit project B update resolves the shared relative path inside B",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "ADV-CTX-explicit-update-project-f4b9135"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-explicit-update-project-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/coverage-guard.test.ts",
+      "name": "new-file coverage guard fails when the comparison base cannot be resolved",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "coverage-base-fail-open"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) coverage-base-fail-open. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/coverage-guard.test.ts",
+      "name": "new-file coverage guard passes when HEAD has no added application modules compared with itself",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "coverage-empty-diff-fails"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) coverage-empty-diff-fails. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/dashboard-html-adversarial.test.ts",
+      "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "dashboard-unescaped-stored-content"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) dashboard-unescaped-stored-content. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/dashboard-html-adversarial.test.ts",
+      "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "dashboard-unescaped-stored-content"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) dashboard-unescaped-stored-content. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/dashboard-html-adversarial.test.ts",
+      "name": "dashboard HTML adversarial stored content D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-DASH-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces D-DASH-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/fts-adversarial.test.ts",
+      "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": "G2-D002",
+      "mutationIds": [
+        "ADV-FTS-repeat-insert"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-FTS-repeat-insert. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/fts-adversarial.test.ts",
+      "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": "G2-D002",
+      "mutationIds": [
+        "ADV-FTS-skip-legacy-healing",
+        "ADV-FTS-repeat-healing"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-FTS-skip-legacy-healing, ADV-FTS-repeat-healing. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/fts-adversarial.test.ts",
+      "name": "FTS duplicate attacks ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "ADV-FTS-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces ADV-FTS-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/http-json-adversarial.test.ts",
+      "name": "HTTP MCP malformed JSON rejects a malformed POST with HTTP 400 and keeps the server healthy",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "http-malformed-json-500"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) http-malformed-json-500. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/routing-reset-adversarial.test.ts",
+      "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "DEF-G1-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces DEF-G1-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/routing-reset-adversarial.test.ts",
+      "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "DEF-G1-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces DEF-G1-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/setup-adversarial.test.ts",
+      "name": "setup exit status after the provider prompt G2-D001 Ctrl+C at IDE integration exits 130",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": "G2-D001",
+      "mutationIds": [
+        "setup-cancellation-success-regression"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) setup-cancellation-success-regression. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/setup-adversarial.test.ts",
+      "name": "setup exit status after the provider prompt completes the interactive core-memory setup with exit 0",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "setup-completion-exit-status"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) setup-completion-exit-status. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-001: absent ID warns without launching a subprocess",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-001: empty ID warns without launching a subprocess",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-001: body-only ID warns without launching a subprocess",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": "D-VSC-002",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": "D-VSC-002",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": "D-VSC-002",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": "D-VSC-002",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with POSIX separators",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": "D-VSC-002",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": "D-VSC-002",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": "D-VSC-002",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": "D-VSC-002",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with Windows separators",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: backticks in the selected path cannot execute shell text or change the selected ID",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: command substitution in the selected path cannot execute shell text or change the selected ID",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: semicolon in the selected path cannot execute shell text or change the selected ID",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: and operator in the selected path cannot execute shell text or change the selected ID",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: pipe in the selected path cannot execute shell text or change the selected ID",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: quotes in the selected path cannot execute shell text or change the selected ID",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: spaces in the selected path cannot execute shell text or change the selected ID",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: newline in the selected path cannot execute shell text or change the selected ID",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-003",
+      "mutationIds": [],
+      "evidence": "Ordinary failing assertion reproduces D-VSC-003; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": "D-VSC-004",
+      "mutationIds": [
+        "vscode-e2-removed-dashboard-command"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-removed-dashboard-command. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+    }
+  ]
+}

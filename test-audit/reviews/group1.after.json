@@ -847,11 +847,11 @@
     },
     {
       "beforeId": "src/test/embed-db.test.ts:33",
-      "beforeName": "joins title, relevance, tags, content \u2014 same recipe as the file-store reindex",
+      "beforeName": "joins title, relevance, tags, content — same recipe as the file-store reindex",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "embeddingText joins title, relevance, tags, content \u2014 same recipe as the file-store reindex"
+        "embeddingText joins title, relevance, tags, content — same recipe as the file-store reindex"
       ],
       "afterClassification": "STRONG",
       "evidence": "embeddingText returns exact title/relevance/tags/content string. Verified in full-suite.json.",
@@ -923,11 +923,11 @@
     },
     {
       "beforeId": "src/test/embed-db.test.ts:89",
-      "beforeName": "missing mode is incremental \u2014 already-embedded rows are untouched",
+      "beforeName": "missing mode is incremental — already-embedded rows are untouched",
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "backfillCentralDbEmbeddings missing mode is incremental \u2014 already-embedded rows are untouched"
+        "backfillCentralDbEmbeddings missing mode is incremental — already-embedded rows are untouched"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects overwrite preexisting vectors while correctly counting only missing rows.",
@@ -2305,8 +2305,8 @@
       "action": "rewritten",
       "afterNames": [
         "ingestion of special-character paths ingests \"has spaces.txt\"",
-        "ingestion of special-character paths ingests \"unicod\u00e9-caf\u00e9.txt\"",
-        "ingestion of special-character paths ingests \"emoji-\ud83c\udf89-file.txt\"",
+        "ingestion of special-character paths ingests \"unicodé-café.txt\"",
+        "ingestion of special-character paths ingests \"emoji-🎉-file.txt\"",
         "ingestion of special-character paths ingests \"trailing space .txt\""
       ],
       "afterClassification": "STRONG",
@@ -2316,8 +2316,8 @@
       ],
       "beforeNames": [
         "ingestion of special-character paths ingests \"has spaces.txt\"",
-        "ingestion of special-character paths ingests \"unicod\u00e9-caf\u00e9.txt\"",
-        "ingestion of special-character paths ingests \"emoji-\ud83c\udf89-file.txt\"",
+        "ingestion of special-character paths ingests \"unicodé-café.txt\"",
+        "ingestion of special-character paths ingests \"emoji-🎉-file.txt\"",
         "ingestion of special-character paths ingests \"trailing space .txt\""
       ],
       "productionModules": [
@@ -2375,11 +2375,11 @@
     },
     {
       "beforeId": "src/test/ingest-structured.test.ts:108",
-      "beforeName": "anthropic \u2014 mentions ANTHROPIC_API_KEY",
+      "beforeName": "anthropic — mentions ANTHROPIC_API_KEY",
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "GnosysIngestion.ingest (LLM path) provider-missing error paths anthropic \u2014 mentions ANTHROPIC_API_KEY"
+        "GnosysIngestion.ingest (LLM path) provider-missing error paths anthropic — mentions ANTHROPIC_API_KEY"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects omit cloud provider key recovery instructions.",
@@ -2398,11 +2398,11 @@
     },
     {
       "beforeId": "src/test/ingest-structured.test.ts:112",
-      "beforeName": "openai \u2014 mentions OPENAI_API_KEY",
+      "beforeName": "openai — mentions OPENAI_API_KEY",
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "GnosysIngestion.ingest (LLM path) provider-missing error paths openai \u2014 mentions OPENAI_API_KEY"
+        "GnosysIngestion.ingest (LLM path) provider-missing error paths openai — mentions OPENAI_API_KEY"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects omit cloud provider key recovery instructions.",
@@ -2421,11 +2421,11 @@
     },
     {
       "beforeId": "src/test/ingest-structured.test.ts:116",
-      "beforeName": "groq \u2014 mentions GROQ_API_KEY",
+      "beforeName": "groq — mentions GROQ_API_KEY",
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "GnosysIngestion.ingest (LLM path) provider-missing error paths groq \u2014 mentions GROQ_API_KEY"
+        "GnosysIngestion.ingest (LLM path) provider-missing error paths groq — mentions GROQ_API_KEY"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects omit cloud provider key recovery instructions.",
@@ -2444,11 +2444,11 @@
     },
     {
       "beforeId": "src/test/ingest-structured.test.ts:120",
-      "beforeName": "xai \u2014 mentions XAI_API_KEY",
+      "beforeName": "xai — mentions XAI_API_KEY",
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "GnosysIngestion.ingest (LLM path) provider-missing error paths xai \u2014 mentions XAI_API_KEY"
+        "GnosysIngestion.ingest (LLM path) provider-missing error paths xai — mentions XAI_API_KEY"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects omit cloud provider key recovery instructions.",
@@ -2467,11 +2467,11 @@
     },
     {
       "beforeId": "src/test/ingest-structured.test.ts:124",
-      "beforeName": "mistral \u2014 mentions MISTRAL_API_KEY",
+      "beforeName": "mistral — mentions MISTRAL_API_KEY",
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "GnosysIngestion.ingest (LLM path) provider-missing error paths mistral \u2014 mentions MISTRAL_API_KEY"
+        "GnosysIngestion.ingest (LLM path) provider-missing error paths mistral — mentions MISTRAL_API_KEY"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects omit cloud provider key recovery instructions.",
@@ -2490,11 +2490,11 @@
     },
     {
       "beforeId": "src/test/ingest-structured.test.ts:128",
-      "beforeName": "custom \u2014 mentions GNOSYS_CUSTOM_KEY",
+      "beforeName": "custom — mentions GNOSYS_CUSTOM_KEY",
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "GnosysIngestion.ingest (LLM path) provider-missing error paths custom \u2014 mentions GNOSYS_CUSTOM_KEY"
+        "GnosysIngestion.ingest (LLM path) provider-missing error paths custom — mentions GNOSYS_CUSTOM_KEY"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects omit cloud provider key recovery instructions.",
@@ -2513,7 +2513,7 @@
     },
     {
       "beforeId": "src/test/ingest-structured.test.ts:132",
-      "beforeName": "ollama \u2014 mentions running locally",
+      "beforeName": "ollama — mentions running locally",
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
@@ -2536,7 +2536,7 @@
     },
     {
       "beforeId": "src/test/ingest-structured.test.ts:136",
-      "beforeName": "lmstudio \u2014 mentions running locally",
+      "beforeName": "lmstudio — mentions running locally",
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
@@ -2559,7 +2559,7 @@
     },
     {
       "beforeId": "src/test/ingest-structured.test.ts:140",
-      "beforeName": "unknown provider \u2014 suggests switching default provider",
+      "beforeName": "unknown provider — suggests switching default provider",
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
@@ -2884,7 +2884,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "applyLens \u2014 single filters filters by category"
+        "applyLens — single filters filters by category"
       ],
       "afterClassification": "STRONG",
       "evidence": "Category filtering returns exact d1/d2 IDs. Verified in full-suite.json.",
@@ -2902,7 +2902,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens \u2014 single filters filters by status"
+        "applyLens — single filters filters by status"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -2922,7 +2922,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens \u2014 single filters filters by multiple statuses"
+        "applyLens — single filters filters by multiple statuses"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -2942,7 +2942,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "applyLens \u2014 single filters filters by tag (any mode)"
+        "applyLens — single filters filters by tag (any mode)"
       ],
       "afterClassification": "STRONG",
       "evidence": "Any-tag mode returns exactly d1/d2. Verified in full-suite.json.",
@@ -2960,7 +2960,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "applyLens \u2014 single filters filters by tag (all mode)"
+        "applyLens — single filters filters by tag (all mode)"
       ],
       "afterClassification": "STRONG",
       "evidence": "All-tag mode returns sole matching literal d1. Verified in full-suite.json.",
@@ -2978,7 +2978,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens \u2014 single filters filters by confidence range"
+        "applyLens — single filters filters by confidence range"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -2998,7 +2998,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens \u2014 single filters filters by author"
+        "applyLens — single filters filters by author"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -3018,7 +3018,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens \u2014 single filters filters by authority"
+        "applyLens — single filters filters by authority"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -3038,7 +3038,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens \u2014 single filters filters by created date range"
+        "applyLens — single filters filters by created date range"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -3058,7 +3058,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens \u2014 single filters filters by modified date range"
+        "applyLens — single filters filters by modified date range"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -3078,7 +3078,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "applyLens \u2014 single filters empty filter returns all memories"
+        "applyLens — single filters empty filter returns all memories"
       ],
       "afterClassification": "STRONG",
       "evidence": "Empty filter preserves all five input rows by exact cardinality. Verified in full-suite.json.",
@@ -3096,7 +3096,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens \u2014 single filters combines multiple criteria in one filter"
+        "applyLens — single filters combines multiple criteria in one filter"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects ignore confidence condition in compound filter.",
@@ -3116,7 +3116,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "applyLens \u2014 single filters combines criteria with OR operator"
+        "applyLens — single filters combines criteria with OR operator"
       ],
       "afterClassification": "STRONG",
       "evidence": "AND yields zero and OR includes all four concrete expected IDs. Verified in full-suite.json.",
@@ -3168,11 +3168,11 @@
     },
     {
       "beforeId": "src/test/mcp-toolset-budget.test.ts:31",
-      "beforeName": "core tier is \u2264 20 tools and its serialized payload \u2264 20,000 chars (~5k tokens)",
+      "beforeName": "core tier is ≤ 20 tools and its serialized payload ≤ 20,000 chars (~5k tokens)",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "MCP toolset budgets core tier is \u2264 20 tools and its serialized payload \u2264 20,000 chars (~5k tokens)"
+        "MCP toolset budgets core tier is ≤ 20 tools and its serialized payload ≤ 20,000 chars (~5k tokens)"
       ],
       "afterClassification": "STRONG",
       "evidence": "Real MCP listTools stays under stated tool/payload budget and includes seven concrete core tools. Verified in full-suite.json.",
@@ -3204,11 +3204,11 @@
     },
     {
       "beforeId": "src/test/mcp-toolset-budget.test.ts:57",
-      "beforeName": "full tier registers everything, \u2264 60 tools",
+      "beforeName": "full tier registers everything, ≤ 60 tools",
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "MCP toolset budgets full tier registers everything, \u2264 60 tools"
+        "MCP toolset budgets full tier registers everything, ≤ 60 tools"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects rename a full-tier tool while retaining full tool count.",
@@ -3224,11 +3224,11 @@
     },
     {
       "beforeId": "src/test/mcp-toolset-budget.test.ts:63",
-      "beforeName": "core \u2282 standard \u2282 full by tier predicate",
+      "beforeName": "core ⊂ standard ⊂ full by tier predicate",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "MCP toolset budgets core \u2282 standard \u2282 full by tier predicate"
+        "MCP toolset budgets core ⊂ standard ⊂ full by tier predicate"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal recall/lens/import tiers and public tier subset predicates protect catalog classification. Verified in full-suite.json.",
@@ -5229,7 +5229,7 @@
       "beforeClassification": "MISLABELED",
       "action": "rewritten",
       "afterNames": [
-        "TC-9c.6: CLI parity \u2014 all major commands functional gnosys --help lists public top-level commands"
+        "TC-9c.6: CLI parity — all major commands functional gnosys --help lists public top-level commands"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects remove advertised sandbox command.",
@@ -5256,7 +5256,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "TC-9c.6: CLI parity \u2014 all major commands functional gnosys search --help shows --federated and --scope flags"
+        "TC-9c.6: CLI parity — all major commands functional gnosys search --help shows --federated and --scope flags"
       ],
       "afterClassification": "STRONG",
       "evidence": "Real search --help exposes literal federated and scope flags. Verified in full-suite.json.",
@@ -5281,7 +5281,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "TC-9c.6: CLI parity \u2014 all major commands functional gnosys discover --help shows --federated and --scope flags"
+        "TC-9c.6: CLI parity — all major commands functional gnosys discover --help shows --federated and --scope flags"
       ],
       "afterClassification": "STRONG",
       "evidence": "Real discover --help exposes literal federated and scope flags. Verified in full-suite.json.",
@@ -5306,7 +5306,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "TC-9c.6: CLI parity \u2014 all major commands functional gnosys recall --help shows --federated and --scope flags"
+        "TC-9c.6: CLI parity — all major commands functional gnosys recall --help shows --federated and --scope flags"
       ],
       "afterClassification": "STRONG",
       "evidence": "Real recall --help exposes literal federated and scope flags. Verified in full-suite.json.",
@@ -5331,7 +5331,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "TC-9c.6: CLI parity \u2014 all major commands functional gnosys hybrid-search --help shows --federated, --scope, and --json flags"
+        "TC-9c.6: CLI parity — all major commands functional gnosys hybrid-search --help shows --federated, --scope, and --json flags"
       ],
       "afterClassification": "STRONG",
       "evidence": "Real hybrid-search --help exposes literal federated/scope/json flags. Verified in full-suite.json.",
@@ -5356,7 +5356,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "TC-9c.6: CLI parity \u2014 all major commands functional gnosys ask --help shows --federated and --scope flags"
+        "TC-9c.6: CLI parity — all major commands functional gnosys ask --help shows --federated and --scope flags"
       ],
       "afterClassification": "STRONG",
       "evidence": "Real ask --help exposes literal federated and scope flags. Verified in full-suite.json.",
@@ -5381,7 +5381,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "TC-9c.6: CLI parity \u2014 all major commands functional gnosys fsearch --help shows --scope flag"
+        "TC-9c.6: CLI parity — all major commands functional gnosys fsearch --help shows --scope flag"
       ],
       "afterClassification": "STRONG",
       "evidence": "Real fsearch --help exposes literal scope flag. Verified in full-suite.json.",
@@ -5406,7 +5406,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "TC-9c.6: CLI parity \u2014 all major commands functional gnosys add-structured --help shows --user and --global flags"
+        "TC-9c.6: CLI parity — all major commands functional gnosys add-structured --help shows --user and --global flags"
       ],
       "afterClassification": "STRONG",
       "evidence": "Real add-structured --help exposes literal user and global flags. Verified in full-suite.json.",
@@ -5431,7 +5431,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "TC-9c.6: CLI parity \u2014 all major commands functional gnosys audit --json outputs valid JSON"
+        "TC-9c.6: CLI parity — all major commands functional gnosys audit --json outputs valid JSON"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects discard actual audit entries.",
@@ -5458,7 +5458,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "TC-9c.6: CLI parity \u2014 all major commands functional gnosys tags lists the tag registry without error"
+        "TC-9c.6: CLI parity — all major commands functional gnosys tags lists the tag registry without error"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects omit category headings.",
@@ -5485,7 +5485,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "TC-9c.6: CLI parity \u2014 all major commands functional gnosys lens runs without error"
+        "TC-9c.6: CLI parity — all major commands functional gnosys lens runs without error"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects suppress empty lens result.",
@@ -7232,26 +7232,26 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "search golden \u2014 top-3 stability keyword top-3 stable for \"JWT OAuth login\"",
-        "search golden \u2014 top-3 stability keyword top-3 stable for \"Redis cache invalidation\"",
-        "search golden \u2014 top-3 stability keyword top-3 stable for \"PostgreSQL schema migration\"",
-        "search golden \u2014 top-3 stability keyword top-3 stable for \"embeddings semantic hybrid FTS\"",
-        "search golden \u2014 top-3 stability discover top-3 stable for \"JWT OAuth login\"",
-        "search golden \u2014 top-3 stability discover top-3 stable for \"Redis cache invalidation\"",
-        "search golden \u2014 top-3 stability discover top-3 stable for \"PostgreSQL schema migration\"",
-        "search golden \u2014 top-3 stability discover top-3 stable for \"embeddings semantic hybrid FTS\"",
-        "search golden \u2014 top-3 stability federated top-3 stable for \"JWT OAuth login\"",
-        "search golden \u2014 top-3 stability federated top-3 stable for \"Redis cache invalidation\"",
-        "search golden \u2014 top-3 stability federated top-3 stable for \"PostgreSQL schema migration\"",
-        "search golden \u2014 top-3 stability federated top-3 stable for \"embeddings semantic hybrid FTS\"",
-        "search golden \u2014 top-3 stability hybrid top-3 stable for \"JWT OAuth login\"",
-        "search golden \u2014 top-3 stability hybrid top-3 stable for \"Redis cache invalidation\"",
-        "search golden \u2014 top-3 stability hybrid top-3 stable for \"PostgreSQL schema migration\"",
-        "search golden \u2014 top-3 stability hybrid top-3 stable for \"embeddings semantic hybrid FTS\"",
-        "search golden \u2014 top-3 stability semantic top-3 stable for \"JWT OAuth login\"",
-        "search golden \u2014 top-3 stability semantic top-3 stable for \"Redis cache invalidation\"",
-        "search golden \u2014 top-3 stability semantic top-3 stable for \"PostgreSQL schema migration\"",
-        "search golden \u2014 top-3 stability semantic top-3 stable for \"embeddings semantic hybrid FTS\""
+        "search golden — top-3 stability keyword top-3 stable for \"JWT OAuth login\"",
+        "search golden — top-3 stability keyword top-3 stable for \"Redis cache invalidation\"",
+        "search golden — top-3 stability keyword top-3 stable for \"PostgreSQL schema migration\"",
+        "search golden — top-3 stability keyword top-3 stable for \"embeddings semantic hybrid FTS\"",
+        "search golden — top-3 stability discover top-3 stable for \"JWT OAuth login\"",
+        "search golden — top-3 stability discover top-3 stable for \"Redis cache invalidation\"",
+        "search golden — top-3 stability discover top-3 stable for \"PostgreSQL schema migration\"",
+        "search golden — top-3 stability discover top-3 stable for \"embeddings semantic hybrid FTS\"",
+        "search golden — top-3 stability federated top-3 stable for \"JWT OAuth login\"",
+        "search golden — top-3 stability federated top-3 stable for \"Redis cache invalidation\"",
+        "search golden — top-3 stability federated top-3 stable for \"PostgreSQL schema migration\"",
+        "search golden — top-3 stability federated top-3 stable for \"embeddings semantic hybrid FTS\"",
+        "search golden — top-3 stability hybrid top-3 stable for \"JWT OAuth login\"",
+        "search golden — top-3 stability hybrid top-3 stable for \"Redis cache invalidation\"",
+        "search golden — top-3 stability hybrid top-3 stable for \"PostgreSQL schema migration\"",
+        "search golden — top-3 stability hybrid top-3 stable for \"embeddings semantic hybrid FTS\"",
+        "search golden — top-3 stability semantic top-3 stable for \"JWT OAuth login\"",
+        "search golden — top-3 stability semantic top-3 stable for \"Redis cache invalidation\"",
+        "search golden — top-3 stability semantic top-3 stable for \"PostgreSQL schema migration\"",
+        "search golden — top-3 stability semantic top-3 stable for \"embeddings semantic hybrid FTS\""
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed all 20 committed golden top-three ID lists against corpus; actual DB keyword/discovery/federated/hybrid/vector ranking matches literal fixtures. Verified in full-suite.json.",
@@ -7292,7 +7292,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/storePath \u2014 Phase B (Bug 10) resolveActiveStorePath returns project store when gnosys.json exists there"
+        "setup/storePath — Phase B (Bug 10) resolveActiveStorePath returns project store when gnosys.json exists there"
       ],
       "afterClassification": "STRONG",
       "evidence": "Project config presence makes resolver return exact project-store path. Verified in full-suite.json.",
@@ -7311,7 +7311,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/storePath \u2014 Phase B (Bug 10) resolveActiveStorePath falls back to global home when no project config exists"
+        "setup/storePath — Phase B (Bug 10) resolveActiveStorePath falls back to global home when no project config exists"
       ],
       "afterClassification": "STRONG",
       "evidence": "Missing project config yields exact configured global-home path. Verified in full-suite.json.",
@@ -7330,7 +7330,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/storePath \u2014 Phase B (Bug 10) resolveActiveStorePath does not create the global home if missing"
+        "setup/storePath — Phase B (Bug 10) resolveActiveStorePath does not create the global home if missing"
       ],
       "afterClassification": "STRONG",
       "evidence": "Read-only resolution returns missing-home path without creating directory. Verified in full-suite.json.",
@@ -7349,7 +7349,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/storePath \u2014 Phase B (Bug 10) ensureActiveStorePath creates the global home when no config exists"
+        "setup/storePath — Phase B (Bug 10) ensureActiveStorePath creates the global home when no config exists"
       ],
       "afterClassification": "STRONG",
       "evidence": "Ensure resolver returns and actually creates selected global home. Verified in full-suite.json.",
@@ -7368,7 +7368,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/storePath \u2014 Phase B (Bug 10) ensureActiveStorePath prefers the project store over the global home"
+        "setup/storePath — Phase B (Bug 10) ensureActiveStorePath prefers the project store over the global home"
       ],
       "afterClassification": "STRONG",
       "evidence": "Ensure resolver selects exact existing project-store path over home. Verified in full-suite.json.",
@@ -7387,7 +7387,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/ui atoms \u2014 Phase A Header renders breadcrumb + version + rule"
+        "setup/ui atoms — Phase A Header renders breadcrumb + version + rule"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed snapshot includes full breadcrumb, v5.9.3 and 80-column rule from real renderer. Verified in full-suite.json.",
@@ -7410,7 +7410,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/ui atoms \u2014 Phase A Header without version"
+        "setup/ui atoms — Phase A Header without version"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed snapshot has setup breadcrumb and rule with no version. Verified in full-suite.json.",
@@ -7433,7 +7433,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/ui atoms \u2014 Phase A Title with subtitle"
+        "setup/ui atoms — Phase A Title with subtitle"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed two-line title snapshot contains exact title and subtitle. Verified in full-suite.json.",
@@ -7456,7 +7456,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/ui atoms \u2014 Phase A Title without subtitle"
+        "setup/ui atoms — Phase A Title without subtitle"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed title-only snapshot contains exact Choose a model text. Verified in full-suite.json.",
@@ -7479,7 +7479,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/ui atoms \u2014 Phase A Menu renders numbered items with meta + tag"
+        "setup/ui atoms — Phase A Menu renders numbered items with meta + tag"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed five-row menu snapshot preserves labels, costs, recommendation marker and back row. Verified in full-suite.json.",
@@ -7502,7 +7502,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/ui atoms \u2014 Phase A Menu with only labels (no meta, no tag)"
+        "setup/ui atoms — Phase A Menu with only labels (no meta, no tag)"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed two-item menu snapshot preserves numbered literal labels. Verified in full-suite.json.",
@@ -7521,11 +7521,11 @@
     },
     {
       "beforeId": "src/test/setup-ui-atoms.test.ts:71",
-      "beforeName": "Status \u2014 ok with meta",
+      "beforeName": "Status — ok with meta",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/ui atoms \u2014 Phase A Status \u2014 ok with meta"
+        "setup/ui atoms — Phase A Status — ok with meta"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed success snapshot renders check glyph, model-validated label and 847 ms. Verified in full-suite.json.",
@@ -7544,11 +7544,11 @@
     },
     {
       "beforeId": "src/test/setup-ui-atoms.test.ts:76",
-      "beforeName": "Status \u2014 warn with meta",
+      "beforeName": "Status — warn with meta",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/ui atoms \u2014 Phase A Status \u2014 warn with meta"
+        "setup/ui atoms — Phase A Status — warn with meta"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed warning snapshot renders warning glyph, missing-key label and found-xai meta. Verified in full-suite.json.",
@@ -7567,11 +7567,11 @@
     },
     {
       "beforeId": "src/test/setup-ui-atoms.test.ts:81",
-      "beforeName": "Status \u2014 fail",
+      "beforeName": "Status — fail",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/ui atoms \u2014 Phase A Status \u2014 fail"
+        "setup/ui atoms — Phase A Status — fail"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed failure snapshot renders cross glyph and 401 unauthorized label. Verified in full-suite.json.",
@@ -7590,11 +7590,11 @@
     },
     {
       "beforeId": "src/test/setup-ui-atoms.test.ts:86",
-      "beforeName": "Status \u2014 progress",
+      "beforeName": "Status — progress",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/ui atoms \u2014 Phase A Status \u2014 progress"
+        "setup/ui atoms — Phase A Status — progress"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed progress snapshot renders progress glyph and pricing text. Verified in full-suite.json.",
@@ -7617,7 +7617,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/ui atoms \u2014 Phase A Diff renders before/after rows"
+        "setup/ui atoms — Phase A Diff renders before/after rows"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed diff snapshot contains three exact before/after value pairs. Verified in full-suite.json.",
@@ -7640,7 +7640,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/ui atoms \u2014 Phase A Panel renders rounded box with title and rows"
+        "setup/ui atoms — Phase A Panel renders rounded box with title and rows"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed panel snapshot preserves title, seven settings rows and borders. Verified in full-suite.json.",
@@ -7663,7 +7663,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/ui atoms \u2014 Phase A Footer renders right-aligned hint"
+        "setup/ui atoms — Phase A Footer renders right-aligned hint"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed footer snapshot positions exact quit/Ctrl-C hint at right. Verified in full-suite.json.",
@@ -7686,7 +7686,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "setup/ui atoms \u2014 Phase A stripAnsi removes ANSI escapes"
+        "setup/ui atoms — Phase A stripAnsi removes ANSI escapes"
       ],
       "afterClassification": "STRONG",
       "evidence": "ANSI stripping returns literal bold and color text. Verified in full-suite.json.",
@@ -7705,11 +7705,11 @@
     },
     {
       "beforeId": "src/test/setup-ui-atoms.test.ts:125",
-      "beforeName": "tokens \u2014 color() wraps text with reset",
+      "beforeName": "tokens — color() wraps text with reset",
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "setup/ui atoms \u2014 Phase A tokens \u2014 color() wraps text with reset"
+        "setup/ui atoms — Phase A tokens — color() wraps text with reset"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects omit requested opening color.",
@@ -7734,7 +7734,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screens 1.1 / 1.2 / 1.3 \u2014 cold-start sub-screen headers renders the provider sub-screen header (Screen 1.1)"
+        "Screens 1.1 / 1.2 / 1.3 — cold-start sub-screen headers renders the provider sub-screen header (Screen 1.1)"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed provider-header snapshot preserves step 1 of 4, version, provider title and pricing explanation. Verified in full-suite.json.",
@@ -7752,7 +7752,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screens 1.1 / 1.2 / 1.3 \u2014 cold-start sub-screen headers renders the model sub-screen header (Screen 1.2)"
+        "Screens 1.1 / 1.2 / 1.3 — cold-start sub-screen headers renders the model sub-screen header (Screen 1.2)"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed model-header snapshot preserves step 2 of 4 and anthropic model title. Verified in full-suite.json.",
@@ -7770,7 +7770,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screens 1.1 / 1.2 / 1.3 \u2014 cold-start sub-screen headers renders the key sub-screen header (Screen 1.3)"
+        "Screens 1.1 / 1.2 / 1.3 — cold-start sub-screen headers renders the key sub-screen header (Screen 1.3)"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed key-header snapshot preserves step 3 of 4, anthropic label and validation-before-save hint. Verified in full-suite.json.",
@@ -7784,11 +7784,11 @@
     },
     {
       "beforeId": "src/test/setup-ui-screen1-substeps.test.ts:57",
-      "beforeName": "renderKeySourceRows tags the env-var row with `\u25c2 found` when detected",
+      "beforeName": "renderKeySourceRows tags the env-var row with `◂ found` when detected",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screens 1.1 / 1.2 / 1.3 \u2014 cold-start sub-screen headers renderKeySourceRows tags the env-var row with `\u25c2 found` when detected"
+        "Screens 1.1 / 1.2 / 1.3 — cold-start sub-screen headers renderKeySourceRows tags the env-var row with `◂ found` when detected"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed source-row snapshot marks only detected environment row found and preserves all four labels. Verified in full-suite.json.",
@@ -7806,7 +7806,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screens 1.1 / 1.2 / 1.3 \u2014 cold-start sub-screen headers renderKeyStepFooter has the 1-4 hint"
+        "Screens 1.1 / 1.2 / 1.3 — cold-start sub-screen headers renderKeyStepFooter has the 1-4 hint"
       ],
       "afterClassification": "STRONG",
       "evidence": "Footer contains literal 1-4 pick and back navigation hints. Verified in full-suite.json.",
@@ -7824,7 +7824,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 10 \u2014 sync-projects render renders the header with version"
+        "Screen 10 — sync-projects render renders the header with version"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed header snapshot contains actual upgrading-projects breadcrumb and version. Verified in full-suite.json.",
@@ -7843,7 +7843,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 10 \u2014 sync-projects render collapsePath shortens long absolute paths"
+        "Screen 10 — sync-projects render collapsePath shortens long absolute paths"
       ],
       "afterClassification": "STRONG",
       "evidence": "Short home path becomes exact ~/proj; long path fits fifty chars and ends with ellipsis. Verified in full-suite.json.",
@@ -7862,7 +7862,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 10 \u2014 sync-projects render renders the upgraded section with full project list"
+        "Screen 10 — sync-projects render renders the upgraded section with full project list"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed upgraded snapshot renders exact three project titles and collapsed/absolute paths. Verified in full-suite.json.",
@@ -7881,7 +7881,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 10 \u2014 sync-projects render renders upgraded with overflow collapse (more than 5)"
+        "Screen 10 — sync-projects render renders upgraded with overflow collapse (more than 5)"
       ],
       "afterClassification": "STRONG",
       "evidence": "Nine-project overflow renders seven lines and literal (4 more) marker. Verified in full-suite.json.",
@@ -7900,7 +7900,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 10 \u2014 sync-projects render renders the skipped section with no .gnosys directory hint"
+        "Screen 10 — sync-projects render renders the skipped section with no .gnosys directory hint"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed skipped snapshot contains exact missing-gnosys hint and project path. Verified in full-suite.json.",
@@ -7919,7 +7919,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "Screen 10 \u2014 sync-projects render renders the failed section when there are failures"
+        "Screen 10 — sync-projects render renders the failed section when there are failures"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects drop failed project detail while keeping line count.",
@@ -7940,7 +7940,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 10 \u2014 sync-projects render renders machines section with older-version warning"
+        "Screen 10 — sync-projects render renders machines section with older-version warning"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed machine snapshot preserves exact versions/dates, current-machine label and older marker on EdsMBP. Verified in full-suite.json.",
@@ -7959,7 +7959,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 10 \u2014 sync-projects render renders machines section returns empty when only one machine"
+        "Screen 10 — sync-projects render renders machines section returns empty when only one machine"
       ],
       "afterClassification": "STRONG",
       "evidence": "Single-machine renderer returns exact empty array. Verified in full-suite.json.",
@@ -7978,7 +7978,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 10 \u2014 sync-projects render renders the done line with version"
+        "Screen 10 — sync-projects render renders the done line with version"
       ],
       "afterClassification": "STRONG",
       "evidence": "Done line contains literal version-stamped completion message. Verified in full-suite.json.",
@@ -7997,7 +7997,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "Screen 10 \u2014 sync-projects render renders dashboard summary with collapsed paths"
+        "Screen 10 — sync-projects render renders dashboard summary with collapsed paths"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects render wrong dashboard html output path.",
@@ -8018,7 +8018,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 4 \u2014 routing render classifyCost: ollama and lmstudio are always free"
+        "Screen 4 — routing render classifyCost: ollama and lmstudio are always free"
       ],
       "afterClassification": "STRONG",
       "evidence": "Both local providers classify as literal free. Verified in full-suite.json.",
@@ -8037,7 +8037,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 4 \u2014 routing render classifyCost: anthropic sonnet is mid-tier"
+        "Screen 4 — routing render classifyCost: anthropic sonnet is mid-tier"
       ],
       "afterClassification": "STRONG",
       "evidence": "Anthropic Sonnet model classifies as literal $$$. Verified in full-suite.json.",
@@ -8056,7 +8056,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 4 \u2014 routing render classifyCost: groq small is cheap"
+        "Screen 4 — routing render classifyCost: groq small is cheap"
       ],
       "afterClassification": "STRONG",
       "evidence": "Small Groq model classifies as literal $. Verified in full-suite.json.",
@@ -8075,7 +8075,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 4 \u2014 routing render classifyCost: unknown model defaults to $$ (conservative)"
+        "Screen 4 — routing render classifyCost: unknown model defaults to $$ (conservative)"
       ],
       "afterClassification": "STRONG",
       "evidence": "Unknown model falls back to literal $$. Verified in full-suite.json.",
@@ -8094,7 +8094,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 4 \u2014 routing render renders the routing table with the cost column"
+        "Screen 4 — routing render renders the routing table with the cost column"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed routing snapshot preserves all task/provider/model/cost columns and rows. Verified in full-suite.json.",
@@ -8109,11 +8109,11 @@
     },
     {
       "beforeId": "src/test/setup-ui-screen4.test.ts:59",
-      "beforeName": "renders the routing table with \u25b6 markers on changed rows",
+      "beforeName": "renders the routing table with ▶ markers on changed rows",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 4 \u2014 routing render renders the routing table with \u25b6 markers on changed rows"
+        "Screen 4 — routing render renders the routing table with ▶ markers on changed rows"
       ],
       "afterClassification": "STRONG",
       "evidence": "Changed synthesis row carries marker while unchanged structuring row does not. Verified in full-suite.json.",
@@ -8128,11 +8128,11 @@
     },
     {
       "beforeId": "src/test/setup-ui-screen4.test.ts:74",
-      "beforeName": "renders the diff block with \u2192 for changes and (unchanged) otherwise",
+      "beforeName": "renders the diff block with → for changes and (unchanged) otherwise",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 4 \u2014 routing render renders the diff block with \u2192 for changes and (unchanged) otherwise"
+        "Screen 4 — routing render renders the diff block with → for changes and (unchanged) otherwise"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed diff snapshot shows exact provider switch and unchanged dream row. Verified in full-suite.json.",
@@ -8151,7 +8151,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 4 \u2014 routing render renderRoutingDiff returns empty string when no entries"
+        "Screen 4 — routing render renderRoutingDiff returns empty string when no entries"
       ],
       "afterClassification": "STRONG",
       "evidence": "No diff entries returns literal empty string. Verified in full-suite.json.",
@@ -8170,7 +8170,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 7 \u2014 dream render builds the diff rows for a first-time enable"
+        "Screen 7 — dream render builds the diff rows for a first-time enable"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed first-enable diff snapshot has exact four labels, prior dashes and new provider/machine/threshold values. Verified in full-suite.json.",
@@ -8189,7 +8189,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 7 \u2014 dream render builds the diff rows showing what changed on a re-run"
+        "Screen 7 — dream render builds the diff rows showing what changed on a re-run"
       ],
       "afterClassification": "STRONG",
       "evidence": "Re-run diff preserves all four exact prior values. Verified in full-suite.json.",
@@ -8208,7 +8208,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "Screen 7 \u2014 dream render renders the thresholds block with default values inside [N ] fields"
+        "Screen 7 — dream render renders the thresholds block with default values inside [N ] fields"
       ],
       "afterClassification": "STRONG",
       "evidence": "Reviewed threshold snapshot renders 10/30/10 values and all three enabled task labels. Verified in full-suite.json.",
@@ -8223,11 +8223,11 @@
     },
     {
       "beforeId": "src/test/setup-ui-screen7.test.ts:88",
-      "beforeName": "renders sub-tasks with \u25cb when disabled",
+      "beforeName": "renders sub-tasks with ○ when disabled",
       "beforeClassification": "HOLLOW",
       "action": "rewritten",
       "afterNames": [
-        "Screen 7 \u2014 dream render renders sub-tasks with \u25cb when disabled"
+        "Screen 7 — dream render renders sub-tasks with ○ when disabled"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects omit disabled task rows entirely.",
@@ -8248,7 +8248,7 @@
       "beforeClassification": "STRONG",
       "action": "rewritten",
       "afterNames": [
-        "Phase C \u2014 settings panel (summary) formatMultiMachineSyncSummary shows NA when remote is not configured"
+        "Phase C — settings panel (summary) formatMultiMachineSyncSummary shows NA when remote is not configured"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects misrender actual persisted remote configuration.",
@@ -8269,7 +8269,7 @@
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "Phase C \u2014 settings panel (summary) describeMultiMachineSyncPanel shows NA with no remote meta or machine config"
+        "Phase C — settings panel (summary) describeMultiMachineSyncPanel shows NA with no remote meta or machine config"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects misrender actual persisted remote configuration.",
@@ -8292,7 +8292,7 @@
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "Phase C \u2014 settings panel (summary) renders panel row 4 with NA when multi-machine sync is not configured"
+        "Phase C — settings panel (summary) renders panel row 4 with NA when multi-machine sync is not configured"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects mislabel sync panel row.",
@@ -8313,7 +8313,7 @@
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "Phase C \u2014 settings panel (summary) renders panel rows for a fresh config (no default provider)"
+        "Phase C — settings panel (summary) renders panel rows for a fresh config (no default provider)"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects misrepresent unconfigured task routing.",
@@ -8334,7 +8334,7 @@
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "Phase C \u2014 settings panel (summary) renders panel rows after a switch to xai"
+        "Phase C — settings panel (summary) renders panel rows after a switch to xai"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects ignore provider loaded from actual config.",
@@ -8351,24 +8351,23 @@
     },
     {
       "beforeId": "src/test/setup-ui-summary.test.ts:153",
-      "beforeName": "buildTrailingMap marks edited sections with \u2713",
+      "beforeName": "buildTrailingMap marks edited sections with ✓",
       "beforeClassification": "COUPLED",
-      "action": "rewritten",
+      "action": "expected_failure",
       "afterNames": [
-        "Phase C \u2014 settings panel (summary) marks an edited routing section after saving and reloading its config"
+        "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config"
       ],
       "afterClassification": "STRONG",
-      "evidence": "Literal observable result now rejects omit edited-section marker.",
-      "mutationIds": [
-        "G1-summary-edited"
-      ],
+      "evidence": "Ordinary failure reproduced for DEF-G1-001; see test-audit/adversarial/final-open-ordinary.json. This detects an open defect and does not prove successful behavior.",
+      "mutationIds": [],
       "productionModules": [
         "src/lib/setup/summary.ts"
       ],
       "featureIds": [
         "F04",
         "F03"
-      ]
+      ],
+      "defectId": "DEF-G1-001"
     },
     {
       "beforeId": "src/test/setup-ui-summary.test.ts:164",
@@ -9979,11 +9978,11 @@
     },
     {
       "beforeId": "src/test/v512-http-bearer.test.ts:33",
-      "beforeName": "missing token \u2192 401",
+      "beforeName": "missing token → 401",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "v5.12 bearer token (missing / wrong / correct) missing token \u2192 401"
+        "v5.12 bearer token (missing / wrong / correct) missing token → 401"
       ],
       "afterClassification": "STRONG",
       "evidence": "Real HTTP server rejects absent bearer header with literal status 401. Verified in full-suite.json.",
@@ -9997,11 +9996,11 @@
     },
     {
       "beforeId": "src/test/v512-http-bearer.test.ts:38",
-      "beforeName": "wrong token \u2192 401",
+      "beforeName": "wrong token → 401",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "v5.12 bearer token (missing / wrong / correct) wrong token \u2192 401"
+        "v5.12 bearer token (missing / wrong / correct) wrong token → 401"
       ],
       "afterClassification": "STRONG",
       "evidence": "Real HTTP server rejects incorrect bearer token with literal status 401. Verified in full-suite.json.",
@@ -10015,7 +10014,7 @@
     },
     {
       "beforeId": "src/test/v512-http-bearer.test.ts:47",
-      "beforeName": "correct token \u2192 passes the auth gate (not 401)",
+      "beforeName": "correct token → passes the auth gate (not 401)",
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
@@ -10476,11 +10475,11 @@
     },
     {
       "beforeId": "src/test/v580-helpers.test.ts:153",
-      "beforeName": "returns a Map of {project_id \u2192 project_name} for all rows",
+      "beforeName": "returns a Map of {project_id → project_name} for all rows",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "idFormat buildProjectNameLookup returns a Map of {project_id \u2192 project_name} for all rows"
+        "idFormat buildProjectNameLookup returns a Map of {project_id → project_name} for all rows"
       ],
       "afterClassification": "STRONG",
       "evidence": "Real DB project-name lookup returns literal alpha/beta names and exactly two entries. Verified in full-suite.json.",
@@ -10700,7 +10699,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "Phase F \u2014 central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db"
+        "Phase F — central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects fail version invocation before producing a version.",
@@ -10718,11 +10717,11 @@
     },
     {
       "beforeId": "src/test/v593-no-central-db-pollution.test.ts:51",
-      "beforeName": "VITEST=true short-circuits maybePrintUpgradeNudge \u2014 no DB file at all",
+      "beforeName": "VITEST=true short-circuits maybePrintUpgradeNudge — no DB file at all",
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "Phase F \u2014 central DB pollution regression VITEST=true short-circuits maybePrintUpgradeNudge \u2014 no DB file at all"
+        "Phase F — central DB pollution regression VITEST=true short-circuits maybePrintUpgradeNudge — no DB file at all"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects fail help invocation before producing help.",
@@ -10740,11 +10739,11 @@
     },
     {
       "beforeId": "src/test/v594-dream-state.test.ts:56",
-      "beforeName": "config-disabled + no machine designated \u2192 disabled",
+      "beforeName": "config-disabled + no machine designated → disabled",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "v5.9.4 dream-state reconciliation (Bugs 7+8) config-disabled + no machine designated \u2192 disabled"
+        "v5.9.4 dream-state reconciliation (Bugs 7+8) config-disabled + no machine designated → disabled"
       ],
       "afterClassification": "STRONG",
       "evidence": "Disabled config without designation resolves literal disabled/default/null state and description. Verified in full-suite.json.",
@@ -10759,11 +10758,11 @@
     },
     {
       "beforeId": "src/test/v594-dream-state.test.ts:64",
-      "beforeName": "config-disabled + local-DB designation \u2192 enabled via local-db",
+      "beforeName": "config-disabled + local-DB designation → enabled via local-db",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "v5.9.4 dream-state reconciliation (Bugs 7+8) config-disabled + local-DB designation \u2192 enabled via local-db"
+        "v5.9.4 dream-state reconciliation (Bugs 7+8) config-disabled + local-DB designation → enabled via local-db"
       ],
       "afterClassification": "STRONG",
       "evidence": "Local DB designation enables Dream with literal work-a and local-db source. Verified in full-suite.json.",
@@ -10778,11 +10777,11 @@
     },
     {
       "beforeId": "src/test/v594-dream-state.test.ts:73",
-      "beforeName": "config-enabled + no DB designation \u2192 enabled via config",
+      "beforeName": "config-enabled + no DB designation → enabled via config",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "v5.9.4 dream-state reconciliation (Bugs 7+8) config-enabled + no DB designation \u2192 enabled via config"
+        "v5.9.4 dream-state reconciliation (Bugs 7+8) config-enabled + no DB designation → enabled via config"
       ],
       "afterClassification": "STRONG",
       "evidence": "Enabled config preserves literal anthropic/model and config source despite no DB designation. Verified in full-suite.json.",
@@ -10797,11 +10796,11 @@
     },
     {
       "beforeId": "src/test/v594-dream-state.test.ts:81",
-      "beforeName": "config-disabled + only remote DB has machine_id \u2192 falls through to remote-db",
+      "beforeName": "config-disabled + only remote DB has machine_id → falls through to remote-db",
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "v5.9.4 dream-state reconciliation (Bugs 7+8) config-disabled + only remote DB has machine_id \u2192 falls through to remote-db"
+        "v5.9.4 dream-state reconciliation (Bugs 7+8) config-disabled + only remote DB has machine_id → falls through to remote-db"
       ],
       "afterClassification": "STRONG",
       "evidence": "Remote designation resolves literal nas-dreamer and remote-db source. Verified in full-suite.json.",
@@ -10877,7 +10876,7 @@
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "v5.9.5 \u2014 self-healing machine_id heals a stale `unknown-<rand>` cache when a real hostname is available"
+        "v5.9.5 — self-healing machine_id heals a stale `unknown-<rand>` cache when a real hostname is available"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects persist wrong healed legacy machine id.",
@@ -10899,7 +10898,7 @@
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "v5.9.5 \u2014 self-healing machine_id heals a stale `dream_machine_id` pointing at the same broken cached id"
+        "v5.9.5 — self-healing machine_id heals a stale `dream_machine_id` pointing at the same broken cached id"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects persist wrong healed dream designation.",
@@ -10921,7 +10920,7 @@
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "v5.9.5 \u2014 self-healing machine_id leaves a real cached id untouched (no churn)"
+        "v5.9.5 — self-healing machine_id leaves a real cached id untouched (no churn)"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects replace valid stable legacy machine identity.",
@@ -10943,7 +10942,7 @@
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "v5.9.5 \u2014 self-healing machine_id leaves an unrelated `dream_machine_id` alone when machine_id heals"
+        "v5.9.5 — self-healing machine_id leaves an unrelated `dream_machine_id` alone when machine_id heals"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects overwrite designation of unrelated dream machine during legacy healing.",
@@ -11037,7 +11036,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "v6.0.0 \u2014 no implicit anthropic default (deci-049) GnosysConfigSchema.parse({}) leaves defaultProvider undefined"
+        "v6.0.0 — no implicit anthropic default (deci-049) GnosysConfigSchema.parse({}) leaves defaultProvider undefined"
       ],
       "afterClassification": "STRONG",
       "evidence": "Empty config schema yields absent defaultProvider rather than implicit anthropic selection. Verified in full-suite.json.",
@@ -11055,7 +11054,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "v6.0.0 \u2014 no implicit anthropic default (deci-049) GnosysConfigSchema.parse({ llm: {} }) leaves defaultProvider undefined"
+        "v6.0.0 — no implicit anthropic default (deci-049) GnosysConfigSchema.parse({ llm: {} }) leaves defaultProvider undefined"
       ],
       "afterClassification": "STRONG",
       "evidence": "Explicit empty llm object also preserves absent defaultProvider. Verified in full-suite.json.",
@@ -11073,7 +11072,7 @@
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "v6.0.0 \u2014 no implicit anthropic default (deci-049) loading an unconfigured store requires explicit provider setup"
+        "v6.0.0 — no implicit anthropic default (deci-049) loading an unconfigured store requires explicit provider setup"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects load implicit provider despite absent configuration.",
@@ -11093,7 +11092,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "v6.0.0 \u2014 no implicit anthropic default (deci-049) an explicitly set defaultProvider survives parse"
+        "v6.0.0 — no implicit anthropic default (deci-049) an explicitly set defaultProvider survives parse"
       ],
       "afterClassification": "STRONG",
       "evidence": "Explicit groq provider survives schema parsing unchanged. Verified in full-suite.json.",
@@ -11111,7 +11110,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "v6.0.0 \u2014 no implicit anthropic default (deci-049) requireDefaultProvider throws the run-setup message when unset"
+        "v6.0.0 — no implicit anthropic default (deci-049) requireDefaultProvider throws the run-setup message when unset"
       ],
       "afterClassification": "STRONG",
       "evidence": "Missing provider produces exact setup-required error from public requireDefaultProvider helper. Verified in full-suite.json.",
@@ -11129,7 +11128,7 @@
       "beforeClassification": "STRONG",
       "action": "kept",
       "afterNames": [
-        "v6.0.0 \u2014 no implicit anthropic default (deci-049) requireDefaultProvider returns the value when set"
+        "v6.0.0 — no implicit anthropic default (deci-049) requireDefaultProvider returns the value when set"
       ],
       "afterClassification": "STRONG",
       "evidence": "Configured provider helper returns literal ollama. Verified in full-suite.json.",
@@ -11147,7 +11146,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "v6.0.0 \u2014 no implicit anthropic default (deci-049) generateConfigTemplate() output contains no defaultProvider"
+        "v6.0.0 — no implicit anthropic default (deci-049) generateConfigTemplate() output contains no defaultProvider"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return empty template.",
@@ -11696,17 +11695,13 @@
     {
       "file": "src/test/setup-ui-summary.test.ts",
       "afterNames": [
-        "Phase C \u2014 settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides"
+        "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides"
       ],
       "afterClassification": "STRONG",
       "action": "expected_failure",
       "defectId": "DEF-G1-001",
-      "mutationIds": [
-        "G1-routing-reset-defect"
-      ],
-      "inverseRepairProbeId": "G1-routing-reset-defect",
-      "countsTowardMutationScore": false,
-      "proof": "Ordinary assertion fails in defect-ordinary.json; expected-failure declaration passes in defect-expected.json; temporary corrective source change yields unexpected success in killed-k.json."
+      "mutationIds": [],
+      "evidence": "Ordinary failure reproduced for DEF-G1-001; see test-audit/adversarial/final-open-ordinary.json. This detects an open defect and does not prove successful behavior."
     }
   ]
 }

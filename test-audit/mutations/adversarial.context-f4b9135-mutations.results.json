@@ -1,0 +1,841 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+  "results": [
+    {
+      "id": "ADV-CTX-mcp-content-f4b9135",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Truncate the persisted context heading while retaining successful response and metadata",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 980,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing custom-provider MCP context commits the same journal decision",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 985,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing custom-provider MCP context commits the same journal decision",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ { …(5) } ] to deeply equal [ { …(5) } ]\n    at expectSaved (<repo>/src/test/context-adversarial.test.ts:14:6)\n    at <repo>/src/test/context-adversarial.test.ts:41:5\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 994,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing custom-provider MCP context commits the same journal decision",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing custom-provider MCP context commits the same journal decision"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "ADV-CTX-import-concurrency-f4b9135",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Ignore configured parallelism and serialize provider requests",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 982,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1212,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 1 to be 2 // Object.is equality\n    at expectImportRequests (<repo>/src/test/context-adversarial.test.ts:25:27)\n    at <repo>/src/test/context-adversarial.test.ts:60:5\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 960,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "ADV-CTX-import-setup-guidance-f4b9135",
+      "file": "src/lib/import.ts",
+      "kind": "fault-injection",
+      "description": "Remove actionable setup guidance while retaining failure status",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1296,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing CLI import without a provider fails with setup guidance",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing MCP import without a provider fails with setup guidance",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1309,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing CLI import without a provider fails with setup guidance",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Mode: LLM (concurrency: 2)\\nDRY RUN —…' to contain 'Run \\'gnosys setup\\''\n    at <repo>/src/test/context-adversarial.test.ts:98:27\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing MCP import without a provider fails with setup guidance",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Import failed: LLM mode requires a pr…' to contain 'Run \\'gnosys setup\\''\n    at <repo>/src/test/context-adversarial.test.ts:117:25\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1362,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing CLI import without a provider fails with setup guidance",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing MCP import without a provider fails with setup guidance",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing CLI import without a provider fails with setup guidance"
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing MCP import without a provider fails with setup guidance"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "ADV-CTX-context-setup-guidance-f4b9135",
+      "file": "src/lib/config.ts",
+      "kind": "fault-injection",
+      "description": "Remove context setup guidance while retaining a provider-resolution error",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 900,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing MCP context without a provider fails with setup guidance",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 913,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing MCP context without a provider fails with setup guidance",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'LLM not available: No provider config…' to contain 'No default LLM provider configured. R…'\n    at <repo>/src/test/context-adversarial.test.ts:108:25\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 901,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing MCP context without a provider fails with setup guidance",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing MCP context without a provider fails with setup guidance"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "ADV-CTX-project-scope-f4b9135",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Drop the explicitly selected project from persisted context memories",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1118,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection the same context is saved independently in projects A and B",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 992,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection the same context is saved independently in projects A and B",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ { …(5) } ]\n    at expectSaved (<repo>/src/test/context-adversarial.test.ts:14:6)\n    at <repo>/src/test/context-adversarial.test.ts:128:7\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1121,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection the same context is saved independently in projects A and B",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection the same context is saved independently in projects A and B"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "ADV-CTX-startup-dedup-f4b9135",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Disable the working startup-project novelty check",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1071,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection startup-project context skips its already saved journal",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1087,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection startup-project context skips its already saved journal",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Context committed — 1 candidates extr…' to contain 'Context committed — 1 candidates extr…'\n    at <repo>/src/test/context-adversarial.test.ts:146:25\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1063,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection startup-project context skips its already saved journal",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection startup-project context skips its already saved journal"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "ADV-CTX-explicit-update-project-f4b9135",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Ignore explicit projectRoot on update and select the startup project",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1006,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection explicit project B update resolves the shared relative path inside B",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 924,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection explicit project B update resolves the shared relative path inside B",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ { …(3) }, { …(3) } ] to deeply equal [ { …(3) }, { …(3) } ]\n    at <repo>/src/test/context-adversarial.test.ts:165:100\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 973,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection explicit project B update resolves the shared relative path inside B",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection explicit project B update resolves the shared relative path inside B"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "ADV-CTX-human-key-leak-f4b9135",
+      "file": "src/lib/configCommand.ts",
+      "kind": "fault-injection",
+      "description": "Expose the fake stored key in human config output",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 587,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/config-display-adversarial.test.ts",
+            "name": "adversarial config display human config output names the key source without exposing stored key bytes",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 602,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/config-display-adversarial.test.ts",
+            "name": "adversarial config display human config output names the key source without exposing stored key bytes",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'System of Cognition (SOC) — LLM Confi…' to contain 'Custom:     model=display-canary-mode…'\n    at <repo>/src/test/config-display-adversarial.test.ts:30:27\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 572,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/config-display-adversarial.test.ts",
+            "name": "adversarial config display human config output names the key source without exposing stored key bytes",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/config-display-adversarial.test.ts",
+          "name": "adversarial config display human config output names the key source without exposing stored key bytes"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "ADV-CTX-D001-provider-f4b9135",
+      "file": "src/lib/commitContextCommand.ts",
+      "kind": "fault-injection",
+      "description": "Reintroduce the repaired CLI ingestion constructor missing the selected config",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1773,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1608,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
+            "status": "failed",
+            "failures": [
+              "AssertionError: Error: No LLM provider available. Run 'gnosys setup' to configure a provider and its credentials.\n: expected 1 to be +0 // Object.is equality\n    at <repo>/src/test/commit-context.test.ts:147:40\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+            "status": "failed",
+            "failures": [
+              "AssertionError: Error: No LLM provider available. Run 'gnosys setup' to configure a provider and its credentials.\n: expected 1 to be +0 // Object.is equality\n    at <repo>/src/test/context-adversarial.test.ts:31:40\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1761,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context"
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "ADV-CTX-D001-guidance-f4b9135",
+      "file": "src/lib/commitContextCommand.ts",
+      "kind": "fault-injection",
+      "description": "Remove setup guidance from repaired CLI context provider failure",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 822,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 886,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Error: No LLM provider available. Con…' to contain 'gnosys setup'\n    at <repo>/src/test/context-adversarial.test.ts:90:27\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 854,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "ADV-CTX-G2D003-provider-f4b9135",
+      "file": "src/lib/importCommand.ts",
+      "kind": "fault-injection",
+      "description": "Reintroduce repaired bulk-import constructor missing selected provider config",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 2914,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1627,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+            "status": "failed",
+            "failures": [
+              "AssertionError: Mode: LLM (concurrency: 2)\nDRY RUN — no files will be written\n\n\r[░░░░░░░░░░░░░░░░░░░░] 0/0 | Loading data...\nImport failed: LLM mode requires a configured LLM provider. Run 'gnosys setup' to configure one (Anthropic, OpenAI, Groq, xAI, Mistral, Ollama, LM Studio), or re-run with --mode structured.\n: expected 1 to be +0 // Object.is equality\n    at <repo>/src/test/context-adversarial.test.ts:50:40\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
+            "status": "failed",
+            "failures": [
+              "AssertionError: Mode: LLM (concurrency: 2)\nDRY RUN — no files will be written\n\n\r[░░░░░░░░░░░░░░░░░░░░] 0/0 | Loading data...\nImport failed: LLM mode requires a configured LLM provider. Run 'gnosys setup' to configure one (Anthropic, OpenAI, Groq, xAI, Mistral, Ollama, LM Studio), or re-run with --mode structured.\n: expected 1 to be +0 // Object.is equality\n    at <repo>/src/test/import-concurrency-wiring.test.ts:83:40\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
+            "status": "failed",
+            "failures": [
+              "AssertionError: Mode: LLM (concurrency: 1)\nDRY RUN — no files will be written\n\n\r[░░░░░░░░░░░░░░░░░░░░] 0/0 | Loading data...\nImport failed: LLM mode requires a configured LLM provider. Run 'gnosys setup' to configure one (Anthropic, OpenAI, Groq, xAI, Mistral, Ollama, LM Studio), or re-run with --mode structured.\n: expected 1 to be +0 // Object.is equality\n    at <repo>/src/test/import-concurrency-wiring.test.ts:108:40\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 2905,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency"
+        },
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests"
+        },
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "ADV-CTX-D002-lookup-f4b9135",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Reintroduce filesystem-only scoped context novelty lookup",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1896,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1981,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
+            "status": "failed",
+            "failures": [
+              "AssertionError: {\"text\":\"Context committed — 2 candidates extracted, 2 added, 0 duplicates skipped:\\n\\n➕ ADDED: \\\"Quartz ledgers\\\"\\n  ID: deci-01M2YYX0X29EHAESGGRC7NF4Z1\\n\\n➕ ADDED: \\\"Cobalt receipts\\\"\\n  ID: requ-01M2YYX0X41R4FX43CT0ZKQTJD\",\"memories\":[{\"title\":\"Cobalt receipts\",\"content\":\"# Cobalt receipts\\n\\nKeep cobalt receipts for seven years.\",\"category\":\"requirements\",\"author\":\"ai\",\"authority\":\"observed\",\"scope\":\"project\",\"project_id\":\"82f34990-0ec0-4f93-bffb-02980bd40f30\"},{\"title\":\"Cobalt receipts\",\"content\":\"# Cobalt receipts\\n\\nKeep cobalt receipts for seven years.\",\"category\":\"requirements\",\"author\":\"ai\",\"authority\":\"observed\",\"scope\":\"project\",\"project_id\":\"82f34990-0ec0-4f93-bffb-02980bd40f30\"},{\"title\":\"Quartz ledgers\",\"content\":\"# Quartz ledgers\\n\\nStore decisions in quartz ledgers.\",\"category\":\"decisions\",\"author\":\"ai\",\"authority\":\"observed\",\"scope\":\"project\",\"project_id\":\"82f34990-0ec0-4f93-bffb-02980bd40f30\"},{\"title\":\"Quartz ledgers\",\"content\":\"# Quartz ledgers\\n\\nStore decisions in quartz ledgers.\",\"category\":\"decisions\",\"author\":\"ai\",\"authority\":\"observed\",\"scope\":\"project\",\"project_id\":\"82f34990-0ec0-4f93-bffb-02980bd40f30\"}]}: expected 'Context committed — 2 candidates extr…' to contain 'Context committed — 2 candidates extr…'\n    at <repo>/src/test/commit-context.test.ts:116:108\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Context committed — 1 candidates extr…' to contain 'Context committed — 1 candidates extr…'\n    at <repo>/src/test/context-adversarial.test.ts:137:25\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1879,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories"
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "ADV-CTX-D002-cross-project-f4b9135",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Remove selected-project filter so prior project A falsely suppresses new project B context",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1117,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection the same context is saved independently in projects A and B",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1098,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection the same context is saved independently in projects A and B",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Context committed — 1 candidates extr…' to contain 'Context committed — 1 candidates extr…'\n    at <repo>/src/test/context-adversarial.test.ts:127:27\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1135,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection the same context is saved independently in projects A and B",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection the same context is saved independently in projects A and B"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

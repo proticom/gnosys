@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "fixture": "/var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-report-validation-S6eWcT",
+  "fixture": "/var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-report-validation-VZb4IK",
   "checks": [
     {
       "name": "No acceptance manifest preserves completed legacy audit",

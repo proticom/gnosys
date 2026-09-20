@@ -1,0 +1,33 @@
+{
+  "ref": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+  "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+  "applicationRestored": true,
+  "testSourcesRestored": true,
+  "exitCode": 1,
+  "tests": [
+    {
+      "file": "/private/tmp/gnosys-adversarial-context/src/test/config-display-adversarial.test.ts",
+      "name": "adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes",
+      "status": "failed",
+      "failures": [
+        "AssertionError: expected '{\\n  \"llm\": {\\n    \"defaultProvider\":…' not to contain 'fixture-only-config-key-7f94a31c'\n    at /private/tmp/gnosys-adversarial-context/src/test/config-display-adversarial.test.ts:39:47\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+      ]
+    },
+    {
+      "file": "/private/tmp/gnosys-adversarial-context/src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+      "status": "failed",
+      "failures": [
+        "AssertionError: {\"result\":{\"code\":0,\"stdout\":\"✓ Import complete in 0.1s\\n  Imported: 2\\n  Skipped:  0\\n  Failed:   0\\n  Total:    2\\n\",\"stderr\":\"Mode: LLM (concurrency: 2)\\n\\r[░░░░░░░░░░░░░░░░░░░░] 0/0 | Loading data...\\r[░░░░░░░░░░░░░░░░░░░░] 0/2 | Verdigris runbooks\\r[██████████░░░░░░░░░░] 1/2 | Cerulean manifests\\r                                                                                \\r\"},\"memories\":[]}: expected [] to deeply equal [ { …(2) }, { …(2) } ]\n    at /private/tmp/gnosys-adversarial-context/src/test/context-adversarial.test.ts:69:187\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+      ]
+    },
+    {
+      "file": "/private/tmp/gnosys-adversarial-context/src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+      "status": "failed",
+      "failures": [
+        "AssertionError: {\"result\":{\"isError\":false,\"text\":\"Import complete in 0.1s\\n  Imported: 2\\n  Skipped:  0\\n  Failed:   0\\n  Total:    2\"},\"memories\":[]}: expected [] to deeply equal [ { …(2) }, { …(2) } ]\n    at /private/tmp/gnosys-adversarial-context/src/test/context-adversarial.test.ts:80:187\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+      ]
+    }
+  ]
+}

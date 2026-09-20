@@ -1,0 +1,17 @@
+{
+  "baseCommit": "ec1955434bbd43136d8bbf3b92ef8d696aa78a38",
+  "applicationFixRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+  "applicationFixCommits": [
+    "b8ac52bb1f18e6977fc45c1914e07610888cf652",
+    "13756f2c1aab1873ba7d68a39727b16b11251a29",
+    "e2c08a37e7c69745e1dd4effc1bbe97f6e01b8b7",
+    "636e03271db7ee670374c846cff747ecd0318d85",
+    "3021bf5c88d5ec11ab3b61f311a68ba5c15a7f07",
+    "a420e3b727c33a578aed2c089d72841f5a4441f9",
+    "29a59b0b8ecdeb6e0796515d787aada530fe7335",
+    "6a69746dabf618e212c23e5530b474903d19df07",
+    "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906"
+  ],
+  "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+  "issues": []
+}

@@ -85,7 +85,7 @@
       "afterNames": [
         "apiKeyVault maskKeySnippet shows first and last characters"
       ],
-      "evidence": "Key masking returns literal sk-a\u2026mnop, protecting visible redaction.",
+      "evidence": "Key masking returns literal sk-a…mnop, protecting visible redaction.",
       "mutationIds": [],
       "action": "kept",
       "afterClassification": "STRONG",
@@ -251,10 +251,10 @@
     },
     {
       "beforeId": "src/test/attachments-inline.test.ts:45",
-      "beforeName": "inline attachments \u2014 round-trip attaches a file and reads back identical bytes, mime, and name",
+      "beforeName": "inline attachments — round-trip attaches a file and reads back identical bytes, mime, and name",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "inline attachments \u2014 round-trip attaches a file and reads back identical bytes, mime, and name"
+        "inline attachments — round-trip attaches a file and reads back identical bytes, mime, and name"
       ],
       "evidence": "Real DB attachment roundtrip preserves exact SVG bytes, MIME, name and size.",
       "mutationIds": [],
@@ -264,10 +264,10 @@
     },
     {
       "beforeId": "src/test/attachments-inline.test.ts:64",
-      "beforeName": "inline attachments \u2014 round-trip returns null when a memory has no attachment",
+      "beforeName": "inline attachments — round-trip returns null when a memory has no attachment",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "inline attachments \u2014 round-trip returns null when a memory has no attachment"
+        "inline attachments — round-trip returns null when a memory has no attachment"
       ],
       "evidence": "A persisted memory without attachment returns null.",
       "mutationIds": [],
@@ -277,10 +277,10 @@
     },
     {
       "beforeId": "src/test/attachments-inline.test.ts:69",
-      "beforeName": "inline attachments \u2014 round-trip detaches an attachment but keeps the memory",
+      "beforeName": "inline attachments — round-trip detaches an attachment but keeps the memory",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "inline attachments \u2014 round-trip detaches an attachment but keeps the memory"
+        "inline attachments — round-trip detaches an attachment but keeps the memory"
       ],
       "evidence": "Detach removes bytes, retains memory and returns false on the second detach.",
       "mutationIds": [],
@@ -290,12 +290,12 @@
     },
     {
       "beforeId": "src/test/attachments-inline.test.ts:84",
-      "beforeName": "inline attachments \u2014 guardrails rejects files larger than the size cap",
+      "beforeName": "inline attachments — guardrails rejects files larger than the size cap",
       "beforeClassification": "COUPLED",
       "afterNames": [
-        "inline attachments \u2014 guardrails rejects files larger than the size cap"
+        "inline attachments — guardrails rejects files larger than the size cap"
       ],
-      "evidence": "attachment-cap Observed Error: promise resolved \"{ memoryId: 'deci-010', \u2026(4) }\" instead of rejecting. Before and restored checks passed.",
+      "evidence": "attachment-cap Observed Error: promise resolved \"{ memoryId: 'deci-010', …(4) }\" instead of rejecting. Before and restored checks passed.",
       "mutationIds": [
         "g2-attachment-cap"
       ],
@@ -305,10 +305,10 @@
     },
     {
       "beforeId": "src/test/attachments-inline.test.ts:91",
-      "beforeName": "inline attachments \u2014 guardrails dedups identical bytes (no rewrite on re-attach)",
+      "beforeName": "inline attachments — guardrails dedups identical bytes (no rewrite on re-attach)",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "inline attachments \u2014 guardrails dedups identical bytes (no rewrite on re-attach)"
+        "inline attachments — guardrails dedups identical bytes (no rewrite on re-attach)"
       ],
       "evidence": "Repeated real attachment returns unchanged=false then unchanged=true.",
       "mutationIds": [],
@@ -318,10 +318,10 @@
     },
     {
       "beforeId": "src/test/attachments-inline.test.ts:102",
-      "beforeName": "inline attachments \u2014 guardrails throws when the target memory does not exist",
+      "beforeName": "inline attachments — guardrails throws when the target memory does not exist",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "inline attachments \u2014 guardrails throws when the target memory does not exist"
+        "inline attachments — guardrails throws when the target memory does not exist"
       ],
       "evidence": "Public attach API rejects missing memory with not-found error.",
       "mutationIds": [],
@@ -331,10 +331,10 @@
     },
     {
       "beforeId": "src/test/attachments-inline.test.ts:109",
-      "beforeName": "inline attachments \u2014 machine-to-machine (row copy) survives the insertMemory row-copy that remote sync uses",
+      "beforeName": "inline attachments — machine-to-machine (row copy) survives the insertMemory row-copy that remote sync uses",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "inline attachments \u2014 machine-to-machine (row copy) survives the insertMemory row-copy that remote sync uses"
+        "inline attachments — machine-to-machine (row copy) survives the insertMemory row-copy that remote sync uses"
       ],
       "evidence": "Row copied into a second real DB retains exact SVG bytes, name and MIME.",
       "mutationIds": [],
@@ -513,7 +513,7 @@
       "afterNames": [
         "bootstrap imports files into the store"
       ],
-      "evidence": "Persist wrong content while preserving counts Observed AssertionError: expected [ [ 'First Doc', \u2026(1) ], \u2026(1) ] to deeply equal [ [ 'First Doc', \u2026(1) ], \u2026(1) ]. Before and restored checks passed.",
+      "evidence": "Persist wrong content while preserving counts Observed AssertionError: expected [ [ 'First Doc', …(1) ], …(1) ] to deeply equal [ [ 'First Doc', …(1) ], …(1) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-bootstrap-content"
       ],
@@ -642,7 +642,7 @@
         "web command docs only document shipped CLI flags docs/commands/web-build.md flags are accepted by the published subcommand",
         "web command docs only document shipped CLI flags docs/commands/web-status.md flags are accepted by the published subcommand"
       ],
-      "evidence": "docs-build-index Observed AssertionError: documented flag --json is absent from web build-index help: expected 'Usage: gnosys web build-index [option\u2026' to match /--json(?:[\\s=<,]|$)/; docs-build Observed AssertionError: documented flag --json is absent from web build help: expected 'Usage: gnosys web build [options]\\n\\n\u2026' to match /--json(?:[\\s=<,]|$)/; docs-status Observed AssertionError: documented flag --json is absent from web status help: expected 'Usage: gnosys web status [options]\\n\\\u2026' to match /--json(?:[\\s=<,]|$)/. Before and restored checks passed.",
+      "evidence": "docs-build-index Observed AssertionError: documented flag --json is absent from web build-index help: expected 'Usage: gnosys web build-index [option…' to match /--json(?:[\\s=<,]|$)/; docs-build Observed AssertionError: documented flag --json is absent from web build help: expected 'Usage: gnosys web build [options]\\n\\n…' to match /--json(?:[\\s=<,]|$)/; docs-status Observed AssertionError: documented flag --json is absent from web status help: expected 'Usage: gnosys web status [options]\\n\\…' to match /--json(?:[\\s=<,]|$)/. Before and restored checks passed.",
       "mutationIds": [
         "g2-docs-build",
         "g2-docs-build-index",
@@ -659,7 +659,7 @@
       "afterNames": [
         "GnosysDreamEngine.dream() orchestrator reports an empty database before beginning Dream"
       ],
-      "evidence": "Skip empty/unmigrated database diagnosis. Observed AssertionError: expected [ 'Too few memories (0 < 3)' ] to include 'gnosys.db not available or not migrat\u2026'. Before and restored checks passed.",
+      "evidence": "Skip empty/unmigrated database diagnosis. Observed AssertionError: expected [ 'Too few memories (0 < 3)' ] to include 'gnosys.db not available or not migrat…'. Before and restored checks passed.",
       "mutationIds": [
         "g2-dream-empty"
       ],
@@ -727,7 +727,7 @@
       "afterNames": [
         "GnosysDreamEngine.dream() orchestrator runs all enabled phases through the configured provider"
       ],
-      "evidence": "Discard model summary content while retaining generated/updated counts. Observed AssertionError: expected 'Summary omitted' to be '# Category summary\\nKey themes and pa\u2026' // Object.is equality. Before and restored checks passed.",
+      "evidence": "Discard model summary content while retaining generated/updated counts. Observed AssertionError: expected 'Summary omitted' to be '# Category summary\\nKey themes and pa…' // Object.is equality. Before and restored checks passed.",
       "mutationIds": [
         "g2-dream-summary-body"
       ],
@@ -812,7 +812,7 @@
       "afterNames": [
         "GnosysDreamEngine phase implementations critiquMemory rule arms produce review suggestions"
       ],
-      "evidence": "Ignore missing tags in quality review. Observed AssertionError: expected 'Very low confidence (0.20) Never rein\u2026' to match /No tags/. Before and restored checks passed.",
+      "evidence": "Ignore missing tags in quality review. Observed AssertionError: expected 'Very low confidence (0.20) Never rein…' to match /No tags/. Before and restored checks passed.",
       "mutationIds": [
         "g2-dream-tag-review"
       ],
@@ -829,7 +829,7 @@
       "afterNames": [
         "GnosysDreamEngine phase implementations llmCritique handles ok, review, needs-update, and malformed JSON"
       ],
-      "evidence": "Flatten needs-update model action into review. Observed AssertionError: expected [ { id: 'borderline-2', \u2026(2) }, \u2026(1) ] to deeply equal [ { id: 'borderline-2', \u2026(2) }, \u2026(1) ]. Before and restored checks passed.",
+      "evidence": "Flatten needs-update model action into review. Observed AssertionError: expected [ { id: 'borderline-2', …(2) }, …(1) ] to deeply equal [ { id: 'borderline-2', …(2) }, …(1) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-dream-critique-action"
       ],
@@ -880,7 +880,7 @@
       "afterNames": [
         "GnosysDreamEngine phase implementations discoverRelationships filters self-ref, low confidence, and deduplicates"
       ],
-      "evidence": "Discard relationship label while preserving edge counts. Observed AssertionError: expected [ { source_id: 'rel-m0', \u2026(5) } ] to match object [ { target_id: 'rel-m1', \u2026(3) } ]. Before and restored checks passed.",
+      "evidence": "Discard relationship label while preserving edge counts. Observed AssertionError: expected [ { source_id: 'rel-m0', …(5) } ] to match object [ { target_id: 'rel-m1', …(3) } ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-dream-relationship-label"
       ],
@@ -1173,7 +1173,7 @@
       "afterNames": [
         "embedQueue embeds queued memories once enabled"
       ],
-      "evidence": "Discard the model output and persist zeroes of the same dimension. Observed AssertionError: expected Buffer[ 0, 0, 0, 0, 0, 0, 0, 0, \u2026(17) ] to deeply equal Buffer[ 0, 0, 128, 63, 0, 0, 0, \u2026(-47) ]. Before and restored checks passed.",
+      "evidence": "Discard the model output and persist zeroes of the same dimension. Observed AssertionError: expected Buffer[ 0, 0, 0, 0, 0, 0, 0, 0, …(17) ] to deeply equal Buffer[ 0, 0, 128, 63, 0, 0, 0, …(-47) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-queue-vector"
       ],
@@ -1185,10 +1185,10 @@
     },
     {
       "beforeId": "src/test/embed-queue.test.ts:80",
-      "beforeName": "embedQueue never throws when the embedder fails \u2014 warns on stderr instead",
+      "beforeName": "embedQueue never throws when the embedder fails — warns on stderr instead",
       "beforeClassification": "MISLABELED",
       "afterNames": [
-        "embedQueue never throws when the embedder fails \u2014 warns on stderr instead"
+        "embedQueue never throws when the embedder fails — warns on stderr instead"
       ],
       "evidence": "Lose the failure label in the stderr warning. Observed AssertionError: expected [ Array(1) ] to deeply equal [ Array(1) ]. Before and restored checks passed.",
       "mutationIds": [
@@ -1200,12 +1200,12 @@
     },
     {
       "beforeId": "src/test/embed-queue.test.ts:96",
-      "beforeName": "embedQueue syncMemoryToDb feeds the queue \u2014 a plain DB write gets a vector",
+      "beforeName": "embedQueue syncMemoryToDb feeds the queue — a plain DB write gets a vector",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "embedQueue syncMemoryToDb feeds the queue \u2014 a plain DB write gets a vector"
+        "embedQueue syncMemoryToDb feeds the queue — a plain DB write gets a vector"
       ],
-      "evidence": "Discard the model output and persist zeroes of the same dimension. Observed AssertionError: expected Buffer[ 0, 0, 0, 0, 0, 0, 0, 0, \u2026(17) ] to deeply equal Buffer[ 0, 0, 128, 63, 0, 0, 0, \u2026(-47) ]. Before and restored checks passed.",
+      "evidence": "Discard the model output and persist zeroes of the same dimension. Observed AssertionError: expected Buffer[ 0, 0, 0, 0, 0, 0, 0, 0, …(17) ] to deeply equal Buffer[ 0, 0, 128, 63, 0, 0, 0, …(-47) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-queue-vector"
       ],
@@ -1222,7 +1222,7 @@
       "afterNames": [
         "embedQueue disable clears pending work"
       ],
-      "evidence": "Retain queued IDs across disable and re-enable. Observed AssertionError: expected Buffer[ 0, 0, 128, 63, 0, 0, 0, \u2026(-47) ] to be null. Before and restored checks passed.",
+      "evidence": "Retain queued IDs across disable and re-enable. Observed AssertionError: expected Buffer[ 0, 0, 128, 63, 0, 0, 0, …(-47) ] to be null. Before and restored checks passed.",
       "mutationIds": [
         "g2-queue-disable-pending"
       ],
@@ -1241,7 +1241,7 @@
       "afterNames": [
         "export archive visibility default exportProject reports archivedExcluded and omits archived memories"
       ],
-      "evidence": "Lose memory bodies in portable project bundles Observed AssertionError: expected [ [ 'mem-arch-002', \u2026(1) ], \u2026(2) ] to deeply equal [ \u2026(3) ]. Before and restored checks passed.",
+      "evidence": "Lose memory bodies in portable project bundles Observed AssertionError: expected [ [ 'mem-arch-002', …(1) ], …(2) ] to deeply equal [ …(3) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-export-bundle-content"
       ],
@@ -1258,7 +1258,7 @@
       "afterNames": [
         "export archive visibility includeArchived exports all with status preserved and archivedExcluded 0"
       ],
-      "evidence": "Lose memory bodies in portable project bundles Observed AssertionError: expected [ [ 'mem-arch-000', \u2026(3) ], \u2026(3) ] to deeply equal [ [ 'mem-arch-000', \u2026(3) ], \u2026(3) ]. Before and restored checks passed.",
+      "evidence": "Lose memory bodies in portable project bundles Observed AssertionError: expected [ [ 'mem-arch-000', …(3) ], …(3) ] to deeply equal [ [ 'mem-arch-000', …(3) ], …(3) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-export-bundle-content"
       ],
@@ -1486,7 +1486,7 @@
       "afterNames": [
         "gnosys_add freeform gate rejects freeform MCP writes by default"
       ],
-      "evidence": "freeform-gate Observed AssertionError: expected 'No writable store found. Create a .gn\u2026' to contain 'gnosys_add is disabled for LLM agents'. Before and restored checks passed.",
+      "evidence": "freeform-gate Observed AssertionError: expected 'No writable store found. Create a .gn…' to contain 'gnosys_add is disabled for LLM agents'. Before and restored checks passed.",
       "mutationIds": [
         "g2-freeform-gate"
       ],
@@ -1501,7 +1501,7 @@
       "afterNames": [
         "gnosys_add freeform gate redirect message lists the structured fields agents must supply"
       ],
-      "evidence": "freeform-guidance Observed AssertionError: expected 'gnosys_add is disabled for LLM agents\u2026' to contain 'content (markdown body)'. Before and restored checks passed.",
+      "evidence": "freeform-guidance Observed AssertionError: expected 'gnosys_add is disabled for LLM agents…' to contain 'content (markdown body)'. Before and restored checks passed.",
       "mutationIds": [
         "g2-freeform-guidance"
       ],
@@ -1570,7 +1570,7 @@
       "afterNames": [
         "runGraphCommand (in-process invoke) reports wikilinks between seeded memories (--json)"
       ],
-      "evidence": "graph-nodes Observed AssertionError: expected [] to deeply equal [ { \u2026(4) }, { \u2026(4) } ]. Before and restored checks passed.",
+      "evidence": "graph-nodes Observed AssertionError: expected [] to deeply equal [ { …(4) }, { …(4) } ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-graph-nodes"
       ],
@@ -1626,11 +1626,11 @@
       "afterNames": [
         "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests"
       ],
-      "evidence": "Ordinary actual CLI import rejects configured Ollama provider before any request. Loaded-config repair makes expected failure unexpectedly pass, including literal three transformed requests and concurrency2/default or1/flag.",
+      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) ADV-CTX-G2D003-provider-f4b9135; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json.",
       "mutationIds": [
-        "g2-import-config-repair-witness"
+        "ADV-CTX-G2D003-provider-f4b9135"
       ],
-      "action": "expected_failure",
+      "action": "rewritten",
       "afterClassification": "STRONG",
       "defectId": "G2-D003",
       "survivingMutationIds": []
@@ -1658,11 +1658,11 @@
       "afterNames": [
         "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency"
       ],
-      "evidence": "Ordinary actual CLI import rejects configured Ollama provider before any request. Loaded-config repair makes expected failure unexpectedly pass, including literal three transformed requests and concurrency2/default or1/flag.",
+      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) ADV-CTX-G2D003-provider-f4b9135; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json.",
       "mutationIds": [
-        "g2-import-config-repair-witness"
+        "ADV-CTX-G2D003-provider-f4b9135"
       ],
-      "action": "expected_failure",
+      "action": "rewritten",
       "afterClassification": "STRONG",
       "defectId": "G2-D003",
       "survivingMutationIds": []
@@ -1806,12 +1806,12 @@
     },
     {
       "beforeId": "src/test/lifecycle-invariants.test.ts:57",
-      "beforeName": "lifecycle invariants \u2014 one primary row, \u22641 sidecar row per id holds after every lifecycle op",
+      "beforeName": "lifecycle invariants — one primary row, ≤1 sidecar row per id holds after every lifecycle op",
       "beforeClassification": "COUPLED",
       "afterNames": [
         "memory lifecycle through database reads and search preserves current content, visibility and reinforcement across lifecycle operations"
       ],
-      "evidence": "Persist wrong replacement content during lifecycle update. Observed AssertionError: expected { id: 'inv-001', \u2026(28) } to match object { title: 'Second version', \u2026(1) }. Before and restored checks passed.",
+      "evidence": "Persist wrong replacement content during lifecycle update. Observed AssertionError: expected { id: 'inv-001', …(28) } to match object { title: 'Second version', …(1) }. Before and restored checks passed.",
       "mutationIds": [
         "g2-lifecycle-update-content"
       ],
@@ -2126,7 +2126,7 @@
       "afterNames": [
         "LLM Provider System createProvider creates xAI provider with correct baseUrl"
       ],
-      "evidence": "xai-url Observed AssertionError: expected \"vi.fn()\" to be called once with arguments: [ \u2026(2) ]. Before and restored checks passed.",
+      "evidence": "xai-url Observed AssertionError: expected \"vi.fn()\" to be called once with arguments: [ …(2) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-xai-url"
       ],
@@ -2154,7 +2154,7 @@
       "afterNames": [
         "LLM Provider System createProvider creates Mistral provider with correct baseUrl"
       ],
-      "evidence": "mistral-url Observed AssertionError: expected \"vi.fn()\" to be called once with arguments: [ \u2026(2) ]. Before and restored checks passed.",
+      "evidence": "mistral-url Observed AssertionError: expected \"vi.fn()\" to be called once with arguments: [ …(2) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-mistral-url"
       ],
@@ -2169,7 +2169,7 @@
       "afterNames": [
         "LLM Provider System createProvider creates custom provider with user-provided baseUrl"
       ],
-      "evidence": "custom-url Observed AssertionError: expected \"vi.fn()\" to be called once with arguments: [ \u2026(2) ]. Before and restored checks passed.",
+      "evidence": "custom-url Observed AssertionError: expected \"vi.fn()\" to be called once with arguments: [ …(2) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-custom-url"
       ],
@@ -2223,7 +2223,7 @@
       "afterNames": [
         "LLM Provider System createProvider custom provider works without API key (local endpoints)"
       ],
-      "evidence": "custom-no-key Observed AssertionError: expected \"vi.fn()\" to be called once with arguments: [ \u2026(2) ]. Before and restored checks passed.",
+      "evidence": "custom-no-key Observed AssertionError: expected \"vi.fn()\" to be called once with arguments: [ …(2) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-custom-no-key"
       ],
@@ -2329,7 +2329,7 @@
       "afterNames": [
         "MCP central ToolContext release closes scoped database resources after an early missing-memory return"
       ],
-      "evidence": "Leak all contexts from central cleanup on early return. Observed AssertionError: expected [ \u2026(5) ] to deeply equal []. Before and restored checks passed.",
+      "evidence": "Leak all contexts from central cleanup on early return. Observed AssertionError: expected [ …(5) ] to deeply equal []. Before and restored checks passed.",
       "mutationIds": [
         "g2-mcp-release-finally"
       ],
@@ -2344,7 +2344,7 @@
       "afterNames": [
         "MCP central ToolContext release returns a tool error envelope when a handler throws"
       ],
-      "evidence": "Drop tool identity from unexpected handler error envelope. Observed AssertionError: expected 'Error during operation: ENOTDIR: not \u2026' to be 'Error in gnosys_init: ENOTDIR: not a \u2026' // Object.is equality. Before and restored checks passed.",
+      "evidence": "Drop tool identity from unexpected handler error envelope. Observed AssertionError: expected 'Error during operation: ENOTDIR: not …' to be 'Error in gnosys_init: ENOTDIR: not a …' // Object.is equality. Before and restored checks passed.",
       "mutationIds": [
         "g2-mcp-error-envelope"
       ],
@@ -2359,7 +2359,7 @@
       "afterNames": [
         "MCP central ToolContext release closes owned remote handles after default and project-scoped calls"
       ],
-      "evidence": "Omit default context from central cleanup. Observed AssertionError: expected [ \u2026(4) ] to deeply equal []. Before and restored checks passed.",
+      "evidence": "Omit default context from central cleanup. Observed AssertionError: expected [ …(4) ] to deeply equal []. Before and restored checks passed.",
       "mutationIds": [
         "g2-mcp-release-default"
       ],
@@ -2389,7 +2389,7 @@
       "afterNames": [
         "MCP central ToolContext release keeps serving after escaped async errors and writes diagnostics only to stderr"
       ],
-      "evidence": "Write escaped exception diagnostics to the JSON-RPC stdout channel. Observed Error: expected 'Central DB: ready \u2713 (0 projects regis\u2026' to contain 'Gnosys MCP: uncaught exception \u2014 Erro\u2026'. Before and restored checks passed.",
+      "evidence": "Write escaped exception diagnostics to the JSON-RPC stdout channel. Observed Error: expected 'Central DB: ready ✓ (0 projects regis…' to contain 'Gnosys MCP: uncaught exception — Erro…'. Before and restored checks passed.",
       "mutationIds": [
         "g2-mcp-async-stderr"
       ],
@@ -2404,7 +2404,7 @@
       "afterNames": [
         "MCP HTTP registration replay two concurrent sessions both see the full real tool list"
       ],
-      "evidence": "Rename the Dream tool while preserving tool counts and identical session lists. Observed AssertionError: expected [ 'gnosys_add', \u2026(55) ] to deeply equal [ 'gnosys_add', \u2026(55) ]. Before and restored checks passed.",
+      "evidence": "Rename the Dream tool while preserving tool counts and identical session lists. Observed AssertionError: expected [ 'gnosys_add', …(55) ] to deeply equal [ 'gnosys_add', …(55) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-toolset-dream-name"
       ],
@@ -2486,7 +2486,7 @@
       "afterNames": [
         "MCP dynamic toolset switching (v6.2) GNOSYS_MCP_TOOLSET=full env override starts on the full tier"
       ],
-      "evidence": "Rename the Dream tool while preserving tool counts and identical session lists. Observed AssertionError: expected [ 'gnosys_add', \u2026(55) ] to deeply equal [ 'gnosys_add', \u2026(55) ]. Before and restored checks passed.",
+      "evidence": "Rename the Dream tool while preserving tool counts and identical session lists. Observed AssertionError: expected [ 'gnosys_add', …(55) ] to deeply equal [ 'gnosys_add', …(55) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-toolset-dream-name"
       ],
@@ -2503,7 +2503,7 @@
       "afterNames": [
         "gnosys_trace traces a codebase and reports created memories"
       ],
-      "evidence": "Keep trace counts but corrupt persisted procedure bodies. Observed AssertionError: expected [ { \u2026(2) }, { \u2026(2) } ] to deeply equal [ { \u2026(2) }, { \u2026(2) } ]. Before and restored checks passed.",
+      "evidence": "Keep trace counts but corrupt persisted procedure bodies. Observed AssertionError: expected [ { …(2) }, { …(2) } ] to deeply equal [ { …(2) }, { …(2) } ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-trace-body"
       ],
@@ -2546,7 +2546,7 @@
       "afterNames": [
         "gnosys_traverse respects direction=in (no outgoing edges followed)"
       ],
-      "evidence": "Drop the root node from traversal output. Observed AssertionError: expected 'Traversal from mem-trace-a (depth: 3,\u2026' to be 'Traversal from mem-trace-a (depth: 3,\u2026' // Object.is equality. Before and restored checks passed.",
+      "evidence": "Drop the root node from traversal output. Observed AssertionError: expected 'Traversal from mem-trace-a (depth: 3,…' to be 'Traversal from mem-trace-a (depth: 3,…' // Object.is equality. Before and restored checks passed.",
       "mutationIds": [
         "g2-traverse-root"
       ],
@@ -2589,7 +2589,7 @@
       "afterNames": [
         "gnosys_reflect rejects a call without the required outcome"
       ],
-      "evidence": "Allow missing outcome past MCP validation and return a different handler error. Observed AssertionError: expected 'Reflect failed: outcome is required' to contain 'Input validation error: Invalid argum\u2026'. Before and restored checks passed.",
+      "evidence": "Allow missing outcome past MCP validation and return a different handler error. Observed AssertionError: expected 'Reflect failed: outcome is required' to contain 'Input validation error: Invalid argum…'. Before and restored checks passed.",
       "mutationIds": [
         "g2-reflect-required"
       ],
@@ -2645,7 +2645,7 @@
       "afterNames": [
         "buildOpenRouterTiers includes free models with :free suffix"
       ],
-      "evidence": "Ignore available models and always use static fallback tiers Observed AssertionError: expected [ { \u2026(5) }, { \u2026(5) }, { \u2026(5) } ] to deeply equal [ { \u2026(5) }, { \u2026(5) } ]. Before and restored checks passed.",
+      "evidence": "Ignore available models and always use static fallback tiers Observed AssertionError: expected [ { …(5) }, { …(5) }, { …(5) } ] to deeply equal [ { …(5) }, { …(5) } ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-openrouter-catalog"
       ],
@@ -2662,7 +2662,7 @@
       "afterNames": [
         "buildOpenRouterTiers falls back to static tiers for empty catalog"
       ],
-      "evidence": "openrouter-fallback Observed AssertionError: expected [ { \u2026(5) }, { \u2026(5) }, { \u2026(5) } ] to deeply equal [ { \u2026(5) }, { \u2026(5) }, { \u2026(5) } ]. Before and restored checks passed.",
+      "evidence": "openrouter-fallback Observed AssertionError: expected [ { …(5) }, { …(5) }, { …(5) } ] to deeply equal [ { …(5) }, { …(5) }, { …(5) } ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-openrouter-fallback"
       ],
@@ -2750,10 +2750,10 @@
     },
     {
       "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:65",
-      "beforeName": "TC-10.1: Reflection API \u2014 success outcome updates confidence boosts confidence on success",
+      "beforeName": "TC-10.1: Reflection API — success outcome updates confidence boosts confidence on success",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "TC-10.1: Reflection API \u2014 success outcome updates confidence boosts confidence on success"
+        "TC-10.1: Reflection API — success outcome updates confidence boosts confidence on success"
       ],
       "evidence": "Sandbox reflection returns success, positive confidence change, reinforcement one and literal delta 0.05.",
       "mutationIds": [],
@@ -2763,10 +2763,10 @@
     },
     {
       "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:86",
-      "beforeName": "TC-10.2: Reflection API \u2014 failure outcome decreases confidence decreases confidence on failure",
+      "beforeName": "TC-10.2: Reflection API — failure outcome decreases confidence decreases confidence on failure",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "TC-10.2: Reflection API \u2014 failure outcome decreases confidence decreases confidence on failure"
+        "TC-10.2: Reflection API — failure outcome decreases confidence decreases confidence on failure"
       ],
       "evidence": "Failure reflection returns failure, decreased confidence and literal delta -0.1.",
       "mutationIds": [],
@@ -2776,10 +2776,10 @@
     },
     {
       "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:105",
-      "beforeName": "TC-10.3: Reflection API \u2014 creates reflection memory with relationships creates a new reflection memory",
+      "beforeName": "TC-10.3: Reflection API — creates reflection memory with relationships creates a new reflection memory",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "TC-10.3: Reflection API \u2014 creates reflection memory with relationships creates a new reflection memory"
+        "TC-10.3: Reflection API — creates reflection memory with relationships creates a new reflection memory"
       ],
       "evidence": "Reads persisted reflection category/outcome/notes and literal validates edge to seeded architecture memory.",
       "mutationIds": [],
@@ -2789,10 +2789,10 @@
     },
     {
       "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:137",
-      "beforeName": "TC-10.4: Reflection API \u2014 consolidation links related memories on success creates corroborates links between multiple memories",
+      "beforeName": "TC-10.4: Reflection API — consolidation links related memories on success creates corroborates links between multiple memories",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "TC-10.4: Reflection API \u2014 consolidation links related memories on success creates corroborates links between multiple memories"
+        "TC-10.4: Reflection API — consolidation links related memories on success creates corroborates links between multiple memories"
       ],
       "evidence": "Successful multi-memory reflection persists a corroborates edge to the second seeded ID.",
       "mutationIds": [],
@@ -2802,12 +2802,12 @@
     },
     {
       "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:158",
-      "beforeName": "TC-10.5: Reflection API \u2014 auto-discovers memories when no IDs provided searches FTS to find related memories",
+      "beforeName": "TC-10.5: Reflection API — auto-discovers memories when no IDs provided searches FTS to find related memories",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "TC-10.5: Reflection API \u2014 auto-discovers memories when no IDs provided searches FTS to find related memories"
+        "TC-10.5: Reflection API — auto-discovers memories when no IDs provided searches FTS to find related memories"
       ],
-      "evidence": "Drop every automatically discovered related memory. Observed AssertionError: expected { \u2026(5) } to match object { memories_updated: [ { \u2026(3) } ] }. Before and restored checks passed.",
+      "evidence": "Drop every automatically discovered related memory. Observed AssertionError: expected { …(5) } to match object { memories_updated: [ { …(3) } ] }. Before and restored checks passed.",
       "mutationIds": [
         "g2-reflect-auto-discovery"
       ],
@@ -2819,10 +2819,10 @@
     },
     {
       "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:176",
-      "beforeName": "TC-10.6: Process Tracing \u2014 discovers functions from source files finds function declarations in TS files",
+      "beforeName": "TC-10.6: Process Tracing — discovers functions from source files finds function declarations in TS files",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "TC-10.6: Process Tracing \u2014 discovers functions from source files finds function declarations in TS files"
+        "TC-10.6: Process Tracing — discovers functions from source files finds function declarations in TS files"
       ],
       "evidence": "Real TS source trace reports exactly one file and three function declarations.",
       "mutationIds": [],
@@ -2832,10 +2832,10 @@
     },
     {
       "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:205",
-      "beforeName": "TC-10.7: Process Tracing \u2014 creates procedural 'how' memories stores functions as category 'how' memories",
+      "beforeName": "TC-10.7: Process Tracing — creates procedural 'how' memories stores functions as category 'how' memories",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "TC-10.7: Process Tracing \u2014 creates procedural 'how' memories stores functions as category 'how' memories"
+        "TC-10.7: Process Tracing — creates procedural 'how' memories stores functions as category 'how' memories"
       ],
       "evidence": "Return no memory IDs while retaining count and inserted rows. Observed AssertionError: expected [] to have a length of 2 but got +0. Before and restored checks passed.",
       "mutationIds": [
@@ -2849,12 +2849,12 @@
     },
     {
       "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:236",
-      "beforeName": "TC-10.8: Process Tracing \u2014 creates leads_to and follows_from relationships creates call-chain relationships between functions",
+      "beforeName": "TC-10.8: Process Tracing — creates leads_to and follows_from relationships creates call-chain relationships between functions",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "TC-10.8: Process Tracing \u2014 creates leads_to and follows_from relationships creates call-chain relationships between functions"
+        "TC-10.8: Process Tracing — creates leads_to and follows_from relationships creates call-chain relationships between functions"
       ],
-      "evidence": "Write self-loop leads_to links instead of the actual callee. Observed AssertionError: expected [ [ \u2026(3) ], [ \u2026(3) ], [ \u2026(3) ], \u2026(1) ] to deeply equal [ [ \u2026(3) ], [ \u2026(3) ], [ \u2026(3) ], \u2026(1) ]. Before and restored checks passed.",
+      "evidence": "Write self-loop leads_to links instead of the actual callee. Observed AssertionError: expected [ [ …(3) ], [ …(3) ], [ …(3) ], …(1) ] to deeply equal [ [ …(3) ], [ …(3) ], [ …(3) ], …(1) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-trace-self-edge"
       ],
@@ -2866,10 +2866,10 @@
     },
     {
       "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:275",
-      "beforeName": "TC-10.9: Process Tracing \u2014 handles empty directory returns zero counts for empty directory",
+      "beforeName": "TC-10.9: Process Tracing — handles empty directory returns zero counts for empty directory",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "TC-10.9: Process Tracing \u2014 handles empty directory returns zero counts for empty directory"
+        "TC-10.9: Process Tracing — handles empty directory returns zero counts for empty directory"
       ],
       "evidence": "Empty real directory returns literal zero files/functions/memories/relationships.",
       "mutationIds": [],
@@ -2879,10 +2879,10 @@
     },
     {
       "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:290",
-      "beforeName": "TC-10.10: Traversal \u2014 BFS follows relationships depth-limited traverses chain up to specified depth",
+      "beforeName": "TC-10.10: Traversal — BFS follows relationships depth-limited traverses chain up to specified depth",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "TC-10.10: Traversal \u2014 BFS follows relationships depth-limited traverses chain up to specified depth"
+        "TC-10.10: Traversal — BFS follows relationships depth-limited traverses chain up to specified depth"
       ],
       "evidence": "Depth-two traversal returns A/B/C and excludes D; depth three reaches all four.",
       "mutationIds": [],
@@ -2892,10 +2892,10 @@
     },
     {
       "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:330",
-      "beforeName": "TC-10.11: Traversal \u2014 respects rel_types filter only follows specified relationship types",
+      "beforeName": "TC-10.11: Traversal — respects rel_types filter only follows specified relationship types",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "TC-10.11: Traversal \u2014 respects rel_types filter only follows specified relationship types"
+        "TC-10.11: Traversal — respects rel_types filter only follows specified relationship types"
       ],
       "evidence": "Type filter includes leads_to target filter-b and excludes requires target filter-c.",
       "mutationIds": [],
@@ -2905,10 +2905,10 @@
     },
     {
       "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:353",
-      "beforeName": "TC-10.12: Traversal \u2014 handles non-existent memory returns error for non-existent memory",
+      "beforeName": "TC-10.12: Traversal — handles non-existent memory returns error for non-existent memory",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "TC-10.12: Traversal \u2014 handles non-existent memory returns error for non-existent memory"
+        "TC-10.12: Traversal — handles non-existent memory returns error for non-existent memory"
       ],
       "evidence": "Unknown traversal root returns ok=false with not-found error.",
       "mutationIds": [],
@@ -2918,10 +2918,10 @@
     },
     {
       "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:363",
-      "beforeName": "TC-10.13: Traversal \u2014 follows bidirectional relationships follows both outgoing and incoming edges",
+      "beforeName": "TC-10.13: Traversal — follows bidirectional relationships follows both outgoing and incoming edges",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "TC-10.13: Traversal \u2014 follows bidirectional relationships follows both outgoing and incoming edges"
+        "TC-10.13: Traversal — follows bidirectional relationships follows both outgoing and incoming edges"
       ],
       "evidence": "Default bidirectional traversal includes both seeded incoming and outgoing neighbors and total three.",
       "mutationIds": [],
@@ -2931,12 +2931,12 @@
     },
     {
       "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:388",
-      "beforeName": "TC-10.14: End-to-end \u2014 trace \u2192 reflect \u2192 traverse chain traces code, reflects on outcome, then traverses the chain",
+      "beforeName": "TC-10.14: End-to-end — trace → reflect → traverse chain traces code, reflects on outcome, then traverses the chain",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "TC-10.14: End-to-end \u2014 trace \u2192 reflect \u2192 traverse chain traces code, reflects on outcome, then traverses the chain"
+        "TC-10.14: End-to-end — trace → reflect → traverse chain traces code, reflects on outcome, then traverses the chain"
       ],
-      "evidence": "Write self-loop leads_to links instead of the actual callee. Observed AssertionError: expected [ [ \u2026(3) ], [ \u2026(3) ], [ \u2026(3) ], \u2026(1) ] to deeply equal [ [ \u2026(3) ], [ \u2026(3) ], [ \u2026(3) ], \u2026(1) ]. Before and restored checks passed.",
+      "evidence": "Write self-loop leads_to links instead of the actual callee. Observed AssertionError: expected [ [ …(3) ], [ …(3) ], [ …(3) ], …(1) ] to deeply equal [ [ …(3) ], [ …(3) ], [ …(3) ], …(1) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-trace-self-edge"
       ],
@@ -2953,7 +2953,7 @@
       "afterNames": [
         "Dream crash recovery through persisted state checkpoints completed phase fingerprints before an interrupted run can finalize"
       ],
-      "evidence": "Delay fingerprint persistence until finalization, losing completed phase progress on interruption. Observed AssertionError: expected [] to deeply equal [ { kind: 'critique', \u2026(1) } ]. Before and restored checks passed.",
+      "evidence": "Delay fingerprint persistence until finalization, losing completed phase progress on interruption. Observed AssertionError: expected [] to deeply equal [ { kind: 'critique', …(1) } ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-dream-phase-checkpoint"
       ],
@@ -3086,7 +3086,7 @@
       "afterNames": [
         "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite recall returns the matching SQLite memory"
       ],
-      "evidence": "Disable database-backed recall. Observed AssertionError: expected [] to deeply equal [ { id: 'recall-001', \u2026(2) } ]. Before and restored checks passed.",
+      "evidence": "Disable database-backed recall. Observed AssertionError: expected [] to deeply equal [ { id: 'recall-001', …(2) } ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-recall-bypass-db"
       ],
@@ -3316,7 +3316,7 @@
       "afterNames": [
         "Phase 8d: Federated Search + Ambiguity TC-8d.4: Cross-project search federatedSearch finds memories across projects"
       ],
-      "evidence": "Misattribute cross-project results while retaining their count Observed AssertionError: expected [ Array(2) ] to deeply equal [ [ 'cross-a', 'proj-alpha' ], \u2026(1) ]. Before and restored checks passed.",
+      "evidence": "Misattribute cross-project results while retaining their count Observed AssertionError: expected [ Array(2) ] to deeply equal [ [ 'cross-a', 'proj-alpha' ], …(1) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-federated-cross-project"
       ],
@@ -3421,7 +3421,7 @@
       "afterNames": [
         "TC-9b.1: Dream Mode idle triggering and state tracking dream_status returns state through sandbox protocol"
       ],
-      "evidence": "Report zero idle threshold despite configuration. Observed AssertionError: expected { id: 'ds1', ok: true, \u2026(1) } to deeply equal { id: 'ds1', ok: true, \u2026(1) }. Before and restored checks passed.",
+      "evidence": "Report zero idle threshold despite configuration. Observed AssertionError: expected { id: 'ds1', ok: true, …(1) } to deeply equal { id: 'ds1', ok: true, …(1) }. Before and restored checks passed.",
       "mutationIds": [
         "g2-sandbox-status-idle"
       ],
@@ -3494,7 +3494,7 @@
       "afterNames": [
         "TC-9b.2: Preference CRUD through sandbox protocol pref_list returns all preferences"
       ],
-      "evidence": "Lose preference values while retaining keys and count. Observed AssertionError: expected [ { key: 'pref-a', value: '' }, \u2026(1) ] to deeply equal [ { key: 'pref-a', \u2026(1) }, \u2026(1) ]. Before and restored checks passed.",
+      "evidence": "Lose preference values while retaining keys and count. Observed AssertionError: expected [ { key: 'pref-a', value: '' }, …(1) ] to deeply equal [ { key: 'pref-a', …(1) }, …(1) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-sandbox-pref-values"
       ],
@@ -3563,7 +3563,7 @@
       "afterNames": [
         "TC-9b.3: Sync rules generation through sandbox sync method includes project conventions"
       ],
-      "evidence": "Drop project convention body while returning its count. Observed AssertionError: expected '## Gnosys Memory System\\n\\nThis proje\u2026' to contain '- **Use React**: We use React for the\u2026'. Before and restored checks passed.",
+      "evidence": "Drop project convention body while returning its count. Observed AssertionError: expected '## Gnosys Memory System\\n\\nThis proje…' to contain '- **Use React**: We use React for the…'. Before and restored checks passed.",
       "mutationIds": [
         "g2-sandbox-conventions"
       ],
@@ -3632,7 +3632,7 @@
       "afterNames": [
         "TC-9b.5: Dream Mode integration with sandbox request handler wire client can check configured dream status"
       ],
-      "evidence": "Report zero idle threshold despite configuration. Observed AssertionError: expected { id: 'wire-1', ok: true, \u2026(1) } to deeply equal { id: 'wire-1', ok: true, \u2026(1) }. Before and restored checks passed.",
+      "evidence": "Report zero idle threshold despite configuration. Observed AssertionError: expected { id: 'wire-1', ok: true, …(1) } to deeply equal { id: 'wire-1', ok: true, …(1) }. Before and restored checks passed.",
       "mutationIds": [
         "g2-sandbox-status-idle"
       ],
@@ -3647,7 +3647,7 @@
       "afterNames": [
         "TC-9b.5: Dream Mode integration with sandbox request handler wire client can set and list persisted preferences"
       ],
-      "evidence": "Lose preference values while retaining keys and count. Observed AssertionError: expected { id: 'wire-1', ok: true, \u2026(1) } to match object { ok: true, result: [ { \u2026(2) } ] }. Before and restored checks passed.",
+      "evidence": "Lose preference values while retaining keys and count. Observed AssertionError: expected { id: 'wire-1', ok: true, …(1) } to match object { ok: true, result: [ { …(2) } ] }. Before and restored checks passed.",
       "mutationIds": [
         "g2-sandbox-pref-values"
       ],
@@ -4060,10 +4060,10 @@
     },
     {
       "beforeId": "src/test/remote-two-machine.test.ts:97",
-      "beforeName": "two-machine remote sync simulation A\u2192NAS\u2192B round-trip with conflict loses no data",
+      "beforeName": "two-machine remote sync simulation A→NAS→B round-trip with conflict loses no data",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "two-machine remote sync simulation A\u2192NAS\u2192B round-trip with conflict loses no data"
+        "two-machine remote sync simulation A→NAS→B round-trip with conflict loses no data"
       ],
       "evidence": "Real A/NAS/B databases retain literal version bodies through pushes/pulls and record one identified conflict while preserving both edits.",
       "mutationIds": [],
@@ -4173,7 +4173,7 @@
       "afterNames": [
         "RemoteSync.push pushes new local memories to remote"
       ],
-      "evidence": "remote-push Observed AssertionError: expected { id: 'new-001', \u2026(28) } to match object { id: 'new-001', \u2026(2) }. Before and restored checks passed.",
+      "evidence": "remote-push Observed AssertionError: expected { id: 'new-001', …(28) } to match object { id: 'new-001', …(2) }. Before and restored checks passed.",
       "mutationIds": [
         "g2-remote-push"
       ],
@@ -4203,7 +4203,7 @@
       "afterNames": [
         "RemoteSync.pull pulls new remote memories to local"
       ],
-      "evidence": "remote-pull Observed AssertionError: expected { id: 'rem-001', \u2026(28) } to match object { id: 'rem-001', \u2026(2) }. Before and restored checks passed.",
+      "evidence": "remote-pull Observed AssertionError: expected { id: 'rem-001', …(28) } to match object { id: 'rem-001', …(2) }. Before and restored checks passed.",
       "mutationIds": [
         "g2-remote-pull"
       ],
@@ -4285,7 +4285,7 @@
       "afterNames": [
         "RemoteSync.migrate copies all local memories to a fresh remote"
       ],
-      "evidence": "remote-migrate Observed AssertionError: expected { id: 'm-001', \u2026(28) } to match object { id: 'm-001', \u2026(2) }. Before and restored checks passed.",
+      "evidence": "remote-migrate Observed AssertionError: expected { id: 'm-001', …(28) } to match object { id: 'm-001', …(2) }. Before and restored checks passed.",
       "mutationIds": [
         "g2-remote-migrate"
       ],
@@ -4302,7 +4302,7 @@
       "afterNames": [
         "RemoteSync.sync (full cycle) two-way sync: local push and remote pull happen in one call"
       ],
-      "evidence": "remote-push Observed AssertionError: expected { id: 'local-only', \u2026(28) } to match object { id: 'local-only', \u2026(2) }. Before and restored checks passed.",
+      "evidence": "remote-push Observed AssertionError: expected { id: 'local-only', …(28) } to match object { id: 'local-only', …(2) }. Before and restored checks passed.",
       "mutationIds": [
         "g2-remote-push"
       ],
@@ -4513,26 +4513,26 @@
     },
     {
       "beforeId": "src/test/setup-ctrlc.test.ts:75",
-      "beforeName": "Phase B \u2014 Ctrl+C clean exit gnosys setup exits cleanly on SIGINT",
+      "beforeName": "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT",
       "beforeClassification": "MISLABELED",
       "afterNames": [
-        "Phase B \u2014 Ctrl+C clean exit gnosys setup exits cleanly on SIGINT"
+        "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT"
       ],
-      "evidence": "Actual PTY Ctrl+C at the visible provider prompt returns exit0. Expected exit130 retained with it.fails; temporary close-listener repair makes the case unexpectedly pass.",
+      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) setup-cancellation-success-regression; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json.",
       "mutationIds": [
-        "g2-pty-setup-repair-witness"
+        "setup-cancellation-success-regression"
       ],
-      "action": "expected_failure",
+      "action": "rewritten",
       "afterClassification": "STRONG",
       "defectId": "G2-D001",
       "survivingMutationIds": []
     },
     {
       "beforeId": "src/test/setup-ctrlc.test.ts:92",
-      "beforeName": "Phase B \u2014 Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT",
+      "beforeName": "Phase B — Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT",
       "beforeClassification": "MISLABELED",
       "afterNames": [
-        "Phase B \u2014 Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT"
+        "Phase B — Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT"
       ],
       "evidence": "Return success instead of SIGINT status after cancelling a models or IDE prompt. Observed AssertionError: \r. Before and restored checks passed.",
       "mutationIds": [
@@ -4544,10 +4544,10 @@
     },
     {
       "beforeId": "src/test/setup-ctrlc.test.ts:107",
-      "beforeName": "Phase B \u2014 Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT",
+      "beforeName": "Phase B — Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT",
       "beforeClassification": "MISLABELED",
       "afterNames": [
-        "Phase B \u2014 Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT"
+        "Phase B — Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT"
       ],
       "evidence": "Return success instead of SIGINT status after cancelling a models or IDE prompt. Observed AssertionError: \r. Before and restored checks passed.",
       "mutationIds": [
@@ -4598,10 +4598,10 @@
     },
     {
       "beforeId": "src/test/setup-models-routing.test.ts:114",
-      "beforeName": "setup models task routing buildTaskModelsPatchFromAccepted regression: vision+dream only \u2014 patch touches only those tasks",
+      "beforeName": "setup models task routing buildTaskModelsPatchFromAccepted regression: vision+dream only — patch touches only those tasks",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "setup models task routing buildTaskModelsPatchFromAccepted regression: vision+dream only \u2014 patch touches only those tasks"
+        "setup models task routing buildTaskModelsPatchFromAccepted regression: vision+dream only — patch touches only those tasks"
       ],
       "evidence": "Accepted vision/dream selection yields exact vision-only task patch and preserves unrelated provider/model routing after merge.",
       "mutationIds": [],
@@ -4646,7 +4646,7 @@
       "afterNames": [
         "setup models task routing promptKeyDestinationAndPersist secure store choice writes the scoped key through the OS boundary"
       ],
-      "evidence": "Persist the selected key under the wrong keychain service name. Observed AssertionError: expected [ [ \u2026(2) ] ] to deeply equal [ [ \u2026(2) ] ]. Before and restored checks passed.",
+      "evidence": "Persist the selected key under the wrong keychain service name. Observed AssertionError: expected [ [ …(2) ] ] to deeply equal [ [ …(2) ] ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-setup-secure-service"
       ],
@@ -4661,7 +4661,7 @@
       "afterNames": [
         "setup models task routing promptKeyDestinationAndPersist dotenv choice writes scoped service line"
       ],
-      "evidence": "Also write the key to the OS secure store despite the explicit dotenv-only destination. Observed AssertionError: expected [ [ \u2026(2) ] ] to deeply equal []. Before and restored checks passed.",
+      "evidence": "Also write the key to the OS secure store despite the explicit dotenv-only destination. Observed AssertionError: expected [ [ …(2) ] ] to deeply equal []. Before and restored checks passed.",
       "mutationIds": [
         "g2-setup-dotenv-only"
       ],
@@ -4676,7 +4676,7 @@
       "afterNames": [
         "setup models task routing promptKeyDestinationAndPersist don't store prints env var names and persists nothing"
       ],
-      "evidence": "Persist the provided key to dotenv despite the do-not-store choice. Observed AssertionError: expected 'EXISTING=preserved\\n\\nGNOSYS_GLOBAL_O\u2026' to be 'EXISTING=preserved\\n' // Object.is equality. Before and restored checks passed.",
+      "evidence": "Persist the provided key to dotenv despite the do-not-store choice. Observed AssertionError: expected 'EXISTING=preserved\\n\\nGNOSYS_GLOBAL_O…' to be 'EXISTING=preserved\\n' // Object.is equality. Before and restored checks passed.",
       "mutationIds": [
         "g2-setup-no-store"
       ],
@@ -4701,10 +4701,10 @@
     },
     {
       "beforeId": "src/test/setup-ui-config-init.test.ts:40",
-      "beforeName": "Phase E \u2014 Screen 14 \u2014 config init without --force prints deprecation warning and does NOT write template",
+      "beforeName": "Phase E — Screen 14 — config init without --force prints deprecation warning and does NOT write template",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "Phase E \u2014 Screen 14 \u2014 config init without --force prints deprecation warning and does NOT write template"
+        "Phase E — Screen 14 — config init without --force prints deprecation warning and does NOT write template"
       ],
       "evidence": "Write a project config template before issuing the deprecation warning without --force. Observed AssertionError: expected true to be false // Object.is equality. Before and restored checks passed.",
       "mutationIds": [
@@ -4718,12 +4718,12 @@
     },
     {
       "beforeId": "src/test/setup-ui-config-init.test.ts:54",
-      "beforeName": "Phase E \u2014 Screen 14 \u2014 config init with --force writes a template without defaultProvider hardcoded",
+      "beforeName": "Phase E — Screen 14 — config init with --force writes a template without defaultProvider hardcoded",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Phase E \u2014 Screen 14 \u2014 config init with --force writes a template without defaultProvider hardcoded"
+        "Phase E — Screen 14 — config init with --force writes a template without defaultProvider hardcoded"
       ],
-      "evidence": "Drop every provider model from the written template while retaining an empty llm object. Observed AssertionError: expected { llm: {}, taskModels: {}, \u2026(10) } to match object { \u2026(3) }. Before and restored checks passed.",
+      "evidence": "Drop every provider model from the written template while retaining an empty llm object. Observed AssertionError: expected { llm: {}, taskModels: {}, …(10) } to match object { …(3) }. Before and restored checks passed.",
       "mutationIds": [
         "g2-config-template"
       ],
@@ -4898,7 +4898,7 @@
       "afterNames": [
         "GnosysStore getCategories returns only directories, excludes hidden and node_modules"
       ],
-      "evidence": "Expose node_modules as a memory category. Observed AssertionError: expected [ 'concepts', 'decisions', \u2026(1) ] to deeply equal [ 'concepts', 'decisions' ]. Before and restored checks passed.",
+      "evidence": "Expose node_modules as a memory category. Observed AssertionError: expected [ 'concepts', 'decisions', …(1) ] to deeply equal [ 'concepts', 'decisions' ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-store-category"
       ],
@@ -4939,7 +4939,7 @@
       "afterNames": [
         "runStoresCommand (in-process invoke) prints the resolver summary including the project store"
       ],
-      "evidence": "stores-output Observed AssertionError: expected 'project' to be '[project] /var/folders/mj/kr233fj93lz\u2026' // Object.is equality. Before and restored checks passed.",
+      "evidence": "stores-output Observed AssertionError: expected 'project' to be '[project] /var/folders/mj/kr233fj93lz…' // Object.is equality. Before and restored checks passed.",
       "mutationIds": [
         "g2-stores-output"
       ],
@@ -4956,7 +4956,7 @@
       "afterNames": [
         "runStoresCommand (in-process invoke) still prints a summary when no project store exists"
       ],
-      "evidence": "stores-output Observed AssertionError: expected 'project' to be 'No stores found. Create a .gnosys/ di\u2026' // Object.is equality. Before and restored checks passed.",
+      "evidence": "stores-output Observed AssertionError: expected 'project' to be 'No stores found. Create a .gnosys/ di…' // Object.is equality. Before and restored checks passed.",
       "mutationIds": [
         "g2-stores-output"
       ],
@@ -5025,7 +5025,7 @@
       "afterNames": [
         "syncClientRead v13 openClientReadContext falls back to accepted snapshot when offline"
       ],
-      "evidence": "snapshot-read Observed AssertionError: expected null to match object { title: 'On master', \u2026(1) }. Before and restored checks passed.",
+      "evidence": "snapshot-read Observed AssertionError: expected null to match object { title: 'On master', …(1) }. Before and restored checks passed.",
       "mutationIds": [
         "g2-snapshot-read"
       ],
@@ -5042,7 +5042,7 @@
       "afterNames": [
         "syncClientRead v13 openClientReadContext returns pending-only when offline without snapshot"
       ],
-      "evidence": "pending-content Observed AssertionError: expected [ [ '01PENDINGONLYPENDINGONL', \u2026(2) ] ] to deeply equal [ [ '01PENDINGONLYPENDINGONL', \u2026(2) ] ]. Before and restored checks passed.",
+      "evidence": "pending-content Observed AssertionError: expected [ [ '01PENDINGONLYPENDINGONL', …(2) ] ] to deeply equal [ [ '01PENDINGONLYPENDINGONL', …(2) ] ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-pending-content"
       ],
@@ -5094,7 +5094,7 @@
       "afterNames": [
         "syncIngest automation runMasterIngestSweep output modes json mode writes a single JSON object to stdout"
       ],
-      "evidence": "ingest-json Observed AssertionError: expected { ingested: 42, skipped: +0, \u2026(2) } to deeply equal { ingested: +0, skipped: +0, \u2026(2) }. Before and restored checks passed.",
+      "evidence": "ingest-json Observed AssertionError: expected { ingested: 42, skipped: +0, …(2) } to deeply equal { ingested: +0, skipped: +0, …(2) }. Before and restored checks passed.",
       "mutationIds": [
         "g2-ingest-json"
       ],
@@ -5124,7 +5124,7 @@
       "afterNames": [
         "syncIngest automation runMasterIngestSweep output modes ingests staged memory in quiet mode without stdout"
       ],
-      "evidence": "quiet-noop Observed AssertionError: expected +0 to be 1 // Object.is equality; ingest-body Observed AssertionError: expected { \u2026(29) } to match object { title: 'Staged', \u2026(1) }. Before and restored checks passed.",
+      "evidence": "quiet-noop Observed AssertionError: expected +0 to be 1 // Object.is equality; ingest-body Observed AssertionError: expected { …(29) } to match object { title: 'Staged', …(1) }. Before and restored checks passed.",
       "mutationIds": [
         "g2-ingest-body",
         "g2-quiet-noop"
@@ -5142,7 +5142,7 @@
       "afterNames": [
         "syncIngest automation maybeRunStartupIngestSweep skips when machine role is client"
       ],
-      "evidence": "startup-client Observed AssertionError: expected { id: 'startup-memory', \u2026(28) } to be null. Before and restored checks passed.",
+      "evidence": "startup-client Observed AssertionError: expected { id: 'startup-memory', …(28) } to be null. Before and restored checks passed.",
       "mutationIds": [
         "g2-startup-client"
       ],
@@ -5157,7 +5157,7 @@
       "afterNames": [
         "syncIngest automation maybeRunStartupIngestSweep skips when remote sync is disabled"
       ],
-      "evidence": "startup-disabled Observed AssertionError: expected { id: 'startup-memory', \u2026(28) } to be null. Before and restored checks passed.",
+      "evidence": "startup-disabled Observed AssertionError: expected { id: 'startup-memory', …(28) } to be null. Before and restored checks passed.",
       "mutationIds": [
         "g2-startup-disabled"
       ],
@@ -5211,7 +5211,7 @@
       "afterNames": [
         "syncStaging v13 round-trips a staged record and rejects corrupted content"
       ],
-      "evidence": "staging-checksum Observed AssertionError: expected { ok: true, payload: { \u2026(11) }, \u2026(1) } to deeply equal { ok: false, \u2026(3) }. Before and restored checks passed.",
+      "evidence": "staging-checksum Observed AssertionError: expected { ok: true, payload: { …(11) }, …(1) } to deeply equal { ok: false, …(3) }. Before and restored checks passed.",
       "mutationIds": [
         "g2-staging-checksum"
       ],
@@ -5284,7 +5284,7 @@
       "afterNames": [
         "runTimelineCommand (in-process invoke) groups seeded memories by period (--json)"
       ],
-      "evidence": "timeline-period Observed AssertionError: expected [ Array(1) ] to deeply equal [ { period: '2026-02', \u2026(3) } ]. Before and restored checks passed.",
+      "evidence": "timeline-period Observed AssertionError: expected [ Array(1) ] to deeply equal [ { period: '2026-02', …(3) } ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-timeline-period"
       ],
@@ -5586,10 +5586,10 @@
     },
     {
       "beforeId": "src/test/v512-http-body-limits.test.ts:32",
-      "beforeName": "v5.12 request body limits oversized body \u2192 413",
+      "beforeName": "v5.12 request body limits oversized body → 413",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "v5.12 request body limits oversized body \u2192 413"
+        "v5.12 request body limits oversized body → 413"
       ],
       "evidence": "A real loopback POST exceeds configured 1024-byte cap and receives literal HTTP 413.",
       "mutationIds": [],
@@ -5599,10 +5599,10 @@
     },
     {
       "beforeId": "src/test/v512-http-body-limits.test.ts:43",
-      "beforeName": "v5.12 request body limits never-completing body \u2192 408",
+      "beforeName": "v5.12 request body limits never-completing body → 408",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "v5.12 request body limits never-completing body \u2192 408"
+        "v5.12 request body limits never-completing body → 408"
       ],
       "evidence": "An unfinished real HTTP request exceeds the 100ms body deadline and receives literal HTTP 408 before a 2s guard.",
       "mutationIds": [],
@@ -5612,10 +5612,10 @@
     },
     {
       "beforeId": "src/test/v512-http-cors.test.ts:33",
-      "beforeName": "v5.12 Origin guard disallowed Origin \u2192 403",
+      "beforeName": "v5.12 Origin guard disallowed Origin → 403",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "v5.12 Origin guard disallowed Origin \u2192 403"
+        "v5.12 Origin guard disallowed Origin → 403"
       ],
       "evidence": "An evil.example Origin receives literal HTTP 403 from the real HTTP server.",
       "mutationIds": [],
@@ -5625,7 +5625,7 @@
     },
     {
       "beforeId": "src/test/v512-http-cors.test.ts:43",
-      "beforeName": "v5.12 Origin guard no Origin header \u2192 not 403",
+      "beforeName": "v5.12 Origin guard no Origin header → not 403",
       "beforeClassification": "WEAK",
       "afterNames": [
         "v5.12 Origin guard no Origin header permits MCP initialization"
@@ -5642,7 +5642,7 @@
     },
     {
       "beforeId": "src/test/v512-http-cors.test.ts:49",
-      "beforeName": "v5.12 Origin guard allowlisted Origin \u2192 not 403",
+      "beforeName": "v5.12 Origin guard allowlisted Origin → not 403",
       "beforeClassification": "WEAK",
       "afterNames": [
         "v5.12 Origin guard allowlisted Origin permits MCP initialization"
@@ -5784,12 +5784,12 @@
     },
     {
       "beforeId": "src/test/v593-cleanup.test.ts:46",
-      "beforeName": "Phase H \u2014 gnosys cleanup classification alive: directory with .gnosys/ subdir",
+      "beforeName": "Phase H — gnosys cleanup classification alive: directory with .gnosys/ subdir",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Phase H \u2014 gnosys cleanup classification alive: directory with .gnosys/ subdir"
+        "Phase H — gnosys cleanup classification alive: directory with .gnosys/ subdir"
       ],
-      "evidence": "Discard registry classification before display and cleanup. Observed AssertionError: expected [] to include '/gnosys-cleanup-fixture/gnosys-cleanu\u2026'. Before and restored checks passed.",
+      "evidence": "Discard registry classification before display and cleanup. Observed AssertionError: expected [] to include '/gnosys-cleanup-fixture/gnosys-cleanu…'. Before and restored checks passed.",
       "mutationIds": [
         "g2-cleanup-classification"
       ],
@@ -5799,12 +5799,12 @@
     },
     {
       "beforeId": "src/test/v593-cleanup.test.ts:66",
-      "beforeName": "Phase H \u2014 gnosys cleanup classification dead: directory exists but no .gnosys/",
+      "beforeName": "Phase H — gnosys cleanup classification dead: directory exists but no .gnosys/",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Phase H \u2014 gnosys cleanup classification dead: directory exists but no .gnosys/"
+        "Phase H — gnosys cleanup classification dead: directory exists but no .gnosys/"
       ],
-      "evidence": "Discard registry classification before display and cleanup. Observed AssertionError: expected [] to include '/gnosys-cleanup-fixture/gnosys-cleanu\u2026'. Before and restored checks passed.",
+      "evidence": "Discard registry classification before display and cleanup. Observed AssertionError: expected [] to include '/gnosys-cleanup-fixture/gnosys-cleanu…'. Before and restored checks passed.",
       "mutationIds": [
         "g2-cleanup-classification"
       ],
@@ -5814,12 +5814,12 @@
     },
     {
       "beforeId": "src/test/v593-cleanup.test.ts:76",
-      "beforeName": "Phase H \u2014 gnosys cleanup classification dead: directory does not exist at all",
+      "beforeName": "Phase H — gnosys cleanup classification dead: directory does not exist at all",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Phase H \u2014 gnosys cleanup classification dead: directory does not exist at all"
+        "Phase H — gnosys cleanup classification dead: directory does not exist at all"
       ],
-      "evidence": "Discard registry classification before display and cleanup. Observed AssertionError: expected [] to include '/gnosys-cleanup-fixture/gnosys-cleanu\u2026'. Before and restored checks passed.",
+      "evidence": "Discard registry classification before display and cleanup. Observed AssertionError: expected [] to include '/gnosys-cleanup-fixture/gnosys-cleanu…'. Before and restored checks passed.",
       "mutationIds": [
         "g2-cleanup-classification"
       ],
@@ -5829,12 +5829,12 @@
     },
     {
       "beforeId": "src/test/v593-cleanup.test.ts:84",
-      "beforeName": "Phase H \u2014 gnosys cleanup classification temp: path under /tmp or /var/folders is classified as temp",
+      "beforeName": "Phase H — gnosys cleanup classification temp: path under /tmp or /var/folders is classified as temp",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Phase H \u2014 gnosys cleanup classification temp: path under /tmp or /var/folders is classified as temp"
+        "Phase H — gnosys cleanup classification temp: path under /tmp or /var/folders is classified as temp"
       ],
-      "evidence": "Discard registry classification before display and cleanup. Observed AssertionError: expected [] to include '/var/folders/mj/kr233fj93lz6plngmhzsx\u2026'. Before and restored checks passed.",
+      "evidence": "Discard registry classification before display and cleanup. Observed AssertionError: expected [] to include '/var/folders/mj/kr233fj93lz6plngmhzsx…'. Before and restored checks passed.",
       "mutationIds": [
         "g2-cleanup-classification"
       ],
@@ -5844,10 +5844,10 @@
     },
     {
       "beforeId": "src/test/v593-cleanup.test.ts:98",
-      "beforeName": "Phase H \u2014 gnosys cleanup classification no registry \u2192 empty categories",
+      "beforeName": "Phase H — gnosys cleanup classification no registry → empty categories",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Phase H \u2014 gnosys cleanup classification no registry \u2192 empty categories"
+        "Phase H — gnosys cleanup classification no registry → empty categories"
       ],
       "evidence": "Invent an alive project when no registry exists. Observed AssertionError: expected [ 'unknown' ] to deeply equal []. Before and restored checks passed.",
       "mutationIds": [
@@ -5859,10 +5859,10 @@
     },
     {
       "beforeId": "src/test/v593-cleanup.test.ts:108",
-      "beforeName": "Phase H \u2014 gnosys cleanup non-interactive write with yes=true removes dead+temp and keeps alive",
+      "beforeName": "Phase H — gnosys cleanup non-interactive write with yes=true removes dead+temp and keeps alive",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Phase H \u2014 gnosys cleanup non-interactive write with yes=true removes dead+temp and keeps alive"
+        "Phase H — gnosys cleanup non-interactive write with yes=true removes dead+temp and keeps alive"
       ],
       "evidence": "Discard registry classification before display and cleanup. Observed AssertionError: expected +0 to be 2 // Object.is equality. Before and restored checks passed.",
       "mutationIds": [
@@ -5874,10 +5874,10 @@
     },
     {
       "beforeId": "src/test/v593-cleanup.test.ts:132",
-      "beforeName": "Phase H \u2014 gnosys cleanup non-interactive write dry-run (interactive=false, yes=false) does NOT write",
+      "beforeName": "Phase H — gnosys cleanup non-interactive write dry-run (interactive=false, yes=false) does NOT write",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Phase H \u2014 gnosys cleanup non-interactive write dry-run (interactive=false, yes=false) does NOT write"
+        "Phase H — gnosys cleanup non-interactive write dry-run (interactive=false, yes=false) does NOT write"
       ],
       "evidence": "Discard registry classification before display and cleanup. Observed AssertionError: expected +0 to be 1 // Object.is equality. Before and restored checks passed.",
       "mutationIds": [
@@ -5889,10 +5889,10 @@
     },
     {
       "beforeId": "src/test/v593-cleanup.test.ts:147",
-      "beforeName": "Phase H \u2014 gnosys cleanup non-interactive write no stale entries \u2192 no write, removed=0",
+      "beforeName": "Phase H — gnosys cleanup non-interactive write no stale entries → no write, removed=0",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Phase H \u2014 gnosys cleanup non-interactive write no stale entries \u2192 no write, removed=0"
+        "Phase H — gnosys cleanup non-interactive write no stale entries → no write, removed=0"
       ],
       "evidence": "Discard registry classification before display and cleanup. Observed AssertionError: expected +0 to be 1 // Object.is equality. Before and restored checks passed.",
       "mutationIds": [
@@ -5904,10 +5904,10 @@
     },
     {
       "beforeId": "src/test/v593-upgrade-nag.test.ts:112",
-      "beforeName": "Phase H \u2014 upgrade-nag consolidation upgrade (patch): emits `upgraded` on stderr, NO MCP-restart block",
+      "beforeName": "Phase H — upgrade-nag consolidation upgrade (patch): emits `upgraded` on stderr, NO MCP-restart block",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Phase H \u2014 upgrade-nag consolidation upgrade (patch): emits `upgraded` on stderr, NO MCP-restart block"
+        "Phase H — upgrade-nag consolidation upgrade (patch): emits `upgraded` on stderr, NO MCP-restart block"
       ],
       "evidence": "A child CLI against a DB stamped one patch older emits upgraded plus the literal version transition and omits restart MCP.",
       "mutationIds": [],
@@ -5917,10 +5917,10 @@
     },
     {
       "beforeId": "src/test/v593-upgrade-nag.test.ts:127",
-      "beforeName": "Phase H \u2014 upgrade-nag consolidation upgrade (minor): emits MCP-restart block",
+      "beforeName": "Phase H — upgrade-nag consolidation upgrade (minor): emits MCP-restart block",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Phase H \u2014 upgrade-nag consolidation upgrade (minor): emits MCP-restart block"
+        "Phase H — upgrade-nag consolidation upgrade (minor): emits MCP-restart block"
       ],
       "evidence": "A child CLI against a DB stamped one minor older emits upgraded and restart MCP.",
       "mutationIds": [],
@@ -5930,10 +5930,10 @@
     },
     {
       "beforeId": "src/test/v593-upgrade-nag.test.ts:140",
-      "beforeName": "Phase H \u2014 upgrade-nag consolidation downgrade: emits `reverted` and the unintentional hint",
+      "beforeName": "Phase H — upgrade-nag consolidation downgrade: emits `reverted` and the unintentional hint",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Phase H \u2014 upgrade-nag consolidation downgrade: emits `reverted` and the unintentional hint"
+        "Phase H — upgrade-nag consolidation downgrade: emits `reverted` and the unintentional hint"
       ],
       "evidence": "A child CLI against a DB stamped newer emits reverted and the unintentional-downgrade hint.",
       "mutationIds": [],
@@ -5943,10 +5943,10 @@
     },
     {
       "beforeId": "src/test/v593-upgrade-nag.test.ts:155",
-      "beforeName": "Phase H \u2014 upgrade-nag consolidation upgrade nag never writes to stdout",
+      "beforeName": "Phase H — upgrade-nag consolidation upgrade nag never writes to stdout",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Phase H \u2014 upgrade-nag consolidation upgrade nag never writes to stdout"
+        "Phase H — upgrade-nag consolidation upgrade nag never writes to stdout"
       ],
       "evidence": "A child CLI against a stale DB emits only the actual package version on stdout.",
       "mutationIds": [],
@@ -5956,10 +5956,10 @@
     },
     {
       "beforeId": "src/test/v594-dream-provider-inheritance.test.ts:33",
-      "beforeName": "v5.9.4 Bug 6 \u2014 dream.provider inheritance from llm.defaultProvider dream.provider inherits defaultProvider when neither dream.provider nor llm.ollama is set",
+      "beforeName": "v5.9.4 Bug 6 — dream.provider inheritance from llm.defaultProvider dream.provider inherits defaultProvider when neither dream.provider nor llm.ollama is set",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "v5.9.4 Bug 6 \u2014 dream.provider inheritance from llm.defaultProvider dream.provider inherits defaultProvider when neither dream.provider nor llm.ollama is set"
+        "v5.9.4 Bug 6 — dream.provider inheritance from llm.defaultProvider dream.provider inherits defaultProvider when neither dream.provider nor llm.ollama is set"
       ],
       "evidence": "Loading a real config with xai default and no dream or Ollama override produces dream.provider=xai.",
       "mutationIds": [],
@@ -5969,10 +5969,10 @@
     },
     {
       "beforeId": "src/test/v594-dream-provider-inheritance.test.ts:44",
-      "beforeName": "v5.9.4 Bug 6 \u2014 dream.provider inheritance from llm.defaultProvider dream.provider stays ollama when user has an llm.ollama block (explicit opt-in)",
+      "beforeName": "v5.9.4 Bug 6 — dream.provider inheritance from llm.defaultProvider dream.provider stays ollama when user has an llm.ollama block (explicit opt-in)",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "v5.9.4 Bug 6 \u2014 dream.provider inheritance from llm.defaultProvider dream.provider stays ollama when user has an llm.ollama block (explicit opt-in)"
+        "v5.9.4 Bug 6 — dream.provider inheritance from llm.defaultProvider dream.provider stays ollama when user has an llm.ollama block (explicit opt-in)"
       ],
       "evidence": "An explicit Ollama block preserves dream.provider=ollama despite an anthropic default.",
       "mutationIds": [],
@@ -5982,10 +5982,10 @@
     },
     {
       "beforeId": "src/test/v594-dream-provider-inheritance.test.ts:59",
-      "beforeName": "v5.9.4 Bug 6 \u2014 dream.provider inheritance from llm.defaultProvider dream.provider is left alone when user explicitly set it (even to ollama)",
+      "beforeName": "v5.9.4 Bug 6 — dream.provider inheritance from llm.defaultProvider dream.provider is left alone when user explicitly set it (even to ollama)",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "v5.9.4 Bug 6 \u2014 dream.provider inheritance from llm.defaultProvider dream.provider is left alone when user explicitly set it (even to ollama)"
+        "v5.9.4 Bug 6 — dream.provider inheritance from llm.defaultProvider dream.provider is left alone when user explicitly set it (even to ollama)"
       ],
       "evidence": "An explicit dream.provider=ollama survives an xai default.",
       "mutationIds": [],
@@ -5995,10 +5995,10 @@
     },
     {
       "beforeId": "src/test/v594-dream-provider-inheritance.test.ts:71",
-      "beforeName": "v5.9.4 Bug 6 \u2014 dream.provider inheritance from llm.defaultProvider dream.provider takes the user's explicit value over inheritance",
+      "beforeName": "v5.9.4 Bug 6 — dream.provider inheritance from llm.defaultProvider dream.provider takes the user's explicit value over inheritance",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "v5.9.4 Bug 6 \u2014 dream.provider inheritance from llm.defaultProvider dream.provider takes the user's explicit value over inheritance"
+        "v5.9.4 Bug 6 — dream.provider inheritance from llm.defaultProvider dream.provider takes the user's explicit value over inheritance"
       ],
       "evidence": "An explicit dream.provider=groq survives an anthropic default.",
       "mutationIds": [],
@@ -6008,10 +6008,10 @@
     },
     {
       "beforeId": "src/test/v594-dream-provider-inheritance.test.ts:83",
-      "beforeName": "v5.9.4 Bug 6 \u2014 dream.provider inheritance from llm.defaultProvider inheritance is skipped when defaultProvider is ollama (no change needed)",
+      "beforeName": "v5.9.4 Bug 6 — dream.provider inheritance from llm.defaultProvider inheritance is skipped when defaultProvider is ollama (no change needed)",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "v5.9.4 Bug 6 \u2014 dream.provider inheritance from llm.defaultProvider inheritance is skipped when defaultProvider is ollama (no change needed)"
+        "v5.9.4 Bug 6 — dream.provider inheritance from llm.defaultProvider inheritance is skipped when defaultProvider is ollama (no change needed)"
       ],
       "evidence": "An ollama default loads with literal dream.provider=ollama.",
       "mutationIds": [],
@@ -6021,10 +6021,10 @@
     },
     {
       "beforeId": "src/test/v594-panel-edges.test.ts:27",
-      "beforeName": "Panel \u2014 v5.9.4 edge cases (Bugs 1+2) top and bottom borders have identical printable widths",
+      "beforeName": "Panel — v5.9.4 edge cases (Bugs 1+2) top and bottom borders have identical printable widths",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "Panel \u2014 v5.9.4 edge cases (Bugs 1+2) top and bottom borders have identical printable widths"
+        "Panel — v5.9.4 edge cases (Bugs 1+2) top and bottom borders have identical printable widths"
       ],
       "evidence": "Shrink panel content by one column Observed AssertionError: expected 70 to be 71 // Object.is equality. Before and restored checks passed.",
       "mutationIds": [
@@ -6038,12 +6038,12 @@
     },
     {
       "beforeId": "src/test/v594-panel-edges.test.ts:43",
-      "beforeName": "Panel \u2014 v5.9.4 edge cases (Bugs 1+2) ANSI in the title does not shift the right rule",
+      "beforeName": "Panel — v5.9.4 edge cases (Bugs 1+2) ANSI in the title does not shift the right rule",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "Panel \u2014 v5.9.4 edge cases (Bugs 1+2) ANSI in the title does not shift the right rule"
+        "Panel — v5.9.4 edge cases (Bugs 1+2) ANSI in the title does not shift the right rule"
       ],
-      "evidence": "Drop the supplied title before rendering Observed AssertionError: expected ' \u256d\u2500  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2026' to be ' \u256d\u2500 styled title \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2026' // Object.is equality. Before and restored checks passed.",
+      "evidence": "Drop the supplied title before rendering Observed AssertionError: expected ' ╭─  ────────────────────────────────…' to be ' ╭─ styled title ────────────────────…' // Object.is equality. Before and restored checks passed.",
       "mutationIds": [
         "g2-panel-title"
       ],
@@ -6055,12 +6055,12 @@
     },
     {
       "beforeId": "src/test/v594-panel-edges.test.ts:51",
-      "beforeName": "Panel \u2014 v5.9.4 edge cases (Bugs 1+2) very long titles fall back to a 1-char clamp instead of negative pad",
+      "beforeName": "Panel — v5.9.4 edge cases (Bugs 1+2) very long titles fall back to a 1-char clamp instead of negative pad",
       "beforeClassification": "MISLABELED",
       "afterNames": [
-        "Panel \u2014 v5.9.4 edge cases (Bugs 1+2) very long titles fall back to a 1-char clamp instead of negative pad"
+        "Panel — v5.9.4 edge cases (Bugs 1+2) very long titles fall back to a 1-char clamp instead of negative pad"
       ],
-      "evidence": "Use two border characters for overflowing titles Observed AssertionError: expected ' \u256d\u2500 this title is intentionally longe\u2026' to be ' \u256d\u2500 this title is intentionally longe\u2026' // Object.is equality. Before and restored checks passed.",
+      "evidence": "Use two border characters for overflowing titles Observed AssertionError: expected ' ╭─ this title is intentionally longe…' to be ' ╭─ this title is intentionally longe…' // Object.is equality. Before and restored checks passed.",
       "mutationIds": [
         "g2-panel-clamp"
       ],
@@ -6070,12 +6070,12 @@
     },
     {
       "beforeId": "src/test/v594-panel-edges.test.ts:63",
-      "beforeName": "Panel \u2014 v5.9.4 edge cases (Bugs 1+2) uses rounded glyphs + accent-dim border per design",
+      "beforeName": "Panel — v5.9.4 edge cases (Bugs 1+2) uses rounded glyphs + accent-dim border per design",
       "beforeClassification": "MISLABELED",
       "afterNames": [
-        "Panel \u2014 v5.9.4 edge cases (Bugs 1+2) uses rounded glyphs + accent-dim border per design"
+        "Panel — v5.9.4 edge cases (Bugs 1+2) uses rounded glyphs + accent-dim border per design"
       ],
-      "evidence": "Render panel border in the wrong palette color Observed AssertionError: expected ' \\u001b[38;5;242m\u256d\u2500 \\u001b[0m\\u001b[1\u2026' to contain '\\u001b[38;5;88m\u256d\u2500 \\u001b[0m'. Before and restored checks passed.",
+      "evidence": "Render panel border in the wrong palette color Observed AssertionError: expected ' \\u001b[38;5;242m╭─ \\u001b[0m\\u001b[1…' to contain '\\u001b[38;5;88m╭─ \\u001b[0m'. Before and restored checks passed.",
       "mutationIds": [
         "g2-panel-color"
       ],
@@ -6133,7 +6133,7 @@
       "afterNames": [
         "Fixture validation sample-index.json is valid and loadable"
       ],
-      "evidence": "Lose document titles when loading a valid index Observed AssertionError: expected [ [ 'web-001', 'WRONG' ], \u2026(4) ] to deeply equal [ [ 'web-001', \u2026(1) ], \u2026(4) ]. Before and restored checks passed.",
+      "evidence": "Lose document titles when loading a valid index Observed AssertionError: expected [ [ 'web-001', 'WRONG' ], …(4) ] to deeply equal [ [ 'web-001', …(1) ], …(4) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-web-load-title"
       ],
@@ -6155,7 +6155,7 @@
       "structuralReason": "Reads static fixture contents or directory entries and asserts only fixture structure; never calls application code.",
       "survivingMutationIds": [],
       "replacementNames": [
-        "Full pipeline: directory ingest \u2192 build index \u2192 search ingests markdown files and builds a searchable index"
+        "Full pipeline: directory ingest → build index → search ingests markdown files and builds a searchable index"
       ]
     },
     {
@@ -6170,7 +6170,7 @@
       "structuralReason": "Reads static fixture contents or directory entries and asserts only fixture structure; never calls application code.",
       "survivingMutationIds": [],
       "replacementNames": [
-        "Full pipeline: directory ingest \u2192 build index \u2192 search ingests markdown files and builds a searchable index"
+        "Full pipeline: directory ingest → build index → search ingests markdown files and builds a searchable index"
       ]
     },
     {
@@ -6185,15 +6185,15 @@
       "structuralReason": "Reads static fixture contents or directory entries and asserts only fixture structure; never calls application code.",
       "survivingMutationIds": [],
       "replacementNames": [
-        "Full pipeline: directory ingest \u2192 build index \u2192 search ingests markdown files and builds a searchable index"
+        "Full pipeline: directory ingest → build index → search ingests markdown files and builds a searchable index"
       ]
     },
     {
       "beforeId": "src/test/webIntegration.test.ts:103",
-      "beforeName": "Full pipeline: directory ingest \u2192 build index \u2192 search ingests markdown files and builds a searchable index",
+      "beforeName": "Full pipeline: directory ingest → build index → search ingests markdown files and builds a searchable index",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Full pipeline: directory ingest \u2192 build index \u2192 search ingests markdown files and builds a searchable index"
+        "Full pipeline: directory ingest → build index → search ingests markdown files and builds a searchable index"
       ],
       "evidence": "The real index build/write/load/search pipeline yields five documents and an Agentic top hit for automation agents workflow.",
       "mutationIds": [],
@@ -6203,10 +6203,10 @@
     },
     {
       "beforeId": "src/test/webIntegration.test.ts:117",
-      "beforeName": "Full pipeline: directory ingest \u2192 build index \u2192 search search respects category filter",
+      "beforeName": "Full pipeline: directory ingest → build index → search search respects category filter",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "Full pipeline: directory ingest \u2192 build index \u2192 search search respects category filter"
+        "Full pipeline: directory ingest → build index → search search respects category filter"
       ],
       "evidence": "Drop all category-filtered search results Observed AssertionError: expected [] to deeply equal [ 'web-005' ]. Before and restored checks passed.",
       "mutationIds": [
@@ -6220,10 +6220,10 @@
     },
     {
       "beforeId": "src/test/webIntegration.test.ts:129",
-      "beforeName": "Full pipeline: directory ingest \u2192 build index \u2192 search search respects tag filter",
+      "beforeName": "Full pipeline: directory ingest → build index → search search respects tag filter",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "Full pipeline: directory ingest \u2192 build index \u2192 search search respects tag filter"
+        "Full pipeline: directory ingest → build index → search search respects tag filter"
       ],
       "evidence": "Drop all tag-filtered search results Observed AssertionError: expected [] to deeply equal [ 'web-005' ]. Before and restored checks passed.",
       "mutationIds": [
@@ -6237,12 +6237,12 @@
     },
     {
       "beforeId": "src/test/webIntegration.test.ts:139",
-      "beforeName": "Full pipeline: directory ingest \u2192 build index \u2192 search getDocument retrieves specific document from built index",
+      "beforeName": "Full pipeline: directory ingest → build index → search getDocument retrieves specific document from built index",
       "beforeClassification": "COUPLED",
       "afterNames": [
-        "Full pipeline: directory ingest \u2192 build index \u2192 search getDocument retrieves specific document from built index"
+        "Full pipeline: directory ingest → build index → search getDocument retrieves specific document from built index"
       ],
-      "evidence": "Require both ID and path to match a lookup Observed AssertionError: expected null to match object { id: 'web-005', \u2026(3) }. Before and restored checks passed.",
+      "evidence": "Require both ID and path to match a lookup Observed AssertionError: expected null to match object { id: 'web-005', …(3) }. Before and restored checks passed.",
       "mutationIds": [
         "g2-web-getdoc"
       ],
@@ -6252,10 +6252,10 @@
     },
     {
       "beforeId": "src/test/webIntegration.test.ts:150",
-      "beforeName": "Full pipeline: directory ingest \u2192 build index \u2192 search listDocuments filters by category on built index",
+      "beforeName": "Full pipeline: directory ingest → build index → search listDocuments filters by category on built index",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "Full pipeline: directory ingest \u2192 build index \u2192 search listDocuments filters by category on built index"
+        "Full pipeline: directory ingest → build index → search listDocuments filters by category on built index"
       ],
       "evidence": "Drop all category-filtered listing results Observed AssertionError: expected [] to deeply equal [ 'web-001', 'web-002' ]. Before and restored checks passed.",
       "mutationIds": [
@@ -6269,10 +6269,10 @@
     },
     {
       "beforeId": "src/test/webIntegration.test.ts:166",
-      "beforeName": "Structured ingest: HTML \u2192 frontmatter extraction extracts title and category from HTML content",
+      "beforeName": "Structured ingest: HTML → frontmatter extraction extracts title and category from HTML content",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Structured ingest: HTML \u2192 frontmatter extraction extracts title and category from HTML content"
+        "Structured ingest: HTML → frontmatter extraction extracts title and category from HTML content"
       ],
       "evidence": "Real structured extraction of about-page HTML yields an About title and literal mapped company category.",
       "mutationIds": [],
@@ -6282,10 +6282,10 @@
     },
     {
       "beforeId": "src/test/webIntegration.test.ts:179",
-      "beforeName": "Structured ingest: HTML \u2192 frontmatter extraction extracts category from URL patterns for blog posts",
+      "beforeName": "Structured ingest: HTML → frontmatter extraction extracts category from URL patterns for blog posts",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Structured ingest: HTML \u2192 frontmatter extraction extracts category from URL patterns for blog posts"
+        "Structured ingest: HTML → frontmatter extraction extracts category from URL patterns for blog posts"
       ],
       "evidence": "Real extraction maps a matching blog URL to literal category blog.",
       "mutationIds": [],
@@ -6295,10 +6295,10 @@
     },
     {
       "beforeId": "src/test/webIntegration.test.ts:192",
-      "beforeName": "Structured ingest: HTML \u2192 frontmatter extraction falls back to general category for unmatched URLs",
+      "beforeName": "Structured ingest: HTML → frontmatter extraction falls back to general category for unmatched URLs",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Structured ingest: HTML \u2192 frontmatter extraction falls back to general category for unmatched URLs"
+        "Structured ingest: HTML → frontmatter extraction falls back to general category for unmatched URLs"
       ],
       "evidence": "An unmatched URL maps to literal fallback category general.",
       "mutationIds": [],
@@ -6313,7 +6313,7 @@
       "afterNames": [
         "TF-IDF on fixture knowledge files computes distinctive terms for each document"
       ],
-      "evidence": "Replace TF-IDF terms with a placeholder Observed AssertionError: expected [ [ 'a', [ { \u2026(2) } ] ], \u2026(1) ] to deeply equal [ \u2026(2) ]. Before and restored checks passed.",
+      "evidence": "Replace TF-IDF terms with a placeholder Observed AssertionError: expected [ [ 'a', [ { …(2) } ] ], …(1) ] to deeply equal [ …(2) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-web-tfidf"
       ],
@@ -6348,7 +6348,7 @@
       "structuralReason": "Reads static fixture contents or directory entries and asserts only fixture structure; never calls application code.",
       "survivingMutationIds": [],
       "replacementNames": [
-        "Full pipeline: directory ingest \u2192 build index \u2192 search ingests markdown files and builds a searchable index"
+        "Full pipeline: directory ingest → build index → search ingests markdown files and builds a searchable index"
       ]
     },
     {
@@ -6358,7 +6358,7 @@
       "afterNames": [
         "Index build determinism building index twice produces identical output"
       ],
-      "evidence": "Generate nondeterministic index metadata Observed AssertionError: expected { version: 1, \u2026(4) } to deeply equal { version: 1, \u2026(4) }; Return identical wrong document IDs on every build while preserving count and all other data. Observed AssertionError: expected [ 'wrong-id', 'wrong-id', \u2026(3) ] to deeply equal [ 'web-005', 'web-003', \u2026(3) ]. Before and restored checks passed.",
+      "evidence": "Generate nondeterministic index metadata Observed AssertionError: expected { version: 1, …(4) } to deeply equal { version: 1, …(4) }; Return identical wrong document IDs on every build while preserving count and all other data. Observed AssertionError: expected [ 'wrong-id', 'wrong-id', …(3) ] to deeply equal [ 'web-005', 'web-003', …(3) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-web-determinism",
         "g2-web-deterministic-corruption"
@@ -6554,7 +6554,7 @@
       "afterNames": [
         "buildLinkGraph tracks outgoing links"
       ],
-      "evidence": "Corrupt outgoing graph target identities Observed AssertionError: expected [ 'WRONG', 'WRONG' ] to deeply equal [ 'DB Choice', \u2026(1) ]. Before and restored checks passed.",
+      "evidence": "Corrupt outgoing graph target identities Observed AssertionError: expected [ 'WRONG', 'WRONG' ] to deeply equal [ 'DB Choice', …(1) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-wiki-graph-outgoing"
       ],
@@ -6653,7 +6653,7 @@
       "afterNames": [
         "getOutgoingLinks returns outgoing links for a source"
       ],
-      "evidence": "Corrupt outgoing targets returned by the public accessor Observed AssertionError: expected [ 'WRONG', 'WRONG' ] to deeply equal [ 'DB Choice', \u2026(1) ]. Before and restored checks passed.",
+      "evidence": "Corrupt outgoing targets returned by the public accessor Observed AssertionError: expected [ 'WRONG', 'WRONG' ] to deeply equal [ 'DB Choice', …(1) ]. Before and restored checks passed.",
       "mutationIds": [
         "g2-wiki-outgoing"
       ],
@@ -6709,12 +6709,12 @@
       "afterNames": [
         "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result"
       ],
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "G2-D002",
       "mutationIds": [
-        "g2-fts-upsert-repair-witness"
+        "ADV-FTS-repeat-insert"
       ],
-      "evidence": "Ordinary repeated upsert returns two FTS hits for one memory. Temporary FTS replacement repair makes it.fails unexpectedly pass; restoration passes.",
+      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) ADV-FTS-repeat-insert; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json.",
       "afterClassification": "STRONG"
     }
   ]

@@ -7,14 +7,14 @@
     "tests": [
       {
         "file": "src/test/v593-no-central-db-pollution.test.ts",
-        "name": "Phase F \u2014 central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db",
+        "name": "Phase F — central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db",
         "mutationIds": [
           "G1-cli-version-success"
         ]
       },
       {
         "file": "src/test/v593-no-central-db-pollution.test.ts",
-        "name": "Phase F \u2014 central DB pollution regression VITEST=true short-circuits maybePrintUpgradeNudge \u2014 no DB file at all",
+        "name": "Phase F — central DB pollution regression VITEST=true short-circuits maybePrintUpgradeNudge — no DB file at all",
         "mutationIds": [
           "G1-cli-help-success"
         ]
@@ -236,7 +236,7 @@
     "tests": [
       {
         "file": "src/test/setup-ui-summary.test.ts",
-        "name": "Phase C \u2014 settings panel (summary) renders panel rows after a switch to xai",
+        "name": "Phase C — settings panel (summary) renders panel rows after a switch to xai",
         "mutationIds": [
           "G1-summary-xai"
         ]
@@ -257,22 +257,22 @@
       },
       {
         "file": "src/test/v600-no-anthropic-default.test.ts",
-        "name": "v6.0.0 \u2014 no implicit anthropic default (deci-049) GnosysConfigSchema.parse({}) leaves defaultProvider undefined",
+        "name": "v6.0.0 — no implicit anthropic default (deci-049) GnosysConfigSchema.parse({}) leaves defaultProvider undefined",
         "mutationIds": []
       },
       {
         "file": "src/test/v600-no-anthropic-default.test.ts",
-        "name": "v6.0.0 \u2014 no implicit anthropic default (deci-049) GnosysConfigSchema.parse({ llm: {} }) leaves defaultProvider undefined",
+        "name": "v6.0.0 — no implicit anthropic default (deci-049) GnosysConfigSchema.parse({ llm: {} }) leaves defaultProvider undefined",
         "mutationIds": []
       },
       {
         "file": "src/test/v600-no-anthropic-default.test.ts",
-        "name": "v6.0.0 \u2014 no implicit anthropic default (deci-049) an explicitly set defaultProvider survives parse",
+        "name": "v6.0.0 — no implicit anthropic default (deci-049) an explicitly set defaultProvider survives parse",
         "mutationIds": []
       },
       {
         "file": "src/test/v600-no-anthropic-default.test.ts",
-        "name": "v6.0.0 \u2014 no implicit anthropic default (deci-049) requireDefaultProvider returns the value when set",
+        "name": "v6.0.0 — no implicit anthropic default (deci-049) requireDefaultProvider returns the value when set",
         "mutationIds": []
       },
       {
@@ -316,7 +316,7 @@
     "tests": [
       {
         "file": "src/test/v600-no-anthropic-default.test.ts",
-        "name": "v6.0.0 \u2014 no implicit anthropic default (deci-049) loading an unconfigured store requires explicit provider setup",
+        "name": "v6.0.0 — no implicit anthropic default (deci-049) loading an unconfigured store requires explicit provider setup",
         "mutationIds": [
           "G1-no-provider-load"
         ]
@@ -330,7 +330,7 @@
       },
       {
         "file": "src/test/v600-no-anthropic-default.test.ts",
-        "name": "v6.0.0 \u2014 no implicit anthropic default (deci-049) requireDefaultProvider throws the run-setup message when unset",
+        "name": "v6.0.0 — no implicit anthropic default (deci-049) requireDefaultProvider throws the run-setup message when unset",
         "mutationIds": []
       },
       {
@@ -339,9 +339,37 @@
         "mutationIds": [
           "g2-atomic-destination-first"
         ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+        "mutationIds": [
+          "ADV-CTX-D001-guidance-f4b9135"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing CLI import without a provider fails with setup guidance",
+        "mutationIds": [
+          "ADV-CTX-import-setup-guidance-f4b9135"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing MCP context without a provider fails with setup guidance",
+        "mutationIds": [
+          "ADV-CTX-context-setup-guidance-f4b9135"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing MCP import without a provider fails with setup guidance",
+        "mutationIds": [
+          "ADV-CTX-import-setup-guidance-f4b9135"
+        ]
       }
     ],
-    "limitations": "group1: Real loadConfig and provider schema reject missing/default and unknown provider. Other malformed config cases are outside this subset. group1: Public provider resolver returns actionable setup instruction when choice is unset. These retained cases passed in full-suite.json; no mutation proof is claimed unless listed. group2: Injected native rename failure preserves original bytes. Does not cover all filesystem failures."
+    "limitations": "Actual CLI context/import and MCP twins reject absent providers with setup guidance. The custom-provider boundary supplements the original Ollama cases. Invalid-config shapes outside the existing mapped cases remain unverified."
   },
   {
     "featureId": "F03",
@@ -361,36 +389,62 @@
       },
       {
         "file": "src/test/v584-updateConfig.test.ts",
-        "name": "updateConfig \u2014 v5.8.4 anthropic-revert regression deep-merges nested objects rather than replacing them outright",
+        "name": "updateConfig — v5.8.4 anthropic-revert regression deep-merges nested objects rather than replacing them outright",
         "mutationIds": []
       },
       {
         "file": "src/test/v584-updateConfig.test.ts",
-        "name": "updateConfig \u2014 v5.8.4 anthropic-revert regression preserves explicit values already in the file when adding a new section",
+        "name": "updateConfig — v5.8.4 anthropic-revert regression preserves explicit values already in the file when adding a new section",
         "mutationIds": []
       },
       {
         "file": "src/test/v584-updateConfig.test.ts",
-        "name": "updateConfig \u2014 v5.8.4 anthropic-revert regression writes only the keys the caller supplied + any that were already in the file (no defaults seeded)",
+        "name": "updateConfig — v5.8.4 anthropic-revert regression writes only the keys the caller supplied + any that were already in the file (no defaults seeded)",
         "mutationIds": []
       },
       {
         "file": "src/test/setup-ui-summary.test.ts",
-        "name": "Phase C \u2014 settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides",
-        "mutationIds": [
-          "G1-routing-reset-defect"
-        ]
+        "name": "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/routing-reset-adversarial.test.ts",
+        "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/routing-reset-adversarial.test.ts",
+        "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/setup-ui-summary.test.ts",
+        "name": "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config",
+        "mutationIds": []
       }
     ],
-    "limitations": "group1: Real config loader/schema strips removed chat keys while preserving supported task routing. Does not cover all nested merge semantics; routing reset remains defect. These retained cases passed in full-suite.json; no mutation proof is claimed unless listed. group3: Reads actual written config JSON to establish supplied-key updates and nested preservation. Environment precedence is outside these cases. Confirmed integrated contract failure(s): DEF-G1-001: Task routing reset reports success but retains persisted overrides. The expected-failure regressions detect these defects and do not establish correct behavior. Inverse repair probes are excluded from fault-mutation scoring."
+    "limitations": "DEF-G1-001 remains open. Reset retains multiple overrides and reset-then-one-override retains old tasks. The corrected summary expects all ollama and fails. Serialized bytes of every unrelated JSON value, including llm and dream, remain unchanged. Whole-file whitespace is not asserted. Original v584 deep-merge tests remain byte-identical and pass."
   },
   {
     "featureId": "F03",
     "obligationKind": "permissions",
     "obligation": "Secrets are not printed by config display",
-    "status": "NO_STRONG_COVERAGE",
-    "tests": [],
-    "limitations": "No Strong test for this obligation was identified in the reviewed current ledger or candidate source checks. Adjacent feature success/schema/helper cases are not evidence for this path."
+    "status": "KNOWN_DEFECT",
+    "tests": [
+      {
+        "file": "src/test/config-display-adversarial.test.ts",
+        "name": "adversarial config display human config output names the key source without exposing stored key bytes",
+        "mutationIds": [
+          "ADV-CTX-human-key-leak-f4b9135"
+        ]
+      },
+      {
+        "file": "src/test/config-display-adversarial.test.ts",
+        "name": "adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes",
+        "mutationIds": []
+      }
+    ],
+    "limitations": "Human config display identifies the key source without exposing the fake stored key. JSON display prints the stored custom-provider apiKey, reproduced as ADV-CTX-001. The expected failure does not prove redaction; other provider key fields are not individually exercised."
   },
   {
     "featureId": "F04",
@@ -442,10 +496,8 @@
       },
       {
         "file": "src/test/setup-ui-summary.test.ts",
-        "name": "Phase C \u2014 settings panel (summary) marks an edited routing section after saving and reloading its config",
-        "mutationIds": [
-          "G1-summary-edited"
-        ]
+        "name": "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config",
+        "mutationIds": []
       },
       {
         "file": "src/test/ide-init-golden.test.ts",
@@ -495,15 +547,22 @@
         "mutationIds": [
           "setup-wrong-selected-model"
         ]
+      },
+      {
+        "file": "src/test/setup-adversarial.test.ts",
+        "name": "setup exit status after the provider prompt completes the interactive core-memory setup with exit 0",
+        "mutationIds": [
+          "setup-completion-exit-status"
+        ]
       }
     ],
-    "limitations": "group1: Actual IDE rules files and MCP config are written using real project DB. Full rendered golden output reviewed. IDE applications are not launched; summary routing reset marker is tested separately from persistence defect DEF-G1-001. group2: Real provider validation parses a successful external HTTP response and returns the decision. Full wizard task routing requires other cases. group3: Real readline menu selections and rendered recommendation/prices plus real isolated IDE marker directories. This unit does not drive the whole wizard through persistence and launching an IDE."
+    "limitations": "Existing mapped wizard cases verify persisted choices and IDE configuration. A real PTY completes core-memory setup after skipping provider and IDE integration with Setup Complete and exit0. Live provider credentials and launching every installed IDE remain outside these cases."
   },
   {
     "featureId": "F04",
     "obligationKind": "failure",
     "obligation": "Invalid keys/models and unavailable local models provide recovery; cancelled prompts stop cleanly",
-    "status": "KNOWN_DEFECT",
+    "status": "PARTIAL",
     "tests": [
       {
         "file": "src/test/setupKeys.test.ts",
@@ -528,23 +587,23 @@
       },
       {
         "file": "src/test/setup-ctrlc.test.ts",
-        "name": "Phase B \u2014 Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT",
+        "name": "Phase B — Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT",
         "mutationIds": [
           "g2-pty-cancel-status"
         ]
       },
       {
         "file": "src/test/setup-ctrlc.test.ts",
-        "name": "Phase B \u2014 Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT",
+        "name": "Phase B — Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT",
         "mutationIds": [
           "g2-pty-cancel-status"
         ]
       },
       {
         "file": "src/test/setup-ctrlc.test.ts",
-        "name": "Phase B \u2014 Ctrl+C clean exit gnosys setup exits cleanly on SIGINT",
+        "name": "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT",
         "mutationIds": [
-          "g2-pty-setup-repair-witness"
+          "setup-cancellation-success-regression"
         ]
       },
       {
@@ -553,9 +612,16 @@
         "mutationIds": [
           "setup-cancel-message"
         ]
+      },
+      {
+        "file": "src/test/setup-adversarial.test.ts",
+        "name": "setup exit status after the provider prompt G2-D001 Ctrl+C at IDE integration exits 130",
+        "mutationIds": [
+          "setup-cancellation-success-regression"
+        ]
       }
     ],
-    "limitations": "group1: Public key wizard handles rejected HTTP credential validation. HTTP and terminal input are boundary doubles; invalid models and cancel paths are not covered by this subset. group2: Validation401 and actual PTY cancellation observed. Bare setup exits0 instead of130, retained as expected failure G2-D001; models/ides cancel correctly. root: The full setup wizard displays the promised Ctrl+C cancellation message. Exit status is covered by the separate PTY regressions, including G2-D001. Confirmed integrated contract failure(s): G2-D001: Main setup cancellation returns success instead of interrupt status. The expected-failure regressions detect these defects and do not establish correct behavior. Inverse repair probes are excluded from fault-mutation scoring."
+    "limitations": "Actual credential validation rejects invalid keys. Main setup Ctrl+C now exits130 at both the provider and later IDE prompt; models and ides still exit130. The cancellation fault is killed by both repaired ordinary cases. Other model validation/recovery combinations remain outside this subset."
   },
   {
     "featureId": "F04",
@@ -592,14 +658,14 @@
       },
       {
         "file": "src/test/v594-grok-build-ide.test.ts",
-        "name": "upsertGrokMcpBlock \u2014 v5.9.4 Bug 12 appends a block to existing content separated by a blank line",
+        "name": "upsertGrokMcpBlock — v5.9.4 Bug 12 appends a block to existing content separated by a blank line",
         "mutationIds": [
           "grok-empty-block"
         ]
       },
       {
         "file": "src/test/v594-grok-build-ide.test.ts",
-        "name": "upsertGrokMcpBlock \u2014 v5.9.4 Bug 12 is idempotent \u2014 second run produces identical bytes",
+        "name": "upsertGrokMcpBlock — v5.9.4 Bug 12 is idempotent — second run produces identical bytes",
         "mutationIds": [
           "grok-empty-block"
         ]
@@ -894,42 +960,42 @@
       },
       {
         "file": "src/test/ingest-structured.test.ts",
-        "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths anthropic \u2014 mentions ANTHROPIC_API_KEY",
+        "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths anthropic — mentions ANTHROPIC_API_KEY",
         "mutationIds": [
           "G1-ingest-cloud-errors"
         ]
       },
       {
         "file": "src/test/ingest-structured.test.ts",
-        "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths openai \u2014 mentions OPENAI_API_KEY",
+        "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths openai — mentions OPENAI_API_KEY",
         "mutationIds": [
           "G1-ingest-cloud-errors"
         ]
       },
       {
         "file": "src/test/ingest-structured.test.ts",
-        "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths groq \u2014 mentions GROQ_API_KEY",
+        "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths groq — mentions GROQ_API_KEY",
         "mutationIds": [
           "G1-ingest-cloud-errors"
         ]
       },
       {
         "file": "src/test/ingest-structured.test.ts",
-        "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths xai \u2014 mentions XAI_API_KEY",
+        "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths xai — mentions XAI_API_KEY",
         "mutationIds": [
           "G1-ingest-cloud-errors"
         ]
       },
       {
         "file": "src/test/ingest-structured.test.ts",
-        "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths mistral \u2014 mentions MISTRAL_API_KEY",
+        "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths mistral — mentions MISTRAL_API_KEY",
         "mutationIds": [
           "G1-ingest-cloud-errors"
         ]
       },
       {
         "file": "src/test/ingest-structured.test.ts",
-        "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths custom \u2014 mentions GNOSYS_CUSTOM_KEY",
+        "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths custom — mentions GNOSYS_CUSTOM_KEY",
         "mutationIds": [
           "G1-ingest-cloud-errors"
         ]
@@ -1218,7 +1284,7 @@
         ]
       }
     ],
-    "limitations": "group1: Public read command resolves real pending overlay and legacy Markdown content. Does not establish update persistence or all federated ID forms. group1: Public command prints literal seeded memory frontmatter/body and structured JSON; no update mutation claim. These retained cases passed in full-suite.json; no mutation proof is claimed unless listed. group2: Public SQLite reads/search observe update, archive, unarchive, reinforcement and delete. Repeated upsert is separately defective G2-D002. group3: MCP reads an exact known ID/body; public store update persists reinforcement fields. Layer path precedence and timestamps need other tests."
+    "limitations": "group1: Public read command resolves real pending overlay and legacy Markdown content. Does not establish update persistence or all federated ID forms. group1: Public command prints literal seeded memory frontmatter/body and structured JSON; no update mutation claim. These retained cases passed in full-suite.json; no mutation proof is claimed unless listed. group2: Public SQLite reads/search observe update, archive, unarchive, reinforcement and delete. Repeated upsert repair G2-D002 is verified by the F09 boundary cases. group3: MCP reads an exact known ID/body; public store update persists reinforcement fields. Layer path precedence and timestamps need other tests."
   },
   {
     "featureId": "F08",
@@ -1289,9 +1355,17 @@
     "featureId": "F08",
     "obligationKind": "permissions",
     "obligation": "No cross-project write caused by cwd fallback when project is supplied",
-    "status": "NO_STRONG_COVERAGE",
-    "tests": [],
-    "limitations": "No Strong test for this obligation was identified in the reviewed current ledger or candidate source checks. Adjacent feature success/schema/helper cases are not evidence for this path."
+    "status": "PARTIAL",
+    "tests": [
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial project selection explicit project B update resolves the shared relative path inside B",
+        "mutationIds": [
+          "ADV-CTX-explicit-update-project-f4b9135"
+        ]
+      }
+    ],
+    "limitations": "Real MCP starts in project A with the same relative filename in A and B linked to distinct memory IDs. Explicit project B update changes only B's persisted content and leaves A unchanged; a cwd-fallback fault is killed. Other optional-store and ID-based permission rules are outside this case."
   },
   {
     "featureId": "F09",
@@ -1385,102 +1459,102 @@
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability keyword top-3 stable for \"JWT OAuth login\"",
+        "name": "search golden — top-3 stability keyword top-3 stable for \"JWT OAuth login\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability keyword top-3 stable for \"Redis cache invalidation\"",
+        "name": "search golden — top-3 stability keyword top-3 stable for \"Redis cache invalidation\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability keyword top-3 stable for \"PostgreSQL schema migration\"",
+        "name": "search golden — top-3 stability keyword top-3 stable for \"PostgreSQL schema migration\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability keyword top-3 stable for \"embeddings semantic hybrid FTS\"",
+        "name": "search golden — top-3 stability keyword top-3 stable for \"embeddings semantic hybrid FTS\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability discover top-3 stable for \"JWT OAuth login\"",
+        "name": "search golden — top-3 stability discover top-3 stable for \"JWT OAuth login\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability discover top-3 stable for \"Redis cache invalidation\"",
+        "name": "search golden — top-3 stability discover top-3 stable for \"Redis cache invalidation\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability discover top-3 stable for \"PostgreSQL schema migration\"",
+        "name": "search golden — top-3 stability discover top-3 stable for \"PostgreSQL schema migration\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability discover top-3 stable for \"embeddings semantic hybrid FTS\"",
+        "name": "search golden — top-3 stability discover top-3 stable for \"embeddings semantic hybrid FTS\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability federated top-3 stable for \"JWT OAuth login\"",
+        "name": "search golden — top-3 stability federated top-3 stable for \"JWT OAuth login\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability federated top-3 stable for \"Redis cache invalidation\"",
+        "name": "search golden — top-3 stability federated top-3 stable for \"Redis cache invalidation\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability federated top-3 stable for \"PostgreSQL schema migration\"",
+        "name": "search golden — top-3 stability federated top-3 stable for \"PostgreSQL schema migration\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability federated top-3 stable for \"embeddings semantic hybrid FTS\"",
+        "name": "search golden — top-3 stability federated top-3 stable for \"embeddings semantic hybrid FTS\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability hybrid top-3 stable for \"JWT OAuth login\"",
+        "name": "search golden — top-3 stability hybrid top-3 stable for \"JWT OAuth login\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability hybrid top-3 stable for \"Redis cache invalidation\"",
+        "name": "search golden — top-3 stability hybrid top-3 stable for \"Redis cache invalidation\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability hybrid top-3 stable for \"PostgreSQL schema migration\"",
+        "name": "search golden — top-3 stability hybrid top-3 stable for \"PostgreSQL schema migration\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability hybrid top-3 stable for \"embeddings semantic hybrid FTS\"",
+        "name": "search golden — top-3 stability hybrid top-3 stable for \"embeddings semantic hybrid FTS\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability semantic top-3 stable for \"JWT OAuth login\"",
+        "name": "search golden — top-3 stability semantic top-3 stable for \"JWT OAuth login\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability semantic top-3 stable for \"Redis cache invalidation\"",
+        "name": "search golden — top-3 stability semantic top-3 stable for \"Redis cache invalidation\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability semantic top-3 stable for \"PostgreSQL schema migration\"",
+        "name": "search golden — top-3 stability semantic top-3 stable for \"PostgreSQL schema migration\"",
         "mutationIds": []
       },
       {
         "file": "src/test/search-golden.test.ts",
-        "name": "search golden \u2014 top-3 stability semantic top-3 stable for \"embeddings semantic hybrid FTS\"",
+        "name": "search golden — top-3 stability semantic top-3 stable for \"embeddings semantic hybrid FTS\"",
         "mutationIds": []
       },
       {
@@ -1504,14 +1578,14 @@
       },
       {
         "file": "src/test/phase9d.coverage-overhaul.test.ts",
-        "name": "TC-9d.1: GnosysDbSearch \u2014 FTS5 adapter discover() returns the matching memory metadata",
+        "name": "TC-9d.1: GnosysDbSearch — FTS5 adapter discover() returns the matching memory metadata",
         "mutationIds": [
           "db-discover-wrong-id"
         ]
       },
       {
         "file": "src/test/phase9d.coverage-overhaul.test.ts",
-        "name": "TC-9d.1: GnosysDbSearch \u2014 FTS5 adapter hybridSearch() keyword mode returns ranked results",
+        "name": "TC-9d.1: GnosysDbSearch — FTS5 adapter hybridSearch() keyword mode returns ranked results",
         "mutationIds": [
           "db-keyword-wrong-id"
         ]
@@ -1567,7 +1641,7 @@
     "featureId": "F09",
     "obligationKind": "boundary",
     "obligation": "Empty, punctuation, Unicode, quoted, ID and code-symbol queries; limit and ties; stale FTS after update/delete",
-    "status": "KNOWN_DEFECT",
+    "status": "PARTIAL",
     "tests": [
       {
         "file": "src/test/fts-or-fallback.test.ts",
@@ -1603,7 +1677,7 @@
       },
       {
         "file": "src/test/phase9d.coverage-overhaul.test.ts",
-        "name": "TC-9d.1: GnosysDbSearch \u2014 FTS5 adapter search respects limit parameter",
+        "name": "TC-9d.1: GnosysDbSearch — FTS5 adapter search respects limit parameter",
         "mutationIds": [
           "db-search-empty-limit"
         ]
@@ -1619,11 +1693,26 @@
         "file": "src/test/lifecycle-invariants.test.ts",
         "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result",
         "mutationIds": [
-          "g2-fts-upsert-repair-witness"
+          "ADV-FTS-repeat-insert"
+        ]
+      },
+      {
+        "file": "src/test/fts-adversarial.test.ts",
+        "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search",
+        "mutationIds": [
+          "ADV-FTS-repeat-insert"
+        ]
+      },
+      {
+        "file": "src/test/fts-adversarial.test.ts",
+        "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+        "mutationIds": [
+          "ADV-FTS-skip-legacy-healing",
+          "ADV-FTS-repeat-healing"
         ]
       }
     ],
-    "limitations": "group1: Empty, punctuation and FTS-hostile query strings produce defined empty/matching result without syntax failure. Unicode/ID/update-delete freshness not implied. These retained cases passed in full-suite.json; no mutation proof is claimed unless listed. group2: Search limit20 against100 stored memories plus latency assertion. Not a representative production performance benchmark. group3: Exact three-result limit and a changed Markdown body replacing the search index. Other Unicode/punctuation/ID boundaries need other tests. Confirmed integrated contract failure(s): G2-D002: Writing the same memory twice duplicates full-text search results. The expected-failure regressions detect these defects and do not establish correct behavior. Inverse repair probes are excluded from fault-mutation scoring."
+    "limitations": "Repeated writes now yield exactly one hit in searchFts, discoverFts, archive fallback and hybrid keyword mode. A raw SQLite database with duplicate FTS rows heals on open, retains both memories, remains user_version5, and makes no database write on the second open. Three direct FTS faults are killed. Existing punctuation/limit/update cases remain mapped; broader Unicode/ID/tie behavior is not fully established. The unchanged 50ms FTS assertion is a hosted-runner flake risk."
   },
   {
     "featureId": "F09",
@@ -1656,7 +1745,7 @@
       },
       {
         "file": "src/test/embed-db.test.ts",
-        "name": "backfillCentralDbEmbeddings missing mode is incremental \u2014 already-embedded rows are untouched",
+        "name": "backfillCentralDbEmbeddings missing mode is incremental — already-embedded rows are untouched",
         "mutationIds": [
           "G1-embedding-incremental"
         ]
@@ -1684,7 +1773,7 @@
       },
       {
         "file": "src/test/embed-db.test.ts",
-        "name": "embeddingText joins title, relevance, tags, content \u2014 same recipe as the file-store reindex",
+        "name": "embeddingText joins title, relevance, tags, content — same recipe as the file-store reindex",
         "mutationIds": []
       },
       {
@@ -1711,7 +1800,7 @@
       },
       {
         "file": "src/test/embed-queue.test.ts",
-        "name": "embedQueue syncMemoryToDb feeds the queue \u2014 a plain DB write gets a vector",
+        "name": "embedQueue syncMemoryToDb feeds the queue — a plain DB write gets a vector",
         "mutationIds": [
           "g2-queue-vector"
         ]
@@ -1748,14 +1837,14 @@
       },
       {
         "file": "src/test/embed-queue.test.ts",
-        "name": "embedQueue never throws when the embedder fails \u2014 warns on stderr instead",
+        "name": "embedQueue never throws when the embedder fails — warns on stderr instead",
         "mutationIds": [
           "g2-queue-warning"
         ]
       },
       {
         "file": "src/test/phase9d.coverage-overhaul.test.ts",
-        "name": "TC-9d.1: GnosysDbSearch \u2014 FTS5 adapter hybridSearch() falls back to keyword when no embeddings",
+        "name": "TC-9d.1: GnosysDbSearch — FTS5 adapter hybridSearch() falls back to keyword when no embeddings",
         "mutationIds": [
           "db-keyword-wrong-id"
         ]
@@ -1771,7 +1860,7 @@
     "tests": [
       {
         "file": "src/test/embed-db.test.ts",
-        "name": "backfillCentralDbEmbeddings missing mode is incremental \u2014 already-embedded rows are untouched",
+        "name": "backfillCentralDbEmbeddings missing mode is incremental — already-embedded rows are untouched",
         "mutationIds": [
           "G1-embedding-incremental"
         ]
@@ -2121,56 +2210,56 @@
       },
       {
         "file": "src/test/lensing.test.ts",
-        "name": "applyLens \u2014 single filters filters by status",
+        "name": "applyLens — single filters filters by status",
         "mutationIds": [
           "G1-lens-status"
         ]
       },
       {
         "file": "src/test/lensing.test.ts",
-        "name": "applyLens \u2014 single filters filters by multiple statuses",
+        "name": "applyLens — single filters filters by multiple statuses",
         "mutationIds": [
           "G1-lens-statuses"
         ]
       },
       {
         "file": "src/test/lensing.test.ts",
-        "name": "applyLens \u2014 single filters filters by confidence range",
+        "name": "applyLens — single filters filters by confidence range",
         "mutationIds": [
           "G1-lens-confidence"
         ]
       },
       {
         "file": "src/test/lensing.test.ts",
-        "name": "applyLens \u2014 single filters filters by created date range",
+        "name": "applyLens — single filters filters by created date range",
         "mutationIds": [
           "G1-lens-created"
         ]
       },
       {
         "file": "src/test/lensing.test.ts",
-        "name": "applyLens \u2014 single filters filters by modified date range",
+        "name": "applyLens — single filters filters by modified date range",
         "mutationIds": [
           "G1-lens-modified"
         ]
       },
       {
         "file": "src/test/lensing.test.ts",
-        "name": "applyLens \u2014 single filters combines multiple criteria in one filter",
+        "name": "applyLens — single filters combines multiple criteria in one filter",
         "mutationIds": [
           "G1-lens-combined"
         ]
       },
       {
         "file": "src/test/lensing.test.ts",
-        "name": "applyLens \u2014 single filters filters by author",
+        "name": "applyLens — single filters filters by author",
         "mutationIds": [
           "G1-lens-author-corrected"
         ]
       },
       {
         "file": "src/test/lensing.test.ts",
-        "name": "applyLens \u2014 single filters filters by authority",
+        "name": "applyLens — single filters filters by authority",
         "mutationIds": [
           "G1-lens-authority-corrected"
         ]
@@ -2258,7 +2347,7 @@
     "tests": [
       {
         "file": "src/test/lensing.test.ts",
-        "name": "applyLens \u2014 single filters combines multiple criteria in one filter",
+        "name": "applyLens — single filters combines multiple criteria in one filter",
         "mutationIds": [
           "G1-lens-combined"
         ]
@@ -2272,34 +2361,34 @@
       },
       {
         "file": "src/test/phase9c.cli-federated.test.ts",
-        "name": "TC-9c.6: CLI parity \u2014 all major commands functional gnosys lens runs without error",
+        "name": "TC-9c.6: CLI parity — all major commands functional gnosys lens runs without error",
         "mutationIds": [
           "G1-cli-lens"
         ]
       },
       {
         "file": "src/test/lensing.test.ts",
-        "name": "applyLens \u2014 single filters filters by category",
+        "name": "applyLens — single filters filters by category",
         "mutationIds": []
       },
       {
         "file": "src/test/lensing.test.ts",
-        "name": "applyLens \u2014 single filters filters by tag (any mode)",
+        "name": "applyLens — single filters filters by tag (any mode)",
         "mutationIds": []
       },
       {
         "file": "src/test/lensing.test.ts",
-        "name": "applyLens \u2014 single filters filters by tag (all mode)",
+        "name": "applyLens — single filters filters by tag (all mode)",
         "mutationIds": []
       },
       {
         "file": "src/test/lensing.test.ts",
-        "name": "applyLens \u2014 single filters empty filter returns all memories",
+        "name": "applyLens — single filters empty filter returns all memories",
         "mutationIds": []
       },
       {
         "file": "src/test/lensing.test.ts",
-        "name": "applyLens \u2014 single filters combines criteria with OR operator",
+        "name": "applyLens — single filters combines criteria with OR operator",
         "mutationIds": []
       }
     ],
@@ -2321,24 +2410,24 @@
     "tests": [
       {
         "file": "src/test/phase10.reflect-trace-traverse.test.ts",
-        "name": "TC-10.5: Reflection API \u2014 auto-discovers memories when no IDs provided searches FTS to find related memories",
+        "name": "TC-10.5: Reflection API — auto-discovers memories when no IDs provided searches FTS to find related memories",
         "mutationIds": [
           "g2-reflect-auto-discovery"
         ]
       },
       {
         "file": "src/test/phase10.reflect-trace-traverse.test.ts",
-        "name": "TC-10.3: Reflection API \u2014 creates reflection memory with relationships creates a new reflection memory",
+        "name": "TC-10.3: Reflection API — creates reflection memory with relationships creates a new reflection memory",
         "mutationIds": []
       },
       {
         "file": "src/test/phase10.reflect-trace-traverse.test.ts",
-        "name": "TC-10.4: Reflection API \u2014 consolidation links related memories on success creates corroborates links between multiple memories",
+        "name": "TC-10.4: Reflection API — consolidation links related memories on success creates corroborates links between multiple memories",
         "mutationIds": []
       },
       {
         "file": "src/test/lifecycle-e2e.test.ts",
-        "name": "memory lifecycle e2e add \u2192 read \u2192 update \u2192 archive \u2192 dearchive \u2192 reinforce\u00d73 \u2192 maintain stays consistent",
+        "name": "memory lifecycle e2e add → read → update → archive → dearchive → reinforce×3 → maintain stays consistent",
         "mutationIds": [
           "lifecycle-fts-empty",
           "lifecycle-reinforce-no-increment"
@@ -2381,12 +2470,12 @@
     "tests": [
       {
         "file": "src/test/phase10.reflect-trace-traverse.test.ts",
-        "name": "TC-10.1: Reflection API \u2014 success outcome updates confidence boosts confidence on success",
+        "name": "TC-10.1: Reflection API — success outcome updates confidence boosts confidence on success",
         "mutationIds": []
       },
       {
         "file": "src/test/phase10.reflect-trace-traverse.test.ts",
-        "name": "TC-10.2: Reflection API \u2014 failure outcome decreases confidence decreases confidence on failure",
+        "name": "TC-10.2: Reflection API — failure outcome decreases confidence decreases confidence on failure",
         "mutationIds": []
       },
       {
@@ -2493,7 +2582,7 @@
       },
       {
         "file": "src/test/reindex-graph-invoke.test.ts",
-        "name": "runReindexGraphCommand (in-process invoke) is idempotent \u2014 a second run also succeeds",
+        "name": "runReindexGraphCommand (in-process invoke) is idempotent — a second run also succeeds",
         "mutationIds": [
           "graph-skip-persistence"
         ]
@@ -2524,14 +2613,14 @@
       },
       {
         "file": "src/test/phase10.reflect-trace-traverse.test.ts",
-        "name": "TC-10.7: Process Tracing \u2014 creates procedural 'how' memories stores functions as category 'how' memories",
+        "name": "TC-10.7: Process Tracing — creates procedural 'how' memories stores functions as category 'how' memories",
         "mutationIds": [
           "g2-trace-memory-ids"
         ]
       },
       {
         "file": "src/test/phase10.reflect-trace-traverse.test.ts",
-        "name": "TC-10.8: Process Tracing \u2014 creates leads_to and follows_from relationships creates call-chain relationships between functions",
+        "name": "TC-10.8: Process Tracing — creates leads_to and follows_from relationships creates call-chain relationships between functions",
         "mutationIds": [
           "g2-trace-self-edge"
         ]
@@ -2560,7 +2649,7 @@
       },
       {
         "file": "src/test/phase10.reflect-trace-traverse.test.ts",
-        "name": "TC-10.6: Process Tracing \u2014 discovers functions from source files finds function declarations in TS files",
+        "name": "TC-10.6: Process Tracing — discovers functions from source files finds function declarations in TS files",
         "mutationIds": []
       }
     ],
@@ -2574,7 +2663,7 @@
     "tests": [
       {
         "file": "src/test/phase10.reflect-trace-traverse.test.ts",
-        "name": "TC-10.7: Process Tracing \u2014 creates procedural 'how' memories stores functions as category 'how' memories",
+        "name": "TC-10.7: Process Tracing — creates procedural 'how' memories stores functions as category 'how' memories",
         "mutationIds": [
           "g2-trace-memory-ids"
         ]
@@ -2586,7 +2675,7 @@
     "featureId": "F18",
     "obligationKind": "success",
     "obligation": "Sweep extracts atomic novel memories and augments changed knowledge",
-    "status": "KNOWN_DEFECT",
+    "status": "PARTIAL",
     "tests": [
       {
         "file": "src/test/commit-context.test.ts",
@@ -2599,11 +2688,25 @@
         "file": "src/test/commit-context.test.ts",
         "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
         "mutationIds": [
-          "context-cli-config-repair"
+          "ADV-CTX-D001-provider-f4b9135"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+        "mutationIds": [
+          "ADV-CTX-D001-provider-f4b9135"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing custom-provider MCP context commits the same journal decision",
+        "mutationIds": [
+          "ADV-CTX-mcp-content-f4b9135"
         ]
       }
     ],
-    "limitations": "root: MCP creates literal atomic memories with observed AI provenance. CLI configured-provider support fails as D-CTX-001. Augmentation of changed knowledge is not independently verified. Confirmed integrated contract failure(s): D-CTX-001: CLI context commit ignores the configured local provider. The expected-failure regressions detect these defects and do not establish correct behavior. Inverse repair probes are excluded from fault-mutation scoring."
+    "limitations": "CLI and MCP save literal extracted context through Ollama and custom-provider HTTP boundaries. The second fixture uses different journal text. Direct configured-provider and content faults are killed. Changed-knowledge augmentation is not independently verified."
   },
   {
     "featureId": "F18",
@@ -2632,7 +2735,7 @@
     "featureId": "F18",
     "obligationKind": "boundary",
     "obligation": "Dry-run has no writes; repeated identical context creates no duplicate",
-    "status": "KNOWN_DEFECT",
+    "status": "PARTIAL",
     "tests": [
       {
         "file": "src/test/commit-context.test.ts",
@@ -2652,11 +2755,33 @@
         "file": "src/test/commit-context.test.ts",
         "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
         "mutationIds": [
-          "context-scoped-dedup-repair"
+          "ADV-CTX-D002-lookup-f4b9135"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial project selection the same context is saved independently in projects A and B",
+        "mutationIds": [
+          "ADV-CTX-project-scope-f4b9135",
+          "ADV-CTX-D002-cross-project-f4b9135"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+        "mutationIds": [
+          "ADV-CTX-D002-lookup-f4b9135"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial project selection startup-project context skips its already saved journal",
+        "mutationIds": [
+          "ADV-CTX-startup-dedup-f4b9135"
         ]
       }
     ],
-    "limitations": "root: Dry-run makes no writes and performs extraction only. Startup-project deduplication works. Explicit-project repetition duplicates memories, retained as D-CTX-002. Confirmed integrated contract failure(s): D-CTX-002: MCP context deduplication fails for an explicitly selected project. The expected-failure regressions detect these defects and do not establish correct behavior. Inverse repair probes are excluded from fault-mutation scoring."
+    "limitations": "MCP dry-run writes nothing. Both startup-project tests skip repeated context. Identical text saves separately in A then B, and repeating in B skips B's existing memory. Scoped-dedup and cross-project false-skip faults are killed. CLI repetition and augmentation are outside these cases."
   },
   {
     "featureId": "F18",
@@ -2670,9 +2795,17 @@
         "mutationIds": [
           "context-wrong-provenance"
         ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial project selection the same context is saved independently in projects A and B",
+        "mutationIds": [
+          "ADV-CTX-project-scope-f4b9135",
+          "ADV-CTX-D002-cross-project-f4b9135"
+        ]
       }
     ],
-    "limitations": "root: The requested project differs from the MCP startup project and receives both records. The tool creates observed AI memories; preserving preexisting declared/imported provenance during augmentation is not independently verified."
+    "limitations": "Explicit context calls persist separate A/B project IDs with project scope and observed authority. The cross-project scope fault is killed. Caller-selected declared/imported provenance and optional stores remain outside this tool path."
   },
   {
     "featureId": "F19",
@@ -2745,18 +2878,28 @@
         "file": "src/test/import-concurrency-wiring.test.ts",
         "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
         "mutationIds": [
-          "g2-import-config-repair-witness"
+          "ADV-CTX-G2D003-provider-f4b9135"
         ]
       },
       {
         "file": "src/test/import-concurrency-wiring.test.ts",
         "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
         "mutationIds": [
-          "g2-import-config-repair-witness"
+          "ADV-CTX-G2D003-provider-f4b9135"
         ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+        "mutationIds": []
       }
     ],
-    "limitations": "group1: Real JSONL mapped titles/content and unmapped extra fields persist with count agreement. CSV/Markdown and tags/category breadth require other cases. group1: Real JSON/CSV records and normalized categories persist; readable summary is checked. No URL/network import claim. These retained cases passed in full-suite.json; no mutation proof is claimed unless listed. group2: Bootstrap persists literal imported data. MCP dry-run exercises real mapped provider requests and config/explicit concurrency2/1; it does not prove MCP durable writes. Confirmed integrated contract failure(s): G2-D003: CLI bulk import ignores its configured provider. The expected-failure regressions detect these defects and do not establish correct behavior. Inverse repair probes are excluded from fault-mutation scoring."
+    "limitations": "Direct import-module and bootstrap tests persist their mapped data. Configured CLI and MCP provider/concurrency paths pass, but normal CLI and MCP entry points report Imported:2 while reopening the database finds zero memories. ADV-CTX-002 remains an expected failure for both surfaces. Provider repair does not establish durable import writes."
   },
   {
     "featureId": "F19",
@@ -2788,7 +2931,7 @@
     "featureId": "F19",
     "obligationKind": "boundary",
     "obligation": "Dry-run, skip-existing, offset/limit, concurrency, empty input, frontmatter preservation",
-    "status": "KNOWN_DEFECT",
+    "status": "PARTIAL",
     "tests": [
       {
         "file": "src/test/import.test.ts",
@@ -2826,18 +2969,32 @@
         "file": "src/test/import-concurrency-wiring.test.ts",
         "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
         "mutationIds": [
-          "g2-import-config-repair-witness"
+          "ADV-CTX-G2D003-provider-f4b9135"
         ]
       },
       {
         "file": "src/test/import-concurrency-wiring.test.ts",
         "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
         "mutationIds": [
-          "g2-import-config-repair-witness"
+          "ADV-CTX-G2D003-provider-f4b9135"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+        "mutationIds": [
+          "ADV-CTX-G2D003-provider-f4b9135"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency",
+        "mutationIds": [
+          "ADV-CTX-import-concurrency-f4b9135"
         ]
       }
     ],
-    "limitations": "group1: Dry-run reports preview and leaves actual DB empty. Offset, limit, skip-existing and concurrent import not established by this row. group1: Real skip-existing, offset and limit bound persisted imports. These retained cases passed in full-suite.json; no mutation proof is claimed unless listed. group2: Bootstrap dry-run/dedup observed. CLI LLM import ignores loaded provider config, so both concurrency contracts remain expected failures G2-D003; repair probe validates intended2/1 behavior. Confirmed integrated contract failure(s): G2-D003: CLI bulk import ignores its configured provider. The expected-failure regressions detect these defects and do not establish correct behavior. Inverse repair probes are excluded from fault-mutation scoring."
+    "limitations": "Original CLI provider requests honor configured concurrency2 and explicit override1. Custom-provider CLI and MCP dry-run cases also exercise literal records and measured concurrency2 without writes. Direct concurrency/provider faults are killed. Existing skip/offset/limit cases remain mapped; exhaustive input formats and frontmatter combinations are not claimed."
   },
   {
     "featureId": "F19",
@@ -2943,14 +3100,14 @@
       },
       {
         "file": "src/test/ingest-special-paths.test.ts",
-        "name": "ingestion of special-character paths ingests \"unicod\u00e9-caf\u00e9.txt\"",
+        "name": "ingestion of special-character paths ingests \"unicodé-café.txt\"",
         "mutationIds": [
           "G1-special-paths"
         ]
       },
       {
         "file": "src/test/ingest-special-paths.test.ts",
-        "name": "ingestion of special-character paths ingests \"emoji-\ud83c\udf89-file.txt\"",
+        "name": "ingestion of special-character paths ingests \"emoji-🎉-file.txt\"",
         "mutationIds": [
           "G1-special-paths"
         ]
@@ -3082,27 +3239,31 @@
         "file": "src/test/chunk-splitter.test.ts",
         "name": "splitIntoChunks keeps an oversized word intact",
         "mutationIds": [
-          "chunks-empty-output"
+          "chunks-empty-output",
+          "chunks-whitespace"
         ]
       },
       {
         "file": "src/test/chunk-splitter.test.ts",
         "name": "splitIntoChunks merges a short chunk with its next paragraph",
         "mutationIds": [
-          "chunks-empty-output"
+          "chunks-empty-output",
+          "chunks-whitespace"
         ]
       },
       {
         "file": "src/test/chunk-splitter.test.ts",
         "name": "splitIntoChunks preserves text and paragraph separators within the target",
         "mutationIds": [
-          "chunks-empty-output"
+          "chunks-empty-output",
+          "chunks-whitespace"
         ]
       },
       {
         "file": "src/test/chunk-splitter.test.ts",
         "name": "splitIntoChunks returns no chunks for whitespace",
         "mutationIds": [
+          "chunks-empty-output",
           "chunks-whitespace"
         ]
       },
@@ -3110,14 +3271,16 @@
         "file": "src/test/chunk-splitter.test.ts",
         "name": "splitIntoChunks splits an oversized paragraph at sentence boundaries",
         "mutationIds": [
-          "chunks-empty-output"
+          "chunks-empty-output",
+          "chunks-whitespace"
         ]
       },
       {
         "file": "src/test/chunk-splitter.test.ts",
         "name": "splitIntoChunks splits paragraphs at the target and preserves order",
         "mutationIds": [
-          "chunks-empty-output"
+          "chunks-empty-output",
+          "chunks-whitespace"
         ]
       }
     ],
@@ -3133,6 +3296,7 @@
         "file": "src/test/ingest-fixtures.test.ts",
         "name": "ingest adversarial fixtures PDF with embedded JS is handled without executing JS",
         "mutationIds": [
+          "G1-pdf-js",
           "G1-pdf-js-execution"
         ]
       }
@@ -3154,12 +3318,12 @@
       },
       {
         "file": "src/test/attachments-inline.test.ts",
-        "name": "inline attachments \u2014 round-trip attaches a file and reads back identical bytes, mime, and name",
+        "name": "inline attachments — round-trip attaches a file and reads back identical bytes, mime, and name",
         "mutationIds": []
       },
       {
         "file": "src/test/attachments-inline.test.ts",
-        "name": "inline attachments \u2014 machine-to-machine (row copy) survives the insertMemory row-copy that remote sync uses",
+        "name": "inline attachments — machine-to-machine (row copy) survives the insertMemory row-copy that remote sync uses",
         "mutationIds": []
       }
     ],
@@ -3173,14 +3337,14 @@
     "tests": [
       {
         "file": "src/test/attachments-inline.test.ts",
-        "name": "inline attachments \u2014 guardrails rejects files larger than the size cap",
+        "name": "inline attachments — guardrails rejects files larger than the size cap",
         "mutationIds": [
           "g2-attachment-cap"
         ]
       },
       {
         "file": "src/test/attachments-inline.test.ts",
-        "name": "inline attachments \u2014 guardrails throws when the target memory does not exist",
+        "name": "inline attachments — guardrails throws when the target memory does not exist",
         "mutationIds": []
       }
     ],
@@ -3194,12 +3358,12 @@
     "tests": [
       {
         "file": "src/test/attachments-inline.test.ts",
-        "name": "inline attachments \u2014 guardrails dedups identical bytes (no rewrite on re-attach)",
+        "name": "inline attachments — guardrails dedups identical bytes (no rewrite on re-attach)",
         "mutationIds": []
       },
       {
         "file": "src/test/attachments-inline.test.ts",
-        "name": "inline attachments \u2014 round-trip detaches an attachment but keeps the memory",
+        "name": "inline attachments — round-trip detaches an attachment but keeps the memory",
         "mutationIds": []
       }
     ],
@@ -3509,22 +3673,22 @@
       },
       {
         "file": "src/test/v594-dream-state.test.ts",
-        "name": "v5.9.4 dream-state reconciliation (Bugs 7+8) config-disabled + no machine designated \u2192 disabled",
+        "name": "v5.9.4 dream-state reconciliation (Bugs 7+8) config-disabled + no machine designated → disabled",
         "mutationIds": []
       },
       {
         "file": "src/test/v594-dream-state.test.ts",
-        "name": "v5.9.4 dream-state reconciliation (Bugs 7+8) config-disabled + local-DB designation \u2192 enabled via local-db",
+        "name": "v5.9.4 dream-state reconciliation (Bugs 7+8) config-disabled + local-DB designation → enabled via local-db",
         "mutationIds": []
       },
       {
         "file": "src/test/v594-dream-state.test.ts",
-        "name": "v5.9.4 dream-state reconciliation (Bugs 7+8) config-enabled + no DB designation \u2192 enabled via config",
+        "name": "v5.9.4 dream-state reconciliation (Bugs 7+8) config-enabled + no DB designation → enabled via config",
         "mutationIds": []
       },
       {
         "file": "src/test/v594-dream-state.test.ts",
-        "name": "v5.9.4 dream-state reconciliation (Bugs 7+8) config-disabled + only remote DB has machine_id \u2192 falls through to remote-db",
+        "name": "v5.9.4 dream-state reconciliation (Bugs 7+8) config-disabled + only remote DB has machine_id → falls through to remote-db",
         "mutationIds": []
       },
       {
@@ -3809,7 +3973,7 @@
       },
       {
         "file": "src/test/phase9c.cli-federated.test.ts",
-        "name": "TC-9c.6: CLI parity \u2014 all major commands functional gnosys audit --json outputs valid JSON",
+        "name": "TC-9c.6: CLI parity — all major commands functional gnosys audit --json outputs valid JSON",
         "mutationIds": [
           "G1-cli-audit"
         ]
@@ -3947,7 +4111,7 @@
       },
       {
         "file": "src/test/phase9d.coverage-overhaul.test.ts",
-        "name": "TC-9d.2: dbWrite \u2014 sync functions auditToDb persists operation details and rounded duration",
+        "name": "TC-9d.2: dbWrite — sync functions auditToDb persists operation details and rounded duration",
         "mutationIds": [
           "audit-write-noop"
         ]
@@ -4038,7 +4202,7 @@
       },
       {
         "file": "src/test/phase9d.coverage-overhaul.test.ts",
-        "name": "TC-9d.3: Audit \u2014 init, log, read, filter, format readAuditLog handles malformed lines gracefully",
+        "name": "TC-9d.3: Audit — init, log, read, filter, format readAuditLog handles malformed lines gracefully",
         "mutationIds": [
           "audit-read-corrupt-operation"
         ]
@@ -4054,12 +4218,12 @@
     "tests": [
       {
         "file": "src/test/phase9d.coverage-overhaul.test.ts",
-        "name": "TC-9d.3: Audit \u2014 init, log, read, filter, format readAuditLog filters by operation",
+        "name": "TC-9d.3: Audit — init, log, read, filter, format readAuditLog filters by operation",
         "mutationIds": []
       },
       {
         "file": "src/test/phase9d.coverage-overhaul.test.ts",
-        "name": "TC-9d.3: Audit \u2014 init, log, read, filter, format readAuditLog filters by limit (most recent)",
+        "name": "TC-9d.3: Audit — init, log, read, filter, format readAuditLog filters by limit (most recent)",
         "mutationIds": []
       }
     ],
@@ -4073,7 +4237,7 @@
     "tests": [
       {
         "file": "src/test/setup-ui-screen10.test.ts",
-        "name": "Screen 10 \u2014 sync-projects render renders dashboard summary with collapsed paths",
+        "name": "Screen 10 — sync-projects render renders dashboard summary with collapsed paths",
         "mutationIds": [
           "G1-dashboard-paths"
         ]
@@ -4116,17 +4280,51 @@
         "file": "src/test/briefing-invoke.test.ts",
         "name": "runBriefingCommand (in-process invoke) prints 'No projects registered.' with --all on an empty DB",
         "mutationIds": []
+      },
+      {
+        "file": "src/test/dashboard-html-adversarial.test.ts",
+        "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+        "mutationIds": [
+          "dashboard-unescaped-stored-content"
+        ]
+      },
+      {
+        "file": "src/test/dashboard-html-adversarial.test.ts",
+        "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+        "mutationIds": [
+          "dashboard-unescaped-stored-content"
+        ]
       }
     ],
-    "limitations": "group3: Public human/JSON briefing returns exact empty-project state. HTML escaping, dead registry entries and malformed headings need other tests."
+    "limitations": "Empty-project briefings return literal empty results. Stored roadmap and open-question titles containing HTML/script syntax render as escaped text in actual generated HTML; removing escaping fails both tests. Archived/dead registry entries and malformed status headings still need separate cases."
   },
   {
     "featureId": "F26",
     "obligationKind": "permissions",
     "obligation": "Rendered HTML escapes stored content; project selection controls report scope",
-    "status": "NO_STRONG_COVERAGE",
-    "tests": [],
-    "limitations": "No Strong test for this obligation was identified in the reviewed current ledger or candidate source checks. Adjacent feature success/schema/helper cases are not evidence for this path."
+    "status": "KNOWN_DEFECT",
+    "tests": [
+      {
+        "file": "src/test/dashboard-html-adversarial.test.ts",
+        "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+        "mutationIds": [
+          "dashboard-unescaped-stored-content"
+        ]
+      },
+      {
+        "file": "src/test/dashboard-html-adversarial.test.ts",
+        "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+        "mutationIds": [
+          "dashboard-unescaped-stored-content"
+        ]
+      },
+      {
+        "file": "src/test/dashboard-html-adversarial.test.ts",
+        "name": "dashboard HTML adversarial stored content D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript",
+        "mutationIds": []
+      }
+    ],
+    "limitations": "Memory titles are escaped, but a stored project name executes JavaScript through a generated click handler (D-DASH-001). The actual emitted handler is entity-decoded and evaluated in an isolated VM; a full browser is not claimed. Report project-scope controls remain outside this probe."
   },
   {
     "featureId": "F27",
@@ -4387,7 +4585,7 @@
     "featureId": "F29",
     "obligationKind": "failure",
     "obligation": "Unavailable SQLite, invalid backup, locked/corrupt DB and failed migration report failure preserving previous state",
-    "status": "PARTIAL_WITH_SERVICE_OR_PLATFORM_BLOCK",
+    "status": "KNOWN_DEFECT",
     "tests": [
       {
         "file": "src/test/db-recovery.test.ts",
@@ -4421,6 +4619,7 @@
         "file": "src/test/phase9e.network-share-polish.test.ts",
         "name": "TC-9e.7: busy_timeout pragma is set new GnosysDB sets busy_timeout to 10000",
         "mutationIds": [
+          "G1-busy-timeout-guard",
           "G1-native-timeout"
         ]
       },
@@ -4456,13 +4655,18 @@
       },
       {
         "file": "src/test/db-recovery-extended.test.ts",
-        "name": "DB recovery \u2014 extended failure modes searchFts degrades gracefully when the FTS index is corrupted",
+        "name": "DB recovery — extended failure modes searchFts degrades gracefully when the FTS index is corrupted",
         "mutationIds": [
           "fts-no-like-fallback"
         ]
+      },
+      {
+        "file": "src/test/fts-adversarial.test.ts",
+        "name": "FTS duplicate attacks ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable",
+        "mutationIds": []
       }
     ],
-    "limitations": "group1: Only actual SQLite package constructor/prepare boundaries are fault-injected; no Gnosys DB methods mocked. Default retry and busy timeout observed at native boundary. Real NAS locking and power-loss durability remain unverified. group1: Real memory/project values are read after native SQLite prepare fault and non-corrupt error is rethrown. Native connection handle is the injected external boundary, not an application DB method. These retained cases passed in full-suite.json; no mutation proof is claimed unless listed. group2: Native NOTADB recovery, cached-statement invalidation and FTS insert/update/delete triggers verified through persisted reads and search. group3: Real SQLite FTS corruption falls back to literal matching row. Actual SQLite fault injection is an external boundary; no application method is mocked. Explicit service/platform limit (group1): Real mounted network-share locking and crash/power-loss durability require environment outside isolated local tmpdir."
+    "limitations": "Existing native SQLite retry, unavailable-module, corrupt-handle and FTS fallback cases remain mapped. New ADV-FTS-001 shows a lost FTS table is recreated empty on reopen: stored content survives but search returns no hit. Comparison with the predecessor reproduces the regression. Real network-share locking and power-loss durability remain unverified."
   },
   {
     "featureId": "F29",
@@ -4481,11 +4685,26 @@
         "file": "src/test/lifecycle-invariants.test.ts",
         "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result",
         "mutationIds": [
-          "g2-fts-upsert-repair-witness"
+          "ADV-FTS-repeat-insert"
+        ]
+      },
+      {
+        "file": "src/test/fts-adversarial.test.ts",
+        "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search",
+        "mutationIds": [
+          "ADV-FTS-repeat-insert"
+        ]
+      },
+      {
+        "file": "src/test/fts-adversarial.test.ts",
+        "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+        "mutationIds": [
+          "ADV-FTS-skip-legacy-healing",
+          "ADV-FTS-repeat-healing"
         ]
       }
     ],
-    "limitations": "group2: Closed/reopened handle reads new persisted content. Repeated upsert duplicates FTS hits, retained as expected failure G2-D002 and repaired only in inverse probe."
+    "limitations": "Public reopen reads persisted content with fresh statements. Repeated upserts now produce one FTS result. Raw duplicate-index healing preserves user_version5 and all memories; the second open causes no native data_version change. Direct repeat-write, omitted-heal and repeated-heal faults are killed. Crash injection and binary-field transaction breadth remain outside these cases."
   },
   {
     "featureId": "F29",
@@ -4509,28 +4728,28 @@
     "tests": [
       {
         "file": "src/test/v595-self-healing-machine-id.test.ts",
-        "name": "v5.9.5 \u2014 self-healing machine_id heals a stale `unknown-<rand>` cache when a real hostname is available",
+        "name": "v5.9.5 — self-healing machine_id heals a stale `unknown-<rand>` cache when a real hostname is available",
         "mutationIds": [
           "G1-machine-heal"
         ]
       },
       {
         "file": "src/test/v595-self-healing-machine-id.test.ts",
-        "name": "v5.9.5 \u2014 self-healing machine_id heals a stale `dream_machine_id` pointing at the same broken cached id",
+        "name": "v5.9.5 — self-healing machine_id heals a stale `dream_machine_id` pointing at the same broken cached id",
         "mutationIds": [
           "G1-machine-dream-heal"
         ]
       },
       {
         "file": "src/test/v595-self-healing-machine-id.test.ts",
-        "name": "v5.9.5 \u2014 self-healing machine_id leaves a real cached id untouched (no churn)",
+        "name": "v5.9.5 — self-healing machine_id leaves a real cached id untouched (no churn)",
         "mutationIds": [
           "G1-machine-stable"
         ]
       },
       {
         "file": "src/test/v595-self-healing-machine-id.test.ts",
-        "name": "v5.9.5 \u2014 self-healing machine_id leaves an unrelated `dream_machine_id` alone when machine_id heals",
+        "name": "v5.9.5 — self-healing machine_id leaves an unrelated `dream_machine_id` alone when machine_id heals",
         "mutationIds": [
           "G1-machine-unrelated"
         ]
@@ -4677,7 +4896,7 @@
       },
       {
         "file": "src/test/v511-projectScan.test.ts",
-        "name": "v5.11 scanProjects is idempotent \u2014 a second scan creates nothing new",
+        "name": "v5.11 scanProjects is idempotent — a second scan creates nothing new",
         "mutationIds": []
       }
     ],
@@ -5197,7 +5416,7 @@
     "tests": [
       {
         "file": "src/test/mcp-toolset-budget.test.ts",
-        "name": "MCP toolset budgets full tier registers everything, \u2264 60 tools",
+        "name": "MCP toolset budgets full tier registers everything, ≤ 60 tools",
         "mutationIds": [
           "G1-full-tool-names"
         ]
@@ -5364,16 +5583,16 @@
     "featureId": "F35",
     "obligationKind": "failure",
     "obligation": "Unauthorized 401; forbidden Origin 403; invalid JSON 400; unknown route 404; oversized 413; stalled body 408",
-    "status": "PARTIAL",
+    "status": "PROTECTED",
     "tests": [
       {
         "file": "src/test/v512-http-bearer.test.ts",
-        "name": "v5.12 bearer token (missing / wrong / correct) missing token \u2192 401",
+        "name": "v5.12 bearer token (missing / wrong / correct) missing token → 401",
         "mutationIds": []
       },
       {
         "file": "src/test/v512-http-bearer.test.ts",
-        "name": "v5.12 bearer token (missing / wrong / correct) wrong token \u2192 401",
+        "name": "v5.12 bearer token (missing / wrong / correct) wrong token → 401",
         "mutationIds": []
       },
       {
@@ -5385,7 +5604,7 @@
       },
       {
         "file": "src/test/v512-http-cors.test.ts",
-        "name": "v5.12 Origin guard disallowed Origin \u2192 403",
+        "name": "v5.12 Origin guard disallowed Origin → 403",
         "mutationIds": []
       },
       {
@@ -5400,16 +5619,23 @@
       },
       {
         "file": "src/test/v512-http-body-limits.test.ts",
-        "name": "v5.12 request body limits oversized body \u2192 413",
+        "name": "v5.12 request body limits oversized body → 413",
         "mutationIds": []
       },
       {
         "file": "src/test/v512-http-body-limits.test.ts",
-        "name": "v5.12 request body limits never-completing body \u2192 408",
+        "name": "v5.12 request body limits never-completing body → 408",
         "mutationIds": []
+      },
+      {
+        "file": "src/test/http-json-adversarial.test.ts",
+        "name": "HTTP MCP malformed JSON rejects a malformed POST with HTTP 400 and keeps the server healthy",
+        "mutationIds": [
+          "http-malformed-json-500"
+        ]
       }
     ],
-    "limitations": "group1: Real loopback HTTP rejects missing and wrong bearer tokens401; origin/body-size/route failure classes are outside subset. These retained cases passed in full-suite.json; no mutation proof is claimed unless listed. group2: 401/403/404/413/408 and missing-session400 observed. Malformed JSON400 requires another case."
+    "limitations": "Real loopback HTTP cases observe the named 401,403,400,404,413,408 responses. The added malformed-JSON POST returns400 and leaves health200 with zero sessions; changing that response to500 fails the test. These claims cover the named local-server status contracts."
   },
   {
     "featureId": "F35",
@@ -5464,7 +5690,7 @@
       },
       {
         "file": "src/test/v512-http-cors.test.ts",
-        "name": "v5.12 Origin guard disallowed Origin \u2192 403",
+        "name": "v5.12 Origin guard disallowed Origin → 403",
         "mutationIds": []
       },
       {
@@ -5774,12 +6000,12 @@
       },
       {
         "file": "src/test/webIntegration.test.ts",
-        "name": "Full pipeline: directory ingest \u2192 build index \u2192 search ingests markdown files and builds a searchable index",
+        "name": "Full pipeline: directory ingest → build index → search ingests markdown files and builds a searchable index",
         "mutationIds": []
       },
       {
         "file": "src/test/webIntegration.test.ts",
-        "name": "Structured ingest: HTML \u2192 frontmatter extraction extracts title and category from HTML content",
+        "name": "Structured ingest: HTML → frontmatter extraction extracts title and category from HTML content",
         "mutationIds": []
       },
       {
@@ -5840,8 +6066,8 @@
         "file": "src/test/webVectors-command-handler.test.ts",
         "name": "web build-index output writes a searchable index when embeddings are absent",
         "mutationIds": [
-          "web-index-skip-write",
-          "web-index-write"
+          "web-index-write",
+          "web-index-skip-write"
         ]
       },
       {
@@ -6312,8 +6538,8 @@
         "file": "src/test/webVectors-command-handler.test.ts",
         "name": "web build-index output writes a searchable index when embeddings are absent",
         "mutationIds": [
-          "web-index-skip-write",
-          "web-index-write"
+          "web-index-write",
+          "web-index-skip-write"
         ]
       },
       {
@@ -6379,7 +6605,7 @@
       },
       {
         "file": "src/test/v593-cleanup.test.ts",
-        "name": "Phase H \u2014 gnosys cleanup non-interactive write with yes=true removes dead+temp and keeps alive",
+        "name": "Phase H — gnosys cleanup non-interactive write with yes=true removes dead+temp and keeps alive",
         "mutationIds": [
           "g2-cleanup-classification"
         ]
@@ -6403,14 +6629,14 @@
     "tests": [
       {
         "file": "src/test/v593-cleanup.test.ts",
-        "name": "Phase H \u2014 gnosys cleanup non-interactive write dry-run (interactive=false, yes=false) does NOT write",
+        "name": "Phase H — gnosys cleanup non-interactive write dry-run (interactive=false, yes=false) does NOT write",
         "mutationIds": [
           "g2-cleanup-classification"
         ]
       },
       {
         "file": "src/test/v593-cleanup.test.ts",
-        "name": "Phase H \u2014 gnosys cleanup non-interactive write no stale entries \u2192 no write, removed=0",
+        "name": "Phase H — gnosys cleanup non-interactive write no stale entries → no write, removed=0",
         "mutationIds": [
           "g2-cleanup-classification"
         ]
@@ -6426,14 +6652,14 @@
     "tests": [
       {
         "file": "src/test/v593-cleanup.test.ts",
-        "name": "Phase H \u2014 gnosys cleanup non-interactive write with yes=true removes dead+temp and keeps alive",
+        "name": "Phase H — gnosys cleanup non-interactive write with yes=true removes dead+temp and keeps alive",
         "mutationIds": [
           "g2-cleanup-classification"
         ]
       },
       {
         "file": "src/test/v593-cleanup.test.ts",
-        "name": "Phase H \u2014 gnosys cleanup non-interactive write dry-run (interactive=false, yes=false) does NOT write",
+        "name": "Phase H — gnosys cleanup non-interactive write dry-run (interactive=false, yes=false) does NOT write",
         "mutationIds": [
           "g2-cleanup-classification"
         ]
@@ -6462,25 +6688,35 @@
       {
         "file": "src/test/vscode-extension.test.ts",
         "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
-        "mutationIds": [
-          "repair-D-VSC-001"
-        ]
+        "mutationIds": []
       },
       {
         "file": "src/test/vscode-extension.test.ts",
         "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
         "mutationIds": [
-          "repair-D-VSC-004"
+          "vscode-e2-removed-dashboard-command"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+        "mutationIds": [
+          "vscode-e2-removed-dashboard-command"
         ]
       }
     ],
-    "limitations": "root: Both success contracts fail in current application code and are retained as expected failures. Reinforcement omits required arguments; dashboard invokes a removed command. Host API is doubled, actual local CLI is executed. Confirmed integrated contract failure(s): D-VSC-001: VS Code reinforcement omits the required signal and supplies a file path as a memory ID; D-VSC-004: VS Code dashboard action invokes a removed CLI command. The expected-failure regressions detect these defects and do not establish correct behavior. Inverse repair probes are excluded from fault-mutation scoring."
+    "limitations": "The dashboard invokes a command derived from built CLI registration and exits0; a removed-command fault is killed. D-VSC-001 remains open: reinforcement passes a file path and omits the useful signal. A fresh unrelated UUID and decoy records expose hardcoded or wrong-ID behavior. Native VS Code is represented by a host boundary double while the actual local CLI runs."
   },
   {
     "featureId": "F41",
     "obligationKind": "failure",
     "obligation": "No editor, outside-store file and CLI error show correct message",
-    "status": "PROTECTED",
+    "status": "KNOWN_DEFECT",
     "tests": [
       {
         "file": "src/test/vscode-extension.test.ts",
@@ -6500,11 +6736,27 @@
         "file": "src/test/vscode-extension.test.ts",
         "name": "VS Code extension public commands reports a process launch failure to the editor",
         "mutationIds": [
-          "vscode-command-error"
+          "vscode-command-error",
+          "vscode-e2-launch-error-hidden"
         ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-001: absent ID warns without launching a subprocess",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-001: empty ID warns without launching a subprocess",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-001: body-only ID warns without launching a subprocess",
+        "mutationIds": []
       }
     ],
-    "limitations": "root: Literal notifications for missing editor, outside-memory file, and subprocess failure are mutation-proven through public activate/command callbacks. Native VS Code UI is not launched."
+    "limitations": "No-editor/outside-store notifications and a real missing-executable error are protected. The launch-error fixture now supplies a valid memory document, so it does not require launching for unreadable IDs. Missing, empty and body-only IDs still fail the required warning/no-subprocess contract under D-VSC-001. Native VS Code UI is not launched."
   },
   {
     "featureId": "F41",
@@ -6514,13 +6766,56 @@
     "tests": [
       {
         "file": "src/test/vscode-extension.test.ts",
-        "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
-        "mutationIds": [
-          "repair-D-VSC-003"
-        ]
+        "name": "VS Code extension public commands D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-003: backticks in the selected path cannot execute shell text or change the selected ID",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-003: command substitution in the selected path cannot execute shell text or change the selected ID",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-003: semicolon in the selected path cannot execute shell text or change the selected ID",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-003: and operator in the selected path cannot execute shell text or change the selected ID",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-003: pipe in the selected path cannot execute shell text or change the selected ID",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-003: quotes in the selected path cannot execute shell text or change the selected ID",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-003: spaces in the selected path cannot execute shell text or change the selected ID",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-003: newline in the selected path cannot execute shell text or change the selected ID",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
+        "mutationIds": []
       }
     ],
-    "limitations": "root: The shell-substitution filename is exercised using a harmless marker under the temporary project. The vulnerability is retained as an expected failure; quote/space variants and native activation are not independently tested. Confirmed integrated contract failure(s): D-VSC-003: VS Code reinforcement evaluates shell syntax in selected filenames. The expected-failure regressions detect these defects and do not establish correct behavior. Inverse repair probes are excluded from fault-mutation scoring."
+    "limitations": "All eight hostile filename forms are exercised. The reinforcement subprocess is shell-free and harmless marker commands do not run, but complete filename-to-selected-ID reinforcement still fails under D-VSC-001. Dashboard launch still uses a shell under the extension-wide D-VSC-003 requirement. The CLI expects a memory ID, so the literal selected file supplies that ID rather than being pinned as an obsolete positional filename. Native activation is unverified."
   },
   {
     "featureId": "F41",
@@ -6532,17 +6827,86 @@
         "file": "src/test/vscode-extension.test.ts",
         "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
         "mutationIds": [
-          "repair-D-VSC-002"
+          "vscode-e2-directory-substring"
         ]
       },
       {
         "file": "src/test/vscode-extension.test.ts",
-        "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+        "name": "VS Code extension public commands D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators",
         "mutationIds": [
-          "repair-D-VSC-003"
+          "vscode-e2-directory-substring"
         ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators",
+        "mutationIds": [
+          "vscode-e2-directory-substring"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators",
+        "mutationIds": [
+          "vscode-e2-directory-substring"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators",
+        "mutationIds": [
+          "vscode-e2-directory-substring"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with POSIX separators",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators",
+        "mutationIds": [
+          "vscode-e2-directory-substring"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators",
+        "mutationIds": [
+          "vscode-e2-directory-substring"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators",
+        "mutationIds": [
+          "vscode-e2-directory-substring"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators",
+        "mutationIds": [
+          "vscode-e2-directory-substring"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with Windows separators",
+        "mutationIds": []
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
+        "mutationIds": []
       }
     ],
-    "limitations": "root: Expected-failure regressions expose substring directory acceptance and shell evaluation of filenames. Both inverse repair probes unexpectedly pass, confirming each failure is specific. Confirmed integrated contract failure(s): D-VSC-002: VS Code memory-directory validation accepts names such as .gnosys-other; D-VSC-003: VS Code reinforcement evaluates shell syntax in selected filenames. The expected-failure regressions detect these defects and do not establish correct behavior. Inverse repair probes are excluded from fault-mutation scoring."
+    "limitations": "All four lookalike components reject with both separator styles; reintroducing substring matching fails nine ordinary cases. Deep exact .gnosys paths reach reinforcement, but successful ID resolution remains blocked by D-VSC-001. The dashboard still uses terminal.sendText and a shell, so the user's all-command shell-free requirement remains open. Backslash paths are exercised on the POSIX host, not native Windows."
   }
 ]

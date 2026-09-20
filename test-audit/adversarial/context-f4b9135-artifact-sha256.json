@@ -1,0 +1,102 @@
+{
+  "applicationRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+  "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+  "files": [
+    {
+      "path": "test-audit/adversarial/context-f4b9135-HANDOFF.md",
+      "sha256": "7d65e5bfae00699460c95bdbbf1476d19247380c2e6ff02f0d8f5bed5bfa284a"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-actions.json",
+      "sha256": "07045c364599703434607d1936fdbff313ea2c7b22fca940d24763464a6203b0"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-defects.json",
+      "sha256": "67baeb7b6c4928f21af31b99d93382699d4afd25ece427365106c78bbb59c4d5"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-digest-replay-check.json",
+      "sha256": "b104d8965b9a084045bb1f3b94cc205c35bbb10e53e6e9d6eb1784ba27f161ba"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-digest-replay-check.summary.json",
+      "sha256": "9b2dc10455aae340fa66bd4cced4c2505daa237ae735cb91b025fb56399bed43"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-digest-replay-repeat.json",
+      "sha256": "bf8fd6c8480e6ff5725ea227e34b4dede8e56e5df15f55b9527fcca970245fe0"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-digest-replay-repeat.summary.json",
+      "sha256": "9b2dc10455aae340fa66bd4cced4c2505daa237ae735cb91b025fb56399bed43"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-digest-rerun-check.json",
+      "sha256": "4cb29c65a4161548e9692eb4062241eb87cbb38076aa9fe470a8c1d9897bb6a1"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-feature-coverage.json",
+      "sha256": "900512d6cd9d426314ab393beace20185b870a51eabe60678ad7f6a6685bbed0"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-final.json",
+      "sha256": "9eff2b73c8a25c7596fe59ba133f75ade33cd074604de90b1dbaac7968f6a14b"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-mutations.json",
+      "sha256": "bc581e6d454cd64513d2701f3c37bf1c5da0910571e97a6c37589f3426e7e7ee"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-mutations.results.json",
+      "sha256": "0de45da267c4db0a04a7373d72b2612be356941b788e54c072b4769b87d82a7a"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-ordinary-before-tests.json",
+      "sha256": "5162352e6e3f6db7fdc821104471a124627f3e3b6d701da161b3cd5e3f9a7912"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-ordinary-summary.json",
+      "sha256": "9c8874002d5a494c9a7f08b1017c32680a81295e015b9498c62d53a7c6c42455"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-ordinary.detached-head.mjs",
+      "sha256": "21ab4851a346f24ab0d093c8f56d79f76dddac72b9ec5ee1bdd1323126f3dde2"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-ordinary.json",
+      "sha256": "da910d8fa03169f15d5990dabb1deaf79f4d9c76b39b9cd9960fa1ebe2d4ac05"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-ordinary.mjs",
+      "sha256": "17646f202a36a4a1e555579e0b3930e168b1c7f3f4019689a73017b22f3ef923"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-ordinary.recording.mjs",
+      "sha256": "b8e9103994e52ce79bfedc171c98e529287ee020af0e93f7403913ea7aa03990"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-replay-check.json",
+      "sha256": "3760dcf91cf95a5e8259297e247fa9c53d316344b2ce10d477acab674b2724d2"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-replay-check.summary.json",
+      "sha256": "160c465d4698135cb8b60e63503fd6fdbdd8a8e58145110b85d1816504848d35"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-replay-repeat.json",
+      "sha256": "20dc8bf4ef76d0aed56025776304a5846688fbd9dae9798d9a03f912471c17fc"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-replay-repeat.summary.json",
+      "sha256": "160c465d4698135cb8b60e63503fd6fdbdd8a8e58145110b85d1816504848d35"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-rerun-check.json",
+      "sha256": "e614d11a766a7a67b1b67a69cc1e1f0bd08477bf77444b99b52970104912b818"
+    },
+    {
+      "path": "test-audit/adversarial/context-f4b9135-unit.json",
+      "sha256": "52534b55b62941abbc3622c6590f41987ef079bfe155a955752a6f27575f8735"
+    }
+  ]
+}

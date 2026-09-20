@@ -1,0 +1,68 @@
+{
+  "applicationRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+  "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+  "applicationNetDiff": "",
+  "testFiles": [
+    {
+      "path": "src/test/commit-context.test.ts",
+      "sha256": "3553672e8f3e7e999f59b3879b6cdca5d699d08f93bd60e95f56f4d264d41f2d"
+    },
+    {
+      "path": "src/test/import-concurrency-wiring.test.ts",
+      "sha256": "a33cc2557cea6d010b78194049566907b7288df3b50ea46a0dfb4f4c1b31722a"
+    },
+    {
+      "path": "src/test/context-adversarial-helpers.ts",
+      "sha256": "8d77d7308764f68c8aad57bd98e4f85f347112afe0c53378d30ec46e2689846f"
+    },
+    {
+      "path": "src/test/context-adversarial.test.ts",
+      "sha256": "30e0f03556ebc841192442bd72cd5fb6c2f797c7d5a4172f724d438d9e9f3144"
+    },
+    {
+      "path": "src/test/config-display-adversarial.test.ts",
+      "sha256": "325a71b3d272b4d83cc6be59b97fb589b35a355b716c492a01823f1dd3c2bcf7"
+    }
+  ],
+  "counts": {
+    "unitPassed": 26,
+    "unitFailed": 0,
+    "unitSkipped": 0,
+    "expectedFailures": 3,
+    "newCases": 16,
+    "newOrdinaryCases": 13,
+    "promotedMarkers": 8,
+    "directFaultsKilled": 13,
+    "directFaultsSurvived": 0,
+    "uniqueKilledCases": 17,
+    "openDefectIds": 2,
+    "ordinaryOpenDefectFailures": 3
+  },
+  "unitEvidence": "test-audit/adversarial/context-f4b9135-unit.json",
+  "mutationSpecs": "test-audit/adversarial/context-f4b9135-mutations.json",
+  "mutationResults": "test-audit/adversarial/context-f4b9135-mutations.results.json",
+  "ordinaryEvidence": "test-audit/adversarial/context-f4b9135-ordinary-summary.json",
+  "reproduction": {
+    "command": "node test-audit/adversarial/context-f4b9135-ordinary.mjs",
+    "output": "Fresh temporary directory by default; --output <new-report.json> chooses a path without overwriting frozen evidence.",
+    "verifiedReplay": "test-audit/adversarial/context-f4b9135-digest-replay-check.summary.json",
+    "repeatabilityProof": "test-audit/adversarial/context-f4b9135-digest-rerun-check.json",
+    "applicationGuard": "Validates the approved application digest, so test-only merge commits are allowed; records actual checkoutRef separately."
+  },
+  "actions": "test-audit/adversarial/context-f4b9135-actions.json",
+  "features": "test-audit/adversarial/context-f4b9135-feature-coverage.json",
+  "defects": "test-audit/adversarial/context-f4b9135-defects.json",
+  "testPatch": "test-audit/adversarial/context-prefix-tests.patch",
+  "testPatchSha256": "d5f317ba52b22f0549d3e639f0f217c48c9aad6a0dedd81bdb45751c250c50c8",
+  "staticChecks": [
+    {
+      "command": "node node_modules/typescript/bin/tsc --noEmit",
+      "exitCode": 0
+    },
+    {
+      "command": "node node_modules/@biomejs/biome/bin/biome check src/test/commit-context.test.ts src/test/import-concurrency-wiring.test.ts src/test/context-adversarial-helpers.ts src/test/context-adversarial.test.ts src/test/config-display-adversarial.test.ts",
+      "exitCode": 0
+    }
+  ],
+  "verifiedAt": "2026-09-20T08:31:07.467287+00:00"
+}

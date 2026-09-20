@@ -3,17 +3,30 @@
     "id": "D-G3-001",
     "title": "Exported fnv1a does not compute the documented 32-bit FNV-1a hash",
     "module": "src/lib/db.ts:389",
-    "reproduction": "node scripts/test-audit-defect.mjs D-G3-001",
+    "reproduction": "node scripts/test-audit-reproduce-current.mjs D-G3-001",
     "expected": "4f9f2cab",
     "actual": "a82fb4a1",
     "evidence": "Independently reproduced in the root audit worktree. BigInt XOR/multiply/modulo-2^32 arithmetic gives 4f9f2cab; the exported function returns a82fb4a1. Its floating-point multiplication loses low bits.",
     "test": "src/test/chunk-splitter.test.ts",
-    "status": "Confirmed. Retained as it.fails; ordinary failure and inverse repair probe recorded. Application code unchanged.",
+    "status": "DEFERRED",
     "evidenceFiles": [
       "test-audit/evidence/group3-hash-defect.json",
       "test-audit/evidence/D-G3-001.reproduced.json",
       "test-audit/mutations/hash.repair.results.json"
-    ]
+    ],
+    "historicalStatus": "Confirmed. Retained as it.fails; ordinary failure and inverse repair probe recorded. Application code unchanged.",
+    "historicalReproduction": "node scripts/test-audit-defect.mjs D-G3-001",
+    "resolution": {
+      "kind": "deferred",
+      "cases": [
+        {
+          "file": "src/test/chunk-splitter.test.ts",
+          "name": "fnv1a D-G3-001: matches the multi-character 32-bit FNV-1a vector"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
+      "reason": "DEFERRED at the user's direction. The ordinary FNV regression still fails; no hash repair was incorporated."
+    }
   },
   {
     "id": "D-VSC-001",
@@ -22,14 +35,87 @@
     "expected": "The selected memory receives useful reinforcement and its persisted modified date becomes today.",
     "actual": "The real CLI rejects the command because --signal is required; the memory remains dated 2000-01-01.",
     "evidence": "The public extension command was invoked through a VS Code host boundary double and executed the local CLI. A temporary probe supplying --signal useful and the fixture memory ID makes the expected-failure test unexpectedly pass.",
-    "reproduction": "node scripts/test-audit-defect.mjs D-VSC-001",
+    "reproduction": "node scripts/test-audit-reproduce-current.mjs D-VSC-001",
     "test": "src/test/vscode-extension.test.ts",
-    "status": "Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.",
+    "status": "OPEN",
     "evidenceFiles": [
       "test-audit/evidence/vscode-defect-reproduction.json",
       "test-audit/mutations/vscode.repairs.results.json",
       "test-audit/evidence/D-VSC-001.reproduced.json"
-    ]
+    ],
+    "historicalStatus": "Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.",
+    "historicalReproduction": "node scripts/test-audit-defect.mjs D-VSC-001",
+    "resolution": {
+      "kind": "open",
+      "cases": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date"
+        },
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-001: absent ID warns without launching a subprocess"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-001: empty ID warns without launching a subprocess"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-001: body-only ID warns without launching a subprocess"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with POSIX separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with Windows separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: backticks in the selected path cannot execute shell text or change the selected ID"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: command substitution in the selected path cannot execute shell text or change the selected ID"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: semicolon in the selected path cannot execute shell text or change the selected ID"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: and operator in the selected path cannot execute shell text or change the selected ID"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: pipe in the selected path cannot execute shell text or change the selected ID"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: quotes in the selected path cannot execute shell text or change the selected ID"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: spaces in the selected path cannot execute shell text or change the selected ID"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: newline in the selected path cannot execute shell text or change the selected ID"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
+      "reason": "OPEN. The selected ID and useful signal are still missing. Corrected QA fixtures supply real document text and no longer require launching for unreadable IDs. This also blocks positive nested-path and hostile-filename reinforcement cases."
+    }
   },
   {
     "id": "D-VSC-002",
@@ -38,14 +124,65 @@
     "expected": "The outside-memory-directory warning appears and reinforcement is not invoked.",
     "actual": "Substring validation accepts .gnosys-other and invokes the reinforcement subprocess.",
     "evidence": "The selected path ends in .gnosys-other/memory.md. Requiring an exact path component makes the expected-failure test unexpectedly pass.",
-    "reproduction": "node scripts/test-audit-defect.mjs D-VSC-002",
+    "reproduction": "node scripts/test-audit-reproduce-current.mjs D-VSC-002",
     "test": "src/test/vscode-extension.test.ts",
-    "status": "Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.",
+    "status": "FIXED",
     "evidenceFiles": [
       "test-audit/evidence/vscode-defect-reproduction.json",
       "test-audit/mutations/vscode.repairs.results.json",
       "test-audit/evidence/D-VSC-002.reproduced.json"
-    ]
+    ],
+    "historicalStatus": "Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.",
+    "historicalReproduction": "node scripts/test-audit-defect.mjs D-VSC-002",
+    "resolution": {
+      "kind": "fixed",
+      "cases": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+      "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
+      "fixCommits": [
+        "13756f2c1aab1873ba7d68a39727b16b11251a29"
+      ],
+      "faultMutationIds": [
+        "vscode-e2-directory-substring"
+      ]
+    }
   },
   {
     "id": "D-VSC-003",
@@ -54,14 +191,27 @@
     "expected": "The literal argument decisions/$(touch audit-injected).md reaches the CLI without evaluating the shell expression.",
     "actual": "The argument becomes decisions/.md and a harmless audit-injected marker is created in the isolated fixture directory.",
     "evidence": "The real shell ran only a harmless touch command inside the temporary test project. Replacing shell interpolation with execFileSync argument passing makes the expected-failure test unexpectedly pass.",
-    "reproduction": "node scripts/test-audit-defect.mjs D-VSC-003",
+    "reproduction": "node scripts/test-audit-reproduce-current.mjs D-VSC-003",
     "test": "src/test/vscode-extension.test.ts",
-    "status": "Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.",
+    "status": "OPEN",
     "evidenceFiles": [
       "test-audit/evidence/vscode-defect-reproduction.json",
       "test-audit/mutations/vscode.repairs.results.json",
       "test-audit/evidence/D-VSC-003.reproduced.json"
-    ]
+    ],
+    "historicalStatus": "Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.",
+    "historicalReproduction": "node scripts/test-audit-defect.mjs D-VSC-003",
+    "resolution": {
+      "kind": "open",
+      "cases": [
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
+      "reason": "OPEN, partially repaired. Reinforcement uses shell-free argv, but the dashboard still invokes a shell through terminal.sendText. The user's extension-wide requirement fails. The CLI accepts a memory ID, so filename cases now require reading that literal selected file and passing its real ID."
+    }
   },
   {
     "id": "D-VSC-004",
@@ -70,14 +220,37 @@
     "expected": "The terminal runs a supported CLI command and exits successfully.",
     "actual": "npx gnosys dashboard exits 1 because dashboard is not a registered command.",
     "evidence": "The terminal host double executes the real built CLI through a local npx shim. A temporary supported status --system command makes the expected-failure test unexpectedly pass.",
-    "reproduction": "node scripts/test-audit-defect.mjs D-VSC-004",
+    "reproduction": "node scripts/test-audit-reproduce-current.mjs D-VSC-004",
     "test": "src/test/vscode-extension.test.ts",
-    "status": "Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.",
+    "status": "FIXED",
     "evidenceFiles": [
       "test-audit/evidence/vscode-defect-reproduction.json",
       "test-audit/mutations/vscode.repairs.results.json",
       "test-audit/evidence/D-VSC-004.reproduced.json"
-    ]
+    ],
+    "historicalStatus": "Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.",
+    "historicalReproduction": "node scripts/test-audit-defect.mjs D-VSC-004",
+    "resolution": {
+      "kind": "fixed",
+      "cases": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+      "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
+      "fixCommits": [
+        "e2c08a37e7c69745e1dd4effc1bbe97f6e01b8b7"
+      ],
+      "faultMutationIds": [
+        "vscode-e2-removed-dashboard-command"
+      ]
+    }
   },
   {
     "id": "DEF-G1-001",
@@ -86,13 +259,38 @@
     "expected": "taskModels is empty after reset.",
     "actual": "The structuring override remains xai/grok-4.20 despite routing reset success.",
     "evidence": "The real summary wizard receives 2,4,y,done and its project config is reloaded. updateConfig recursively merges the empty taskModels object, retaining previous keys. A temporary clear-overrides repair makes the expected-failure test unexpectedly pass.",
-    "reproduction": "node scripts/test-audit-defect.mjs DEF-G1-001",
+    "reproduction": "node scripts/test-audit-reproduce-current.mjs DEF-G1-001",
     "test": "src/test/setup-ui-summary.test.ts",
-    "status": "Confirmed. Retained as it.fails. Application code unchanged.",
+    "status": "OPEN",
     "evidenceFiles": [
       "test-audit/mutations/group1.checkpoint2.results.json",
       "test-audit/evidence/DEF-G1-001.reproduced.json"
-    ]
+    ],
+    "historicalStatus": "Confirmed. Retained as it.fails. Application code unchanged.",
+    "historicalReproduction": "node scripts/test-audit-defect.mjs DEF-G1-001",
+    "resolution": {
+      "kind": "open",
+      "cases": [
+        {
+          "file": "src/test/setup-ui-summary.test.ts",
+          "name": "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config"
+        },
+        {
+          "file": "src/test/setup-ui-summary.test.ts",
+          "name": "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides"
+        },
+        {
+          "file": "src/test/routing-reset-adversarial.test.ts",
+          "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value"
+        },
+        {
+          "file": "src/test/routing-reset-adversarial.test.ts",
+          "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
+      "reason": "OPEN. Reset retains task overrides. Four ordinary wizard regressions fail, including the corrected all-ollama summary. Unrelated serialized config values remain unchanged; v584 tests remain byte-identical."
+    }
   },
   {
     "id": "G2-D001",
@@ -103,12 +301,35 @@
     "expected": "Exit code130 after Ctrl+C at the real provider prompt.",
     "actual": "The cancellation message appears but the process exits0.",
     "evidence": "A Python POSIX PTY waits for the real prompt and sends the Ctrl+C byte. The main setup close listener exits0 before safeQuestion can exit130. Models and IDE setup return130 through the same PTY.",
-    "reproduction": "node scripts/test-audit-defect.mjs G2-D001",
-    "status": "Confirmed. Retained as it.fails. Application code unchanged.",
+    "reproduction": "node scripts/test-audit-reproduce-current.mjs G2-D001",
+    "status": "FIXED",
     "evidenceFiles": [
       "test-audit/mutations/group2.checkpoint2.results.json",
       "test-audit/evidence/G2-D001.reproduced.json"
-    ]
+    ],
+    "historicalStatus": "Confirmed. Retained as it.fails. Application code unchanged.",
+    "historicalReproduction": "node scripts/test-audit-defect.mjs G2-D001",
+    "resolution": {
+      "kind": "fixed",
+      "cases": [
+        {
+          "file": "src/test/setup-ctrlc.test.ts",
+          "name": "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT"
+        },
+        {
+          "file": "src/test/setup-adversarial.test.ts",
+          "name": "setup exit status after the provider prompt G2-D001 Ctrl+C at IDE integration exits 130"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+      "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
+      "fixCommits": [
+        "6a69746dabf618e212c23e5530b474903d19df07"
+      ],
+      "faultMutationIds": [
+        "setup-cancellation-success-regression"
+      ]
+    }
   },
   {
     "id": "G2-D002",
@@ -119,12 +340,41 @@
     "expected": "One stored memory and one search result after repeated syncMemoryToDb writes.",
     "actual": "One stored memory but two search results with the same ID.",
     "evidence": "Two public syncMemoryToDb writes followed by getAllMemories and searchFts reproduce the mismatch. A temporary FTS-row replacement repair makes the expected-failure test unexpectedly pass.",
-    "reproduction": "node scripts/test-audit-defect.mjs G2-D002",
-    "status": "Confirmed. Retained as it.fails. Application code unchanged.",
+    "reproduction": "node scripts/test-audit-reproduce-current.mjs G2-D002",
+    "status": "FIXED",
     "evidenceFiles": [
       "test-audit/mutations/group2.checkpoint2.results.json",
       "test-audit/evidence/G2-D002.reproduced.json"
-    ]
+    ],
+    "historicalStatus": "Confirmed. Retained as it.fails. Application code unchanged.",
+    "historicalReproduction": "node scripts/test-audit-defect.mjs G2-D002",
+    "resolution": {
+      "kind": "fixed",
+      "cases": [
+        {
+          "file": "src/test/lifecycle-invariants.test.ts",
+          "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result"
+        },
+        {
+          "file": "src/test/fts-adversarial.test.ts",
+          "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search"
+        },
+        {
+          "file": "src/test/fts-adversarial.test.ts",
+          "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+      "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
+      "fixCommits": [
+        "29a59b0b8ecdeb6e0796515d787aada530fe7335"
+      ],
+      "faultMutationIds": [
+        "ADV-FTS-repeat-insert",
+        "ADV-FTS-skip-legacy-healing",
+        "ADV-FTS-repeat-healing"
+      ]
+    }
   },
   {
     "id": "D-CTX-001",
@@ -134,12 +384,40 @@
     "expected": "Configured Ollama provider extracts and saves two memories, matching the MCP path.",
     "actual": "CLI exits 1 with an LLM unavailable error before making any provider request.",
     "evidence": "The command constructs GnosysIngestion without the loaded config. A temporary constructor-config repair makes the expected-failure regression unexpectedly pass.",
-    "reproduction": "node scripts/test-audit-defect.mjs D-CTX-001",
-    "status": "Confirmed. Retained as it.fails. Application code unchanged.",
+    "reproduction": "node scripts/test-audit-reproduce-current.mjs D-CTX-001",
+    "status": "FIXED",
     "evidenceFiles": [
       "test-audit/evidence/D-CTX-001.reproduced.json",
       "test-audit/mutations/context.after.results.json"
-    ]
+    ],
+    "historicalStatus": "Confirmed. Retained as it.fails. Application code unchanged.",
+    "historicalReproduction": "node scripts/test-audit-defect.mjs D-CTX-001",
+    "resolution": {
+      "kind": "fixed",
+      "cases": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context"
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision"
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+      "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
+      "fixCommits": [
+        "636e03271db7ee670374c846cff747ecd0318d85"
+      ],
+      "faultMutationIds": [
+        "ADV-CTX-D001-provider-f4b9135",
+        "ADV-CTX-D001-guidance-f4b9135"
+      ]
+    }
   },
   {
     "id": "D-CTX-002",
@@ -149,12 +427,35 @@
     "expected": "Repeating the same context in the requested project skips both candidates and retains two memories.",
     "actual": "The second call adds both memories again, leaving four records. Repeating in the startup project correctly skips both.",
     "evidence": "The scoped search reads the Markdown store while writes persist in the central database. A temporary project-filtered central FTS lookup makes the expected-failure regression unexpectedly pass.",
-    "reproduction": "node scripts/test-audit-defect.mjs D-CTX-002",
-    "status": "Confirmed. Retained as it.fails. Application code unchanged.",
+    "reproduction": "node scripts/test-audit-reproduce-current.mjs D-CTX-002",
+    "status": "FIXED",
     "evidenceFiles": [
       "test-audit/evidence/D-CTX-002.reproduced.json",
       "test-audit/mutations/context.after.results.json"
-    ]
+    ],
+    "historicalStatus": "Confirmed. Retained as it.fails. Application code unchanged.",
+    "historicalReproduction": "node scripts/test-audit-defect.mjs D-CTX-002",
+    "resolution": {
+      "kind": "fixed",
+      "cases": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories"
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+      "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
+      "fixCommits": [
+        "a420e3b727c33a578aed2c089d72841f5a4441f9"
+      ],
+      "faultMutationIds": [
+        "ADV-CTX-D002-lookup-f4b9135"
+      ]
+    }
   },
   {
     "id": "G2-D003",
@@ -168,11 +469,185 @@
     "expected": "Configured provider receives three record requests with peak concurrency 2 by default or 1 when overridden.",
     "actual": "Both CLI invocations exit 1 before contacting the provider. The MCP path processes all three records with the same configuration.",
     "evidence": "The CLI constructs GnosysIngestion without passing the loaded config. A temporary constructor-config repair makes both expected-failure tests unexpectedly pass.",
-    "reproduction": "node scripts/test-audit-defect.mjs G2-D003",
-    "status": "Confirmed. Retained as two it.fails regressions. Application code unchanged.",
+    "reproduction": "node scripts/test-audit-reproduce-current.mjs G2-D003",
+    "status": "FIXED",
     "evidenceFiles": [
       "test-audit/evidence/G2-D003.reproduced.json",
       "test-audit/mutations/group2.checkpoint5.import.results.json"
-    ]
+    ],
+    "historicalStatus": "Confirmed. Retained as two it.fails regressions. Application code unchanged.",
+    "historicalReproduction": "node scripts/test-audit-defect.mjs G2-D003",
+    "resolution": {
+      "kind": "fixed",
+      "cases": [
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests"
+        },
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency"
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+      "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
+      "fixCommits": [
+        "3021bf5c88d5ec11ab3b61f311a68ba5c15a7f07"
+      ],
+      "faultMutationIds": [
+        "ADV-CTX-G2D003-provider-f4b9135"
+      ]
+    }
+  },
+  {
+    "id": "D-DASH-001",
+    "title": "Stored project name can execute JavaScript through generated dashboard click handler",
+    "module": "src/lib/portfolioHtml.ts:457",
+    "entryPoint": "generatePortfolioHtml(generatePortfolio(realDb))",
+    "input": "QA');globalThis.dashboardInjected=true;//",
+    "expected": "Click selects the complete stored project name and dashboardInjected remains false.",
+    "actual": "Click handler calls scrollToProject with QA and then sets dashboardInjected=true.",
+    "reproduction": "node scripts/test-audit-reproduce-current.mjs D-DASH-001",
+    "test": "src/test/dashboard-html-adversarial.test.ts",
+    "testName": "dashboard HTML adversarial stored content D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript",
+    "status": "OPEN",
+    "evidenceFiles": [
+      "test-audit/adversarial/dashboard-injection-reproduction.html",
+      "test-audit/adversarial/vscode-dashboard-ordinary.json"
+    ],
+    "limitation": "JavaScript evaluated in isolated VM from actual generated onclick attribute, without a full DOM/browser.",
+    "historicalStatus": "Confirmed ordinary assertion failure; retained it.fails; no application edit or repair probe.",
+    "historicalReproduction": "node test-audit/adversarial/vscode-dashboard-reproduce.mjs",
+    "resolution": {
+      "kind": "open",
+      "cases": [
+        {
+          "file": "src/test/dashboard-html-adversarial.test.ts",
+          "name": "dashboard HTML adversarial stored content D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
+      "reason": "New ordinary failure reproduced and retained as an expected failure. No application repair was incorporated."
+    },
+    "evidence": "Click handler calls scrollToProject with QA and then sets dashboardInjected=true. JavaScript evaluated in isolated VM from actual generated onclick attribute, without a full DOM/browser."
+  },
+  {
+    "id": "ADV-FTS-001",
+    "title": "Reopening after external FTS loss makes persisted memories unsearchable",
+    "module": "src/lib/db.ts",
+    "test": "src/test/fts-adversarial.test.ts",
+    "testName": "FTS duplicate attacks ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable",
+    "introducedBy": "29a59b0b8ecdeb6e0796515d787aada530fe7335",
+    "observedAt": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+    "expected": "{\"memory\":\"saffron survives index loss\",\"search\":[\"fts-recovery\"],\"version\":5}",
+    "actual": "{\"memory\":\"saffron survives index loss\",\"search\":[],\"version\":5}",
+    "evidence": "Actual GnosysDB insert/search succeeds, raw separate SQLite drops the index, LIKE fallback still finds the record, then GnosysDB.reopen recreates an empty FTS table without repopulating it. Independent predecessor a420 versus29a comparison confirms this was introduced by29a.",
+    "reproduction": "node scripts/test-audit-reproduce-current.mjs ADV-FTS-001",
+    "evidenceFiles": [
+      "test-audit/adversarial/fts-ordinary.json",
+      "test-audit/adversarial/fts-regression.compare.json"
+    ],
+    "resolution": {
+      "kind": "open",
+      "cases": [
+        {
+          "file": "src/test/fts-adversarial.test.ts",
+          "name": "FTS duplicate attacks ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
+      "reason": "New ordinary failure reproduced and retained as an expected failure. No application repair was incorporated."
+    },
+    "historicalReproduction": "node test-audit/adversarial/fts-routing-reproduce.mjs",
+    "status": "OPEN",
+    "historicalStatus": "OPEN"
+  },
+  {
+    "id": "ADV-CTX-001",
+    "title": "JSON config display exposes stored provider keys",
+    "test": "src/test/config-display-adversarial.test.ts",
+    "testName": "adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes",
+    "expected": "config show --json preserves useful provider/model metadata without printing stored apiKey bytes; the stored key stays unchanged.",
+    "actual": "The command exits0 and prints the literal fake stored key fixture-only-config-key-7f94a31c inside llm.custom.apiKey.",
+    "cause": "runConfigShowCommand writes JSON.stringify(cfg) without redacting apiKey fields.",
+    "source": [
+      "src/lib/configCommand.ts:55"
+    ],
+    "reproduction": "node scripts/test-audit-reproduce-current.mjs ADV-CTX-001",
+    "status": "OPEN",
+    "featureIds": [
+      "F03"
+    ],
+    "evidenceFiles": [
+      "test-audit/adversarial/context-f4b9135-ordinary.json",
+      "test-audit/adversarial/context-f4b9135-ordinary-summary.json"
+    ],
+    "applicationRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+    "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+    "historicalStatus": "OPEN; ordinary failure measured on the frozen application ref; expected-failure test retained; no application repair included.",
+    "historicalReproduction": "node test-audit/adversarial/context-f4b9135-ordinary.mjs",
+    "resolution": {
+      "kind": "open",
+      "cases": [
+        {
+          "file": "src/test/config-display-adversarial.test.ts",
+          "name": "adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
+      "reason": "New ordinary failure reproduced and retained as an expected failure. No application repair was incorporated."
+    },
+    "evidence": "runConfigShowCommand writes JSON.stringify(cfg) without redacting apiKey fields."
+  },
+  {
+    "id": "ADV-CTX-002",
+    "title": "CLI and MCP bulk import report successful records without persisting them",
+    "test": "src/test/context-adversarial.test.ts",
+    "testName": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+    "expected": "Each non-dry-run import persists both structured memories and reports Imported:2.",
+    "actual": "At frozen commit f4b9135, CLI exits0 with Imported:2/Failed:0/Total:2 and MCP returns isError:false with the same counters; reopening the central DB after either isolated operation returns zero memories.",
+    "cause": "Both callers omit the optional DB argument to performImport, whose persistence block runs only when db is supplied. Both affected surfaces are now measured, not inferred.",
+    "source": [
+      "src/index.ts:2200",
+      "src/lib/import.ts:371",
+      "src/lib/importCommand.ts:106"
+    ],
+    "reproduction": "node scripts/test-audit-reproduce-current.mjs ADV-CTX-002",
+    "status": "OPEN",
+    "featureIds": [
+      "F19"
+    ],
+    "evidenceFiles": [
+      "test-audit/adversarial/context-f4b9135-ordinary.json",
+      "test-audit/adversarial/context-f4b9135-ordinary-summary.json"
+    ],
+    "testNames": [
+      "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+      "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories"
+    ],
+    "applicationRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+    "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+    "historicalStatus": "OPEN; ordinary failure measured on the frozen application ref; expected-failure test retained; no application repair included.",
+    "historicalReproduction": "node test-audit/adversarial/context-f4b9135-ordinary.mjs",
+    "resolution": {
+      "kind": "open",
+      "cases": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories"
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
+      "reason": "New ordinary failure reproduced and retained as an expected failure. No application repair was incorporated."
+    },
+    "evidence": "Both callers omit the optional DB argument to performImport, whose persistence block runs only when db is supplied. Both affected surfaces are now measured, not inferred."
   }
 ]

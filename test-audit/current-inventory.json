@@ -2004,7 +2004,7 @@
     },
     {
       "path": "src/test/commit-context.test.ts",
-      "sha256": "429b653ad18bdac7732e0cce84801187a294b691b6972722eb18bb44a51cd16f",
+      "sha256": "3553672e8f3e7e999f59b3879b6cdca5d699d08f93bd60e95f56f4d264d41f2d",
       "imports": [
         "vitest",
         "node:http",
@@ -2089,7 +2089,7 @@
           "suites": [
             "context sweep public contracts"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [
             "toContain",
             "toEqual"
@@ -2150,7 +2150,7 @@
           "suites": [
             "context sweep public contracts"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [
             "toBe",
             "toContain",
@@ -2162,6 +2162,66 @@
             "snapshot": false,
             "conditional": false,
             "sourceInspection": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "src/test/config-display-adversarial.test.ts",
+      "sha256": "325a71b3d272b4d83cc6be59b97fb589b35a355b716c492a01823f1dd3c2bcf7",
+      "imports": [
+        "vitest",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "node:child_process",
+        "zod"
+      ],
+      "mocks": [],
+      "tests": [
+        {
+          "id": "src/test/config-display-adversarial.test.ts:26",
+          "line": 26,
+          "name": "human config output names the key source without exposing stored key bytes",
+          "suites": [
+            "adversarial config display"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toBe",
+            "toContain",
+            "toContain",
+            "toContain",
+            "toContain"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": true
+          }
+        },
+        {
+          "id": "src/test/config-display-adversarial.test.ts:35",
+          "line": 35,
+          "name": "ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes",
+          "suites": [
+            "adversarial config display"
+          ],
+          "declaration": "it.fails",
+          "assertions": [
+            "toBe",
+            "toEqual",
+            "toContain",
+            "toContain"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": true
           }
         }
       ]
@@ -2220,6 +2280,443 @@
             "weakMatchers": [],
             "snapshot": false,
             "conditional": false,
+            "sourceInspection": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "src/test/context-adversarial.test.ts",
+      "sha256": "30e0f03556ebc841192442bd72cd5fb6c2f797c7d5a4172f724d438d9e9f3144",
+      "imports": [
+        "vitest",
+        "../lib/db.js",
+        "../lib/store.js",
+        "node:path",
+        "./_helpers.js",
+        "./context-adversarial-helpers.js"
+      ],
+      "mocks": [],
+      "tests": [
+        {
+          "id": "src/test/context-adversarial.test.ts:29",
+          "line": 29,
+          "name": "D-CTX-001 custom-provider CLI context commits the new journal decision",
+          "suites": [
+            "adversarial context and provider routing"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toBe",
+            "toContain"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/context-adversarial.test.ts:36",
+          "line": 36,
+          "name": "custom-provider MCP context commits the same journal decision",
+          "suites": [
+            "adversarial context and provider routing"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toMatchObject",
+            "toContain",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/context-adversarial.test.ts:48",
+          "line": 48,
+          "name": "G2-D003 custom-provider CLI bulk import uses configured concurrency",
+          "suites": [
+            "adversarial context and provider routing"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toBe",
+            "toContain"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/context-adversarial.test.ts:55",
+          "line": 55,
+          "name": "custom-provider MCP bulk import uses configured concurrency",
+          "suites": [
+            "adversarial context and provider routing"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toBe",
+            "toContain",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/context-adversarial.test.ts:64",
+          "line": 64,
+          "name": "ADV-CTX-002 normal CLI bulk import persists the reported memories",
+          "suites": [
+            "adversarial context and provider routing"
+          ],
+          "declaration": "it.fails",
+          "assertions": [
+            "toBe",
+            "toContain",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/context-adversarial.test.ts:75",
+          "line": 75,
+          "name": "ADV-CTX-002 normal MCP bulk import persists the reported memories",
+          "suites": [
+            "adversarial context and provider routing"
+          ],
+          "declaration": "it.fails",
+          "assertions": [
+            "toBe",
+            "toContain",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/context-adversarial.test.ts:86",
+          "line": 86,
+          "name": "D-CTX-001 context without a provider fails with setup guidance",
+          "suites": [
+            "adversarial context and provider routing"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toBe",
+            "toContain",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/context-adversarial.test.ts:94",
+          "line": 94,
+          "name": "CLI import without a provider fails with setup guidance",
+          "suites": [
+            "adversarial context and provider routing"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toBe",
+            "toContain",
+            "toEqual",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/context-adversarial.test.ts:103",
+          "line": 103,
+          "name": "MCP context without a provider fails with setup guidance",
+          "suites": [
+            "adversarial context and provider routing"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toBe",
+            "toContain",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/context-adversarial.test.ts:112",
+          "line": 112,
+          "name": "MCP import without a provider fails with setup guidance",
+          "suites": [
+            "adversarial context and provider routing"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toBe",
+            "toContain",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/context-adversarial.test.ts:123",
+          "line": 123,
+          "name": "the same context is saved independently in projects A and B",
+          "suites": [
+            "adversarial project selection"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toContain",
+            "toHaveLength"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/context-adversarial.test.ts:133",
+          "line": 133,
+          "name": "D-CTX-002 repeated B context skips only B's already saved journal",
+          "suites": [
+            "adversarial project selection"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toContain",
+            "toHaveLength"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/context-adversarial.test.ts:142",
+          "line": 142,
+          "name": "startup-project context skips its already saved journal",
+          "suites": [
+            "adversarial project selection"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toContain"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/context-adversarial.test.ts:150",
+          "line": 150,
+          "name": "explicit project B update resolves the shared relative path inside B",
+          "suites": [
+            "adversarial project selection"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toBe",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "src/test/coverage-guard.test.ts",
+      "sha256": "8ade20c94bb2c1323a3550da740fae40de2c0de37502545e71b46d0c97d0707a",
+      "imports": [
+        "node:child_process",
+        "node:path",
+        "vitest"
+      ],
+      "mocks": [],
+      "tests": [
+        {
+          "id": "src/test/coverage-guard.test.ts:8",
+          "line": 8,
+          "name": "fails when the comparison base cannot be resolved",
+          "suites": [
+            "new-file coverage guard"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toBe",
+            "toContain",
+            "toBe"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/coverage-guard.test.ts:19",
+          "line": 19,
+          "name": "passes when HEAD has no added application modules compared with itself",
+          "suites": [
+            "new-file coverage guard"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toBe",
+            "toBe",
+            "toBe"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "src/test/dashboard-html-adversarial.test.ts",
+      "sha256": "4ba8ebec8117832fdb8a3b0c58a6f2947efb85faa2a40e49ddf879a4a728469b",
+      "imports": [
+        "node:fs",
+        "node:os",
+        "node:path",
+        "node:vm",
+        "vitest",
+        "../lib/db.js",
+        "../lib/portfolio.js",
+        "../lib/portfolioHtml.js",
+        "./_helpers.js"
+      ],
+      "mocks": [],
+      "tests": [
+        {
+          "id": "src/test/dashboard-html-adversarial.test.ts:40",
+          "line": 40,
+          "name": "renders malicious roadmap memory titles as literal escaped text",
+          "suites": [
+            "dashboard HTML adversarial stored content"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toContain",
+            "toContain",
+            "toBe"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/dashboard-html-adversarial.test.ts:47",
+          "line": 47,
+          "name": "renders malicious open-question titles as escaped action text",
+          "suites": [
+            "dashboard HTML adversarial stored content"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toContain",
+            "toContain",
+            "toBe"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/dashboard-html-adversarial.test.ts:54",
+          "line": 54,
+          "name": "D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript",
+          "suites": [
+            "dashboard HTML adversarial stored content"
+          ],
+          "declaration": "it.fails",
+          "assertions": [
+            "toBe",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": true,
             "sourceInspection": false
           }
         }
@@ -5493,6 +5990,83 @@
       ]
     },
     {
+      "path": "src/test/fts-adversarial.test.ts",
+      "sha256": "a5d9ba8e7eed35ab41c0bbdb6739f57ce261ba5f2c1b0a8287119850ec6143cb",
+      "imports": [
+        "node:fs",
+        "node:path",
+        "better-sqlite3",
+        "vitest",
+        "../lib/db.js",
+        "../lib/dbSearch.js",
+        "./_helpers.js"
+      ],
+      "mocks": [],
+      "tests": [
+        {
+          "id": "src/test/fts-adversarial.test.ts:15",
+          "line": 15,
+          "name": "G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search",
+          "suites": [
+            "FTS duplicate attacks"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/fts-adversarial.test.ts:36",
+          "line": 36,
+          "name": "G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+          "suites": [
+            "FTS duplicate attacks"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toEqual",
+            "toEqual",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/fts-adversarial.test.ts:104",
+          "line": 104,
+          "name": "ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable",
+          "suites": [
+            "FTS duplicate attacks"
+          ],
+          "declaration": "it.fails",
+          "assertions": [
+            "toEqual",
+            "toEqual",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        }
+      ]
+    },
+    {
       "path": "src/test/fts-or-fallback.test.ts",
       "sha256": "3b2f48e78a966cfaed87a87c78105c9ead91cd6b0e2b5ddb64acc6a857f87a30",
       "imports": [
@@ -6383,6 +6957,39 @@
       ]
     },
     {
+      "path": "src/test/http-json-adversarial.test.ts",
+      "sha256": "edab6d44bf5cfaad411e1928390249e409c786f15c6dc6d110a4ba41a32ec7fd",
+      "imports": [
+        "@modelcontextprotocol/sdk/server/mcp.js",
+        "vitest",
+        "../lib/mcpHttp.js"
+      ],
+      "mocks": [],
+      "tests": [
+        {
+          "id": "src/test/http-json-adversarial.test.ts:9",
+          "line": 9,
+          "name": "rejects a malformed POST with HTTP 400 and keeps the server healthy",
+          "suites": [
+            "HTTP MCP malformed JSON"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toBe",
+            "toBe",
+            "toMatchObject"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": true,
+            "sourceInspection": false
+          }
+        }
+      ]
+    },
+    {
       "path": "src/test/hybrid-degrade-warning.test.ts",
       "sha256": "3b9d92918d4bfe5252faf364e0d9d8e4684bbd7143f6d2d6046285e87d3a5ebf",
       "imports": [
@@ -6829,7 +7436,7 @@
     },
     {
       "path": "src/test/import-concurrency-wiring.test.ts",
-      "sha256": "fff02e22f28882ebb32781a6420a067f99befd0e0d07bcacec14b9090b0cb3dc",
+      "sha256": "a33cc2557cea6d010b78194049566907b7288df3b50ea46a0dfb4f4c1b31722a",
       "imports": [
         "vitest",
         "http",
@@ -6850,7 +7457,7 @@
           "suites": [
             "bulk import concurrency through CLI and MCP"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [
             "toBe",
             "toContain"
@@ -6891,7 +7498,7 @@
           "suites": [
             "bulk import concurrency through CLI and MCP"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [
             "toBe",
             "toContain"
@@ -8793,7 +9400,7 @@
     },
     {
       "path": "src/test/lifecycle-invariants.test.ts",
-      "sha256": "65c0a2c9db1724c1a70c3e6cc7fe669a3416aef1f476e92b3c9c40250fd5a202",
+      "sha256": "10f32d8ff64a6f4814678d77810616652fe4f7082f232fae7f3436c64a97d983",
       "imports": [
         "vitest",
         "./_helpers.js",
@@ -8840,7 +9447,7 @@
           "suites": [
             "memory lifecycle through database reads and search"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [
             "toEqual",
             "toEqual"
@@ -21635,6 +22242,65 @@
       ]
     },
     {
+      "path": "src/test/routing-reset-adversarial.test.ts",
+      "sha256": "711201ca29e79a589417b5eaaa8f3cef9c7d1ff7004e4241f22dd78e0ef30259",
+      "imports": [
+        "node:fs",
+        "node:os",
+        "node:path",
+        "node:readline/promises",
+        "node:stream",
+        "vitest",
+        "./_helpers.js"
+      ],
+      "mocks": [],
+      "tests": [
+        {
+          "id": "src/test/routing-reset-adversarial.test.ts:85",
+          "line": 85,
+          "name": "DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+          "suites": [
+            "routing reset attacks"
+          ],
+          "declaration": "it.fails",
+          "assertions": [
+            "toBe",
+            "toEqual",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/routing-reset-adversarial.test.ts:93",
+          "line": 93,
+          "name": "DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+          "suites": [
+            "routing reset attacks"
+          ],
+          "declaration": "it.fails",
+          "assertions": [
+            "toBe",
+            "toBe",
+            "toEqual",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        }
+      ]
+    },
+    {
       "path": "src/test/sandbox-status-invoke.test.ts",
       "sha256": "167f282ba3a3ea38b9758ae5dffd83f8084089710ff6a3ec6232f6a0d8a00b7f",
       "imports": [
@@ -21947,25 +22613,86 @@
       ]
     },
     {
+      "path": "src/test/setup-adversarial.test.ts",
+      "sha256": "c5c7cd45b24a26772da760fc4c042a7f55fb6df810bbea68149fec4938447c5d",
+      "imports": [
+        "node:child_process",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "vitest",
+        "./_pty-relay.js"
+      ],
+      "mocks": [],
+      "tests": [
+        {
+          "id": "src/test/setup-adversarial.test.ts:61",
+          "line": 61,
+          "name": "G2-D001 Ctrl+C at IDE integration exits 130",
+          "suites": [
+            "setup exit status after the provider prompt"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toBe",
+            "toContain",
+            "toContain",
+            "toBe"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/setup-adversarial.test.ts:69",
+          "line": 69,
+          "name": "completes the interactive core-memory setup with exit 0",
+          "suites": [
+            "setup exit status after the provider prompt"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toBe",
+            "toContain",
+            "toContain",
+            "toContain",
+            "toBe"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        }
+      ]
+    },
+    {
       "path": "src/test/setup-ctrlc.test.ts",
-      "sha256": "98e75d2359d5c46343a9c983286896b3b922a793d13d669a7a0a499788feaa73",
+      "sha256": "82d8c9f7d99c02f7363b87ddf4c910bfede9405ac687c7c2d05e2444ac743183",
       "imports": [
         "vitest",
         "child_process",
         "path",
         "os",
-        "fs"
+        "fs",
+        "./_pty-relay.js"
       ],
       "mocks": [],
       "tests": [
         {
-          "id": "src/test/setup-ctrlc.test.ts:100",
-          "line": 100,
+          "id": "src/test/setup-ctrlc.test.ts:72",
+          "line": 72,
           "name": "gnosys setup exits cleanly on SIGINT",
           "suites": [
             "Phase B — Ctrl+C clean exit"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [
             "toBe"
           ],
@@ -21978,8 +22705,8 @@
           }
         },
         {
-          "id": "src/test/setup-ctrlc.test.ts:104",
-          "line": 104,
+          "id": "src/test/setup-ctrlc.test.ts:76",
+          "line": 76,
           "name": "gnosys setup models exits cleanly on SIGINT",
           "suites": [
             "Phase B — Ctrl+C clean exit"
@@ -21997,8 +22724,8 @@
           }
         },
         {
-          "id": "src/test/setup-ctrlc.test.ts:108",
-          "line": 108,
+          "id": "src/test/setup-ctrlc.test.ts:80",
+          "line": 80,
           "name": "gnosys setup ides exits cleanly on SIGINT",
           "suites": [
             "Phase B — Ctrl+C clean exit"
@@ -23880,7 +24607,7 @@
     },
     {
       "path": "src/test/setup-ui-summary.test.ts",
-      "sha256": "257fd379e5d9ec2961d66b63869aad12dc08766846dba9c5571b8690b6da3bfc",
+      "sha256": "169124065c3f5c03f36b4d11b7755646112edb09c604a906e3b6ac076edd7084",
       "imports": [
         "vitest",
         "node:fs",
@@ -24004,7 +24731,7 @@
           "suites": [
             "Phase C — settings panel (summary)"
           ],
-          "declaration": "it",
+          "declaration": "it.fails",
           "assertions": [
             "toBe",
             "toHaveLength",
@@ -32180,8 +32907,167 @@
       ]
     },
     {
+      "path": "src/test/vscode-adversarial.test.ts",
+      "sha256": "e060eb7bfc997d06336c09f7aca2e30c89c39cfe1543dc27154a301c8171054c",
+      "imports": [
+        "node:child_process",
+        "node:crypto",
+        "node:fs",
+        "node:os",
+        "node:path",
+        "vitest",
+        "zod",
+        "../lib/db.js",
+        "./_helpers.js"
+      ],
+      "mocks": [],
+      "tests": [
+        {
+          "id": "src/test/vscode-adversarial.test.ts:149",
+          "line": 149,
+          "name": "D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant",
+          "suites": [
+            "VS Code adversarial public commands"
+          ],
+          "declaration": "it.fails",
+          "assertions": [],
+          "signals": {
+            "noLocalExpect": true,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/vscode-adversarial.test.ts:159",
+          "line": 159,
+          "name": "`D-VSC-001: ${label} warns without launching a subprocess`",
+          "suites": [
+            "VS Code adversarial public commands"
+          ],
+          "declaration": "it.fails",
+          "assertions": [
+            "toEqual",
+            "toEqual",
+            "toEqual",
+            "toEqual",
+            "toHaveLength",
+            "toMatch"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/vscode-adversarial.test.ts:173",
+          "line": 173,
+          "name": "`D-VSC-002: rejects ${component} with ${separator === \"/\" ? \"POSIX\" : \"Windows\"} separators`",
+          "suites": [
+            "VS Code adversarial public commands"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toEqual",
+            "toEqual",
+            "toEqual",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/vscode-adversarial.test.ts:183",
+          "line": 183,
+          "name": "`D-VSC-002: accepts deeply nested exact .gnosys with ${separator === \"/\" ? \"POSIX\" : \"Windows\"} separators`",
+          "suites": [
+            "VS Code adversarial public commands"
+          ],
+          "declaration": "it.fails",
+          "assertions": [],
+          "signals": {
+            "noLocalExpect": true,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/vscode-adversarial.test.ts:201",
+          "line": 201,
+          "name": "`D-VSC-003: ${label} in the selected path cannot execute shell text or change the selected ID`",
+          "suites": [
+            "VS Code adversarial public commands"
+          ],
+          "declaration": "it.fails",
+          "assertions": [
+            "toBe",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/vscode-adversarial.test.ts:210",
+          "line": 210,
+          "name": "D-VSC-003: every extension command launches processes without a shell",
+          "suites": [
+            "VS Code adversarial public commands"
+          ],
+          "declaration": "it.fails",
+          "assertions": [
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        },
+        {
+          "id": "src/test/vscode-adversarial.test.ts:217",
+          "line": 217,
+          "name": "D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+          "suites": [
+            "VS Code adversarial public commands"
+          ],
+          "declaration": "it",
+          "assertions": [
+            "toHaveLength",
+            "toContain",
+            "toEqual",
+            "toEqual"
+          ],
+          "signals": {
+            "noLocalExpect": false,
+            "weakMatchers": [],
+            "snapshot": false,
+            "conditional": false,
+            "sourceInspection": false
+          }
+        }
+      ]
+    },
+    {
       "path": "src/test/vscode-extension.test.ts",
-      "sha256": "2fedcd3d469752516d9f46cc8af6c8e1054ab71b73b5252c801121caaa7d7f5c",
+      "sha256": "c22054ca1eb1cfbafc9588cea47ac02b9c33f50556e5e6600f998eab96645386",
       "imports": [
         "node:child_process",
         "node:fs",
@@ -32254,8 +33140,8 @@
           }
         },
         {
-          "id": "src/test/vscode-extension.test.ts:72",
-          "line": 72,
+          "id": "src/test/vscode-extension.test.ts:73",
+          "line": 73,
           "name": "D-VSC-001: reinforcing an open memory resets its persisted decay date",
           "suites": [
             "VS Code extension public commands"
@@ -32275,13 +33161,13 @@
           }
         },
         {
-          "id": "src/test/vscode-extension.test.ts:80",
-          "line": 80,
+          "id": "src/test/vscode-extension.test.ts:81",
+          "line": 81,
           "name": "D-VSC-002: rejects a directory whose name only starts with .gnosys",
           "suites": [
             "VS Code extension public commands"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [
             "toEqual"
           ],
@@ -32294,16 +33180,16 @@
           }
         },
         {
-          "id": "src/test/vscode-extension.test.ts:86",
-          "line": 86,
-          "name": "D-VSC-003: passes shell syntax in a filename as literal text",
+          "id": "src/test/vscode-extension.test.ts:87",
+          "line": 87,
+          "name": "D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename",
           "suites": [
             "VS Code extension public commands"
           ],
           "declaration": "it.fails",
           "assertions": [
-            "toEqual",
-            "toBe"
+            "toBe",
+            "toEqual"
           ],
           "signals": {
             "noLocalExpect": false,
@@ -32314,13 +33200,13 @@
           }
         },
         {
-          "id": "src/test/vscode-extension.test.ts:93",
-          "line": 93,
+          "id": "src/test/vscode-extension.test.ts:96",
+          "line": 96,
           "name": "D-VSC-004: the dashboard action opens a command supported by the installed CLI",
           "suites": [
             "VS Code extension public commands"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [
             "toEqual",
             "toEqual"

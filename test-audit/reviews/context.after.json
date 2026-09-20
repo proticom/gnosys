@@ -60,23 +60,23 @@
       "file": "src/test/commit-context.test.ts",
       "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-CTX-001",
       "mutationIds": [
-        "context-cli-config-repair"
+        "ADV-CTX-D001-provider-f4b9135"
       ],
-      "evidence": "Ordinary regression fails on the real CLI/MCP path; inverse repair makes the expected-failure case unexpectedly pass. Application restored."
+      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) ADV-CTX-D001-provider-f4b9135; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json."
     },
     {
       "file": "src/test/commit-context.test.ts",
       "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-CTX-002",
       "mutationIds": [
-        "context-scoped-dedup-repair"
+        "ADV-CTX-D002-lookup-f4b9135"
       ],
-      "evidence": "Ordinary regression fails on the real CLI/MCP path; inverse repair makes the expected-failure case unexpectedly pass. Application restored."
+      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) ADV-CTX-D002-lookup-f4b9135; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json."
     }
   ]
 }

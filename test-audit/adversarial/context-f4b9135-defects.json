@@ -1,0 +1,235 @@
+{
+  "newDefects": [
+    {
+      "id": "ADV-CTX-001",
+      "title": "JSON config display exposes stored provider keys",
+      "test": "src/test/config-display-adversarial.test.ts",
+      "testName": "adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes",
+      "expected": "config show --json preserves useful provider/model metadata without printing stored apiKey bytes; the stored key stays unchanged.",
+      "actual": "The command exits0 and prints the literal fake stored key fixture-only-config-key-7f94a31c inside llm.custom.apiKey.",
+      "cause": "runConfigShowCommand writes JSON.stringify(cfg) without redacting apiKey fields.",
+      "source": [
+        "src/lib/configCommand.ts:55"
+      ],
+      "reproduction": "node test-audit/adversarial/context-f4b9135-ordinary.mjs",
+      "status": "OPEN; ordinary failure measured on the frozen application ref; expected-failure test retained; no application repair included.",
+      "featureIds": [
+        "F03"
+      ],
+      "evidenceFiles": [
+        "test-audit/adversarial/context-f4b9135-ordinary.json",
+        "test-audit/adversarial/context-f4b9135-ordinary-summary.json"
+      ],
+      "applicationRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+      "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412"
+    },
+    {
+      "id": "ADV-CTX-002",
+      "title": "CLI and MCP bulk import report successful records without persisting them",
+      "test": "src/test/context-adversarial.test.ts",
+      "testName": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+      "expected": "Each non-dry-run import persists both structured memories and reports Imported:2.",
+      "actual": "At frozen commit f4b9135, CLI exits0 with Imported:2/Failed:0/Total:2 and MCP returns isError:false with the same counters; reopening the central DB after either isolated operation returns zero memories.",
+      "cause": "Both callers omit the optional DB argument to performImport, whose persistence block runs only when db is supplied. Both affected surfaces are now measured, not inferred.",
+      "source": [
+        "src/index.ts:2200",
+        "src/lib/import.ts:371",
+        "src/lib/importCommand.ts:106"
+      ],
+      "reproduction": "node test-audit/adversarial/context-f4b9135-ordinary.mjs",
+      "status": "OPEN; ordinary failure measured on the frozen application ref; expected-failure test retained; no application repair included.",
+      "featureIds": [
+        "F19"
+      ],
+      "evidenceFiles": [
+        "test-audit/adversarial/context-f4b9135-ordinary.json",
+        "test-audit/adversarial/context-f4b9135-ordinary-summary.json"
+      ],
+      "testNames": [
+        "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+        "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories"
+      ],
+      "applicationRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+      "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412"
+    }
+  ],
+  "knownDefectVariants": [
+    {
+      "defectId": "D-CTX-001",
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+      "historicalOrdinaryFailureEvidence": "test-audit/adversarial/context-ordinary.json",
+      "currentStatus": "repaired; ordinary test passes and direct fault is killed",
+      "mutationIds": [
+        "ADV-CTX-D001-provider-f4b9135"
+      ]
+    },
+    {
+      "defectId": "G2-D003",
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+      "historicalOrdinaryFailureEvidence": "test-audit/adversarial/context-ordinary.json",
+      "currentStatus": "repaired; ordinary test passes and direct fault is killed",
+      "mutationIds": [
+        "ADV-CTX-G2D003-provider-f4b9135"
+      ]
+    },
+    {
+      "defectId": "D-CTX-001",
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+      "historicalOrdinaryFailureEvidence": "test-audit/adversarial/context-ordinary.json",
+      "currentStatus": "repaired; ordinary test passes and direct fault is killed",
+      "mutationIds": [
+        "ADV-CTX-D001-guidance-f4b9135"
+      ]
+    },
+    {
+      "defectId": "D-CTX-002",
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+      "historicalOrdinaryFailureEvidence": "test-audit/adversarial/context-ordinary.json",
+      "currentStatus": "repaired; ordinary test passes and direct fault is killed",
+      "mutationIds": [
+        "ADV-CTX-D002-lookup-f4b9135"
+      ]
+    }
+  ],
+  "newBugsFixed": false,
+  "knownFixValidation": [
+    {
+      "id": "D-CTX-001",
+      "ref": "636e032",
+      "ordinaryPasses": 3,
+      "evidence": "test-audit/adversarial/context-636e032-ordinary.json"
+    },
+    {
+      "id": "G2-D003",
+      "ref": "3021bf5",
+      "ordinaryPasses": 3,
+      "evidence": "test-audit/adversarial/context-3021bf5-ordinary.json"
+    },
+    {
+      "id": "D-CTX-002",
+      "ref": "a420e3b",
+      "ordinaryPasses": 5,
+      "evidence": "test-audit/adversarial/context-a420e3b-ordinary.json"
+    }
+  ],
+  "finalApplicationRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+  "finalApplicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+  "finalKnownFixValidation": [
+    {
+      "beforeId": "src/test/commit-context.test.ts:113",
+      "file": "src/test/commit-context.test.ts",
+      "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
+      "action": "expected_failure_to_ordinary",
+      "defectId": "D-CTX-002",
+      "ordinaryStatus": "passed",
+      "mutationIds": [
+        "ADV-CTX-D002-lookup-f4b9135"
+      ],
+      "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+      "initialValidatedApplicationRef": "a420e3b727c33a578aed2c089d72841f5a4441f9",
+      "applicationRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906"
+    },
+    {
+      "beforeId": "src/test/commit-context.test.ts:137",
+      "file": "src/test/commit-context.test.ts",
+      "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
+      "action": "expected_failure_to_ordinary",
+      "defectId": "D-CTX-001",
+      "ordinaryStatus": "passed",
+      "mutationIds": [
+        "ADV-CTX-D001-provider-f4b9135"
+      ],
+      "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+      "initialValidatedApplicationRef": "a420e3b727c33a578aed2c089d72841f5a4441f9",
+      "applicationRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906"
+    },
+    {
+      "beforeId": "src/test/context-adversarial.test.ts:29",
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+      "action": "expected_failure_to_ordinary",
+      "defectId": "D-CTX-001",
+      "ordinaryStatus": "passed",
+      "mutationIds": [
+        "ADV-CTX-D001-provider-f4b9135"
+      ],
+      "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+      "initialValidatedApplicationRef": "a420e3b727c33a578aed2c089d72841f5a4441f9",
+      "applicationRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906"
+    },
+    {
+      "beforeId": "src/test/context-adversarial.test.ts:48",
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+      "action": "expected_failure_to_ordinary",
+      "defectId": "G2-D003",
+      "ordinaryStatus": "passed",
+      "mutationIds": [
+        "ADV-CTX-G2D003-provider-f4b9135"
+      ],
+      "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+      "initialValidatedApplicationRef": "a420e3b727c33a578aed2c089d72841f5a4441f9",
+      "applicationRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906"
+    },
+    {
+      "beforeId": "src/test/context-adversarial.test.ts:75",
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+      "action": "expected_failure_to_ordinary",
+      "defectId": "D-CTX-001",
+      "ordinaryStatus": "passed",
+      "mutationIds": [
+        "ADV-CTX-D001-guidance-f4b9135"
+      ],
+      "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+      "initialValidatedApplicationRef": "a420e3b727c33a578aed2c089d72841f5a4441f9",
+      "applicationRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906"
+    },
+    {
+      "beforeId": "src/test/context-adversarial.test.ts:122",
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+      "action": "expected_failure_to_ordinary",
+      "defectId": "D-CTX-002",
+      "ordinaryStatus": "passed",
+      "mutationIds": [
+        "ADV-CTX-D002-lookup-f4b9135"
+      ],
+      "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+      "initialValidatedApplicationRef": "a420e3b727c33a578aed2c089d72841f5a4441f9",
+      "applicationRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906"
+    },
+    {
+      "beforeId": "src/test/import-concurrency-wiring.test.ts:81",
+      "file": "src/test/import-concurrency-wiring.test.ts",
+      "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
+      "action": "expected_failure_to_ordinary",
+      "defectId": "G2-D003",
+      "ordinaryStatus": "passed",
+      "mutationIds": [
+        "ADV-CTX-G2D003-provider-f4b9135"
+      ],
+      "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+      "initialValidatedApplicationRef": "a420e3b727c33a578aed2c089d72841f5a4441f9",
+      "applicationRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906"
+    },
+    {
+      "beforeId": "src/test/import-concurrency-wiring.test.ts:106",
+      "file": "src/test/import-concurrency-wiring.test.ts",
+      "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
+      "action": "expected_failure_to_ordinary",
+      "defectId": "G2-D003",
+      "ordinaryStatus": "passed",
+      "mutationIds": [
+        "ADV-CTX-G2D003-provider-f4b9135"
+      ],
+      "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+      "initialValidatedApplicationRef": "a420e3b727c33a578aed2c089d72841f5a4441f9",
+      "applicationRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906"
+    }
+  ]
+}

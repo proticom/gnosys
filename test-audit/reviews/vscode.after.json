@@ -30,9 +30,10 @@
       "action": "added",
       "defectId": null,
       "mutationIds": [
-        "vscode-command-error"
+        "vscode-command-error",
+        "vscode-e2-launch-error-hidden"
       ],
-      "evidence": "Literal editor notification changes fail under recorded application mutations; restored code passes."
+      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) vscode-e2-launch-error-hidden; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json."
     },
     {
       "file": "src/test/vscode-extension.test.ts",
@@ -40,43 +41,39 @@
       "classification": "STRONG",
       "action": "expected_failure",
       "defectId": "D-VSC-001",
-      "mutationIds": [
-        "repair-D-VSC-001"
-      ],
-      "evidence": "Public extension command drives real local CLI; only VS Code host services are replaced. Expected-failure repair probes become unexpected passes and restored code returns to expected failure."
+      "mutationIds": [],
+      "evidence": "Ordinary failure reproduced for D-VSC-001; see test-audit/adversarial/final-open-ordinary.json. This detects an open defect and does not prove successful behavior."
     },
     {
       "file": "src/test/vscode-extension.test.ts",
       "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-002",
       "mutationIds": [
-        "repair-D-VSC-002"
+        "vscode-e2-directory-substring"
       ],
-      "evidence": "Public extension command drives real local CLI; only VS Code host services are replaced. Expected-failure repair probes become unexpected passes and restored code returns to expected failure."
+      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) vscode-e2-directory-substring; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json."
     },
     {
       "file": "src/test/vscode-extension.test.ts",
-      "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+      "name": "VS Code extension public commands D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename",
       "classification": "STRONG",
       "action": "expected_failure",
-      "defectId": "D-VSC-003",
-      "mutationIds": [
-        "repair-D-VSC-003"
-      ],
-      "evidence": "Public extension command drives real local CLI; only VS Code host services are replaced. Expected-failure repair probes become unexpected passes and restored code returns to expected failure."
+      "defectId": "D-VSC-001",
+      "mutationIds": [],
+      "evidence": "Ordinary failure reproduced for D-VSC-001; see test-audit/adversarial/final-open-ordinary.json. This detects an open defect and does not prove successful behavior."
     },
     {
       "file": "src/test/vscode-extension.test.ts",
       "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-004",
       "mutationIds": [
-        "repair-D-VSC-004"
+        "vscode-e2-removed-dashboard-command"
       ],
-      "evidence": "Public extension command drives real local CLI; only VS Code host services are replaced. Expected-failure repair probes become unexpected passes and restored code returns to expected failure."
+      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) vscode-e2-removed-dashboard-command; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json."
     }
   ]
 }

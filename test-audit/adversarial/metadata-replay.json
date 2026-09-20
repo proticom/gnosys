@@ -1,0 +1,10 @@
+{
+  "equal": true,
+  "hashes": {
+    "test-audit/defects.json": "111b8b5b1c86971add698d1a50ae6f9aa0bdbd66a1c73d8b2e0da618610a8166",
+    "test-audit/reviews/adversarial.after.json": "d2d503170ac3cd92fd84c8a7bbdae9045dfd553a8c1eb296cf899e3ea97a2527",
+    "test-audit/adversarial/acceptance.json": "1e55bd917c2098171395ea17b8656ae90df466dbb7172e0739e97f6eecea5362",
+    "test-audit/feature-coverage.json": "34b5c918cb210724eec7319c51d99e88ac1aa6decd123da75db03be2c47f86d8",
+    "test-audit/adversarial/feature-restatus.json": "c89517b7aba51e6127dd61e4e14f24505f74b280354e6f0d77c5fc3baaacdb63"
+  }
+}

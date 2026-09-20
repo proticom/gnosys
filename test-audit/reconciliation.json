@@ -1,11 +1,12 @@
 {
   "schemaVersion": 1,
   "base": "203c4e7",
-  "cwd": "/Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit",
+  "cwd": "/Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit-qa",
   "evidence": {
-    "runtime": "test-audit/evidence/final-full-suite.json",
+    "runtime": "test-audit/adversarial/repair-unit-full.json",
     "baselineRuntime": "test-audit/evidence/baseline.json",
     "actionFiles": [
+      "adversarial.after.json",
       "cli.after.json",
       "context.after.json",
       "external.after.json",
@@ -21,19 +22,19 @@
   "allCurrentClassificationsStrong": true,
   "counts": {
     "originalDeclarations": 1748,
-    "currentDeclarations": 1532,
-    "runtimeCases": 1693,
+    "currentDeclarations": 1568,
+    "runtimeCases": 1746,
     "originalActions": 1748,
     "declarationClassifications": {
-      "STRONG": 1532
+      "STRONG": 1568
     },
     "runtimeClassifications": {
-      "STRONG": 1693
+      "STRONG": 1746
     },
     "changes": {
       "unchanged": 1010,
       "changed_or_renamed": 504,
-      "new": 18
+      "new": 54
     },
     "issues": {}
   },
@@ -6185,8 +6186,8 @@
       "runtimePattern": "^context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories$",
       "dynamicName": false,
       "bodyHash": "75fdc2567d24b1ceacc1acc902aedc3becfb836736a34f0a368bd6c7acb018d1",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
@@ -6197,7 +6198,7 @@
           "actions": [
             {
               "ref": "context.after.json#additional:6",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -6281,8 +6282,8 @@
       "runtimePattern": "^context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context$",
       "dynamicName": false,
       "bodyHash": "1986fd4dc41a974a84cdcfb8da33e1ab6e3a66605ca08b3c37a07a90e2780075",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
@@ -6293,6 +6294,70 @@
           "actions": [
             {
               "ref": "context.after.json#additional:5",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/config-display-adversarial.test.ts:26",
+      "file": "src/test/config-display-adversarial.test.ts",
+      "line": 26,
+      "name": "human config output names the key source without exposing stored key bytes",
+      "suites": [
+        "adversarial config display"
+      ],
+      "sourceName": "adversarial config display human config output names the key source without exposing stored key bytes",
+      "runtimePattern": "^adversarial config display human config output names the key source without exposing stored key bytes$",
+      "dynamicName": false,
+      "bodyHash": "419118720196d32d4bed83e13caf3b41aab7ba305ac2c04cff8186b0dabc02df",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "adversarial config display human config output names the key source without exposing stored key bytes",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:0",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/config-display-adversarial.test.ts:35",
+      "file": "src/test/config-display-adversarial.test.ts",
+      "line": 35,
+      "name": "ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes",
+      "suites": [
+        "adversarial config display"
+      ],
+      "sourceName": "adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes",
+      "runtimePattern": "^adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes$",
+      "dynamicName": false,
+      "bodyHash": "fe85b5c79f2cc70efd06e6f2d7f547f29128cc44b18276527f5a196de9108f50",
+      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
+      "declaration": "it.fails",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:1",
               "action": "expected_failure",
               "beforeId": null,
               "classification": "STRONG"
@@ -6363,6 +6428,614 @@
               "ref": "group2.after.json#original:46",
               "action": "kept",
               "beforeId": "src/test/config-knob-removal.test.ts:74",
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/context-adversarial.test.ts:29",
+      "file": "src/test/context-adversarial.test.ts",
+      "line": 29,
+      "name": "D-CTX-001 custom-provider CLI context commits the new journal decision",
+      "suites": [
+        "adversarial context and provider routing"
+      ],
+      "sourceName": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+      "runtimePattern": "^adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision$",
+      "dynamicName": false,
+      "bodyHash": "3af7ebd94597f167843e1618ca4b4424d3f03ee2665b7b83c7e79b3567e8d69c",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:2",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/context-adversarial.test.ts:36",
+      "file": "src/test/context-adversarial.test.ts",
+      "line": 36,
+      "name": "custom-provider MCP context commits the same journal decision",
+      "suites": [
+        "adversarial context and provider routing"
+      ],
+      "sourceName": "adversarial context and provider routing custom-provider MCP context commits the same journal decision",
+      "runtimePattern": "^adversarial context and provider routing custom-provider MCP context commits the same journal decision$",
+      "dynamicName": false,
+      "bodyHash": "ce29513d09e56cc19ff00f6e23e5b01045956925230be26bb44230df8ecf9167",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "adversarial context and provider routing custom-provider MCP context commits the same journal decision",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:3",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/context-adversarial.test.ts:48",
+      "file": "src/test/context-adversarial.test.ts",
+      "line": 48,
+      "name": "G2-D003 custom-provider CLI bulk import uses configured concurrency",
+      "suites": [
+        "adversarial context and provider routing"
+      ],
+      "sourceName": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+      "runtimePattern": "^adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency$",
+      "dynamicName": false,
+      "bodyHash": "9efd2aa2e7b094b62ee174298bf518c329df7af280135aa1fa2a345f158c3bed",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:4",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/context-adversarial.test.ts:55",
+      "file": "src/test/context-adversarial.test.ts",
+      "line": 55,
+      "name": "custom-provider MCP bulk import uses configured concurrency",
+      "suites": [
+        "adversarial context and provider routing"
+      ],
+      "sourceName": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency",
+      "runtimePattern": "^adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency$",
+      "dynamicName": false,
+      "bodyHash": "99cd6db14eb5722c7e5ebd5fbcddde25696c9c4b2004b7fc16e6814ef51fc35e",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:5",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/context-adversarial.test.ts:64",
+      "file": "src/test/context-adversarial.test.ts",
+      "line": 64,
+      "name": "ADV-CTX-002 normal CLI bulk import persists the reported memories",
+      "suites": [
+        "adversarial context and provider routing"
+      ],
+      "sourceName": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+      "runtimePattern": "^adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories$",
+      "dynamicName": false,
+      "bodyHash": "a15b77c43094a46d6d8adfb261b0a7bbfd2443d9babd636d8988571aa744cab9",
+      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
+      "declaration": "it.fails",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:6",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/context-adversarial.test.ts:75",
+      "file": "src/test/context-adversarial.test.ts",
+      "line": 75,
+      "name": "ADV-CTX-002 normal MCP bulk import persists the reported memories",
+      "suites": [
+        "adversarial context and provider routing"
+      ],
+      "sourceName": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+      "runtimePattern": "^adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories$",
+      "dynamicName": false,
+      "bodyHash": "ac22f65c9d0cb48a2c0ffc9a298c024bcebf696221b9749d2ee138cc1c8ccd80",
+      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
+      "declaration": "it.fails",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:7",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/context-adversarial.test.ts:86",
+      "file": "src/test/context-adversarial.test.ts",
+      "line": 86,
+      "name": "D-CTX-001 context without a provider fails with setup guidance",
+      "suites": [
+        "adversarial context and provider routing"
+      ],
+      "sourceName": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+      "runtimePattern": "^adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance$",
+      "dynamicName": false,
+      "bodyHash": "2182a23e9031a03a07269fd2aed512dc5d0cf4d04002db5f9cd914e12baf74d3",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:8",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/context-adversarial.test.ts:94",
+      "file": "src/test/context-adversarial.test.ts",
+      "line": 94,
+      "name": "CLI import without a provider fails with setup guidance",
+      "suites": [
+        "adversarial context and provider routing"
+      ],
+      "sourceName": "adversarial context and provider routing CLI import without a provider fails with setup guidance",
+      "runtimePattern": "^adversarial context and provider routing CLI import without a provider fails with setup guidance$",
+      "dynamicName": false,
+      "bodyHash": "409d1a78b6b3b62016ef2188d25fc05feb6cd2bd50ce9f94fc0a02f4ee0db5e4",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "adversarial context and provider routing CLI import without a provider fails with setup guidance",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:9",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/context-adversarial.test.ts:103",
+      "file": "src/test/context-adversarial.test.ts",
+      "line": 103,
+      "name": "MCP context without a provider fails with setup guidance",
+      "suites": [
+        "adversarial context and provider routing"
+      ],
+      "sourceName": "adversarial context and provider routing MCP context without a provider fails with setup guidance",
+      "runtimePattern": "^adversarial context and provider routing MCP context without a provider fails with setup guidance$",
+      "dynamicName": false,
+      "bodyHash": "0189e8cc8a663e96df0779fba18c14a8e521aa4451f63f6021ee478944855446",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "adversarial context and provider routing MCP context without a provider fails with setup guidance",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:10",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/context-adversarial.test.ts:112",
+      "file": "src/test/context-adversarial.test.ts",
+      "line": 112,
+      "name": "MCP import without a provider fails with setup guidance",
+      "suites": [
+        "adversarial context and provider routing"
+      ],
+      "sourceName": "adversarial context and provider routing MCP import without a provider fails with setup guidance",
+      "runtimePattern": "^adversarial context and provider routing MCP import without a provider fails with setup guidance$",
+      "dynamicName": false,
+      "bodyHash": "5bb7f2e1b091d2d7f78ad9d78ccc50d861777a4ab563bd2de35d1baa171eb7f9",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "adversarial context and provider routing MCP import without a provider fails with setup guidance",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:11",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/context-adversarial.test.ts:123",
+      "file": "src/test/context-adversarial.test.ts",
+      "line": 123,
+      "name": "the same context is saved independently in projects A and B",
+      "suites": [
+        "adversarial project selection"
+      ],
+      "sourceName": "adversarial project selection the same context is saved independently in projects A and B",
+      "runtimePattern": "^adversarial project selection the same context is saved independently in projects A and B$",
+      "dynamicName": false,
+      "bodyHash": "eb0cde6ef2c30b289c03cdc6e4df73033000efb24d37ad1e1097de66a53684f5",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "adversarial project selection the same context is saved independently in projects A and B",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:12",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/context-adversarial.test.ts:133",
+      "file": "src/test/context-adversarial.test.ts",
+      "line": 133,
+      "name": "D-CTX-002 repeated B context skips only B's already saved journal",
+      "suites": [
+        "adversarial project selection"
+      ],
+      "sourceName": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+      "runtimePattern": "^adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal$",
+      "dynamicName": false,
+      "bodyHash": "d4d8edfcd7946010f7d759d5b642d88f77f28a6edddf31cfed457845ce7c34fa",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:13",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/context-adversarial.test.ts:142",
+      "file": "src/test/context-adversarial.test.ts",
+      "line": 142,
+      "name": "startup-project context skips its already saved journal",
+      "suites": [
+        "adversarial project selection"
+      ],
+      "sourceName": "adversarial project selection startup-project context skips its already saved journal",
+      "runtimePattern": "^adversarial project selection startup-project context skips its already saved journal$",
+      "dynamicName": false,
+      "bodyHash": "83a40d4902a8f56584071b704cb39628ee0a92a3d908a038c90ca814a731f33c",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "adversarial project selection startup-project context skips its already saved journal",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:14",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/context-adversarial.test.ts:150",
+      "file": "src/test/context-adversarial.test.ts",
+      "line": 150,
+      "name": "explicit project B update resolves the shared relative path inside B",
+      "suites": [
+        "adversarial project selection"
+      ],
+      "sourceName": "adversarial project selection explicit project B update resolves the shared relative path inside B",
+      "runtimePattern": "^adversarial project selection explicit project B update resolves the shared relative path inside B$",
+      "dynamicName": false,
+      "bodyHash": "341731ab51086f45892d6ede6e8c41823cbe3a464135d3c5df9644f9217e3287",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "adversarial project selection explicit project B update resolves the shared relative path inside B",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:15",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/coverage-guard.test.ts:8",
+      "file": "src/test/coverage-guard.test.ts",
+      "line": 8,
+      "name": "fails when the comparison base cannot be resolved",
+      "suites": [
+        "new-file coverage guard"
+      ],
+      "sourceName": "new-file coverage guard fails when the comparison base cannot be resolved",
+      "runtimePattern": "^new-file coverage guard fails when the comparison base cannot be resolved$",
+      "dynamicName": false,
+      "bodyHash": "0e75e7ea0ea83831702cf895ff5c7fa0b413edf2a038b93411fa7183a3d508b4",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "new-file coverage guard fails when the comparison base cannot be resolved",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:16",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/coverage-guard.test.ts:19",
+      "file": "src/test/coverage-guard.test.ts",
+      "line": 19,
+      "name": "passes when HEAD has no added application modules compared with itself",
+      "suites": [
+        "new-file coverage guard"
+      ],
+      "sourceName": "new-file coverage guard passes when HEAD has no added application modules compared with itself",
+      "runtimePattern": "^new-file coverage guard passes when HEAD has no added application modules compared with itself$",
+      "dynamicName": false,
+      "bodyHash": "defa274d965af23bcb93574d4bbd79804fbf80c9734b7ecae4634263ba6dae9d",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "new-file coverage guard passes when HEAD has no added application modules compared with itself",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:17",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/dashboard-html-adversarial.test.ts:40",
+      "file": "src/test/dashboard-html-adversarial.test.ts",
+      "line": 40,
+      "name": "renders malicious roadmap memory titles as literal escaped text",
+      "suites": [
+        "dashboard HTML adversarial stored content"
+      ],
+      "sourceName": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+      "runtimePattern": "^dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text$",
+      "dynamicName": false,
+      "bodyHash": "6cd80c2714426cebb2b170424920e2f9e51844ff707f50e8b5b7e45cc41e909d",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:18",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/dashboard-html-adversarial.test.ts:47",
+      "file": "src/test/dashboard-html-adversarial.test.ts",
+      "line": 47,
+      "name": "renders malicious open-question titles as escaped action text",
+      "suites": [
+        "dashboard HTML adversarial stored content"
+      ],
+      "sourceName": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+      "runtimePattern": "^dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text$",
+      "dynamicName": false,
+      "bodyHash": "27dd8522a341b057c8ecd491aa4c1dd6988b496ce692bf7521822dc71e672ad2",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:19",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/dashboard-html-adversarial.test.ts:54",
+      "file": "src/test/dashboard-html-adversarial.test.ts",
+      "line": 54,
+      "name": "D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript",
+      "suites": [
+        "dashboard HTML adversarial stored content"
+      ],
+      "sourceName": "dashboard HTML adversarial stored content D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript",
+      "runtimePattern": "^dashboard HTML adversarial stored content D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript$",
+      "dynamicName": false,
+      "bodyHash": "e0633e2ec8d47a3fdf2d4d51103284b52b2ac1207560849d416d1115338f3e7f",
+      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
+      "declaration": "it.fails",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "dashboard HTML adversarial stored content D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:20",
+              "action": "expected_failure",
+              "beforeId": null,
               "classification": "STRONG"
             }
           ]
@@ -11066,6 +11739,102 @@
       ]
     },
     {
+      "id": "src/test/fts-adversarial.test.ts:15",
+      "file": "src/test/fts-adversarial.test.ts",
+      "line": 15,
+      "name": "G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search",
+      "suites": [
+        "FTS duplicate attacks"
+      ],
+      "sourceName": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search",
+      "runtimePattern": "^FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search$",
+      "dynamicName": false,
+      "bodyHash": "48d6af4445a9af238c3f3fb34e0c4810e1f00d3874a45f86e6f5673cee57f854",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:21",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/fts-adversarial.test.ts:36",
+      "file": "src/test/fts-adversarial.test.ts",
+      "line": 36,
+      "name": "G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+      "suites": [
+        "FTS duplicate attacks"
+      ],
+      "sourceName": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+      "runtimePattern": "^FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories$",
+      "dynamicName": false,
+      "bodyHash": "2aa03f4a94d0e73ed6f7ce7627d8878ddcdfa7fe67455f6727bb4ec3c39be67a",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:22",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/fts-adversarial.test.ts:104",
+      "file": "src/test/fts-adversarial.test.ts",
+      "line": 104,
+      "name": "ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable",
+      "suites": [
+        "FTS duplicate attacks"
+      ],
+      "sourceName": "FTS duplicate attacks ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable",
+      "runtimePattern": "^FTS duplicate attacks ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable$",
+      "dynamicName": false,
+      "bodyHash": "69422ca1bdfda28a3d50c0b5bbec9182f1c282589c0f911ee02b26dfac3709c5",
+      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
+      "declaration": "it.fails",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "FTS duplicate attacks ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:23",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "src/test/fts-or-fallback.test.ts:63",
       "file": "src/test/fts-or-fallback.test.ts",
       "line": 63,
@@ -12437,6 +13206,38 @@
       ]
     },
     {
+      "id": "src/test/http-json-adversarial.test.ts:9",
+      "file": "src/test/http-json-adversarial.test.ts",
+      "line": 9,
+      "name": "rejects a malformed POST with HTTP 400 and keeps the server healthy",
+      "suites": [
+        "HTTP MCP malformed JSON"
+      ],
+      "sourceName": "HTTP MCP malformed JSON rejects a malformed POST with HTTP 400 and keeps the server healthy",
+      "runtimePattern": "^HTTP MCP malformed JSON rejects a malformed POST with HTTP 400 and keeps the server healthy$",
+      "dynamicName": false,
+      "bodyHash": "ec460aeb8e5d23da5640011337b1d5b2993962ede8a0e94b9bf079183f6db59e",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "HTTP MCP malformed JSON rejects a malformed POST with HTTP 400 and keeps the server healthy",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:24",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "src/test/hybrid-degrade-warning.test.ts:47",
       "file": "src/test/hybrid-degrade-warning.test.ts",
       "line": 47,
@@ -13118,8 +13919,8 @@
       "runtimePattern": "^bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests$",
       "dynamicName": false,
       "bodyHash": "5919612f6792a15c5e0e504f221367f034d7d74ae064eb38d66aefc4b32afe75",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "changed_or_renamed",
       "originalIds": [
         "src/test/import-concurrency-wiring.test.ts:20"
@@ -13132,7 +13933,7 @@
           "actions": [
             {
               "ref": "group2.after.json#original:112",
-              "action": "expected_failure",
+              "action": "rewritten",
               "beforeId": "src/test/import-concurrency-wiring.test.ts:20",
               "classification": "STRONG"
             }
@@ -13186,8 +13987,8 @@
       "runtimePattern": "^bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency$",
       "dynamicName": false,
       "bodyHash": "72c6704e7ac8f4b7240a0a55bfb6cf8e73760f5c4bffcc0645687cb3d8d4846e",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "changed_or_renamed",
       "originalIds": [
         "src/test/import-concurrency-wiring.test.ts:31"
@@ -13200,7 +14001,7 @@
           "actions": [
             {
               "ref": "group2.after.json#original:114",
-              "action": "expected_failure",
+              "action": "rewritten",
               "beforeId": "src/test/import-concurrency-wiring.test.ts:31",
               "classification": "STRONG"
             }
@@ -16340,8 +17141,8 @@
       "runtimePattern": "^memory lifecycle through database reads and search writing the same memory twice keeps one searchable result$",
       "dynamicName": false,
       "bodyHash": "6cdcd5ec1f4b0fca7715e0e5aee29cfeb393c83393c30c9245459125673bdde4",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
@@ -16352,7 +17153,7 @@
           "actions": [
             {
               "ref": "group2.after.json#additional:0",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -35816,6 +36617,70 @@
       ]
     },
     {
+      "id": "src/test/routing-reset-adversarial.test.ts:85",
+      "file": "src/test/routing-reset-adversarial.test.ts",
+      "line": 85,
+      "name": "DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+      "suites": [
+        "routing reset attacks"
+      ],
+      "sourceName": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+      "runtimePattern": "^routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value$",
+      "dynamicName": false,
+      "bodyHash": "8cae7c67d278360dd45fb0590de54bd51e4ec77ae79644019223cc268f89948a",
+      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
+      "declaration": "it.fails",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:25",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/routing-reset-adversarial.test.ts:93",
+      "file": "src/test/routing-reset-adversarial.test.ts",
+      "line": 93,
+      "name": "DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+      "suites": [
+        "routing reset attacks"
+      ],
+      "sourceName": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+      "runtimePattern": "^routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config$",
+      "dynamicName": false,
+      "bodyHash": "549cf4b4904137be3b6582a23e3ed9980b940a79899952ee31bd0398147e392c",
+      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
+      "declaration": "it.fails",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:26",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "src/test/sandbox-status-invoke.test.ts:42",
       "file": "src/test/sandbox-status-invoke.test.ts",
       "line": 42,
@@ -36459,9 +37324,73 @@
       ]
     },
     {
-      "id": "src/test/setup-ctrlc.test.ts:100",
+      "id": "src/test/setup-adversarial.test.ts:61",
+      "file": "src/test/setup-adversarial.test.ts",
+      "line": 61,
+      "name": "G2-D001 Ctrl+C at IDE integration exits 130",
+      "suites": [
+        "setup exit status after the provider prompt"
+      ],
+      "sourceName": "setup exit status after the provider prompt G2-D001 Ctrl+C at IDE integration exits 130",
+      "runtimePattern": "^setup exit status after the provider prompt G2-D001 Ctrl\\+C at IDE integration exits 130$",
+      "dynamicName": false,
+      "bodyHash": "0d1223edc7fd01cc7ecff837afc7e94d1a8ab2a23b0431fbb787f648521a14df",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "setup exit status after the provider prompt G2-D001 Ctrl+C at IDE integration exits 130",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:27",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/setup-adversarial.test.ts:69",
+      "file": "src/test/setup-adversarial.test.ts",
+      "line": 69,
+      "name": "completes the interactive core-memory setup with exit 0",
+      "suites": [
+        "setup exit status after the provider prompt"
+      ],
+      "sourceName": "setup exit status after the provider prompt completes the interactive core-memory setup with exit 0",
+      "runtimePattern": "^setup exit status after the provider prompt completes the interactive core-memory setup with exit 0$",
+      "dynamicName": false,
+      "bodyHash": "2b0aa0ea51eeea3bae1d4826c9d56efd15a06a723698c00a518fa84624c59bd0",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "setup exit status after the provider prompt completes the interactive core-memory setup with exit 0",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:28",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/setup-ctrlc.test.ts:72",
       "file": "src/test/setup-ctrlc.test.ts",
-      "line": 100,
+      "line": 72,
       "name": "gnosys setup exits cleanly on SIGINT",
       "suites": [
         "Phase B — Ctrl+C clean exit"
@@ -36470,8 +37399,8 @@
       "runtimePattern": "^Phase B — Ctrl\\+C clean exit gnosys setup exits cleanly on SIGINT$",
       "dynamicName": false,
       "bodyHash": "221681f989048d37547d16caabf673272b5ccd62630fa547178850ac653b2d22",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "changed_or_renamed",
       "originalIds": [
         "src/test/setup-ctrlc.test.ts:75"
@@ -36484,7 +37413,7 @@
           "actions": [
             {
               "ref": "group2.after.json#original:320",
-              "action": "expected_failure",
+              "action": "rewritten",
               "beforeId": "src/test/setup-ctrlc.test.ts:75",
               "classification": "STRONG"
             }
@@ -36493,9 +37422,9 @@
       ]
     },
     {
-      "id": "src/test/setup-ctrlc.test.ts:104",
+      "id": "src/test/setup-ctrlc.test.ts:76",
       "file": "src/test/setup-ctrlc.test.ts",
-      "line": 104,
+      "line": 76,
       "name": "gnosys setup models exits cleanly on SIGINT",
       "suites": [
         "Phase B — Ctrl+C clean exit"
@@ -36527,9 +37456,9 @@
       ]
     },
     {
-      "id": "src/test/setup-ctrlc.test.ts:108",
+      "id": "src/test/setup-ctrlc.test.ts:80",
       "file": "src/test/setup-ctrlc.test.ts",
-      "line": 108,
+      "line": 80,
       "name": "gnosys setup ides exits cleanly on SIGINT",
       "suites": [
         "Phase B — Ctrl+C clean exit"
@@ -39573,9 +40502,9 @@
       "sourceName": "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config",
       "runtimePattern": "^Phase C — settings panel \\(summary\\) marks an edited routing section after saving and reloading its config$",
       "dynamicName": false,
-      "bodyHash": "47286faa98885c06553b9e5f9d6dd96c5a1c2e4a8401f122822605a25f20a6d2",
-      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
-      "declaration": "it",
+      "bodyHash": "72e55d4bd8bd383a7bf605c5d65cc0ecbc3930dcb2ca189255bc0cab7f80bf2b",
+      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
+      "declaration": "it.fails",
       "change": "changed_or_renamed",
       "originalIds": [
         "src/test/setup-ui-summary.test.ts:153"
@@ -39588,7 +40517,7 @@
           "actions": [
             {
               "ref": "group1.after.json#original:388",
-              "action": "rewritten",
+              "action": "expected_failure",
               "beforeId": "src/test/setup-ui-summary.test.ts:153",
               "classification": "STRONG"
             }
@@ -51875,6 +52804,434 @@
       ]
     },
     {
+      "id": "src/test/vscode-adversarial.test.ts:149",
+      "file": "src/test/vscode-adversarial.test.ts",
+      "line": 149,
+      "name": "D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant",
+      "suites": [
+        "VS Code adversarial public commands"
+      ],
+      "sourceName": "VS Code adversarial public commands D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant",
+      "runtimePattern": "^VS Code adversarial public commands D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant$",
+      "dynamicName": false,
+      "bodyHash": "b73980e479163a8291027b1fa57c69d28767aefc2cf77ae7d4885700cbfdd4a2",
+      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
+      "declaration": "it.fails",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "VS Code adversarial public commands D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:29",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/vscode-adversarial.test.ts:159",
+      "file": "src/test/vscode-adversarial.test.ts",
+      "line": 159,
+      "name": "`D-VSC-001: ${label} warns without launching a subprocess`",
+      "suites": [
+        "VS Code adversarial public commands"
+      ],
+      "sourceName": "VS Code adversarial public commands `D-VSC-001: ${label} warns without launching a subprocess`",
+      "runtimePattern": "^VS Code adversarial public commands D-VSC-001: [\\s\\S]*? warns without launching a subprocess$",
+      "dynamicName": true,
+      "bodyHash": "d0bc7a2b256194c0e76e6da943562bd2cd169da8fea11804aa4865dec875725d",
+      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
+      "declaration": "it.fails",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "VS Code adversarial public commands D-VSC-001: absent ID warns without launching a subprocess",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:30",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-001: empty ID warns without launching a subprocess",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:31",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-001: body-only ID warns without launching a subprocess",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:32",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/vscode-adversarial.test.ts:173",
+      "file": "src/test/vscode-adversarial.test.ts",
+      "line": 173,
+      "name": "`D-VSC-002: rejects ${component} with ${separator === \"/\" ? \"POSIX\" : \"Windows\"} separators`",
+      "suites": [
+        "VS Code adversarial public commands"
+      ],
+      "sourceName": "VS Code adversarial public commands `D-VSC-002: rejects ${component} with ${separator === \"/\" ? \"POSIX\" : \"Windows\"} separators`",
+      "runtimePattern": "^VS Code adversarial public commands D-VSC-002: rejects [\\s\\S]*? with [\\s\\S]*? separators$",
+      "dynamicName": true,
+      "bodyHash": "618431afd842d79192d4675b572b75f57eed444ccd0a7a15829aabf78be80478",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:33",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:34",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:35",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:36",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:38",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:39",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:40",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:41",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/vscode-adversarial.test.ts:183",
+      "file": "src/test/vscode-adversarial.test.ts",
+      "line": 183,
+      "name": "`D-VSC-002: accepts deeply nested exact .gnosys with ${separator === \"/\" ? \"POSIX\" : \"Windows\"} separators`",
+      "suites": [
+        "VS Code adversarial public commands"
+      ],
+      "sourceName": "VS Code adversarial public commands `D-VSC-002: accepts deeply nested exact .gnosys with ${separator === \"/\" ? \"POSIX\" : \"Windows\"} separators`",
+      "runtimePattern": "^VS Code adversarial public commands D-VSC-002: accepts deeply nested exact \\.gnosys with [\\s\\S]*? separators$",
+      "dynamicName": true,
+      "bodyHash": "4e2e743cf8743c80887112d0f0b84a0dd55a3cc372677bfa8a2603cfe5dd2e7e",
+      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
+      "declaration": "it.fails",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with POSIX separators",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:37",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with Windows separators",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:42",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/vscode-adversarial.test.ts:201",
+      "file": "src/test/vscode-adversarial.test.ts",
+      "line": 201,
+      "name": "`D-VSC-003: ${label} in the selected path cannot execute shell text or change the selected ID`",
+      "suites": [
+        "VS Code adversarial public commands"
+      ],
+      "sourceName": "VS Code adversarial public commands `D-VSC-003: ${label} in the selected path cannot execute shell text or change the selected ID`",
+      "runtimePattern": "^VS Code adversarial public commands D-VSC-003: [\\s\\S]*? in the selected path cannot execute shell text or change the selected ID$",
+      "dynamicName": true,
+      "bodyHash": "b37610943916e329c2692d34067d1774871d71f3e82fb1751ca3ca919a031f17",
+      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
+      "declaration": "it.fails",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "VS Code adversarial public commands D-VSC-003: backticks in the selected path cannot execute shell text or change the selected ID",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:43",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-003: command substitution in the selected path cannot execute shell text or change the selected ID",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:44",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-003: semicolon in the selected path cannot execute shell text or change the selected ID",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:45",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-003: and operator in the selected path cannot execute shell text or change the selected ID",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:46",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-003: pipe in the selected path cannot execute shell text or change the selected ID",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:47",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-003: quotes in the selected path cannot execute shell text or change the selected ID",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:48",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-003: spaces in the selected path cannot execute shell text or change the selected ID",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:49",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        },
+        {
+          "name": "VS Code adversarial public commands D-VSC-003: newline in the selected path cannot execute shell text or change the selected ID",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:50",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/vscode-adversarial.test.ts:210",
+      "file": "src/test/vscode-adversarial.test.ts",
+      "line": 210,
+      "name": "D-VSC-003: every extension command launches processes without a shell",
+      "suites": [
+        "VS Code adversarial public commands"
+      ],
+      "sourceName": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
+      "runtimePattern": "^VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell$",
+      "dynamicName": false,
+      "bodyHash": "71d2b3ab6e0c136231b24a33678194b80ce947c5e7c2337a2df9848d8cebc50d",
+      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
+      "declaration": "it.fails",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:51",
+              "action": "expected_failure",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "src/test/vscode-adversarial.test.ts:217",
+      "file": "src/test/vscode-adversarial.test.ts",
+      "line": 217,
+      "name": "D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+      "suites": [
+        "VS Code adversarial public commands"
+      ],
+      "sourceName": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+      "runtimePattern": "^VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully$",
+      "dynamicName": false,
+      "bodyHash": "48e4106900cd7953dcceed25dae52f5ceec6709e9b5736dddd8e700b2e5de2c8",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
+      "change": "new",
+      "originalIds": [],
+      "classification": "STRONG",
+      "runtimeCases": [
+        {
+          "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+          "classification": "STRONG",
+          "actions": [
+            {
+              "ref": "adversarial.after.json#additional:52",
+              "action": "added",
+              "beforeId": null,
+              "classification": "STRONG"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "src/test/vscode-extension.test.ts:53",
       "file": "src/test/vscode-extension.test.ts",
       "line": 53,
@@ -51949,7 +53306,7 @@
       "sourceName": "VS Code extension public commands reports a process launch failure to the editor",
       "runtimePattern": "^VS Code extension public commands reports a process launch failure to the editor$",
       "dynamicName": false,
-      "bodyHash": "2f58a4055d9db1a8116184884ad086eff63a84123d67f0ab48628e9aa9bd9cb9",
+      "bodyHash": "4ffa832e9f172f83a222fd93fe0f57ca39cc5b90d665483a545fd8d300b3e1c6",
       "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
       "declaration": "it",
       "change": "new",
@@ -51971,9 +53328,9 @@
       ]
     },
     {
-      "id": "src/test/vscode-extension.test.ts:72",
+      "id": "src/test/vscode-extension.test.ts:73",
       "file": "src/test/vscode-extension.test.ts",
-      "line": 72,
+      "line": 73,
       "name": "D-VSC-001: reinforcing an open memory resets its persisted decay date",
       "suites": [
         "VS Code extension public commands"
@@ -52003,9 +53360,9 @@
       ]
     },
     {
-      "id": "src/test/vscode-extension.test.ts:80",
+      "id": "src/test/vscode-extension.test.ts:81",
       "file": "src/test/vscode-extension.test.ts",
-      "line": 80,
+      "line": 81,
       "name": "D-VSC-002: rejects a directory whose name only starts with .gnosys",
       "suites": [
         "VS Code extension public commands"
@@ -52014,8 +53371,8 @@
       "runtimePattern": "^VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with \\.gnosys$",
       "dynamicName": false,
       "bodyHash": "d7d89cb19b4be4092a08c183c447d9b94725625ac2543add6915d33e939eed16",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
@@ -52026,7 +53383,7 @@
           "actions": [
             {
               "ref": "vscode.after.json#additional:4",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -52035,17 +53392,17 @@
       ]
     },
     {
-      "id": "src/test/vscode-extension.test.ts:86",
+      "id": "src/test/vscode-extension.test.ts:87",
       "file": "src/test/vscode-extension.test.ts",
-      "line": 86,
-      "name": "D-VSC-003: passes shell syntax in a filename as literal text",
+      "line": 87,
+      "name": "D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename",
       "suites": [
         "VS Code extension public commands"
       ],
-      "sourceName": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
-      "runtimePattern": "^VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text$",
+      "sourceName": "VS Code extension public commands D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename",
+      "runtimePattern": "^VS Code extension public commands D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename$",
       "dynamicName": false,
-      "bodyHash": "2fb0632bee3f3f80b73f1d87bde61d5857022ffdf280baba9aaa13c32c2985c7",
+      "bodyHash": "32edf22308e88b144f8c2f2a7e3383fa81539fc12592048bbf4a4f5b2ff9439a",
       "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
       "declaration": "it.fails",
       "change": "new",
@@ -52053,7 +53410,7 @@
       "classification": "STRONG",
       "runtimeCases": [
         {
-          "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+          "name": "VS Code extension public commands D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename",
           "classification": "STRONG",
           "actions": [
             {
@@ -52067,9 +53424,9 @@
       ]
     },
     {
-      "id": "src/test/vscode-extension.test.ts:93",
+      "id": "src/test/vscode-extension.test.ts:96",
       "file": "src/test/vscode-extension.test.ts",
-      "line": 93,
+      "line": 96,
       "name": "D-VSC-004: the dashboard action opens a command supported by the installed CLI",
       "suites": [
         "VS Code extension public commands"
@@ -52078,8 +53435,8 @@
       "runtimePattern": "^VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI$",
       "dynamicName": false,
       "bodyHash": "58ed0025869f79c42d62b2643173657ff183f59a1ceeefcacfef01414232b78a",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
@@ -52090,7 +53447,7 @@
           "actions": [
             {
               "ref": "vscode.after.json#additional:6",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -60876,7 +62233,7 @@
       "actions": [
         {
           "ref": "context.after.json#additional:6",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -60924,6 +62281,38 @@
       "actions": [
         {
           "ref": "context.after.json#additional:5",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/config-display-adversarial.test.ts",
+      "name": "adversarial config display human config output names the key source without exposing stored key bytes",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/config-display-adversarial.test.ts:26",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:0",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/config-display-adversarial.test.ts",
+      "name": "adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/config-display-adversarial.test.ts:35",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:1",
           "action": "expected_failure",
           "beforeId": null,
           "classification": "STRONG"
@@ -60958,6 +62347,310 @@
           "ref": "group2.after.json#original:46",
           "action": "kept",
           "beforeId": "src/test/config-knob-removal.test.ts:74",
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/context-adversarial.test.ts:29",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:2",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing custom-provider MCP context commits the same journal decision",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/context-adversarial.test.ts:36",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:3",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/context-adversarial.test.ts:48",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:4",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/context-adversarial.test.ts:55",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:5",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/context-adversarial.test.ts:64",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:6",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/context-adversarial.test.ts:75",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:7",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/context-adversarial.test.ts:86",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:8",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing CLI import without a provider fails with setup guidance",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/context-adversarial.test.ts:94",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:9",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing MCP context without a provider fails with setup guidance",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/context-adversarial.test.ts:103",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:10",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing MCP import without a provider fails with setup guidance",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/context-adversarial.test.ts:112",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:11",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial project selection the same context is saved independently in projects A and B",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/context-adversarial.test.ts:123",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:12",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/context-adversarial.test.ts:133",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:13",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial project selection startup-project context skips its already saved journal",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/context-adversarial.test.ts:142",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:14",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial project selection explicit project B update resolves the shared relative path inside B",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/context-adversarial.test.ts:150",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:15",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/coverage-guard.test.ts",
+      "name": "new-file coverage guard fails when the comparison base cannot be resolved",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/coverage-guard.test.ts:8",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:16",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/coverage-guard.test.ts",
+      "name": "new-file coverage guard passes when HEAD has no added application modules compared with itself",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/coverage-guard.test.ts:19",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:17",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/dashboard-html-adversarial.test.ts",
+      "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/dashboard-html-adversarial.test.ts:40",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:18",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/dashboard-html-adversarial.test.ts",
+      "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/dashboard-html-adversarial.test.ts:47",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:19",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/dashboard-html-adversarial.test.ts",
+      "name": "dashboard HTML adversarial stored content D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/dashboard-html-adversarial.test.ts:54",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:20",
+          "action": "expected_failure",
+          "beforeId": null,
           "classification": "STRONG"
         }
       ]
@@ -63235,6 +64928,54 @@
       ]
     },
     {
+      "file": "src/test/fts-adversarial.test.ts",
+      "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/fts-adversarial.test.ts:15",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:21",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/fts-adversarial.test.ts",
+      "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/fts-adversarial.test.ts:36",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:22",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/fts-adversarial.test.ts",
+      "name": "FTS duplicate attacks ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/fts-adversarial.test.ts:104",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:23",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
       "file": "src/test/fts-or-fallback.test.ts",
       "name": "GnosysDB FTS OR fallback (central DB) discoverFts still matches when ALL terms are present (AND precision preserved)",
       "status": "passed",
@@ -63875,6 +65616,22 @@
       ]
     },
     {
+      "file": "src/test/http-json-adversarial.test.ts",
+      "name": "HTTP MCP malformed JSON rejects a malformed POST with HTTP 400 and keeps the server healthy",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/http-json-adversarial.test.ts:9",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:24",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
       "file": "src/test/hybrid-degrade-warning.test.ts",
       "name": "hybrid search degrade warnings (v5.12.3) gnosys_hybrid_search warns when the semantic leg can't run",
       "status": "passed",
@@ -64220,7 +65977,7 @@
       "actions": [
         {
           "ref": "group2.after.json#original:112",
-          "action": "expected_failure",
+          "action": "rewritten",
           "beforeId": "src/test/import-concurrency-wiring.test.ts:20",
           "classification": "STRONG"
         }
@@ -64252,7 +66009,7 @@
       "actions": [
         {
           "ref": "group2.after.json#original:114",
-          "action": "expected_failure",
+          "action": "rewritten",
           "beforeId": "src/test/import-concurrency-wiring.test.ts:31",
           "classification": "STRONG"
         }
@@ -65846,7 +67603,7 @@
       "actions": [
         {
           "ref": "group2.after.json#additional:0",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -74941,6 +76698,38 @@
       ]
     },
     {
+      "file": "src/test/routing-reset-adversarial.test.ts",
+      "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/routing-reset-adversarial.test.ts:85",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:25",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/routing-reset-adversarial.test.ts",
+      "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/routing-reset-adversarial.test.ts:93",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:26",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
       "file": "src/test/sandbox-status-invoke.test.ts",
       "name": "runSandboxStatusCommand (in-process invoke) reports the sandbox as not running in a fresh GNOSYS_HOME (human)",
       "status": "passed",
@@ -75437,16 +77226,48 @@
       ]
     },
     {
+      "file": "src/test/setup-adversarial.test.ts",
+      "name": "setup exit status after the provider prompt G2-D001 Ctrl+C at IDE integration exits 130",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/setup-adversarial.test.ts:61",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:27",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/setup-adversarial.test.ts",
+      "name": "setup exit status after the provider prompt completes the interactive core-memory setup with exit 0",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/setup-adversarial.test.ts:69",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:28",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
       "file": "src/test/setup-ctrlc.test.ts",
       "name": "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT",
       "status": "passed",
       "classification": "STRONG",
       "isNew": false,
-      "declarationId": "src/test/setup-ctrlc.test.ts:100",
+      "declarationId": "src/test/setup-ctrlc.test.ts:72",
       "actions": [
         {
           "ref": "group2.after.json#original:320",
-          "action": "expected_failure",
+          "action": "rewritten",
           "beforeId": "src/test/setup-ctrlc.test.ts:75",
           "classification": "STRONG"
         }
@@ -75458,7 +77279,7 @@
       "status": "passed",
       "classification": "STRONG",
       "isNew": false,
-      "declarationId": "src/test/setup-ctrlc.test.ts:104",
+      "declarationId": "src/test/setup-ctrlc.test.ts:76",
       "actions": [
         {
           "ref": "group2.after.json#original:321",
@@ -75474,7 +77295,7 @@
       "status": "passed",
       "classification": "STRONG",
       "isNew": false,
-      "declarationId": "src/test/setup-ctrlc.test.ts:108",
+      "declarationId": "src/test/setup-ctrlc.test.ts:80",
       "actions": [
         {
           "ref": "group2.after.json#original:322",
@@ -76902,7 +78723,7 @@
       "actions": [
         {
           "ref": "group1.after.json#original:388",
-          "action": "rewritten",
+          "action": "expected_failure",
           "beforeId": "src/test/setup-ui-summary.test.ts:153",
           "classification": "STRONG"
         }
@@ -82653,6 +84474,390 @@
       ]
     },
     {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:149",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:29",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-001: absent ID warns without launching a subprocess",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:159",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:30",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-001: empty ID warns without launching a subprocess",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:159",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:31",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-001: body-only ID warns without launching a subprocess",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:159",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:32",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:173",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:33",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:173",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:34",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:173",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:35",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:173",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:36",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with POSIX separators",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:183",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:37",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:173",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:38",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:173",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:39",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:173",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:40",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:173",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:41",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with Windows separators",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:183",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:42",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: backticks in the selected path cannot execute shell text or change the selected ID",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:201",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:43",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: command substitution in the selected path cannot execute shell text or change the selected ID",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:201",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:44",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: semicolon in the selected path cannot execute shell text or change the selected ID",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:201",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:45",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: and operator in the selected path cannot execute shell text or change the selected ID",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:201",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:46",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: pipe in the selected path cannot execute shell text or change the selected ID",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:201",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:47",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: quotes in the selected path cannot execute shell text or change the selected ID",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:201",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:48",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: spaces in the selected path cannot execute shell text or change the selected ID",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:201",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:49",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: newline in the selected path cannot execute shell text or change the selected ID",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:201",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:50",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:210",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:51",
+          "action": "expected_failure",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+      "status": "passed",
+      "classification": "STRONG",
+      "isNew": true,
+      "declarationId": "src/test/vscode-adversarial.test.ts:217",
+      "actions": [
+        {
+          "ref": "adversarial.after.json#additional:52",
+          "action": "added",
+          "beforeId": null,
+          "classification": "STRONG"
+        }
+      ]
+    },
+    {
       "file": "src/test/vscode-extension.test.ts",
       "name": "VS Code extension public commands warns when no editor is open",
       "status": "passed",
@@ -82706,7 +84911,7 @@
       "status": "passed",
       "classification": "STRONG",
       "isNew": true,
-      "declarationId": "src/test/vscode-extension.test.ts:72",
+      "declarationId": "src/test/vscode-extension.test.ts:73",
       "actions": [
         {
           "ref": "vscode.after.json#additional:3",
@@ -82722,11 +84927,11 @@
       "status": "passed",
       "classification": "STRONG",
       "isNew": true,
-      "declarationId": "src/test/vscode-extension.test.ts:80",
+      "declarationId": "src/test/vscode-extension.test.ts:81",
       "actions": [
         {
           "ref": "vscode.after.json#additional:4",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -82734,11 +84939,11 @@
     },
     {
       "file": "src/test/vscode-extension.test.ts",
-      "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+      "name": "VS Code extension public commands D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename",
       "status": "passed",
       "classification": "STRONG",
       "isNew": true,
-      "declarationId": "src/test/vscode-extension.test.ts:86",
+      "declarationId": "src/test/vscode-extension.test.ts:87",
       "actions": [
         {
           "ref": "vscode.after.json#additional:5",
@@ -82754,11 +84959,11 @@
       "status": "passed",
       "classification": "STRONG",
       "isNew": true,
-      "declarationId": "src/test/vscode-extension.test.ts:93",
+      "declarationId": "src/test/vscode-extension.test.ts:96",
       "actions": [
         {
           "ref": "vscode.after.json#additional:6",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }

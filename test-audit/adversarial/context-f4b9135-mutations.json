@@ -1,0 +1,161 @@
+[
+  {
+    "id": "ADV-CTX-mcp-content-f4b9135",
+    "file": "src/index.ts",
+    "search": "syncMemoryToDb(ctx.centralDb, frontmatter, content, undefined, ctx.projectId, \"project\");",
+    "replace": "syncMemoryToDb(ctx.centralDb, frontmatter, content.slice(1), undefined, ctx.projectId, \"project\");",
+    "tests": [
+      "src/test/context-adversarial.test.ts"
+    ],
+    "testName": "custom-provider MCP context commits the same journal decision$",
+    "description": "Truncate the persisted context heading while retaining successful response and metadata",
+    "build": true
+  },
+  {
+    "id": "ADV-CTX-import-concurrency-f4b9135",
+    "file": "src/index.ts",
+    "search": "concurrency: concurrency ?? ctx.config?.importConcurrency,",
+    "replace": "concurrency: 1,",
+    "tests": [
+      "src/test/context-adversarial.test.ts"
+    ],
+    "testName": "custom-provider MCP bulk import uses configured concurrency$",
+    "description": "Ignore configured parallelism and serialize provider requests",
+    "build": true
+  },
+  {
+    "id": "ADV-CTX-import-setup-guidance-f4b9135",
+    "file": "src/lib/import.ts",
+    "search": "LLM mode requires a configured LLM provider. Run 'gnosys setup' to configure one (Anthropic, OpenAI, Groq, xAI, Mistral, Ollama, LM Studio), or re-run with --mode structured.",
+    "replace": "LLM mode requires a provider. Contact support.",
+    "tests": [
+      "src/test/context-adversarial.test.ts"
+    ],
+    "testName": "(CLI|MCP) import without a provider fails with setup guidance$",
+    "description": "Remove actionable setup guidance while retaining failure status",
+    "build": true
+  },
+  {
+    "id": "ADV-CTX-context-setup-guidance-f4b9135",
+    "file": "src/lib/config.ts",
+    "search": "No default LLM provider configured. Run 'gnosys setup' (or set llm.defaultProvider in gnosys.json).",
+    "replace": "No provider configured. Contact support.",
+    "tests": [
+      "src/test/context-adversarial.test.ts"
+    ],
+    "testName": "MCP context without a provider fails with setup guidance$",
+    "description": "Remove context setup guidance while retaining a provider-resolution error",
+    "build": true
+  },
+  {
+    "id": "ADV-CTX-project-scope-f4b9135",
+    "file": "src/index.ts",
+    "search": "syncMemoryToDb(ctx.centralDb, frontmatter, content, undefined, ctx.projectId, \"project\");",
+    "replace": "syncMemoryToDb(ctx.centralDb, frontmatter, content, undefined, null, \"project\");",
+    "tests": [
+      "src/test/context-adversarial.test.ts"
+    ],
+    "testName": "the same context is saved independently in projects A and B$",
+    "description": "Drop the explicitly selected project from persisted context memories",
+    "build": true
+  },
+  {
+    "id": "ADV-CTX-startup-dedup-f4b9135",
+    "file": "src/index.ts",
+    "search": "const hasOverlap = existing.length > 0;",
+    "replace": "const hasOverlap = false;",
+    "tests": [
+      "src/test/context-adversarial.test.ts"
+    ],
+    "testName": "startup-project context skips its already saved journal$",
+    "description": "Disable the working startup-project novelty check",
+    "build": true
+  },
+  {
+    "id": "ADV-CTX-explicit-update-project-f4b9135",
+    "file": "src/index.ts",
+    "search": "    content: newContent,\n    projectRoot,\n  }) => {\n    const ctx = await resolveToolContext(projectRoot);",
+    "replace": "    content: newContent,\n    projectRoot,\n  }) => {\n    const ctx = await resolveToolContext();",
+    "tests": [
+      "src/test/context-adversarial.test.ts"
+    ],
+    "testName": "explicit project B update resolves the shared relative path inside B$",
+    "description": "Ignore explicit projectRoot on update and select the startup project",
+    "build": true
+  },
+  {
+    "id": "ADV-CTX-human-key-leak-f4b9135",
+    "file": "src/lib/configCommand.ts",
+    "search": "${cfg.llm.custom.apiKey ? \"config\" : (process.env.GNOSYS_LLM_API_KEY ? \"env\" : \"\u2014\")}",
+    "replace": "${cfg.llm.custom.apiKey || \"\u2014\"}",
+    "tests": [
+      "src/test/config-display-adversarial.test.ts"
+    ],
+    "testName": "human config output names the key source without exposing stored key bytes$",
+    "description": "Expose the fake stored key in human config output",
+    "build": true
+  },
+  {
+    "id": "ADV-CTX-D001-provider-f4b9135",
+    "file": "src/lib/commitContextCommand.ts",
+    "search": "new GnosysIngestion(writeTarget.store, tagRegistry, ccConfig)",
+    "replace": "new GnosysIngestion(writeTarget.store, tagRegistry)",
+    "tests": [
+      "src/test/commit-context.test.ts",
+      "src/test/context-adversarial.test.ts"
+    ],
+    "testName": "D-CTX-001.*(CLI honors|custom-provider CLI)",
+    "description": "Reintroduce the repaired CLI ingestion constructor missing the selected config",
+    "build": true
+  },
+  {
+    "id": "ADV-CTX-D001-guidance-f4b9135",
+    "file": "src/lib/commitContextCommand.ts",
+    "search": "Error: No LLM provider available. Run 'gnosys setup' to configure a provider and its credentials.",
+    "replace": "Error: No LLM provider available. Contact support.",
+    "tests": [
+      "src/test/context-adversarial.test.ts"
+    ],
+    "testName": "D-CTX-001 context without a provider fails with setup guidance$",
+    "description": "Remove setup guidance from repaired CLI context provider failure",
+    "build": true
+  },
+  {
+    "id": "ADV-CTX-G2D003-provider-f4b9135",
+    "file": "src/lib/importCommand.ts",
+    "search": "new GnosysIngestion(writeTarget.store, tagRegistry, config)",
+    "replace": "new GnosysIngestion(writeTarget.store, tagRegistry)",
+    "tests": [
+      "src/test/import-concurrency-wiring.test.ts",
+      "src/test/context-adversarial.test.ts"
+    ],
+    "testName": "CLI uses configured concurrency|CLI concurrency flag overrides|G2-D003",
+    "description": "Reintroduce repaired bulk-import constructor missing selected provider config",
+    "build": true
+  },
+  {
+    "id": "ADV-CTX-D002-lookup-f4b9135",
+    "file": "src/index.ts",
+    "search": "      const existing = ctx.centralDb?.isAvailable()\n        ? ctx.centralDb.discoverFts(searchTerms, 3, { projectId: ctx.projectId, scope: \"project\" })\n          .map((memory) => ({ title: memory.title, relative_path: memory.id }))\n        : ctx.search?.discover(searchTerms, 3) ?? [];",
+    "replace": "      const existing = ctx.search\n        ? ctx.search.discover(searchTerms, 3)\n        : [];",
+    "tests": [
+      "src/test/commit-context.test.ts",
+      "src/test/context-adversarial.test.ts"
+    ],
+    "testName": "D-CTX-002",
+    "description": "Reintroduce filesystem-only scoped context novelty lookup",
+    "build": true
+  },
+  {
+    "id": "ADV-CTX-D002-cross-project-f4b9135",
+    "file": "src/index.ts",
+    "search": "ctx.centralDb.discoverFts(searchTerms, 3, { projectId: ctx.projectId, scope: \"project\" })",
+    "replace": "ctx.centralDb.discoverFts(searchTerms, 3)",
+    "tests": [
+      "src/test/context-adversarial.test.ts"
+    ],
+    "testName": "the same context is saved independently in projects A and B$",
+    "description": "Remove selected-project filter so prior project A falsely suppresses new project B context",
+    "build": true
+  }
+]

@@ -1,0 +1,466 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+  "results": [
+    {
+      "id": "vscode-e2-directory-substring",
+      "file": "extensions/vscode/extension.js",
+      "kind": "fault-injection",
+      "description": "Accept .gnosys as a substring rather than an exact path component.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1862,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 4350,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ Array(1) ]\n    at <repo>/src/test/vscode-adversarial.test.ts:177:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ Array(1) ]\n    at <repo>/src/test/vscode-adversarial.test.ts:177:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ Array(1) ]\n    at <repo>/src/test/vscode-adversarial.test.ts:177:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ Array(1) ]\n    at <repo>/src/test/vscode-adversarial.test.ts:177:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ Array(1) ]\n    at <repo>/src/test/vscode-adversarial.test.ts:177:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ Array(1) ]\n    at <repo>/src/test/vscode-adversarial.test.ts:177:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ Array(1) ]\n    at <repo>/src/test/vscode-adversarial.test.ts:177:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ Array(1) ]\n    at <repo>/src/test/vscode-adversarial.test.ts:177:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { warnings: [], information: [], …(2) } to deeply equal { …(4) }\n    at <repo>/src/test/vscode-extension.test.ts:82:92\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1785,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators"
+        },
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "vscode-e2-removed-dashboard-command",
+      "file": "extensions/vscode/extension.js",
+      "kind": "fault-injection",
+      "description": "Launch removed dashboard command instead of registered status successor.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1687,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1388,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'read', 'discover', 'search', …(65) ] to include 'dashboard'\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1319:15)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/vscode-adversarial.test.ts:223:24\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20"
+            ]
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 1 ] to deeply equal [ +0 ]\n    at <repo>/src/test/vscode-extension.test.ts:99:96\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1650,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully"
+        },
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "vscode-e2-launch-error-hidden",
+      "file": "extensions/vscode/extension.js",
+      "kind": "fault-injection",
+      "description": "Downgrade a failed process launch to a warning so the user no longer receives the error notification.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 513,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands reports a process launch failure to the editor",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 517,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands reports a process launch failure to the editor",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ Array(1) ] to deeply equal []\n    at <repo>/src/test/vscode-extension.test.ts:68:29\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 518,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands reports a process launch failure to the editor",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands reports a process launch failure to the editor"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "dashboard-unescaped-stored-content",
+      "file": "src/lib/portfolioHtml.ts",
+      "kind": "fault-injection",
+      "description": "Drop output escaping so stored memory titles are emitted as live HTML in roadmap, activity and action cards.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 404,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 397,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '<!DOCTYPE html>\\n<html lang=\"en\">\\n<h…' to contain '<strong>&lt;/span&gt;&lt;script&gt;gl…'\n    at <repo>/src/test/dashboard-html-adversarial.test.ts:42:18\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '<!DOCTYPE html>\\n<html lang=\"en\">\\n<h…' to contain '<div class=\"action-text\">&lt;/span&gt…'\n    at <repo>/src/test/dashboard-html-adversarial.test.ts:49:18\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 395,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dashboard-html-adversarial.test.ts",
+          "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text"
+        },
+        {
+          "file": "src/test/dashboard-html-adversarial.test.ts",
+          "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

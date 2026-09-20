@@ -1,55 +1,64 @@
 {
   "complete": true,
   "checks": [
-    "Full suite: 1,693 passed, zero failed or skipped, including 12 documented expected-failure cases; 95.72 seconds. Evidence: [final-full-suite.json](test-audit/evidence/final-full-suite.json).",
-    "Coverage run: 1,693 passed with the configured thresholds satisfied. Statements 69.83%, branches 59.9%, functions 77.82%, lines 71.75%. These numbers describe instrumented code only. Evidence: [coverage summary](test-audit/evidence/final-coverage-summary.json) and [run log](test-audit/evidence/final-coverage.log).",
-    "Docker setup: all six cases passed in 23.912 seconds. The two real CLI CI scenarios passed in 1.775 and 0.612 seconds. Evidence: [Docker](test-audit/evidence/final-docker-setup.json), [multi-project](test-audit/evidence/final-ci-multi-project.json), [local storage](test-audit/evidence/final-ci-local-storage.json).",
-    "Typecheck passed. Lint passed with 23 warnings. Knip failed on three unused application exports, listed below. Evidence: [static checks](test-audit/evidence/final-static-checks.json), [lint output](test-audit/evidence/final-lint.log), [Knip output](test-audit/evidence/final-knip.log).",
-    "The newly-added-file coverage check passed against the pinned baseline because the audit adds no application modules.",
-    "All 1,748 original declarations, 1,532 current declarations and 1,693 runtime cases reconcile with zero action, classification, source-body, or mutation-proof gaps. Every original WEAK/HOLLOW rating has a surviving fault or explicit structural reason. Evidence: [ledger](test-audit/ledger.json) and [source/runtime reconciliation](test-audit/reconciliation.json).",
-    "All 11 defects were reproduced with ordinary failing tests; all 12 expected-failure cases are linked to those defects. Each inverse repair probe makes its expected-failure case report an unexpected pass.",
-    "Application source, prompts and extension code match the baseline, with no untracked application files. Evidence: [source integrity](test-audit/evidence/final-source-integrity.json).",
-    "The rerunnable AST reconciliation checker passed 10 controlled scenarios. The report generator also rejected stale runtime evidence before writing output. Evidence: [reconciliation self-check](test-audit/evidence/reconcile-selfcheck.json), [stale-report check](test-audit/evidence/report-stale-runtime-rejected.json).",
-    "Behavior-over-implementation removed the CLI source-concatenation helper and source-marker assertions. Build-the-lever produced the inventory, mutation, reconciliation and report scripts used for the final checks."
+    "Adversarial review: seven fixed, seven open and one deferred defect at application revision f4b9135. All requested attacks and limitations are listed in [repair review](test-audit/adversarial/REVIEW.md).",
+    "Full suite: 1,746 passed, zero unexpected failures or skipped cases, including 27 documented expected failures; 109.49 seconds. Evidence: [full suite](test-audit/adversarial/repair-unit-full.json).",
+    "Coverage suite: 1,746 passed in 118.04 seconds; configured thresholds passed. Statements 71.64%, branches 61.39%, functions 81.18%, lines 73.57%. Evidence: [coverage run](test-audit/adversarial/final-coverage-suite.json) and [summary](test-audit/adversarial/final-coverage-summary.json).",
+    "Typecheck, lint and npm run knip exit 0. Lint retains 23 warnings. Both real CLI CI scenarios pass. Evidence: [static and CI checks](test-audit/adversarial/final-static-ci-checks.json).",
+    "All six setup Docker scenarios pass against the packed CLI using ephemeral tmpfs fixture directories, without network or host mounts. The default run hit a full Docker overlay before four fixture directories could be created; both receipts are preserved. Evidence: [tmpfs replay](test-audit/adversarial/final-docker-tmpfs.json) and [default run](test-audit/adversarial/final-docker-setup.json).",
+    "The new-file coverage guard exits 2 for an unresolved base and 0 against the pinned baseline. The renamed local-storage workflow makes no network-share claim. Direct CI faults are killed. Evidence: [checks](test-audit/adversarial/final-static-ci-checks.json), [CI review](test-audit/adversarial/ci-review.json), [CI fault proofs](test-audit/adversarial/ci-http.results.json).",
+    "All 1,748 original declarations, 1,568 current declarations and 1,746 runtime cases reconcile with zero action, classification, source-body or mutation-proof gaps. Every original WEAK/HOLLOW rating retains surviving-fault evidence or an explicit structural reason. Evidence: [ledger](test-audit/ledger.json) and [reconciliation](test-audit/reconciliation.json).",
+    "Seven fixed defects have ordinary passing cases and current direct fault pass/fail/pass proofs. All 27 remaining expected-failure runtime cases fail as ordinary tests. D-G3-001 stays DEFERRED. Inverse repair unexpected passes receive no successful protection credit. Evidence: [acceptance](test-audit/adversarial/acceptance.json) and [ordinary failures](test-audit/adversarial/final-open-ordinary.json).",
+    "All ten original KNOWN_DEFECT matrix rows were restated from current evidence; the inventory remains 41 feature groups and 164 obligations. Evidence: [row-by-row restatus](test-audit/adversarial/feature-restatus.json).",
+    "Application bytes and modes match the frozen repair revision. Replaying only the nine listed application commits from completed audit ec19554 produces the same application tree; later application work is excluded. Evidence: [source integrity](test-audit/adversarial/final-source-integrity.json).",
+    "The v584 updateConfig and 50/100 ms read-test files remain byte-identical to the completed audit revision and pass. Evidence: [unchanged files](test-audit/adversarial/unchanged-compatibility-tests.json).",
+    "The report acceptance validator passes 24 controlled checks, including rejection of stale runtime data, unlisted application edits, inverse-only repair evidence and expected failures claimed as successful protection. Metadata generators produce identical output on replay. Evidence: [validator](test-audit/adversarial/report-validation.results.json) and [metadata replay](test-audit/adversarial/metadata-replay.json).",
+    "Behavior-over-implementation changed the VS Code fixtures to require the selected document ID and useful signal, and corrected the routing summary to expect cleared overrides. Build-the-lever produced reusable ordinary-defect reproduction, reconciliation and matrix update scripts."
   ],
   "blockers": [
     {
-      "kind": "ci_failure_preserved_by_scope",
-      "description": "Knip exits 1 for src/lib/remoteWizard.ts:661 (__test), src/lib/setup/summary.ts:370 (__test), and src/lib/setupKeys.ts:716 (setupKeysTestHooks). Their test consumers were removed. Deleting these now-unused exports would change application code, which this audit forbids. The CI dead-code job therefore remains failing; no ignore was added to hide it."
+      "kind": "hosted_runner_flake_risks",
+      "description": "First CI run watchlist: src/test/phase7b.read-paths.test.ts:104 requires reading 100 memories in under 100 ms; line124 requires FTS search in under 50 ms. Hosted-runner contention, scheduling and cold caches may exceed these wall-clock limits. Both assertions remain unchanged."
+    },
+    {
+      "kind": "local_docker_disk_full",
+      "description": "The default Docker run encountered a 100%-full overlay filesystem (0 bytes available, inodes48% used). Four scenarios failed while creating fixture directories. The same image and unchanged six tests passed with ephemeral tmpfs fixture directories. No Docker data was deleted; the normal local Docker runner remains capacity-limited."
     },
     {
       "kind": "platform_and_service_limits",
-      "description": "Live provider services and credentials, native keychain/scheduler integration, a running VS Code extension host, and physical network-share behavior were not exercised. Tests use local HTTP, external-boundary doubles, subprocesses and temporary local storage. The feature matrix names these limits."
+      "description": "Live provider credentials/services, native keychain and scheduler integration, a running VS Code extension host, native Windows path handling and physical network-share behavior were not exercised. Tests use local HTTP boundaries, host doubles, real subprocesses and isolated temporary storage. The feature matrix names these limits."
     },
     {
       "kind": "ci_matrix_not_executed",
-      "description": "Verification ran on local macOS with Node 22.17.1 and in the setup Docker image. Other configured Linux/macOS Node 20/22/24 matrix combinations and remote GitHub Actions were not run; no push or PR was authorized."
+      "description": "Verification used local macOS Node22.17.1 and the isolated Node22 Docker image. Other configured remote CI matrix combinations were not run; no push or PR was authorized."
     },
     {
-      "kind": "existing_coverage_gate_limit",
-      "description": "The pre-existing new-file coverage script exits successfully when its base ref cannot be resolved and omits files absent from its coverage summary. The explicit pinned-base check passed here, but this does not establish coverage for excluded modules. See COLL-03 and coverage_scope in test-audit/collection.json."
+      "kind": "existing_coverage_scope_limit",
+      "description": "The unresolved-base behavior is fixed. The coverage guard still skips added files absent from its coverage summary; the pinned-base pass adds no application modules and does not establish coverage for excluded modules. The original COLL-03 record is historical evidence; this is its remaining limit."
     }
   ],
   "verification": [
     {
       "name": "full_suite",
-      "passed": 1693,
+      "passed": 1746,
       "failed": 0,
       "skipped": 0,
-      "expectedFailureCases": 12,
-      "evidence": "test-audit/evidence/final-full-suite.json"
+      "expectedFailureCases": 27,
+      "durationSeconds": 109.49,
+      "evidence": "test-audit/adversarial/repair-unit-full.json"
     },
     {
       "name": "coverage",
       "exitCode": 0,
+      "passed": 1746,
+      "durationSeconds": 118.04,
       "percentages": {
-        "lines": 71.75,
-        "statements": 69.83,
-        "functions": 77.82,
-        "branches": 59.9,
-        "branchesTrue": 100
+        "statements": 71.64,
+        "branches": 61.39,
+        "functions": 81.18,
+        "lines": 73.57
       },
-      "evidence": "test-audit/evidence/final-coverage-suite.json"
+      "evidence": "test-audit/adversarial/final-coverage-suite.json"
     },
     {
       "name": "typecheck",
@@ -59,8 +68,9 @@
         "typecheck"
       ],
       "exitCode": 0,
-      "durationSeconds": 3.58,
-      "evidence": "test-audit/evidence/final-typecheck.log"
+      "expectedExit": 0,
+      "durationSeconds": 3.38,
+      "evidence": "test-audit/adversarial/final-static-ci-checks.json"
     },
     {
       "name": "lint",
@@ -70,8 +80,9 @@
         "lint"
       ],
       "exitCode": 0,
-      "durationSeconds": 0.36,
-      "evidence": "test-audit/evidence/final-lint.log"
+      "expectedExit": 0,
+      "durationSeconds": 0.35,
+      "evidence": "test-audit/adversarial/final-static-ci-checks.json"
     },
     {
       "name": "knip",
@@ -80,27 +91,71 @@
         "run",
         "knip"
       ],
-      "exitCode": 1,
-      "durationSeconds": 0.82,
-      "evidence": "test-audit/evidence/final-knip.log"
+      "exitCode": 0,
+      "expectedExit": 0,
+      "durationSeconds": 0.76,
+      "evidence": "test-audit/adversarial/final-static-ci-checks.json"
     },
     {
-      "name": "e2e:setup",
+      "name": "ci-multi-project",
+      "command": [
+        "node",
+        "scripts/test-ci-scenarios.mjs",
+        "multi-project"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "durationSeconds": 1.55,
+      "evidence": "test-audit/adversarial/final-static-ci-checks.json"
+    },
+    {
+      "name": "ci-local-storage",
+      "command": [
+        "node",
+        "scripts/test-ci-scenarios.mjs",
+        "local-storage"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "durationSeconds": 0.53,
+      "evidence": "test-audit/adversarial/final-static-ci-checks.json"
+    },
+    {
+      "name": "coverage-base-pinned",
+      "command": [
+        "node",
+        "scripts/check-new-file-coverage.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "durationSeconds": 0.14,
+      "evidence": "test-audit/adversarial/final-static-ci-checks.json"
+    },
+    {
+      "name": "coverage-base-missing",
+      "command": [
+        "node",
+        "scripts/check-new-file-coverage.mjs"
+      ],
+      "exitCode": 2,
+      "expectedExit": 2,
+      "durationSeconds": 0.04,
+      "evidence": "test-audit/adversarial/final-static-ci-checks.json"
+    },
+    {
+      "name": "e2e:setup:default",
+      "exitCode": 1,
+      "passed": 2,
+      "failed": 4,
+      "failureKind": "fixture creation ENOSPC",
+      "evidence": "test-audit/adversarial/final-docker-setup.json"
+    },
+    {
+      "name": "e2e:setup:tmpfs",
       "exitCode": 0,
       "passed": 6,
-      "evidence": "test-audit/evidence/final-docker-setup.json"
-    },
-    {
-      "name": "ci:multi-project",
-      "exitCode": 0,
-      "passed": 1,
-      "evidence": "test-audit/evidence/final-ci-multi-project.json"
-    },
-    {
-      "name": "ci:network-share",
-      "exitCode": 0,
-      "passed": 1,
-      "evidence": "test-audit/evidence/final-ci-local-storage.json"
+      "durationSeconds": 5.39,
+      "evidence": "test-audit/adversarial/final-docker-tmpfs.json"
     }
   ]
 }
