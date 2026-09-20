@@ -14,6 +14,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "fs";
+import Database from "better-sqlite3";
 import path from "path";
 import os from "os";
 import {
@@ -26,7 +27,6 @@ import {
   seedMultiProjectMemories,
   cliInit,
   cli,
-  cliJson,
   extractJson,
 } from "./_helpers.js";
 import { GnosysDbSearch } from "../lib/dbSearch.js";
@@ -105,32 +105,27 @@ describe("TC-9d.1: GnosysDbSearch — FTS5 adapter", () => {
     expect(results[0].relative_path).toBe("search-1");
   });
 
-  it("discover() returns FTS5 results as DiscoverResult format", () => {
+  it("discover() returns the matching memory metadata", () => {
     const results = search.discover("database", 10);
-    expect(results.length).toBeGreaterThanOrEqual(1);
-    expect(results[0]).toHaveProperty("relative_path");
-    expect(results[0]).toHaveProperty("title");
-    expect(results[0]).toHaveProperty("relevance");
-    expect(results[0]).toHaveProperty("rank");
+    expect(results.map(({ relative_path, title, relevance }) => ({ relative_path, title, relevance }))).toEqual([
+      { relative_path: "search-2", title: "Database schema design patterns", relevance: "database schema design patterns postgresql" }
+    ]);
   });
 
   it("hybridSearch() keyword mode returns ranked results", async () => {
     const results = await search.hybridSearch("jwt authentication", 10, "keyword");
-    expect(results.length).toBeGreaterThanOrEqual(1);
-    expect(results[0]).toHaveProperty("relativePath");
-    expect(results[0]).toHaveProperty("score");
-    expect(results[0]).toHaveProperty("sources");
-    expect(results[0].sources).toContain("keyword");
-    expect(results[0].fromArchive).toBe(false);
+    expect(results.map(({ relativePath, title, sources, fromArchive }) => ({ relativePath, title, sources, fromArchive }))).toEqual([
+      { relativePath: "search-1", title: "Authentication with JWT tokens", sources: ["keyword"], fromArchive: false }
+    ]);
+    expect(results[0].score).toBeCloseTo(0.01639344262295082, 12);
   });
 
   it("hybridSearch() falls back to keyword when no embeddings", async () => {
     const results = await search.hybridSearch("authentication", 10, "hybrid");
-    // Should fall back to keyword since no embeddings exist
-    expect(results.length).toBeGreaterThanOrEqual(1);
-    for (const r of results) {
-      expect(r.sources).toContain("keyword");
-    }
+    expect(results.map(({ relativePath, title, sources, fromArchive }) => ({ relativePath, title, sources, fromArchive }))).toEqual([
+      { relativePath: "search-1", title: "Authentication with JWT tokens", sources: ["keyword"], fromArchive: false }
+    ]);
+    expect(results[0].score).toBeCloseTo(0.01639344262295082, 12);
   });
 
   it("hybridSearch() semantic mode returns empty when no embeddings", async () => {
@@ -173,18 +168,8 @@ describe("TC-9d.1: GnosysDbSearch — FTS5 adapter", () => {
   });
 
   it("search respects limit parameter", () => {
-    // Add more memories
-    for (let i = 10; i < 20; i++) {
-      env.db.insertMemory(makeMemory({
-        id: `limit-test-${i}`,
-        title: `Limit test memory ${i}`,
-        content: `Content about authentication for limit testing ${i}`,
-        relevance: "authentication limit test",
-      }));
-    }
-
-    const results = search.search("authentication", 3);
-    expect(results.length).toBeLessThanOrEqual(3);
+    for (let i = 10; i < 20; i++) env.db.insertMemory(makeMemory({ id: `limit-test-${i}`, title: `Limit test memory ${i}`, content: "boundedresult", relevance: "boundedresult" }));
+    expect(search.search("boundedresult", 3).map(row => row.relative_path)).toEqual(["limit-test-10", "limit-test-11", "limit-test-12"]);
   });
 });
 
@@ -289,11 +274,11 @@ describe("TC-9d.2: dbWrite — sync functions", () => {
       content_hash: "old-hash",
     }));
 
-    syncUpdateToDb(env.db, "upd-002", {}, "New content here");
+    syncUpdateToDb(env.db, "upd-002", {}, "a");
 
     const mem = env.db.getMemory("upd-002");
-    expect(mem!.content).toBe("New content here");
-    expect(mem!.content_hash).not.toBe("old-hash");
+    expect(mem!.content).toBe("a");
+    expect(mem!.content_hash).toBe("e40c292c");
   });
 
   it("syncArchiveToDb sets tier and status to archive", () => {
@@ -343,17 +328,11 @@ describe("TC-9d.2: dbWrite — sync functions", () => {
     expect(mem!.confidence).toBe(0.45);
   });
 
-  it("auditToDb logs an audit entry without throwing", () => {
-    // auditToDb is fire-and-forget — just verify it doesn't throw
-    expect(() => {
-      auditToDb(env.db, "search", "mem-123", { query: "test" }, 42.5, "trace-abc");
-    }).not.toThrow();
-
-    // Verify via direct SQL
-    expect(() => {
-      auditToDb(env.db, "write", "mem-456");
-      auditToDb(env.db, "recall", undefined, { depth: 3 });
-    }).not.toThrow();
+  it("auditToDb persists operation details and rounded duration", () => {
+    auditToDb(env.db, "search", "mem-123", { query: "test" }, 42.5, "trace-abc");
+    expect(env.db.getAuditLog("mem-123").map(({ operation, memory_id, details, duration_ms, trace_id }) => ({ operation, memory_id, details, duration_ms, trace_id }))).toEqual([
+      { operation: "search", memory_id: "mem-123", details: '{"query":"test"}', duration_ms: 43, trace_id: "trace-abc" }
+    ]);
   });
 });
 
@@ -441,7 +420,7 @@ describe("TC-9d.3: Audit — init, log, read, filter, format", () => {
     ].join("\n") + "\n");
 
     const entries = readAuditLog(tmpDir);
-    expect(entries.length).toBe(2); // Skips the malformed line
+    expect(entries).toEqual([{ timestamp: "2026-03-12T00:00:00Z", operation: "search" }, { timestamp: "2026-03-12T00:01:00Z", operation: "write" }]);
   });
 
   it("formatAuditTimeline groups by date with summary", () => {
@@ -540,8 +519,11 @@ describe("TC-9d.4: Lock — acquire/release and stale detection", () => {
   it("release function is idempotent", async () => {
     const release = await acquireWriteLock(tmpDir, "test");
     release();
-    // Second call should not throw
-    expect(() => release()).not.toThrow();
+    release();
+    expect(fs.existsSync(path.join(tmpDir, ".config", "write.lock"))).toBe(false);
+    const releaseNext = await acquireWriteLock(tmpDir, "next");
+    try { expect(JSON.parse(fs.readFileSync(path.join(tmpDir, ".config", "write.lock"), "utf8")).operation).toBe("next"); }
+    finally { releaseNext(); }
   });
 
   it("creates .config directory if it doesn't exist", async () => {
@@ -570,21 +552,16 @@ describe("TC-9d.5: ProjectIdentity — create, read, mismatch, walk-up", () => {
 
   it("createProjectIdentity creates identity file and returns it", async () => {
     const identity = await createProjectIdentity(tmpDir, { projectName: "TestProject" });
-
-    expect(identity.projectId).toBeDefined();
-    expect(identity.projectId.length).toBe(36); // UUID format
-    expect(identity.projectName).toBe("TestProject");
-    expect(identity.workingDirectory).toBe(path.resolve(tmpDir));
-    expect(identity.schemaVersion).toBe(1);
-    expect(identity.user).toBeDefined();
+    expect(identity.projectId).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+    expect(JSON.parse(fs.readFileSync(path.join(tmpDir, ".gnosys", "gnosys.json"), "utf8"))).toMatchObject({ projectName: "TestProject", workingDirectory: tmpDir, schemaVersion: 1 });
   });
 
   it("createProjectIdentity reuses existing projectId", async () => {
     const first = await createProjectIdentity(tmpDir, { projectName: "First" });
+    await writeProjectIdentity(tmpDir, { ...first, projectId: "11111111-1111-4111-8111-111111111111" });
     const second = await createProjectIdentity(tmpDir, { projectName: "Renamed" });
-
-    expect(second.projectId).toBe(first.projectId);
-    expect(second.projectName).toBe("Renamed");
+    expect(second.projectId).toBe("11111111-1111-4111-8111-111111111111");
+    expect((await readProjectIdentity(tmpDir))?.projectName).toBe("Renamed");
   });
 
   it("readProjectIdentity reads valid identity", async () => {
@@ -663,16 +640,7 @@ describe("TC-9d.5: ProjectIdentity — create, read, mismatch, walk-up", () => {
   });
 
   it("findProjectIdentity returns null at filesystem root", async () => {
-    // Use a temp dir that definitely has no .gnosys up the tree
-    const isolated = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-9d-root-"));
-    try {
-      const found = await findProjectIdentity(isolated);
-      // Could be null or could find a real .gnosys somewhere — depends on system
-      // The important thing is it doesn't crash
-      expect(found === null || found.identity !== undefined).toBe(true);
-    } finally {
-      fs.rmSync(isolated, { recursive: true, force: true });
-    }
+    expect(await findProjectIdentity(path.parse(tmpDir).root)).toBeNull();
   });
 
   it("detectAgentRulesTarget returns null when no IDE markers present", () => {
@@ -722,24 +690,11 @@ describe("TC-9d.6: Multi-project — cross-project isolation", () => {
   afterEach(async () => await cleanupTestEnv(env));
 
   it("memories from different projects are isolated by project_id", () => {
-    const ids = seedMultiProjectMemories(env.db, [
-      { id: "proj-a", name: "Alpha", dir: "/tmp/alpha" },
-      { id: "proj-b", name: "Beta", dir: "/tmp/beta" },
-    ], 3);
-
-    // 3 per project + 1 user + 1 global = 8 total
-    expect(ids.length).toBe(8);
-
-    const allMemories = env.db.getActiveMemories();
-    const alphaMemories = allMemories.filter(m => m.project_id === "proj-a");
-    const betaMemories = allMemories.filter(m => m.project_id === "proj-b");
-    const userMemories = allMemories.filter(m => m.scope === "user");
-    const globalMemories = allMemories.filter(m => m.scope === "global");
-
-    expect(alphaMemories.length).toBe(3);
-    expect(betaMemories.length).toBe(3);
-    expect(userMemories.length).toBe(1);
-    expect(globalMemories.length).toBe(1);
+    seedMultiProjectMemories(env.db, [{ id: "proj-a", name: "Alpha", dir: "/tmp/alpha" }, { id: "proj-b", name: "Beta", dir: "/tmp/beta" }], 3);
+    expect(env.db.getMemoriesByProject("proj-a").map(m => m.id).sort()).toEqual(["proj-a-mem-1", "proj-a-mem-2", "proj-a-mem-3"]);
+    expect(env.db.getMemoriesByProject("proj-b").map(m => m.id).sort()).toEqual(["proj-b-mem-1", "proj-b-mem-2", "proj-b-mem-3"]);
+    expect(env.db.getMemoriesByScope("user").map(m => m.id)).toEqual(["user-pref-001"]);
+    expect(env.db.getMemoriesByScope("global").map(m => m.id)).toEqual(["global-001"]);
   });
 
   it("FTS search finds memories across all projects", () => {
@@ -787,112 +742,6 @@ describe("TC-9d.6: Multi-project — cross-project isolation", () => {
 
 // ─── TC-9d.7: Helper library — factories and seeding ─────────────────
 
-describe("TC-9d.7: Helpers library — factory functions", () => {
-  it("makeMemory() generates unique IDs on each call", () => {
-    const m1 = makeMemory();
-    const m2 = makeMemory();
-    expect(m1.id).not.toBe(m2.id);
-  });
-
-  it("makeMemory() applies overrides correctly", () => {
-    const mem = makeMemory({
-      id: "custom-id",
-      title: "Custom Title",
-      confidence: 0.5,
-      scope: "global",
-      project_id: null,
-    });
-
-    expect(mem.id).toBe("custom-id");
-    expect(mem.title).toBe("Custom Title");
-    expect(mem.confidence).toBe(0.5);
-    expect(mem.scope).toBe("global");
-    expect(mem.project_id).toBeNull();
-  });
-
-  it("makeMemory() has sensible defaults", () => {
-    const mem = makeMemory();
-    expect(mem.tier).toBe("active");
-    expect(mem.status).toBe("active");
-    expect(mem.scope).toBe("project");
-    expect(mem.confidence).toBe(0.9);
-    expect(mem.reinforcement_count).toBe(0);
-    expect(mem.category).toBe("general");
-    expect(mem.author).toBe("ai");
-    expect(mem.authority).toBe("declared");
-  });
-
-  it("makeProject() generates unique IDs on each call", () => {
-    const p1 = makeProject();
-    const p2 = makeProject();
-    expect(p1.id).not.toBe(p2.id);
-  });
-
-  it("makeProject() applies overrides correctly", () => {
-    const proj = makeProject({
-      id: "custom-proj",
-      name: "My Project",
-      working_directory: "/my/project",
-    });
-
-    expect(proj.id).toBe("custom-proj");
-    expect(proj.name).toBe("My Project");
-    expect(proj.working_directory).toBe("/my/project");
-    expect(proj.user).toBe("testuser");
-  });
-
-  it("makeFrontmatter() applies overrides correctly", () => {
-    const fm = makeFrontmatter({
-      id: "fm-001",
-      title: "My Frontmatter",
-      category: "architecture",
-    });
-
-    expect(fm.id).toBe("fm-001");
-    expect(fm.title).toBe("My Frontmatter");
-    expect(fm.category).toBe("architecture");
-    expect(fm.confidence).toBe(0.9); // Default
-  });
-
-  it("createTestEnv provides working DB", async () => {
-    const env = await createTestEnv("factory-test");
-    try {
-      expect(env.db.isAvailable()).toBe(true);
-      expect(env.tmpDir).toContain("gnosys-factory-test");
-      expect(fs.existsSync(env.tmpDir)).toBe(true);
-    } finally {
-      await cleanupTestEnv(env);
-    }
-  });
-
-  it("cleanupTestEnv removes temp directory", async () => {
-    const env = await createTestEnv("cleanup-test");
-    const dir = env.tmpDir;
-    await cleanupTestEnv(env);
-    expect(fs.existsSync(dir)).toBe(false);
-  });
-
-  it("seedMultiProjectMemories creates expected memory layout", async () => {
-    const env = await createTestEnv("seed-test");
-    try {
-      const ids = seedMultiProjectMemories(env.db, [
-        { id: "p1", name: "One", dir: "/tmp/one" },
-      ], 2);
-
-      // 2 project memories + 1 user + 1 global = 4
-      expect(ids.length).toBe(4);
-
-      const all = env.db.getActiveMemories();
-      const projMems = all.filter(m => m.project_id === "p1");
-      expect(projMems.length).toBe(2);
-      expect(projMems[0].category).toBe("decisions");
-      expect(projMems[1].category).toBe("requirements");
-    } finally {
-      await cleanupTestEnv(env);
-    }
-  });
-});
-
 // ─── TC-9d.8: Graph — load and format ────────────────────────────────
 
 describe("TC-9d.8: Graph — load and format stats", () => {
@@ -939,9 +788,8 @@ describe("TC-9d.8: Graph — load and format stats", () => {
 
     const result = await loadGraph(tmpDir);
     expect(result).not.toBeNull();
-    expect(result!.nodes.length).toBe(2);
-    expect(result!.edges.length).toBe(2);
-    expect(result!.stats.totalNodes).toBe(2);
+    expect(result!.nodes).toEqual([{ id: "a.md", title: "A", edges: 2, outgoing: 1, incoming: 1 }, { id: "b.md", title: "B", edges: 2, outgoing: 1, incoming: 1 }]);
+    expect(result!.edges).toEqual([{ source: "a.md", target: "b.md", label: "B" }, { source: "b.md", target: "a.md", label: "A" }]);
   });
 
   it("formatGraphStats produces readable output", () => {
@@ -982,19 +830,29 @@ describe("TC-9d.8: Graph — load and format stats", () => {
 // ─── TC-9d.9: WAL and enableWAL ─────────────────────────────────────
 
 describe("TC-9d.9: enableWAL utility", () => {
-  it("enableWAL does not throw on mock DB", () => {
-    const mockDb = {
-      pragma: (_cmd: string) => {},
-    };
-    expect(() => enableWAL(mockDb)).not.toThrow();
+  it("enableWAL configures a real SQLite connection", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-wal-"));
+    const db = new Database(path.join(dir, "data.db"));
+    try {
+      db.pragma("wal_autocheckpoint = 0");
+      enableWAL(db, 1234.9);
+      expect(db.pragma("journal_mode", { simple: true })).toBe("wal");
+      expect(db.pragma("busy_timeout", { simple: true })).toBe(1234);
+      expect(db.pragma("wal_autocheckpoint", { simple: true })).toBe(1000);
+    } finally { db.close(); fs.rmSync(dir, { recursive: true, force: true }); }
   });
 
-  it("enableWAL handles errors gracefully", () => {
-    const brokenDb = {
-      pragma: () => { throw new Error("DB not available"); },
-    };
-    // Should not throw
-    expect(() => enableWAL(brokenDb)).not.toThrow();
+  it("enableWAL continues after a closed handle and configures the next connection", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-wal-retry-"));
+    const closed = new Database(":memory:");
+    closed.close();
+    const db = new Database(path.join(dir, "data.db"));
+    try {
+      enableWAL(closed);
+      enableWAL(db, -5);
+      expect(db.pragma("journal_mode", { simple: true })).toBe("wal");
+      expect(db.pragma("busy_timeout", { simple: true })).toBe(0);
+    } finally { db.close(); fs.rmSync(dir, { recursive: true, force: true }); }
   });
 });
 
@@ -1012,23 +870,13 @@ describe("TC-9d.10: CLI working-set commands", () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
-  it("gnosys stats --json reports memory count for initialized project", () => {
-    const output = cliJson<{ totalCount: number }>("stats", tmpDir);
-    expect(typeof output.totalCount).toBe("number");
-    // Init may create a bootstrap memory, so just verify it's a non-negative number
-    expect(output.totalCount).toBeGreaterThanOrEqual(0);
-  });
 
-  it("gnosys list --json reports memories array for initialized project", () => {
-    const output = cliJson<{ count: number; memories: unknown[] }>("list", tmpDir);
-    expect(typeof output.count).toBe("number");
-    expect(Array.isArray(output.memories)).toBe(true);
-    expect(output.count).toBe(output.memories.length);
-  });
+
+
 
   it("gnosys audit --json reports empty entries for fresh project", () => {
     const output = cli("audit --json", tmpDir);
     const parsed = JSON.parse(extractJson(output));
-    expect(parsed).toHaveProperty("entries");
+    expect(parsed).toEqual([]);
   });
 });

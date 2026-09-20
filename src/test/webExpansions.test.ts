@@ -263,13 +263,12 @@ describe("query-time expansion", () => {
     expect(optedOut.map((result) => result.document.id)).toEqual(["direct"]);
   });
 
-  it("searches v1 indexes identically when no expansions field exists", () => {
-    const index = makeExpansionIndex();
-
-    expect(search(index, "desserts", { limit: 10 })).toEqual(
-      search({ ...index, version: 1 }, "desserts", { limit: 10 })
-    );
-  });
+  it("searches v1 indexes without expansions", () => {
+ const results = search(makeExpansionIndex(), "desserts", { limit: 10 });
+ expect(results.map(row => ({ id: row.document.id, score: row.score, matchedTokens: row.matchedTokens }))).toEqual([
+  { id: "direct", score: 4, matchedTokens: ["desserts"] }
+ ]);
+});
 
   it("participates in semantic fusion on a v2 index", () => {
     const index = attachExpansions(makeExpansionIndex(), { desserts: ["cookie"] });

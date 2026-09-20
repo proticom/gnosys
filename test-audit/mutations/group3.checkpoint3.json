@@ -1,0 +1,2326 @@
+[
+  {
+    "id": "cli-list-empty",
+    "file": "src/lib/listCommand.ts",
+    "description": "cli list empty",
+    "search": "    let memories = listMemoriesWithOverlay(resolved, (db) => db.getActiveMemories());",
+    "replace": "    let memories = listMemoriesWithOverlay(resolved, (db) => db.getActiveMemories()).slice(0, 0);",
+    "tests": [
+      "src/test/cli-json.test.ts",
+      "src/test/phase8c.cli-parity.test.ts",
+      "src/test/phase9d.coverage-overhaul.test.ts",
+      "src/test/acceptance.test.ts"
+    ],
+    "testName": "gnosys list returns|gnosys list --json|CLI list command|CLI uses GNOSYS_PROJECT",
+    "build": true
+  },
+  {
+    "id": "cli-stats-bogus",
+    "file": "src/lib/statsCommand.ts",
+    "description": "cli stats bogus",
+    "search": "outputResult(!!opts.json, { totalCount: 0 },",
+    "replace": "outputResult(!!opts.json, { totalCount: 999 },",
+    "tests": [
+      "src/test/cli-json.test.ts",
+      "src/test/phase8c.cli-parity.test.ts",
+      "src/test/phase9d.coverage-overhaul.test.ts",
+      "src/test/acceptance.test.ts"
+    ],
+    "testName": "gnosys stats returns|gnosys stats --json",
+    "build": true
+  },
+  {
+    "id": "cli-projects-omit-rows",
+    "file": "src/lib/projectsCommand.ts",
+    "description": "cli projects omit rows",
+    "search": "const projectData = visibleProjects.map((p) => ({",
+    "replace": "const projectData = visibleProjects.slice(0, 0).map((p) => ({",
+    "tests": [
+      "src/test/cli-json.test.ts",
+      "src/test/phase8c.cli-parity.test.ts",
+      "src/test/phase9d.coverage-overhaul.test.ts",
+      "src/test/acceptance.test.ts"
+    ],
+    "testName": "gnosys projects lists|gnosys projects --json",
+    "build": true
+  },
+  {
+    "id": "cli-pref-phantom",
+    "file": "src/lib/prefCommand.ts",
+    "description": "cli pref phantom",
+    "search": "{ preferences: [] }",
+    "replace": "{ preferences: [{ key: \"phantom\", value: \"not stored\" }] }",
+    "tests": [
+      "src/test/cli-json.test.ts",
+      "src/test/phase8c.cli-parity.test.ts",
+      "src/test/phase9d.coverage-overhaul.test.ts",
+      "src/test/acceptance.test.ts"
+    ],
+    "testName": "gnosys pref get --json",
+    "build": true
+  },
+  {
+    "id": "cli-pref-human-empty",
+    "file": "src/lib/prefCommand.ts",
+    "description": "cli pref human empty",
+    "search": "    humanFn();",
+    "replace": "    console.log(\"wrong output\");",
+    "tests": [
+      "src/test/cli-json.test.ts",
+      "src/test/phase8c.cli-parity.test.ts",
+      "src/test/phase9d.coverage-overhaul.test.ts",
+      "src/test/acceptance.test.ts"
+    ],
+    "testName": "gnosys pref get returns preferences",
+    "build": true
+  },
+  {
+    "id": "cli-identity-invalid",
+    "file": "src/lib/projectIdentity.ts",
+    "description": "cli identity invalid",
+    "search": "  const merged = { ...existing, ...identity };",
+    "replace": "  const merged = { ...existing, ...identity, projectId: path.basename(projectDir) };",
+    "tests": [
+      "src/test/cli-json.test.ts",
+      "src/test/phase8c.cli-parity.test.ts",
+      "src/test/phase9d.coverage-overhaul.test.ts",
+      "src/test/acceptance.test.ts"
+    ],
+    "testName": "gnosys.json exists after init|re-init preserves project identity",
+    "build": true
+  },
+  {
+    "id": "cli-audit-phantom",
+    "file": "src/lib/auditCommand.ts",
+    "description": "cli audit phantom",
+    "search": "      console.log(JSON.stringify(entries, null, 2));",
+    "replace": "      console.log(JSON.stringify({ ...entries, entries: [{ operation: \"phantom\" }] }, null, 2));",
+    "tests": [
+      "src/test/cli-json.test.ts",
+      "src/test/phase8c.cli-parity.test.ts",
+      "src/test/phase9d.coverage-overhaul.test.ts",
+      "src/test/acceptance.test.ts"
+    ],
+    "testName": "gnosys audit --json reports",
+    "build": true
+  },
+  {
+    "id": "init-noop",
+    "file": "src/cli/project.ts",
+    "description": "init noop",
+    "search": "    const targetDir = opts.directory",
+    "replace": "    if (opts.directory) return;\n    const targetDir = opts.directory",
+    "tests": [
+      "src/test/init.test.ts"
+    ],
+    "testName": "does NOT",
+    "build": true
+  },
+  {
+    "id": "init-null-tags",
+    "file": "src/cli/project.ts",
+    "description": "init null tags",
+    "search": "JSON.stringify(defaultRegistry, null, 2)",
+    "replace": "JSON.stringify(Object.fromEntries(Object.keys(defaultRegistry).map(key => [key, null])), null, 2)",
+    "tests": [
+      "src/test/init.test.ts"
+    ],
+    "testName": "places tags.json inside",
+    "build": true
+  },
+  {
+    "id": "init-invalid-identity",
+    "file": "src/lib/projectIdentity.ts",
+    "description": "init invalid identity",
+    "search": "  const merged = { ...existing, ...identity };",
+    "replace": "  const merged = { ...existing, ...identity, projectId: path.basename(projectDir), projectName: null };",
+    "tests": [
+      "src/test/init.test.ts",
+      "src/test/acceptance.test.ts",
+      "src/test/phase8a.central-db.test.ts"
+    ],
+    "testName": "creates gnosys.json project identity|generates stable projectId|initializes project A and B|both projects have unique projectIds|gnosys init creates .gnosys directory|re-init preserves projectId",
+    "build": true
+  },
+  {
+    "id": "init-future-schema",
+    "file": "src/lib/projectIdentity.ts",
+    "description": "init future schema",
+    "search": "const IDENTITY_SCHEMA_VERSION = 1;",
+    "replace": "const IDENTITY_SCHEMA_VERSION = 999;",
+    "tests": [
+      "src/test/phase8a.central-db.test.ts"
+    ],
+    "testName": "gnosys.json includes schemaVersion",
+    "build": true
+  },
+  {
+    "id": "init-resync-noop",
+    "file": "src/cli/project.ts",
+    "description": "init resync noop",
+    "search": "    if (!isResync) {\n      // Create directory",
+    "replace": "    if (isResync) { console.log(\"re-synced\"); return; }\n    if (!isResync) {\n      // Create directory",
+    "tests": [
+      "src/test/init.test.ts"
+    ],
+    "testName": "re-syncs if",
+    "build": true
+  },
+  {
+    "id": "preference-drop-value",
+    "file": "src/lib/preferences.ts",
+    "description": "preference drop value",
+    "search": "content: `# ${title}\\n\\n${value}`,",
+    "replace": "content: `# ${title}\\n\\n`,",
+    "tests": [
+      "src/test/acceptance.test.ts"
+    ],
+    "testName": "adds user-scoped preferences",
+    "build": true
+  },
+  {
+    "id": "scope-always-project",
+    "file": "src/lib/db.ts",
+    "description": "scope always project",
+    "search": ").all(scope) as DbMemory[],",
+    "replace": ").all(\"project\") as DbMemory[],",
+    "tests": [
+      "src/test/phase0-6.regression.test.ts"
+    ],
+    "testName": "separates memories by scope"
+  },
+  {
+    "id": "regression-export-drop-body",
+    "file": "src/lib/export.ts",
+    "description": "Drop all memory body text while preserving title/frontmatter and success counts.",
+    "search": "let content = `${frontmatter}\\n\\n# ${mem.title}\\n\\n${mem.content}`;",
+    "replace": "let content = `${frontmatter}\\n\\n# ${mem.title}\\n\\n`;",
+    "tests": [
+      "src/test/phase0-6.regression.test.ts"
+    ],
+    "testName": "exporter creates"
+  },
+  {
+    "id": "archive-empty-content",
+    "file": "src/lib/archive.ts",
+    "description": "archive empty content",
+    "search": "        memory.frontmatter.title,\n        memory.content,",
+    "replace": "        memory.frontmatter.title,\n        \"\",",
+    "tests": [
+      "src/test/phase0-6.regression.test.ts"
+    ],
+    "testName": "archive module can"
+  },
+  {
+    "id": "schema-version-future",
+    "file": "src/lib/db.ts",
+    "description": "schema version future",
+    "search": "return this.db.pragma(\"user_version\", { simple: true }) as number;",
+    "replace": "return 999;",
+    "tests": [
+      "src/test/phase7a.migration.test.ts"
+    ],
+    "testName": "getSchemaVersion"
+  },
+  {
+    "id": "fts-wrong-row-id",
+    "file": "src/lib/db.ts",
+    "description": "fts wrong row id",
+    "search": "      const results = run(ftsAndQuery(terms));\n      if (results.length > 0 || terms.length === 1) return results;",
+    "replace": "      const results = run(ftsAndQuery(terms));\n      if (results.length > 0 || terms.length === 1) return results.map(row => ({ ...row, id: \"wrong-id\" }));",
+    "tests": [
+      "src/test/phase7a.migration.test.ts"
+    ],
+    "testName": "porter tokenizer"
+  },
+  {
+    "id": "reindex-ignore-second-call",
+    "file": "src/lib/search.ts",
+    "description": "reindex ignore second call",
+    "search": "    this.clearIndex();\n    return this.addStoreMemories(store);",
+    "replace": "    if (this.search(\"keyword\").length > 0) return 1;\n    this.clearIndex();\n    return this.addStoreMemories(store);",
+    "tests": [
+      "src/test/phase7c.dual-write.test.ts"
+    ],
+    "testName": "search index reflects"
+  },
+  {
+    "id": "cli-stats-human-output",
+    "file": "src/lib/statsCommand.ts",
+    "description": "Suppress human statistics output.",
+    "search": "    humanFn();",
+    "replace": "    console.log(\"wrong output\");",
+    "tests": [
+      "src/test/phase8c.cli-parity.test.ts"
+    ],
+    "testName": "gnosys stats returns statistics",
+    "build": true
+  },
+  {
+    "id": "splash-double-v",
+    "file": "src/lib/setup/coldStart.ts",
+    "description": "splash double v",
+    "search": "export function renderColdStartSplash(version: string): string {\n  const v = version.startsWith(\"v\") ? version : `v${version}`;",
+    "replace": "export function renderColdStartSplash(version: string): string {\n  const v = `v${version}`;",
+    "tests": [
+      "src/test/setup-ui-coldstart.test.ts"
+    ],
+    "testName": "handles version with leading v"
+  },
+  {
+    "id": "table-strip-cell-color",
+    "file": "src/lib/setup/ui/table.ts",
+    "description": "table strip cell color",
+    "search": "const raw = rawCells[rowIdx][colIdx];",
+    "replace": "const raw = stripAnsi(rawCells[rowIdx][colIdx]);",
+    "tests": [
+      "src/test/setup-ui-table.test.ts"
+    ],
+    "testName": "preserves coloured cell"
+  },
+  {
+    "id": "machine-invalid-fresh-id",
+    "file": "src/lib/machineConfig.ts",
+    "description": "machine invalid fresh id",
+    "search": "export function defaultMachineConfig(): MachineConfig {\n  return {\n    machineId: randomUUID(),",
+    "replace": "export function defaultMachineConfig(): MachineConfig {\n  return {\n    machineId: \"invalid\",",
+    "tests": [
+      "src/test/v511-machineConfig.test.ts"
+    ],
+    "testName": "creates machine.json on first run"
+  },
+  {
+    "id": "machine-drop-existing-roots",
+    "file": "src/lib/machineConfig.ts",
+    "description": "machine drop existing roots",
+    "search": "  return { config: existing, created: false, regenerated: false };",
+    "replace": "  return { config: {...existing, roots: {}}, created: false, regenerated: false };",
+    "tests": [
+      "src/test/v511-machineConfig.test.ts"
+    ],
+    "testName": "returns the existing config unchanged"
+  },
+  {
+    "id": "machine-constant-id",
+    "file": "src/lib/machineConfig.ts",
+    "description": "machine constant id",
+    "search": "  return ensureMachineConfig().config.machineId;",
+    "replace": "  return \"same-for-every-machine\";",
+    "tests": [
+      "src/test/v511-machineConfig.test.ts"
+    ],
+    "testName": "getMachineId is stable"
+  },
+  {
+    "id": "scope-always-project",
+    "file": "src/lib/db.ts",
+    "description": "scope always project",
+    "search": ").all(scope) as DbMemory[],",
+    "replace": ").all(\"project\") as DbMemory[],",
+    "tests": [
+      "src/test/phase0-6.regression.test.ts"
+    ],
+    "testName": "separates memories by scope"
+  },
+  {
+    "id": "regression-export-drop-body",
+    "file": "src/lib/export.ts",
+    "description": "Drop all memory body text while preserving title/frontmatter and success counts.",
+    "search": "let content = `${frontmatter}\\n\\n# ${mem.title}\\n\\n${mem.content}`;",
+    "replace": "let content = `${frontmatter}\\n\\n# ${mem.title}\\n\\n`;",
+    "tests": [
+      "src/test/phase0-6.regression.test.ts"
+    ],
+    "testName": "exporter creates"
+  },
+  {
+    "id": "archive-empty-content",
+    "file": "src/lib/archive.ts",
+    "description": "archive empty content",
+    "search": "        memory.frontmatter.title,\n        memory.content,",
+    "replace": "        memory.frontmatter.title,\n        \"\",",
+    "tests": [
+      "src/test/phase0-6.regression.test.ts"
+    ],
+    "testName": "archive module can"
+  },
+  {
+    "id": "schema-version-future",
+    "file": "src/lib/db.ts",
+    "description": "schema version future",
+    "search": "return this.db.pragma(\"user_version\", { simple: true }) as number;",
+    "replace": "return 999;",
+    "tests": [
+      "src/test/phase7a.migration.test.ts"
+    ],
+    "testName": "getSchemaVersion"
+  },
+  {
+    "id": "fts-wrong-row-id",
+    "file": "src/lib/db.ts",
+    "description": "fts wrong row id",
+    "search": "      const results = run(ftsAndQuery(terms));\n      if (results.length > 0 || terms.length === 1) return results;",
+    "replace": "      const results = run(ftsAndQuery(terms));\n      if (results.length > 0 || terms.length === 1) return results.map(row => ({ ...row, id: \"wrong-id\" }));",
+    "tests": [
+      "src/test/phase7a.migration.test.ts"
+    ],
+    "testName": "porter tokenizer"
+  },
+  {
+    "id": "reindex-ignore-second-call",
+    "file": "src/lib/search.ts",
+    "description": "reindex ignore second call",
+    "search": "    this.clearIndex();\n    return this.addStoreMemories(store);",
+    "replace": "    if (this.db.prepare(\"SELECT count(*) AS count FROM memories_fts\").get().count > 0) return 1;\n    this.clearIndex();\n    return this.addStoreMemories(store);",
+    "tests": [
+      "src/test/phase7c.dual-write.test.ts"
+    ],
+    "testName": "search index reflects"
+  },
+  {
+    "id": "dream-drop-empty-error",
+    "file": "src/lib/dream.ts",
+    "description": "dream drop empty error",
+    "search": "report.errors.push(\"gnosys.db not available or not migrated\");",
+    "replace": "report.errors.push(\"unrelated failure\");",
+    "tests": [
+      "src/test/phase0-6.regression.test.ts"
+    ],
+    "testName": "dream reports an empty"
+  },
+  {
+    "id": "dream-drop-minimum-error",
+    "file": "src/lib/dream.ts",
+    "description": "dream drop minimum error",
+    "search": "report.errors.push(`Too few memories (${counts.active} < ${this.dreamConfig.minMemories})`);",
+    "replace": "report.errors.push(\"unrelated failure\");",
+    "tests": [
+      "src/test/phase0-6.regression.test.ts"
+    ],
+    "testName": "dream reports the configured"
+  },
+  {
+    "id": "dashboard-wrong-active-count",
+    "file": "src/lib/dashboard.ts",
+    "description": "dashboard wrong active count",
+    "search": "activeCount: counts.active,",
+    "replace": "activeCount: 999,",
+    "tests": [
+      "src/test/phase0-6.regression.test.ts"
+    ],
+    "testName": "dashboard reports literal"
+  },
+  {
+    "id": "maintenance-wrong-no-store-error",
+    "file": "src/lib/maintenance.ts",
+    "description": "maintenance wrong no store error",
+    "search": "throw new Error(\"No writable store found. Run gnosys init first.\");",
+    "replace": "throw new Error(\"unknown maintenance failure\");",
+    "tests": [
+      "src/test/phase0-6.regression.test.ts"
+    ],
+    "testName": "maintenance rejects"
+  },
+  {
+    "id": "update-drop-reinforcement",
+    "file": "src/lib/db.ts",
+    "description": "update drop reinforcement",
+    "search": "  updateMemory(id: string, updates: Partial<DbMemory>): void {",
+    "replace": "  updateMemory(id: string, updates: Partial<DbMemory>): void {\n    delete updates.reinforcement_count;",
+    "tests": [
+      "src/test/phase0-6.regression.test.ts"
+    ],
+    "testName": "updates persisted reinforcement"
+  },
+  {
+    "id": "migration-drop-body",
+    "file": "src/lib/migrate.ts",
+    "description": "migration drop body",
+    "search": "        content: mem.content,",
+    "replace": "        content: \"\",",
+    "tests": [
+      "src/test/phase7a.migration.test.ts"
+    ],
+    "testName": "getMemoryCount returns correct totals after migration"
+  },
+  {
+    "id": "memory-drop-scope-project",
+    "file": "src/lib/db.ts",
+    "description": "memory drop scope project",
+    "search": "mem.project_id || null, mem.scope || \"project\"",
+    "replace": "null, \"project\"",
+    "tests": [
+      "src/test/phase7a.migration.test.ts"
+    ],
+    "testName": "memories retain scope"
+  },
+  {
+    "id": "project-drop-vault",
+    "file": "src/lib/db.ts",
+    "description": "project drop vault",
+    "search": "project.agent_rules_target || null, project.obsidian_vault || null,",
+    "replace": "project.agent_rules_target || null, null,",
+    "tests": [
+      "src/test/phase7a.migration.test.ts"
+    ],
+    "testName": "projects persist identity"
+  },
+  {
+    "id": "audit-drop-details",
+    "file": "src/lib/db.ts",
+    "description": "audit drop details",
+    "search": ").run(entry.timestamp, entry.operation, entry.memory_id, entry.details, entry.duration_ms, entry.trace_id);",
+    "replace": ").run(entry.timestamp, entry.operation, entry.memory_id, null, entry.duration_ms, entry.trace_id);",
+    "tests": [
+      "src/test/phase7a.migration.test.ts"
+    ],
+    "testName": "audit_log table accepts"
+  },
+  {
+    "id": "sandbox-cap-half",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox cap half",
+    "search": "confidence: Math.min(1.0, mem.confidence + 0.05),\n          last_reinforced:",
+    "replace": "confidence: 0.5,\n          last_reinforced:",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "reinforce caps"
+  },
+  {
+    "id": "sandbox-helper-empty",
+    "file": "src/sandbox/helper-template.ts",
+    "description": "sandbox helper empty",
+    "search": "fs.writeFileSync(outputPath, source, \"utf8\");",
+    "replace": "fs.writeFileSync(outputPath, source.slice(0, 0), \"utf8\");",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "generates gnosys-helper.ts"
+  },
+  {
+    "id": "sandbox-wrong-dir",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox wrong dir",
+    "search": "const dir = getSandboxDirImpl();",
+    "replace": "const dir = getSandboxDirImpl() + \"-wrong\";",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "getSandboxDir returns"
+  },
+  {
+    "id": "sandbox-wrong-socket",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox wrong socket",
+    "search": "return path.join(getSandboxDir(), \"gnosys.sock\");",
+    "replace": "return path.join(getSandboxDir(), \"wrong-gnosys.sock\");",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "getSocketPath returns"
+  },
+  {
+    "id": "sandbox-wrong-pid",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox wrong pid",
+    "search": "return path.join(getSandboxDir(), \"gnosys.pid\");",
+    "replace": "return path.join(getSandboxDir(), \"wrong-gnosys.pid\");",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "getPidPath returns"
+  },
+  {
+    "id": "db-discover-wrong-id",
+    "file": "src/lib/dbSearch.ts",
+    "description": "db discover wrong id",
+    "search": "const results = this.db.discoverFts(query, limit);",
+    "replace": "const results = this.db.discoverFts(query, limit).map(row => ({ ...row, id: \"wrong-id\" }));",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "discover\\(\\) returns"
+  },
+  {
+    "id": "db-keyword-wrong-id",
+    "file": "src/lib/dbSearch.ts",
+    "description": "db keyword wrong id",
+    "search": "      relativePath: r.id,",
+    "replace": "      relativePath: \"wrong-id\",",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "keyword mode returns|falls back to keyword"
+  },
+  {
+    "id": "db-search-empty-limit",
+    "file": "src/lib/dbSearch.ts",
+    "description": "db search empty limit",
+    "search": "const results = this.db.searchFts(query, limit);\n    return results.map((r) => ({",
+    "replace": "const results = this.db.searchFts(query, limit);\n    return results.slice(0, 0).map((r) => ({",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "search respects limit"
+  },
+  {
+    "id": "sync-content-invalid-hash",
+    "file": "src/lib/dbWrite.ts",
+    "description": "sync content invalid hash",
+    "search": "dbUpdates.content_hash = fnv1a(newContent);",
+    "replace": "dbUpdates.content_hash = \"invalid-hash\";",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "updates content and hash"
+  },
+  {
+    "id": "audit-write-noop",
+    "file": "src/lib/dbWrite.ts",
+    "description": "audit write noop",
+    "search": "  if (!db.isAvailable()) return;\n  db.logAudit({",
+    "replace": "  if (db.isAvailable()) return;\n  db.logAudit({",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "auditToDb logs"
+  },
+  {
+    "id": "audit-read-corrupt-operation",
+    "file": "src/lib/audit.ts",
+    "description": "audit read corrupt operation",
+    "search": "entries.push(JSON.parse(line) as AuditEntry);",
+    "replace": "entries.push({ ...JSON.parse(line), operation: \"corrupted\" } as AuditEntry);",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "handles malformed lines"
+  },
+  {
+    "id": "lock-release-noop",
+    "file": "src/lib/lock.ts",
+    "description": "lock release noop",
+    "search": "      return () => {\n        try {\n          fs.unlinkSync(lockPath);",
+    "replace": "      return () => {\n        try {\n          // unlink accidentally omitted",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "release function is idempotent"
+  },
+  {
+    "id": "identity-invalid-constant-id",
+    "file": "src/lib/projectIdentity.ts",
+    "description": "identity invalid constant id",
+    "search": "projectId: existing?.projectId || crypto.randomUUID(),",
+    "replace": "projectId: \"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\",",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "creates identity file|reuses existing projectId"
+  },
+  {
+    "id": "identity-phantom-root",
+    "file": "src/lib/projectIdentity.ts",
+    "description": "identity phantom root",
+    "search": "  return null;\n}\n\n// \u2500\u2500\u2500 IDE Hook Configuration",
+    "replace": "  return { identity: { projectId: \"phantom\" } as ProjectIdentity, projectRoot: root };\n}\n\n// \u2500\u2500\u2500 IDE Hook Configuration",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "returns null at filesystem root"
+  },
+  {
+    "id": "graph-corrupt-node-titles",
+    "file": "src/lib/graph.ts",
+    "description": "graph corrupt node titles",
+    "search": "return JSON.parse(raw) as GraphJSON;",
+    "replace": "return { ...JSON.parse(raw), nodes: JSON.parse(raw).nodes.map((node: GraphNode) => ({ ...node, title: \"corrupted\" })) } as GraphJSON;",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "loadGraph reads a valid"
+  },
+  {
+    "id": "wal-noop",
+    "file": "src/lib/lock.ts",
+    "description": "wal noop",
+    "search": "export function enableWAL(db: any, busyTimeoutMs: number = 5000): void {",
+    "replace": "export function enableWAL(db: any, busyTimeoutMs: number = 5000): void {\n  return;",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "enableWAL"
+  },
+  {
+    "id": "pref-persist-empty-value",
+    "file": "src/lib/preferences.ts",
+    "description": "pref persist empty value",
+    "search": "content: `# ${title}\\n\\n${value}`,",
+    "replace": "content: `# ${title}\\n\\n`,",
+    "tests": [
+      "src/test/pref-invoke.test.ts"
+    ],
+    "testName": "sets a known preference"
+  },
+  {
+    "id": "graph-skip-persistence",
+    "file": "src/lib/graph.ts",
+    "description": "graph skip persistence",
+    "search": "  await fs.writeFile(graphPath, JSON.stringify(graphJSON, null, 2) + \"\\n\", \"utf-8\");",
+    "replace": "  // persistence omitted",
+    "tests": [
+      "src/test/reindex-graph-invoke.test.ts"
+    ],
+    "testName": "rebuilds the graph|second run"
+  },
+  {
+    "id": "discover-fallback-wrong-title",
+    "file": "src/lib/search.ts",
+    "description": "discover fallback wrong title",
+    "search": "results = tryRun(andExpr);",
+    "replace": "results = tryRun(andExpr).map(row => ({ ...row, title: \"wrong-title\" }));",
+    "tests": [
+      "src/test/search.test.ts"
+    ],
+    "testName": "falls back to full-text"
+  },
+  {
+    "id": "expansions-v1-empty-search",
+    "file": "src/lib/staticSearch.ts",
+    "description": "expansions v1 empty search",
+    "search": "return results.slice(0, limit);",
+    "replace": "return results.slice(0, 0);",
+    "tests": [
+      "src/test/webExpansions.test.ts"
+    ],
+    "testName": "searches v1 indexes identically"
+  },
+  {
+    "id": "sandbox-add-empty-content",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox add empty content",
+    "search": "title: memTitle,\n          category,\n          content,",
+    "replace": "title: memTitle,\n          category,\n          content: \"\",",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "add creates a memory"
+  },
+  {
+    "id": "sandbox-empty-recall",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox empty recall",
+    "search": "result: results.map((r) => {",
+    "replace": "result: results.slice(0, 0).map((r) => {",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "recall returns results|multiple adds and recall with limit"
+  },
+  {
+    "id": "sandbox-list-wrong-title",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox list wrong title",
+    "search": "title: m.title,\n            category: m.category,",
+    "replace": "title: \"wrong title\",\n            category: m.category,",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "list returns memories|list filters by category|client can list"
+  },
+  {
+    "id": "sandbox-wrong-total",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox wrong total",
+    "search": "...counts,\n            categories,",
+    "replace": "...counts,\n            total: 999,\n            categories,",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "stats returns database|client can get stats"
+  },
+  {
+    "id": "sandbox-cap-half",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox cap half",
+    "search": "confidence: Math.min(1.0, mem.confidence + 0.05),\n          last_reinforced:",
+    "replace": "confidence: 0.5,\n          last_reinforced:",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "reinforce caps"
+  },
+  {
+    "id": "sandbox-helper-empty",
+    "file": "src/sandbox/helper-template.ts",
+    "description": "sandbox helper empty",
+    "search": "fs.writeFileSync(outputPath, source, \"utf8\");",
+    "replace": "fs.writeFileSync(outputPath, source.slice(0, 0), \"utf8\");",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "auto-starts the server",
+    "build": true
+  },
+  {
+    "id": "sandbox-wrong-dir",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox wrong dir",
+    "search": "const dir = getSandboxDirImpl();",
+    "replace": "const dir = getSandboxDirImpl() + \"-wrong\";",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "getSandboxDir creates"
+  },
+  {
+    "id": "sandbox-wrong-socket",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox wrong socket",
+    "search": "return path.join(getSandboxDir(), \"gnosys.sock\");",
+    "replace": "return path.join(getSandboxDir(), \"wrong-gnosys.sock\");",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "getSocketPath returns"
+  },
+  {
+    "id": "sandbox-wrong-pid",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox wrong pid",
+    "search": "return path.join(getSandboxDir(), \"gnosys.pid\");",
+    "replace": "return path.join(getSandboxDir(), \"wrong-gnosys.pid\");",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "getPidPath returns"
+  },
+  {
+    "id": "sandbox-helper-autostart-noop",
+    "file": "src/sandbox/helper-template.ts",
+    "description": "Generated helper omits real startup command.",
+    "search": "execSync(\"npx gnosys sandbox start\", { stdio: \"ignore\", timeout: 10_000 });",
+    "replace": "void 0;",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "auto-starts the server",
+    "build": true
+  },
+  {
+    "id": "hash-length",
+    "file": "src/lib/db.ts",
+    "description": "Replace FNV hash with input length.",
+    "search": "function fnv1a(str: string): string {",
+    "replace": "function fnv1a(str: string): string {\n  if (str.length >= 0) return String(str.length);",
+    "tests": [
+      "src/test/chunk-splitter.test.ts"
+    ],
+    "testName": "fnv1a content hash"
+  },
+  {
+    "id": "static-load-empty-documents",
+    "file": "src/lib/staticSearch.ts",
+    "description": "static load empty documents",
+    "search": "  const index = parsed as GnosysWebIndex;",
+    "replace": "  const index = { ...(parsed as GnosysWebIndex), documents: [] };",
+    "tests": [
+      "src/test/staticSearch.test.ts"
+    ],
+    "testName": "loads from a file path|loads from a JSON string"
+  },
+  {
+    "id": "static-search-empty",
+    "file": "src/lib/staticSearch.ts",
+    "description": "static search empty",
+    "search": "  const queryTokens = tokenize(query);",
+    "replace": "  if (query.length >= 0) return [];\n  const queryTokens = tokenize(query);",
+    "tests": [
+      "src/test/staticSearch.test.ts"
+    ],
+    "testName": "search filters by category|search filters by tags|is case-insensitive|strips punctuation"
+  },
+  {
+    "id": "static-reverse-rank",
+    "file": "src/lib/staticSearch.ts",
+    "description": "static reverse rank",
+    "search": "  results.sort((a, b) => b.score - a.score);",
+    "replace": "  results.sort((a, b) => a.score - b.score);",
+    "tests": [
+      "src/test/staticSearch.test.ts"
+    ],
+    "testName": "returns results sorted"
+  },
+  {
+    "id": "static-ignore-limit",
+    "file": "src/lib/staticSearch.ts",
+    "description": "static ignore limit",
+    "search": "  return results.slice(0, limit);",
+    "replace": "  return results;",
+    "tests": [
+      "src/test/staticSearch.test.ts"
+    ],
+    "testName": "respects limit option"
+  },
+  {
+    "id": "static-wrong-document",
+    "file": "src/lib/staticSearch.ts",
+    "description": "static wrong document",
+    "search": "    results.push({ document: doc, score: finalScore, matchedTokens, docIndex });",
+    "replace": "    results.push({ document: { ...doc, id: \"wrong-document\" }, score: finalScore, matchedTokens, docIndex });",
+    "tests": [
+      "src/test/staticSearch.test.ts"
+    ],
+    "testName": "handles multi-word queries|boosts recent documents"
+  },
+  {
+    "id": "static-repeat-documents",
+    "file": "src/lib/staticSearch.ts",
+    "description": "static repeat documents",
+    "search": "  if (!filter) return [...index.documents];",
+    "replace": "  if (!filter) return index.documents.map(() => index.documents[0]);",
+    "tests": [
+      "src/test/staticSearch.test.ts"
+    ],
+    "testName": "returns all documents with no filter"
+  },
+  {
+    "id": "project-query-ignores-project",
+    "file": "src/lib/db.ts",
+    "description": "Project memory query returns a fixed different project.",
+    "search": "return this.withRecovery(() => this.prep(sql).all(projectId) as DbMemory[]);",
+    "replace": "return this.withRecovery(() => this.prep(sql).all(\"proj-a\") as DbMemory[]);",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "memories from different projects"
+  },
+  {
+    "id": "fingerprint-ignore-identity",
+    "file": "src/lib/dreamRunLog.ts",
+    "description": "Ignore IDs and content hash in dream fingerprints.",
+    "search": ".map((m) => `${m.id}:${m.modified}:${m.content_hash || \"\"}`)",
+    "replace": ".map((m) => `${m.modified}`)",
+    "tests": [
+      "src/test/dream-run-log.test.ts"
+    ],
+    "testName": "creates stable fingerprints"
+  },
+  {
+    "id": "dream-cost-constant",
+    "file": "src/lib/dreamRunLog.ts",
+    "description": "Return a positive constant cost for every input.",
+    "search": "  return Math.round(cost * 1_000_000) / 1_000_000;",
+    "replace": "  return 999;",
+    "tests": [
+      "src/test/dream-run-log.test.ts"
+    ],
+    "testName": "estimates tokens and cost"
+  },
+  {
+    "id": "ingestion-empty-long-slug",
+    "file": "src/lib/ingest.ts",
+    "description": "Truncate long names to zero characters.",
+    "search": ".substring(0, 60);",
+    "replace": ".substring(0, text.length > 60 ? 0 : 60);",
+    "tests": [
+      "src/test/ingest.test.ts"
+    ],
+    "testName": "truncates filename"
+  },
+  {
+    "id": "docx-empty-output",
+    "file": "src/lib/docxExtract.ts",
+    "description": "Return empty output without parsing the DOCX.",
+    "search": "export async function extractDocxText(filePath: string): Promise<DocxChunk[]> {",
+    "replace": "export async function extractDocxText(filePath: string): Promise<DocxChunk[]> {\n  if (filePath.length >= 0) return [];",
+    "tests": [
+      "src/test/docx-bomb.test.ts"
+    ],
+    "testName": "handles billion-laughs"
+  },
+  {
+    "id": "ingestion-available-always",
+    "file": "src/lib/ingest.ts",
+    "description": "Claim a provider is available even when none is configured.",
+    "search": "    return this.provider !== null;",
+    "replace": "    return true;",
+    "tests": [
+      "src/test/ingest.test.ts"
+    ],
+    "testName": "reports availability"
+  },
+  {
+    "id": "cli-stats-human-output",
+    "file": "src/lib/statsCommand.ts",
+    "description": "Suppress human statistics output.",
+    "search": "    humanFn();",
+    "replace": "    console.log(\"wrong output\");",
+    "tests": [
+      "src/test/phase8c.cli-parity.test.ts"
+    ],
+    "testName": "gnosys stats returns statistics",
+    "build": true
+  },
+  {
+    "id": "log-invert-gate",
+    "file": "src/lib/log.ts",
+    "description": "log invert gate",
+    "search": "return LEVEL_ORDER[level] >= LEVEL_ORDER[configuredLevel()];",
+    "replace": "return LEVEL_ORDER[level] < LEVEL_ORDER[configuredLevel()];",
+    "tests": [
+      "src/test/log.test.ts"
+    ],
+    "testName": "respects GNOSYS_LOG_LEVEL"
+  },
+  {
+    "id": "log-file-suppresses-stderr",
+    "file": "src/lib/log.ts",
+    "description": "log file suppresses stderr",
+    "search": "  if (!shouldEmit(level)) return;",
+    "replace": "  if (!shouldEmit(level) || process.env.GNOSYS_LOG_FILE) return;",
+    "tests": [
+      "src/test/log.test.ts"
+    ],
+    "testName": "never throws on bad file"
+  },
+  {
+    "id": "recall-empty-truncation",
+    "file": "src/lib/recallHookCommand.ts",
+    "description": "recall empty truncation",
+    "search": "return prompt.trim().slice(0, MAX_QUERY_CHARS);",
+    "replace": "return prompt.trim().slice(0, prompt.length > MAX_QUERY_CHARS ? 0 : MAX_QUERY_CHARS);",
+    "tests": [
+      "src/test/recall-hook.test.ts"
+    ],
+    "testName": "truncates very long"
+  },
+  {
+    "id": "grok-empty-block",
+    "file": "src/lib/setup.ts",
+    "description": "grok empty block",
+    "search": "const blockBody = renderGrokMcpBlock(entry);",
+    "replace": "const blockBody = renderGrokMcpBlock(entry).slice(0, 0);",
+    "tests": [
+      "src/test/ide-mcp-install.test.ts",
+      "src/test/v594-grok-build-ide.test.ts"
+    ],
+    "testName": "uses mcp_servers header|appends a block to existing|is idempotent"
+  },
+  {
+    "id": "claude-skip-install",
+    "file": "src/lib/setup.ts",
+    "description": "claude skip install",
+    "search": "        await installStdioMcpJson(configPath);\n        const home = os.homedir();",
+    "replace": "        void configPath;\n        const home = os.homedir();",
+    "tests": [
+      "src/test/ide-mcp-install.test.ts"
+    ],
+    "testName": "claude-desktop writes"
+  },
+  {
+    "id": "machine-damage-peer",
+    "file": "src/lib/machineRegistry.ts",
+    "description": "machine damage peer",
+    "search": "  registry[input.hostname] = {",
+    "replace": "  for (const entry of Object.values(registry)) entry.version = \"corrupt\";\n  registry[input.hostname] = {",
+    "tests": [
+      "src/test/machine-registry.test.ts"
+    ],
+    "testName": "never removes a different"
+  },
+  {
+    "id": "machine-empty-persistence",
+    "file": "src/lib/machineRegistry.ts",
+    "description": "machine empty persistence",
+    "search": "  writeMachineRegistry(db, registry);\n  return registry;",
+    "replace": "  writeMachineRegistry(db, {});\n  return registry;",
+    "tests": [
+      "src/test/machine-registry.test.ts"
+    ],
+    "testName": "persists the result"
+  },
+  {
+    "id": "links-wrong-target",
+    "file": "src/lib/linksCommand.ts",
+    "description": "links wrong target",
+    "search": "    outgoing,\n    backlinks,",
+    "replace": "    outgoing: outgoing.map(link => ({...link, target: \"wrong\"})),\n    backlinks,",
+    "tests": [
+      "src/test/links-invoke.test.ts"
+    ],
+    "testName": "emits structured JSON"
+  },
+  {
+    "id": "launchd-always-absent",
+    "file": "src/lib/dreamLaunchd.ts",
+    "description": "launchd always absent",
+    "search": "  if (!fs.existsSync(file)) {",
+    "replace": "  if (true || !fs.existsSync(file)) {",
+    "tests": [
+      "src/test/dream-launchd-health.test.ts"
+    ],
+    "testName": "reports missing, healthy"
+  },
+  {
+    "id": "web-ingest-drop-body",
+    "file": "src/lib/webIngest.ts",
+    "description": "web ingest drop body",
+    "search": "buildMemoryFile(fm, markdown).replace(",
+    "replace": "buildMemoryFile(fm, \"\").replace(",
+    "tests": [
+      "src/test/webIngest.test.ts"
+    ],
+    "testName": "reads local markdown|existing frontmatter|html source|skips unchanged|updates changed|category subdirectories|processes a single URL|fetches and parses|respects exclude|sitemap index|wraps ingestSite"
+  },
+  {
+    "id": "web-prune-noop",
+    "file": "src/lib/webIngest.ts",
+    "description": "web prune noop",
+    "search": "        await fs.unlink(existing);",
+    "replace": "        // unlink omitted",
+    "tests": [
+      "src/test/webIngest.test.ts"
+    ],
+    "testName": "removes orphaned"
+  },
+  {
+    "id": "web-remove-noop",
+    "file": "src/lib/webIngest.ts",
+    "description": "web remove noop",
+    "search": "    await fs.rm(knowledgePath, { recursive: true, force: true });",
+    "replace": "    // removal omitted",
+    "tests": [
+      "src/test/webIngest.test.ts"
+    ],
+    "testName": "removes knowledge idempotently"
+  },
+  {
+    "id": "sandbox-add-empty-content",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox add empty content",
+    "search": "title: memTitle,\n          category,\n          content,",
+    "replace": "title: memTitle,\n          category,\n          content: \"\",",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "add creates a memory"
+  },
+  {
+    "id": "sandbox-empty-recall",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox empty recall",
+    "search": "result: results.map((r) => {",
+    "replace": "result: results.slice(0, 0).map((r) => {",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "recall returns results|multiple adds and recall with limit"
+  },
+  {
+    "id": "sandbox-list-wrong-title",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox list wrong title",
+    "search": "title: m.title,\n            category: m.category,",
+    "replace": "title: \"wrong title\",\n            category: m.category,",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "list returns memories|list filters by category|client can list"
+  },
+  {
+    "id": "sandbox-wrong-total",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox wrong total",
+    "search": "...counts,\n            categories,",
+    "replace": "...counts,\n            total: 999,\n            categories,",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "stats returns database|client can get stats"
+  },
+  {
+    "id": "sandbox-cap-half",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox cap half",
+    "search": "confidence: Math.min(1.0, mem.confidence + 0.05),\n          last_reinforced:",
+    "replace": "confidence: 0.5,\n          last_reinforced:",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "reinforce caps"
+  },
+  {
+    "id": "sandbox-helper-empty",
+    "file": "src/sandbox/helper-template.ts",
+    "description": "sandbox helper empty",
+    "search": "fs.writeFileSync(outputPath, source, \"utf8\");",
+    "replace": "fs.writeFileSync(outputPath, source.slice(0, 0), \"utf8\");",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "generates gnosys-helper.ts"
+  },
+  {
+    "id": "sandbox-wrong-dir",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox wrong dir",
+    "search": "const dir = getSandboxDirImpl();",
+    "replace": "const dir = getSandboxDirImpl() + \"-wrong\";",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "getSandboxDir returns"
+  },
+  {
+    "id": "sandbox-wrong-socket",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox wrong socket",
+    "search": "return path.join(getSandboxDir(), \"gnosys.sock\");",
+    "replace": "return path.join(getSandboxDir(), \"wrong-gnosys.sock\");",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "getSocketPath returns"
+  },
+  {
+    "id": "sandbox-wrong-pid",
+    "file": "src/sandbox/server.ts",
+    "description": "sandbox wrong pid",
+    "search": "return path.join(getSandboxDir(), \"gnosys.pid\");",
+    "replace": "return path.join(getSandboxDir(), \"wrong-gnosys.pid\");",
+    "tests": [
+      "src/test/phase9a.sandbox.test.ts"
+    ],
+    "testName": "getPidPath returns"
+  },
+  {
+    "id": "mcp-structured-content-optional",
+    "file": "src/index.ts",
+    "description": "Structured add accidentally makes content optional in public input schema.",
+    "search": "content: z.string().describe(\"Memory content as markdown\"),",
+    "replace": "content: z.string().optional().describe(\"Memory content as markdown\"),",
+    "tests": [
+      "src/test/mcp-fuzz.test.ts"
+    ],
+    "testName": "rejects malformed"
+  },
+  {
+    "id": "mcp-discover-renamed",
+    "file": "src/index.ts",
+    "description": "Public discover tool registration is accidentally renamed and absent from core toolset.",
+    "search": "regTool(\n  \"gnosys_discover\",",
+    "replace": "regTool(\n  \"gnosys_discover_removed\",",
+    "tests": [
+      "src/test/v511-serve-handshake.test.ts"
+    ],
+    "build": true
+  },
+  {
+    "id": "reindex-ignore-second-call",
+    "file": "src/lib/search.ts",
+    "description": "reindex ignore second call",
+    "search": "    this.clearIndex();\n    return this.addStoreMemories(store);",
+    "replace": "    if (this.db.prepare(\"SELECT count(*) AS count FROM memories_fts\").get().count > 0) return 1;\n    this.clearIndex();\n    return this.addStoreMemories(store);",
+    "tests": [
+      "src/test/phase7c.dual-write.test.ts"
+    ],
+    "testName": "search index reflects"
+  },
+  {
+    "id": "init-noop",
+    "file": "src/cli/project.ts",
+    "description": "init noop",
+    "search": "    const targetDir = opts.directory",
+    "replace": "    if (opts.directory) return;\n    const targetDir = opts.directory",
+    "tests": [
+      "src/test/init.test.ts"
+    ],
+    "testName": "creates a usable registered store",
+    "build": true
+  },
+  {
+    "id": "init-null-tags",
+    "file": "src/cli/project.ts",
+    "description": "init null tags",
+    "search": "JSON.stringify(defaultRegistry, null, 2)",
+    "replace": "JSON.stringify(Object.fromEntries(Object.keys(defaultRegistry).map(key => [key, null])), null, 2)",
+    "tests": [
+      "src/test/init.test.ts"
+    ],
+    "testName": "writes the default categorized",
+    "build": true
+  },
+  {
+    "id": "init-invalid-identity",
+    "file": "src/lib/projectIdentity.ts",
+    "description": "init invalid identity",
+    "search": "  const merged = { ...existing, ...identity };",
+    "replace": "  const merged = { ...existing, ...identity, projectId: path.basename(projectDir), projectName: null };",
+    "tests": [
+      "src/test/init.test.ts",
+      "src/test/acceptance.test.ts",
+      "src/test/phase8a.central-db.test.ts"
+    ],
+    "testName": "creates a usable registered store|re-syncs the working directory|initializes project A and B|both projects have unique projectIds|gnosys init creates .gnosys directory|re-init preserves projectId",
+    "build": true
+  },
+  {
+    "id": "init-future-schema",
+    "file": "src/lib/projectIdentity.ts",
+    "description": "init future schema",
+    "search": "const IDENTITY_SCHEMA_VERSION = 1;",
+    "replace": "const IDENTITY_SCHEMA_VERSION = 999;",
+    "tests": [
+      "src/test/phase8a.central-db.test.ts"
+    ],
+    "testName": "gnosys.json includes schemaVersion",
+    "build": true
+  },
+  {
+    "id": "init-resync-noop",
+    "file": "src/cli/project.ts",
+    "description": "init resync noop",
+    "search": "    if (!isResync) {\n      // Create directory",
+    "replace": "    if (isResync) { console.log(\"re-synced\"); return; }\n    if (!isResync) {\n      // Create directory",
+    "tests": [
+      "src/test/init.test.ts"
+    ],
+    "testName": "re-syncs the working directory",
+    "build": true
+  },
+  {
+    "id": "preference-drop-value",
+    "file": "src/lib/preferences.ts",
+    "description": "preference drop value",
+    "search": "content: `# ${title}\\n\\n${value}`,",
+    "replace": "content: `# ${title}\\n\\n`,",
+    "tests": [
+      "src/test/acceptance.test.ts"
+    ],
+    "testName": "adds user-scoped preferences",
+    "build": true
+  },
+  {
+    "id": "init-skip-registration",
+    "file": "src/lib/projectIdentity.ts",
+    "description": "Omit central DB project registration.",
+    "search": "    opts.centralDb.insertProject(dbProject);",
+    "replace": "    void dbProject;",
+    "tests": [
+      "src/test/phase8a.central-db.test.ts",
+      "src/test/init.test.ts"
+    ],
+    "testName": "project is registered in central DB after init|creates a usable registered store",
+    "build": true
+  },
+  {
+    "id": "setup-wrong-selected-model",
+    "file": "src/lib/setup.ts",
+    "description": "Model selection returns an unrelated model while the catalog remains intact.",
+    "search": "return tiers[tierIndex].model;",
+    "replace": "return \"wrong-model\";",
+    "tests": [
+      "src/test/setup.test.ts"
+    ],
+    "testName": "cloud model selections|selects local models"
+  },
+  {
+    "id": "setup-detect-no-ides",
+    "file": "src/lib/setup.ts",
+    "description": "IDE detector ignores installed marker directories.",
+    "search": "  return detected;",
+    "replace": "  return [];",
+    "tests": [
+      "src/test/setup.test.ts"
+    ],
+    "testName": "detectIDEs"
+  },
+  {
+    "id": "setup-wrong-provider",
+    "file": "src/lib/setup.ts",
+    "description": "setup wrong provider",
+    "search": "return PROVIDER_ORDER[choiceIdx];",
+    "replace": "return \"wrong-provider\";",
+    "tests": [
+      "src/test/setup.test.ts"
+    ],
+    "testName": "each menu option"
+  },
+  {
+    "id": "setup-drop-custom-model",
+    "file": "src/lib/setup.ts",
+    "description": "setup drop custom model",
+    "search": "return await askInput(rl, \"Model name\");",
+    "replace": "return (await askInput(rl, \"Model name\")) && \"wrong-custom\";",
+    "tests": [
+      "src/test/setup.test.ts"
+    ],
+    "testName": "typed model"
+  },
+  {
+    "id": "remote-diff-wrong-role",
+    "file": "src/lib/setup/remoteRender.ts",
+    "description": "remote diff wrong role",
+    "search": "color(c.accentHi, d.roleOrMode)",
+    "replace": "color(c.accentHi, \"master\")",
+    "tests": [
+      "src/test/setup-ui-screen6.test.ts"
+    ],
+    "testName": "selected client role"
+  },
+  {
+    "id": "scope-allow-invalid",
+    "file": "src/lib/db.ts",
+    "description": "scope allow invalid",
+    "search": "CHECK(scope IN ('project','user','global'))",
+    "replace": "CHECK(scope IN ('project','user','global','invalid_scope'))",
+    "tests": [
+      "src/test/phase8a.central-db.test.ts"
+    ],
+    "testName": "scope constraint"
+  },
+  {
+    "id": "lifecycle-fts-empty",
+    "file": "src/lib/db.ts",
+    "description": "lifecycle fts empty",
+    "search": "if (terms.length === 0) return [];",
+    "replace": "if (terms.length >= 0) return [];",
+    "tests": [
+      "src/test/lifecycle-e2e.test.ts"
+    ]
+  },
+  {
+    "id": "remote-resume-drop-new-memory",
+    "file": "src/lib/remote.ts",
+    "description": "remote resume drop new memory",
+    "search": "// Memory only exists locally \u2014 push\n        try {\n          remoteDb.insertMemory(local);",
+    "replace": "// Memory only exists locally \u2014 push\n        try {\n          remoteDb.insertMemory({ ...local, content: \"\" });",
+    "tests": [
+      "src/test/remote-resume.test.ts"
+    ]
+  },
+  {
+    "id": "heartbeat-cleanup",
+    "file": "src/lib/heartbeat.ts",
+    "description": "Omit heartbeat cleanup after both success and failure.",
+    "search": "    hb.stop();",
+    "replace": "    void hb;",
+    "tests": [
+      "src/test/heartbeat.test.ts"
+    ]
+  },
+  {
+    "id": "export-drop-body",
+    "file": "src/lib/export.ts",
+    "description": "Drop all memory body text while preserving title/frontmatter and success counts.",
+    "search": "let content = `${frontmatter}\\n\\n# ${mem.title}\\n\\n${mem.content}`;",
+    "replace": "let content = `${frontmatter}\\n\\n# ${mem.title}\\n\\n`;",
+    "tests": [
+      "src/test/acceptance.test.ts",
+      "src/test/phase7e.export.test.ts"
+    ],
+    "testName": "exports memories to Obsidian vault|exports memories into target directory|only exports active memories|exported memory can be read back"
+  },
+  {
+    "id": "export-omit-wikilink-source",
+    "file": "src/lib/export.ts",
+    "description": "Skip writing the selected source memory.",
+    "search": "    const safeCategory = this.slugify(mem.category) || \"uncategorized\";",
+    "replace": "    if (mem.title === \"Wikilink Source\") return true;\n    const safeCategory = this.slugify(mem.category) || \"uncategorized\";",
+    "tests": [
+      "src/test/phase7e.export.test.ts"
+    ],
+    "testName": "exported files preserve wikilinks"
+  },
+  {
+    "id": "backup-garbage",
+    "file": "src/lib/db.ts",
+    "description": "Write nonempty garbage in place of a SQLite backup.",
+    "search": "    await this.db.backup(backupPath);",
+    "replace": "    fs.writeFileSync(backupPath, \"not a sqlite backup\");",
+    "tests": [
+      "src/test/acceptance.test.ts",
+      "src/test/phase8a.central-db.test.ts"
+    ],
+    "testName": "backs up the central database|backup creates a copy|backup file contains"
+  },
+  {
+    "id": "bundle-drop-body",
+    "file": "src/lib/exportProject.ts",
+    "description": "Omit memory body from serialized project bundle.",
+    "search": "      ...rest,\n      embedding_b64:",
+    "replace": "      ...rest,\n      content: \"\",\n      embedding_b64:",
+    "tests": [
+      "src/test/export-import-project.test.ts"
+    ],
+    "testName": "exports a project"
+  },
+  {
+    "id": "merge-delete-existing",
+    "file": "src/lib/importProject.ts",
+    "description": "Delete existing memory while still reporting a merge skip.",
+    "search": "      if (strategy === \"merge\") {\n        memoriesSkipped++;",
+    "replace": "      if (strategy === \"merge\") {\n        db.deleteMemory(id);\n        memoriesSkipped++;",
+    "tests": [
+      "src/test/export-import-project.test.ts"
+    ],
+    "testName": "import strategy=merge"
+  },
+  {
+    "id": "db-discover-wrong-id",
+    "file": "src/lib/dbSearch.ts",
+    "description": "db discover wrong id",
+    "search": "const results = this.db.discoverFts(query, limit);",
+    "replace": "const results = this.db.discoverFts(query, limit).map(row => ({ ...row, id: \"wrong-id\" }));",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "discover\\(\\) returns"
+  },
+  {
+    "id": "db-keyword-wrong-id",
+    "file": "src/lib/dbSearch.ts",
+    "description": "db keyword wrong id",
+    "search": "      relativePath: r.id,",
+    "replace": "      relativePath: \"wrong-id\",",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "keyword mode returns|falls back to keyword"
+  },
+  {
+    "id": "db-search-empty-limit",
+    "file": "src/lib/dbSearch.ts",
+    "description": "db search empty limit",
+    "search": "const results = this.db.searchFts(query, limit);\n    return results.map((r) => ({",
+    "replace": "const results = this.db.searchFts(query, limit);\n    return results.slice(0, 0).map((r) => ({",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "search respects limit"
+  },
+  {
+    "id": "sync-content-invalid-hash",
+    "file": "src/lib/dbWrite.ts",
+    "description": "sync content invalid hash",
+    "search": "dbUpdates.content_hash = fnv1a(newContent);",
+    "replace": "dbUpdates.content_hash = \"invalid-hash\";",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "updates content and hash"
+  },
+  {
+    "id": "audit-write-noop",
+    "file": "src/lib/dbWrite.ts",
+    "description": "audit write noop",
+    "search": "  if (!db.isAvailable()) return;\n  db.logAudit({",
+    "replace": "  if (db.isAvailable()) return;\n  db.logAudit({",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "auditToDb persists"
+  },
+  {
+    "id": "audit-read-corrupt-operation",
+    "file": "src/lib/audit.ts",
+    "description": "audit read corrupt operation",
+    "search": "entries.push(JSON.parse(line) as AuditEntry);",
+    "replace": "entries.push({ ...JSON.parse(line), operation: \"corrupted\" } as AuditEntry);",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "handles malformed lines"
+  },
+  {
+    "id": "lock-release-noop",
+    "file": "src/lib/lock.ts",
+    "description": "lock release noop",
+    "search": "      return () => {\n        try {\n          fs.unlinkSync(lockPath);",
+    "replace": "      return () => {\n        try {\n          // unlink accidentally omitted",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "release function is idempotent"
+  },
+  {
+    "id": "identity-invalid-constant-id",
+    "file": "src/lib/projectIdentity.ts",
+    "description": "identity invalid constant id",
+    "search": "projectId: existing?.projectId || crypto.randomUUID(),",
+    "replace": "projectId: \"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\",",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "creates identity file|reuses existing projectId"
+  },
+  {
+    "id": "identity-phantom-root",
+    "file": "src/lib/projectIdentity.ts",
+    "description": "identity phantom root",
+    "search": "  return null;\n}\n\n// \u2500\u2500\u2500 IDE Hook Configuration",
+    "replace": "  return { identity: { projectId: \"phantom\" } as ProjectIdentity, projectRoot: root };\n}\n\n// \u2500\u2500\u2500 IDE Hook Configuration",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "returns null at filesystem root"
+  },
+  {
+    "id": "graph-corrupt-node-titles",
+    "file": "src/lib/graph.ts",
+    "description": "graph corrupt node titles",
+    "search": "return JSON.parse(raw) as GraphJSON;",
+    "replace": "return { ...JSON.parse(raw), nodes: JSON.parse(raw).nodes.map((node: GraphNode) => ({ ...node, title: \"corrupted\" })) } as GraphJSON;",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "loadGraph reads a valid"
+  },
+  {
+    "id": "wal-noop",
+    "file": "src/lib/lock.ts",
+    "description": "wal noop",
+    "search": "export function enableWAL(db: any, busyTimeoutMs: number = 5000): void {",
+    "replace": "export function enableWAL(db: any, busyTimeoutMs: number = 5000): void {\n  return;",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "enableWAL"
+  },
+  {
+    "id": "pref-persist-empty-value",
+    "file": "src/lib/preferences.ts",
+    "description": "pref persist empty value",
+    "search": "content: `# ${title}\\n\\n${value}`,",
+    "replace": "content: `# ${title}\\n\\n`,",
+    "tests": [
+      "src/test/pref-invoke.test.ts"
+    ],
+    "testName": "sets a known preference|reads the stored preference"
+  },
+  {
+    "id": "graph-skip-persistence",
+    "file": "src/lib/graph.ts",
+    "description": "graph skip persistence",
+    "search": "  await fs.writeFile(graphPath, JSON.stringify(graphJSON, null, 2) + \"\\n\", \"utf-8\");",
+    "replace": "  // persistence omitted",
+    "tests": [
+      "src/test/reindex-graph-invoke.test.ts"
+    ],
+    "testName": "rebuilds the graph|second run"
+  },
+  {
+    "id": "discover-fallback-wrong-title",
+    "file": "src/lib/search.ts",
+    "description": "discover fallback wrong title",
+    "search": "results = tryRun(andExpr);",
+    "replace": "results = tryRun(andExpr).map(row => ({ ...row, title: \"wrong-title\" }));",
+    "tests": [
+      "src/test/search.test.ts"
+    ],
+    "testName": "falls back to full-text"
+  },
+  {
+    "id": "expansions-v1-empty-search",
+    "file": "src/lib/staticSearch.ts",
+    "description": "expansions v1 empty search",
+    "search": "return results.slice(0, limit);",
+    "replace": "return results.slice(0, 0);",
+    "tests": [
+      "src/test/webExpansions.test.ts"
+    ],
+    "testName": "searches v1 indexes"
+  },
+  {
+    "id": "project-query-ignores-project",
+    "file": "src/lib/db.ts",
+    "description": "Project memory query returns a fixed different project.",
+    "search": "return this.withRecovery(() => this.prep(sql).all(projectId) as DbMemory[]);",
+    "replace": "return this.withRecovery(() => this.prep(sql).all(\"proj-a\") as DbMemory[]);",
+    "tests": [
+      "src/test/phase9d.coverage-overhaul.test.ts"
+    ],
+    "testName": "memories from different projects"
+  },
+  {
+    "id": "web-ingest-drop-body",
+    "file": "src/lib/webIngest.ts",
+    "description": "web ingest drop body",
+    "search": "buildMemoryFile(fm, markdown).replace(",
+    "replace": "buildMemoryFile(fm, \"\").replace(",
+    "tests": [
+      "src/test/webIngest.test.ts"
+    ],
+    "testName": "reads local markdown|existing frontmatter|html source|skips unchanged|updates changed|category subdirectories|processes a single URL|fetches and parses|respects exclude|sitemap index|wraps ingestSite"
+  },
+  {
+    "id": "web-prune-noop",
+    "file": "src/lib/webIngest.ts",
+    "description": "web prune noop",
+    "search": "        await fs.unlink(existing);",
+    "replace": "        // unlink omitted",
+    "tests": [
+      "src/test/webIngest.test.ts"
+    ],
+    "testName": "removes orphaned"
+  },
+  {
+    "id": "web-remove-noop",
+    "file": "src/lib/webIngest.ts",
+    "description": "web remove noop",
+    "search": "    await fs.rm(knowledgePath, { recursive: true, force: true });",
+    "replace": "    // removal omitted",
+    "tests": [
+      "src/test/webIngest.test.ts"
+    ],
+    "testName": "non-existent directory"
+  },
+  {
+    "id": "chunks-empty-output",
+    "file": "src/lib/chunkSplitter.ts",
+    "description": "Discard all text chunks.",
+    "search": "export function splitIntoChunks(text: string, options?: ChunkOptions): TextChunk[] {",
+    "replace": "export function splitIntoChunks(text: string, options?: ChunkOptions): TextChunk[] {\n  if (text.length >= 0) return [];",
+    "tests": [
+      "src/test/chunk-splitter.test.ts"
+    ],
+    "testName": "identical chunks|many repetitions"
+  },
+  {
+    "id": "lifecycle-reinforce-no-increment",
+    "file": "src/lib/maintenance.ts",
+    "description": "Reinforcement persists the prior count instead of incrementing.",
+    "search": "const currentCount = memory.frontmatter.reinforcement_count || 0;\n    const newCount = currentCount + 1;",
+    "replace": "const currentCount = memory.frontmatter.reinforcement_count || 0;\n    const newCount = currentCount;",
+    "tests": [
+      "src/test/lifecycle-e2e.test.ts"
+    ]
+  },
+  {
+    "id": "mcp-structured-content-optional",
+    "file": "src/index.ts",
+    "description": "Structured add accidentally makes content optional in public input schema.",
+    "search": "content: z.string().describe(\"Memory content as markdown\"),",
+    "replace": "content: z.string().optional().describe(\"Memory content as markdown\"),",
+    "tests": [
+      "src/test/mcp-fuzz.test.ts"
+    ],
+    "testName": "rejects malformed"
+  },
+  {
+    "id": "mcp-discover-renamed",
+    "file": "src/index.ts",
+    "description": "Public discover tool registration is accidentally renamed and absent from core toolset.",
+    "search": "regTool(\n  \"gnosys_discover\",",
+    "replace": "regTool(\n  \"gnosys_discover_removed\",",
+    "tests": [
+      "src/test/v511-serve-handshake.test.ts"
+    ],
+    "build": true
+  },
+  {
+    "id": "setup-wrong-selected-model",
+    "file": "src/lib/setup.ts",
+    "description": "Model selection returns an unrelated model while the catalog remains intact.",
+    "search": "return tiers[tierIndex].model;",
+    "replace": "return \"wrong-model\";",
+    "tests": [
+      "src/test/setup.test.ts"
+    ],
+    "testName": "recommended model|required fields|zero pricing"
+  },
+  {
+    "id": "setup-detect-no-ides",
+    "file": "src/lib/setup.ts",
+    "description": "IDE detector ignores installed marker directories.",
+    "search": "  return detected;",
+    "replace": "  return [];",
+    "tests": [
+      "src/test/setup.test.ts"
+    ],
+    "testName": "array of strings|bare directory"
+  },
+  {
+    "id": "splash-double-v",
+    "file": "src/lib/setup/coldStart.ts",
+    "description": "splash double v",
+    "search": "export function renderColdStartSplash(version: string): string {\n  const v = version.startsWith(\"v\") ? version : `v${version}`;",
+    "replace": "export function renderColdStartSplash(version: string): string {\n  const v = `v${version}`;",
+    "tests": [
+      "src/test/setup-ui-coldstart.test.ts"
+    ],
+    "testName": "handles version with leading v"
+  },
+  {
+    "id": "table-strip-cell-color",
+    "file": "src/lib/setup/ui/table.ts",
+    "description": "table strip cell color",
+    "search": "const raw = rawCells[rowIdx][colIdx];",
+    "replace": "const raw = stripAnsi(rawCells[rowIdx][colIdx]);",
+    "tests": [
+      "src/test/setup-ui-table.test.ts"
+    ],
+    "testName": "preserves coloured cell"
+  },
+  {
+    "id": "machine-invalid-fresh-id",
+    "file": "src/lib/machineConfig.ts",
+    "description": "machine invalid fresh id",
+    "search": "export function defaultMachineConfig(): MachineConfig {\n  return {\n    machineId: randomUUID(),",
+    "replace": "export function defaultMachineConfig(): MachineConfig {\n  return {\n    machineId: \"invalid\",",
+    "tests": [
+      "src/test/v511-machineConfig.test.ts"
+    ],
+    "testName": "creates machine.json on first run"
+  },
+  {
+    "id": "machine-drop-existing-roots",
+    "file": "src/lib/machineConfig.ts",
+    "description": "machine drop existing roots",
+    "search": "  return { config: existing, created: false, regenerated: false };",
+    "replace": "  return { config: {...existing, roots: {}}, created: false, regenerated: false };",
+    "tests": [
+      "src/test/v511-machineConfig.test.ts"
+    ],
+    "testName": "returns the existing config unchanged"
+  },
+  {
+    "id": "machine-constant-id",
+    "file": "src/lib/machineConfig.ts",
+    "description": "machine constant id",
+    "search": "  return ensureMachineConfig().config.machineId;",
+    "replace": "  return \"same-for-every-machine\";",
+    "tests": [
+      "src/test/v511-machineConfig.test.ts"
+    ],
+    "testName": "getMachineId is stable"
+  },
+  {
+    "id": "log-invert-gate",
+    "file": "src/lib/log.ts",
+    "description": "log invert gate",
+    "search": "return LEVEL_ORDER[level] >= LEVEL_ORDER[configuredLevel()];",
+    "replace": "return LEVEL_ORDER[level] < LEVEL_ORDER[configuredLevel()];",
+    "tests": [
+      "src/test/log.test.ts"
+    ],
+    "testName": "respects GNOSYS_LOG_LEVEL"
+  },
+  {
+    "id": "log-file-suppresses-stderr",
+    "file": "src/lib/log.ts",
+    "description": "log file suppresses stderr",
+    "search": "  if (!shouldEmit(level)) return;",
+    "replace": "  if (!shouldEmit(level) || process.env.GNOSYS_LOG_FILE) return;",
+    "tests": [
+      "src/test/log.test.ts"
+    ],
+    "testName": "never throws on bad file"
+  },
+  {
+    "id": "recall-empty-truncation",
+    "file": "src/lib/recallHookCommand.ts",
+    "description": "recall empty truncation",
+    "search": "return prompt.trim().slice(0, MAX_QUERY_CHARS);",
+    "replace": "return prompt.trim().slice(0, prompt.length > MAX_QUERY_CHARS ? 0 : MAX_QUERY_CHARS);",
+    "tests": [
+      "src/test/recall-hook.test.ts"
+    ],
+    "testName": "truncates very long"
+  },
+  {
+    "id": "grok-empty-block",
+    "file": "src/lib/setup.ts",
+    "description": "grok empty block",
+    "search": "const blockBody = renderGrokMcpBlock(entry);",
+    "replace": "const blockBody = renderGrokMcpBlock(entry).slice(0, 0);",
+    "tests": [
+      "src/test/ide-mcp-install.test.ts",
+      "src/test/v594-grok-build-ide.test.ts"
+    ],
+    "testName": "uses mcp_servers header|appends a block to existing|is idempotent"
+  },
+  {
+    "id": "claude-skip-install",
+    "file": "src/lib/setup.ts",
+    "description": "claude skip install",
+    "search": "        await installStdioMcpJson(configPath);\n        const home = os.homedir();",
+    "replace": "        void configPath;\n        const home = os.homedir();",
+    "tests": [
+      "src/test/ide-mcp-install.test.ts"
+    ],
+    "testName": "claude-desktop writes"
+  },
+  {
+    "id": "machine-damage-peer",
+    "file": "src/lib/machineRegistry.ts",
+    "description": "machine damage peer",
+    "search": "  registry[input.hostname] = {",
+    "replace": "  for (const entry of Object.values(registry)) entry.version = \"corrupt\";\n  registry[input.hostname] = {",
+    "tests": [
+      "src/test/machine-registry.test.ts"
+    ],
+    "testName": "never removes a different"
+  },
+  {
+    "id": "machine-empty-persistence",
+    "file": "src/lib/machineRegistry.ts",
+    "description": "machine empty persistence",
+    "search": "  writeMachineRegistry(db, registry);\n  return registry;",
+    "replace": "  writeMachineRegistry(db, {});\n  return registry;",
+    "tests": [
+      "src/test/machine-registry.test.ts"
+    ],
+    "testName": "persists the result"
+  },
+  {
+    "id": "links-wrong-target",
+    "file": "src/lib/linksCommand.ts",
+    "description": "links wrong target",
+    "search": "    outgoing,\n    backlinks,",
+    "replace": "    outgoing: outgoing.map(link => ({...link, target: \"wrong\"})),\n    backlinks,",
+    "tests": [
+      "src/test/links-invoke.test.ts"
+    ],
+    "testName": "emits structured JSON"
+  },
+  {
+    "id": "launchd-always-absent",
+    "file": "src/lib/dreamLaunchd.ts",
+    "description": "launchd always absent",
+    "search": "  if (!fs.existsSync(file)) {",
+    "replace": "  if (true || !fs.existsSync(file)) {",
+    "tests": [
+      "src/test/dream-launchd-health.test.ts"
+    ],
+    "testName": "returns a coherent all-false"
+  },
+  {
+    "id": "static-load-empty-documents",
+    "file": "src/lib/staticSearch.ts",
+    "description": "static load empty documents",
+    "search": "  const index = parsed as GnosysWebIndex;",
+    "replace": "  const index = { ...(parsed as GnosysWebIndex), documents: [] };",
+    "tests": [
+      "src/test/staticSearch.test.ts"
+    ],
+    "testName": "loads from a file path|loads from a JSON string"
+  },
+  {
+    "id": "static-search-empty",
+    "file": "src/lib/staticSearch.ts",
+    "description": "static search empty",
+    "search": "  const queryTokens = tokenize(query);",
+    "replace": "  if (query.length >= 0) return [];\n  const queryTokens = tokenize(query);",
+    "tests": [
+      "src/test/staticSearch.test.ts"
+    ],
+    "testName": "search filters by category|search filters by tags|is case-insensitive|strips punctuation"
+  },
+  {
+    "id": "static-reverse-rank",
+    "file": "src/lib/staticSearch.ts",
+    "description": "static reverse rank",
+    "search": "  results.sort((a, b) => b.score - a.score);",
+    "replace": "  results.sort((a, b) => a.score - b.score);",
+    "tests": [
+      "src/test/staticSearch.test.ts"
+    ],
+    "testName": "returns results sorted"
+  },
+  {
+    "id": "static-ignore-limit",
+    "file": "src/lib/staticSearch.ts",
+    "description": "static ignore limit",
+    "search": "  return results.slice(0, limit);",
+    "replace": "  return results;",
+    "tests": [
+      "src/test/staticSearch.test.ts"
+    ],
+    "testName": "respects limit option"
+  },
+  {
+    "id": "static-wrong-document",
+    "file": "src/lib/staticSearch.ts",
+    "description": "static wrong document",
+    "search": "    results.push({ document: doc, score: finalScore, matchedTokens, docIndex });",
+    "replace": "    results.push({ document: { ...doc, id: \"wrong-document\" }, score: finalScore, matchedTokens, docIndex });",
+    "tests": [
+      "src/test/staticSearch.test.ts"
+    ],
+    "testName": "handles multi-word queries|boosts recent documents"
+  },
+  {
+    "id": "static-repeat-documents",
+    "file": "src/lib/staticSearch.ts",
+    "description": "static repeat documents",
+    "search": "  if (!filter) return [...index.documents];",
+    "replace": "  if (!filter) return index.documents.map(() => index.documents[0]);",
+    "tests": [
+      "src/test/staticSearch.test.ts"
+    ],
+    "testName": "returns all documents with no filter"
+  },
+  {
+    "id": "static-bypass-cache",
+    "file": "src/lib/staticSearch.ts",
+    "description": "Ignore cached file contents before explicit cache clear.",
+    "search": "  if (cachedIndex && cachedSource === pathOrJson) {",
+    "replace": "  if (false && cachedIndex && cachedSource === pathOrJson) {",
+    "tests": [
+      "src/test/staticSearch.test.ts"
+    ],
+    "testName": "caches repeated calls"
+  },
+  {
+    "id": "fingerprint-ignore-identity",
+    "file": "src/lib/dreamRunLog.ts",
+    "description": "Ignore IDs and content hash in dream fingerprints.",
+    "search": ".map((m) => `${m.id}:${m.modified}:${m.content_hash || \"\"}`)",
+    "replace": ".map((m) => `${m.modified}`)",
+    "tests": [
+      "src/test/dream-run-log.test.ts"
+    ],
+    "testName": "creates stable fingerprints"
+  },
+  {
+    "id": "dream-cost-constant",
+    "file": "src/lib/dreamRunLog.ts",
+    "description": "Return a positive constant cost for every input.",
+    "search": "  return Math.round(cost * 1_000_000) / 1_000_000;",
+    "replace": "  return 999;",
+    "tests": [
+      "src/test/dream-run-log.test.ts"
+    ],
+    "testName": "estimates tokens and cost"
+  },
+  {
+    "id": "ingestion-empty-long-slug",
+    "file": "src/lib/ingest.ts",
+    "description": "Truncate long names to zero characters.",
+    "search": ".substring(0, 60);",
+    "replace": ".substring(0, text.length > 60 ? 0 : 60);",
+    "tests": [
+      "src/test/ingest.test.ts"
+    ],
+    "testName": "truncates filename"
+  },
+  {
+    "id": "docx-empty-output",
+    "file": "src/lib/docxExtract.ts",
+    "description": "Return empty output without parsing the DOCX.",
+    "search": "export async function extractDocxText(filePath: string): Promise<DocxChunk[]> {",
+    "replace": "export async function extractDocxText(filePath: string): Promise<DocxChunk[]> {\n  if (filePath.length >= 0) return [];",
+    "tests": [
+      "src/test/docx-bomb.test.ts"
+    ],
+    "testName": "handles billion-laughs"
+  },
+  {
+    "id": "presence-wrong-filename",
+    "file": "src/lib/syncStaging.ts",
+    "description": "presence wrong filename",
+    "search": "const PRESENCE_FILE = \".presence.json\";",
+    "replace": "const PRESENCE_FILE = \".wrong-presence.json\";",
+    "tests": [
+      "src/test/remoteWizard.test.ts"
+    ],
+    "testName": "detectCloned",
+    "build": false
+  },
+  {
+    "id": "config-suggestions-null",
+    "file": "src/lib/setup/configSetRender.ts",
+    "description": "config suggestions null",
+    "search": "return bestDist <= 3 ? best : null;",
+    "replace": "return null;",
+    "tests": [
+      "src/test/setup-ui-screen13.test.ts"
+    ],
+    "testName": "suggests documented",
+    "build": false
+  },
+  {
+    "id": "vectors-cache-clear-noop",
+    "file": "src/lib/staticSearch.ts",
+    "description": "vectors cache clear noop",
+    "search": "  cachedVectors = null;\n  cachedVectorsSource = null;",
+    "replace": "  // cache clear accidentally omitted",
+    "tests": [
+      "src/test/staticSearchSemantic.test.ts"
+    ],
+    "testName": "retains loaded",
+    "build": false
+  },
+  {
+    "id": "standalone-search-empty",
+    "file": "src/lib/staticSearch.ts",
+    "description": "standalone search empty",
+    "search": "  return results.slice(0, limit);",
+    "replace": "  return results.slice(limit, limit);",
+    "tests": [
+      "src/test/staticSearchSemantic.test.ts"
+    ],
+    "testName": "runs copied",
+    "build": true
+  },
+  {
+    "id": "fts-no-like-fallback",
+    "file": "src/lib/db.ts",
+    "description": "fts no like fallback",
+    "search": "      const pattern = `%${terms.join(\" \")}%`;",
+    "replace": "      const pattern = \"no-memory-can-match-this\";",
+    "tests": [
+      "src/test/db-recovery-extended.test.ts"
+    ],
+    "testName": "FTS index is corrupted",
+    "build": false
+  },
+  {
+    "id": "federated-cli-local-instead-snapshot",
+    "file": "src/lib/clientReadResolve.ts",
+    "description": "Client commands accidentally query the local central DB instead of the accepted client snapshot.",
+    "search": "    db: clientRead.db,",
+    "replace": "    db: localDb,",
+    "tests": [
+      "src/test/federated-client-read.test.ts"
+    ],
+    "testName": "reads the accepted snapshot|ask sends accepted"
+  },
+  {
+    "id": "federated-mcp-local-instead-snapshot",
+    "file": "src/index.ts",
+    "description": "MCP context accidentally queries local DB instead of accepted snapshot.",
+    "search": "  return { centralDb: clientRead.db, clientRead };",
+    "replace": "  return { centralDb: localDb, clientRead };",
+    "tests": [
+      "src/test/federated-client-read.test.ts"
+    ],
+    "testName": "gnosys_federated_search returns",
+    "build": true
+  },
+  {
+    "id": "cli-list-empty",
+    "file": "src/lib/listCommand.ts",
+    "description": "cli list empty",
+    "search": "    let memories = listMemoriesWithOverlay(resolved, (db) => db.getActiveMemories());",
+    "replace": "    let memories = listMemoriesWithOverlay(resolved, (db) => db.getActiveMemories()).slice(0, 0);",
+    "tests": [
+      "src/test/cli-json.test.ts",
+      "src/test/phase8c.cli-parity.test.ts",
+      "src/test/phase9d.coverage-overhaul.test.ts",
+      "src/test/acceptance.test.ts"
+    ],
+    "testName": "gnosys list returns|gnosys list --json|CLI list command|CLI scopes list|library API",
+    "build": true
+  },
+  {
+    "id": "cli-stats-bogus",
+    "file": "src/lib/statsCommand.ts",
+    "description": "cli stats bogus",
+    "search": "outputResult(!!opts.json, { totalCount: 0 },",
+    "replace": "outputResult(!!opts.json, { totalCount: 999 },",
+    "tests": [
+      "src/test/cli-json.test.ts",
+      "src/test/phase8c.cli-parity.test.ts",
+      "src/test/phase9d.coverage-overhaul.test.ts",
+      "src/test/acceptance.test.ts"
+    ],
+    "testName": "gnosys stats returns|gnosys stats --json",
+    "build": true
+  },
+  {
+    "id": "cli-projects-omit-rows",
+    "file": "src/lib/projectsCommand.ts",
+    "description": "cli projects omit rows",
+    "search": "const projectData = visibleProjects.map((p) => ({",
+    "replace": "const projectData = visibleProjects.slice(0, 0).map((p) => ({",
+    "tests": [
+      "src/test/cli-json.test.ts",
+      "src/test/phase8c.cli-parity.test.ts",
+      "src/test/phase9d.coverage-overhaul.test.ts",
+      "src/test/acceptance.test.ts"
+    ],
+    "testName": "gnosys projects lists|gnosys projects --json",
+    "build": true
+  },
+  {
+    "id": "cli-pref-phantom",
+    "file": "src/lib/prefCommand.ts",
+    "description": "cli pref phantom",
+    "search": "{ preferences: [] }",
+    "replace": "{ preferences: [{ key: \"phantom\", value: \"not stored\" }] }",
+    "tests": [
+      "src/test/cli-json.test.ts",
+      "src/test/phase8c.cli-parity.test.ts",
+      "src/test/phase9d.coverage-overhaul.test.ts",
+      "src/test/acceptance.test.ts"
+    ],
+    "testName": "gnosys pref get --json",
+    "build": true
+  },
+  {
+    "id": "cli-pref-human-empty",
+    "file": "src/lib/prefCommand.ts",
+    "description": "cli pref human empty",
+    "search": "    humanFn();",
+    "replace": "    console.log(\"wrong output\");",
+    "tests": [
+      "src/test/cli-json.test.ts",
+      "src/test/phase8c.cli-parity.test.ts",
+      "src/test/phase9d.coverage-overhaul.test.ts",
+      "src/test/acceptance.test.ts"
+    ],
+    "testName": "gnosys pref get returns preferences",
+    "build": true
+  },
+  {
+    "id": "cli-identity-invalid",
+    "file": "src/lib/projectIdentity.ts",
+    "description": "cli identity invalid",
+    "search": "  const merged = { ...existing, ...identity };",
+    "replace": "  const merged = { ...existing, ...identity, projectId: path.basename(projectDir) };",
+    "tests": [
+      "src/test/init.test.ts"
+    ],
+    "testName": "creates a usable registered store|re-syncs the working directory",
+    "build": true
+  },
+  {
+    "id": "cli-audit-phantom",
+    "file": "src/lib/auditCommand.ts",
+    "description": "cli audit phantom",
+    "search": "      console.log(JSON.stringify(entries, null, 2));",
+    "replace": "      console.log(JSON.stringify({ ...entries, entries: [{ operation: \"phantom\" }] }, null, 2));",
+    "tests": [
+      "src/test/cli-json.test.ts",
+      "src/test/phase8c.cli-parity.test.ts",
+      "src/test/phase9d.coverage-overhaul.test.ts",
+      "src/test/acceptance.test.ts"
+    ],
+    "testName": "gnosys audit --json reports",
+    "build": true
+  },
+  {
+    "id": "chunks-empty-output",
+    "file": "src/lib/chunkSplitter.ts",
+    "description": "Discard all text chunks.",
+    "search": "export function splitIntoChunks(text: string, options?: ChunkOptions): TextChunk[] {",
+    "replace": "export function splitIntoChunks(text: string, options?: ChunkOptions): TextChunk[] {\n  if (text.length >= 0) return [];",
+    "tests": [
+      "src/test/chunk-splitter.test.ts"
+    ],
+    "testName": "preserves text|splits paragraphs|merges a short|splits an oversized|keeps an oversized"
+  },
+  {
+    "id": "chunks-whitespace",
+    "file": "src/lib/chunkSplitter.ts",
+    "description": "Emit a spurious chunk for whitespace-only input.",
+    "search": "  if (!text.trim()) {\n    return [];\n  }",
+    "replace": "  if (!text.trim()) {\n    return [{text, index: 0}];\n  }",
+    "tests": [
+      "src/test/chunk-splitter.test.ts"
+    ],
+    "testName": "returns no chunks"
+  },
+  {
+    "id": "hash-length",
+    "file": "src/lib/db.ts",
+    "description": "Replace FNV hash with input length.",
+    "search": "function fnv1a(str: string): string {",
+    "replace": "function fnv1a(str: string): string {\n  if (str.length >= 0) return String(str.length);",
+    "tests": [
+      "src/test/chunk-splitter.test.ts"
+    ],
+    "testName": "matches the empty-input"
+  },
+  {
+    "id": "export-drop-body",
+    "file": "src/lib/export.ts",
+    "description": "Drop all memory body text while preserving title/frontmatter and success counts.",
+    "search": "let content = `${frontmatter}\\n\\n# ${mem.title}\\n\\n${mem.content}`;",
+    "replace": "let content = `${frontmatter}\\n\\n# ${mem.title}\\n\\n`;",
+    "tests": [
+      "src/test/acceptance.test.ts",
+      "src/test/phase7e.export.test.ts"
+    ],
+    "testName": "exports memories to Obsidian vault|exports memories into target directory|only exports active memories|exported memory can be read back"
+  },
+  {
+    "id": "export-omit-wikilink-source",
+    "file": "src/lib/export.ts",
+    "description": "Skip writing the selected source memory.",
+    "search": "    const safeCategory = this.slugify(mem.category) || \"uncategorized\";",
+    "replace": "    if (mem.title === \"Wikilink Source\") return true;\n    const safeCategory = this.slugify(mem.category) || \"uncategorized\";",
+    "tests": [
+      "src/test/phase7e.export.test.ts"
+    ],
+    "testName": "exported files preserve wikilinks"
+  },
+  {
+    "id": "backup-garbage",
+    "file": "src/lib/db.ts",
+    "description": "Write nonempty garbage in place of a SQLite backup.",
+    "search": "    await this.db.backup(backupPath);",
+    "replace": "    fs.writeFileSync(backupPath, \"not a sqlite backup\");",
+    "tests": [
+      "src/test/acceptance.test.ts",
+      "src/test/phase8a.central-db.test.ts"
+    ],
+    "testName": "backs up the central database|backup creates a copy|backup file contains"
+  },
+  {
+    "id": "bundle-drop-body",
+    "file": "src/lib/exportProject.ts",
+    "description": "Omit memory body from serialized project bundle.",
+    "search": "      ...rest,\n      embedding_b64:",
+    "replace": "      ...rest,\n      content: \"\",\n      embedding_b64:",
+    "tests": [
+      "src/test/export-import-project.test.ts"
+    ],
+    "testName": "exports a project"
+  },
+  {
+    "id": "merge-delete-existing",
+    "file": "src/lib/importProject.ts",
+    "description": "Delete existing memory while still reporting a merge skip.",
+    "search": "      if (strategy === \"merge\") {\n        memoriesSkipped++;",
+    "replace": "      if (strategy === \"merge\") {\n        db.deleteMemory(id);\n        memoriesSkipped++;",
+    "tests": [
+      "src/test/export-import-project.test.ts"
+    ],
+    "testName": "import strategy=merge"
+  },
+  {
+    "id": "lifecycle-fts-empty",
+    "file": "src/lib/db.ts",
+    "description": "lifecycle fts empty",
+    "search": "  searchFts(\n    query: string,\n    limit: number = 20,\n  ): Array<{ id: string; title: string; snippet: string; rank: number; project_id: string | null }> {\n    const terms = ftsTerms(query);\n    if (terms.length === 0) return [];",
+    "replace": "  searchFts(\n    query: string,\n    limit: number = 20,\n  ): Array<{ id: string; title: string; snippet: string; rank: number; project_id: string | null }> {\n    const terms = ftsTerms(query);\n    if (terms.length >= 0) return [];",
+    "tests": [
+      "src/test/lifecycle-e2e.test.ts"
+    ]
+  },
+  {
+    "id": "remote-resume-drop-new-memory",
+    "file": "src/lib/remote.ts",
+    "description": "remote resume drop new memory",
+    "search": "// Memory only exists locally \u2014 push\n        try {\n          remoteDb.insertMemory(local);",
+    "replace": "// Memory only exists locally \u2014 push\n        try {\n          remoteDb.insertMemory({ ...local, content: \"\" });",
+    "tests": [
+      "src/test/remote-resume.test.ts"
+    ]
+  },
+  {
+    "id": "lifecycle-reinforce-no-increment",
+    "file": "src/lib/maintenance.ts",
+    "description": "Reinforcement persists the prior count instead of incrementing.",
+    "search": "const newCount = currentCount + 1;",
+    "replace": "const newCount = currentCount;",
+    "tests": [
+      "src/test/lifecycle-e2e.test.ts"
+    ]
+  }
+]

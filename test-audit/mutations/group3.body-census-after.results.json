@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "cli-pref-roundtrip-drop-value",
+      "file": "src/lib/preferences.ts",
+      "description": "pref persist empty value",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 850,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/cli-json.test.ts",
+            "name": "CLI --json flag gnosys pref set + get --json round-trips",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 720,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/cli-json.test.ts",
+            "name": "CLI --json flag gnosys pref set + get --json round-trips",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '' to be 'test value' // Object.is equality\n    at <repo>/src/test/cli-json.test.ts:99:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 843,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/cli-json.test.ts",
+            "name": "CLI --json flag gnosys pref set + get --json round-trips",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/cli-json.test.ts",
+          "name": "CLI --json flag gnosys pref set + get --json round-trips"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "remote-typed-phrase-always-accept",
+      "file": "src/lib/remoteWizard.ts",
+      "description": "Typed confirmation accepts an incorrect phrase.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 455,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remoteWizard.test.ts",
+            "name": "remoteWizard v13 helpers matchesTypedPhrase requires exact match after trim",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 474,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remoteWizard.test.ts",
+            "name": "remoteWizard v13 helpers matchesTypedPhrase requires exact match after trim",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected true to be false // Object.is equality\n    at <repo>/src/test/remoteWizard.test.ts:25:61\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 455,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remoteWizard.test.ts",
+            "name": "remoteWizard v13 helpers matchesTypedPhrase requires exact match after trim",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remoteWizard.test.ts",
+          "name": "remoteWizard v13 helpers matchesTypedPhrase requires exact match after trim"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

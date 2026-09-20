@@ -1,5 +1,5 @@
 // v5.14.x overnight sprint — priority 3 wiring-test conversion (invoke tests)
-import { mkdirSync, mkdtempSync, rmSync } from "fs";
+import { mkdirSync, mkdtempSync, rmSync, readFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -73,14 +73,21 @@ describe("runReindexGraphCommand (in-process invoke)", () => {
   it("rebuilds the graph and prints stats for a project store", async () => {
     await runReindexGraphCommand(getResolver);
     const out = logged();
-    expect(out.length).toBeGreaterThan(0);
+    expect(out).toContain("Nodes: 1");
+    const graph = JSON.parse(readFileSync(join(projectDir, ".gnosys/graph.json"), "utf8"));
+    expect(graph.nodes.map((node: { id: string; title: string }) => ({ id: node.id, title: node.title }))).toEqual([{ id: "decisions/alpha.md", title: "Alpha" }]);
+    expect(graph.edges).toEqual([]);
+    expect(graph.stats.orphanLinks).toBe(1);
     expect(errSpy).not.toHaveBeenCalled();
     expect(process.exitCode).toBeUndefined();
   });
 
   it("is idempotent — a second run also succeeds", async () => {
     await runReindexGraphCommand(getResolver);
-    expect(logSpy).toHaveBeenCalled();
+    await runReindexGraphCommand(getResolver);
+    const graph = JSON.parse(readFileSync(join(projectDir, ".gnosys/graph.json"), "utf8"));
+    expect(graph.nodes.map((node: { id: string; title: string }) => ({ id: node.id, title: node.title }))).toEqual([{ id: "decisions/alpha.md", title: "Alpha" }]);
+    expect(graph.stats).toMatchObject({ totalNodes: 1, totalEdges: 0, orphanLinks: 1 });
     expect(errSpy).not.toHaveBeenCalled();
   });
 });

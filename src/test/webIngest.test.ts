@@ -1,7 +1,7 @@
 /**
  * Tests for webIngest.ts — Site crawling and content extraction.
  *
- * Uses mock filesystem and avoids real network calls.
+ * Uses temporary files and mocks only HTTP responses.
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
@@ -84,6 +84,7 @@ describe("ingestSite with directory source", () => {
     const files = fs.readdirSync(outputDir, { recursive: true }) as string[];
     const mdFiles = files.filter((f) => f.endsWith(".md"));
     expect(mdFiles.length).toBe(1);
+    expect(fs.readFileSync(path.join(outputDir, "general/post.md"), "utf8")).toContain("This is blog content about AI and automation.");
   });
 
   it("handles .md source files with existing frontmatter", async () => {
@@ -92,6 +93,8 @@ describe("ingestSite with directory source", () => {
     const result = await ingestSite(defaultConfig());
     expect(result.added.length).toBe(1);
     expect(result.errors).toEqual([]);
+    const saved = fs.readFileSync(path.join(outputDir, "general/existing.md"), "utf8");
+    expect(saved).toContain("Content with existing frontmatter.");
   });
 
   it("handles .html source files by converting to markdown", async () => {
@@ -109,6 +112,7 @@ describe("ingestSite with directory source", () => {
     expect(mdFile).toBeDefined();
     const content = fs.readFileSync(path.join(outputDir, mdFile!), "utf-8");
     expect(content).toContain("HTML Page");
+    expect(content).toContain("This is **bold** content.");
   });
 
   it("strips MDX components from .mdx files", async () => {
@@ -138,6 +142,8 @@ describe("ingestSite with directory source", () => {
     expect(result2.unchanged.length).toBe(1);
     expect(result2.added.length).toBe(0);
     expect(result2.updated.length).toBe(0);
+    expect(fs.readFileSync(path.join(outputDir, "general/stable.md"), "utf8")).toContain("This won't change.");
+    expect(result2.unchanged).toEqual(["general/stable.md"]);
   });
 
   it("updates changed pages on re-ingest", async () => {
@@ -152,6 +158,9 @@ describe("ingestSite with directory source", () => {
     const result2 = await ingestSite(defaultConfig());
     expect(result2.updated.length).toBe(1);
     expect(result2.added.length).toBe(0);
+    const saved = fs.readFileSync(path.join(outputDir, "general/changing.md"), "utf8");
+    expect(saved).toContain("Updated content with new information.");
+    expect(saved).not.toContain("Original content.");
   });
 
   it("creates category subdirectories in output", async () => {
@@ -163,6 +172,8 @@ describe("ingestSite with directory source", () => {
     // Output should have subdirectories
     const entries = fs.readdirSync(outputDir, { recursive: true });
     expect(entries.length).toBeGreaterThan(0);
+    expect(fs.readdirSync(outputDir).sort()).toEqual(["general"]);
+    expect(fs.readFileSync(path.join(outputDir, "general/post.md"), "utf8")).toContain("Content.");
   });
 
   it("handles empty content directory", async () => {
@@ -220,6 +231,8 @@ describe("pruning", () => {
     const result = await ingestSite(defaultConfig({ prune: true }));
     expect(result.removed.length).toBe(1);
     expect(result.removed[0]).toContain("orphan.md");
+    expect(fs.existsSync(path.join(outputDir, "general/orphan.md"))).toBe(false);
+    expect(fs.readFileSync(path.join(outputDir, "general/keep.md"), "utf8")).toContain("Keep this.");
   });
 
   it("preserves orphaned files when prune is disabled", async () => {
@@ -254,6 +267,8 @@ describe("ingestUrl", () => {
 
     expect(result.added.length).toBe(1);
     expect(result.errors).toEqual([]);
+    expect(result.added).toEqual(["blog/test-page.md"]);
+    expect(fs.readFileSync(path.join(outputDir, "blog/test-page.md"), "utf8")).toContain("Page content here.");
   });
 });
 
@@ -282,6 +297,9 @@ describe("ingestSite with sitemap", () => {
     );
 
     expect(result.added.length).toBe(2);
+    expect(result.added.sort()).toEqual(["blog/post-1.md", "company/about.md"]);
+    expect(fs.readFileSync(path.join(outputDir, "blog/post-1.md"), "utf8")).toContain("Content.");
+    expect(fs.readFileSync(path.join(outputDir, "company/about.md"), "utf8")).toContain("Content.");
   });
 
   it("respects exclude patterns", async () => {
@@ -307,6 +325,9 @@ describe("ingestSite with sitemap", () => {
     );
 
     expect(result.added.length).toBe(1); // Only blog post
+    expect(result.added).toEqual(["blog/post-1.md"]);
+    expect(fs.readFileSync(path.join(outputDir, "blog/post-1.md"), "utf8")).toContain("Content.");
+    expect(fs.readdirSync(outputDir)).toEqual(["blog"]);
   });
 
   it("handles fetch errors gracefully", async () => {
@@ -359,6 +380,8 @@ describe("ingestSite with sitemap", () => {
     );
 
     expect(result.added.length).toBe(1);
+    expect(result.added).toEqual(["blog/post-1.md"]);
+    expect(fs.readFileSync(path.join(outputDir, "blog/post-1.md"), "utf8")).toContain("Content.");
   });
 });
 
@@ -374,8 +397,16 @@ describe("removeKnowledge", () => {
     expect(fs.existsSync(knowledgePath)).toBe(false);
   });
 
-  it("handles non-existent directory gracefully", async () => {
-    await expect(removeKnowledge("/nonexistent/path")).resolves.not.toThrow();
+  it("removes knowledge idempotently while preserving sibling content", async () => {
+    const knowledge = path.join(tmpDir, "remove-twice");
+    fs.mkdirSync(knowledge);
+    fs.writeFileSync(path.join(knowledge, "note.md"), "old knowledge");
+    const sibling = path.join(tmpDir, "keep.md");
+    fs.writeFileSync(sibling, "keep this sibling");
+    await removeKnowledge(knowledge);
+    await removeKnowledge(knowledge);
+    expect(fs.existsSync(knowledge)).toBe(false);
+    expect(fs.readFileSync(sibling, "utf8")).toBe("keep this sibling");
   });
 });
 
@@ -387,5 +418,7 @@ describe("ingestDirectory", () => {
 
     const result = await ingestDirectory(contentDir, defaultConfig());
     expect(result.added.length).toBe(1);
+    expect(result.added).toEqual(["general/test.md"]);
+    expect(fs.readFileSync(path.join(outputDir, "general/test.md"), "utf8")).toContain("Content.");
   });
 });

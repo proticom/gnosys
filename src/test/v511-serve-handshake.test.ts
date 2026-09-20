@@ -8,6 +8,8 @@
 
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { execSync } from "child_process";
+import { GnosysDB } from "../lib/db.js";
+import { makeMemory } from "./_helpers.js";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
@@ -25,6 +27,9 @@ describe("gnosys serve MCP handshake", () => {
       execSync("npm run build", { cwd: PROJECT_ROOT, stdio: "pipe" });
     }
     tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-serve-handshake-"));
+    const db = new GnosysDB(path.join(tmpHome, "brain"));
+    db.insertMemory(makeMemory({ id: "handshake-memory", title: "Handshake persisted memory", content: "handshake literal body", scope: "global" }));
+    db.close();
   }, 60_000);
 
   afterAll(() => {
@@ -42,6 +47,8 @@ describe("gnosys serve MCP handshake", () => {
       env: {
         ...process.env,
         HOME: tmpHome,
+        GNOSYS_HOME: path.join(tmpHome, "brain"),
+        GNOSYS_CONFIG_DIR: path.join(tmpHome, "config"),
         GNOSYS_LOCAL_ONLY: "1",
       },
       stderr: "pipe",
@@ -49,7 +56,9 @@ describe("gnosys serve MCP handshake", () => {
     const client = new Client({ name: "gnosys-mcp-bin-test", version: "0.0.0" });
     await client.connect(transport);
     const { tools } = await client.listTools();
-    expect(tools?.length ?? 0).toBeGreaterThan(10);
+    expect(tools.map(tool => tool.name)).toEqual(expect.arrayContaining(["gnosys_discover", "gnosys_read", "gnosys_add_structured"]));
+    const result = await client.callTool({ name: "gnosys_read", arguments: { path: "handshake-memory", projectRoot: tmpHome } });
+    expect(JSON.stringify(result.content)).toContain("handshake literal body");
     await client.close();
   }, 30_000);
 
@@ -60,6 +69,8 @@ describe("gnosys serve MCP handshake", () => {
       env: {
         ...process.env,
         HOME: tmpHome,
+        GNOSYS_HOME: path.join(tmpHome, "brain"),
+        GNOSYS_CONFIG_DIR: path.join(tmpHome, "config"),
         GNOSYS_LOCAL_ONLY: "1",
       },
       stderr: "pipe",
@@ -67,7 +78,9 @@ describe("gnosys serve MCP handshake", () => {
     const client = new Client({ name: "serve-handshake-test", version: "0.0.0" });
     await client.connect(transport);
     const { tools } = await client.listTools();
-    expect(tools?.length ?? 0).toBeGreaterThan(10);
+    expect(tools.map(tool => tool.name)).toEqual(expect.arrayContaining(["gnosys_discover", "gnosys_read", "gnosys_add_structured"]));
+    const result = await client.callTool({ name: "gnosys_read", arguments: { path: "handshake-memory", projectRoot: tmpHome } });
+    expect(JSON.stringify(result.content)).toContain("handshake literal body");
     await client.close();
   }, 30_000);
 });

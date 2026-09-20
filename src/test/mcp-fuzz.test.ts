@@ -1,96 +1,165 @@
-/**
- * MCP tool input schema fuzzing — verifies Zod schemas reject malformed arguments.
- */
-
-import { describe, it, expect, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { mkdtempSync, rmSync } from "fs";
+import { tmpdir } from "os";
+import { join } from "path";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
-import { registerCapabilities } from "../index.js";
 
-const CALL_TIMEOUT_MS = 5_000;
-
-async function connect() {
-  const server = new McpServer({ name: "fuzz", version: "0.0.0" });
-  // v6.2.0 gnosys_toolset: default tier is now core; this test fuzzes EVERY
-  // tool with required fields, so pin the full tier.
-  registerCapabilities(server, "full");
-  const client = new Client({ name: "fuzz-client", version: "0.0.0" });
-  const [serverTransport, clientTransport] = InMemoryTransport.createLinkedPair();
-  await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
-  return { server, client };
-}
-
-function schemaFields(tool: { inputSchema?: { properties?: Record<string, unknown>; required?: string[] } }) {
-  const properties = tool.inputSchema?.properties ?? {};
-  const required = tool.inputSchema?.required ?? [];
-  return { required, properties };
-}
-
-function badValueForProperty(prop: unknown): unknown {
-  const type = (prop as { type?: string })?.type;
-  if (type === "number" || type === "integer") return "not-a-number";
-  if (type === "boolean") return "not-a-boolean";
-  if (type === "array") return "not-an-array";
-  if (type === "object") return "not-an-object";
-  return 123;
-}
-
-async function callRejected(client: Client, name: string, args: unknown): Promise<boolean> {
-  const call = (async () => {
-    try {
-      const result = await client.callTool({ name, arguments: args as Record<string, unknown> });
-      return result.isError === true;
-    } catch {
-      return true;
-    }
-  })();
-
-  const timedOut = new Promise<boolean>((_, reject) => {
-    setTimeout(() => reject(new Error(`callTool timed out for ${name}`)), CALL_TIMEOUT_MS);
-  });
-
-  return Promise.race([call, timedOut]);
-}
+const requiredFields: Record<string, string[]> = {
+  "gnosys_discover": [
+    "query"
+  ],
+  "gnosys_read": [
+    "path"
+  ],
+  "gnosys_search": [
+    "query"
+  ],
+  "gnosys_add": [
+    "input"
+  ],
+  "gnosys_add_structured": [
+    "title",
+    "category",
+    "tags",
+    "content"
+  ],
+  "gnosys_tags_add": [
+    "category",
+    "tag"
+  ],
+  "gnosys_reinforce": [
+    "memory_id",
+    "signal"
+  ],
+  "gnosys_init": [
+    "directory"
+  ],
+  "gnosys_migrate": [
+    "sourcePath",
+    "targetPath"
+  ],
+  "gnosys_update": [
+    "path"
+  ],
+  "gnosys_commit_context": [
+    "context"
+  ],
+  "gnosys_history": [
+    "path"
+  ],
+  "gnosys_links": [
+    "path"
+  ],
+  "gnosys_bootstrap": [
+    "sourceDir"
+  ],
+  "gnosys_import": [
+    "format",
+    "data",
+    "mapping"
+  ],
+  "gnosys_hybrid_search": [
+    "query"
+  ],
+  "gnosys_semantic_search": [
+    "query"
+  ],
+  "gnosys_ask": [
+    "question"
+  ],
+  "gnosys_dearchive": [
+    "query"
+  ],
+  "gnosys_export": [
+    "targetDir"
+  ],
+  "gnosys_recall": [
+    "query"
+  ],
+  "gnosys_preference_set": [
+    "key",
+    "value"
+  ],
+  "gnosys_preference_delete": [
+    "key"
+  ],
+  "gnosys_federated_search": [
+    "query"
+  ],
+  "gnosys_detect_ambiguity": [
+    "query"
+  ],
+  "gnosys_remote_resolve": [
+    "memoryId",
+    "choice"
+  ],
+  "gnosys_attach": [
+    "memoryId",
+    "filePath"
+  ],
+  "gnosys_get_attachment": [
+    "memoryId"
+  ],
+  "gnosys_ingest_file": [
+    "filePath"
+  ],
+  "gnosys_trace": [
+    "directory"
+  ],
+  "gnosys_reflect": [
+    "outcome"
+  ],
+  "gnosys_traverse": [
+    "memoryId"
+  ]
+};
 
 describe("MCP tool input fuzzing", () => {
   let client: Client;
   let server: McpServer;
-
+  let home: string;
+  beforeEach(() => {
+    home = mkdtempSync(join(tmpdir(), "gnosys-mcp-schema-"));
+    vi.stubEnv("GNOSYS_HOME", home);
+    vi.stubEnv("GNOSYS_CONFIG_DIR", join(home, "config"));
+    vi.stubEnv("GNOSYS_LOCAL_ONLY", "1");
+  });
   afterEach(async () => {
-    try {
-      await client?.close();
-    } catch {
-      /* ignore */
-    }
-    try {
-      await server?.close();
-    } catch {
-      /* ignore */
-    }
+    await client?.close();
+    await server?.close();
+    vi.unstubAllEnvs();
+    rmSync(home, { recursive: true, force: true });
   });
 
-  it("rejects malformed input for every tool with required fields", async () => {
-    ({ server, client } = await connect());
+  it("rejects malformed input at the declared required-field validation boundary", async () => {
+    const { registerCapabilities } = await import("../index.js");
+    server = new McpServer({ name: "fuzz", version: "1" });
+    registerCapabilities(server, "full");
+    client = new Client({ name: "fuzz-client", version: "1" });
+    const [serverTransport, clientTransport] = InMemoryTransport.createLinkedPair();
+    await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
     const { tools } = await client.listTools();
-    expect(tools.length).toBeGreaterThanOrEqual(50); // v5.x: 50 after gnosys_rollback removed (git-backed history/rollback legacy)
-
-    for (const tool of tools) {
-      const { required, properties } = schemaFields(tool);
-      if (required.length === 0) continue;
-
-      const field = required[0];
-      const prop = properties[field];
-      const wrongType = { [field]: badValueForProperty(prop) };
-      const badInputs: unknown[] = [{}, wrongType];
-
-      for (const bad of badInputs) {
-        const rejected = await callRejected(client, tool.name, bad);
-        expect(
-          rejected,
-          `${tool.name} accepted bad input: ${JSON.stringify(bad).slice(0, 60)}`,
-        ).toBe(true);
+    const advertised = Object.fromEntries(tools.filter(tool => tool.inputSchema.required?.length).map(tool => [tool.name, tool.inputSchema.required]));
+    expect(advertised).toEqual(requiredFields);
+    for (const [name, fields] of Object.entries(requiredFields)) {
+      const tool = tools.find(item => item.name === name);
+      for (const field of fields) {
+        const schema = tool?.inputSchema.properties?.[field];
+        const type = typeof schema === "object" && schema !== null && "type" in schema ? schema.type : undefined;
+        const invalidValue = type === "number" || type === "integer" ? "not-a-number" : type === "boolean" ? "not-a-boolean" : type === "array" ? "not-an-array" : type === "object" ? "not-an-object" : 123;
+        for (const args of [{}, { [field]: invalidValue }]) {
+          const result = await client.callTool({ name, arguments: args });
+          expect(result.isError, `${name}.${field}`).toBe(true);
+          if (!Array.isArray(result.content)) throw new Error("Missing MCP content array");
+          const text = result.content.flatMap(block => typeof block === "object" && block !== null && "text" in block && typeof block.text === "string" ? [block.text] : []).join("\n");
+          const prefix = `MCP error -32602: Input validation error: Invalid arguments for tool ${name}: `;
+          expect(text.startsWith(prefix), text).toBe(true);
+          const issues = JSON.parse(text.slice(prefix.length));
+          expect(issues.map((issue: { path: string[] }) => issue.path[0]), `${name}.${field}`).toContain(field);
+        }
       }
     }
-  }, 180_000);
+  }, 30_000);
 });

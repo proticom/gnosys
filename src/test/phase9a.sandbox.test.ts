@@ -11,10 +11,14 @@
  *   TC-9a.7: Sandbox manager start/stop lifecycle
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import fs from "fs";
 import path from "path";
 import net from "net";
+import { execFile } from "child_process";
+import { promisify } from "util";
+import ts from "typescript";
+import { stopSandbox } from "../sandbox/manager.js";
 import {
   handleRequest,
   getSandboxDir,
@@ -34,10 +38,15 @@ let env: TestEnv;
 
 beforeEach(async () => {
   env = await createTestEnv("phase9a");
+  vi.stubEnv("GNOSYS_HOME", env.tmpDir);
+  vi.stubEnv("GNOSYS_CONFIG_DIR", path.join(env.tmpDir, "config"));
+  vi.stubEnv("GNOSYS_LOCAL_ONLY", "1");
+  vi.stubEnv("GNOSYS_DREAM_ENABLED", "false");
 });
 
 afterEach(async () => {
   await cleanupTestEnv(env);
+  vi.unstubAllEnvs();
 });
 
 // ─── TC-9a.1: Server request handler ──────────────────────────────────────
@@ -64,6 +73,9 @@ describe("TC-9a.1: Sandbox server handles all request methods", () => {
     const result = res.result as { id: string; title: string };
     expect(result.id).toMatch(/^mem-/);
     expect(result.title).toBe("TypeScript convention");
+    expect(env.db.getMemory(result.id)).toMatchObject({
+      title: "TypeScript convention", content: "We use TypeScript strict mode", category: "decisions",
+    });
   });
 
   it("add with minimal params auto-generates title", () => {
@@ -106,7 +118,10 @@ describe("TC-9a.1: Sandbox server handles all request methods", () => {
       params: { query: "database" },
     });
     expect(res.ok).toBe(true);
-    expect(Array.isArray(res.result)).toBe(true);
+    expect(res.result).toEqual([expect.objectContaining({
+      title: "We use PostgreSQL for production databases",
+      content: "We use PostgreSQL for production databases", category: "decisions",
+    })]);
   });
 
   it("recall without query returns error", () => {
@@ -164,8 +179,11 @@ describe("TC-9a.1: Sandbox server handles all request methods", () => {
       params: {},
     });
     expect(res.ok).toBe(true);
-    const result = res.result as any[];
-    expect(result.length).toBeGreaterThanOrEqual(2);
+    expect(res.result).toEqual(expect.arrayContaining([
+      expect.objectContaining({ title: "Memory one", category: "decisions" }),
+      expect.objectContaining({ title: "Memory two", category: "architecture" }),
+    ]));
+    expect(res.result).toHaveLength(2);
   });
 
   it("list filters by category", () => {
@@ -186,8 +204,7 @@ describe("TC-9a.1: Sandbox server handles all request methods", () => {
       params: { category: "decisions" },
     });
     expect(res.ok).toBe(true);
-    const result = res.result as any[];
-    expect(result.every((m: any) => m.category === "decisions")).toBe(true);
+    expect(res.result).toEqual([expect.objectContaining({ title: "Decision memory", category: "decisions" })]);
   });
 
   it("stats returns database statistics", () => {
@@ -203,11 +220,7 @@ describe("TC-9a.1: Sandbox server handles all request methods", () => {
       params: {},
     });
     expect(res.ok).toBe(true);
-    const result = res.result as any;
-    expect(result).toHaveProperty("active");
-    expect(result).toHaveProperty("total");
-    expect(result).toHaveProperty("categories");
-    expect(result.total).toBeGreaterThanOrEqual(1);
+    expect(res.result).toEqual({ active: 1, archived: 0, total: 1, categories: ["decisions"], projects: 0 });
   });
 });
 
@@ -303,7 +316,7 @@ describe("TC-9a.3: Sandbox client round-trip via socket", () => {
     await client.add({ content: "List test two" });
 
     const list = await client.list();
-    expect(list.length).toBeGreaterThanOrEqual(2);
+    expect(list.map((memory) => memory.title).sort()).toEqual(["List test one", "List test two"]);
   });
 
   it("client can get stats", async () => {
@@ -311,7 +324,7 @@ describe("TC-9a.3: Sandbox client round-trip via socket", () => {
     await client.add({ content: "Stats test" });
 
     const stats = await client.stats();
-    expect(stats.total).toBeGreaterThanOrEqual(1);
+    expect(stats).toEqual({ active: 1, archived: 0, total: 1, categories: ["decisions"], projects: 0 });
   });
 
   it("client isRunning returns true for running server", async () => {
@@ -327,38 +340,64 @@ describe("TC-9a.3: Sandbox client round-trip via socket", () => {
 
 // ─── TC-9a.4: Helper library generator ──────────────────────────────────
 
-describe("TC-9a.4: Helper library generator creates valid file", () => {
-  it("generates gnosys-helper.ts in the target directory", async () => {
-    const outputPath = await generateHelper(env.tmpDir);
-    expect(outputPath).toBe(path.join(env.tmpDir, "gnosys-helper.ts"));
-    expect(fs.existsSync(outputPath)).toBe(true);
-  });
-
-  it("generated file contains the gnosys export", async () => {
-    await generateHelper(env.tmpDir);
-    const content = fs.readFileSync(path.join(env.tmpDir, "gnosys-helper.ts"), "utf8");
-    expect(content).toContain("export const gnosys");
-    expect(content).toContain("async add(");
-    expect(content).toContain("async recall(");
-    expect(content).toContain("async reinforce(");
-    expect(content).toContain("async list(");
-    expect(content).toContain("async stats(");
-    expect(content).toContain("export default gnosys");
-  });
-
-  it("generated file includes socket path logic", async () => {
-    await generateHelper(env.tmpDir);
-    const content = fs.readFileSync(path.join(env.tmpDir, "gnosys-helper.ts"), "utf8");
-    expect(content).toContain("getSocketPath");
-    expect(content).toContain(".gnosys");
-  });
-
-  it("generated file includes auto-start logic", async () => {
-    await generateHelper(env.tmpDir);
-    const content = fs.readFileSync(path.join(env.tmpDir, "gnosys-helper.ts"), "utf8");
-    expect(content).toContain("ensureRunning");
-    expect(content).toContain("gnosys sandbox start");
-  });
+describe("TC-9a.4: Generated helper through the real background server", () => {
+  it("auto-starts the server and persists scoped add, recall, list, stats and reinforcement", async () => {
+    const projectId = "123e4567-e89b-42d3-a456-426614174000";
+    fs.mkdirSync(path.join(env.tmpDir, ".gnosys"));
+    fs.writeFileSync(path.join(env.tmpDir, ".gnosys", "gnosys.json"), JSON.stringify({
+      projectId, projectName: "Generated helper fixture", workingDirectory: env.tmpDir, schemaVersion: 1,
+    }));
+    const helperPath = await generateHelper(env.tmpDir);
+    const modulePath = path.join(env.tmpDir, "helper.mjs");
+    fs.writeFileSync(modulePath, ts.transpileModule(fs.readFileSync(helperPath, "utf8"), {
+      compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+    }).outputText);
+    const binDir = path.join(env.tmpDir, "bin");
+    fs.mkdirSync(binDir);
+    const marker = path.join(env.tmpDir, "launcher.txt");
+    const cliPath = path.resolve("dist/cli.js");
+    fs.writeFileSync(path.join(binDir, "npx"), `#!${process.execPath}
+require("fs").writeFileSync(${JSON.stringify(marker)}, "started locally");
+require("child_process").execFileSync(${JSON.stringify(process.execPath)}, [${JSON.stringify(cliPath)}, "sandbox", "start"], { stdio: "inherit" });
+`, { mode: 0o755 });
+    const scriptPath = path.join(env.tmpDir, "exercise.mjs");
+    fs.writeFileSync(scriptPath, `import { gnosys } from "./helper.mjs";
+const added = await gnosys.add("generated quartz body", { title: "Generated memory" });
+const recalled = await gnosys.recall("quartz");
+const listed = await gnosys.list();
+const stats = await gnosys.stats();
+const reinforced = await gnosys.reinforce(added.id);
+console.log(JSON.stringify({
+  addedTitle: added.title,
+  recalled: recalled.map(({ title, content }) => ({ title, content })),
+  titles: listed.map(memory => memory.title), stats,
+  reinforcement: { count: reinforced.reinforcement_count, confidence: reinforced.confidence }
+}));
+`);
+    try {
+      const { stdout } = await promisify(execFile)(process.execPath, [scriptPath], {
+        cwd: env.tmpDir,
+        env: { ...process.env, PATH: binDir + path.delimiter + process.env.PATH },
+        timeout: 20_000,
+      });
+      expect(fs.readFileSync(marker, "utf8")).toBe("started locally");
+      expect(JSON.parse(stdout)).toEqual({
+        addedTitle: "Generated memory",
+        recalled: [{ title: "Generated memory", content: "generated quartz body" }],
+        titles: ["Generated memory"],
+        stats: { active: 1, archived: 0, total: 1, categories: ["decisions"], projects: 0 },
+        reinforcement: { count: 1, confidence: 0.9500000000000001 },
+      });
+      expect(env.db.getAllMemories()).toEqual([expect.objectContaining({
+        title: "Generated memory", content: "generated quartz body",
+        project_id: "123e4567-e89b-42d3-a456-426614174000", scope: "project", reinforcement_count: 1,
+      })]);
+    } finally {
+      await stopSandbox();
+    }
+    expect(fs.existsSync(getSocketPath())).toBe(false);
+    expect(fs.existsSync(getPidPath())).toBe(false);
+  }, 30_000);
 });
 
 // ─── TC-9a.5: Add + Recall round-trip ───────────────────────────────────
@@ -422,7 +461,12 @@ describe("TC-9a.5: Add + Recall round-trip through sandbox", () => {
     }
 
     const results = await client.recall("testing patterns", { limit: 3 });
-    expect(results.length).toBeLessThanOrEqual(3);
+    expect(results).toHaveLength(3);
+    expect(results.map((memory) => memory.content).sort()).toEqual([
+      "Memory number 0 about testing patterns and approaches",
+      "Memory number 1 about testing patterns and approaches",
+      "Memory number 2 about testing patterns and approaches",
+    ]);
   });
 
   it("add with project_id scopes the memory", async () => {
@@ -494,32 +538,27 @@ describe("TC-9a.6: Reinforce boosts confidence", () => {
     handleRequest(env.db, { id: "r6", method: "reinforce", params: { id: memId } });
     const res = handleRequest(env.db, { id: "r7", method: "reinforce", params: { id: memId } });
     const result = res.result as { confidence: number };
-    expect(result.confidence).toBeLessThanOrEqual(1.0);
+    expect(result.confidence).toBe(1);
+    expect(env.db.getMemory(memId)).toMatchObject({ confidence: 1, reinforcement_count: 2 });
   });
 });
 
 // ─── TC-9a.7: Sandbox paths and utilities ───────────────────────────────
 
 describe("TC-9a.7: Sandbox path utilities", () => {
-  it("getSandboxDir returns a path under ~/.gnosys", () => {
-    const dir = getSandboxDir();
-    expect(dir).toContain(".gnosys");
-    expect(dir).toContain("sandbox");
-    expect(fs.existsSync(dir)).toBe(true);
+  it("getSandboxDir creates the selected home sandbox directory", () => {
+    const directory = getSandboxDir();
+    expect(directory).toBe(path.join(env.tmpDir, "sandbox"));
+    expect(fs.statSync(directory).isDirectory()).toBe(true);
   });
 
-  it("getSocketPath returns platform-appropriate path", () => {
-    const socketPath = getSocketPath();
-    if (process.platform === "win32") {
-      expect(socketPath).toContain("pipe");
-    } else {
-      expect(socketPath).toContain("gnosys.sock");
-    }
+  it("getSocketPath returns the socket in the selected home", () => {
+    expect(getSocketPath()).toBe(process.platform === "win32"
+      ? "\\\\.\\pipe\\gnosys-sandbox"
+      : path.join(env.tmpDir, "sandbox", "gnosys.sock"));
   });
 
-  it("getPidPath returns path under sandbox dir", () => {
-    const pidPath = getPidPath();
-    expect(pidPath).toContain("gnosys.pid");
-    expect(pidPath).toContain("sandbox");
+  it("getPidPath returns the pid file in the selected home", () => {
+    expect(getPidPath()).toBe(path.join(env.tmpDir, "sandbox", "gnosys.pid"));
   });
 });

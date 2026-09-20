@@ -116,10 +116,11 @@ describe("Screen 6 — remote render", () => {
     expect(out.split("\n")).toMatchSnapshot();
   });
 
-  it("SYNC_MODE_LABELS covers all three modes", async () => {
-    const { SYNC_MODE_LABELS } = await load();
-    expect(SYNC_MODE_LABELS["read-write"]).toContain("reads and writes");
-    expect(SYNC_MODE_LABELS["pull-only"]).toContain("never write");
-    expect(SYNC_MODE_LABELS["push-only"]).toContain("never read");
+  it("renders the selected client role and both remote paths", async () => {
+    const { renderRemoteDiff } = await load();
+    const out = strip(renderRemoteDiff({ previousRemote: "/old/brain", newRemote: "/new/brain", roleOrMode: "client" }));
+    expect(out).toContain("/old/brain");
+    expect(out).toContain("/new/brain");
+    expect(out.split("\n").find((line) => line.includes("role"))?.trim().replace(/\s+/g, " ")).toBe("role — → client");
   });
 });

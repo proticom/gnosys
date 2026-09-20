@@ -43,9 +43,8 @@ describe("Phase 8a: Central DB + Project Identity", () => {
       expect(fs.existsSync(identityPath)).toBe(true);
 
       const identity = JSON.parse(fs.readFileSync(identityPath, "utf-8"));
-      expect(identity).toHaveProperty("projectId");
-      expect(identity).toHaveProperty("projectName");
-      expect(identity).toHaveProperty("workingDirectory");
+      expect(identity.projectId).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+      expect(identity.projectName).toBe(path.basename(env.tmpDir));
       expect(identity.workingDirectory).toBe(env.tmpDir);
     });
 
@@ -74,7 +73,7 @@ describe("Phase 8a: Central DB + Project Identity", () => {
         )
       );
       expect(identity).toHaveProperty("schemaVersion");
-      expect(identity.schemaVersion).toBeGreaterThanOrEqual(1);
+      expect(identity.schemaVersion).toBe(1);
     });
   });
 
@@ -82,19 +81,12 @@ describe("Phase 8a: Central DB + Project Identity", () => {
 
   describe("TC-8a.2: Project data moves to central DB correctly", () => {
     it("project is registered in central DB after init", () => {
-      // The central DB is at ~/.gnosys/gnosys.db in production
-      // For tests, we verify the DB can store projects
-      const project = makeProject({
-        id: "central-001",
-        name: "CentralTest",
+      cliInit(env.tmpDir, { centralDir: env.tmpDir });
+      const identity = JSON.parse(fs.readFileSync(path.join(env.tmpDir, ".gnosys/gnosys.json"), "utf8"));
+      expect(env.db.getProject(identity.projectId)).toMatchObject({
+        name: path.basename(env.tmpDir),
         working_directory: env.tmpDir,
       });
-      env.db.insertProject(project);
-
-      const retrieved = env.db.getProject("central-001");
-      expect(retrieved).not.toBeNull();
-      expect(retrieved!.name).toBe("CentralTest");
-      expect(retrieved!.working_directory).toBe(env.tmpDir);
     });
 
     it("multiple projects can coexist in central DB", () => {
@@ -181,25 +173,11 @@ describe("Phase 8a: Central DB + Project Identity", () => {
     });
 
     it("scope constraint rejects invalid values", () => {
-      expect(() => {
-        (env.db as any).db
-          .prepare(
-            "INSERT INTO memories (id, title, category, content, content_hash, status, tier, created, modified, scope, author) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-          )
-          .run(
-            "bad-scope",
-            "Bad",
-            "test",
-            "content",
-            "hash",
-            "active",
-            "active",
-            new Date().toISOString(),
-            new Date().toISOString(),
-            "invalid_scope",
-            "ai"
-          );
-      }).toThrow();
+      expect(() => env.db.insertMemory(makeMemory({
+        id: "bad-scope",
+        scope: "invalid_scope",
+      }))).toThrow("CHECK constraint failed: scope IN ('project','user','global')");
+      expect(env.db.getMemory("bad-scope")).toBeNull();
     });
   });
 
@@ -216,10 +194,15 @@ describe("Phase 8a: Central DB + Project Identity", () => {
       fs.mkdirSync(backupDir, { recursive: true });
       const backupPath = await env.db.backup(backupDir);
 
-      expect(fs.existsSync(backupPath)).toBe(true);
-      // Backup file should be non-empty
-      const stat = fs.statSync(backupPath);
-      expect(stat.size).toBeGreaterThan(0);
+      const restoredDir = path.join(env.tmpDir, "restored");
+      fs.mkdirSync(restoredDir);
+      fs.copyFileSync(backupPath, path.join(restoredDir, "gnosys.db"));
+      const restored = new GnosysDB(restoredDir);
+      try {
+        expect(restored.getMemory("bk-001")?.title).toBe("Backup Test");
+      } finally {
+        restored.close();
+      }
     });
 
     it("backup file contains the same data", async () => {
@@ -231,10 +214,15 @@ describe("Phase 8a: Central DB + Project Identity", () => {
       fs.mkdirSync(backupDir, { recursive: true });
       const backupPath = await env.db.backup(backupDir);
 
-      // Open backup DB to verify it is loadable (instance intentionally unused)
-      new GnosysDB(path.dirname(backupPath));
-      // The backup might be at a different location, let's just verify the file exists and is valid
-      expect(fs.existsSync(backupPath)).toBe(true);
+      const restoredDir = path.join(env.tmpDir, "restored");
+      fs.mkdirSync(restoredDir);
+      fs.copyFileSync(backupPath, path.join(restoredDir, "gnosys.db"));
+      const restored = new GnosysDB(restoredDir);
+      try {
+        expect(restored.getMemory("bk-verify")?.title).toBe("Verify Backup");
+      } finally {
+        restored.close();
+      }
     });
   });
 
@@ -261,6 +249,7 @@ describe("Phase 8a: Central DB + Project Identity", () => {
         )
       ).projectId;
 
+      expect(id1).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
       expect(id1).toBe(id2);
     });
 

@@ -1,0 +1,25 @@
+[
+  {
+    "id": "cli-pref-roundtrip-drop-value",
+    "file": "src/lib/preferences.ts",
+    "description": "pref persist empty value",
+    "search": "content: `# ${title}\\n\\n${value}`,",
+    "replace": "content: `# ${title}\\n\\n`,",
+    "tests": [
+      "src/test/cli-json.test.ts"
+    ],
+    "testName": "set \\+ get",
+    "build": true
+  },
+  {
+    "id": "remote-typed-phrase-always-accept",
+    "file": "src/lib/remoteWizard.ts",
+    "description": "Typed confirmation accepts an incorrect phrase.",
+    "search": "return input.trim() === expected;",
+    "replace": "return input.length >= 0 || expected.length >= 0;",
+    "tests": [
+      "src/test/remoteWizard.test.ts"
+    ],
+    "testName": "matchesTypedPhrase requires"
+  }
+]
