@@ -674,6 +674,21 @@ export async function updateConfig(
   return validated;
 }
 
+export async function setDefaultAndClearTaskOverrides(
+  storePath: string,
+  llm: { defaultProvider?: LLMProviderName } & Partial<Record<LLMProviderName, { model: string }>>,
+): Promise<void> {
+  const configPath = path.join(storePath, "gnosys.json");
+  const rawExisting = (await readRawConfig(configPath)) ?? {};
+  const merged = { ...deepMergeConfig(rawExisting, { llm }), taskModels: {} };
+  const globalPath = path.join(getGnosysHome(), "gnosys.json");
+  const inherited = path.resolve(configPath) === path.resolve(globalPath)
+    ? {}
+    : (await readRawConfig(globalPath)) ?? {};
+  GnosysConfigSchema.parse(deepMergeConfig(inherited, merged));
+  await atomicWriteFile(configPath, JSON.stringify(merged, null, 2) + "\n");
+}
+
 /**
  * Generate a default gnosys.json with the new llm config structure.
  *

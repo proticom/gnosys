@@ -9,6 +9,7 @@ import type { Interface as ReadlineInterface } from "readline/promises";
 import {
   loadConfig,
   updateConfig,
+  setDefaultAndClearTaskOverrides,
   getProviderModel,
   type GnosysConfig,
 } from "../../config.js";
@@ -128,7 +129,7 @@ export async function runRoutingSetup(opts: RoutingOptions): Promise<boolean> {
     "What would you like to do?",
     [
       "Keep current routing (no changes)",
-      "Edit tasks — set the same provider + model for all tasks (simple global default)",
+      "Set the default model and clear this config's task overrides",
       "Edit tasks — pick different providers/models for specific tasks (advanced)",
       "Reset all task overrides to the current default (the one shown in the main setup summary)",
     ],
@@ -141,9 +142,8 @@ export async function runRoutingSetup(opts: RoutingOptions): Promise<boolean> {
   }
 
   if (choice === 1) {
-    // Edit tasks — set the same provider + model for all tasks (simple global default)
     console.log("");
-    printStatus("progress", "setting a single default for all tasks…");
+    printStatus("progress", "setting the default model and clearing this config's task overrides…");
     try {
       const { fetchDynamicModels } = await import("../../setup.js");
       const { pickModel } = await import("../../setup.js");
@@ -153,25 +153,20 @@ export async function runRoutingSetup(opts: RoutingOptions): Promise<boolean> {
         opts.rl,
         provider,
         dynamicModels,
-        `Default model for ${provider} (used for all tasks + dream)`,
+        `Default model for ${provider}`,
         currentModel,
       );
-      if (chosenModel && chosenModel !== currentModel) {
-        const after = await loadConfig(storePath);
-        await updateConfig(storePath, {
-          llm: {
-            ...after.llm,
-            [provider]: {
-              ...(after.llm[provider] || {}),
-              model: chosenModel,
-            },
-          },
-          // Clear per-task overrides so everything truly uses the single default
-          taskModels: {},
+      if (chosenModel) {
+        await setDefaultAndClearTaskOverrides(storePath, {
+          [provider]: { model: chosenModel },
         });
-        printStatus("ok", `default set for everything · ${provider} / ${chosenModel}`);
+        printStatus("ok", `default model set · ${provider} / ${chosenModel}`, "task overrides in this config cleared");
+        const updated = await loadConfig(storePath);
+        if (Object.keys(updated.taskModels).length > 0) {
+          printStatus("warn", "global task overrides still apply", "task routing shows the effective provider and model for each task");
+        }
       } else {
-        printStatus("ok", "no change to the global default");
+        printStatus("ok", "no model selected; routing unchanged");
       }
     } catch (err) {
       printStatus("warn", "could not update default model", String(err));
