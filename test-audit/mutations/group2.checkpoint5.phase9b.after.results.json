@@ -1,0 +1,432 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "g2-scheduler-start-noop",
+      "file": "src/lib/dream.ts",
+      "description": "Make scheduler start a no-op.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 697,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking DreamScheduler starts and stops without error",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 586,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking DreamScheduler starts and stops without error",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 0.9 to be 0.86 // Object.is equality\n    at <repo>/src/test/phase9b.dream-prefs-sync.test.ts:65:61\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 572,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking DreamScheduler starts and stops without error",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+          "name": "TC-9b.1: Dream Mode idle triggering and state tracking DreamScheduler starts and stops without error"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-sandbox-idle-config",
+      "file": "src/sandbox/server.ts",
+      "description": "Ignore caller idle threshold.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 620,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking initDreamMode creates a scheduler with correct state",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 614,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking initDreamMode creates a scheduler with correct state",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 0.9 to be 0.86 // Object.is equality\n    at <repo>/src/test/phase9b.dream-prefs-sync.test.ts:94:61\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 578,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking initDreamMode creates a scheduler with correct state",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+          "name": "TC-9b.1: Dream Mode idle triggering and state tracking initDreamMode creates a scheduler with correct state"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-sandbox-status-idle",
+      "file": "src/sandbox/server.ts",
+      "description": "Report zero idle threshold despite configuration.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 558,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking dream_status returns state through sandbox protocol",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.5: Dream Mode integration with sandbox request handler wire client can check configured dream status",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 562,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking dream_status returns state through sandbox protocol",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { id: 'ds1', ok: true, …(1) } to deeply equal { id: 'ds1', ok: true, …(1) }\n    at <repo>/src/test/phase9b.dream-prefs-sync.test.ts:102:88\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.5: Dream Mode integration with sandbox request handler wire client can check configured dream status",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { id: 'wire-1', ok: true, …(1) } to deeply equal { id: 'wire-1', ok: true, …(1) }\n    at <repo>/src/test/phase9b.dream-prefs-sync.test.ts:404:45\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 541,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking dream_status returns state through sandbox protocol",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.5: Dream Mode integration with sandbox request handler wire client can check configured dream status",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+          "name": "TC-9b.1: Dream Mode idle triggering and state tracking dream_status returns state through sandbox protocol"
+        },
+        {
+          "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+          "name": "TC-9b.5: Dream Mode integration with sandbox request handler wire client can check configured dream status"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-sandbox-empty-error",
+      "file": "src/lib/dream.ts",
+      "description": "Replace empty-database diagnostic with generic text.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 532,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking Dream engine reports errors when conditions not met",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 552,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking Dream engine reports errors when conditions not met",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'Unknown failure' ] to deeply equal [ Array(1) ]\n    at <repo>/src/test/phase9b.dream-prefs-sync.test.ts:111:27\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 554,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking Dream engine reports errors when conditions not met",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+          "name": "TC-9b.1: Dream Mode idle triggering and state tracking Dream engine reports errors when conditions not met"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-sandbox-pref-values",
+      "file": "src/sandbox/server.ts",
+      "description": "Lose preference values while retaining keys and count.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 610,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.2: Preference CRUD through sandbox protocol pref_list returns all preferences",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.5: Dream Mode integration with sandbox request handler wire client can set and list persisted preferences",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 617,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.2: Preference CRUD through sandbox protocol pref_list returns all preferences",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ { key: 'pref-a', value: '' }, …(1) ] to deeply equal [ { key: 'pref-a', …(1) }, …(1) ]\n    at <repo>/src/test/phase9b.dream-prefs-sync.test.ts:177:131\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.5: Dream Mode integration with sandbox request handler wire client can set and list persisted preferences",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { id: 'wire-1', ok: true, …(1) } to match object { ok: true, result: [ { …(2) } ] }\n(2 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/phase9b.dream-prefs-sync.test.ts:410:40\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 597,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.2: Preference CRUD through sandbox protocol pref_list returns all preferences",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.5: Dream Mode integration with sandbox request handler wire client can set and list persisted preferences",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+          "name": "TC-9b.2: Preference CRUD through sandbox protocol pref_list returns all preferences"
+        },
+        {
+          "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+          "name": "TC-9b.5: Dream Mode integration with sandbox request handler wire client can set and list persisted preferences"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-sandbox-conventions",
+      "file": "src/sandbox/server.ts",
+      "description": "Drop project convention body while returning its count.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 596,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.3: Sync rules generation through sandbox sync method includes project conventions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 654,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.3: Sync rules generation through sandbox sync method includes project conventions",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '## Gnosys Memory System\\n\\nThis proje…' to contain '- **Use React**: We use React for the…'\n    at <repo>/src/test/phase9b.dream-prefs-sync.test.ts:287:69\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 636,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.3: Sync rules generation through sandbox sync method includes project conventions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+          "name": "TC-9b.3: Sync rules generation through sandbox sync method includes project conventions"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-scheduler-activity-reset",
+      "file": "src/lib/dream.ts",
+      "description": "Do not reset the idle clock on user activity.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 653,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking DreamScheduler recordActivity resets idle timer",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 608,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking DreamScheduler recordActivity resets idle timer",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 0.86 to be 0.9 // Object.is equality\n    at <repo>/src/test/phase9b.dream-prefs-sync.test.ts:80:61\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 588,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking DreamScheduler recordActivity resets idle timer",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+          "name": "TC-9b.1: Dream Mode idle triggering and state tracking DreamScheduler recordActivity resets idle timer"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

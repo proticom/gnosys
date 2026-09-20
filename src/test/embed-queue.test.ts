@@ -124,8 +124,12 @@ describe("embedQueue", () => {
     enableWriteTimeEmbedding(() => db, new GnosysEmbeddings(env.tmpDir));
     queueMemoryEmbedding("q-clear-1");
     disableWriteTimeEmbedding();
+    db.insertMemory(makeMemory({ id: "q-clear-2" }));
+    enableWriteTimeEmbedding(() => db, new GnosysEmbeddings(env.tmpDir));
+    queueMemoryEmbedding("q-clear-2");
     await flushWriteTimeEmbeddings();
 
     expect(db.getEmbedding("q-clear-1")).toBeNull();
+    expect(db.getEmbedding("q-clear-2")).toEqual(Buffer.from(new Float32Array([1, 2, 3, 4]).buffer));
   });
 });

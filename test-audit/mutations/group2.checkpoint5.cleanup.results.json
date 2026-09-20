@@ -1,0 +1,258 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "g2-cleanup-classification",
+      "file": "src/lib/cleanup.ts",
+      "description": "Discard registry classification before display and cleanup.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 445,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup classification alive: directory with .gnosys/ subdir",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup classification dead: directory exists but no .gnosys/",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup classification dead: directory does not exist at all",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup classification temp: path under /tmp or /var/folders is classified as temp",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup non-interactive write with yes=true removes dead+temp and keeps alive",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup non-interactive write dry-run (interactive=false, yes=false) does NOT write",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup non-interactive write no stale entries → no write, removed=0",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 369,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup classification alive: directory with .gnosys/ subdir",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to include '/gnosys-cleanup-fixture/gnosys-cleanu…'\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1319:15)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/v593-cleanup.test.ts:52:28\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup classification dead: directory exists but no .gnosys/",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to include '/gnosys-cleanup-fixture/gnosys-cleanu…'\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1319:15)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/v593-cleanup.test.ts:64:25\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup classification dead: directory does not exist at all",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to include '/gnosys-cleanup-fixture/gnosys-cleanu…'\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1319:15)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/v593-cleanup.test.ts:72:25\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup classification temp: path under /tmp or /var/folders is classified as temp",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to include '/var/folders/mj/kr233fj93lz6plngmhzsx…'\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1319:15)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/v593-cleanup.test.ts:83:27\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup non-interactive write with yes=true removes dead+temp and keeps alive",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected +0 to be 2 // Object.is equality\n    at <repo>/src/test/v593-cleanup.test.ts:111:30\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup non-interactive write dry-run (interactive=false, yes=false) does NOT write",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected +0 to be 1 // Object.is equality\n    at <repo>/src/test/v593-cleanup.test.ts:132:28\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup non-interactive write no stale entries → no write, removed=0",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected +0 to be 1 // Object.is equality\n    at <repo>/src/test/v593-cleanup.test.ts:146:25\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 378,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup classification alive: directory with .gnosys/ subdir",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup classification dead: directory exists but no .gnosys/",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup classification dead: directory does not exist at all",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup classification temp: path under /tmp or /var/folders is classified as temp",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup non-interactive write with yes=true removes dead+temp and keeps alive",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup non-interactive write dry-run (interactive=false, yes=false) does NOT write",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup non-interactive write no stale entries → no write, removed=0",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/v593-cleanup.test.ts",
+          "name": "Phase H — gnosys cleanup classification alive: directory with .gnosys/ subdir"
+        },
+        {
+          "file": "src/test/v593-cleanup.test.ts",
+          "name": "Phase H — gnosys cleanup classification dead: directory exists but no .gnosys/"
+        },
+        {
+          "file": "src/test/v593-cleanup.test.ts",
+          "name": "Phase H — gnosys cleanup classification dead: directory does not exist at all"
+        },
+        {
+          "file": "src/test/v593-cleanup.test.ts",
+          "name": "Phase H — gnosys cleanup classification temp: path under /tmp or /var/folders is classified as temp"
+        },
+        {
+          "file": "src/test/v593-cleanup.test.ts",
+          "name": "Phase H — gnosys cleanup non-interactive write with yes=true removes dead+temp and keeps alive"
+        },
+        {
+          "file": "src/test/v593-cleanup.test.ts",
+          "name": "Phase H — gnosys cleanup non-interactive write dry-run (interactive=false, yes=false) does NOT write"
+        },
+        {
+          "file": "src/test/v593-cleanup.test.ts",
+          "name": "Phase H — gnosys cleanup non-interactive write no stale entries → no write, removed=0"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-cleanup-missing-registry",
+      "file": "src/lib/cleanup.ts",
+      "description": "Invent an alive project when no registry exists.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 379,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup classification no registry → empty categories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 382,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup classification no registry → empty categories",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'unknown' ] to deeply equal []\n    at <repo>/src/test/v593-cleanup.test.ts:92:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 378,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H — gnosys cleanup classification no registry → empty categories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/v593-cleanup.test.ts",
+          "name": "Phase H — gnosys cleanup classification no registry → empty categories"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

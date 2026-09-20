@@ -1,0 +1,39 @@
+[
+  {
+    "tests": [
+      "src/test/import-concurrency-wiring.test.ts"
+    ],
+    "build": true,
+    "id": "g2-import-config-repair-witness",
+    "kind": "defect-repair-probe",
+    "file": "src/lib/importCommand.ts",
+    "search": "const ingestion = new GnosysIngestion(writeTarget.store, tagRegistry);",
+    "replace": "const ingestion = new GnosysIngestion(writeTarget.store, tagRegistry, await (await import(\"./config.js\")).loadConfig(writeTarget.store.getStorePath()));",
+    "testName": "CLI uses configured|CLI concurrency flag",
+    "description": "Temporarily provide loaded configuration to CLI ingestion so two expected failures unexpectedly pass."
+  },
+  {
+    "tests": [
+      "src/test/import-concurrency-wiring.test.ts"
+    ],
+    "build": true,
+    "id": "g2-import-mcp-default",
+    "file": "src/index.ts",
+    "search": "concurrency: concurrency ?? ctx.config?.importConcurrency,",
+    "replace": "concurrency: concurrency ?? 1,",
+    "testName": "MCP uses configured",
+    "description": "Ignore configured import concurrency in MCP."
+  },
+  {
+    "tests": [
+      "src/test/import-concurrency-wiring.test.ts"
+    ],
+    "build": true,
+    "id": "g2-import-mcp-override",
+    "file": "src/index.ts",
+    "search": "concurrency: concurrency ?? ctx.config?.importConcurrency,",
+    "replace": "concurrency: ctx.config?.importConcurrency,",
+    "testName": "MCP uses configured",
+    "description": "Ignore the explicit MCP import concurrency override."
+  }
+]

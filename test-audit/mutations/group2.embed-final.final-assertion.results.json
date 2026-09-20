@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "g2-queue-disable-pending",
+      "file": "src/lib/embedQueue.ts",
+      "description": "Retain queued IDs across disable and re-enable.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 460,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue disable clears pending work",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 478,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue disable clears pending work",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected Buffer[ 0, 0, 128, 63, 0, 0, 0, …(-47) ] to be null\n    at <repo>/src/test/embed-queue.test.ts:132:42\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 464,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue disable clears pending work",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/embed-queue.test.ts",
+          "name": "embedQueue disable clears pending work"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-setup-dotenv-only",
+      "file": "src/lib/setup.ts",
+      "description": "Also write the key to the OS secure store despite the explicit dotenv-only destination.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 477,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing promptKeyDestinationAndPersist dotenv choice writes scoped service line",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 472,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing promptKeyDestinationAndPersist dotenv choice writes scoped service line",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ [ …(2) ] ] to deeply equal []\n    at <repo>/src/test/setup-models-routing.test.ts:249:117\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 468,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-models-routing.test.ts",
+            "name": "setup models task routing promptKeyDestinationAndPersist dotenv choice writes scoped service line",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-models-routing.test.ts",
+          "name": "setup models task routing promptKeyDestinationAndPersist dotenv choice writes scoped service line"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

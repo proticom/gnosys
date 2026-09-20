@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "g2-queue-disable-pending",
+      "file": "src/lib/embedQueue.ts",
+      "description": "Retain queued IDs across disable and re-enable.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 419,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue disable clears pending work",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 453,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue disable clears pending work",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 450,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/embed-queue.test.ts",
+            "name": "embedQueue disable clears pending work",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    }
+  ]
+}

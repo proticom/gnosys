@@ -1,0 +1,79 @@
+[
+  {
+    "id": "g2-scheduler-start-noop",
+    "file": "src/lib/dream.ts",
+    "search": "    if (!this.config.enabled) return;",
+    "replace": "    return;",
+    "tests": [
+      "src/test/phase9b.dream-prefs-sync.test.ts"
+    ],
+    "testName": "DreamScheduler starts and stops",
+    "description": "Make scheduler start a no-op."
+  },
+  {
+    "id": "g2-sandbox-idle-config",
+    "file": "src/sandbox/server.ts",
+    "search": "    ...dreamConfig,",
+    "replace": "    ...dreamConfig,\n    idleMinutes: 10,",
+    "tests": [
+      "src/test/phase9b.dream-prefs-sync.test.ts"
+    ],
+    "testName": "initDreamMode creates",
+    "description": "Ignore caller idle threshold."
+  },
+  {
+    "id": "g2-sandbox-status-idle",
+    "file": "src/sandbox/server.ts",
+    "search": "            ...dreamState,",
+    "replace": "            ...dreamState, idleMinutes: 0,",
+    "tests": [
+      "src/test/phase9b.dream-prefs-sync.test.ts"
+    ],
+    "testName": "dream_status returns state|wire client can check",
+    "description": "Report zero idle threshold despite configuration."
+  },
+  {
+    "id": "g2-sandbox-empty-error",
+    "file": "src/lib/dream.ts",
+    "search": "report.errors.push(\"gnosys.db not available or not migrated\");",
+    "replace": "report.errors.push(\"Unknown failure\");",
+    "tests": [
+      "src/test/phase9b.dream-prefs-sync.test.ts"
+    ],
+    "testName": "Dream engine reports errors",
+    "description": "Replace empty-database diagnostic with generic text."
+  },
+  {
+    "id": "g2-sandbox-pref-values",
+    "file": "src/sandbox/server.ts",
+    "search": "result: prefs.map((p) => ({ key: p.key, value: p.value, title: p.title }))",
+    "replace": "result: prefs.map((p) => ({ key: p.key, value: \"\", title: p.title }))",
+    "tests": [
+      "src/test/phase9b.dream-prefs-sync.test.ts"
+    ],
+    "testName": "pref_list returns all preferences|wire client can set",
+    "description": "Lose preference values while retaining keys and count."
+  },
+  {
+    "id": "g2-sandbox-conventions",
+    "file": "src/sandbox/server.ts",
+    "search": "const block = generateRulesBlock(preferences, projectConventions);",
+    "replace": "const block = generateRulesBlock(preferences, []);",
+    "tests": [
+      "src/test/phase9b.dream-prefs-sync.test.ts"
+    ],
+    "testName": "sync method includes project conventions",
+    "description": "Drop project convention body while returning its count."
+  },
+  {
+    "id": "g2-scheduler-activity-reset",
+    "file": "src/lib/dream.ts",
+    "search": "  recordActivity(): void {\n    this.lastActivity = Date.now();",
+    "replace": "  recordActivity(): void {",
+    "tests": [
+      "src/test/phase9b.dream-prefs-sync.test.ts"
+    ],
+    "testName": "recordActivity resets idle timer",
+    "description": "Do not reset the idle clock on user activity."
+  }
+]

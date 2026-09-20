@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "g2-import-config-repair-witness",
+      "file": "src/lib/importCommand.ts",
+      "description": "Temporarily provide loaded configuration to CLI ingestion so two expected failures unexpectedly pass.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1280,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 2256,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
+            "status": "failed",
+            "failures": [
+              "Error: Expect test to fail\n    at runTest (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3041:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)"
+            ]
+          },
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
+            "status": "failed",
+            "failures": [
+              "Error: Expect test to fail\n    at runTest (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3041:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1017,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests"
+        },
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency"
+        }
+      ],
+      "applicationRestored": true,
+      "kind": "defect-repair-probe"
+    },
+    {
+      "id": "g2-import-mcp-default",
+      "file": "src/index.ts",
+      "description": "Ignore configured import concurrency in MCP.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1942,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP MCP uses configured concurrency and honors the explicit override",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1559,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP MCP uses configured concurrency and honors the explicit override",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 1 to be 2 // Object.is equality\n    at assertRequests (<repo>/src/test/import-concurrency-wiring.test.ts:60:19)\n    at <repo>/src/test/import-concurrency-wiring.test.ts:102:7\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1930,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP MCP uses configured concurrency and honors the explicit override",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP MCP uses configured concurrency and honors the explicit override"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-import-mcp-override",
+      "file": "src/index.ts",
+      "description": "Ignore the explicit MCP import concurrency override.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1945,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP MCP uses configured concurrency and honors the explicit override",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1633,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP MCP uses configured concurrency and honors the explicit override",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 2 to be 1 // Object.is equality\n    at assertRequests (<repo>/src/test/import-concurrency-wiring.test.ts:60:19)\n    at <repo>/src/test/import-concurrency-wiring.test.ts:102:7\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 2001,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP MCP uses configured concurrency and honors the explicit override",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP MCP uses configured concurrency and honors the explicit override"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+[
+  {
+    "id": "g2-queue-disable-pending",
+    "file": "src/lib/embedQueue.ts",
+    "search": "  pending.clear();",
+    "replace": "  // Pending work is retained.",
+    "tests": [
+      "src/test/embed-queue.test.ts"
+    ],
+    "testName": "disable clears pending work",
+    "description": "Retain queued IDs across disable and re-enable."
+  },
+  {
+    "id": "g2-setup-dotenv-only",
+    "file": "src/lib/setup.ts",
+    "search": "  if (choice === dotenvIdx) {\n    await writeServiceKeyToEnv(opts.service, opts.key);",
+    "replace": "  if (choice === dotenvIdx) {\n    storeApiKeySecret(opts.service, opts.key, opts.provider);\n    await writeServiceKeyToEnv(opts.service, opts.key);",
+    "tests": [
+      "src/test/setup-models-routing.test.ts"
+    ],
+    "testName": "dotenv choice writes scoped service line",
+    "description": "Also write the key to the OS secure store despite the explicit dotenv-only destination."
+  }
+]

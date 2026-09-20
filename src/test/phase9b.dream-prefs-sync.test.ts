@@ -10,7 +10,7 @@
  *   TC-9b.6: Rules file injection with protected blocks
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import fs from "fs";
 import path from "path";
 import net from "net";
@@ -18,9 +18,8 @@ import {
   handleRequest,
   type SandboxRequest,
   initDreamMode,
-  type DreamState,
 } from "../sandbox/server.js";
-import { SandboxClient } from "../sandbox/client.js";
+import { z } from "zod";
 import type { Preference } from "../lib/preferences.js";
 import { injectRules, generateRulesBlock } from "../lib/rulesGen.js";
 import { DEFAULT_DREAM_CONFIG, DreamScheduler, GnosysDreamEngine } from "../lib/dream.js";
@@ -29,6 +28,7 @@ import {
   createTestEnv,
   cleanupTestEnv,
   type TestEnv,
+  makeMemory,
 } from "./_helpers.js";
 
 let env: TestEnv;
@@ -38,74 +38,78 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
+  vi.useRealTimers();
+  vi.unstubAllEnvs();
   await cleanupTestEnv(env);
 });
 
 // ─── TC-9b.1: Dream Mode idle triggering ──────────────────────────────
 
 describe("TC-9b.1: Dream Mode idle triggering and state tracking", () => {
-  it("DreamScheduler starts and stops without error", () => {
-    const engine = new GnosysDreamEngine(env.db, DEFAULT_CONFIG, {
-      ...DEFAULT_DREAM_CONFIG,
-      enabled: true,
-      idleMinutes: 999, // won't trigger in test
-    });
-    const scheduler = new DreamScheduler(engine, {
-      enabled: true,
-      idleMinutes: 999,
-    });
+  function seedScheduled(): void {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-01-11T12:00:00.000Z"));
+    vi.stubEnv("GNOSYS_HOME", env.tmpDir);
+    env.db.setMeta("machine_id", "sandbox-machine");
+    env.db.setDreamMachineId("sandbox-machine");
+    env.db.insertMemory(makeMemory({ id: "sandbox-dream", confidence: 0.9, last_reinforced: "2026-01-01T12:00:00.000Z" }));
+  }
+  const phases = { minMemories: 1, selfCritique: false, generateSummaries: false, discoverRelationships: false };
 
-    scheduler.start();
-    expect(scheduler.isDreaming()).toBe(false);
-    scheduler.stop();
+  it("DreamScheduler starts and stops without error", async () => {
+    seedScheduled();
+    const scheduler = new DreamScheduler(new GnosysDreamEngine(env.db, DEFAULT_CONFIG, phases), { enabled: true, idleMinutes: 1 });
+    try {
+      scheduler.start();
+      await vi.advanceTimersByTimeAsync(60_000);
+      expect(env.db.getMemory("sandbox-dream")?.confidence).toBe(0.86);
+      scheduler.stop();
+      await vi.advanceTimersByTimeAsync(120_000);
+      expect(env.db.queryAuditLog({ operation: "dream_complete" })).toHaveLength(1);
+    } finally { scheduler.stop(); }
   });
 
-  it("DreamScheduler recordActivity resets idle timer", () => {
-    const engine = new GnosysDreamEngine(env.db, DEFAULT_CONFIG, {
-      ...DEFAULT_DREAM_CONFIG,
-      enabled: true,
-    });
-    const scheduler = new DreamScheduler(engine, { enabled: true });
-
-    scheduler.start();
-    scheduler.recordActivity();
-    expect(scheduler.isDreaming()).toBe(false);
-    scheduler.stop();
+  it("DreamScheduler recordActivity resets idle timer", async () => {
+    seedScheduled();
+    const scheduler = new DreamScheduler(new GnosysDreamEngine(env.db, DEFAULT_CONFIG, phases), { enabled: true, idleMinutes: 2 });
+    try {
+      scheduler.start();
+      await vi.advanceTimersByTimeAsync(60_000);
+      scheduler.recordActivity();
+      await vi.advanceTimersByTimeAsync(60_000);
+      expect(env.db.getMemory("sandbox-dream")?.confidence).toBe(0.9);
+      await vi.advanceTimersByTimeAsync(60_000);
+      expect(env.db.getMemory("sandbox-dream")?.confidence).toBe(0.86);
+    } finally { scheduler.stop(); }
   });
 
-  it("initDreamMode creates a scheduler with correct state", () => {
-    const scheduler = initDreamMode(env.db, DEFAULT_CONFIG, {
-      idleMinutes: 15,
-    });
-    expect(scheduler).not.toBeNull();
-    scheduler?.stop();
+  it("initDreamMode creates a scheduler with correct state", async () => {
+    seedScheduled();
+    const scheduler = initDreamMode(env.db, DEFAULT_CONFIG, { ...phases, idleMinutes: 2 });
+    try {
+      scheduler?.start();
+      await vi.advanceTimersByTimeAsync(60_000);
+      expect(env.db.getMemory("sandbox-dream")?.confidence).toBe(0.9);
+      await vi.advanceTimersByTimeAsync(60_000);
+      expect(env.db.getMemory("sandbox-dream")?.confidence).toBe(0.86);
+      expect(handleRequest(env.db, { id: "configured", method: "dream_status", params: {} }).result).toMatchObject({ enabled: true, idleMinutes: 2, isDreaming: false });
+    } finally { scheduler?.stop(); }
   });
 
   it("dream_status returns state through sandbox protocol", () => {
-    const res = handleRequest(env.db, {
-      id: "ds1",
-      method: "dream_status",
-      params: {},
-    });
-    expect(res.ok).toBe(true);
-    const result = res.result as DreamState;
-    expect(result).toHaveProperty("enabled");
-    expect(result).toHaveProperty("idleMinutes");
-    expect(result).toHaveProperty("dreamsCompleted");
-    expect(result).toHaveProperty("isDreaming");
-    expect(result.isDreaming).toBe(false);
+    const scheduler = initDreamMode(env.db, DEFAULT_CONFIG, { idleMinutes: 15 });
+    try {
+      expect(handleRequest(env.db, { id: "ds1", method: "dream_status", params: {} })).toEqual({
+        id: "ds1", ok: true, result: { enabled: true, idleMinutes: 15, lastDreamReport: null, dreamsCompleted: 0, isDreaming: false },
+      });
+    } finally { scheduler?.stop(); }
   });
 
   it("Dream engine reports errors when conditions not met", async () => {
-    const engine = new GnosysDreamEngine(env.db, DEFAULT_CONFIG, {
-      ...DEFAULT_DREAM_CONFIG,
-      enabled: true,
-      minMemories: 100, // won't have 100 memories
-    });
+    const engine = new GnosysDreamEngine(env.db, DEFAULT_CONFIG, { ...DEFAULT_DREAM_CONFIG, enabled: true, minMemories: 100 });
     const report = await engine.dream();
-    expect(report.errors.length).toBeGreaterThan(0);
-    // May report "Too few memories" or DB-related errors depending on test env
-    expect(typeof report.errors[0]).toBe("string");
+    expect(report.errors).toEqual(["gnosys.db not available or not migrated"]);
+    expect(env.db.queryAuditLog({ operation: "dream_start" })).toEqual([]);
   });
 });
 
@@ -170,9 +174,7 @@ describe("TC-9b.2: Preference CRUD through sandbox protocol", () => {
       params: {},
     });
     expect(res.ok).toBe(true);
-    const prefs = res.result as any[];
-    expect(prefs.length).toBeGreaterThanOrEqual(2);
-    expect(prefs.some((p: any) => p.key === "pref-a")).toBe(true);
+    expect(z.array(z.object({ key: z.string(), value: z.string() })).parse(res.result).sort((a,b) => a.key.localeCompare(b.key))).toEqual([{ key: "pref-a", value: "value a" }, { key: "pref-b", value: "value b" }]);
   });
 
   it("pref_delete removes a preference", () => {
@@ -281,7 +283,9 @@ describe("TC-9b.3: Sync rules generation through sandbox", () => {
       },
     });
     expect(res.ok).toBe(true);
-    expect((res.result as any).conventionCount).toBe(1);
+    expect(res.result).toMatchObject({ conventionCount: 1 });
+    expect(z.object({ block: z.string() }).parse(res.result).block).toContain("- **Use React**: We use React for the frontend.");
+    expect(z.object({ block: z.string() }).parse(res.result).block).toContain("We use React for the frontend.");
   });
 
   it("sync without project_dir returns error", () => {
@@ -379,28 +383,32 @@ describe("TC-9b.5: Dream Mode integration with sandbox request handler", () => {
     try { fs.unlinkSync(socketPath); } catch { /* ignore */ }
   });
 
-  it("client can check dream status", async () => {
-    const client = new SandboxClient(socketPath);
-    // Use low-level send for dream_status (not in typed client API)
-    const res = await (client as any).send("dream_status");
-    expect(res.ok).toBe(true);
-    expect(res.result).toHaveProperty("isDreaming");
+  function request(method: string, params: Record<string, unknown> = {}): Promise<unknown> {
+    return new Promise((resolve, reject) => {
+      const socket = net.createConnection(socketPath, () => socket.write(JSON.stringify({ id: "wire-1", method, params }) + "\n"));
+      let body = "";
+      socket.on("error", reject);
+      socket.on("data", data => {
+        body += data;
+        if (body.includes("\n")) {
+          socket.end();
+          try { resolve(JSON.parse(body.trim())); } catch (error) { reject(error); }
+        }
+      });
+    });
+  }
+
+  it("wire client can check configured dream status", async () => {
+    const scheduler = initDreamMode(env.db, DEFAULT_CONFIG, { idleMinutes: 7 });
+    try {
+      expect(await request("dream_status")).toEqual({ id: "wire-1", ok: true, result: { enabled: true, idleMinutes: 7, lastDreamReport: null, dreamsCompleted: 0, isDreaming: false } });
+    } finally { scheduler?.stop(); }
   });
 
-  it("client can set and list preferences", async () => {
-    const client = new SandboxClient(socketPath);
-
-    // Set a preference via low-level send
-    const setRes = await (client as any).send("pref_set", {
-      key: "testing-approach",
-      value: "vitest with coverage",
-    });
-    expect(setRes.ok).toBe(true);
-
-    // List preferences
-    const listRes = await (client as any).send("pref_list");
-    expect(listRes.ok).toBe(true);
-    expect(listRes.result.length).toBeGreaterThanOrEqual(1);
+  it("wire client can set and list persisted preferences", async () => {
+    expect(await request("pref_set", { key: "testing-approach", value: "vitest with coverage" })).toMatchObject({ ok: true, result: { key: "testing-approach", value: "vitest with coverage" } });
+    expect(await request("pref_list")).toMatchObject({ ok: true, result: [{ key: "testing-approach", value: "vitest with coverage" }] });
+    expect(env.db.getMemory("pref-testing-approach")).toMatchObject({ scope: "user", content: "# Testing Approach\n\nvitest with coverage" });
   });
 });
 

@@ -1,0 +1,13 @@
+[
+  {
+    "id": "g2-queue-disable-pending",
+    "file": "src/lib/embedQueue.ts",
+    "search": "  pending.clear();",
+    "replace": "  // Pending work is retained.",
+    "tests": [
+      "src/test/embed-queue.test.ts"
+    ],
+    "testName": "disable clears pending work",
+    "description": "Retain queued IDs across disable and re-enable."
+  }
+]

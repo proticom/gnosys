@@ -155,5 +155,24 @@
       "test-audit/evidence/D-CTX-002.reproduced.json",
       "test-audit/mutations/context.after.results.json"
     ]
+  },
+  {
+    "id": "G2-D003",
+    "title": "CLI bulk import ignores its configured provider",
+    "module": "src/lib/importCommand.ts:68",
+    "test": "src/test/import-concurrency-wiring.test.ts",
+    "testNames": [
+      "CLI uses configured concurrency for real provider requests",
+      "CLI concurrency flag overrides configured concurrency"
+    ],
+    "expected": "Configured provider receives three record requests with peak concurrency 2 by default or 1 when overridden.",
+    "actual": "Both CLI invocations exit 1 before contacting the provider. The MCP path processes all three records with the same configuration.",
+    "evidence": "The CLI constructs GnosysIngestion without passing the loaded config. A temporary constructor-config repair makes both expected-failure tests unexpectedly pass.",
+    "reproduction": "node scripts/test-audit-defect.mjs G2-D003",
+    "status": "Confirmed. Retained as two it.fails regressions. Application code unchanged.",
+    "evidenceFiles": [
+      "test-audit/evidence/G2-D003.reproduced.json",
+      "test-audit/mutations/group2.checkpoint5.import.results.json"
+    ]
   }
 ]

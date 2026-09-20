@@ -1,0 +1,288 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "g2-scheduler-start-noop",
+      "file": "src/lib/dream.ts",
+      "description": "Make scheduler start a no-op.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 587,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking DreamScheduler starts and stops without error",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 494,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking DreamScheduler starts and stops without error",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 536,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking DreamScheduler starts and stops without error",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-sandbox-idle-config",
+      "file": "src/sandbox/server.ts",
+      "description": "Ignore caller idle threshold.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 542,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking initDreamMode creates a scheduler with correct state",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 539,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking initDreamMode creates a scheduler with correct state",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 524,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking initDreamMode creates a scheduler with correct state",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-sandbox-status-idle",
+      "file": "src/sandbox/server.ts",
+      "description": "Report zero idle threshold despite configuration.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 527,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking dream_status returns state through sandbox protocol",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 518,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking dream_status returns state through sandbox protocol",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 509,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking dream_status returns state through sandbox protocol",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-sandbox-empty-error",
+      "file": "src/lib/dream.ts",
+      "description": "Replace empty-database diagnostic with generic text.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 516,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking Dream engine reports errors when conditions not met",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 522,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking Dream engine reports errors when conditions not met",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 544,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.1: Dream Mode idle triggering and state tracking Dream engine reports errors when conditions not met",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-sandbox-pref-values",
+      "file": "src/sandbox/server.ts",
+      "description": "Lose preference values while retaining keys and count.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 550,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.2: Preference CRUD through sandbox protocol pref_list returns all preferences",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 551,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.2: Preference CRUD through sandbox protocol pref_list returns all preferences",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 559,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.2: Preference CRUD through sandbox protocol pref_list returns all preferences",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-sandbox-conventions",
+      "file": "src/sandbox/server.ts",
+      "description": "Drop project convention body while returning its count.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 556,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.3: Sync rules generation through sandbox sync method includes project conventions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 530,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.3: Sync rules generation through sandbox sync method includes project conventions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 546,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9b.dream-prefs-sync.test.ts",
+            "name": "TC-9b.3: Sync rules generation through sandbox sync method includes project conventions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    }
+  ]
+}

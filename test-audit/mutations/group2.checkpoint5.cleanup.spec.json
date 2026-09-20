@@ -1,0 +1,24 @@
+[
+  {
+    "id": "g2-cleanup-classification",
+    "file": "src/lib/cleanup.ts",
+    "search": "  return { alive, dead, temp };",
+    "replace": "  return { alive: [], dead: [], temp: [] };",
+    "tests": [
+      "src/test/v593-cleanup.test.ts"
+    ],
+    "testName": "alive:|dead:|temp:|with yes=true|dry-run|no stale entries",
+    "description": "Discard registry classification before display and cleanup."
+  },
+  {
+    "id": "g2-cleanup-missing-registry",
+    "file": "src/lib/cleanup.ts",
+    "search": "    return { alive: [], dead: [], temp: [] };",
+    "replace": "    return { alive: [\"unknown\"], dead: [], temp: [] };",
+    "tests": [
+      "src/test/v593-cleanup.test.ts"
+    ],
+    "testName": "no registry",
+    "description": "Invent an alive project when no registry exists."
+  }
+]
