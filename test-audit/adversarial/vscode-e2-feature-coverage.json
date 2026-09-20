@@ -1,0 +1,124 @@
+[
+  {
+    "featureId": "F26",
+    "obligationKind": "permissions",
+    "obligation": "Rendered HTML escapes stored content; project selection controls report scope",
+    "tests": [
+      {
+        "file": "src/test/dashboard-html-adversarial.test.ts",
+        "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+        "mutationIds": [
+          "dashboard-unescaped-stored-content"
+        ]
+      },
+      {
+        "file": "src/test/dashboard-html-adversarial.test.ts",
+        "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+        "mutationIds": [
+          "dashboard-unescaped-stored-content"
+        ]
+      }
+    ],
+    "limitations": "Protects roadmap/open-question titles in generated roadmap, activity and action text. D-DASH-001 still permits stored project-name JavaScript in click handler. Does not prove project-selection scope."
+  },
+  {
+    "featureId": "F41",
+    "obligationKind": "permissions",
+    "obligation": "Selected file cannot inject shell commands; store detection uses actual path boundary",
+    "tests": [
+      {
+        "file": "src/test/vscode-extension.test.ts",
+        "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+        "mutationIds": [
+          "vscode-e2-directory-substring"
+        ]
+      },
+      {
+        "file": "src/test/vscode-extension.test.ts",
+        "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+        "mutationIds": [
+          "vscode-e2-shell-reinforcement"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators",
+        "mutationIds": [
+          "vscode-e2-directory-substring"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators",
+        "mutationIds": [
+          "vscode-e2-directory-substring"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators",
+        "mutationIds": [
+          "vscode-e2-directory-substring"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators",
+        "mutationIds": [
+          "vscode-e2-directory-substring"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators",
+        "mutationIds": [
+          "vscode-e2-directory-substring"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators",
+        "mutationIds": [
+          "vscode-e2-directory-substring"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators",
+        "mutationIds": [
+          "vscode-e2-directory-substring"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators",
+        "mutationIds": [
+          "vscode-e2-directory-substring"
+        ]
+      }
+    ],
+    "limitations": "All eight lookalike directory forms plus existing prefix regression reject without launch; legacy reinforcement argument reaches process literally. Dashboard still launches a shell; unique-ID success remains blocked by D-VSC-001. The old path positional oracle needs replacement when the CLI ID contract is fixed."
+  },
+  {
+    "featureId": "F41",
+    "obligationKind": "success",
+    "obligation": "Reinforce active memory produces persisted reinforcement and feedback; dashboard command launches functioning dashboard",
+    "tests": [
+      {
+        "file": "src/test/vscode-extension.test.ts",
+        "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+        "mutationIds": [
+          "vscode-e2-removed-dashboard-command"
+        ]
+      },
+      {
+        "file": "src/test/vscode-adversarial.test.ts",
+        "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+        "mutationIds": [
+          "vscode-e2-removed-dashboard-command"
+        ]
+      }
+    ],
+    "limitations": "Proves public dashboard action invokes registered CLI command and exits 0. Does not prove semantic dashboard contents, a web dashboard, or useful reinforcement. Shell-free dashboard execution remains unmet."
+  }
+]

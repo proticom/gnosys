@@ -1,0 +1,20 @@
+[
+  {
+    "id": "D-DASH-001",
+    "title": "Stored project name can execute JavaScript through generated dashboard click handler",
+    "module": "src/lib/portfolioHtml.ts:457",
+    "entryPoint": "generatePortfolioHtml(generatePortfolio(realDb))",
+    "input": "QA');globalThis.dashboardInjected=true;//",
+    "expected": "Click selects the complete stored project name and dashboardInjected remains false.",
+    "actual": "Click handler calls scrollToProject with QA and then sets dashboardInjected=true.",
+    "reproduction": "node test-audit/adversarial/vscode-dashboard-reproduce.mjs",
+    "test": "src/test/dashboard-html-adversarial.test.ts",
+    "testName": "dashboard HTML adversarial stored content D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript",
+    "status": "Confirmed ordinary assertion failure; retained it.fails; no application edit or repair probe.",
+    "evidenceFiles": [
+      "test-audit/adversarial/dashboard-injection-reproduction.html",
+      "test-audit/adversarial/vscode-dashboard-ordinary.json"
+    ],
+    "limitation": "JavaScript evaluated in isolated VM from actual generated onclick attribute, without a full DOM/browser."
+  }
+]

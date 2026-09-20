@@ -1,0 +1,136 @@
+{
+  "applicationRef": "a420e3b727c33a578aed2c089d72841f5a4441f9",
+  "testFiles": [
+    {
+      "path": "src/test/commit-context.test.ts",
+      "sha256": "3553672e8f3e7e999f59b3879b6cdca5d699d08f93bd60e95f56f4d264d41f2d"
+    },
+    {
+      "path": "src/test/import-concurrency-wiring.test.ts",
+      "sha256": "a33cc2557cea6d010b78194049566907b7288df3b50ea46a0dfb4f4c1b31722a"
+    },
+    {
+      "path": "src/test/context-adversarial-helpers.ts",
+      "sha256": "8d77d7308764f68c8aad57bd98e4f85f347112afe0c53378d30ec46e2689846f"
+    },
+    {
+      "path": "src/test/context-adversarial.test.ts",
+      "sha256": "30e0f03556ebc841192442bd72cd5fb6c2f797c7d5a4172f724d438d9e9f3144"
+    },
+    {
+      "path": "src/test/config-display-adversarial.test.ts",
+      "sha256": "325a71b3d272b4d83cc6be59b97fb589b35a355b716c492a01823f1dd3c2bcf7"
+    }
+  ],
+  "unit": {
+    "passed": 26,
+    "failed": 0,
+    "skipped": 0,
+    "expectedFailures": 3,
+    "evidence": "test-audit/adversarial/context-a420e3b-unit.json"
+  },
+  "ordinaryRepairReplays": [
+    {
+      "ref": "636e03271db7ee670374c846cff747ecd0318d85",
+      "applicationDigest": "0fac87fd22503882b6c420a844f88ec5ece28974c2d89d12d21bd6768cf800db",
+      "tests": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
+          "status": "passed"
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+          "status": "passed"
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ref": "3021bf5c88d5ec11ab3b61f311a68ba5c15a7f07",
+      "applicationDigest": "30c13ec8424323a2052aec18cb22f740272d0971e8b17ceb70dce8201fd34ebb",
+      "tests": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+          "status": "passed"
+        },
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
+          "status": "passed"
+        },
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ref": "a420e3b727c33a578aed2c089d72841f5a4441f9",
+      "applicationDigest": "d2abeadd7b6ccbbad0d750fd1c9cfe371097c36e4bad6bd3dac1f0c8e8c9a39c",
+      "tests": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
+          "status": "passed"
+        },
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts MCP skips repeated context in its startup project",
+          "status": "passed"
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection the same context is saved independently in projects A and B",
+          "status": "passed"
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+          "status": "passed"
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection startup-project context skips its already saved journal",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "markersRemoved": {
+    "D-CTX-001": 3,
+    "G2-D003": 3,
+    "D-CTX-002": 2
+  },
+  "remainingAcceptanceGaps": [
+    {
+      "id": "ADV-CTX-001",
+      "surface": "config show --json",
+      "state": "ordinary failure reproduced; expected failure retained"
+    },
+    {
+      "id": "ADV-CTX-002",
+      "surface": "normal CLI and MCP import",
+      "state": "both report Imported:2 with zero persisted rows; expected failures retained",
+      "evidence": "test-audit/adversarial/context-3021bf5-persistence-ordinary-summary.json"
+    }
+  ],
+  "staticChecks": {
+    "typecheck": 0,
+    "biome": 0
+  },
+  "applicationNetDiff": "",
+  "directFaultReplay": {
+    "state": "prepared; replay pending",
+    "spec": "test-audit/adversarial/context-a420e3b-mutations.json",
+    "count": 13
+  },
+  "patch": "test-audit/adversarial/context-prefix-tests.patch"
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "dashboard-unescaped-stored-content",
+    "file": "src/lib/portfolioHtml.ts",
+    "description": "Drop output escaping so stored memory titles are emitted as live HTML in roadmap, activity and action cards.",
+    "search": "  return str.replace(/&/g, \"&amp;\").replace(/</g, \"&lt;\").replace(/>/g, \"&gt;\").replace(/\"/g, \"&quot;\");",
+    "replace": "  return str;",
+    "tests": [
+      "src/test/dashboard-html-adversarial.test.ts"
+    ],
+    "testName": "renders malicious",
+    "build": false
+  }
+]

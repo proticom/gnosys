@@ -1,0 +1,419 @@
+diff --git a/src/test/commit-context.test.ts b/src/test/commit-context.test.ts
+index 16a373c..5aad518 100644
+--- a/src/test/commit-context.test.ts
++++ b/src/test/commit-context.test.ts
+@@ -110,7 +110,7 @@ describe("context sweep public contracts", () => {
+     expect(memories()).toEqual([]);
+   });
+ 
+-  it.fails("D-CTX-002: MCP repeats scoped context without adding duplicate memories", async () => {
++  it("D-CTX-002: MCP repeats scoped context without adding duplicate memories", async () => {
+     await commit();
+     const result = await commit();
+     expect(result.content[0].text, JSON.stringify({ text: result.content[0].text, memories: memories() })).toContain("Context committed — 2 candidates extracted, 0 added, 2 duplicates skipped:");
+@@ -134,7 +134,7 @@ describe("context sweep public contracts", () => {
+     expect(memories().map((memory) => memory.title)).toEqual(["Quartz ledgers"]);
+   });
+ 
+-  it.fails("D-CTX-001: CLI honors the configured local provider and saves extracted context", async () => {
++  it("D-CTX-001: CLI honors the configured local provider and saves extracted context", async () => {
+     const result = await new Promise<{ code: number | null; stdout: string; stderr: string }>((resolve, reject) => {
+       const child = spawn(process.execPath, [cli, "commit-context", "Use quartz ledgers. Retain cobalt receipts."], { cwd: directory, env });
+       let stdout = "";
+diff --git a/src/test/import-concurrency-wiring.test.ts b/src/test/import-concurrency-wiring.test.ts
+index 18c0ca3..842e2c5 100644
+--- a/src/test/import-concurrency-wiring.test.ts
++++ b/src/test/import-concurrency-wiring.test.ts
+@@ -78,7 +78,7 @@ function runCli(extra: string[] = []): Promise<{ code: number | null; stdout: st
+ }
+ 
+ describe("bulk import concurrency through CLI and MCP", () => {
+-  it.fails("CLI uses configured concurrency for real provider requests", async () => {
++  it("CLI uses configured concurrency for real provider requests", async () => {
+     const result = await runCli();
+     expect(result.code, result.stderr).toBe(0);
+     expect(result.stdout).toContain("  Imported: 3\n  Skipped:  0\n  Failed:   0\n  Total:    3");
+@@ -103,7 +103,7 @@ describe("bulk import concurrency through CLI and MCP", () => {
+     }
+   });
+ 
+-  it.fails("CLI concurrency flag overrides configured concurrency", async () => {
++  it("CLI concurrency flag overrides configured concurrency", async () => {
+     const result = await runCli(["--concurrency", "1"]);
+     expect(result.code, result.stderr).toBe(0);
+     expect(result.stdout).toContain("  Imported: 3\n  Skipped:  0\n  Failed:   0\n  Total:    3");
+diff --git a/src/test/context-adversarial-helpers.ts b/src/test/context-adversarial-helpers.ts
+new file mode 100644
+index 0000000..8104957
+--- /dev/null
++++ b/src/test/context-adversarial-helpers.ts
+@@ -0,0 +1,145 @@
++import { createServer, type Server } from "node:http";
++import { execFileSync, spawn } from "node:child_process";
++import fs from "node:fs";
++import os from "node:os";
++import path from "node:path";
++import { Client } from "@modelcontextprotocol/sdk/client/index.js";
++import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
++import { z } from "zod";
++import { GnosysDB } from "../lib/db.js";
++
++export const contextText = "Mandate saffron release journals for every production release.";
++export const contextTitle = "Saffron release journals";
++export const contextBody = "Record every production release in a saffron journal.";
++const candidate = { summary: "Keep saffron release journals", type: "decision", search_terms: ["saffron", "release", "journals"] };
++export const records = [
++  { title: "Verdigris runbooks", content: "Keep verdigris recovery instructions." },
++  { title: "Cerulean manifests", content: "Sign cerulean deployment manifests." },
++];
++export const mapping = { title: "title", content: "content" };
++export const cliPath = path.resolve("dist/cli.js");
++const identity = z.object({ projectId: z.string() }).passthrough();
++const requestBody = z.object({ model: z.string(), messages: z.array(z.object({ role: z.string(), content: z.string() })) });
++const resultBody = z.object({ isError: z.boolean().optional(), content: z.array(z.object({ type: z.literal("text"), text: z.string() })) });
++export type Project = { root: string; id: string };
++export type CommandResult = { code: number | null; stdout: string; stderr: string };
++type ProviderRequest = { pathname: string; model: string; prompt: string };
++
++export class ContextHarness {
++  readonly directory = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-adversarial-context-")));
++  readonly brain = path.join(this.directory, "brain");
++  readonly env = { PATH: process.env.PATH || "", HOME: this.directory, GNOSYS_HOME: this.brain,
++    GNOSYS_CONFIG_DIR: path.join(this.directory, "config"), GNOSYS_LOCAL_ONLY: "1", GNOSYS_MCP_TOOLSET: "full",
++    GNOSYS_SKIP_UPGRADE_NUDGE: "1", VITEST: "true", CI: "true" };
++  readonly requests: ProviderRequest[] = [];
++  readonly projects: Project[] = [];
++  maximum = 0;
++  private active = 0;
++  private provider: Server | undefined;
++  private clients: Client[] = [];
++  private baseUrl = "";
++
++  async start(): Promise<void> {
++    this.provider = createServer(async (request, response) => {
++      try {
++        let body = "";
++        for await (const chunk of request) body += String(chunk);
++        const parsed = requestBody.parse(JSON.parse(body));
++        const prompt = parsed.messages.filter(message => message.role === "user").map(message => message.content).join("\n");
++        this.requests.push({ pathname: request.url || "", model: parsed.model, prompt });
++        this.maximum = Math.max(this.maximum, ++this.active);
++        let text: string;
++        if (prompt === `Extract atomic knowledge items from this context:\n\n${contextText}`) {
++          text = JSON.stringify([candidate]);
++        } else {
++          const record = records.find(item => prompt.includes(`Title: ${item.title}\n`));
++          const title = record?.title || contextTitle;
++          if (!record && !prompt.includes(candidate.summary)) throw new Error(`Unexpected fixture prompt: ${prompt}`);
++          text = JSON.stringify({ title, category: "decisions", tags: {}, relevance: record ? title.toLowerCase() : "saffron release journals",
++            content: record ? `Structured ${record.content}` : contextBody, confidence: 0.9,
++            filename: title.toLowerCase().replaceAll(" ", "-") });
++        }
++        await new Promise(resolve => setTimeout(resolve, 35));
++        response.writeHead(200, { "content-type": "application/json" });
++        response.end(JSON.stringify({ choices: [{ message: { content: text } }] }));
++      } catch (error) {
++        response.writeHead(500);
++        response.end(String(error));
++      } finally { this.active--; }
++    });
++    await new Promise<void>((resolve, reject) => {
++      this.provider?.once("error", reject);
++      this.provider?.listen(0, "127.0.0.1", resolve);
++    });
++    const address = this.provider.address();
++    if (!address || typeof address === "string") throw new Error("Missing provider listener");
++    this.baseUrl = `http://127.0.0.1:${address.port}/v1`;
++    for (const name of ["project-a", "project-b"]) {
++      const root = path.join(this.directory, name);
++      fs.mkdirSync(root);
++      execFileSync(process.execPath, [cliPath, "init"], { cwd: root, env: this.env, stdio: "pipe" });
++      const config = identity.parse(JSON.parse(fs.readFileSync(path.join(root, ".gnosys", "gnosys.json"), "utf8")));
++      this.projects.push({ root, id: config.projectId });
++      this.configure(root, true);
++    }
++    fs.writeFileSync(path.join(this.directory, "records.json"), JSON.stringify(records));
++  }
++
++  configure(root: string, enabled: boolean): void {
++    const file = path.join(root, ".gnosys", "gnosys.json");
++    const config = identity.parse(JSON.parse(fs.readFileSync(file, "utf8")));
++    fs.writeFileSync(file, JSON.stringify({ ...config, importConcurrency: 2,
++      llm: enabled ? { defaultProvider: "custom", custom: { model: "adversarial-custom", baseUrl: this.baseUrl } } : {} }));
++  }
++
++  async connect(root = this.projects[0].root): Promise<Client> {
++    let stderr = "";
++    const transport = new StdioClientTransport({ command: process.execPath, args: [path.resolve("dist/index.js")], cwd: root,
++      env: this.env, stderr: "pipe" });
++    transport.stderr?.on("data", data => { stderr += String(data); });
++    const client = new Client({ name: "adversarial-context", version: "1" });
++    this.clients.push(client);
++    await client.connect(transport);
++    const deadline = Date.now() + 10000;
++    while (!stderr.includes("Gnosys MCP: heavy modules ready")) {
++      if (Date.now() > deadline) throw new Error(`MCP heavy initialization timed out: ${stderr}`);
++      await new Promise(resolve => setTimeout(resolve, 20));
++    }
++    return client;
++  }
++
++  run(args: string[], root = this.projects[0].root): Promise<CommandResult> {
++    return new Promise((resolve, reject) => {
++      const child = spawn(process.execPath, [cliPath, ...args], { cwd: root, env: this.env });
++      let stdout = "";
++      let stderr = "";
++      child.stdout.on("data", chunk => { stdout += String(chunk); });
++      child.stderr.on("data", chunk => { stderr += String(chunk); });
++      child.on("error", reject);
++      child.on("close", code => resolve({ code, stdout, stderr }));
++    });
++  }
++
++  importArgs(dryRun = true): string[] {
++    return ["import", path.join(this.directory, "records.json"), "--format", "json", "--mapping", JSON.stringify(mapping), "--mode", "llm", ...(dryRun ? ["--dry-run"] : [])];
++  }
++
++  memories() {
++    const db = new GnosysDB(this.brain);
++    try {
++      return db.getAllMemories().map(({ id, title, content, project_id, scope, authority }) => ({ id, title, content, project_id, scope, authority }))
++        .sort((a, b) => a.id.localeCompare(b.id));
++    } finally { db.close(); }
++  }
++
++  async close(): Promise<void> {
++    for (const client of this.clients) await client.close();
++    if (this.provider?.listening) await new Promise<void>((resolve, reject) => this.provider?.close(error => error ? reject(error) : resolve()));
++    fs.rmSync(this.directory, { recursive: true, force: true });
++  }
++}
++
++export async function call(client: Client, name: string, args: Record<string, unknown>) {
++  const result = resultBody.parse(await client.callTool({ name, arguments: args }));
++  return { isError: result.isError === true, text: result.content.map(item => item.text).join("\n") };
++}
+diff --git a/src/test/context-adversarial.test.ts b/src/test/context-adversarial.test.ts
+new file mode 100644
+index 0000000..829834e
+--- /dev/null
++++ b/src/test/context-adversarial.test.ts
+@@ -0,0 +1,170 @@
++import { afterEach, beforeEach, describe, expect, it } from "vitest";
++import { GnosysDB } from "../lib/db.js";
++import { GnosysStore } from "../lib/store.js";
++import path from "node:path";
++import { makeFrontmatter, makeMemory } from "./_helpers.js";
++import { call, ContextHarness, contextBody, contextText, contextTitle, mapping, records } from "./context-adversarial-helpers.js";
++
++let harness: ContextHarness;
++beforeEach(async () => { harness = new ContextHarness(); await harness.start(); });
++afterEach(async () => { await harness.close(); });
++
++function expectSaved(projectId: string): void {
++  expect(harness.memories().filter(memory => memory.project_id === projectId).map(({ title, content, project_id, scope, authority }) => ({ title, content, project_id, scope, authority })))
++    .toEqual([{ title: contextTitle, content: `# ${contextTitle}\n\n${contextBody}`, project_id: projectId, scope: "project", authority: "observed" }]);
++}
++function expectImportRequests(): void {
++  expect(harness.requests.map(({ pathname, model }) => ({ pathname, model }))).toEqual([
++    { pathname: "/v1/chat/completions", model: "adversarial-custom" },
++    { pathname: "/v1/chat/completions", model: "adversarial-custom" },
++  ]);
++  expect(harness.requests.map(request => request.prompt).sort()).toEqual([
++    "Structure this into an atomic memory:\n\nTitle: Cerulean manifests\nCategory: imported\n\nSign cerulean deployment manifests.",
++    "Structure this into an atomic memory:\n\nTitle: Verdigris runbooks\nCategory: imported\n\nKeep verdigris recovery instructions.",
++  ]);
++  expect(harness.maximum).toBe(2);
++}
++
++describe("adversarial context and provider routing", () => {
++  it("D-CTX-001 custom-provider CLI context commits the new journal decision", async () => {
++    const result = await harness.run(["commit-context", contextText]);
++    expect(result.code, result.stderr).toBe(0);
++    expect(result.stdout).toContain("COMMITTED: 1 candidates, 1 added, 0 duplicates skipped.");
++    expectSaved(harness.projects[0].id);
++  });
++
++  it("custom-provider MCP context commits the same journal decision", async () => {
++    const client = await harness.connect();
++    const result = await call(client, "gnosys_commit_context", { context: contextText });
++    expect(result).toMatchObject({ isError: false });
++    expect(result.text).toContain("Context committed — 1 candidates extracted, 1 added, 0 duplicates skipped:");
++    expectSaved(harness.projects[0].id);
++    expect(harness.requests.map(({ pathname, model }) => ({ pathname, model }))).toEqual([
++      { pathname: "/v1/chat/completions", model: "adversarial-custom" },
++      { pathname: "/v1/chat/completions", model: "adversarial-custom" },
++    ]);
++  });
++
++  it("G2-D003 custom-provider CLI bulk import uses configured concurrency", async () => {
++    const result = await harness.run(harness.importArgs());
++    expect(result.code, result.stderr).toBe(0);
++    expect(result.stdout).toContain("  Imported: 2\n  Skipped:  0\n  Failed:   0\n  Total:    2");
++    expectImportRequests();
++  });
++
++  it("custom-provider MCP bulk import uses configured concurrency", async () => {
++    const client = await harness.connect();
++    const result = await call(client, "gnosys_import", { format: "json", data: JSON.stringify(records), mapping, mode: "llm", dryRun: true });
++    expect(result.isError).toBe(false);
++    expect(result.text).toContain("  Imported: 2\n  Skipped:  0\n  Failed:   0\n  Total:    2");
++    expectImportRequests();
++    expect(harness.memories()).toEqual([]);
++  });
++
++  it.fails("ADV-CTX-002 normal CLI bulk import persists the reported memories", async () => {
++    const result = await harness.run(harness.importArgs(false));
++    expect(result.code, result.stderr).toBe(0);
++    expect(result.stdout).toContain("  Imported: 2\n  Skipped:  0\n  Failed:   0\n  Total:    2");
++    expectImportRequests();
++    expect(harness.memories().map(({ title, content }) => ({ title, content })).sort((a, b) => a.title.localeCompare(b.title)), JSON.stringify({ result, memories: harness.memories() })).toEqual([
++      { title: "Cerulean manifests", content: "# Cerulean manifests\n\nStructured Sign cerulean deployment manifests." },
++      { title: "Verdigris runbooks", content: "# Verdigris runbooks\n\nStructured Keep verdigris recovery instructions." },
++    ]);
++  });
++
++  it.fails("ADV-CTX-002 normal MCP bulk import persists the reported memories", async () => {
++    const client = await harness.connect();
++    const result = await call(client, "gnosys_import", { format: "json", data: JSON.stringify(records), mapping, mode: "llm" });
++    expect(result.isError).toBe(false);
++    expect(result.text).toContain("  Imported: 2\n  Skipped:  0\n  Failed:   0\n  Total:    2");
++    expect(harness.memories().map(({ title, content }) => ({ title, content })).sort((a, b) => a.title.localeCompare(b.title)), JSON.stringify({ result, memories: harness.memories() })).toEqual([
++      { title: "Cerulean manifests", content: "# Cerulean manifests\n\nStructured Sign cerulean deployment manifests." },
++      { title: "Verdigris runbooks", content: "# Verdigris runbooks\n\nStructured Keep verdigris recovery instructions." },
++    ]);
++  });
++
++  it("D-CTX-001 context without a provider fails with setup guidance", async () => {
++    harness.configure(harness.projects[0].root, false);
++    const result = await harness.run(["commit-context", contextText]);
++    expect(result.code).toBe(1);
++    expect(result.stderr).toContain("gnosys setup");
++    expect(harness.memories()).toEqual([]);
++  });
++
++  it("CLI import without a provider fails with setup guidance", async () => {
++    harness.configure(harness.projects[0].root, false);
++    const result = await harness.run(harness.importArgs());
++    expect(result.code).toBe(1);
++    expect(result.stderr).toContain("Run 'gnosys setup'");
++    expect(harness.memories()).toEqual([]);
++    expect(harness.requests).toEqual([]);
++  });
++
++  it("MCP context without a provider fails with setup guidance", async () => {
++    harness.configure(harness.projects[0].root, false);
++    const client = await harness.connect();
++    const result = await call(client, "gnosys_commit_context", { context: contextText });
++    expect(result.isError).toBe(true);
++    expect(result.text).toContain("No default LLM provider configured. Run 'gnosys setup'");
++    expect(harness.memories()).toEqual([]);
++  });
++
++  it("MCP import without a provider fails with setup guidance", async () => {
++    harness.configure(harness.projects[0].root, false);
++    const client = await harness.connect();
++    const result = await call(client, "gnosys_import", { format: "json", data: JSON.stringify(records), mapping, mode: "llm" });
++    expect(result.isError).toBe(true);
++    expect(result.text).toContain("Run 'gnosys setup'");
++    expect(harness.memories()).toEqual([]);
++  });
++});
++
++describe("adversarial project selection", () => {
++  it("the same context is saved independently in projects A and B", async () => {
++    const client = await harness.connect();
++    for (const project of harness.projects) {
++      const result = await call(client, "gnosys_commit_context", { context: contextText, projectRoot: project.root });
++      expect(result.text).toContain("Context committed — 1 candidates extracted, 1 added, 0 duplicates skipped:");
++      expectSaved(project.id);
++    }
++    expect(harness.memories()).toHaveLength(2);
++  });
++
++  it("D-CTX-002 repeated B context skips only B's already saved journal", async () => {
++    const client = await harness.connect();
++    for (const project of harness.projects) await call(client, "gnosys_commit_context", { context: contextText, projectRoot: project.root });
++    const result = await call(client, "gnosys_commit_context", { context: contextText, projectRoot: harness.projects[1].root });
++    expect(result.text).toContain("Context committed — 1 candidates extracted, 0 added, 1 duplicates skipped:");
++    for (const project of harness.projects) expectSaved(project.id);
++    expect(harness.memories()).toHaveLength(2);
++  });
++
++  it("startup-project context skips its already saved journal", async () => {
++    const client = await harness.connect();
++    await call(client, "gnosys_commit_context", { context: contextText });
++    const result = await call(client, "gnosys_commit_context", { context: contextText });
++    expect(result.text).toContain("Context committed — 1 candidates extracted, 0 added, 1 duplicates skipped:");
++    expectSaved(harness.projects[0].id);
++  });
++
++  it("explicit project B update resolves the shared relative path inside B", async () => {
++    const db = new GnosysDB(harness.brain);
++    try {
++      for (const [index, project] of harness.projects.entries()) {
++        const id = `adversarial-route-${index}`;
++        const title = `Route ${index}`;
++        const content = `Original route ${index}`;
++        const store = new GnosysStore(path.join(project.root, ".gnosys"));
++        await store.writeMemory("decisions", "shared-route.md", makeFrontmatter({ id, title }), content, { autoCommit: false });
++        db.insertMemory(makeMemory({ id, title, content, project_id: project.id, scope: "project" }));
++      }
++    } finally { db.close(); }
++    const client = await harness.connect();
++    const result = await call(client, "gnosys_update", { path: "decisions/shared-route.md", content: "Only B receives the amended route", projectRoot: harness.projects[1].root });
++    expect(result.isError).toBe(false);
++    expect(harness.memories().map(({ id, content, project_id }) => ({ id, content, project_id }))).toEqual([
++      { id: "adversarial-route-0", content: "Original route 0", project_id: harness.projects[0].id },
++      { id: "adversarial-route-1", content: "# Route 1\n\nOnly B receives the amended route", project_id: harness.projects[1].id },
++    ]);
++  });
++});
+diff --git a/src/test/config-display-adversarial.test.ts b/src/test/config-display-adversarial.test.ts
+new file mode 100644
+index 0000000..dbb7aa4
+--- /dev/null
++++ b/src/test/config-display-adversarial.test.ts
+@@ -0,0 +1,42 @@
++import { afterEach, beforeEach, describe, expect, it } from "vitest";
++import fs from "node:fs";
++import os from "node:os";
++import path from "node:path";
++import { spawnSync } from "node:child_process";
++import { z } from "zod";
++
++let directory: string;
++let env: NodeJS.ProcessEnv;
++let configFile: string;
++const canary = "fixture-only-config-key-7f94a31c";
++const cli = path.resolve("dist/cli.js");
++const displayedConfig = z.object({ llm: z.object({ defaultProvider: z.string(), custom: z.object({ model: z.string(), baseUrl: z.string() }) }) });
++beforeEach(() => {
++  directory = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-config-display-adversarial-")));
++  env = { PATH: process.env.PATH, HOME: directory, GNOSYS_HOME: path.join(directory, "brain"), GNOSYS_CONFIG_DIR: path.join(directory, "config"), GNOSYS_LOCAL_ONLY: "1", GNOSYS_SKIP_UPGRADE_NUDGE: "1", VITEST: "true", CI: "true" };
++  const initialized = spawnSync(process.execPath, [cli, "init"], { cwd: directory, env, encoding: "utf8" });
++  if (initialized.status !== 0) throw new Error(initialized.stderr);
++  configFile = path.join(directory, ".gnosys", "gnosys.json");
++  const identity = z.record(z.string(), z.unknown()).parse(JSON.parse(fs.readFileSync(configFile, "utf8")));
++  fs.writeFileSync(configFile, JSON.stringify({ ...identity, llm: { defaultProvider: "custom", custom: { model: "display-canary-model", baseUrl: "http://provider.invalid/v1", apiKey: canary } } }));
++});
++afterEach(() => fs.rmSync(directory, { recursive: true, force: true }));
++
++describe("adversarial config display", () => {
++  it("human config output names the key source without exposing stored key bytes", () => {
++    const result = spawnSync(process.execPath, [cli, "config", "show"], { cwd: directory, env, encoding: "utf8" });
++    expect(result.status, result.stderr).toBe(0);
++    expect(result.stdout).toContain("Default provider: custom");
++    expect(result.stdout).toContain("Custom:     model=display-canary-model, url=http://provider.invalid/v1, apiKey=config");
++    expect(result.stdout + result.stderr).not.toContain(canary);
++    expect(fs.readFileSync(configFile, "utf8")).toContain(canary);
++  });
++
++  it.fails("ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes", () => {
++    const result = spawnSync(process.execPath, [cli, "config", "show", "--json"], { cwd: directory, env, encoding: "utf8" });
++    expect(result.status, result.stderr).toBe(0);
++    expect(displayedConfig.parse(JSON.parse(result.stdout))).toEqual({ llm: { defaultProvider: "custom", custom: { model: "display-canary-model", baseUrl: "http://provider.invalid/v1" } } });
++    expect(result.stdout + result.stderr).not.toContain(canary);
++    expect(fs.readFileSync(configFile, "utf8")).toContain(canary);
++  });
++});

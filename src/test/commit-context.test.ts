@@ -110,7 +110,7 @@ describe("context sweep public contracts", () => {
     expect(memories()).toEqual([]);
   });
 
-  it.fails("D-CTX-002: MCP repeats scoped context without adding duplicate memories", async () => {
+  it("D-CTX-002: MCP repeats scoped context without adding duplicate memories", async () => {
     await commit();
     const result = await commit();
     expect(result.content[0].text, JSON.stringify({ text: result.content[0].text, memories: memories() })).toContain("Context committed — 2 candidates extracted, 0 added, 2 duplicates skipped:");
@@ -134,7 +134,7 @@ describe("context sweep public contracts", () => {
     expect(memories().map((memory) => memory.title)).toEqual(["Quartz ledgers"]);
   });
 
-  it.fails("D-CTX-001: CLI honors the configured local provider and saves extracted context", async () => {
+  it("D-CTX-001: CLI honors the configured local provider and saves extracted context", async () => {
     const result = await new Promise<{ code: number | null; stdout: string; stderr: string }>((resolve, reject) => {
       const child = spawn(process.execPath, [cli, "commit-context", "Use quartz ledgers. Retain cobalt receipts."], { cwd: directory, env });
       let stdout = "";

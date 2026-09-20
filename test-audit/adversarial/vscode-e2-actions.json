@@ -1,0 +1,608 @@
+{
+  "commit": "e2c08a3",
+  "tests": [
+    {
+      "file": "src/test/vscode-extension.test.ts",
+      "name": "VS Code extension public commands warns when no editor is open",
+      "afterNames": [
+        "VS Code extension public commands warns when no editor is open"
+      ],
+      "action": "kept",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "beforeId": "src/test/vscode-extension.test.ts:53",
+      "beforeName": "VS Code extension public commands warns when no editor is open",
+      "beforeClassification": "STRONG"
+    },
+    {
+      "file": "src/test/vscode-extension.test.ts",
+      "name": "VS Code extension public commands warns when the active file is outside a memory directory",
+      "afterNames": [
+        "VS Code extension public commands warns when the active file is outside a memory directory"
+      ],
+      "action": "kept",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "beforeId": "src/test/vscode-extension.test.ts:59",
+      "beforeName": "VS Code extension public commands warns when the active file is outside a memory directory",
+      "beforeClassification": "STRONG"
+    },
+    {
+      "file": "src/test/vscode-extension.test.ts",
+      "name": "VS Code extension public commands reports a process launch failure to the editor",
+      "afterNames": [
+        "VS Code extension public commands reports a process launch failure to the editor"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [
+        "vscode-e2-launch-error-hidden"
+      ],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "beforeId": "src/test/vscode-extension.test.ts:65",
+      "beforeName": "VS Code extension public commands reports a process launch failure to the editor",
+      "beforeClassification": "STRONG"
+    },
+    {
+      "file": "src/test/vscode-extension.test.ts",
+      "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+      "afterNames": [
+        "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected '2000-01-01' to be '2026-09-20' // Object.is equality",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-001",
+      "beforeId": "src/test/vscode-extension.test.ts:72",
+      "beforeName": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+      "beforeClassification": "STRONG"
+    },
+    {
+      "file": "src/test/vscode-extension.test.ts",
+      "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+      "afterNames": [
+        "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-002",
+      "beforeId": "src/test/vscode-extension.test.ts:80",
+      "beforeName": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+      "beforeClassification": "STRONG"
+    },
+    {
+      "file": "src/test/vscode-extension.test.ts",
+      "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+      "afterNames": [
+        "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [
+        "vscode-e2-shell-reinforcement"
+      ],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-003",
+      "beforeId": "src/test/vscode-extension.test.ts:86",
+      "beforeName": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+      "beforeClassification": "STRONG",
+      "limitations": "Protects literal transport of the current legacy path argument only. A correct D-VSC-001 repair changes reinforce to a frontmatter ID; replace this obsolete path positional oracle with selected-ID behavior at that point, without weakening shell safety."
+    },
+    {
+      "file": "src/test/vscode-extension.test.ts",
+      "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+      "afterNames": [
+        "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [
+        "vscode-e2-removed-dashboard-command"
+      ],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-004",
+      "beforeId": "src/test/vscode-extension.test.ts:93",
+      "beforeName": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+      "beforeClassification": "STRONG"
+    }
+  ],
+  "additionalTests": [
+    {
+      "file": "src/test/dashboard-html-adversarial.test.ts",
+      "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+      "afterNames": [
+        "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text"
+      ],
+      "action": "added",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [
+        "dashboard-unescaped-stored-content"
+      ],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json"
+    },
+    {
+      "file": "src/test/dashboard-html-adversarial.test.ts",
+      "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+      "afterNames": [
+        "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text"
+      ],
+      "action": "added",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [
+        "dashboard-unescaped-stored-content"
+      ],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json"
+    },
+    {
+      "file": "src/test/dashboard-html-adversarial.test.ts",
+      "name": "dashboard HTML adversarial stored content D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript",
+      "afterNames": [
+        "dashboard HTML adversarial stored content D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected true to be false // Object.is equality",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-DASH-001"
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected [ Array(1) ] to deeply equal []",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-001"
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-001: absent ID warns without launching a subprocess",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-001: absent ID warns without launching a subprocess"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected [ { method: 'execFileSync', \u2026(3) } ] to deeply equal []",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-001"
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-001: empty ID warns without launching a subprocess",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-001: empty ID warns without launching a subprocess"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected [ { method: 'execFileSync', \u2026(3) } ] to deeply equal []",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-001"
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-001: body-only ID warns without launching a subprocess",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-001: body-only ID warns without launching a subprocess"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected [ { method: 'execFileSync', \u2026(3) } ] to deeply equal []",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-001"
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators"
+      ],
+      "action": "added",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-002"
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators"
+      ],
+      "action": "added",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-002"
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators"
+      ],
+      "action": "added",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-002"
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators"
+      ],
+      "action": "added",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-002"
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with POSIX separators",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with POSIX separators"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected [ Array(1) ] to deeply equal []",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-002",
+      "blockedBy": "D-VSC-001: exact path is accepted and launch occurs, but missing useful signal/wrong ID prevents successful reinforcement."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators"
+      ],
+      "action": "added",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-002"
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators"
+      ],
+      "action": "added",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-002"
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators"
+      ],
+      "action": "added",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-002"
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators"
+      ],
+      "action": "added",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [
+        "vscode-e2-directory-substring"
+      ],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-002"
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with Windows separators",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with Windows separators"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected [ Array(1) ] to deeply equal []",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-002",
+      "blockedBy": "D-VSC-001 and remaining POSIX-host handling of a backslash fsPath; host document.getText reads the physical selected file."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: backticks in the selected path cannot execute shell text or change the selected ID",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-003: backticks in the selected path cannot execute shell text or change the selected ID"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected [ Array(1) ] to deeply equal []",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-003",
+      "blockedBy": "D-VSC-001 remains; no marker executes and reinforcement launch is shell-free, but selected dynamic ID does not reach CLI."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: command substitution in the selected path cannot execute shell text or change the selected ID",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-003: command substitution in the selected path cannot execute shell text or change the selected ID"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected [ Array(1) ] to deeply equal []",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-003",
+      "blockedBy": "D-VSC-001 remains; no marker executes and reinforcement launch is shell-free, but selected dynamic ID does not reach CLI."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: semicolon in the selected path cannot execute shell text or change the selected ID",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-003: semicolon in the selected path cannot execute shell text or change the selected ID"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected [ Array(1) ] to deeply equal []",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-003",
+      "blockedBy": "D-VSC-001 remains; no marker executes and reinforcement launch is shell-free, but selected dynamic ID does not reach CLI."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: and operator in the selected path cannot execute shell text or change the selected ID",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-003: and operator in the selected path cannot execute shell text or change the selected ID"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected [ Array(1) ] to deeply equal []",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-003",
+      "blockedBy": "D-VSC-001 remains; no marker executes and reinforcement launch is shell-free, but selected dynamic ID does not reach CLI."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: pipe in the selected path cannot execute shell text or change the selected ID",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-003: pipe in the selected path cannot execute shell text or change the selected ID"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected [ Array(1) ] to deeply equal []",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-003",
+      "blockedBy": "D-VSC-001 remains; no marker executes and reinforcement launch is shell-free, but selected dynamic ID does not reach CLI."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: quotes in the selected path cannot execute shell text or change the selected ID",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-003: quotes in the selected path cannot execute shell text or change the selected ID"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected [ Array(1) ] to deeply equal []",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-003",
+      "blockedBy": "D-VSC-001 remains; no marker executes and reinforcement launch is shell-free, but selected dynamic ID does not reach CLI."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: spaces in the selected path cannot execute shell text or change the selected ID",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-003: spaces in the selected path cannot execute shell text or change the selected ID"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected [ Array(1) ] to deeply equal []",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-003",
+      "blockedBy": "D-VSC-001 remains; no marker executes and reinforcement launch is shell-free, but selected dynamic ID does not reach CLI."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: newline in the selected path cannot execute shell text or change the selected ID",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-003: newline in the selected path cannot execute shell text or change the selected ID"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected [ Array(1) ] to deeply equal []",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-003",
+      "blockedBy": "D-VSC-001 remains; no marker executes and reinforcement launch is shell-free, but selected dynamic ID does not reach CLI."
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell"
+      ],
+      "action": "expected_failure",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [],
+      "evidence": "AssertionError: expected [ [ false ], [ true ] ] to deeply equal [ [ false ], [ false ] ]",
+      "protection": false,
+      "ordinaryOutcome": "failed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-003"
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+      "afterNames": [
+        "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully"
+      ],
+      "action": "added",
+      "afterClassification": "STRONG",
+      "classification": "STRONG",
+      "mutationIds": [
+        "vscode-e2-removed-dashboard-command"
+      ],
+      "evidence": "Ordinary committed-fix run passes its literal observable oracle.",
+      "protection": true,
+      "ordinaryOutcome": "passed",
+      "ordinaryArtifact": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "defectId": "D-VSC-004"
+    }
+  ]
+}

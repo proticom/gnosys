@@ -78,7 +78,7 @@ function runCli(extra: string[] = []): Promise<{ code: number | null; stdout: st
 }
 
 describe("bulk import concurrency through CLI and MCP", () => {
-  it.fails("CLI uses configured concurrency for real provider requests", async () => {
+  it("CLI uses configured concurrency for real provider requests", async () => {
     const result = await runCli();
     expect(result.code, result.stderr).toBe(0);
     expect(result.stdout).toContain("  Imported: 3\n  Skipped:  0\n  Failed:   0\n  Total:    3");
@@ -103,7 +103,7 @@ describe("bulk import concurrency through CLI and MCP", () => {
     }
   });
 
-  it.fails("CLI concurrency flag overrides configured concurrency", async () => {
+  it("CLI concurrency flag overrides configured concurrency", async () => {
     const result = await runCli(["--concurrency", "1"]);
     expect(result.code, result.stderr).toBe(0);
     expect(result.stdout).toContain("  Imported: 3\n  Skipped:  0\n  Failed:   0\n  Total:    3");

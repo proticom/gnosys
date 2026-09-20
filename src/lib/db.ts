@@ -1344,6 +1344,7 @@ export class GnosysDB {
   discoverFts(
     query: string,
     limit: number = 20,
+    filter?: { projectId: string | null; scope: "project" | "user" | "global" },
   ): Array<{ id: string; title: string; relevance: string; rank: number; project_id: string | null }> {
     const terms = ftsTerms(query);
     if (terms.length === 0) return [];
@@ -1354,6 +1355,7 @@ export class GnosysDB {
       FROM memories_fts fts
       JOIN memories m ON m.id = fts.id
       WHERE memories_fts MATCH ?
+      ${filter ? "AND m.project_id IS ? AND m.scope = ?" : ""}
       ORDER BY fts.rank
       LIMIT ?
     `;
@@ -1362,7 +1364,8 @@ export class GnosysDB {
     // syntax failures still degrade gracefully to "no results".
     const tryRun = (match: string) => {
       try {
-        return this.prep(select).all(match, limit) as Array<{
+        const params = filter ? [match, filter.projectId, filter.scope, limit] : [match, limit];
+        return this.prep(select).all(...params) as Array<{
           id: string; title: string; relevance: string; rank: number; project_id: string | null;
         }>;
       } catch (err) {

@@ -1,0 +1,104 @@
+{
+  "applicationCommit": "e2c08a3",
+  "applicationFilesChanged": false,
+  "checks": {
+    "retainedSuite": {
+      "passed": 34,
+      "expectedFailures": 17,
+      "unexpectedFailures": 0
+    },
+    "ordinary": {
+      "passed": 17,
+      "failed": 17
+    },
+    "faults": {
+      "killed": 5,
+      "passingCasesKilled": 15
+    },
+    "typecheck": "passed",
+    "focusedLint": "passed without warnings"
+  },
+  "files": [
+    {
+      "path": "src/test/vscode-adversarial.test.ts",
+      "sha256": "e060eb7bfc997d06336c09f7aca2e30c89c39cfe1543dc27154a301c8171054c"
+    },
+    {
+      "path": "src/test/dashboard-html-adversarial.test.ts",
+      "sha256": "4ba8ebec8117832fdb8a3b0c58a6f2947efb85faa2a40e49ddf879a4a728469b"
+    },
+    {
+      "path": "src/test/vscode-extension.test.ts",
+      "sha256": "5ba52a0978bcd05fca7d66dd8a5b89a08c99f6f4569eb38eeab4e55454555325"
+    },
+    {
+      "path": "test-audit/adversarial/vscode-e2-actions.json",
+      "sha256": "32971f328c3cad2771ba7fa1af0e272532402f9710724e9098eb2b8defbb7e4a"
+    },
+    {
+      "path": "test-audit/adversarial/vscode-e2-after.json",
+      "sha256": "bef9e5823199cd0c1dba4d002b3dfedae9ad44929b0de6fcf86d99e6dcd311d9"
+    },
+    {
+      "path": "test-audit/adversarial/vscode-e2-after.results.json",
+      "sha256": "2dbc90f4c96eb356a1c8d8faec1d7514c502bfa802c336f1d4fdb06fe1946d27"
+    },
+    {
+      "path": "test-audit/adversarial/vscode-e2-baseline.json",
+      "sha256": "9821e19912e018dd365e405b661d823bdbfe55dabf20947316338668bedffaa8"
+    },
+    {
+      "path": "test-audit/adversarial/vscode-e2-dispositions.json",
+      "sha256": "a2d49febc212123db930f099fc36714020a8105238e424ce6bbd449c23cf4998"
+    },
+    {
+      "path": "test-audit/adversarial/vscode-e2-feature-coverage.json",
+      "sha256": "aa3090a240a6f562cd3ba8a7d435875a1e7ff4aac807da4a589bc28f34efea85"
+    },
+    {
+      "path": "test-audit/adversarial/vscode-e2-feedback.md",
+      "sha256": "aeb16fbaad8ef4107c98e5e7291717d115df6c308a441705ee8f46471e518f8d"
+    },
+    {
+      "path": "test-audit/adversarial/vscode-e2-replay.json",
+      "sha256": "8e8b9eaec2101e5a67654929ca2705c5ec8f4f107ca7a3d58477bbe34a8851c9"
+    },
+    {
+      "path": "test-audit/adversarial/vscode-e2-tests.patch",
+      "sha256": "12121ea037c762f0902e0fee54a4492c5b3ec6b35497c1288ed4de2b127e62ae"
+    },
+    {
+      "path": "test-audit/adversarial/vscode-dashboard-reproduce.mjs",
+      "sha256": "4734be971dfd9dd5a40d5a09f92828d8a6f68c2f6240937385e4aba60b21169c"
+    },
+    {
+      "path": "test-audit/adversarial/vscode-dashboard-reproduction.json",
+      "sha256": "7efb1c198182b3ce79cc43141c7f8594e48bd081ff12a2c98b618438feae68ef"
+    },
+    {
+      "path": "test-audit/adversarial/vscode-dashboard-ordinary.json",
+      "sha256": "e410f6dcda44c634da93e432ace6d4e244bc898f7c9640caa9c4ccb34f720b14"
+    },
+    {
+      "path": "test-audit/adversarial/vscode-observations.jsonl",
+      "sha256": "2fc1752f1245a88c7797a337160ef20c17968444148ddff6b84ced66b4e1727e"
+    },
+    {
+      "path": "test-audit/adversarial/dashboard-after.json",
+      "sha256": "0a32bdbfc89713b81a85d7b9d1db27b7c7e189ceffe2835b157d3016ff335ef8"
+    },
+    {
+      "path": "test-audit/adversarial/dashboard-e2-after.results.json",
+      "sha256": "5511593341458201c3aaaca10449b3615e6ad778ca93640840be95e19e385631"
+    },
+    {
+      "path": "test-audit/adversarial/dashboard-defects.json",
+      "sha256": "8ce32e7dc2c03a7e0e43bd5c819e86b8253904d66cf24b056ede6c39982cdd93"
+    },
+    {
+      "path": "test-audit/adversarial/dashboard-injection-reproduction.html",
+      "sha256": "a075b40b5a44f374e7eb15192d172417d6f9a3edb084cdcd1c3d02ea8b3b05c3"
+    }
+  ],
+  "note": "Source manifest refreshed after reviewed reproduction-mode changes and fresh ordinary replay; final QA replay remains required."
+}

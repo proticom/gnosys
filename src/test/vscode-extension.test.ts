@@ -66,7 +66,7 @@ describe("VS Code extension public commands", () => {
     const result = run("gnosys.reinforceMemory", path.join(directory, "missing-project/.gnosys/memory.md"));
     expect(result.warnings).toEqual([]);
     expect(result.information).toEqual([]);
-    expect(result.errors).toEqual(["Reinforce failed: spawnSync /bin/sh ENOENT"]);
+    expect(result.errors).toEqual(["Reinforce failed: spawnSync npx ENOENT"]);
   });
 
   it.fails("D-VSC-001: reinforcing an open memory resets its persisted decay date", () => {
@@ -77,20 +77,20 @@ describe("VS Code extension public commands", () => {
     expect(result.information).toEqual(["Reinforced: vscode-memory.md"]);
   });
 
-  it.fails("D-VSC-002: rejects a directory whose name only starts with .gnosys", () => {
+  it("D-VSC-002: rejects a directory whose name only starts with .gnosys", () => {
     expect(run("gnosys.reinforceMemory", path.join(directory, ".gnosys-other/memory.md"))).toEqual({
       warnings: ["This file is not inside a .gnosys/ directory."], information: [], errors: [], terminals: [],
     });
   });
 
-  it.fails("D-VSC-003: passes shell syntax in a filename as literal text", () => {
+  it("D-VSC-003: passes shell syntax in a filename as literal text", () => {
     run("gnosys.reinforceMemory", path.join(directory, ".gnosys/decisions/$(touch audit-injected).md"));
     const calls = fs.readFileSync(path.join(directory, "invocations.jsonl"), "utf8").trim().split("\n").map((line) => JSON.parse(line));
     expect(calls).toEqual([["gnosys", "reinforce", "decisions/$(touch audit-injected).md"]]);
     expect(fs.existsSync(path.join(directory, "audit-injected"))).toBe(false);
   });
 
-  it.fails("D-VSC-004: the dashboard action opens a command supported by the installed CLI", () => {
+  it("D-VSC-004: the dashboard action opens a command supported by the installed CLI", () => {
     const result = run("gnosys.runDashboard");
     expect(result.terminals.map(({ name, shown }) => ({ name, shown }))).toEqual([{ name: "Gnosys Dashboard", shown: true }]);
     expect(result.terminals.flatMap((terminal) => terminal.runs.map((entry) => entry.status))).toEqual([0]);

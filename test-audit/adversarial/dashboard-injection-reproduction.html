@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gnosys Portfolio</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f5f6f8;--surface:#fff;--text:#1a1a2e;--text2:#5f6368;--border:#e2e4e9;--shadow:0 1px 3px rgba(0,0,0,.06);--shadow2:0 4px 16px rgba(0,0,0,.08);--radius:10px}
+@media(prefers-color-scheme:dark){:root{--bg:#121220;--surface:#1e1e36;--text:#e4e4f0;--text2:#8e8ea8;--border:#2e2e4a;--shadow:0 1px 3px rgba(0,0,0,.3);--shadow2:0 4px 16px rgba(0,0,0,.4)}}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+code{font-family:'JetBrains Mono',monospace;font-size:.75rem;background:var(--border);padding:.1rem .3rem;border-radius:3px}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,#0f0f2d 0%,#1a1a4a 50%,#0f0f2d 100%);color:#fff;padding:2rem 2rem 1.75rem}
+.hero-inner{max-width:1100px;margin:0 auto}
+.hero h1{font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
+.hero .sub{color:#8e8ea8;font-size:.8rem;margin-bottom:1.25rem}
+.hero-stats{display:flex;gap:.5rem;flex-wrap:wrap}
+.hero-stat{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.6rem 1rem;display:flex;align-items:center;gap:.5rem;cursor:pointer;transition:all .15s;user-select:none}
+.hero-stat:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2)}
+.hero-stat.active{background:rgba(100,130,255,.15);border-color:rgba(100,130,255,.4)}
+.hero-stat .material-icons-outlined{font-size:1.1rem}
+.hero-stat .val{font-size:1.3rem;font-weight:700}
+.hero-stat label{font-size:.65rem;text-transform:uppercase;letter-spacing:.04em;color:#8e8ea8}
+.stat-alert .val{color:#ff6b6b}
+.stat-alert .material-icons-outlined{color:#ff6b6b}
+.stat-ok .val{color:#4ade80}
+.stat-ok .material-icons-outlined{color:#4ade80}
+.stat-warn .val{color:#fbbf24}
+.stat-warn .material-icons-outlined{color:#fbbf24}
+
+/* ── Container ── */
+.container{max-width:1100px;margin:0 auto;padding:1rem 2rem 3rem}
+@media(max-width:768px){.container{padding:1rem}}
+
+/* ── Attention panel ── */
+.attention{margin-bottom:1.5rem;display:none}
+.attention.visible{display:block}
+.attention h2{font-size:.9rem;font-weight:600;color:var(--text2);margin-bottom:.75rem;display:flex;align-items:center;gap:.35rem}
+.attention h2 .material-icons-outlined{font-size:1.1rem;color:#d93025}
+.action-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:.5rem}
+.action-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.65rem .8rem;display:flex;gap:.6rem;align-items:flex-start;transition:box-shadow .15s;cursor:pointer}
+.action-card:hover{box-shadow:var(--shadow2)}
+.action-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.action-icon .material-icons-outlined{font-size:.95rem;color:#fff}
+.action-body{flex:1;min-width:0}
+.action-text{font-size:.8rem;line-height:1.4}
+.action-meta{display:flex;gap:.5rem;margin-top:.25rem;font-size:.65rem;color:var(--text2)}
+.action-project{font-weight:600}
+.action-type{font-family:'JetBrains Mono',monospace;text-transform:uppercase;font-size:.6rem;letter-spacing:.03em}
+
+/* ── Readiness bar ── */
+.readiness-bar{margin-bottom:1.5rem}
+.readiness-bar h2{font-size:.9rem;font-weight:600;color:var(--text2);margin-bottom:.75rem;display:flex;align-items:center;gap:.35rem}
+.readiness-bar h2 .material-icons-outlined{font-size:1.1rem}
+.readiness-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.5rem}
+.readiness-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.75rem;text-align:center;cursor:pointer;transition:all .15s}
+.readiness-card:hover{box-shadow:var(--shadow2);transform:translateY(-1px)}
+.readiness-card h4{font-size:.8rem;margin-top:.35rem;font-weight:600}
+.readiness-card .label{font-size:.7rem;color:var(--text2)}
+.ring{display:block;margin:0 auto}
+
+/* ── Project Cards ── */
+.project-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:.75rem;overflow:hidden;transition:box-shadow .15s}
+.project-card:hover{box-shadow:var(--shadow2)}
+.project-card.has-blockers{border-color:#fca5a5}
+@media(prefers-color-scheme:dark){.project-card.has-blockers{border-color:#7f1d1d}}
+
+.card-head{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;cursor:pointer;user-select:none}
+.card-head-left{display:flex;align-items:center;gap:.75rem}
+.card-head-left h3{font-size:1rem;font-weight:600}
+.card-label{font-size:.75rem;color:var(--text2)}
+.card-head-right{display:flex;align-items:center;gap:.75rem}
+.mini-stats{display:flex;gap:.75rem;font-size:.75rem;color:var(--text2)}
+.mini-stats span{display:flex;align-items:center;gap:.2rem}
+.mini-stats .material-icons-outlined{font-size:.9rem}
+.chevron{color:var(--text2);transition:transform .25s;font-size:1.3rem}
+.project-card.expanded .chevron{transform:rotate(180deg)}
+
+.card-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.project-card.expanded .card-body{max-height:5000px}
+
+.card-cols{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;padding:0 1rem 1rem}
+@media(max-width:768px){.card-cols{grid-template-columns:1fr}}
+
+/* ── Blockers section (inside card) ── */
+.blockers-section{background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:.75rem;margin:0 1rem .75rem}
+@media(prefers-color-scheme:dark){.blockers-section{background:#2a1215;border-color:#7f1d1d}}
+.blockers-section h4{color:#d93025}
+
+/* ── Sections ── */
+.section{margin-bottom:1rem}
+.section h4{font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:.5rem;display:flex;align-items:center;gap:.3rem}
+.section h4 .material-icons-outlined{font-size:.95rem}
+.block-item{display:flex;align-items:flex-start;gap:.4rem;padding:.25rem 0;font-size:.78rem;line-height:1.4}
+.done-item{display:flex;align-items:flex-start;gap:.4rem;padding:.2rem 0;font-size:.75rem;color:var(--text2)}
+.done-item .material-icons-outlined{font-size:.9rem;color:#34a853;flex-shrink:0;margin-top:1px}
+.done-section{max-height:200px;overflow-y:auto}
+
+/* ── Category bars ── */
+.cat-row{display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem;font-size:.75rem}
+.cat-label{width:100px;flex-shrink:0;text-align:right;color:var(--text2);font-family:'JetBrains Mono',monospace;font-size:.7rem}
+.cat-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.cat-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.cat-count{width:22px;text-align:right;font-weight:600;font-size:.7rem;font-family:'JetBrains Mono',monospace}
+
+/* ── Roadmap/Activity ── */
+.road-item{display:flex;align-items:flex-start;gap:.4rem;padding:.3rem 0;font-size:.78rem}
+.road-item .material-icons-outlined{font-size:.95rem;color:#1a73e8;flex-shrink:0;margin-top:1px}
+.mem-id{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text2);margin-left:.3rem}
+.act-item{display:flex;align-items:center;gap:.4rem;padding:.2rem 0;font-size:.75rem}
+.act-cat{font-size:.55rem;color:#fff;padding:.1rem .35rem;border-radius:3px;flex-shrink:0;font-family:'JetBrains Mono',monospace;text-transform:uppercase}
+.act-title{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.act-date{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text2);flex-shrink:0}
+
+.footer{text-align:center;padding:1.5rem;font-size:.7rem;color:var(--text2)}
+
+/* ── Prompt panel ── */
+.prompt-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.5;white-space:pre-wrap;word-break:break-word;max-height:400px;overflow-y:auto;color:var(--text)}
+.prompt-hint{font-size:.75rem;color:var(--text2);margin-top:.5rem}
+.prompt-hint code{font-size:.7rem}
+.copy-btn{background:none;border:1px solid var(--border);border-radius:4px;cursor:pointer;padding:.15rem .3rem;margin-left:.5rem;color:var(--text2);vertical-align:middle;transition:all .15s}
+.copy-btn:hover{border-color:var(--text);color:var(--text)}
+.copy-btn .material-icons-outlined{font-size:.9rem}
+
+/* ── Regen spinner ── */
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.spinning{animation:spin .8s linear infinite}
+
+/* ── Staleness indicators ── */
+.stale-badge{display:inline-flex;align-items:center;gap:.2rem;font-size:.6rem;font-weight:500;color:#d93025;background:#fef2f2;border:1px solid #fca5a5;padding:.1rem .4rem;border-radius:4px;margin-left:.4rem;vertical-align:middle}
+.stale-badge .material-icons-outlined{font-size:.75rem}
+.fresh-badge{display:inline-flex;font-size:.6rem;font-weight:500;color:var(--text2);background:var(--bg);padding:.1rem .4rem;border-radius:4px;margin-left:.4rem;vertical-align:middle}
+@media(prefers-color-scheme:dark){.stale-badge{background:#2a1215;border-color:#7f1d1d}}
+.stale-status .card-head{opacity:.85}
+.readiness-stale{opacity:.7;border:1px dashed var(--border)}
+.readiness-age{font-size:.6rem;color:var(--text2);margin-top:.25rem}
+.readiness-age.stale{color:#d93025;font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Gnosys Portfolio</h1>
+    <p class="sub">Updated 2026-09-20</p>
+    <div class="hero-stats">
+      <div class="hero-stat stat-alert" onclick="togglePanel('attention')" title="Click to show/hide action items">
+        <span class="material-icons-outlined">warning</span>
+        <span class="val">1</span>
+        <label>Blockers</label>
+      </div>
+      <div class="hero-stat stat-ok" onclick="filterByType('question')" title="Click to show open questions">
+        <span class="material-icons-outlined">help</span>
+        <span class="val">0</span>
+        <label>Questions</label>
+      </div>
+      <div class="hero-stat" onclick="togglePanel('readiness-section')">
+        <span class="material-icons-outlined">speed</span>
+        <span class="val">0%</span>
+        <label>Avg Ready</label>
+      </div>
+      <div class="hero-stat">
+        <span class="material-icons-outlined">folder_open</span>
+        <span class="val">1</span>
+        <label>Projects</label>
+      </div>
+      <div class="hero-stat">
+        <span class="material-icons-outlined">memory</span>
+        <span class="val">1</span>
+        <label>Memories</label>
+      </div>
+      <div class="hero-stat" onclick="regenerate()" title="Regenerate this dashboard" style="margin-left:auto">
+        <span class="material-icons-outlined" id="regen-icon">refresh</span>
+        <label>Regenerate</label>
+      </div>
+      <div class="hero-stat" onclick="togglePanel('prompt-panel')" title="Show status update prompt for AI agents">
+        <span class="material-icons-outlined">terminal</span>
+        <label>AI Prompt</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Attention Panel (toggled by hero stat) -->
+  <div class="attention" id="attention">
+    <h2><span class="material-icons-outlined">notification_important</span> Needs Your Attention</h2>
+    <div class="action-grid">
+      
+    </div>
+  </div>
+
+  <!-- AI Status Prompt Panel -->
+  <div class="attention" id="prompt-panel">
+    <h2><span class="material-icons-outlined">terminal</span> AI Status Update Prompt <button class="copy-btn" onclick="copyPrompt()" title="Copy to clipboard"><span class="material-icons-outlined">content_copy</span></button></h2>
+    <pre class="prompt-box" id="status-prompt"># Gnosys Status Update — Guided Checklist
+
+You are updating the project status for the Gnosys portfolio dashboard. Follow this process exactly.
+
+## Step 1: Analyze the codebase
+
+Read the project structure, recent git history, test results, build status, and any existing status memories (use gnosys_discover and gnosys_read). Fill in as much as you can from code.
+
+## Step 2: Work through every section below
+
+For EACH section, either fill it in from your analysis or ASK the user. Do NOT skip sections. Do NOT write the status memory until all sections are addressed.
+
+### Section A: What's Complete
+List all features, milestones, and capabilities that are done and working. Be specific (e.g., &quot;14 Playwright E2E tests passing&quot; not &quot;tests exist&quot;).
+
+### Section B: What's NOT Done
+List everything remaining before the project can go live. Include partial work, missing features, and known gaps.
+
+### Section C: Waiting on Human
+**YOU MUST ASK THE USER** if you cannot determine these from code:
+- Are there accounts that need to be created or configured? (Apple Developer, cloud providers, API keys, DNS, domain registrars, app store submissions)
+- Are there approvals or sign-offs needed? (legal, compliance, stakeholder review)
+- Are there purchases needed? (certificates, licenses, subscriptions)
+- Are there manual deployment steps only the user can do?
+- Is the user waiting on anyone else? (contractors, partners, third-party services)
+
+If the code shows signs of these (e.g., placeholder API keys, TODO comments about accounts, unsigned builds), list what you found and confirm with the user.
+
+### Section D: Blockers
+Items that are actively preventing progress. Distinguish between:
+- **Technical blockers**: bugs, dependency issues, broken builds
+- **External blockers**: waiting on third-party, account access, API approval
+- **Decision blockers**: choices that need to be made before work can continue
+
+### Section E: Open Decisions
+Questions or choices that haven't been resolved yet. **ASK the user** about any you find:
+- Architecture or technology choices still open
+- Scope decisions (what's in v1 vs deferred)
+- Prioritization questions
+- Trade-offs that need a human call
+
+### Section F: Go-Live Readiness
+Assess each area — mark as Ready, Partial, Not Started, or N/A:
+- [ ] Core features functional
+- [ ] Error handling and edge cases
+- [ ] Security review (auth, input validation, secrets management)
+- [ ] Performance acceptable (or: performance testing not done)
+- [ ] Functional testing sufficient (state coverage level and any known gaps)
+- [ ] Documentation (user-facing: README, API docs, guides)
+- [ ] Deployment pipeline (CI/CD, hosting, domain, SSL)
+- [ ] Monitoring and logging
+- [ ] Data migration / seed data
+- [ ] Legal (privacy policy, terms, licenses, compliance)
+
+### Section G: Testing Status
+- **Functional tests**: What exists? What's the coverage? Any known failing tests?
+- **Performance tests**: Have they been run? Any issues found? Any remediation done?
+- **Integration tests**: Do external services / APIs work end-to-end?
+- **Known defects**: List any open bugs with severity (critical/major/minor)
+- **Defect remediation**: Any bugs that were found and fixed recently?
+
+### Section H: Roadmap Changes
+- Has the plan changed since the last status update?
+- Any new work discovered during development?
+- Any scope added or removed?
+- What's the recommended next priority?
+
+## Step 3: Ask the user about gaps
+
+Before writing the memory, present your findings and explicitly ask about anything you couldn't determine:
+
+&gt; &quot;I've analyzed the codebase and filled in what I can. I need your input on these items before I can write the status:
+&gt; 1. [specific question]
+&gt; 2. [specific question]
+&gt; ...&quot;
+
+If the user says &quot;skip&quot; or &quot;not applicable&quot; for a section, mark it as &quot;N/A — skipped by owner&quot; in the status.
+
+## Step 4: Write the status memory
+
+Once all sections are addressed, call gnosys_add_structured with:
+
+- **title**: &quot;[Project Name] status as of [YYYY-MM-DD] — [one-line summary]&quot;
+- **category**: &quot;landscape&quot;
+- **tags**: { &quot;type&quot;: [&quot;status&quot;, &quot;milestone&quot;], &quot;concern&quot;: [&quot;release&quot;] }
+- **relevance**: &quot;[project-name] status complete shipped ready go-live production blockers testing&quot;
+- **author**: &quot;human+ai&quot;
+- **authority**: &quot;observed&quot;
+- **confidence**: 0.95
+- **projectRoot**: &quot;[the project's working directory]&quot;
+
+The content MUST use these exact heading formats (the dashboard parser depends on them):
+
+```markdown
+# [Project Name] Status — [YYYY-MM-DD]
+
+## What's Complete
+- [from Section A]
+
+## What's NOT Done
+- [from Section B]
+
+## Waiting on Human
+- [from Section C — manual steps, accounts, approvals]
+
+## Blockers
+- [from Section D — categorized as Technical / External / Decision]
+
+## Open Decisions
+- [from Section E]
+
+## Go-Live Readiness
+- [from Section F — checklist with status per area]
+
+## Testing Status
+- [from Section G — functional, performance, integration, defects]
+
+## Roadmap Changes
+- [from Section H — plan changes, new work, next priority]
+```
+
+IMPORTANT: Be specific enough that someone reading the dashboard can take action immediately. &quot;Needs testing&quot; is useless — &quot;No load tests run; API response times unknown under concurrent usage&quot; is actionable.</pre>
+    <p class="prompt-hint">Give this prompt to any AI agent working in a project. It will generate a dashboard-compatible status memory via <code>gnosys_add_structured</code>. You can also run <code>gnosys update-status</code> in a project directory to get a project-specific version.</p>
+  </div>
+
+  <!-- Readiness Overview -->
+  <div class="readiness-bar" id="readiness-section">
+    <h2><span class="material-icons-outlined">speed</span> Production Readiness</h2>
+    <div class="readiness-grid">
+      
+        <div class="readiness-card readiness-stale" onclick="scrollToProject('QA');globalThis.dashboardInjected=true;//')">
+          
+    <svg width="56" height="56" class="ring">
+      <circle cx="28" cy="28" r="25" fill="none" stroke="var(--border)" stroke-width="5"/>
+      <circle cx="28" cy="28" r="25" fill="none" stroke="#ea4335" stroke-width="5"
+              stroke-dasharray="157.07963267948966" stroke-dashoffset="157.07963267948966"
+              stroke-linecap="round" transform="rotate(-90 28 28)"
+              style="transition:stroke-dashoffset 0.8s ease"/>
+      <text x="28" y="28" text-anchor="middle" dy="0.35em"
+            fill="#ea4335" font-size="13" font-weight="700" font-family="Inter,sans-serif">0%</text>
+    </svg>
+          <h4>QA');globalThis.dashboardInjected=true;//</h4>
+          <div class="label">Unknown</div>
+          <div class="readiness-age stale">No status</div>
+        </div>
+    </div>
+  </div>
+
+  <!-- Project Cards -->
+  
+    <div class="project-card has-blockers stale-status" id="proj-QA');globalThis.dashboardInjected=true;//" data-project="QA');globalThis.dashboardInjected=true;//">
+      <div class="card-head" style="border-left:4px solid #4285f4" onclick="toggle(this)">
+        <div class="card-head-left">
+          
+    <svg width="56" height="56" class="ring">
+      <circle cx="28" cy="28" r="25" fill="none" stroke="var(--border)" stroke-width="5"/>
+      <circle cx="28" cy="28" r="25" fill="none" stroke="#ea4335" stroke-width="5"
+              stroke-dasharray="157.07963267948966" stroke-dashoffset="157.07963267948966"
+              stroke-linecap="round" transform="rotate(-90 28 28)"
+              style="transition:stroke-dashoffset 0.8s ease"/>
+      <text x="28" y="28" text-anchor="middle" dy="0.35em"
+            fill="#ea4335" font-size="13" font-weight="700" font-family="Inter,sans-serif">0%</text>
+    </svg>
+          <div>
+            <h3 style="color:#4285f4">QA');globalThis.dashboardInjected=true;// <span class="stale-badge" title="No status memory exists. Run gnosys update-status in this project."><span class="material-icons-outlined">schedule</span>No status</span></h3>
+            <div class="card-label">Unknown &mdash; <strong style="color:#d93025">1 blocker</strong></div>
+          </div>
+        </div>
+        <div class="card-head-right">
+          <div class="mini-stats">
+            <span title="Memories"><span class="material-icons-outlined">memory</span>1</span>
+            <span title="Roadmap"><span class="material-icons-outlined">map</span>1</span>
+            <span title="Recent 7d"><span class="material-icons-outlined">update</span>1</span>
+          </div>
+          <span class="material-icons-outlined chevron">expand_more</span>
+        </div>
+      </div>
+      <div class="card-body">
+        
+    <div class="section blockers-section">
+      <h4><span class="material-icons-outlined">priority_high</span> Blocking Go-Live</h4>
+      
+      <div class="block-item">
+        <span class="material-icons-outlined" style="color:var(--text-secondary);font-size:1rem">arrow_forward</span>
+        <span>No status snapshot available</span>
+      </div>
+    </div>
+        <div class="card-cols">
+          <div class="card-col">
+            
+            <div class="section">
+              <h4><span class="material-icons-outlined">bar_chart</span> Categories</h4>
+              <div class="cat-row">
+      <span class="cat-label">roadmap</span>
+      <div class="cat-track"><div class="cat-fill" style="width:100%;background:#4285f4"></div></div>
+      <span class="cat-count">1</span>
+    </div>
+            </div>
+          </div>
+          <div class="card-col">
+            <div class="section"><h4><span class="material-icons-outlined">map</span> Roadmap</h4><div class="road-item"><span class="material-icons-outlined">flag</span>
+     <div><strong>Ordinary roadmap memory</strong> <span class="mem-id">dashboard-memory</span></div></div></div>
+            <div class="section"><h4><span class="material-icons-outlined">history</span> Recent Activity</h4><div class="act-item">
+      <span class="act-cat" style="background:#4285f4">roadmap</span>
+      <span class="act-title">Ordinary roadmap memory</span>
+      <span class="act-date">2026-09-20</span>
+    </div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+<div class="footer">
+  Powered by <strong>Gnosys</strong> &mdash; 1 memories across 1 projects
+</div>
+
+<script>
+function toggle(el){el.closest('.project-card').classList.toggle('expanded')}
+
+function togglePanel(id){
+  const el=document.getElementById(id);
+  if(el)el.classList.toggle('visible');
+}
+
+function regenerate(){
+  const icon=document.getElementById('regen-icon');
+  icon.classList.add('spinning');
+  // Copy the regenerate command to clipboard so user can paste in terminal
+  const cmd='gnosys portfolio --output /var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-dashboard-adversarial-civKwp/dashboard.html &amp;&amp; open /var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-dashboard-adversarial-civKwp/dashboard.html';
+  navigator.clipboard.writeText(cmd).then(()=>{
+    icon.textContent='check';
+    icon.classList.remove('spinning');
+    setTimeout(()=>{icon.textContent='refresh'},2000);
+    // Show a brief toast
+    const toast=document.createElement('div');
+    toast.style.cssText='position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:.5rem 1rem;border-radius:8px;font-size:.8rem;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,.3)';
+    toast.textContent='Regenerate command copied to clipboard — paste in terminal';
+    document.body.appendChild(toast);
+    setTimeout(()=>toast.remove(),3500);
+  });
+}
+
+function copyPrompt(){
+  const text=document.getElementById('status-prompt').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const toast=document.createElement('div');
+    toast.style.cssText='position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:.5rem 1rem;border-radius:8px;font-size:.8rem;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,.3)';
+    toast.textContent='Status update prompt copied to clipboard';
+    document.body.appendChild(toast);
+    setTimeout(()=>toast.remove(),2500);
+  });
+}
+
+function scrollToProject(name){
+  const card=document.getElementById('proj-'+name);
+  if(!card)return;
+  card.classList.add('expanded');
+  card.scrollIntoView({behavior:'smooth',block:'start'});
+  card.style.outline='2px solid #4285f4';
+  setTimeout(()=>card.style.outline='',2000);
+}
+
+function filterByType(type){
+  // Show attention panel
+  const panel=document.getElementById('attention');
+  panel.classList.add('visible');
+
+  // Expand projects that have this type of action item
+  document.querySelectorAll('.project-card').forEach(c=>{
+    const name=c.dataset.project;
+    const hasType=document.querySelector('.action-card[data-project="'+name+'"]');
+    if(hasType)c.classList.add('expanded');
+  });
+
+  // Highlight matching action cards
+  document.querySelectorAll('.action-card').forEach(c=>{
+    c.style.outline='none';
+  });
+
+  // Scroll to attention panel
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// Click action card → scroll to that project
+document.querySelectorAll('.action-card').forEach(card=>{
+  card.addEventListener('click',()=>{
+    const name=card.dataset.project;
+    scrollToProject(name);
+  });
+});
+
+// Auto-expand projects with blockers on load
+document.querySelectorAll('.project-card.has-blockers').forEach(c=>c.classList.add('expanded'));
+</script>
+</body>
+</html>

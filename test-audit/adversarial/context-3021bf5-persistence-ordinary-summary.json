@@ -1,0 +1,24 @@
+{
+  "ref": "3021bf5c88d5ec11ab3b61f311a68ba5c15a7f07",
+  "applicationDigest": "30c13ec8424323a2052aec18cb22f740272d0971e8b17ceb70dce8201fd34ebb",
+  "applicationRestored": true,
+  "exitCode": 1,
+  "tests": [
+    {
+      "file": "/private/tmp/gnosys-adversarial-context/src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+      "status": "failed",
+      "failures": [
+        "AssertionError: {\"result\":{\"code\":0,\"stdout\":\"✓ Import complete in 0.1s\\n  Imported: 2\\n  Skipped:  0\\n  Failed:   0\\n  Total:    2\\n\",\"stderr\":\"Mode: LLM (concurrency: 2)\\n\\r[░░░░░░░░░░░░░░░░░░░░] 0/0 | Loading data...\\r[░░░░░░░░░░░░░░░░░░░░] 0/2 | Verdigris runbooks\\r[██████████░░░░░░░░░░] 1/2 | Cerulean manifests\\r                                                                                \\r\"},\"memories\":[]}: expected [] to deeply equal [ { …(2) }, { …(2) } ]\n    at /private/tmp/gnosys-adversarial-context/src/test/context-adversarial.test.ts:69:187\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+      ]
+    },
+    {
+      "file": "/private/tmp/gnosys-adversarial-context/src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+      "status": "failed",
+      "failures": [
+        "AssertionError: {\"result\":{\"isError\":false,\"text\":\"Import complete in 0.1s\\n  Imported: 2\\n  Skipped:  0\\n  Failed:   0\\n  Total:    2\"},\"memories\":[]}: expected [] to deeply equal [ { …(2) }, { …(2) } ]\n    at /private/tmp/gnosys-adversarial-context/src/test/context-adversarial.test.ts:80:187\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+      ]
+    }
+  ]
+}

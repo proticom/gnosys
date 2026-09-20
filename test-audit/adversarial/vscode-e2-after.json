@@ -1,0 +1,48 @@
+[
+  {
+    "id": "vscode-e2-directory-substring",
+    "file": "extensions/vscode/extension.js",
+    "description": "Accept .gnosys as a substring rather than an exact path component.",
+    "search": "const memoryDirectory = /(?:^|[\\\\/])\\.gnosys(?:[\\\\/]|$)/.exec(filePath);",
+    "replace": "const memoryDirectory = /\\.gnosys/.exec(filePath);",
+    "tests": [
+      "src/test/vscode-adversarial.test.ts",
+      "src/test/vscode-extension.test.ts"
+    ],
+    "testName": "D-VSC-002: rejects"
+  },
+  {
+    "id": "vscode-e2-shell-reinforcement",
+    "file": "extensions/vscode/extension.js",
+    "description": "Reintroduce shell interpolation instead of literal argv for reinforcement.",
+    "search": "execFileSync(\"npx\", [\"gnosys\", \"reinforce\", relativePath], {",
+    "replace": "require(\"child_process\").execSync(`npx gnosys reinforce \"${relativePath}\"`, {",
+    "tests": [
+      "src/test/vscode-extension.test.ts"
+    ],
+    "testName": "D-VSC-003: passes shell syntax"
+  },
+  {
+    "id": "vscode-e2-removed-dashboard-command",
+    "file": "extensions/vscode/extension.js",
+    "description": "Launch removed dashboard command instead of registered status successor.",
+    "search": "terminal.sendText(\"npx gnosys status --system\");",
+    "replace": "terminal.sendText(\"npx gnosys dashboard\");",
+    "tests": [
+      "src/test/vscode-adversarial.test.ts",
+      "src/test/vscode-extension.test.ts"
+    ],
+    "testName": "D-VSC-004:"
+  },
+  {
+    "id": "vscode-e2-launch-error-hidden",
+    "file": "extensions/vscode/extension.js",
+    "description": "Downgrade a failed process launch to a warning so the user no longer receives the error notification.",
+    "search": "vscode.window.showErrorMessage(",
+    "replace": "vscode.window.showWarningMessage(",
+    "tests": [
+      "src/test/vscode-extension.test.ts"
+    ],
+    "testName": "reports a process launch failure"
+  }
+]

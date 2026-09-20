@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "a377929aee44fd3115f024f1f854c25f5a9b83df41089498e80df427cf3999af",
+  "results": [
+    {
+      "id": "dashboard-unescaped-stored-content",
+      "file": "src/lib/portfolioHtml.ts",
+      "kind": "fault-injection",
+      "description": "Drop output escaping so stored memory titles are emitted as live HTML in roadmap, activity and action cards.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 458,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 442,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '<!DOCTYPE html>\\n<html lang=\"en\">\\n<h…' to contain '<strong>&lt;/span&gt;&lt;script&gt;gl…'\n    at <repo>/src/test/dashboard-html-adversarial.test.ts:42:18\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '<!DOCTYPE html>\\n<html lang=\"en\">\\n<h…' to contain '<div class=\"action-text\">&lt;/span&gt…'\n    at <repo>/src/test/dashboard-html-adversarial.test.ts:49:18\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 434,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dashboard-html-adversarial.test.ts",
+          "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text"
+        },
+        {
+          "file": "src/test/dashboard-html-adversarial.test.ts",
+          "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

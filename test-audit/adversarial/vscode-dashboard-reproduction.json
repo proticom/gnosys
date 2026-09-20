@@ -1,0 +1,26 @@
+{
+  "mode": "ordinary-all",
+  "commit": "e2c08a37e7c69745e1dd4effc1bbe97f6e01b8b7",
+  "expectedExit": 1,
+  "exitCode": 1,
+  "error": null,
+  "purpose": "Ordinary defect reproduction; expected-failure annotations temporarily disabled without changing assertions or application code.",
+  "files": [
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "restored": true,
+      "sha256": "e060eb7bfc997d06336c09f7aca2e30c89c39cfe1543dc27154a301c8171054c"
+    },
+    {
+      "file": "src/test/dashboard-html-adversarial.test.ts",
+      "restored": true,
+      "sha256": "4ba8ebec8117832fdb8a3b0c58a6f2947efb85faa2a40e49ddf879a4a728469b"
+    },
+    {
+      "file": "src/test/vscode-extension.test.ts",
+      "restored": true,
+      "sha256": "5ba52a0978bcd05fca7d66dd8a5b89a08c99f6f4569eb38eeab4e55454555325"
+    }
+  ],
+  "applicationUnchanged": true
+}

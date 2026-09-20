@@ -1,0 +1,99 @@
+{
+  "newDefects": [
+    {
+      "id": "ADV-CTX-001",
+      "title": "JSON config display exposes stored provider keys",
+      "test": "src/test/config-display-adversarial.test.ts",
+      "testName": "adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes",
+      "expected": "config show --json preserves useful provider/model metadata without printing stored apiKey bytes; the stored key stays unchanged.",
+      "actual": "The command exits0 and prints the literal fake stored key fixture-only-config-key-7f94a31c inside llm.custom.apiKey.",
+      "cause": "runConfigShowCommand writes JSON.stringify(cfg) without redacting apiKey fields.",
+      "source": [
+        "src/lib/configCommand.ts:55"
+      ],
+      "reproduction": "node test-audit/adversarial/context-ordinary.mjs (temporarily removes expected-failure annotations and restores them; uses only fake keys)",
+      "status": "New adversarial finding; expected failure retained; application unchanged.",
+      "featureIds": [
+        "F03"
+      ],
+      "evidenceFiles": [
+        "test-audit/adversarial/context-ordinary.json",
+        "test-audit/adversarial/context-ordinary-summary.json"
+      ]
+    },
+    {
+      "id": "ADV-CTX-002",
+      "title": "CLI and MCP bulk import report successful records without persisting them",
+      "test": "src/test/context-adversarial.test.ts",
+      "testName": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+      "expected": "Each non-dry-run import persists both structured memories and reports Imported:2.",
+      "actual": "At committed provider fix3021bf5, CLI exits0 with Imported:2/Failed:0/Total:2 and MCP returns isError:false with the same counters; reopening the central DB after either isolated operation returns zero memories.",
+      "cause": "Both callers omit the optional DB argument to performImport, whose persistence block runs only when db is supplied. Both affected surfaces are now measured, not inferred.",
+      "source": [
+        "src/index.ts:2200",
+        "src/lib/import.ts:371",
+        "src/lib/importCommand.ts:106"
+      ],
+      "reproduction": "node test-audit/adversarial/context-3021bf5-persistence-ordinary.mjs",
+      "status": "New adversarial finding; expected failure retained; application unchanged.",
+      "featureIds": [
+        "F19"
+      ],
+      "evidenceFiles": [
+        "test-audit/adversarial/context-3021bf5-persistence-ordinary.json",
+        "test-audit/adversarial/context-3021bf5-persistence-ordinary-summary.json"
+      ],
+      "testNames": [
+        "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+        "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories"
+      ]
+    }
+  ],
+  "knownDefectVariants": [
+    {
+      "defectId": "D-CTX-001",
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+      "evidence": "test-audit/adversarial/context-ordinary.json"
+    },
+    {
+      "defectId": "G2-D003",
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+      "evidence": "test-audit/adversarial/context-ordinary.json"
+    },
+    {
+      "defectId": "D-CTX-001",
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+      "evidence": "test-audit/adversarial/context-ordinary.json"
+    },
+    {
+      "defectId": "D-CTX-002",
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+      "evidence": "test-audit/adversarial/context-ordinary.json"
+    }
+  ],
+  "newBugsFixed": false,
+  "knownFixValidation": [
+    {
+      "id": "D-CTX-001",
+      "ref": "636e032",
+      "ordinaryPasses": 3,
+      "evidence": "test-audit/adversarial/context-636e032-ordinary.json"
+    },
+    {
+      "id": "G2-D003",
+      "ref": "3021bf5",
+      "ordinaryPasses": 3,
+      "evidence": "test-audit/adversarial/context-3021bf5-ordinary.json"
+    },
+    {
+      "id": "D-CTX-002",
+      "ref": "a420e3b",
+      "ordinaryPasses": 5,
+      "evidence": "test-audit/adversarial/context-a420e3b-ordinary.json"
+    }
+  ]
+}

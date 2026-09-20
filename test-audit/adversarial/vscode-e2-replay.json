@@ -1,0 +1,23 @@
+{
+  "commit": "e2c08a3",
+  "ordinaryCommand": "node test-audit/adversarial/vscode-dashboard-reproduce.mjs",
+  "afterRepairCommand": "node test-audit/adversarial/vscode-dashboard-reproduce.mjs --repairs-only",
+  "ordinaryExpected": {
+    "passed": 17,
+    "failed": 17
+  },
+  "retainedSuiteExpected": {
+    "passed": 34,
+    "unexpectedFailures": 0,
+    "expectedFailures": 17
+  },
+  "requirements": [
+    "Rebuild committed application in isolated checkout; do not replay uncommitted app files.",
+    "D-VSC-001 must use actual selected frontmatter ID plus useful signal and warn without process launch when ID is unavailable.",
+    "Dashboard must stop using sendText shell evaluation; shell-mode unique sets per command must be [[false],[false]], independently of process count.",
+    "D-VSC-002 Windows positive path must resolve selected actual document and meaningful cwd on the actual platform.",
+    "D-DASH-001 must render stored names as data in click behavior.",
+    "D-VSC-001 changes the old literal-path positional oracle in existing D-VSC-003; update it to assert the literal resolved ID and no shell evaluation, keeping the dynamic ID adversarial cases."
+  ],
+  "note": "This replay is ordinary assertions, not an inverse repair probe. Temporary it.fails removal restores all test sources in finally; application files are untouched."
+}

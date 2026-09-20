@@ -1,0 +1,304 @@
+[
+  {
+    "file": "src/test/dashboard-html-adversarial.test.ts",
+    "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [
+      "dashboard-unescaped-stored-content"
+    ],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/dashboard-html-adversarial.test.ts",
+    "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [
+      "dashboard-unescaped-stored-content"
+    ],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/dashboard-html-adversarial.test.ts",
+    "name": "dashboard HTML adversarial stored content D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-001: absent ID warns without launching a subprocess",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-001: empty ID warns without launching a subprocess",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-001: body-only ID warns without launching a subprocess",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [
+      "vscode-e2-directory-substring"
+    ],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [
+      "vscode-e2-directory-substring"
+    ],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [
+      "vscode-e2-directory-substring"
+    ],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [
+      "vscode-e2-directory-substring"
+    ],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with POSIX separators",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": "D-VSC-001: exact path is accepted and launch occurs, but missing useful signal/wrong ID prevents successful reinforcement."
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [
+      "vscode-e2-directory-substring"
+    ],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [
+      "vscode-e2-directory-substring"
+    ],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [
+      "vscode-e2-directory-substring"
+    ],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [
+      "vscode-e2-directory-substring"
+    ],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with Windows separators",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": "D-VSC-001 and remaining POSIX-host handling of a backslash fsPath; host document.getText reads the physical selected file."
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-003: backticks in the selected path cannot execute shell text or change the selected ID",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": "D-VSC-001 remains; no marker executes and reinforcement launch is shell-free, but selected dynamic ID does not reach CLI."
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-003: command substitution in the selected path cannot execute shell text or change the selected ID",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": "D-VSC-001 remains; no marker executes and reinforcement launch is shell-free, but selected dynamic ID does not reach CLI."
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-003: semicolon in the selected path cannot execute shell text or change the selected ID",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": "D-VSC-001 remains; no marker executes and reinforcement launch is shell-free, but selected dynamic ID does not reach CLI."
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-003: and operator in the selected path cannot execute shell text or change the selected ID",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": "D-VSC-001 remains; no marker executes and reinforcement launch is shell-free, but selected dynamic ID does not reach CLI."
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-003: pipe in the selected path cannot execute shell text or change the selected ID",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": "D-VSC-001 remains; no marker executes and reinforcement launch is shell-free, but selected dynamic ID does not reach CLI."
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-003: quotes in the selected path cannot execute shell text or change the selected ID",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": "D-VSC-001 remains; no marker executes and reinforcement launch is shell-free, but selected dynamic ID does not reach CLI."
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-003: spaces in the selected path cannot execute shell text or change the selected ID",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": "D-VSC-001 remains; no marker executes and reinforcement launch is shell-free, but selected dynamic ID does not reach CLI."
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-003: newline in the selected path cannot execute shell text or change the selected ID",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": "D-VSC-001 remains; no marker executes and reinforcement launch is shell-free, but selected dynamic ID does not reach CLI."
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-adversarial.test.ts",
+    "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [
+      "vscode-e2-removed-dashboard-command"
+    ],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-extension.test.ts",
+    "name": "VS Code extension public commands warns when no editor is open",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-extension.test.ts",
+    "name": "VS Code extension public commands warns when the active file is outside a memory directory",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-extension.test.ts",
+    "name": "VS Code extension public commands reports a process launch failure to the editor",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [
+      "vscode-e2-launch-error-hidden"
+    ],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-extension.test.ts",
+    "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+    "ordinaryOutcome": "failed",
+    "retainedExpectedFailure": true,
+    "mutationIds": [],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-extension.test.ts",
+    "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [
+      "vscode-e2-directory-substring"
+    ],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-extension.test.ts",
+    "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [
+      "vscode-e2-shell-reinforcement"
+    ],
+    "blockedBy": null
+  },
+  {
+    "file": "src/test/vscode-extension.test.ts",
+    "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+    "ordinaryOutcome": "passed",
+    "retainedExpectedFailure": false,
+    "mutationIds": [
+      "vscode-e2-removed-dashboard-command"
+    ],
+    "blockedBy": null
+  }
+]

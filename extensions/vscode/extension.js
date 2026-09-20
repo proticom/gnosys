@@ -7,11 +7,11 @@
  * Commands:
  *   - Gnosys: Reinforce Memory — increments reinforcement_count on the
  *     currently open .md file if it's inside a .gnosys/ directory.
- *   - Gnosys: Show Dashboard — runs `gnosys dashboard` in the terminal.
+ *   - Gnosys: Show Dashboard — runs `gnosys status --system` in the terminal.
  */
 
 const vscode = require("vscode");
-const { execSync } = require("child_process");
+const { execFileSync } = require("child_process");
 const path = require("path");
 
 function activate(context) {
@@ -28,7 +28,8 @@ function activate(context) {
       const filePath = editor.document.uri.fsPath;
 
       // Check if we're inside a .gnosys directory
-      if (!filePath.includes(".gnosys")) {
+      const memoryDirectory = /(?:^|[\\/])\.gnosys(?:[\\/]|$)/.exec(filePath);
+      if (!memoryDirectory) {
         vscode.window.showWarningMessage(
           "This file is not inside a .gnosys/ directory."
         );
@@ -36,12 +37,12 @@ function activate(context) {
       }
 
       // Find the .gnosys root
-      const gnosysIndex = filePath.indexOf(".gnosys");
+      const gnosysIndex = memoryDirectory.index + memoryDirectory[0].indexOf(".gnosys");
       const storePath = filePath.substring(0, gnosysIndex + ".gnosys".length);
       const relativePath = path.relative(storePath, filePath);
 
       try {
-        execSync(`npx gnosys reinforce "${relativePath}"`, {
+        execFileSync("npx", ["gnosys", "reinforce", relativePath], {
           cwd: path.dirname(storePath),
           timeout: 10000,
         });
@@ -62,7 +63,7 @@ function activate(context) {
     () => {
       const terminal = vscode.window.createTerminal("Gnosys Dashboard");
       terminal.show();
-      terminal.sendText("npx gnosys dashboard");
+      terminal.sendText("npx gnosys status --system");
     }
   );
 
