@@ -45,7 +45,7 @@ import fs from "fs/promises";
 import type { MemoryFrontmatter } from "./lib/store.js";
 import { GnosysSearch } from "./lib/search.js";
 import { GnosysTagRegistry } from "./lib/tags.js";
-import { GnosysResolver } from "./lib/resolver.js";
+import { GnosysResolver, type LayeredMemory } from "./lib/resolver.js";
 import { applyLens, type LensFilter } from "./lib/lensing.js";
 import { groupByPeriod, computeStats, type TimePeriod } from "./lib/timeline.js";
 import { buildLinkGraph, getBacklinks, getOutgoingLinks, formatGraphSummary } from "./lib/wikilinks.js";
@@ -322,6 +322,56 @@ interface ToolContext {
    *  must be closed on release. The default context shares the module-global
    *  search instance, which must NOT be closed. */
   ownsSearch?: boolean;
+}
+
+const storedMemoryMetadata = z.object({
+  author: z.enum(["human", "ai", "human+ai", "user"])
+    .transform((value) => value === "user" ? "human" : value),
+  authority: z.enum(["declared", "observed", "imported", "inferred", "user"])
+    .transform((value) => value === "user" ? "declared" : value),
+  status: z.enum(["active", "archived", "superseded"]),
+  scope: z.enum(["project", "user", "global"]),
+  tags: z.union([z.array(z.string()), z.record(z.string(), z.array(z.string()))]),
+});
+
+async function readContextMemories(ctx: ToolContext): Promise<LayeredMemory[]> {
+  if (!ctx.centralDb?.isAvailable()) return ctx.resolver.getAllMemories();
+
+  let memories = ctx.centralDb.getAllMemories();
+  if (ctx.clientRead?.pendingOverlay.length) {
+    memories = applyPendingOverlay(memories, ctx.clientRead.pendingOverlay, new Set()).memories;
+  }
+  return memories
+    .filter((memory) => memory.scope === "user" || memory.scope === "global" || memory.project_id === ctx.projectId)
+    .map((memory) => {
+      const metadata = storedMemoryMetadata.parse({ ...memory, tags: JSON.parse(memory.tags || "[]") });
+      const sourceLayer = metadata.scope === "user" ? "personal" : metadata.scope;
+      const relativePath = memory.source_path || `${memory.category}/${memory.id}.md`;
+      return {
+        frontmatter: {
+          id: memory.id,
+          title: memory.title,
+          category: memory.category,
+          tags: metadata.tags,
+          relevance: memory.relevance,
+          author: metadata.author,
+          authority: metadata.authority,
+          confidence: memory.confidence,
+          created: memory.created,
+          modified: memory.modified,
+          status: metadata.status,
+          supersedes: memory.supersedes,
+          superseded_by: memory.superseded_by,
+          reinforcement_count: memory.reinforcement_count,
+          last_reinforced: memory.last_reinforced,
+        },
+        content: memory.content,
+        filePath: "",
+        relativePath,
+        sourceLayer,
+        sourceLabel: sourceLayer,
+      };
+    });
 }
 
 function applyClientReadToCentralDb(localDb: GnosysDB | null): {
@@ -1545,7 +1595,7 @@ regTool(
     cutoff.setDate(cutoff.getDate() - threshold);
     const cutoffStr = cutoff.toISOString().split("T")[0];
 
-    const allMemories = await ctx.resolver.getAllMemories();
+    const allMemories = await readContextMemories(ctx);
     const stale = allMemories
       .filter((m) => {
         const lastTouched = m.frontmatter.last_reviewed || m.frontmatter.modified;
@@ -1850,7 +1900,7 @@ regTool(
   async ({ category, tags, tagMatchMode, status, author, authority, minConfidence, maxConfidence, createdAfter, createdBefore, modifiedAfter, modifiedBefore, projectRoot }) => {
     try {
     const ctx = await resolveToolContext(projectRoot);
-    const allMemories = await ctx.resolver.getAllMemories();
+    const allMemories = await readContextMemories(ctx);
 
     const lens: LensFilter = {};
     if (category) lens.category = category;
@@ -1895,7 +1945,7 @@ regTool(
   async ({ period, projectRoot }) => {
     try {
     const ctx = await resolveToolContext(projectRoot);
-    const allMemories = await ctx.resolver.getAllMemories();
+    const allMemories = await readContextMemories(ctx);
     const entries = groupByPeriod(allMemories, (period as TimePeriod) || "month");
 
     if (entries.length === 0) {
@@ -1923,7 +1973,7 @@ regTool(
   async ({ projectRoot }) => {
     try {
     const ctx = await resolveToolContext(projectRoot);
-    const allMemories = await ctx.resolver.getAllMemories();
+    const allMemories = await readContextMemories(ctx);
     const stats = computeStats(allMemories);
 
     if (stats.totalCount === 0) {
@@ -2048,7 +2098,7 @@ regTool(
   async ({ projectRoot }) => {
     try {
     const ctx = await resolveToolContext(projectRoot);
-    const allMemories = await ctx.resolver.getAllMemories();
+    const allMemories = await readContextMemories(ctx);
 
     if (allMemories.length === 0) {
       return { content: [{ type: "text", text: "No memories found." }] };
@@ -2622,7 +2672,7 @@ regTool(
     const ctx = await resolveToolContext(projectRoot);
     try {
       const { reindexGraph, formatGraphStats } = await import("./lib/graph.js");
-      const stats = await reindexGraph(ctx.resolver);
+      const stats = await reindexGraph(ctx.resolver, undefined, await readContextMemories(ctx));
       return {
         content: [{ type: "text", text: formatGraphStats(stats) }],
       };
