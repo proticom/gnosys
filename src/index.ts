@@ -2185,13 +2185,6 @@ regTool(
       };
     }
 
-    if (!ingestion) {
-      return {
-        content: [{ type: "text", text: "Ingestion module not initialized." }],
-        isError: true,
-      };
-    }
-
     const effectiveMode = (mode as "llm" | "structured") || "structured";
 
     try {
@@ -2199,7 +2192,11 @@ regTool(
       const { performImport, formatImportSummary } = await import(
         "./lib/import.js"
       );
-      const result = await performImport(writeTarget.store, ingestion, {
+      const { GnosysIngestion } = await import("./lib/ingest.js");
+      const importTags = new GnosysTagRegistry(writeTarget.store.getStorePath());
+      await importTags.load();
+      const importIngestion = new GnosysIngestion(writeTarget.store, importTags, ctx.config);
+      const result = await performImport(writeTarget.store, importIngestion, {
         format: format as "csv" | "json" | "jsonl",
         data,
         mapping: mapping as Record<string, string>,
