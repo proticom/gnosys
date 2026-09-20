@@ -47,7 +47,7 @@ describe("discoverFiles", () => {
     await fs.writeFile(path.join(sourceDir, "notes.txt"), "Notes");
 
     const files = await discoverFiles(sourceDir, ["**/*.md", "**/*.txt"]);
-    expect(files).toHaveLength(2);
+    expect(files).toEqual(["doc.md", "notes.txt"]);
   });
 
   it("returns empty for empty directory", async () => {
@@ -59,7 +59,7 @@ describe("discoverFiles", () => {
     await fs.writeFile(path.join(sourceDir, "doc.md"), "# Doc");
 
     const files = await discoverFiles(sourceDir, ["**/*.md", "*.md"]);
-    expect(files).toHaveLength(1);
+    expect(files).toEqual(["doc.md"]);
   });
 });
 
@@ -158,7 +158,10 @@ describe("bootstrap", () => {
 
     // Verify files were written
     const memories = await store.getAllMemories();
-    expect(memories).toHaveLength(2);
+    expect(memories.map(memory => [memory.frontmatter.title, memory.content]).sort()).toEqual([
+      ["First Doc", "# First Doc\n\nContent one."],
+      ["Second Doc", "# Second Doc\n\nContent two."],
+    ]);
   });
 
   it("skips existing memories when skipExisting is true", async () => {
@@ -236,7 +239,8 @@ describe("bootstrap", () => {
     });
 
     expect(result.totalScanned).toBe(1);
-    expect(result.imported).toHaveLength(1);
+    expect(result.imported).toEqual(["notes.txt"]);
+    expect((await store.getAllMemories()).map(memory => [memory.frontmatter.title, memory.content])).toEqual([["Notes", "# Notes\n\nTXT content"]]);
   });
 
   it("preserves category from subdirectory structure", async () => {

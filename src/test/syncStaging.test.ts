@@ -9,9 +9,6 @@ import {
   quarantineStaleTmpFiles,
   countFailedStagingFiles,
   quarantineStagingFile,
-  stagingPayloadChecksum,
-  STAGING_SCHEMA_VERSION,
-  UNKNOWN_SCHEMA_MESSAGE,
   listPendingStagingQueue,
 } from "../lib/syncStaging.js";
 import { GnosysDB } from "../lib/db.js";
@@ -28,7 +25,7 @@ describe("syncStaging v13", () => {
     fs.rmSync(masterPath, { recursive: true, force: true });
   });
 
-  it("writes atomically and validates checksum on read", () => {
+  it("round-trips a staged record and rejects corrupted content", () => {
     const payload = buildStagedMemoryPayload({
       id: "01MEMORYULIDMEMORYULIDMEM",
       title: "Test",
@@ -40,11 +37,10 @@ describe("syncStaging v13", () => {
     const filePath = path.join(masterPath, ".gnosys-staging", machineId, fileName);
     expect(fs.existsSync(filePath)).toBe(true);
     const parsed = parseStagedFile(filePath);
-    expect(parsed.ok).toBe(true);
-    if (parsed.ok) {
-      expect(parsed.payload.id).toBe(payload.id);
-      expect(parsed.payload.checksum).toBe(stagingPayloadChecksum(parsed.payload));
-    }
+    expect(parsed).toMatchObject({ ok: true, payload: { schemaVersion: 1, id: "01MEMORYULIDMEMORYULIDMEM", title: "Test", category: "concepts", content: "hello" } });
+    expect(fs.readdirSync(path.dirname(filePath))).toEqual([fileName]);
+    fs.writeFileSync(filePath, JSON.stringify({ ...payload, content: "tampered" }));
+    expect(parseStagedFile(filePath)).toEqual({ ok: false, filePath, reason: "checksum mismatch", quarantine: true });
   });
 
   it("quarantines checksum mismatch and unknown schemaVersion", () => {
@@ -54,7 +50,7 @@ describe("syncStaging v13", () => {
     fs.writeFileSync(
       badChecksum,
       JSON.stringify({
-        schemaVersion: STAGING_SCHEMA_VERSION,
+        schemaVersion: 1,
         id: "01BAD",
         title: "t",
         category: "concepts",
@@ -88,18 +84,25 @@ describe("syncStaging v13", () => {
     );
     const unk = parseStagedFile(unknownSchema);
     expect(unk.ok).toBe(false);
-    if (!unk.ok) expect(unk.reason).toBe(UNKNOWN_SCHEMA_MESSAGE);
+    if (!unk.ok) expect(unk.reason).toBe("Update your master machine to a newer version of Gnosys.");
 
-    quarantineStagingFile(badChecksum, masterPath, machineId);
-    expect(countFailedStagingFiles(masterPath, machineId)).toBe(1);
+    const badTarget = quarantineStagingFile(badChecksum, masterPath, machineId);
+    const unknownTarget = quarantineStagingFile(unknownSchema, masterPath, machineId);
+    expect(countFailedStagingFiles(masterPath, machineId)).toBe(2);
+    expect(fs.existsSync(badChecksum)).toBe(false);
+    expect(fs.existsSync(unknownSchema)).toBe(false);
+    expect(JSON.parse(fs.readFileSync(badTarget, "utf8")).id).toBe("01BAD");
+    expect(JSON.parse(fs.readFileSync(unknownTarget, "utf8")).id).toBe("01UNK");
   });
 
   it("moves stale .tmp files into failed/", () => {
     const dir = path.join(masterPath, ".gnosys-staging", machineId);
     fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(path.join(dir, "stale.tmp"), "{}");
+    fs.writeFileSync(path.join(dir, "stale.tmp"), '{"keep":"original"}');
     expect(quarantineStaleTmpFiles(masterPath, machineId)).toBe(1);
     expect(countFailedStagingFiles(masterPath, machineId)).toBe(1);
+    expect(fs.existsSync(path.join(dir, "stale.tmp"))).toBe(false);
+    expect(fs.readFileSync(path.join(dir, "failed", "stale.tmp"), "utf8")).toBe('{"keep":"original"}');
   });
 
   it("orders queue by ledger firstSeenAt when master DB is available", () => {

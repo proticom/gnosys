@@ -131,6 +131,8 @@ describe("Phase 8d: Federated Search + Ambiguity", () => {
       const newResult = results.find((r) => r.id === "new-api");
       expect(newResult).toBeDefined();
       expect(newResult!.boosts).toContain("recent");
+    const withoutRecency = federatedSearch(env.db, "API gateway", { projectId: "proj-1", recencyWindowHours: 0 }).find(result => result.id === "new-api");
+    expect(newResult!.score / withoutRecency!.score).toBeCloseTo(1.3, 10);
     });
 
     it("reinforced memories get a reinforcement boost", () => {
@@ -165,6 +167,9 @@ describe("Phase 8d: Federated Search + Ambiguity", () => {
           reinforced.boosts.some((b) => b.startsWith("reinforced:"))
         ).toBe(true);
       }
+    env.db.updateMemory("reinforced-001", { reinforcement_count: 0 });
+    const withoutReinforcement = federatedSearch(env.db, "REST GraphQL API", { projectId: "proj-1" }).find(result => result.id === "reinforced-001");
+    expect(reinforced!.score / withoutReinforcement!.score).toBeCloseTo(1.25, 10);
     });
 
     it("respects includeGlobal=false", () => {
@@ -189,7 +194,7 @@ describe("Phase 8d: Federated Search + Ambiguity", () => {
       const results = federatedSearch(env.db, "design patterns", {
         includeGlobal: false,
       });
-      expect(results.every((r) => r.scope !== "global")).toBe(true);
+      expect(results.map(result => [result.id, result.scope])).toEqual([["proj-only", "project"]]);
     });
 
     it("returns empty array for no matches", () => {
@@ -383,7 +388,7 @@ describe("Phase 8d: Federated Search + Ambiguity", () => {
 
       // Search without projectId — should find both
       const results = federatedSearch(env.db, "architecture");
-      expect(results.length).toBe(2);
+      expect(results.map(result => [result.id, result.projectId]).sort()).toEqual([["cross-a", "proj-alpha"], ["cross-b", "proj-beta"]]);
     });
 
     it("working set returns only recent project memories", () => {

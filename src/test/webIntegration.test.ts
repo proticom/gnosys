@@ -6,12 +6,12 @@
  * Uses fixture files from src/test/fixtures/web/.
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { spawnSync } from "node:child_process";
 import fs from "fs";
 import fsp from "fs/promises";
 import path from "path";
 import os from "os";
-import matter from "gray-matter";
 import { buildIndexSync, writeIndex } from "../lib/webIndex.js";
 import {
   loadIndex,
@@ -37,6 +37,7 @@ beforeEach(() => {
 
 afterEach(async () => {
   clearIndexCache();
+  vi.useRealTimers();
   await fsp.rm(tmpDir, { recursive: true, force: true });
 });
 
@@ -60,41 +61,16 @@ describe("Fixture validation", () => {
     const idx = loadIndex(path.join(FIXTURES, "sample-index.json"));
     expect(idx.version).toBe(1);
     expect(idx.documents.length).toBeGreaterThan(0);
-    expect(idx.documentCount).toBe(idx.documents.length);
+    expect(idx.documentCount).toBe(5);
+    expect(idx.documents.map(doc => [doc.id, doc.title])).toEqual([
+      ["web-001", "Building in Public: Why Transparency Wins"],
+      ["web-002", "AI Readiness Assessment"],
+      ["web-003", "Agentic Automation Services"],
+      ["web-004", "Mavenn Platform"],
+      ["web-005", "About Example Co"],
+    ]);
   });
 
-  it("sample knowledge files have valid frontmatter", () => {
-    const knowledgeDir = path.join(FIXTURES, "sample-knowledge");
-    const files = fs.readdirSync(knowledgeDir).filter(f => f.endsWith(".md"));
-    expect(files.length).toBeGreaterThan(0);
-
-    for (const file of files) {
-      const content = fs.readFileSync(path.join(knowledgeDir, file), "utf-8");
-      const { data } = matter(content);
-      expect(data.id).toBeTruthy();
-      expect(data.title).toBeTruthy();
-      expect(data.category).toBeTruthy();
-      expect(data.relevance).toBeTruthy();
-    }
-  });
-
-  it("sample HTML pages exist and are valid", () => {
-    const pagesDir = path.join(FIXTURES, "sample-pages");
-    const files = fs.readdirSync(pagesDir).filter(f => f.endsWith(".html"));
-    expect(files.length).toBe(5);
-
-    for (const file of files) {
-      const content = fs.readFileSync(path.join(pagesDir, file), "utf-8");
-      expect(content).toContain("<html");
-      expect(content).toContain("<h1>");
-    }
-  });
-
-  it("sample MDX files exist", () => {
-    const mdxDir = path.join(FIXTURES, "sample-mdx");
-    const files = fs.readdirSync(mdxDir).filter(f => f.endsWith(".mdx"));
-    expect(files.length).toBe(3);
-  });
 });
 
 // ─── Directory ingest → index → search pipeline ────────────────────────
@@ -120,7 +96,8 @@ describe("Full pipeline: directory ingest → build index → search", () => {
 
     const allResults = search(loaded, "knowledge team");
     const landscapeOnly = search(loaded, "knowledge team", { category: "landscape" });
-    expect(landscapeOnly.length).toBeLessThanOrEqual(allResults.length);
+    expect(allResults.map(r => r.document.id).sort()).toEqual(["web-003", "web-004", "web-005"]);
+    expect(landscapeOnly.map(r => r.document.id)).toEqual(["web-005"]);
     for (const r of landscapeOnly) {
       expect(r.document.category).toBe("landscape");
     }
@@ -131,6 +108,7 @@ describe("Full pipeline: directory ingest → build index → search", () => {
     const loaded = loadIndex(indexPath);
 
     const tagResults = search(loaded, "company team mission", { tags: ["domain:company"] });
+    expect(tagResults.map(r => r.document.id)).toEqual(["web-005"]);
     for (const r of tagResults) {
       expect(r.document.tags.some((t: string) => t === "domain:company")).toBe(true);
     }
@@ -140,11 +118,8 @@ describe("Full pipeline: directory ingest → build index → search", () => {
     const indexPath = await setupPipeline();
     const loaded = loadIndex(indexPath);
 
-    const doc = loaded.documents.find(d => d.title.includes("About"));
-    expect(doc).toBeTruthy();
-    const fetched = getDocument(loaded, doc!.id);
-    expect(fetched).toBeTruthy();
-    expect(fetched!.title).toBe(doc!.title);
+    const fetched = getDocument(loaded, "web-005");
+    expect(fetched).toMatchObject({ id: "web-005", title: "About Example Co", path: "web-about.md", category: "landscape" });
   });
 
   it("listDocuments filters by category on built index", async () => {
@@ -153,7 +128,8 @@ describe("Full pipeline: directory ingest → build index → search", () => {
 
     const all = listDocuments(loaded);
     const concepts = listDocuments(loaded, { category: "concepts" });
-    expect(concepts.length).toBeLessThanOrEqual(all.length);
+    expect(all).toHaveLength(5);
+    expect(concepts.map(doc => doc.id).sort()).toEqual(["web-001", "web-002"]);
     for (const doc of concepts) {
       expect(doc.category).toBe("concepts");
     }
@@ -203,20 +179,14 @@ describe("Structured ingest: HTML → frontmatter extraction", () => {
 
 describe("TF-IDF on fixture knowledge files", () => {
   it("computes distinctive terms for each document", () => {
-    const knowledgeDir = path.join(FIXTURES, "sample-knowledge");
-    const files = fs.readdirSync(knowledgeDir).filter(f => f.endsWith(".md"));
-    const docs = files.map(f => ({
-      id: f.replace(".md", ""),
-      content: fs.readFileSync(path.join(knowledgeDir, f), "utf-8"),
-    }));
-
-    const tfidf = computeTfIdf(docs, 10);
-    expect(tfidf.size).toBe(docs.length);
-
-    for (const [_id, terms] of tfidf) {
-      expect(terms.length).toBeGreaterThan(0);
-      expect(terms.length).toBeLessThanOrEqual(10);
-    }
+    const terms = computeTfIdf([
+      { id: "a", content: "orange orange apple" },
+      { id: "b", content: "pear pear apple" },
+    ], 2);
+    expect([...terms]).toEqual([
+      ["a", [{ term: "orange", score: 1.0986 }, { term: "apple", score: 0.3466 }]],
+      ["b", [{ term: "pear", score: 1.0986 }, { term: "apple", score: 0.3466 }]],
+    ]);
   });
 
   it("automation doc gets automation-related terms", () => {
@@ -240,19 +210,12 @@ describe("TF-IDF on fixture knowledge files", () => {
 
 // ─── MDX handling ───────────────────────────────────────────────────────
 
-describe("MDX content handling", () => {
-  it("MDX fixtures contain content that should be processable", () => {
-    const mdxDir = path.join(FIXTURES, "sample-mdx");
-    const content = fs.readFileSync(path.join(mdxDir, "features.mdx"), "utf-8");
-    expect(content).toBeTruthy();
-    expect(content.length).toBeGreaterThan(0);
-  });
-});
-
 // ─── Index determinism ──────────────────────────────────────────────────
 
 describe("Index build determinism", () => {
   it("building index twice produces identical output", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-03-22T12:00:00Z"));
     const srcDir = path.join(FIXTURES, "sample-knowledge");
     for (const file of fs.readdirSync(srcDir)) {
       fs.copyFileSync(path.join(srcDir, file), path.join(outputDir, file));
@@ -261,41 +224,33 @@ describe("Index build determinism", () => {
     const index1 = buildIndexSync(outputDir);
     const index2 = buildIndexSync(outputDir);
 
-    expect(index1.documents.map(d => d.id)).toEqual(index2.documents.map(d => d.id));
-    expect(Object.keys(index1.invertedIndex).sort()).toEqual(
-      Object.keys(index2.invertedIndex).sort()
-    );
+    expect(index1).toEqual(index2);
+    expect(index1.documentCount).toBe(5);
+    expect(index1.generated).toBe("2026-03-22T12:00:00.000Z");
+    expect(index1.documents.map(doc => doc.id)).toEqual(["web-005", "web-003", "web-002", "web-001", "web-004"]);
+    expect(index1.invertedIndex.transparency).toEqual([{ docIndex: 3, score: 12.5423 }]);
   });
 });
 
 // ─── Bundle isolation ───────────────────────────────────────────────────
 
 describe("Bundle isolation: gnosys/web has no native deps", () => {
-  it("staticSearch.ts only imports from Node.js fs", () => {
-    const source = fs.readFileSync(
-      path.resolve(__dirname, "../lib/staticSearch.ts"),
-      "utf-8"
-    );
-    // Extract all import lines
-    const imports = source.match(/^import\s+.+from\s+["'].+["']/gm) || [];
-    for (const imp of imports) {
-      const from = imp.match(/from\s+["'](.+)["']/)?.[1];
-      if (!from) continue;
-      // Only allow Node.js built-ins
-      expect(
-        from === "fs" || from === "path" || from.startsWith("node:"),
-        `staticSearch.ts imports "${from}" which is not a Node.js built-in`
-      ).toBe(true);
-    }
+  it("the published web entry searches without third-party runtime dependencies", () => {
+    const loader = path.join(tmpDir, "builtins-only.mjs");
+    fs.writeFileSync(loader, `import { isBuiltin } from "node:module";
+export async function resolve(specifier, context, next) {
+  if (!isBuiltin(specifier) && specifier !== "gnosys/web" && !specifier.startsWith("file:") && !specifier.startsWith(".")) {
+    throw new Error("Third-party dependency: " + specifier);
+  }
+  return next(specifier, context);
+}`);
+    const child = spawnSync(process.execPath, ["--loader", loader, "--input-type=module", "-e", `
+      import { loadIndex, search } from "gnosys/web";
+      const index = loadIndex(${JSON.stringify(path.join(FIXTURES, "sample-index.json"))});
+      process.stdout.write(JSON.stringify(search(index, "automation").map(result => result.document.id)));
+    `], { cwd: path.resolve(__dirname, "../.."), encoding: "utf-8", timeout: 10000 });
+    expect(child.status, child.stderr).toBe(0);
+    expect(JSON.parse(child.stdout)).toEqual(["web-003", "web-002"]);
   });
 
-  it("staticSearch.ts has no import type that would pull runtime deps", () => {
-    const source = fs.readFileSync(
-      path.resolve(__dirname, "../lib/staticSearch.ts"),
-      "utf-8"
-    );
-    // No non-type imports from project files
-    const runtimeImports = source.match(/^import\s+(?!type\s).*from\s+["']\.\/.+["']/gm) || [];
-    expect(runtimeImports.length).toBe(0);
-  });
 });

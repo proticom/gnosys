@@ -63,10 +63,12 @@ describe("syncClientRead v13", () => {
       project_id: null,
       scope: "global",
     });
+    masterDb.close();
     const snapDir = path.join(masterPath, "snapshots");
     fs.mkdirSync(snapDir, { recursive: true });
     const snapFile = "snap-1-1.db";
     fs.copyFileSync(path.join(masterPath, "gnosys.db"), path.join(snapDir, snapFile));
+    masterDb = new GnosysDB(masterPath);
     fs.writeFileSync(
       path.join(snapDir, "snapshot-manifest.json"),
       JSON.stringify({
@@ -214,6 +216,7 @@ describe("syncClientRead v13", () => {
     expect(ctx.source).toBe("snapshot");
     expect(ctx.masterReachable).toBe(false);
     expect(ctx.ownsReadDb).toBe(true);
+    expect(ctx.db.getMemory("01MASTERMEMORYMASTERMEMO")).toMatchObject({ title: "On master", content: "master body" });
     closeClientReadContext(ctx);
   });
 
@@ -229,7 +232,7 @@ describe("syncClientRead v13", () => {
     });
     const ctx = openClientReadContext(localDb, masterPath, machineId);
     expect(ctx.source).toBe("pending-only");
-    expect(ctx.pendingOverlay).toHaveLength(1);
+    expect(ctx.pendingOverlay.map(memory => [memory.id, memory.title, memory.content])).toEqual([["01PENDINGONLYPENDINGONL", "Local pending", "only here"]]);
     expect(ctx.db).toBe(localDb);
     closeClientReadContext(ctx);
   });
@@ -243,6 +246,7 @@ describe("syncClientRead v13", () => {
       content: "x",
       created: "2026-06-01T00:00:00.000Z",
     });
+    localDb.insertPendingAdd({ id: "01STILLPENDING", title: "Still pending", category: "concepts", content: "Keep visible", created: "2026-06-01T00:00:00.000Z" });
     const dir = path.join(stagingRoot(masterPath), machineId, "receipts");
     fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(
@@ -250,7 +254,7 @@ describe("syncClientRead v13", () => {
       JSON.stringify({ ulid: "01FILTEREDBYRECEIPTFILT", outcome: "ingested", at: "2026-06-01T00:00:00.000Z" }),
     );
     const ctx = openClientReadContext(localDb, masterPath, machineId);
-    expect(ctx.pendingOverlay.find((p) => p.id === "01FILTEREDBYRECEIPTFILT")).toBeUndefined();
+    expect(ctx.pendingOverlay.map(memory => [memory.id, memory.content])).toEqual([["01STILLPENDING", "Keep visible"]]);
     closeClientReadContext(ctx);
   });
 });

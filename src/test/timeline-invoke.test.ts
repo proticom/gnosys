@@ -52,7 +52,7 @@ describe("runTimelineCommand (in-process invoke)", () => {
 
   it("groups seeded memories by period (--json)", async () => {
     const db = GnosysDB.openLocal();
-    const now = new Date().toISOString();
+    const now = "2026-02-15T12:00:00.000Z";
     db.insertMemory({
       id: "deci-401",
       title: "Timeline invoke fixture",
@@ -86,7 +86,8 @@ describe("runTimelineCommand (in-process invoke)", () => {
     await runTimelineCommand({ period: "month", limitTitles: "5", json: true });
     const parsed = JSON.parse(logged());
     expect(parsed.count).toBe(1);
-    expect(parsed.entries.length).toBeGreaterThanOrEqual(1);
+    expect(parsed.period).toBe("month");
+    expect(parsed.entries).toEqual([{ period: "2026-02", created: 1, modified: 0, titles: ["Timeline invoke fixture"] }]);
   });
 
   it("renders the human timeline header for seeded memories", async () => {

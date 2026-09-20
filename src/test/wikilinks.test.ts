@@ -92,7 +92,7 @@ describe("extractLinks", () => {
 });
 
 describe("resolveLink", () => {
-  it("resolves by title (case-insensitive)", () => {
+  it("resolves by exact title", () => {
     const result = resolveLink("DB Choice", memories);
     expect(result?.frontmatter.id).toBe("db-choice");
   });
@@ -113,8 +113,10 @@ describe("resolveLink", () => {
   });
 
   it("resolves by id", () => {
-    const result = resolveLink("auth-decision", memories);
-    expect(result?.frontmatter.id).toBe("auth-decision");
+    const byId = makeMem({ id: "opaque-id", title: "Different title" });
+    byId.relativePath = "decisions/different-filename.md";
+    const result = resolveLink("opaque-id", [...memories, byId]);
+    expect(result?.frontmatter.id).toBe("opaque-id");
   });
 
   it("returns null for non-existent target", () => {
@@ -132,7 +134,7 @@ describe("buildLinkGraph", () => {
   it("tracks outgoing links", () => {
     const graph = buildLinkGraph(memories);
     const authNode = graph.nodes.get("decisions/auth-decision.md");
-    expect(authNode?.outgoing).toHaveLength(2);
+    expect(authNode?.outgoing.map(link => link.target)).toEqual(["DB Choice", "architecture/three-layers"]);
   });
 
   it("tracks backlinks (incoming)", () => {
@@ -171,7 +173,7 @@ describe("buildLinkGraph", () => {
 describe("getBacklinks", () => {
   it("returns backlinks for a target", () => {
     const backlinks = getBacklinks(memories, "decisions/auth-decision.md");
-    expect(backlinks).toHaveLength(2);
+    expect(backlinks.map(link => link.sourceTitle)).toEqual(["DB Choice", "Frontend Guide"]);
   });
 
   it("returns empty for memory with no backlinks", () => {
@@ -183,7 +185,7 @@ describe("getBacklinks", () => {
 describe("getOutgoingLinks", () => {
   it("returns outgoing links for a source", () => {
     const outgoing = getOutgoingLinks(memories, "decisions/auth-decision.md");
-    expect(outgoing).toHaveLength(2);
+    expect(outgoing.map(link => link.target)).toEqual(["DB Choice", "architecture/three-layers"]);
   });
 
   it("returns empty for memory with no outgoing links", () => {

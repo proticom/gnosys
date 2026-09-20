@@ -9,7 +9,7 @@ import {
 } from "../lib/syncStaging.js";
 import { writeMasterMarker } from "../lib/masterLease.js";
 import { runMasterIngestSweep } from "../lib/syncIngest.js";
-import { ensureMachineConfig } from "../lib/machineConfig.js";
+import { ensureMachineConfig, writeMachineConfig } from "../lib/machineConfig.js";
 import { buildSyncIngestLaunchAgentPlist } from "../lib/syncIngestLaunchd.js";
 import {
   buildSyncIngestSystemdService,
@@ -36,21 +36,11 @@ describe("syncIngest automation", () => {
       fs.rmSync(masterPath, { recursive: true, force: true });
     });
 
-    it("quiet mode produces zero stdout", () => {
-      runMasterIngestSweep(masterPath, { quiet: true });
-      expect(logSpy).not.toHaveBeenCalled();
-    });
-
     it("json mode writes a single JSON object to stdout", () => {
       runMasterIngestSweep(masterPath, { json: true });
       expect(logSpy).toHaveBeenCalledTimes(1);
       const parsed = JSON.parse(String(logSpy.mock.calls[0][0]));
-      expect(parsed).toMatchObject({
-        ingested: expect.any(Number),
-        skipped: expect.any(Number),
-        quarantined: expect.any(Number),
-        errors: expect.any(Array),
-      });
+      expect(parsed).toEqual({ ingested: 0, skipped: 0, quarantined: 0, errors: [] });
     });
 
     it("json mode still succeeds with zero ingested", () => {
@@ -71,49 +61,65 @@ describe("syncIngest automation", () => {
       const result = runMasterIngestSweep(masterPath, { quiet: true });
       expect(result.ingested).toBe(1);
       expect(logSpy).not.toHaveBeenCalled();
+      const persisted = new GnosysDB(masterPath);
+      try { expect(persisted.getMemory("01INGESTMEM01INGESTMEM01ING")).toMatchObject({ title: "Staged", content: "from client" }); }
+      finally { persisted.close(); }
     });
   });
 
   describe("maybeRunStartupIngestSweep", () => {
+    let base: string;
+    let master: string;
+    let stagedFile: string;
+    beforeEach(() => {
+      base = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-startup-ingest-"));
+      master = path.join(base, "master");
+      fs.mkdirSync(master, { recursive: true });
+      vi.stubEnv("GNOSYS_HOME", path.join(base, "local"));
+      vi.stubEnv("GNOSYS_CONFIG_DIR", path.join(base, "config"));
+      const mc = ensureMachineConfig().config;
+      writeMasterMarker(master, mc.machineId);
+      const local = GnosysDB.openLocal();
+      local.setMeta("remote_path", master);
+      local.close();
+      new GnosysDB(master).close();
+      const file = writeStagedMemoryFile(master, mc.machineId, buildStagedMemoryPayload({ id: "startup-memory", title: "Pending startup", category: "concepts", content: "Preserve until master", machineId: mc.machineId }));
+      stagedFile = path.join(master, ".gnosys-staging", mc.machineId, file);
+    });
+    afterEach(() => {
+      vi.unstubAllEnvs();
+      fs.rmSync(base, { recursive: true, force: true });
+    });
+    function readStartupMemory() {
+      const db = new GnosysDB(master);
+      try { return db.getMemory("startup-memory"); } finally { db.close(); }
+    }
     it("skips when machine role is client", async () => {
-      const machineConfig = await import("../lib/machineConfig.js");
-      vi.spyOn(machineConfig, "readMachineConfig").mockReturnValue({
-        machineId: "01CLIENTMACHINE01CLIENTMACH",
-        hostname: "test-host",
-        roots: {},
-        schemaVersion: 1,
-        remote: { enabled: true, role: "client", path: "/tmp/master" },
-      });
-
-      const dbMod = await import("../lib/db.js");
-      const openSpy = vi.spyOn(dbMod.GnosysDB, "openLocal");
-      const ingestMod = await import("../lib/syncIngest.js");
-      const sweepSpy = vi.spyOn(ingestMod, "runMasterIngestSweep");
-
+      const mc = ensureMachineConfig().config;
+      mc.remote = { enabled: true, role: "client", path: master };
+      writeMachineConfig(mc);
       await maybeRunStartupIngestSweep();
-
-      expect(openSpy).not.toHaveBeenCalled();
-      expect(sweepSpy).not.toHaveBeenCalled();
-
-      vi.restoreAllMocks();
+      expect(readStartupMemory()).toBeNull();
+      expect(fs.existsSync(stagedFile)).toBe(true);
+      mc.remote = { enabled: true, role: "master", path: master };
+      writeMachineConfig(mc);
+      await maybeRunStartupIngestSweep();
+      expect(readStartupMemory()).toMatchObject({ title: "Pending startup", content: "Preserve until master" });
+      expect(fs.existsSync(stagedFile)).toBe(false);
     });
 
     it("skips when remote sync is disabled", async () => {
-      const machineConfig = await import("../lib/machineConfig.js");
-      vi.spyOn(machineConfig, "readMachineConfig").mockReturnValue({
-        machineId: "01MASTERMACHINE01MASTERMACH",
-        hostname: "test-host",
-        roots: {},
-        schemaVersion: 1,
-        remote: { enabled: false },
-      });
-
-      const dbMod = await import("../lib/db.js");
-      const openSpy = vi.spyOn(dbMod.GnosysDB, "openLocal");
+      const mc = ensureMachineConfig().config;
+      mc.remote = { enabled: false, role: "master", path: master };
+      writeMachineConfig(mc);
       await maybeRunStartupIngestSweep();
-      expect(openSpy).not.toHaveBeenCalled();
-
-      vi.restoreAllMocks();
+      expect(readStartupMemory()).toBeNull();
+      expect(fs.existsSync(stagedFile)).toBe(true);
+      mc.remote = { enabled: true, role: "master", path: master };
+      writeMachineConfig(mc);
+      await maybeRunStartupIngestSweep();
+      expect(readStartupMemory()).toMatchObject({ title: "Pending startup", content: "Preserve until master" });
+      expect(fs.existsSync(stagedFile)).toBe(false);
     });
   });
 

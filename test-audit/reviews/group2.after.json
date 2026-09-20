@@ -1,0 +1,2433 @@
+{
+  "tests": [
+    {
+      "beforeId": "src/test/atomic-config-write.test.ts:26",
+      "beforeName": "atomic config writes atomicWriteFile writes exact content with no leftover temp file",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "atomic config writes atomicWriteFile writes exact content with no leftover temp file"
+      ],
+      "evidence": "Reads actual destination bytes and parsed literal config; asserts no temporary artifacts.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/atomic-config-write.test.ts:37",
+      "beforeName": "atomic config writes atomicWriteFile overwrites an existing file atomically",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "atomic config writes atomicWriteFile preserves the previous content if replacement fails"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-atomic-destination-first",
+      "mutationIds": [
+        "g2-atomic-destination-first"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/atomic-config-write.test.ts:48",
+      "beforeName": "atomic config writes atomicWriteFileSync writes exact content with no leftover temp file",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "atomic config writes atomicWriteFileSync writes exact content with no leftover temp file"
+      ],
+      "evidence": "Sync writer destination bytes equal supplied machine JSON and leaves no temporary artifacts.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/attachments-inline.test.ts:45",
+      "beforeName": "inline attachments — round-trip attaches a file and reads back identical bytes, mime, and name",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "inline attachments — round-trip attaches a file and reads back identical bytes, mime, and name"
+      ],
+      "evidence": "Real DB attachment roundtrip preserves exact SVG bytes, MIME, name and size.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/attachments-inline.test.ts:64",
+      "beforeName": "inline attachments — round-trip returns null when a memory has no attachment",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "inline attachments — round-trip returns null when a memory has no attachment"
+      ],
+      "evidence": "A persisted memory without attachment returns null.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/attachments-inline.test.ts:69",
+      "beforeName": "inline attachments — round-trip detaches an attachment but keeps the memory",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "inline attachments — round-trip detaches an attachment but keeps the memory"
+      ],
+      "evidence": "Detach removes bytes, retains memory and returns false on the second detach.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/attachments-inline.test.ts:84",
+      "beforeName": "inline attachments — guardrails rejects files larger than the size cap",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "inline attachments — guardrails rejects files larger than the size cap"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-attachment-cap",
+      "mutationIds": [
+        "g2-attachment-cap"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/attachments-inline.test.ts:91",
+      "beforeName": "inline attachments — guardrails dedups identical bytes (no rewrite on re-attach)",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "inline attachments — guardrails dedups identical bytes (no rewrite on re-attach)"
+      ],
+      "evidence": "Repeated real attachment returns unchanged=false then unchanged=true.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/attachments-inline.test.ts:102",
+      "beforeName": "inline attachments — guardrails throws when the target memory does not exist",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "inline attachments — guardrails throws when the target memory does not exist"
+      ],
+      "evidence": "Public attach API rejects missing memory with not-found error.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/attachments-inline.test.ts:109",
+      "beforeName": "inline attachments — machine-to-machine (row copy) survives the insertMemory row-copy that remote sync uses",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "inline attachments — machine-to-machine (row copy) survives the insertMemory row-copy that remote sync uses"
+      ],
+      "evidence": "Row copied into a second real DB retains exact SVG bytes, name and MIME.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:25",
+      "beforeName": "discoverFiles finds markdown files",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "discoverFiles finds markdown files"
+      ],
+      "evidence": "Real directory discovery returns exactly doc1.md/doc2.md and excludes txt.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:36",
+      "beforeName": "discoverFiles finds files in subdirectories",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "discoverFiles finds files in subdirectories"
+      ],
+      "evidence": "Nested discovery returns the literal decisions/auth.md path.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:45",
+      "beforeName": "discoverFiles supports custom patterns",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "discoverFiles supports custom patterns"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-bootstrap-discovery",
+      "mutationIds": [
+        "g2-bootstrap-discovery"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:53",
+      "beforeName": "discoverFiles returns empty for empty directory",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "discoverFiles returns empty for empty directory"
+      ],
+      "evidence": "Empty real directory returns zero discovered files.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:58",
+      "beforeName": "discoverFiles deduplicates files across patterns",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "discoverFiles deduplicates files across patterns"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-bootstrap-discovery",
+      "mutationIds": [
+        "g2-bootstrap-discovery"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:73",
+      "beforeName": "parseFileForImport extracts title from H1 heading",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "parseFileForImport extracts title from H1 heading"
+      ],
+      "evidence": "Public parser extracts literal My Decision from H1.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:78",
+      "beforeName": "parseFileForImport falls back to filename for title",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "parseFileForImport falls back to filename for title"
+      ],
+      "evidence": "Filename fallback produces literal My Cool Doc title.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:83",
+      "beforeName": "parseFileForImport infers category from directory structure",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "parseFileForImport infers category from directory structure"
+      ],
+      "evidence": "Directory inference returns literal decisions category.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:88",
+      "beforeName": "parseFileForImport uses default category for root files",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "parseFileForImport uses default category for root files"
+      ],
+      "evidence": "Root file returns literal imported category.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:93",
+      "beforeName": "parseFileForImport preserves existing frontmatter when option is set",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "parseFileForImport preserves existing frontmatter when option is set"
+      ],
+      "evidence": "Frontmatter option preserves literal title/category/confidence/author values.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:114",
+      "beforeName": "parseFileForImport uses defaults when not preserving frontmatter",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "parseFileForImport uses defaults when not preserving frontmatter"
+      ],
+      "evidence": "Discarding source metadata yields literal imported category and authority.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:127",
+      "beforeName": "parseFileForImport strips frontmatter from body",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "parseFileForImport strips frontmatter from body"
+      ],
+      "evidence": "Returned body equals literal heading/body text without YAML delimiters.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:142",
+      "beforeName": "bootstrap imports files into the store",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "bootstrap imports files into the store"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-bootstrap-content",
+      "mutationIds": [
+        "g2-bootstrap-content"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:164",
+      "beforeName": "bootstrap skips existing memories when skipExisting is true",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "bootstrap skips existing memories when skipExisting is true"
+      ],
+      "evidence": "Mixed duplicate/new input reports one imported and literal doc1.md skipped.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:199",
+      "beforeName": "bootstrap supports dry run mode",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "bootstrap supports dry run mode"
+      ],
+      "evidence": "Dry run reports one candidate while actual store remains empty.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:217",
+      "beforeName": "bootstrap handles empty source directory",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "bootstrap handles empty source directory"
+      ],
+      "evidence": "Empty bootstrap reports zero scanned and imported.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:226",
+      "beforeName": "bootstrap respects custom patterns",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "bootstrap respects custom patterns"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-bootstrap-pattern",
+      "mutationIds": [
+        "g2-bootstrap-pattern"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/bootstrap.test.ts:242",
+      "beforeName": "bootstrap preserves category from subdirectory structure",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "bootstrap preserves category from subdirectory structure"
+      ],
+      "evidence": "Persisted imported memory retains literal architecture category.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/centralize-network.test.ts:13",
+      "beforeName": "gnosys centralize for network MCP seeding wires centralize --to for seeding a central brain (e.g. Docker volume or host for http serve)",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "gnosys centralize for network MCP seeding copies the local brain through --to and overwrites only with --force"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-centralize-cli-force",
+      "mutationIds": [
+        "g2-centralize-cli-force"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/docs-web-flags.test.ts:32",
+      "beforeName": "web command docs only document shipped CLI flags `${relPath} flags all exist in src/cli.ts`",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "web command docs only document shipped CLI flags docs/commands/web-build-index.md flags are accepted by the published subcommand",
+        "web command docs only document shipped CLI flags docs/commands/web-build.md flags are accepted by the published subcommand",
+        "web command docs only document shipped CLI flags docs/commands/web-status.md flags are accepted by the published subcommand"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-docs-build, g2-docs-build-index, g2-docs-status",
+      "mutationIds": [
+        "g2-docs-build",
+        "g2-docs-build-index",
+        "g2-docs-status"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/export-archive-flag.test.ts:83",
+      "beforeName": "export archive visibility default exportProject reports archivedExcluded and omits archived memories",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "export archive visibility default exportProject reports archivedExcluded and omits archived memories"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-export-bundle-content",
+      "mutationIds": [
+        "g2-export-bundle-content"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/export-archive-flag.test.ts:102",
+      "beforeName": "export archive visibility includeArchived exports all with status preserved and archivedExcluded 0",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "export archive visibility includeArchived exports all with status preserved and archivedExcluded 0"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-export-bundle-content",
+      "mutationIds": [
+        "g2-export-bundle-content"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/export-archive-flag.test.ts:123",
+      "beforeName": "export archive visibility vault export activeOnly reports archivedExcluded",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "export archive visibility vault export activeOnly reports archivedExcluded"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-export-vault-write",
+      "mutationIds": [
+        "g2-export-vault-write"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:71",
+      "beforeName": "federatedSearch returns results scored with scope boosting",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "federatedSearch returns results scored with scope boosting"
+      ],
+      "evidence": "Real federated search returns both IDs, higher current-project score and current-project boost marker.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:100",
+      "beforeName": "federatedSearch boosts recently modified memories",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "federatedSearch boosts recently modified memories"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-federated-recency",
+      "mutationIds": [
+        "g2-federated-recency"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:127",
+      "beforeName": "federatedSearch respects includeGlobal=false",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "federatedSearch respects includeGlobal=false"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-federated-global",
+      "mutationIds": [
+        "g2-federated-global"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:146",
+      "beforeName": "federatedSearch returns empty array for no matches",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "federatedSearch returns empty array for no matches"
+      ],
+      "evidence": "Unmatched query over empty real DB yields literal empty array.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:151",
+      "beforeName": "federatedSearch boosts reinforced memories",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "federatedSearch boosts reinforced memories"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-federated-reinforcement",
+      "mutationIds": [
+        "g2-federated-reinforcement"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:179",
+      "beforeName": "detectAmbiguity returns null when query matches only one project",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "detectAmbiguity returns null when query matches only one project"
+      ],
+      "evidence": "Single-project query yields literal null ambiguity result.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:196",
+      "beforeName": "detectAmbiguity returns ambiguity error when query matches multiple projects",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "detectAmbiguity returns ambiguity error when query matches multiple projects"
+      ],
+      "evidence": "Two-project query yields ambiguous_project with exact Alpha/Beta candidates.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:230",
+      "beforeName": "generateBriefing generates a briefing for a project with memories",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "generateBriefing generates a briefing for a project with memories"
+      ],
+      "evidence": "Briefing exposes literal project name/counts/category keys and architecture tag count two.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:269",
+      "beforeName": "generateBriefing returns null for non-existent project",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "generateBriefing returns null for non-existent project"
+      ],
+      "evidence": "Unknown project produces literal null briefing.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:276",
+      "beforeName": "generateAllBriefings generates briefings for all registered projects",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "generateAllBriefings generates briefings for all registered projects"
+      ],
+      "evidence": "All-project briefing output has exactly Alpha and Beta names.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:296",
+      "beforeName": "getWorkingSet returns recently modified memories for a project",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "getWorkingSet returns recently modified memories for a project"
+      ],
+      "evidence": "24-hour working set returns only literal recent-mem and excludes 48-hour record.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:320",
+      "beforeName": "getWorkingSet returns empty set for no recent activity",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "getWorkingSet returns empty set for no recent activity"
+      ],
+      "evidence": "Only 48-hour memory yields empty 24-hour working set.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:335",
+      "beforeName": "formatWorkingSet formats empty working set",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "formatWorkingSet formats empty working set"
+      ],
+      "evidence": "Empty working-set formatter produces literal No recent activity text.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/federated.test.ts:340",
+      "beforeName": "formatWorkingSet formats non-empty working set",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "formatWorkingSet formats non-empty working set"
+      ],
+      "evidence": "Nonempty formatting includes literal ID, title and decisions category.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/freeform-add-gate.test.ts:26",
+      "beforeName": "gnosys_add freeform gate (source-level contract) index.ts gates the gnosys_add handler behind GNOSYS_ALLOW_FREEFORM_ADD",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "gnosys_add freeform gate rejects freeform MCP writes by default"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-freeform-gate",
+      "mutationIds": [
+        "g2-freeform-gate"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/freeform-add-gate.test.ts:36",
+      "beforeName": "gnosys_add freeform gate (source-level contract) redirect message lists the structured fields agents must supply",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "gnosys_add freeform gate redirect message lists the structured fields agents must supply"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-freeform-guidance",
+      "mutationIds": [
+        "g2-freeform-guidance"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/freeform-add-gate.test.ts:48",
+      "beforeName": "gnosys_add freeform gate (source-level contract) generated agent rules state the server rejects freeform gnosys_add",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "gnosys_add freeform gate generated agent rules state the server rejects freeform gnosys_add"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-freeform-rules",
+      "mutationIds": [
+        "g2-freeform-rules"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/graph-invoke.test.ts:79",
+      "beforeName": "runGraphCommand (in-process invoke) prints 'No memories found.' on an empty central DB",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "runGraphCommand (in-process invoke) prints 'No memories found.' on an empty central DB"
+      ],
+      "evidence": "Empty real central DB command prints literal No memories found.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/graph-invoke.test.ts:85",
+      "beforeName": "runGraphCommand (in-process invoke) reports wikilinks between seeded memories (--json)",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "runGraphCommand (in-process invoke) reports wikilinks between seeded memories (--json)"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-graph-nodes",
+      "mutationIds": [
+        "g2-graph-nodes"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/list-invoke.test.ts:78",
+      "beforeName": "runListCommand (in-process invoke) lists the seeded user-scope memory (--json)",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "runListCommand (in-process invoke) lists the seeded user-scope memory (--json)"
+      ],
+      "evidence": "Real list command JSON includes literal seeded deci-501 ID.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/list-invoke.test.ts:85",
+      "beforeName": "runListCommand (in-process invoke) filters by tag (--tag, --json)",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "runListCommand (in-process invoke) filters by tag (--tag, --json)"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-list-tag",
+      "mutationIds": [
+        "g2-list-tag"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/list-invoke.test.ts:92",
+      "beforeName": "runListCommand (in-process invoke) returns an empty set for a category with no matches (--json)",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "runListCommand (in-process invoke) returns an empty set for a category with no matches (--json)"
+      ],
+      "evidence": "Unmatched category returns count zero and literal empty memories array.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/list-invoke.test.ts:99",
+      "beforeName": "runListCommand (in-process invoke) renders human output with scope/status markers",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "runListCommand (in-process invoke) renders human output with scope/status markers"
+      ],
+      "evidence": "Human output contains literal [user] [active] scope/status and fixture title.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:23",
+      "beforeName": "LLM Provider System Provider Registry ALL_PROVIDERS includes all 9 providers",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "LLM Provider System Provider Registry accepts all nine supported providers through config parsing"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-provider-schema",
+      "mutationIds": [
+        "g2-provider-schema"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:38",
+      "beforeName": "LLM Provider System Config Schema parses old configs without xai/mistral/custom sections (backward compat)",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System Config Schema parses old configs without xai/mistral/custom sections (backward compat)"
+      ],
+      "evidence": "Legacy schema input retains anthropic and supplies literal xAI/Mistral defaults with no custom config.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:55",
+      "beforeName": "LLM Provider System Config Schema accepts xai as defaultProvider",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System Config Schema accepts xai as defaultProvider"
+      ],
+      "evidence": "Public schema preserves literal xai default selection.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:61",
+      "beforeName": "LLM Provider System Config Schema accepts mistral as defaultProvider",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System Config Schema accepts mistral as defaultProvider"
+      ],
+      "evidence": "Public schema preserves literal mistral default selection.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:67",
+      "beforeName": "LLM Provider System Config Schema accepts custom as defaultProvider with full config",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System Config Schema accepts custom as defaultProvider with full config"
+      ],
+      "evidence": "Public schema preserves custom provider, literal model and base URL.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:84",
+      "beforeName": "LLM Provider System Config Schema rejects invalid provider names",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System Config Schema rejects invalid provider names"
+      ],
+      "evidence": "Public config boundary rejects invalid-provider input.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:91",
+      "beforeName": "LLM Provider System getProviderModel returns xai model from config",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System getProviderModel returns xai model from config"
+      ],
+      "evidence": "Provider-model getter returns literal grok-3 override.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:98",
+      "beforeName": "LLM Provider System getProviderModel returns mistral model from config",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System getProviderModel returns mistral model from config"
+      ],
+      "evidence": "Provider-model getter returns literal mistral-small-latest override.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:105",
+      "beforeName": "LLM Provider System getProviderModel returns openrouter model from config",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System getProviderModel returns openrouter model from config"
+      ],
+      "evidence": "Provider-model getter returns literal configured OpenRouter model ID.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:114",
+      "beforeName": "LLM Provider System getProviderModel returns custom model from config",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System getProviderModel returns custom model from config"
+      ],
+      "evidence": "Provider-model getter returns literal custom my-model override.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:123",
+      "beforeName": "LLM Provider System getProviderModel returns empty string for custom when not configured",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System getProviderModel returns empty string for custom when not configured"
+      ],
+      "evidence": "Unconfigured custom model resolves to literal empty string.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:143",
+      "beforeName": "LLM Provider System API Key Helpers getXAIApiKey reads from config first",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "LLM Provider System API Key Helpers getXAIApiKey reads from config first"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-key-xai",
+      "mutationIds": [
+        "g2-key-xai"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:150",
+      "beforeName": "LLM Provider System API Key Helpers getXAIApiKey falls back to env var",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System API Key Helpers getXAIApiKey falls back to env var"
+      ],
+      "evidence": "Absent configured key falls back to literal xai-from-env.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:156",
+      "beforeName": "LLM Provider System API Key Helpers getMistralApiKey reads from config first",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "LLM Provider System API Key Helpers getMistralApiKey reads from config first"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-key-mistral",
+      "mutationIds": [
+        "g2-key-mistral"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:163",
+      "beforeName": "LLM Provider System API Key Helpers getMistralApiKey falls back to env var",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System API Key Helpers getMistralApiKey falls back to env var"
+      ],
+      "evidence": "Absent configured Mistral key resolves literal mis-from-env.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:169",
+      "beforeName": "LLM Provider System API Key Helpers getOpenRouterApiKey falls back to OPENROUTER_API_KEY",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System API Key Helpers getOpenRouterApiKey falls back to OPENROUTER_API_KEY"
+      ],
+      "evidence": "OpenRouter key helper reads literal or-from-env value.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:175",
+      "beforeName": "LLM Provider System API Key Helpers getCustomApiKey reads from config",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System API Key Helpers getCustomApiKey reads from config"
+      ],
+      "evidence": "Custom key helper returns literal configured custom-key.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:182",
+      "beforeName": "LLM Provider System API Key Helpers getCustomApiKey falls back to GNOSYS_LLM_API_KEY",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System API Key Helpers getCustomApiKey falls back to GNOSYS_LLM_API_KEY"
+      ],
+      "evidence": "Custom helper falls back to literal generic-key environment value.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:190",
+      "beforeName": "LLM Provider System createProvider creates xAI provider with correct baseUrl",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "LLM Provider System createProvider creates xAI provider with correct baseUrl"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-xai-url",
+      "mutationIds": [
+        "g2-xai-url"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:199",
+      "beforeName": "LLM Provider System createProvider creates OpenRouter provider",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System createProvider creates OpenRouter provider"
+      ],
+      "evidence": "Factory exposes literal OpenRouter name and configured model through public provider object.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:217",
+      "beforeName": "LLM Provider System createProvider creates Mistral provider with correct baseUrl",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "LLM Provider System createProvider creates Mistral provider with correct baseUrl"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-mistral-url",
+      "mutationIds": [
+        "g2-mistral-url"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:226",
+      "beforeName": "LLM Provider System createProvider creates custom provider with user-provided baseUrl",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "LLM Provider System createProvider creates custom provider with user-provided baseUrl"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-custom-url",
+      "mutationIds": [
+        "g2-custom-url"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:241",
+      "beforeName": "LLM Provider System createProvider throws when xAI has no API key",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System createProvider throws when xAI has no API key"
+      ],
+      "evidence": "Missing xAI key rejects provider construction with xAI API key error.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:247",
+      "beforeName": "LLM Provider System createProvider throws when Mistral has no API key",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System createProvider throws when Mistral has no API key"
+      ],
+      "evidence": "Missing Mistral key rejects provider construction with Mistral API key error.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:253",
+      "beforeName": "LLM Provider System createProvider throws when custom provider has no config",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System createProvider throws when custom provider has no config"
+      ],
+      "evidence": "Absent custom configuration rejects construction with specific not-configured error.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:258",
+      "beforeName": "LLM Provider System createProvider custom provider works without API key (local endpoints)",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "LLM Provider System createProvider custom provider works without API key (local endpoints)"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-custom-no-key",
+      "mutationIds": [
+        "g2-custom-no-key"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:273",
+      "beforeName": "LLM Provider System isProviderAvailable xai is unavailable without API key",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System isProviderAvailable xai is unavailable without API key"
+      ],
+      "evidence": "Absent xAI key produces available=false from real availability function.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:280",
+      "beforeName": "LLM Provider System isProviderAvailable mistral is unavailable without API key",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System isProviderAvailable mistral is unavailable without API key"
+      ],
+      "evidence": "Absent Mistral key produces available=false.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:287",
+      "beforeName": "LLM Provider System isProviderAvailable custom is unavailable when not configured",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System isProviderAvailable custom is unavailable when not configured"
+      ],
+      "evidence": "Missing custom config produces available=false.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/llm-providers.test.ts:293",
+      "beforeName": "LLM Provider System isProviderAvailable custom is available when baseUrl and model are set",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "LLM Provider System isProviderAvailable custom is available when baseUrl and model are set"
+      ],
+      "evidence": "Complete custom endpoint/model config produces available=true.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/openrouterTiers.test.ts:9",
+      "beforeName": "buildOpenRouterTiers includes free models with :free suffix",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "buildOpenRouterTiers includes free models with :free suffix"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-openrouter-catalog",
+      "mutationIds": [
+        "g2-openrouter-catalog"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/openrouterTiers.test.ts:28",
+      "beforeName": "buildOpenRouterTiers falls back to static tiers for empty catalog",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "buildOpenRouterTiers falls back to static tiers for empty catalog"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-openrouter-fallback",
+      "mutationIds": [
+        "g2-openrouter-fallback"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:41",
+      "beforeName": "Phase 8d: Federated Search + Ambiguity TC-8d.1: Federated search with tier boosting project-scoped results rank higher than user-scoped",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Phase 8d: Federated Search + Ambiguity TC-8d.1: Federated search with tier boosting project-scoped results rank higher than user-scoped"
+      ],
+      "evidence": "Actual federated scores rank literal project-arch above user-arch among exactly two results.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:73",
+      "beforeName": "Phase 8d: Federated Search + Ambiguity TC-8d.1: Federated search with tier boosting user-scoped results rank higher than global-scoped",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Phase 8d: Federated Search + Ambiguity TC-8d.1: Federated search with tier boosting user-scoped results rank higher than global-scoped"
+      ],
+      "evidence": "Actual user-db score exceeds global-db for same thematic query.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:101",
+      "beforeName": "Phase 8d: Federated Search + Ambiguity TC-8d.1: Federated search with tier boosting recently modified memories get a recency boost",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "Phase 8d: Federated Search + Ambiguity TC-8d.1: Federated search with tier boosting recently modified memories get a recency boost"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-federated-recency",
+      "mutationIds": [
+        "g2-federated-recency"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:136",
+      "beforeName": "Phase 8d: Federated Search + Ambiguity TC-8d.1: Federated search with tier boosting reinforced memories get a reinforcement boost",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "Phase 8d: Federated Search + Ambiguity TC-8d.1: Federated search with tier boosting reinforced memories get a reinforcement boost"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-federated-reinforcement",
+      "mutationIds": [
+        "g2-federated-reinforcement"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:170",
+      "beforeName": "Phase 8d: Federated Search + Ambiguity TC-8d.1: Federated search with tier boosting respects includeGlobal=false",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "Phase 8d: Federated Search + Ambiguity TC-8d.1: Federated search with tier boosting respects includeGlobal=false"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-federated-global",
+      "mutationIds": [
+        "g2-federated-global"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:195",
+      "beforeName": "Phase 8d: Federated Search + Ambiguity TC-8d.1: Federated search with tier boosting returns empty array for no matches",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Phase 8d: Federated Search + Ambiguity TC-8d.1: Federated search with tier boosting returns empty array for no matches"
+      ],
+      "evidence": "Unmatched empty DB search returns literal empty array.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:204",
+      "beforeName": "Phase 8d: Federated Search + Ambiguity TC-8d.2: Multi-project ambiguity detection returns null for single-project match",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Phase 8d: Federated Search + Ambiguity TC-8d.2: Multi-project ambiguity detection returns null for single-project match"
+      ],
+      "evidence": "Single registered matching project produces null ambiguity.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:229",
+      "beforeName": "Phase 8d: Federated Search + Ambiguity TC-8d.2: Multi-project ambiguity detection detects ambiguity across multiple projects",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Phase 8d: Federated Search + Ambiguity TC-8d.2: Multi-project ambiguity detection detects ambiguity across multiple projects"
+      ],
+      "evidence": "Two matching projects produce exact Alpha/Beta ambiguity candidates.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:282",
+      "beforeName": "Phase 8d: Federated Search + Ambiguity TC-8d.3: Project briefing generation generates a briefing with correct stats",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Phase 8d: Federated Search + Ambiguity TC-8d.3: Project briefing generation generates a briefing with correct stats"
+      ],
+      "evidence": "Briefing has literal project name, count two, both categories and project summary text.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:324",
+      "beforeName": "Phase 8d: Federated Search + Ambiguity TC-8d.3: Project briefing generation returns null for non-existent project",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Phase 8d: Federated Search + Ambiguity TC-8d.3: Project briefing generation returns null for non-existent project"
+      ],
+      "evidence": "Missing briefing project returns null.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:329",
+      "beforeName": "Phase 8d: Federated Search + Ambiguity TC-8d.3: Project briefing generation generateAllBriefings covers all projects",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Phase 8d: Federated Search + Ambiguity TC-8d.3: Project briefing generation generateAllBriefings covers all projects"
+      ],
+      "evidence": "All-project briefing enumerates exactly AllA and AllB.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:364",
+      "beforeName": "Phase 8d: Federated Search + Ambiguity TC-8d.4: Cross-project search federatedSearch finds memories across projects",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "Phase 8d: Federated Search + Ambiguity TC-8d.4: Cross-project search federatedSearch finds memories across projects"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-federated-cross-project",
+      "mutationIds": [
+        "g2-federated-cross-project"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:389",
+      "beforeName": "Phase 8d: Federated Search + Ambiguity TC-8d.4: Cross-project search working set returns only recent project memories",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Phase 8d: Federated Search + Ambiguity TC-8d.4: Cross-project search working set returns only recent project memories"
+      ],
+      "evidence": "Working set returns exactly ws-recent and excludes old memory.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:417",
+      "beforeName": "Phase 8d: Federated Search + Ambiguity TC-8d.4: Cross-project search formatWorkingSet handles empty set",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Phase 8d: Federated Search + Ambiguity TC-8d.4: Cross-project search formatWorkingSet handles empty set"
+      ],
+      "evidence": "Empty formatter emits No recent activity message.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase8d.federated.test.ts:422",
+      "beforeName": "Phase 8d: Federated Search + Ambiguity TC-8d.4: Cross-project search formatWorkingSet includes memory details",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Phase 8d: Federated Search + Ambiguity TC-8d.4: Cross-project search formatWorkingSet includes memory details"
+      ],
+      "evidence": "Nonempty formatter includes literal fmt-001 and Formatted Memory.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/stores-invoke.test.ts:41",
+      "beforeName": "runStoresCommand (in-process invoke) prints the resolver summary including the project store",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "runStoresCommand (in-process invoke) prints the resolver summary including the project store"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-stores-output",
+      "mutationIds": [
+        "g2-stores-output"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/stores-invoke.test.ts:49",
+      "beforeName": "runStoresCommand (in-process invoke) still prints a summary when no project store exists",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "runStoresCommand (in-process invoke) still prints a summary when no project store exists"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-stores-output",
+      "mutationIds": [
+        "g2-stores-output"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncClientRead.test.ts:101",
+      "beforeName": "syncClientRead v13 applyPendingOverlay merges pending and excludes ingested ULIDs",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "syncClientRead v13 applyPendingOverlay merges pending and excludes ingested ULIDs"
+      ],
+      "evidence": "Pending overlay merges exact 01BASE/01PEND IDs and excludes acknowledged 01DONE.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncClientRead.test.ts:164",
+      "beforeName": "syncClientRead v13 listClientReceipts and getIngestedUlids tolerate missing dir and malformed files",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "syncClientRead v13 listClientReceipts and getIngestedUlids tolerate missing dir and malformed files"
+      ],
+      "evidence": "Missing receipt directory yields empty list and mixed valid/malformed files yield exact ingested-ULID set.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncClientRead.test.ts:176",
+      "beforeName": "syncClientRead v13 openClientReadContext uses local db for master role",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "syncClientRead v13 openClientReadContext uses local db for master role"
+      ],
+      "evidence": "Master-role context uses caller-owned DB, master source and empty overlay.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncClientRead.test.ts:186",
+      "beforeName": "syncClientRead v13 openClientReadContext opens master db when client and reachable",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "syncClientRead v13 openClientReadContext opens master db when client and reachable"
+      ],
+      "evidence": "Reachable client context opens remote DB and reads literal On master memory title.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncClientRead.test.ts:196",
+      "beforeName": "syncClientRead v13 openClientReadContext falls back to accepted snapshot when offline",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "syncClientRead v13 openClientReadContext falls back to accepted snapshot when offline"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-snapshot-read",
+      "mutationIds": [
+        "g2-snapshot-read"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncClientRead.test.ts:220",
+      "beforeName": "syncClientRead v13 openClientReadContext returns pending-only when offline without snapshot",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "syncClientRead v13 openClientReadContext returns pending-only when offline without snapshot"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-pending-content",
+      "mutationIds": [
+        "g2-pending-content"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncClientRead.test.ts:237",
+      "beforeName": "syncClientRead v13 openClientReadContext filters pending overlay by ingest receipts",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "syncClientRead v13 openClientReadContext filters pending overlay by ingest receipts"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-pending-receipt",
+      "mutationIds": [
+        "g2-pending-receipt"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:39",
+      "beforeName": "syncIngest automation runMasterIngestSweep output modes quiet mode produces zero stdout",
+      "beforeClassification": "WEAK",
+      "afterNames": [],
+      "evidence": "Duplicate removed. The strengthened ingests staged memory in quiet mode without stdout case proves both persisted content and silence; it kills the quiet no-op mutation that this original test survived.",
+      "mutationIds": [
+        "g2-quiet-noop"
+      ],
+      "action": "deleted",
+      "afterClassification": null
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:44",
+      "beforeName": "syncIngest automation runMasterIngestSweep output modes json mode writes a single JSON object to stdout",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "syncIngest automation runMasterIngestSweep output modes json mode writes a single JSON object to stdout"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-ingest-json",
+      "mutationIds": [
+        "g2-ingest-json"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:56",
+      "beforeName": "syncIngest automation runMasterIngestSweep output modes json mode still succeeds with zero ingested",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "syncIngest automation runMasterIngestSweep output modes json mode still succeeds with zero ingested"
+      ],
+      "evidence": "Empty quiet JSON sweep returns zero ingested and empty errors.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:62",
+      "beforeName": "syncIngest automation runMasterIngestSweep output modes ingests staged memory in quiet mode without stdout",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "syncIngest automation runMasterIngestSweep output modes ingests staged memory in quiet mode without stdout"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-ingest-body, g2-quiet-noop",
+      "mutationIds": [
+        "g2-ingest-body",
+        "g2-quiet-noop"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:78",
+      "beforeName": "syncIngest automation maybeRunStartupIngestSweep skips when machine role is client",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "syncIngest automation maybeRunStartupIngestSweep skips when machine role is client"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-startup-client",
+      "mutationIds": [
+        "g2-startup-client"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:101",
+      "beforeName": "syncIngest automation maybeRunStartupIngestSweep skips when remote sync is disabled",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "syncIngest automation maybeRunStartupIngestSweep skips when remote sync is disabled"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-startup-disabled",
+      "mutationIds": [
+        "g2-startup-disabled"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:121",
+      "beforeName": "syncIngest automation launchd plist generation produces valid XML with required keys",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "syncIngest automation launchd plist generation produces valid XML with required keys"
+      ],
+      "evidence": "Generated launchd output includes literal label, 900-second interval and ingest/quiet arguments.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:136",
+      "beforeName": "syncIngest automation systemd unit generation produces a valid oneshot service unit",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "syncIngest automation systemd unit generation produces a valid oneshot service unit"
+      ],
+      "evidence": "Generated systemd service includes literal oneshot type and full ingest command.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncIngestAutomation.test.ts:144",
+      "beforeName": "syncIngest automation systemd unit generation produces a timer with configurable interval",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "syncIngest automation systemd unit generation produces a timer with configurable interval"
+      ],
+      "evidence": "20-minute systemd timer renders literal OnUnitActiveSec=1200s and timers.target.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncStaging.test.ts:31",
+      "beforeName": "syncStaging v13 writes atomically and validates checksum on read",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "syncStaging v13 round-trips a staged record and rejects corrupted content"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-staging-checksum",
+      "mutationIds": [
+        "g2-staging-checksum"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncStaging.test.ts:50",
+      "beforeName": "syncStaging v13 quarantines checksum mismatch and unknown schemaVersion",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "syncStaging v13 quarantines checksum mismatch and unknown schemaVersion"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-staging-quarantine",
+      "mutationIds": [
+        "g2-staging-quarantine"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncStaging.test.ts:97",
+      "beforeName": "syncStaging v13 moves stale .tmp files into failed/",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "syncStaging v13 moves stale .tmp files into failed/"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-staging-copy",
+      "mutationIds": [
+        "g2-staging-copy"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/syncStaging.test.ts:105",
+      "beforeName": "syncStaging v13 orders queue by ledger firstSeenAt when master DB is available",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "syncStaging v13 orders queue by ledger firstSeenAt when master DB is available"
+      ],
+      "evidence": "Real ledger timestamps order first pending queue entry as literal 01EARLY despite reverse file creation.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/timeline-invoke.test.ts:47",
+      "beforeName": "runTimelineCommand (in-process invoke) prints 'No memories found.' on an empty central DB",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "runTimelineCommand (in-process invoke) prints 'No memories found.' on an empty central DB"
+      ],
+      "evidence": "Empty timeline command emits literal No memories found.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/timeline-invoke.test.ts:53",
+      "beforeName": "runTimelineCommand (in-process invoke) groups seeded memories by period (--json)",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "runTimelineCommand (in-process invoke) groups seeded memories by period (--json)"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-timeline-period",
+      "mutationIds": [
+        "g2-timeline-period"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/timeline-invoke.test.ts:92",
+      "beforeName": "runTimelineCommand (in-process invoke) renders the human timeline header for seeded memories",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "runTimelineCommand (in-process invoke) renders the human timeline header for seeded memories"
+      ],
+      "evidence": "Human timeline renders literal by-month header and one-memory count.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v512-centralize.test.ts:37",
+      "beforeName": "v5.12 centralizeDb copies a consistent brain (with data) to the target",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "v5.12 centralizeDb copies a consistent brain (with data) to the target"
+      ],
+      "evidence": "Real centralized DB copy opens and contains literal seeded project name and memory title.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v512-centralize.test.ts:57",
+      "beforeName": "v5.12 centralizeDb refuses to overwrite an existing target without --force",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "v5.12 centralizeDb refuses to overwrite an existing target without --force"
+      ],
+      "evidence": "Repeated target without force rejects with already-exists error.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v512-centralize.test.ts:62",
+      "beforeName": "v5.12 centralizeDb overwrites with force",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "v5.12 centralizeDb overwrites with force"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-centralize-force",
+      "mutationIds": [
+        "g2-centralize-force"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v512-centralize.test.ts:67",
+      "beforeName": "v5.12 centralizeDb throws when the source brain is missing",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "v5.12 centralizeDb throws when the source brain is missing"
+      ],
+      "evidence": "Missing source rejects with No local brain error.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v512-http-cors.test.ts:33",
+      "beforeName": "v5.12 Origin guard disallowed Origin → 403",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "v5.12 Origin guard disallowed Origin → 403"
+      ],
+      "evidence": "An evil.example Origin receives literal HTTP 403 from the real HTTP server.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v512-http-cors.test.ts:43",
+      "beforeName": "v5.12 Origin guard no Origin header → not 403",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "v5.12 Origin guard no Origin header permits MCP initialization"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-cors-no-origin",
+      "mutationIds": [
+        "g2-cors-no-origin"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v512-http-cors.test.ts:49",
+      "beforeName": "v5.12 Origin guard allowlisted Origin → not 403",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "v5.12 Origin guard allowlisted Origin permits MCP initialization"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-cors-allowed",
+      "mutationIds": [
+        "g2-cors-allowed"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v512-mcpHttp.test.ts:46",
+      "beforeName": "v5.12 MCP HTTP transport serves /health",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "v5.12 MCP HTTP transport serves /health"
+      ],
+      "evidence": "The real health endpoint returns success and literal status ok.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v512-mcpHttp.test.ts:53",
+      "beforeName": "v5.12 MCP HTTP transport a client can connect and list tools over HTTP",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "v5.12 MCP HTTP transport a client can connect and list tools over HTTP"
+      ],
+      "evidence": "An SDK client initializes through the real HTTP transport and lists the ping tool.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v512-mcpHttp.test.ts:60",
+      "beforeName": "v5.12 MCP HTTP transport tracks concurrent sessions independently",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "v5.12 MCP HTTP transport tracks concurrent sessions independently"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-http-session-isolation",
+      "mutationIds": [
+        "g2-http-session-isolation"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v512-mcpHttp.test.ts:68",
+      "beforeName": "v5.12 MCP HTTP transport 404s unknown paths",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "v5.12 MCP HTTP transport 404s unknown paths"
+      ],
+      "evidence": "A real request to an unknown route receives literal HTTP 404.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v512-mcpHttp.test.ts:74",
+      "beforeName": "v5.12 MCP HTTP transport returns 400 for a non-initialize POST without a session",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "v5.12 MCP HTTP transport returns 400 for a non-initialize POST without a session"
+      ],
+      "evidence": "A tools/list request lacking a session receives literal HTTP 400.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v512-mcpHttp.test.ts:86",
+      "beforeName": "v5.12 MCP HTTP auth (Phase C) rejects requests without the bearer token",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "v5.12 MCP HTTP auth (Phase C) rejects requests without the bearer token"
+      ],
+      "evidence": "A server configured with a bearer token rejects a real unauthenticated MCP request with HTTP 401.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v512-mcpHttp.test.ts:96",
+      "beforeName": "v5.12 MCP HTTP auth (Phase C) allows a client that presents the token",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "v5.12 MCP HTTP auth (Phase C) allows a client that presents the token"
+      ],
+      "evidence": "A real SDK client using the configured bearer token connects and receives the ping tool.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v512-mcpHttp.test.ts:108",
+      "beforeName": "v5.12 MCP HTTP auth (Phase C) health probe is reachable without auth",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "v5.12 MCP HTTP auth (Phase C) health probe is reachable without auth"
+      ],
+      "evidence": "The health endpoint remains successful when bearer auth is configured and no authorization is supplied.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v592-serve-stdout-clean.test.ts:42",
+      "beforeName": "v5.9.2 regression: gnosys serve stdout must stay clean emits zero stdout bytes even when DB app_version is older than pkg.version",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "v5.9.2 regression: gnosys serve stdout must stay clean initializes with valid JSON-RPC against an older database"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-serve-exit",
+      "mutationIds": [
+        "g2-serve-exit"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v594-panel-edges.test.ts:27",
+      "beforeName": "Panel — v5.9.4 edge cases (Bugs 1+2) top and bottom borders have identical printable widths",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "Panel — v5.9.4 edge cases (Bugs 1+2) top and bottom borders have identical printable widths"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-panel-width",
+      "mutationIds": [
+        "g2-panel-width"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v594-panel-edges.test.ts:43",
+      "beforeName": "Panel — v5.9.4 edge cases (Bugs 1+2) ANSI in the title does not shift the right rule",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "Panel — v5.9.4 edge cases (Bugs 1+2) ANSI in the title does not shift the right rule"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-panel-title",
+      "mutationIds": [
+        "g2-panel-title"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v594-panel-edges.test.ts:51",
+      "beforeName": "Panel — v5.9.4 edge cases (Bugs 1+2) very long titles fall back to a 1-char clamp instead of negative pad",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "Panel — v5.9.4 edge cases (Bugs 1+2) very long titles fall back to a 1-char clamp instead of negative pad"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-panel-clamp",
+      "mutationIds": [
+        "g2-panel-clamp"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/v594-panel-edges.test.ts:63",
+      "beforeName": "Panel — v5.9.4 edge cases (Bugs 1+2) uses rounded glyphs + accent-dim border per design",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "Panel — v5.9.4 edge cases (Bugs 1+2) uses rounded glyphs + accent-dim border per design"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-panel-color",
+      "mutationIds": [
+        "g2-panel-color"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/web-remove-invoke.test.ts:59",
+      "beforeName": "runWebRemoveCommand (in-process invoke) removes a knowledge file and rebuilds the index (--json)",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "runWebRemoveCommand (in-process invoke) removes a knowledge file and rebuilds the index (--json)"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-web-remove-index",
+      "mutationIds": [
+        "g2-web-remove-index"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/web-remove-invoke.test.ts:68",
+      "beforeName": "runWebRemoveCommand (in-process invoke) refuses to remove a path outside the knowledge directory",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "runWebRemoveCommand (in-process invoke) refuses to remove a path outside the knowledge directory"
+      ],
+      "evidence": "Traversal outside knowledge root produces exit(1) and the literal refusal message.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/web-remove-invoke.test.ts:77",
+      "beforeName": "runWebRemoveCommand (in-process invoke) errors on a missing file",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "runWebRemoveCommand (in-process invoke) errors on a missing file"
+      ],
+      "evidence": "A missing file produces exit(1) and literal File not found output.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:59",
+      "beforeName": "Fixture validation sample-index.json is valid and loadable",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "Fixture validation sample-index.json is valid and loadable"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-web-load-title",
+      "mutationIds": [
+        "g2-web-load-title"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:66",
+      "beforeName": "Fixture validation sample knowledge files have valid frontmatter",
+      "beforeClassification": "HOLLOW",
+      "afterNames": [],
+      "evidence": "The existing full pipeline builds and searches these fixtures.",
+      "mutationIds": [],
+      "action": "deleted",
+      "afterClassification": null,
+      "structuralReason": "Reads static fixture contents or directory entries and asserts only fixture structure; never calls application code."
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:81",
+      "beforeName": "Fixture validation sample HTML pages exist and are valid",
+      "beforeClassification": "HOLLOW",
+      "afterNames": [],
+      "evidence": "Structured ingest cases call the application extractor on these fixtures.",
+      "mutationIds": [],
+      "action": "deleted",
+      "afterClassification": null,
+      "structuralReason": "Reads static fixture contents or directory entries and asserts only fixture structure; never calls application code."
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:93",
+      "beforeName": "Fixture validation sample MDX files exist",
+      "beforeClassification": "HOLLOW",
+      "afterNames": [],
+      "evidence": "Removed a fixture file-count check with no application behavior.",
+      "mutationIds": [],
+      "action": "deleted",
+      "afterClassification": null,
+      "structuralReason": "Reads static fixture contents or directory entries and asserts only fixture structure; never calls application code."
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:103",
+      "beforeName": "Full pipeline: directory ingest → build index → search ingests markdown files and builds a searchable index",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Full pipeline: directory ingest → build index → search ingests markdown files and builds a searchable index"
+      ],
+      "evidence": "The real index build/write/load/search pipeline yields five documents and an Agentic top hit for automation agents workflow.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:117",
+      "beforeName": "Full pipeline: directory ingest → build index → search search respects category filter",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "Full pipeline: directory ingest → build index → search search respects category filter"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-web-category",
+      "mutationIds": [
+        "g2-web-category"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:129",
+      "beforeName": "Full pipeline: directory ingest → build index → search search respects tag filter",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "Full pipeline: directory ingest → build index → search search respects tag filter"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-web-tags",
+      "mutationIds": [
+        "g2-web-tags"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:139",
+      "beforeName": "Full pipeline: directory ingest → build index → search getDocument retrieves specific document from built index",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "Full pipeline: directory ingest → build index → search getDocument retrieves specific document from built index"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-web-getdoc",
+      "mutationIds": [
+        "g2-web-getdoc"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:150",
+      "beforeName": "Full pipeline: directory ingest → build index → search listDocuments filters by category on built index",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "Full pipeline: directory ingest → build index → search listDocuments filters by category on built index"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-web-list-category",
+      "mutationIds": [
+        "g2-web-list-category"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:166",
+      "beforeName": "Structured ingest: HTML → frontmatter extraction extracts title and category from HTML content",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Structured ingest: HTML → frontmatter extraction extracts title and category from HTML content"
+      ],
+      "evidence": "Real structured extraction of about-page HTML yields an About title and literal mapped company category.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:179",
+      "beforeName": "Structured ingest: HTML → frontmatter extraction extracts category from URL patterns for blog posts",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Structured ingest: HTML → frontmatter extraction extracts category from URL patterns for blog posts"
+      ],
+      "evidence": "Real extraction maps a matching blog URL to literal category blog.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:192",
+      "beforeName": "Structured ingest: HTML → frontmatter extraction falls back to general category for unmatched URLs",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Structured ingest: HTML → frontmatter extraction falls back to general category for unmatched URLs"
+      ],
+      "evidence": "An unmatched URL maps to literal fallback category general.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:205",
+      "beforeName": "TF-IDF on fixture knowledge files computes distinctive terms for each document",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "TF-IDF on fixture knowledge files computes distinctive terms for each document"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-web-tfidf",
+      "mutationIds": [
+        "g2-web-tfidf"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:222",
+      "beforeName": "TF-IDF on fixture knowledge files automation doc gets automation-related terms",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "TF-IDF on fixture knowledge files automation doc gets automation-related terms"
+      ],
+      "evidence": "Real TF-IDF for the automation document must include at least one literal domain term automation, agentic or workflow.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:244",
+      "beforeName": "MDX content handling MDX fixtures contain content that should be processable",
+      "beforeClassification": "HOLLOW",
+      "afterNames": [],
+      "evidence": "Removed a fixture nonempty check with no application behavior.",
+      "mutationIds": [],
+      "action": "deleted",
+      "afterClassification": null,
+      "structuralReason": "Reads static fixture contents or directory entries and asserts only fixture structure; never calls application code."
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:255",
+      "beforeName": "Index build determinism building index twice produces identical output",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "Index build determinism building index twice produces identical output"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-web-determinism",
+      "mutationIds": [
+        "g2-web-determinism",
+        "g2-web-deterministic-corruption",
+        "g2-web-deterministic-corruption"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:274",
+      "beforeName": "Bundle isolation: gnosys/web has no native deps staticSearch.ts only imports from Node.js fs",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "Bundle isolation: gnosys/web has no native deps the published web entry searches without third-party runtime dependencies"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-web-native-isolation",
+      "mutationIds": [
+        "g2-web-native-isolation"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/webIntegration.test.ts:292",
+      "beforeName": "Bundle isolation: gnosys/web has no native deps staticSearch.ts has no import type that would pull runtime deps",
+      "beforeClassification": "COUPLED",
+      "afterNames": [],
+      "evidence": "Replaced by the published web entry searches without third-party runtime dependencies.",
+      "mutationIds": [],
+      "action": "deleted",
+      "afterClassification": null
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:67",
+      "beforeName": "extractLinks extracts simple wikilinks",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "extractLinks extracts simple wikilinks"
+      ],
+      "evidence": "extractLinks returns exactly DB Choice and architecture/three-layers with a literal null display alias.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:75",
+      "beforeName": "extractLinks extracts wikilinks with display text",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "extractLinks extracts wikilinks with display text"
+      ],
+      "evidence": "An aliased wikilink yields literal target Auth Decision and display text our auth approach.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:82",
+      "beforeName": "extractLinks returns empty array for content with no links",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "extractLinks returns empty array for content with no links"
+      ],
+      "evidence": "Link-free content produces an empty extracted-link array.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:87",
+      "beforeName": "extractLinks includes source info",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "extractLinks includes source info"
+      ],
+      "evidence": "Extracted links carry literal source path decisions/auth-decision.md and source title Auth Decision.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:95",
+      "beforeName": "resolveLink resolves by title (case-insensitive)",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "resolveLink resolves by exact title"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-wiki-exact-title",
+      "mutationIds": [
+        "g2-wiki-exact-title"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:100",
+      "beforeName": "resolveLink resolves by title case-insensitively",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "resolveLink resolves by title case-insensitively"
+      ],
+      "evidence": "Lowercase db choice resolves to literal ID db-choice.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:105",
+      "beforeName": "resolveLink resolves by relative path",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "resolveLink resolves by relative path"
+      ],
+      "evidence": "The architecture/three-layers.md path resolves to literal ID three-layers.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:110",
+      "beforeName": "resolveLink resolves by filename without extension",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "resolveLink resolves by filename without extension"
+      ],
+      "evidence": "The extensionless filename three-layers resolves to literal ID three-layers.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:115",
+      "beforeName": "resolveLink resolves by id",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "resolveLink resolves by id"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-wiki-id",
+      "mutationIds": [
+        "g2-wiki-id"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:120",
+      "beforeName": "resolveLink returns null for non-existent target",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "resolveLink returns null for non-existent target"
+      ],
+      "evidence": "An unknown target produces literal null.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:127",
+      "beforeName": "buildLinkGraph builds graph with correct link counts",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "buildLinkGraph builds graph with correct link counts"
+      ],
+      "evidence": "The concrete four-memory graph reports exactly five extracted links.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:132",
+      "beforeName": "buildLinkGraph tracks outgoing links",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "buildLinkGraph tracks outgoing links"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-wiki-graph-outgoing",
+      "mutationIds": [
+        "g2-wiki-graph-outgoing"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:138",
+      "beforeName": "buildLinkGraph tracks backlinks (incoming)",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "buildLinkGraph tracks backlinks (incoming)"
+      ],
+      "evidence": "Auth backlinks contain exactly two links from literal DB Choice and Frontend Guide.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:148",
+      "beforeName": "buildLinkGraph identifies orphaned links",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "buildLinkGraph identifies orphaned links"
+      ],
+      "evidence": "The graph identifies exactly one orphan with literal target Nonexistent Memory and source Frontend Guide.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:155",
+      "beforeName": "buildLinkGraph handles memories with no links",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "buildLinkGraph handles memories with no links"
+      ],
+      "evidence": "The concrete Three Layers memory has zero outgoing and one incoming link.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:163",
+      "beforeName": "buildLinkGraph handles empty memory list",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "buildLinkGraph handles empty memory list"
+      ],
+      "evidence": "An empty input produces zero total links, no orphaned links and no graph nodes.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:172",
+      "beforeName": "getBacklinks returns backlinks for a target",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "getBacklinks returns backlinks for a target"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-wiki-backlinks",
+      "mutationIds": [
+        "g2-wiki-backlinks"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:177",
+      "beforeName": "getBacklinks returns empty for memory with no backlinks",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "getBacklinks returns empty for memory with no backlinks"
+      ],
+      "evidence": "A frontend memory with no backlinks returns an empty array.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:184",
+      "beforeName": "getOutgoingLinks returns outgoing links for a source",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "getOutgoingLinks returns outgoing links for a source"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-wiki-outgoing",
+      "mutationIds": [
+        "g2-wiki-outgoing"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:189",
+      "beforeName": "getOutgoingLinks returns empty for memory with no outgoing links",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "getOutgoingLinks returns empty for memory with no outgoing links"
+      ],
+      "evidence": "A layers memory without outgoing links returns an empty array.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:196",
+      "beforeName": "formatGraphSummary produces a readable summary",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "formatGraphSummary produces a readable summary"
+      ],
+      "evidence": "The rendered graph summary contains literal total=5, orphaned=1, Auth Decision and Nonexistent Memory.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/wikilinks.test.ts:205",
+      "beforeName": "formatGraphSummary handles empty graph",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "formatGraphSummary handles empty graph"
+      ],
+      "evidence": "The empty graph summary includes literal zero links and No cross-references found.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    }
+  ]
+}

@@ -1,8 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
   buildOpenRouterTiers,
-  OPENROUTER_DEFAULT_MODEL,
-  OPENROUTER_STATIC_TIERS,
 } from "../lib/openrouterTiers.js";
 
 describe("buildOpenRouterTiers", () => {
@@ -20,12 +18,17 @@ describe("buildOpenRouterTiers", () => {
         created: 1_600_000_000,
       },
     ]);
-    expect(tiers.some((t) => t.model === OPENROUTER_DEFAULT_MODEL)).toBe(true);
-    expect(tiers.some((t) => t.input === 0 && t.output === 0)).toBe(true);
-    expect(tiers.some((t) => t.recommended)).toBe(true);
+    expect(tiers).toEqual([
+      { name: "Free · Nemotron 3 Super (free)", model: "nvidia/nemotron-3-super-120b-a12b:free", input: 0, output: 0, recommended: true },
+      { name: "Free · llama-3.3-70b-instruct:free", model: "meta-llama/llama-3.3-70b-instruct:free", input: 0, output: 0, recommended: false },
+    ]);
   });
 
   it("falls back to static tiers for empty catalog", () => {
-    expect(buildOpenRouterTiers([])).toEqual(OPENROUTER_STATIC_TIERS);
+    expect(buildOpenRouterTiers([])).toEqual([
+      { name: "Free · Nemotron 3 Super", model: "nvidia/nemotron-3-super-120b-a12b:free", input: 0, output: 0, recommended: true },
+      { name: "Free · Devstral Small", model: "mistralai/devstral-small-2505:free", input: 0, output: 0, recommended: false },
+      { name: "Free · Llama 3.3 70B", model: "meta-llama/llama-3.3-70b-instruct:free", input: 0, output: 0, recommended: false },
+    ]);
   });
 });

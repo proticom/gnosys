@@ -1,19 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "fs";
 import path from "path";
-import { readCliSource } from "./_helpers.js"; // v6.2.1 cli split
-
-/**
- * Doc-drift guard for `gnosys web` command docs (v5.17.0 semantic search).
- *
- * Parses the flags documented in docs/commands/web-build-index.md,
- * web-build.md, and web-status.md and asserts each documented `--flag`
- * exists in src/cli.ts. One-directional on purpose: docs may omit flags,
- * but must never document a flag the CLI does not ship.
- */
+import { spawnSync } from "node:child_process";
 
 const root = path.resolve(__dirname, "..", "..");
-const cliSource = readCliSource(); // v6.2.1 cli split: read src/cli.ts + src/cli/*.ts
 
 const docFiles = [
   "docs/commands/web-build-index.md",
@@ -23,20 +13,24 @@ const docFiles = [
 
 function documentedFlags(markdown: string): string[] {
   // Match long flags like --input, --no-stop-words, --embed-model.
-  const matches = markdown.match(/--[a-z][a-z0-9-]*/g) ?? [];
+  const options = markdown.split("\n").filter(line => line.startsWith("| `--")).join("\n");
+  const matches = options.match(/--[a-z][a-z0-9-]*/g) ?? [];
   return [...new Set(matches)];
 }
 
 describe("web command docs only document shipped CLI flags", () => {
   for (const relPath of docFiles) {
-    it(`${relPath} flags all exist in src/cli.ts`, () => {
+    it(`${relPath} flags are accepted by the published subcommand`, () => {
       const markdown = readFileSync(path.join(root, relPath), "utf-8");
       const flags = documentedFlags(markdown);
+      const command = path.basename(relPath, ".md").replace(/^web-/, "");
+      const child = spawnSync(process.execPath, [path.join(root, "dist/cli.js"), "web", command, "--help"], {
+        encoding: "utf8", timeout: 10000, env: { ...process.env, GNOSYS_SKIP_UPGRADE_NUDGE: "1" },
+      });
+      expect(child.status, child.stderr).toBe(0);
       expect(flags.length).toBeGreaterThan(0);
       for (const flag of flags) {
-        // Commander negated flags (--no-foo) are declared literally in
-        // cli.ts option strings, so a plain substring check suffices.
-        expect(cliSource, `documented flag ${flag} in ${relPath} is missing from src/cli.ts`).toContain(flag);
+        expect(child.stdout, `documented flag ${flag} is absent from web ${command} help`).toMatch(new RegExp(`${flag}(?:[\\s=<,]|$)`));
       }
     });
   }

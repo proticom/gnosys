@@ -1,0 +1,1188 @@
+[
+  {
+    "id": "g2-panel-width",
+    "file": "src/lib/setup/ui/panel.ts",
+    "search": "Math.min(66, Math.max(40, W - 4))",
+    "replace": "Math.min(65, Math.max(40, W - 4))",
+    "tests": [
+      "src/test/v594-panel-edges.test.ts"
+    ],
+    "testName": "top\\ and\\ bottom\\ borders\\ have\\ identical\\ printable\\ widths",
+    "description": "Shrink panel content by one column",
+    "build": false,
+    "artifact": "batch1.before.spec.json"
+  },
+  {
+    "id": "g2-panel-title",
+    "file": "src/lib/setup/ui/panel.ts",
+    "search": "  const W = width();",
+    "replace": "  title = \"\";\n  const W = width();",
+    "tests": [
+      "src/test/v594-panel-edges.test.ts"
+    ],
+    "testName": "ANSI\\ in\\ the\\ title\\ does\\ not\\ shift\\ the\\ right\\ rule",
+    "description": "Drop the supplied title before rendering",
+    "build": false,
+    "artifact": "batch1.before.spec.json"
+  },
+  {
+    "id": "g2-web-remove-index",
+    "file": "src/lib/webRemoveCommand.ts",
+    "search": "await writeIndex(index, path.join(knowledgeRoot, \"gnosys-index.json\"));",
+    "replace": "await fsp.writeFile(path.join(knowledgeRoot, \"gnosys-index.json\"), \"{}\");",
+    "tests": [
+      "src/test/web-remove-invoke.test.ts"
+    ],
+    "testName": "removes\\ a\\ knowledge\\ file\\ and\\ rebuilds\\ the\\ index\\ \\(\\-\\-json\\)",
+    "description": "Write corrupt empty index after deletion",
+    "build": false,
+    "artifact": "batch1.before.spec.json"
+  },
+  {
+    "id": "g2-web-load-title",
+    "file": "src/lib/staticSearch.ts",
+    "search": "  cachedIndex = index;",
+    "replace": "  index.documents = index.documents.map(document => ({ ...document, title: \"WRONG\" }));\n  cachedIndex = index;",
+    "tests": [
+      "src/test/webIntegration.test.ts"
+    ],
+    "testName": "sample\\-index\\.json\\ is\\ valid\\ and\\ loadable",
+    "description": "Lose document titles when loading a valid index",
+    "build": false,
+    "artifact": "batch1.before.spec.json"
+  },
+  {
+    "id": "g2-web-category",
+    "file": "src/lib/staticSearch.ts",
+    "search": "  const queryTokens = tokenize(query);",
+    "replace": "  if (options.category) return [];\n  const queryTokens = tokenize(query);",
+    "tests": [
+      "src/test/webIntegration.test.ts"
+    ],
+    "testName": "search\\ respects\\ category\\ filter",
+    "description": "Drop all category-filtered search results",
+    "build": false,
+    "artifact": "batch1.before.spec.json"
+  },
+  {
+    "id": "g2-web-tags",
+    "file": "src/lib/staticSearch.ts",
+    "search": "  const queryTokens = tokenize(query);",
+    "replace": "  if (options.tags) return [];\n  const queryTokens = tokenize(query);",
+    "tests": [
+      "src/test/webIntegration.test.ts"
+    ],
+    "testName": "search\\ respects\\ tag\\ filter",
+    "description": "Drop all tag-filtered search results",
+    "build": false,
+    "artifact": "batch1.before.spec.json"
+  },
+  {
+    "id": "g2-web-list-category",
+    "file": "src/lib/staticSearch.ts",
+    "search": "  if (!filter) return [...index.documents];",
+    "replace": "  if (filter?.category) return [];\n  if (!filter) return [...index.documents];",
+    "tests": [
+      "src/test/webIntegration.test.ts"
+    ],
+    "testName": "listDocuments\\ filters\\ by\\ category\\ on\\ built\\ index",
+    "description": "Drop all category-filtered listing results",
+    "build": false,
+    "artifact": "batch1.before.spec.json"
+  },
+  {
+    "id": "g2-web-tfidf",
+    "file": "src/lib/structuredIngest.ts",
+    "search": "result.set(doc.id, scores.slice(0, topN));",
+    "replace": "result.set(doc.id, [{ term: \"placeholder\", score: 1 }]);",
+    "tests": [
+      "src/test/webIntegration.test.ts"
+    ],
+    "testName": "computes\\ distinctive\\ terms\\ for\\ each\\ document",
+    "description": "Replace TF-IDF terms with a placeholder",
+    "build": false,
+    "artifact": "batch1.before.spec.json"
+  },
+  {
+    "id": "g2-wiki-graph-outgoing",
+    "file": "src/lib/wikilinks.ts",
+    "search": "sourceNode.outgoing.push(link);",
+    "replace": "sourceNode.outgoing.push({ ...link, target: \"WRONG\" });",
+    "tests": [
+      "src/test/wikilinks.test.ts"
+    ],
+    "testName": "tracks\\ outgoing\\ links",
+    "description": "Corrupt outgoing graph target identities",
+    "build": false,
+    "artifact": "batch1.before.spec.json"
+  },
+  {
+    "id": "g2-wiki-backlinks",
+    "file": "src/lib/wikilinks.ts",
+    "search": "return node?.incoming || [];",
+    "replace": "return node?.incoming.map(link => ({ ...link, sourceTitle: \"WRONG\" })) || [];",
+    "tests": [
+      "src/test/wikilinks.test.ts"
+    ],
+    "testName": "returns\\ backlinks\\ for\\ a\\ target",
+    "description": "Corrupt backlink source names",
+    "build": false,
+    "artifact": "batch1.before.spec.json"
+  },
+  {
+    "id": "g2-wiki-outgoing",
+    "file": "src/lib/wikilinks.ts",
+    "search": "return node?.outgoing || [];",
+    "replace": "return node?.outgoing.map(link => ({ ...link, target: \"WRONG\" })) || [];",
+    "tests": [
+      "src/test/wikilinks.test.ts"
+    ],
+    "testName": "returns\\ outgoing\\ links\\ for\\ a\\ source",
+    "description": "Corrupt outgoing targets returned by the public accessor",
+    "build": false,
+    "artifact": "batch1.before.spec.json"
+  },
+  {
+    "id": "g2-web-load-title",
+    "file": "src/lib/staticSearch.ts",
+    "search": "  cachedIndex = index;",
+    "replace": "  index.documents = index.documents.map(document => ({ ...document, title: \"WRONG\" }));\n  cachedIndex = index;",
+    "tests": [
+      "src/test/webIntegration.test.ts"
+    ],
+    "testName": "sample\\-index\\.json\\ is\\ valid\\ and\\ loadable",
+    "description": "Lose document titles when loading a valid index",
+    "build": false,
+    "artifact": "batch1.remaining.spec.json"
+  },
+  {
+    "id": "g2-web-category",
+    "file": "src/lib/staticSearch.ts",
+    "search": "  const queryTokens = tokenize(query);",
+    "replace": "  if (options.category) return [];\n  const queryTokens = tokenize(query);",
+    "tests": [
+      "src/test/webIntegration.test.ts"
+    ],
+    "testName": "search\\ respects\\ category\\ filter",
+    "description": "Drop all category-filtered search results",
+    "build": false,
+    "artifact": "batch1.remaining.spec.json"
+  },
+  {
+    "id": "g2-web-tags",
+    "file": "src/lib/staticSearch.ts",
+    "search": "  const queryTokens = tokenize(query);",
+    "replace": "  if (options.tags) return [];\n  const queryTokens = tokenize(query);",
+    "tests": [
+      "src/test/webIntegration.test.ts"
+    ],
+    "testName": "search\\ respects\\ tag\\ filter",
+    "description": "Drop all tag-filtered search results",
+    "build": false,
+    "artifact": "batch1.remaining.spec.json"
+  },
+  {
+    "id": "g2-web-list-category",
+    "file": "src/lib/staticSearch.ts",
+    "search": "  if (!filter) return [...index.documents];",
+    "replace": "  if (filter?.category) return [];\n  if (!filter) return [...index.documents];",
+    "tests": [
+      "src/test/webIntegration.test.ts"
+    ],
+    "testName": "listDocuments\\ filters\\ by\\ category\\ on\\ built\\ index",
+    "description": "Drop all category-filtered listing results",
+    "build": false,
+    "artifact": "batch1.remaining.spec.json"
+  },
+  {
+    "id": "g2-web-tfidf",
+    "file": "src/lib/structuredIngest.ts",
+    "search": "result.set(doc.id, scores.slice(0, topN));",
+    "replace": "result.set(doc.id, [{ term: \"placeholder\", score: 1 }]);",
+    "tests": [
+      "src/test/webIntegration.test.ts"
+    ],
+    "testName": "computes\\ distinctive\\ terms\\ for\\ each\\ document",
+    "description": "Replace TF-IDF terms with a placeholder",
+    "build": false,
+    "artifact": "batch1.remaining.spec.json"
+  },
+  {
+    "id": "g2-wiki-graph-outgoing",
+    "file": "src/lib/wikilinks.ts",
+    "search": "sourceNode.outgoing.push(link);",
+    "replace": "sourceNode.outgoing.push({ ...link, target: \"WRONG\" });",
+    "tests": [
+      "src/test/wikilinks.test.ts"
+    ],
+    "testName": "tracks\\ outgoing\\ links",
+    "description": "Corrupt outgoing graph target identities",
+    "build": false,
+    "artifact": "batch1.remaining.spec.json"
+  },
+  {
+    "id": "g2-wiki-backlinks",
+    "file": "src/lib/wikilinks.ts",
+    "search": "return node?.incoming || [];",
+    "replace": "return node?.incoming.map(link => ({ ...link, sourceTitle: \"WRONG\" })) || [];",
+    "tests": [
+      "src/test/wikilinks.test.ts"
+    ],
+    "testName": "returns\\ backlinks\\ for\\ a\\ target",
+    "description": "Corrupt backlink source names",
+    "build": false,
+    "artifact": "batch1.remaining.spec.json"
+  },
+  {
+    "id": "g2-wiki-outgoing",
+    "file": "src/lib/wikilinks.ts",
+    "search": "return node?.outgoing || [];",
+    "replace": "return node?.outgoing.map(link => ({ ...link, target: \"WRONG\" })) || [];",
+    "tests": [
+      "src/test/wikilinks.test.ts"
+    ],
+    "testName": "returns\\ outgoing\\ links\\ for\\ a\\ source",
+    "description": "Corrupt outgoing targets returned by the public accessor",
+    "build": false,
+    "artifact": "batch1.remaining.spec.json"
+  },
+  {
+    "id": "g2-bootstrap-discovery",
+    "file": "src/lib/bootstrap.ts",
+    "search": "return files.sort();",
+    "replace": "return files.sort().map(file => file.replace(/\\.[^.]+$/, \".wrong\"));",
+    "tests": [
+      "src/test/bootstrap.test.ts"
+    ],
+    "testName": "supports\\ custom\\ patterns|deduplicates\\ files\\ across\\ patterns",
+    "description": "Corrupt extensions returned by custom glob discovery",
+    "artifact": "batch2.before.spec.json"
+  },
+  {
+    "id": "g2-bootstrap-content",
+    "file": "src/lib/bootstrap.ts",
+    "search": "        fullContent\n      );",
+    "replace": "        \"# Wrong\\n\\nLost content\"\n      );",
+    "tests": [
+      "src/test/bootstrap.test.ts"
+    ],
+    "testName": "imports\\ files\\ into\\ the\\ store",
+    "description": "Persist wrong content while preserving counts",
+    "artifact": "batch2.before.spec.json"
+  },
+  {
+    "id": "g2-bootstrap-pattern",
+    "file": "src/lib/bootstrap.ts",
+    "search": "const files = await discoverFiles(options.sourceDir, options.patterns);",
+    "replace": "const files = await discoverFiles(options.sourceDir, [\"**/*.md\"]);",
+    "tests": [
+      "src/test/bootstrap.test.ts"
+    ],
+    "testName": "respects\\ custom\\ patterns",
+    "description": "Ignore custom file patterns",
+    "artifact": "batch2.before.spec.json"
+  },
+  {
+    "id": "g2-export-bundle-content",
+    "file": "src/lib/exportProject.ts",
+    "search": "      ...rest,\n      embedding_b64:",
+    "replace": "      ...rest,\n      content: \"Lost exported content\",\n      embedding_b64:",
+    "tests": [
+      "src/test/export-archive-flag.test.ts"
+    ],
+    "testName": "default\\ exportProject\\ reports\\ archivedExcluded\\ and\\ omits\\ archived\\ memories|includeArchived\\ exports\\ all\\ with\\ status\\ preserved\\ and\\ archivedExcluded\\ 0",
+    "description": "Lose memory bodies in portable project bundles",
+    "artifact": "batch2.before.spec.json"
+  },
+  {
+    "id": "g2-export-vault-write",
+    "file": "src/lib/export.ts",
+    "search": "    this.assertWithin(targetDir, filePath);\n    await fs.writeFile(filePath, content, \"utf-8\");\n    return true;",
+    "replace": "    this.assertWithin(targetDir, filePath);\n    await fs.writeFile(filePath, \"Wrong memory body\", \"utf-8\");\n    return true;",
+    "tests": [
+      "src/test/export-archive-flag.test.ts"
+    ],
+    "testName": "vault\\ export\\ activeOnly\\ reports\\ archivedExcluded",
+    "description": "Corrupt emitted vault files while reporting successful counts",
+    "artifact": "batch2.before.spec.json"
+  },
+  {
+    "id": "g2-federated-recency",
+    "file": "src/lib/federated.ts",
+    "search": "score *= RECENCY_BOOST;",
+    "replace": "score *= 1;",
+    "tests": [
+      "src/test/federated.test.ts",
+      "src/test/phase8d.federated.test.ts"
+    ],
+    "testName": "boosts\\ recently\\ modified\\ memories|recently\\ modified\\ memories\\ get\\ a\\ recency\\ boost",
+    "description": "Keep recent label but omit recency score multiplier",
+    "artifact": "batch2.before.spec.json"
+  },
+  {
+    "id": "g2-federated-reinforcement",
+    "file": "src/lib/federated.ts",
+    "search": "score *= rBoost;",
+    "replace": "score *= 1;",
+    "tests": [
+      "src/test/federated.test.ts",
+      "src/test/phase8d.federated.test.ts"
+    ],
+    "testName": "boosts\\ reinforced\\ memories|reinforced\\ memories\\ get\\ a\\ reinforcement\\ boost",
+    "description": "Keep reinforced label but omit score multiplier",
+    "artifact": "batch2.before.spec.json"
+  },
+  {
+    "id": "g2-federated-global",
+    "file": "src/lib/federated.ts",
+    "search": "  if (rawResults.length === 0) return [];",
+    "replace": "  if (!includeGlobal) return [];\n  if (rawResults.length === 0) return [];",
+    "tests": [
+      "src/test/federated.test.ts",
+      "src/test/phase8d.federated.test.ts"
+    ],
+    "testName": "respects\\ includeGlobal=false",
+    "description": "Drop project results when global inclusion is disabled",
+    "artifact": "batch2.before.spec.json"
+  },
+  {
+    "id": "g2-federated-cross-project",
+    "file": "src/lib/federated.ts",
+    "search": "      projectId: mem.project_id,",
+    "replace": "      projectId: \"wrong-project\",",
+    "tests": [
+      "src/test/phase8d.federated.test.ts"
+    ],
+    "testName": "federatedSearch\\ finds\\ memories\\ across\\ projects",
+    "description": "Misattribute cross-project results while retaining their count",
+    "artifact": "batch2.before.spec.json"
+  },
+  {
+    "id": "g2-centralize-force",
+    "file": "src/lib/centralize.ts",
+    "search": "    await db.backup(target);",
+    "replace": "    if (!opts.force) await db.backup(target);",
+    "tests": [
+      "src/test/v512-centralize.test.ts"
+    ],
+    "testName": "overwrites\\ with\\ force",
+    "description": "centralize-force",
+    "build": false,
+    "artifact": "batch4.before.spec.json"
+  },
+  {
+    "id": "g2-graph-nodes",
+    "file": "src/lib/graphCommand.ts",
+    "search": "nodes: Array.from(graph.nodes.values()),",
+    "replace": "nodes: [],",
+    "tests": [
+      "src/test/graph-invoke.test.ts"
+    ],
+    "testName": "reports\\ wikilinks\\ between\\ seeded\\ memories\\ \\(\\-\\-json\\)",
+    "description": "graph-nodes",
+    "build": false,
+    "artifact": "batch4.before.spec.json"
+  },
+  {
+    "id": "g2-list-tag",
+    "file": "src/lib/listCommand.ts",
+    "search": "    if (opts.tag) {",
+    "replace": "    if (false && opts.tag) {",
+    "tests": [
+      "src/test/list-invoke.test.ts"
+    ],
+    "testName": "filters\\ by\\ tag\\ \\(\\-\\-tag,\\ \\-\\-json\\)",
+    "description": "list-tag",
+    "build": false,
+    "artifact": "batch4.before.spec.json"
+  },
+  {
+    "id": "g2-timeline-period",
+    "file": "src/lib/timelineCommand.ts",
+    "search": "groupDbByPeriod(memories, opts.period as TimePeriod)",
+    "replace": "groupDbByPeriod(memories, \"year\")",
+    "tests": [
+      "src/test/timeline-invoke.test.ts"
+    ],
+    "testName": "groups\\ seeded\\ memories\\ by\\ period\\ \\(\\-\\-json\\)",
+    "description": "timeline-period",
+    "build": false,
+    "artifact": "batch4.before.spec.json"
+  },
+  {
+    "id": "g2-stores-output",
+    "file": "src/lib/storesCommand.ts",
+    "search": "console.log(resolver.getSummary());",
+    "replace": "console.log(\"project\");",
+    "tests": [
+      "src/test/stores-invoke.test.ts"
+    ],
+    "testName": "prints\\ the\\ resolver\\ summary\\ including\\ the\\ project\\ store|still\\ prints\\ a\\ summary\\ when\\ no\\ project\\ store\\ exists",
+    "description": "stores-output",
+    "build": false,
+    "artifact": "batch4.before.spec.json"
+  },
+  {
+    "id": "g2-key-xai",
+    "file": "src/lib/config.ts",
+    "search": "  return getApiKeyForProviderFromConfig(config, \"xai\");",
+    "replace": "  return process.env.XAI_API_KEY || getApiKeyForProviderFromConfig(config, \"xai\");",
+    "tests": [
+      "src/test/llm-providers.test.ts"
+    ],
+    "testName": "getXAIApiKey\\ reads\\ from\\ config\\ first",
+    "description": "Use environment key before configured xai key",
+    "artifact": "batch5.before.spec.json"
+  },
+  {
+    "id": "g2-key-mistral",
+    "file": "src/lib/config.ts",
+    "search": "  return getApiKeyForProviderFromConfig(config, \"mistral\");",
+    "replace": "  return process.env.MISTRAL_API_KEY || getApiKeyForProviderFromConfig(config, \"mistral\");",
+    "tests": [
+      "src/test/llm-providers.test.ts"
+    ],
+    "testName": "getMistralApiKey\\ reads\\ from\\ config\\ first",
+    "description": "Use environment key before configured mistral key",
+    "artifact": "batch5.before.spec.json"
+  },
+  {
+    "id": "g2-openrouter-catalog",
+    "file": "src/lib/openrouterTiers.ts",
+    "search": "  const parsed = catalog\n",
+    "replace": "  const parsed = catalog.slice(0, 0)\n",
+    "tests": [
+      "src/test/openrouterTiers.test.ts"
+    ],
+    "testName": "includes\\ free\\ models\\ with\\ :free\\ suffix",
+    "description": "Ignore available models and always use static fallback tiers",
+    "artifact": "batch5.before.spec.json"
+  },
+  {
+    "id": "g2-snapshot-read",
+    "file": "src/lib/syncClient.ts",
+    "search": "        db: snapDb,\n        localDb,\n        pendingOverlay: pendingAdds,\n        source: \"snapshot\",\n        masterReachable: false,",
+    "replace": "        db: localDb,\n        localDb,\n        pendingOverlay: pendingAdds,\n        source: \"snapshot\",\n        masterReachable: false,",
+    "tests": [
+      "src/test/syncClientRead.test.ts"
+    ],
+    "testName": "openClientReadContext\\ falls\\ back\\ to\\ accepted\\ snapshot\\ when\\ offline",
+    "description": "snapshot-read",
+    "artifact": "batch6.after.spec.json"
+  },
+  {
+    "id": "g2-pending-content",
+    "file": "src/lib/syncClient.ts",
+    "search": "    pendingOverlay: pendingAdds,\n    source: \"pending-only\",",
+    "replace": "    pendingOverlay: pendingAdds.map(p => ({ ...p, content: \"WRONG\" })),\n    source: \"pending-only\",",
+    "tests": [
+      "src/test/syncClientRead.test.ts"
+    ],
+    "testName": "openClientReadContext\\ returns\\ pending\\-only\\ when\\ offline\\ without\\ snapshot",
+    "description": "pending-content",
+    "artifact": "batch6.after.spec.json"
+  },
+  {
+    "id": "g2-pending-receipt",
+    "file": "src/lib/syncClient.ts",
+    "search": "const pendingAdds = localDb.listActivePendingAdds().filter((p) => !ingestedUlids.has(p.id));",
+    "replace": "const pendingAdds = localDb.listActivePendingAdds().filter((p) => false && !ingestedUlids.has(p.id));",
+    "tests": [
+      "src/test/syncClientRead.test.ts"
+    ],
+    "testName": "openClientReadContext\\ filters\\ pending\\ overlay\\ by\\ ingest\\ receipts",
+    "description": "pending-receipt",
+    "artifact": "batch6.after.spec.json"
+  },
+  {
+    "id": "g2-staging-copy",
+    "file": "src/lib/syncStaging.ts",
+    "search": "  renameSync(filePath, dest);\n  return dest;",
+    "replace": "  atomicWriteFileSync(dest, readFileSync(filePath, \"utf8\"));\n  return dest;",
+    "tests": [
+      "src/test/syncStaging.test.ts"
+    ],
+    "testName": "moves\\ stale\\ \\.tmp\\ files\\ into\\ failed/",
+    "description": "staging-copy",
+    "artifact": "batch6.after.spec.json"
+  },
+  {
+    "id": "g2-quiet-noop",
+    "file": "src/lib/syncIngest.ts",
+    "search": "  const result: IngestSweepResult = { ingested: 0, skipped: 0, quarantined: 0, errors: [] };",
+    "replace": "  const result: IngestSweepResult = { ingested: 0, skipped: 0, quarantined: 0, errors: [] };\n  if (opts?.quiet) return result;",
+    "tests": [
+      "src/test/syncIngestAutomation.test.ts"
+    ],
+    "testName": "ingests\\ staged\\ memory\\ in\\ quiet\\ mode\\ without\\ stdout",
+    "description": "quiet-noop",
+    "artifact": "batch6.after.spec.json"
+  },
+  {
+    "id": "g2-ingest-json",
+    "file": "src/lib/syncIngest.ts",
+    "search": "console.log(JSON.stringify(result));",
+    "replace": "console.log(JSON.stringify({ ...result, ingested: 42 }));",
+    "tests": [
+      "src/test/syncIngestAutomation.test.ts"
+    ],
+    "testName": "json\\ mode\\ writes\\ a\\ single\\ JSON\\ object\\ to\\ stdout",
+    "description": "ingest-json",
+    "artifact": "batch6.after.spec.json"
+  },
+  {
+    "id": "g2-ingest-body",
+    "file": "src/lib/syncIngest.ts",
+    "search": "masterDb.insertMemory(payloadToMemory(parsed.payload, now));",
+    "replace": "masterDb.insertMemory({ ...payloadToMemory(parsed.payload, now), content: \"WRONG\" });",
+    "tests": [
+      "src/test/syncIngestAutomation.test.ts"
+    ],
+    "testName": "ingests\\ staged\\ memory\\ in\\ quiet\\ mode\\ without\\ stdout",
+    "description": "ingest-body",
+    "artifact": "batch6.after.spec.json"
+  },
+  {
+    "id": "g2-snapshot-read",
+    "file": "src/lib/syncClient.ts",
+    "search": "        db: snapDb,\n        localDb,\n        pendingOverlay: pendingAdds,\n        source: \"snapshot\",\n        masterReachable: false,",
+    "replace": "        db: localDb,\n        localDb,\n        pendingOverlay: pendingAdds,\n        source: \"snapshot\",\n        masterReachable: false,",
+    "tests": [
+      "src/test/syncClientRead.test.ts"
+    ],
+    "testName": "openClientReadContext\\ falls\\ back\\ to\\ accepted\\ snapshot\\ when\\ offline",
+    "description": "snapshot-read",
+    "artifact": "batch6.before.spec.json"
+  },
+  {
+    "id": "g2-pending-content",
+    "file": "src/lib/syncClient.ts",
+    "search": "    pendingOverlay: pendingAdds,\n    source: \"pending-only\",",
+    "replace": "    pendingOverlay: pendingAdds.map(p => ({ ...p, content: \"WRONG\" })),\n    source: \"pending-only\",",
+    "tests": [
+      "src/test/syncClientRead.test.ts"
+    ],
+    "testName": "openClientReadContext\\ returns\\ pending\\-only\\ when\\ offline\\ without\\ snapshot",
+    "description": "pending-content",
+    "artifact": "batch6.before.spec.json"
+  },
+  {
+    "id": "g2-pending-receipt",
+    "file": "src/lib/syncClient.ts",
+    "search": "const pendingAdds = localDb.listActivePendingAdds().filter((p) => !ingestedUlids.has(p.id));",
+    "replace": "const pendingAdds = localDb.listActivePendingAdds().filter((p) => false && !ingestedUlids.has(p.id));",
+    "tests": [
+      "src/test/syncClientRead.test.ts"
+    ],
+    "testName": "openClientReadContext\\ filters\\ pending\\ overlay\\ by\\ ingest\\ receipts",
+    "description": "pending-receipt",
+    "artifact": "batch6.before.spec.json"
+  },
+  {
+    "id": "g2-staging-copy",
+    "file": "src/lib/syncStaging.ts",
+    "search": "  renameSync(filePath, dest);\n  return dest;",
+    "replace": "  atomicWriteFileSync(dest, readFileSync(filePath, \"utf8\"));\n  return dest;",
+    "tests": [
+      "src/test/syncStaging.test.ts"
+    ],
+    "testName": "moves\\ stale\\ \\.tmp\\ files\\ into\\ failed/",
+    "description": "staging-copy",
+    "artifact": "batch6.before.spec.json"
+  },
+  {
+    "id": "g2-quiet-noop",
+    "file": "src/lib/syncIngest.ts",
+    "search": "  const result: IngestSweepResult = { ingested: 0, skipped: 0, quarantined: 0, errors: [] };",
+    "replace": "  const result: IngestSweepResult = { ingested: 0, skipped: 0, quarantined: 0, errors: [] };\n  if (opts.quiet) return result;",
+    "tests": [
+      "src/test/syncIngestAutomation.test.ts"
+    ],
+    "testName": "quiet\\ mode\\ produces\\ zero\\ stdout",
+    "description": "quiet-noop",
+    "artifact": "batch6.before.spec.json"
+  },
+  {
+    "id": "g2-ingest-json",
+    "file": "src/lib/syncIngest.ts",
+    "search": "console.log(JSON.stringify(result));",
+    "replace": "console.log(JSON.stringify({ ...result, ingested: 42 }));",
+    "tests": [
+      "src/test/syncIngestAutomation.test.ts"
+    ],
+    "testName": "json\\ mode\\ writes\\ a\\ single\\ JSON\\ object\\ to\\ stdout",
+    "description": "ingest-json",
+    "artifact": "batch6.before.spec.json"
+  },
+  {
+    "id": "g2-ingest-body",
+    "file": "src/lib/syncIngest.ts",
+    "search": "masterDb.insertMemory(payloadToMemory(parsed.payload, now));",
+    "replace": "masterDb.insertMemory({ ...payloadToMemory(parsed.payload, now), content: \"WRONG\" });",
+    "tests": [
+      "src/test/syncIngestAutomation.test.ts"
+    ],
+    "testName": "ingests\\ staged\\ memory\\ in\\ quiet\\ mode\\ without\\ stdout",
+    "description": "ingest-body",
+    "artifact": "batch6.before.spec.json"
+  },
+  {
+    "id": "g2-docs-build-index",
+    "file": "src/cli/web.ts",
+    "search": "  .command(\"build-index\")\n  .description(\"Generate search index JSON from the knowledge directory\")\n  .option(\"--input <dir>\", \"Override knowledge directory\")\n  .option(\"--output <path>\", \"Override output file path\")\n  .option(\"--no-stop-words\", \"Disable stop-word filtering\")\n  .option(\"--embeddings <provider>\", \"Also build gnosys-vectors.json (openai|voyage|local)\")\n  .option(\"--embed-model <id>\", \"Override the embedding model\")\n  .option(\"--no-expansions\", \"Skip LLM concept-expansion generation\")\n  .option(\"--json\", \"Output index stats as JSON\")\n",
+    "replace": "  .command(\"build-index\")\n  .description(\"Generate search index JSON from the knowledge directory\")\n  .option(\"--input <dir>\", \"Override knowledge directory\")\n  .option(\"--output <path>\", \"Override output file path\")\n  .option(\"--no-stop-words\", \"Disable stop-word filtering\")\n  .option(\"--embeddings <provider>\", \"Also build gnosys-vectors.json (openai|voyage|local)\")\n  .option(\"--embed-model <id>\", \"Override the embedding model\")\n  .option(\"--no-expansions\", \"Skip LLM concept-expansion generation\")\n  .option(\"--audit-json\", \"Output index stats as JSON\")\n",
+    "tests": [
+      "src/test/docs-web-flags.test.ts"
+    ],
+    "testName": "docs/commands/web\\-build\\-index\\.md\\ flags\\ are\\ accepted\\ by\\ the\\ published\\ subcommand",
+    "description": "docs-build-index",
+    "build": true,
+    "artifact": "docs.spec.json"
+  },
+  {
+    "id": "g2-docs-build",
+    "file": "src/cli/web.ts",
+    "search": "  .command(\"build\")\n  .description(\"Run ingest + build-index in one shot\")\n  .option(\"--source <url>\", \"Override sitemap URL or content directory\")\n  .option(\"--prune\", \"Remove orphaned knowledge files\")\n  .option(\"--no-llm\", \"Force structured mode (no LLM)\")\n  .option(\"--concurrency <n>\", \"Parallel processing limit\", \"3\")\n  .option(\"--dry-run\", \"Show what would change without writing files\")\n  .option(\"--embeddings <provider>\", \"Also build gnosys-vectors.json (openai|voyage|local)\")\n  .option(\"--embed-model <id>\", \"Override the embedding model\")\n  .option(\"--no-expansions\", \"Skip LLM concept-expansion generation\")\n  .option(\"--json\", \"Output results as JSON\")\n",
+    "replace": "  .command(\"build\")\n  .description(\"Run ingest + build-index in one shot\")\n  .option(\"--source <url>\", \"Override sitemap URL or content directory\")\n  .option(\"--prune\", \"Remove orphaned knowledge files\")\n  .option(\"--no-llm\", \"Force structured mode (no LLM)\")\n  .option(\"--concurrency <n>\", \"Parallel processing limit\", \"3\")\n  .option(\"--dry-run\", \"Show what would change without writing files\")\n  .option(\"--embeddings <provider>\", \"Also build gnosys-vectors.json (openai|voyage|local)\")\n  .option(\"--embed-model <id>\", \"Override the embedding model\")\n  .option(\"--no-expansions\", \"Skip LLM concept-expansion generation\")\n  .option(\"--audit-json\", \"Output results as JSON\")\n",
+    "tests": [
+      "src/test/docs-web-flags.test.ts"
+    ],
+    "testName": "docs/commands/web\\-build\\.md\\ flags\\ are\\ accepted\\ by\\ the\\ published\\ subcommand",
+    "description": "docs-build",
+    "build": true,
+    "artifact": "docs.spec.json"
+  },
+  {
+    "id": "g2-docs-status",
+    "file": "src/cli/web.ts",
+    "search": "  .command(\"status\")\n  .description(\"Show the current state of the web knowledge base\")\n  .option(\"--json\", \"Output as JSON\")\n",
+    "replace": "  .command(\"status\")\n  .description(\"Show the current state of the web knowledge base\")\n  .option(\"--audit-json\", \"Output as JSON\")\n",
+    "tests": [
+      "src/test/docs-web-flags.test.ts"
+    ],
+    "testName": "docs/commands/web\\-status\\.md\\ flags\\ are\\ accepted\\ by\\ the\\ published\\ subcommand",
+    "description": "docs-status",
+    "build": true,
+    "artifact": "docs.spec.json"
+  },
+  {
+    "id": "g2-http-session-isolation",
+    "file": "src/lib/mcpHttp.ts",
+    "search": "if (sid && transports.delete(sid)) log(`session closed: ${sid} (${transports.size} active)`);",
+    "replace": "if (sid && transports.delete(sid)) { transports.clear(); log(`session closed: ${sid} (${transports.size} active)`); }",
+    "tests": [
+      "src/test/v512-mcpHttp.test.ts"
+    ],
+    "testName": "tracks concurrent sessions independently",
+    "description": "Closing one session removes every other client session",
+    "artifact": "http-session.spec.json"
+  },
+  {
+    "id": "g2-cors-no-origin",
+    "file": "src/lib/mcpHttp.ts",
+    "search": "    // Phase C: bearer auth (only enforced when a token is configured).",
+    "replace": "    if (!origin) { jsonRpcError(res, 500, -32603, \"broken initialization\"); return; }\n    // Phase C: bearer auth (only enforced when a token is configured).",
+    "tests": [
+      "src/test/v512-http-cors.test.ts"
+    ],
+    "testName": "no\\ Origin\\ header\\ permits\\ MCP\\ initialization",
+    "description": "Reject legitimate cors-no-origin initialization with HTTP 500",
+    "artifact": "http.after.spec.json"
+  },
+  {
+    "id": "g2-cors-allowed",
+    "file": "src/lib/mcpHttp.ts",
+    "search": "    // Phase C: bearer auth (only enforced when a token is configured).",
+    "replace": "    if (origin && (opts.allowedOrigins ?? []).includes(origin)) { jsonRpcError(res, 500, -32603, \"broken initialization\"); return; }\n    // Phase C: bearer auth (only enforced when a token is configured).",
+    "tests": [
+      "src/test/v512-http-cors.test.ts"
+    ],
+    "testName": "allowlisted\\ Origin\\ permits\\ MCP\\ initialization",
+    "description": "Reject legitimate cors-allowed initialization with HTTP 500",
+    "artifact": "http.after.spec.json"
+  },
+  {
+    "id": "g2-http-session-isolation",
+    "file": "src/lib/mcpHttp.ts",
+    "search": "if (sid && transports.delete(sid)) log(`session closed: ${sid} (${transports.size} active)`);",
+    "replace": "if (sid && transports.delete(sid)) { transports.clear(); log(`session closed: ${sid} (${transports.size} active)`); }",
+    "tests": [
+      "src/test/v512-mcpHttp.test.ts"
+    ],
+    "testName": "tracks concurrent sessions independently",
+    "description": "Closing one session removes every other client session",
+    "artifact": "http.after.spec.json"
+  },
+  {
+    "id": "g2-cors-no-origin",
+    "file": "src/lib/mcpHttp.ts",
+    "search": "    // Phase C: bearer auth (only enforced when a token is configured).",
+    "replace": "    if (!origin) { jsonRpcError(res, 500, -32603, \"broken initialization\"); return; }\n    // Phase C: bearer auth (only enforced when a token is configured).",
+    "tests": [
+      "src/test/v512-http-cors.test.ts"
+    ],
+    "testName": "no\\ Origin\\ header\\ →\\ not\\ 403",
+    "description": "Reject legitimate cors-no-origin initialization with HTTP 500",
+    "artifact": "http.before.spec.json"
+  },
+  {
+    "id": "g2-cors-allowed",
+    "file": "src/lib/mcpHttp.ts",
+    "search": "    // Phase C: bearer auth (only enforced when a token is configured).",
+    "replace": "    if (origin && (opts.allowedOrigins ?? []).includes(origin)) { jsonRpcError(res, 500, -32603, \"broken initialization\"); return; }\n    // Phase C: bearer auth (only enforced when a token is configured).",
+    "tests": [
+      "src/test/v512-http-cors.test.ts"
+    ],
+    "testName": "allowlisted\\ Origin\\ →\\ not\\ 403",
+    "description": "Reject legitimate cors-allowed initialization with HTTP 500",
+    "artifact": "http.before.spec.json"
+  },
+  {
+    "id": "g2-staging-copy",
+    "file": "src/lib/syncStaging.ts",
+    "search": "  renameSync(filePath, dest);\n  return dest;",
+    "replace": "  atomicWriteFileSync(dest, readFileSync(filePath, \"utf8\"));\n  return dest;",
+    "tests": [
+      "src/test/syncStaging.test.ts"
+    ],
+    "testName": "moves\\ stale\\ \\.tmp\\ files\\ into\\ failed/",
+    "description": "staging-copy",
+    "artifact": "staging-before.spec.json"
+  },
+  {
+    "id": "g2-serve-exit",
+    "file": "src/cli/runtime.ts",
+    "search": "    await startMcpServer();",
+    "replace": "    if (opts.transport === \"stdio\") process.exit(1);\n    await startMcpServer();",
+    "tests": [
+      "src/test/v592-serve-stdout-clean.test.ts"
+    ],
+    "testName": "initializes with valid JSON-RPC against an older database",
+    "description": "Exit the serve command before starting its MCP transport",
+    "build": true,
+    "artifact": "stdio.after.spec.json"
+  },
+  {
+    "id": "g2-serve-exit",
+    "file": "src/cli/runtime.ts",
+    "search": "    await startMcpServer();",
+    "replace": "    if (opts.transport === \"stdio\") process.exit(1);\n    await startMcpServer();",
+    "tests": [
+      "src/test/v592-serve-stdout-clean.test.ts"
+    ],
+    "testName": "emits zero stdout bytes",
+    "description": "Exit the serve command before starting its MCP transport",
+    "build": true,
+    "artifact": "stdio.before.spec.json"
+  },
+  {
+    "id": "g2-panel-clamp",
+    "file": "src/lib/setup/ui/panel.ts",
+    "search": "const topPadLen = Math.max(1, innerW - 1 - titleBareLen);",
+    "replace": "const topPadLen = Math.max(2, innerW - 1 - titleBareLen);",
+    "tests": [
+      "src/test/v594-panel-edges.test.ts"
+    ],
+    "testName": "very\\ long\\ titles\\ fall\\ back\\ to\\ a\\ 1\\-char\\ clamp\\ instead\\ of\\ negative\\ pad",
+    "description": "Use two border characters for overflowing titles",
+    "build": false,
+    "artifact": "unit1-new.spec.json"
+  },
+  {
+    "id": "g2-panel-color",
+    "file": "src/lib/setup/ui/panel.ts",
+    "search": "const border = c.accentDim;",
+    "replace": "const border = c.textDim;",
+    "tests": [
+      "src/test/v594-panel-edges.test.ts"
+    ],
+    "testName": "uses\\ rounded\\ glyphs\\ \\+\\ accent\\-dim\\ border\\ per\\ design",
+    "description": "Render panel border in the wrong palette color",
+    "build": false,
+    "artifact": "unit1-new.spec.json"
+  },
+  {
+    "id": "g2-web-getdoc",
+    "file": "src/lib/staticSearch.ts",
+    "search": "(d) => d.id === idOrPath || d.path === idOrPath",
+    "replace": "(d) => d.id === idOrPath && d.path === idOrPath",
+    "tests": [
+      "src/test/webIntegration.test.ts"
+    ],
+    "testName": "getDocument\\ retrieves\\ specific\\ document\\ from\\ built\\ index",
+    "description": "Require both ID and path to match a lookup",
+    "build": false,
+    "artifact": "unit1-new.spec.json"
+  },
+  {
+    "id": "g2-web-determinism",
+    "file": "src/lib/webIndex.ts",
+    "search": "generated: new Date().toISOString(),",
+    "replace": "generated: new Date(Math.random() * 1e12).toISOString(),",
+    "tests": [
+      "src/test/webIntegration.test.ts"
+    ],
+    "testName": "building\\ index\\ twice\\ produces\\ identical\\ output",
+    "description": "Generate nondeterministic index metadata",
+    "build": false,
+    "artifact": "unit1-new.spec.json"
+  },
+  {
+    "id": "g2-web-native-isolation",
+    "file": "src/lib/staticSearch.ts",
+    "search": "import { readFileSync, existsSync } from \"fs\";",
+    "replace": "import \"better-sqlite3\";\nimport { readFileSync, existsSync } from \"fs\";",
+    "tests": [
+      "src/test/webIntegration.test.ts"
+    ],
+    "testName": "the\\ published\\ web\\ entry\\ searches\\ without\\ third\\-party\\ runtime\\ dependencies",
+    "description": "Add a native dependency to the public web entry",
+    "build": true,
+    "artifact": "unit1-new.spec.json"
+  },
+  {
+    "id": "g2-wiki-exact-title",
+    "file": "src/lib/wikilinks.ts",
+    "search": "if (byTitle) return byTitle;",
+    "replace": "if (byTitle) return null;",
+    "tests": [
+      "src/test/wikilinks.test.ts"
+    ],
+    "testName": "resolves\\ by\\ exact\\ title",
+    "description": "Break title lookup",
+    "build": false,
+    "artifact": "unit1-new.spec.json"
+  },
+  {
+    "id": "g2-wiki-id",
+    "file": "src/lib/wikilinks.ts",
+    "search": "if (byId) return byId;",
+    "replace": "if (byId) return null;",
+    "tests": [
+      "src/test/wikilinks.test.ts"
+    ],
+    "testName": "resolves\\ by\\ id",
+    "description": "Remove the ID fallback",
+    "build": false,
+    "artifact": "unit1-new.spec.json"
+  },
+  {
+    "id": "g2-atomic-destination-first",
+    "file": "src/lib/atomicWrite.ts",
+    "search": "    await fsp.writeFile(tmp, data, \"utf-8\");",
+    "replace": "    await fsp.writeFile(dest, data, \"utf-8\");\n    await fsp.writeFile(tmp, data, \"utf-8\");",
+    "tests": [
+      "src/test/atomic-config-write.test.ts"
+    ],
+    "testName": "atomicWriteFile\\ preserves\\ the\\ previous\\ content\\ if\\ replacement\\ fails",
+    "description": "atomic-destination-first",
+    "artifact": "unit3-new.spec.json"
+  },
+  {
+    "id": "g2-attachment-cap",
+    "file": "src/lib/attachments.ts",
+    "search": "export const MAX_INLINE_ATTACHMENT_BYTES = 10 * 1024 * 1024;",
+    "replace": "export const MAX_INLINE_ATTACHMENT_BYTES = 11 * 1024 * 1024;",
+    "tests": [
+      "src/test/attachments-inline.test.ts"
+    ],
+    "testName": "rejects\\ files\\ larger\\ than\\ the\\ size\\ cap",
+    "description": "attachment-cap",
+    "artifact": "unit3-new.spec.json"
+  },
+  {
+    "id": "g2-freeform-gate",
+    "file": "src/index.ts",
+    "search": "if (process.env.GNOSYS_ALLOW_FREEFORM_ADD !== \"1\") {",
+    "replace": "if (process.env.GNOSYS_ALLOW_FREEFORM_ADD === \"1\") {",
+    "tests": [
+      "src/test/freeform-add-gate.test.ts"
+    ],
+    "testName": "rejects\\ freeform\\ MCP\\ writes\\ by\\ default",
+    "description": "freeform-gate",
+    "artifact": "unit3-new.spec.json"
+  },
+  {
+    "id": "g2-freeform-guidance",
+    "file": "src/index.ts",
+    "search": "\"content (markdown body), relevance (space-separated keyword cloud for discovery), \" +",
+    "replace": "\"body and keywords, \" +",
+    "tests": [
+      "src/test/freeform-add-gate.test.ts"
+    ],
+    "testName": "redirect\\ message\\ lists\\ the\\ structured\\ fields\\ agents\\ must\\ supply",
+    "description": "freeform-guidance",
+    "artifact": "unit3-new.spec.json"
+  },
+  {
+    "id": "g2-freeform-rules",
+    "file": "src/lib/rulesGen.ts",
+    "search": "  sections.push(getBaseInstructions());",
+    "replace": "  if (false) sections.push(getBaseInstructions());",
+    "tests": [
+      "src/test/freeform-add-gate.test.ts"
+    ],
+    "testName": "generated\\ agent\\ rules\\ state\\ the\\ server\\ rejects\\ freeform\\ gnosys_add",
+    "description": "freeform-rules",
+    "artifact": "unit3-new.spec.json"
+  },
+  {
+    "id": "g2-provider-schema",
+    "file": "src/lib/config.ts",
+    "search": "const LLMProviderEnum = z.enum([\"anthropic\", \"ollama\", \"groq\", \"openai\", \"lmstudio\", \"xai\", \"mistral\", \"openrouter\", \"custom\"]);",
+    "replace": "const LLMProviderEnum = z.enum([\"anthropic\", \"ollama\", \"groq\", \"openai\", \"lmstudio\", \"xai\", \"mistral\", \"openrouter\", \"custom\"]).refine(provider => provider !== \"xai\");",
+    "tests": [
+      "src/test/llm-providers.test.ts"
+    ],
+    "testName": "accepts\\ all\\ nine\\ supported\\ providers\\ through\\ config\\ parsing",
+    "description": "provider-schema",
+    "build": false,
+    "artifact": "unit5-new.spec.json"
+  },
+  {
+    "id": "g2-xai-url",
+    "file": "src/lib/llm.ts",
+    "search": "\"xai\", model, \"https://api.x.ai/v1\", apiKey, config",
+    "replace": "\"xai\", model, \"https://wrong.example/v1\", apiKey, config",
+    "tests": [
+      "src/test/llm-providers.test.ts"
+    ],
+    "testName": "creates\\ xAI\\ provider\\ with\\ correct\\ baseUrl",
+    "description": "xai-url",
+    "build": false,
+    "artifact": "unit5-new.spec.json"
+  },
+  {
+    "id": "g2-mistral-url",
+    "file": "src/lib/llm.ts",
+    "search": "\"mistral\", model, \"https://api.mistral.ai/v1\", apiKey, config",
+    "replace": "\"mistral\", model, \"https://wrong.example/v1\", apiKey, config",
+    "tests": [
+      "src/test/llm-providers.test.ts"
+    ],
+    "testName": "creates\\ Mistral\\ provider\\ with\\ correct\\ baseUrl",
+    "description": "mistral-url",
+    "build": false,
+    "artifact": "unit5-new.spec.json"
+  },
+  {
+    "id": "g2-custom-url",
+    "file": "src/lib/llm.ts",
+    "search": "\"custom\", model, customConfig.baseUrl, apiKey || \"\", config",
+    "replace": "\"custom\", model, \"https://wrong.example/v1\", apiKey || \"\", config",
+    "tests": [
+      "src/test/llm-providers.test.ts"
+    ],
+    "testName": "creates\\ custom\\ provider\\ with\\ user\\-provided\\ baseUrl",
+    "description": "custom-url",
+    "build": false,
+    "artifact": "unit5-new.spec.json"
+  },
+  {
+    "id": "g2-custom-no-key",
+    "file": "src/lib/llm.ts",
+    "search": "\"custom\", model, customConfig.baseUrl, apiKey || \"\", config",
+    "replace": "\"custom\", model, customConfig.baseUrl, apiKey || \"unexpected-key\", config",
+    "tests": [
+      "src/test/llm-providers.test.ts"
+    ],
+    "testName": "custom\\ provider\\ works\\ without\\ API\\ key\\ \\(local\\ endpoints\\)",
+    "description": "custom-no-key",
+    "build": false,
+    "artifact": "unit5-new.spec.json"
+  },
+  {
+    "id": "g2-openrouter-fallback",
+    "file": "src/lib/openrouterTiers.ts",
+    "search": "    return [...OPENROUTER_STATIC_TIERS];",
+    "replace": "    return OPENROUTER_STATIC_TIERS.map(tier => ({ ...tier, input: 1 }));",
+    "tests": [
+      "src/test/openrouterTiers.test.ts"
+    ],
+    "testName": "falls\\ back\\ to\\ static\\ tiers\\ for\\ empty\\ catalog",
+    "description": "openrouter-fallback",
+    "build": false,
+    "artifact": "unit5-new.spec.json"
+  },
+  {
+    "id": "g2-centralize-cli-force",
+    "file": "src/cli/remote.ts",
+    "search": "    await runCentralizeCommand(opts);",
+    "replace": "    await runCentralizeCommand({ ...opts, force: false });",
+    "tests": [
+      "src/test/centralize-network.test.ts"
+    ],
+    "testName": "copies\\ the\\ local\\ brain\\ through\\ \\-\\-to\\ and\\ overwrites\\ only\\ with\\ \\-\\-force",
+    "description": "centralize-cli-force",
+    "build": true,
+    "artifact": "unit5-new.spec.json"
+  },
+  {
+    "id": "g2-staging-checksum",
+    "file": "src/lib/syncStaging.ts",
+    "search": "if (!checksum || expected !== checksum) {",
+    "replace": "if (false && (!checksum || expected !== checksum)) {",
+    "tests": [
+      "src/test/syncStaging.test.ts"
+    ],
+    "testName": "round\\-trips\\ a\\ staged\\ record\\ and\\ rejects\\ corrupted\\ content",
+    "description": "staging-checksum",
+    "build": false,
+    "artifact": "unit6-new.spec.json"
+  },
+  {
+    "id": "g2-staging-quarantine",
+    "file": "src/lib/syncStaging.ts",
+    "search": "  renameSync(filePath, dest);\n  return dest;",
+    "replace": "  atomicWriteFileSync(dest, readFileSync(filePath, \"utf8\"));\n  return dest;",
+    "tests": [
+      "src/test/syncStaging.test.ts"
+    ],
+    "testName": "quarantines\\ checksum\\ mismatch\\ and\\ unknown\\ schemaVersion",
+    "description": "staging-quarantine",
+    "build": false,
+    "artifact": "unit6-new.spec.json"
+  },
+  {
+    "id": "g2-startup-client",
+    "file": "src/lib/syncIngestStartup.ts",
+    "search": "  if (!mc?.remote.enabled || mc.remote.role !== \"master\") return;",
+    "replace": "  if (!mc?.remote.enabled) return;",
+    "tests": [
+      "src/test/syncIngestAutomation.test.ts"
+    ],
+    "testName": "skips\\ when\\ machine\\ role\\ is\\ client",
+    "description": "startup-client",
+    "build": false,
+    "artifact": "unit6-new.spec.json"
+  },
+  {
+    "id": "g2-startup-disabled",
+    "file": "src/lib/syncIngestStartup.ts",
+    "search": "  if (!mc?.remote.enabled || mc.remote.role !== \"master\") return;",
+    "replace": "  if (mc?.remote.role !== \"master\") return;",
+    "tests": [
+      "src/test/syncIngestAutomation.test.ts"
+    ],
+    "testName": "skips\\ when\\ remote\\ sync\\ is\\ disabled",
+    "description": "startup-disabled",
+    "build": false,
+    "artifact": "unit6-new.spec.json"
+  },
+  {
+    "id": "g2-docs-build-index",
+    "file": "src/cli/web.ts",
+    "search": "  .command(\"build-index\")\n  .description(\"Generate search index JSON from the knowledge directory\")\n  .option(\"--input <dir>\", \"Override knowledge directory\")\n  .option(\"--output <path>\", \"Override output file path\")\n  .option(\"--no-stop-words\", \"Disable stop-word filtering\")\n  .option(\"--embeddings <provider>\", \"Also build gnosys-vectors.json (openai|voyage|local)\")\n  .option(\"--embed-model <id>\", \"Override the embedding model\")\n  .option(\"--no-expansions\", \"Skip LLM concept-expansion generation\")\n  .option(\"--json\", \"Output index stats as JSON\")\n",
+    "replace": "  .command(\"build-index\")\n  .description(\"Generate search index JSON from the knowledge directory\")\n  .option(\"--input <dir>\", \"Override knowledge directory\")\n  .option(\"--output <path>\", \"Override output file path\")\n  .option(\"--no-stop-words\", \"Disable stop-word filtering\")\n  .option(\"--embeddings <provider>\", \"Also build gnosys-vectors.json (openai|voyage|local)\")\n  .option(\"--embed-model <id>\", \"Override the embedding model\")\n  .option(\"--no-expansions\", \"Skip LLM concept-expansion generation\")\n  .option(\"--audit-json\", \"Output index stats as JSON\")\n",
+    "tests": [
+      "src/test/docs-web-flags.test.ts"
+    ],
+    "testName": "docs/commands/web\\-build\\-index\\.md\\ flags\\ are\\ accepted\\ by\\ the\\ published\\ subcommand",
+    "description": "docs-build-index",
+    "build": true,
+    "artifact": "unit6-new.spec.json"
+  },
+  {
+    "id": "g2-docs-build",
+    "file": "src/cli/web.ts",
+    "search": "  .command(\"build\")\n  .description(\"Run ingest + build-index in one shot\")\n  .option(\"--source <url>\", \"Override sitemap URL or content directory\")\n  .option(\"--prune\", \"Remove orphaned knowledge files\")\n  .option(\"--no-llm\", \"Force structured mode (no LLM)\")\n  .option(\"--concurrency <n>\", \"Parallel processing limit\", \"3\")\n  .option(\"--dry-run\", \"Show what would change without writing files\")\n  .option(\"--embeddings <provider>\", \"Also build gnosys-vectors.json (openai|voyage|local)\")\n  .option(\"--embed-model <id>\", \"Override the embedding model\")\n  .option(\"--no-expansions\", \"Skip LLM concept-expansion generation\")\n  .option(\"--json\", \"Output results as JSON\")\n",
+    "replace": "  .command(\"build\")\n  .description(\"Run ingest + build-index in one shot\")\n  .option(\"--source <url>\", \"Override sitemap URL or content directory\")\n  .option(\"--prune\", \"Remove orphaned knowledge files\")\n  .option(\"--no-llm\", \"Force structured mode (no LLM)\")\n  .option(\"--concurrency <n>\", \"Parallel processing limit\", \"3\")\n  .option(\"--dry-run\", \"Show what would change without writing files\")\n  .option(\"--embeddings <provider>\", \"Also build gnosys-vectors.json (openai|voyage|local)\")\n  .option(\"--embed-model <id>\", \"Override the embedding model\")\n  .option(\"--no-expansions\", \"Skip LLM concept-expansion generation\")\n  .option(\"--audit-json\", \"Output results as JSON\")\n",
+    "tests": [
+      "src/test/docs-web-flags.test.ts"
+    ],
+    "testName": "docs/commands/web\\-build\\.md\\ flags\\ are\\ accepted\\ by\\ the\\ published\\ subcommand",
+    "description": "docs-build",
+    "build": true,
+    "artifact": "unit6-new.spec.json"
+  },
+  {
+    "id": "g2-docs-status",
+    "file": "src/cli/web.ts",
+    "search": "  .command(\"status\")\n  .description(\"Show the current state of the web knowledge base\")\n  .option(\"--json\", \"Output as JSON\")\n",
+    "replace": "  .command(\"status\")\n  .description(\"Show the current state of the web knowledge base\")\n  .option(\"--audit-json\", \"Output as JSON\")\n",
+    "tests": [
+      "src/test/docs-web-flags.test.ts"
+    ],
+    "testName": "docs/commands/web\\-status\\.md\\ flags\\ are\\ accepted\\ by\\ the\\ published\\ subcommand",
+    "description": "docs-status",
+    "build": true,
+    "artifact": "unit6-new.spec.json"
+  },
+  {
+    "id": "g2-startup-client",
+    "file": "src/lib/syncIngestStartup.ts",
+    "search": "  if (!mc?.remote.enabled || mc.remote.role !== \"master\") return;",
+    "replace": "  if (!mc?.remote.enabled) return;",
+    "tests": [
+      "src/test/syncIngestAutomation.test.ts"
+    ],
+    "testName": "skips\\ when\\ machine\\ role\\ is\\ client",
+    "description": "startup-client",
+    "build": false,
+    "artifact": "unit6-remaining.spec.json"
+  },
+  {
+    "id": "g2-startup-disabled",
+    "file": "src/lib/syncIngestStartup.ts",
+    "search": "  if (!mc?.remote.enabled || mc.remote.role !== \"master\") return;",
+    "replace": "  if (mc?.remote.role !== \"master\") return;",
+    "tests": [
+      "src/test/syncIngestAutomation.test.ts"
+    ],
+    "testName": "skips\\ when\\ remote\\ sync\\ is\\ disabled",
+    "description": "startup-disabled",
+    "build": false,
+    "artifact": "unit6-remaining.spec.json"
+  },
+  {
+    "id": "g2-docs-build-index",
+    "file": "src/cli/web.ts",
+    "search": "  .command(\"build-index\")\n  .description(\"Generate search index JSON from the knowledge directory\")\n  .option(\"--input <dir>\", \"Override knowledge directory\")\n  .option(\"--output <path>\", \"Override output file path\")\n  .option(\"--no-stop-words\", \"Disable stop-word filtering\")\n  .option(\"--embeddings <provider>\", \"Also build gnosys-vectors.json (openai|voyage|local)\")\n  .option(\"--embed-model <id>\", \"Override the embedding model\")\n  .option(\"--no-expansions\", \"Skip LLM concept-expansion generation\")\n  .option(\"--json\", \"Output index stats as JSON\")\n",
+    "replace": "  .command(\"build-index\")\n  .description(\"Generate search index JSON from the knowledge directory\")\n  .option(\"--input <dir>\", \"Override knowledge directory\")\n  .option(\"--output <path>\", \"Override output file path\")\n  .option(\"--no-stop-words\", \"Disable stop-word filtering\")\n  .option(\"--embeddings <provider>\", \"Also build gnosys-vectors.json (openai|voyage|local)\")\n  .option(\"--embed-model <id>\", \"Override the embedding model\")\n  .option(\"--no-expansions\", \"Skip LLM concept-expansion generation\")\n  .option(\"--audit-json\", \"Output index stats as JSON\")\n",
+    "tests": [
+      "src/test/docs-web-flags.test.ts"
+    ],
+    "testName": "docs/commands/web\\-build\\-index\\.md\\ flags\\ are\\ accepted\\ by\\ the\\ published\\ subcommand",
+    "description": "docs-build-index",
+    "build": true,
+    "artifact": "unit6-remaining.spec.json"
+  },
+  {
+    "id": "g2-docs-build",
+    "file": "src/cli/web.ts",
+    "search": "  .command(\"build\")\n  .description(\"Run ingest + build-index in one shot\")\n  .option(\"--source <url>\", \"Override sitemap URL or content directory\")\n  .option(\"--prune\", \"Remove orphaned knowledge files\")\n  .option(\"--no-llm\", \"Force structured mode (no LLM)\")\n  .option(\"--concurrency <n>\", \"Parallel processing limit\", \"3\")\n  .option(\"--dry-run\", \"Show what would change without writing files\")\n  .option(\"--embeddings <provider>\", \"Also build gnosys-vectors.json (openai|voyage|local)\")\n  .option(\"--embed-model <id>\", \"Override the embedding model\")\n  .option(\"--no-expansions\", \"Skip LLM concept-expansion generation\")\n  .option(\"--json\", \"Output results as JSON\")\n",
+    "replace": "  .command(\"build\")\n  .description(\"Run ingest + build-index in one shot\")\n  .option(\"--source <url>\", \"Override sitemap URL or content directory\")\n  .option(\"--prune\", \"Remove orphaned knowledge files\")\n  .option(\"--no-llm\", \"Force structured mode (no LLM)\")\n  .option(\"--concurrency <n>\", \"Parallel processing limit\", \"3\")\n  .option(\"--dry-run\", \"Show what would change without writing files\")\n  .option(\"--embeddings <provider>\", \"Also build gnosys-vectors.json (openai|voyage|local)\")\n  .option(\"--embed-model <id>\", \"Override the embedding model\")\n  .option(\"--no-expansions\", \"Skip LLM concept-expansion generation\")\n  .option(\"--audit-json\", \"Output results as JSON\")\n",
+    "tests": [
+      "src/test/docs-web-flags.test.ts"
+    ],
+    "testName": "docs/commands/web\\-build\\.md\\ flags\\ are\\ accepted\\ by\\ the\\ published\\ subcommand",
+    "description": "docs-build",
+    "build": true,
+    "artifact": "unit6-remaining.spec.json"
+  },
+  {
+    "id": "g2-docs-status",
+    "file": "src/cli/web.ts",
+    "search": "  .command(\"status\")\n  .description(\"Show the current state of the web knowledge base\")\n  .option(\"--json\", \"Output as JSON\")\n",
+    "replace": "  .command(\"status\")\n  .description(\"Show the current state of the web knowledge base\")\n  .option(\"--audit-json\", \"Output as JSON\")\n",
+    "tests": [
+      "src/test/docs-web-flags.test.ts"
+    ],
+    "testName": "docs/commands/web\\-status\\.md\\ flags\\ are\\ accepted\\ by\\ the\\ published\\ subcommand",
+    "description": "docs-status",
+    "build": true,
+    "artifact": "unit6-remaining.spec.json"
+  },
+  {
+    "id": "g2-web-deterministic-corruption",
+    "file": "src/lib/webIndex.ts",
+    "search": "    documents,\n    invertedIndex: sortedIndex,",
+    "replace": "    documents: documents.map(doc => ({ ...doc, id: \"wrong-id\" })),\n    invertedIndex: sortedIndex,",
+    "tests": [
+      "src/test/webIntegration.test.ts"
+    ],
+    "testName": "building index twice produces identical output",
+    "description": "Return identical wrong document IDs on every build while preserving count and all other data.",
+    "artifact": "web-determinism-review.before.spec.json"
+  }
+]

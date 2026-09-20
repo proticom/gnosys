@@ -3,9 +3,8 @@
  * custom provider support, backward compatibility, and config schema.
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import {
-  ALL_PROVIDERS,
   getProviderModel,
   getXAIApiKey,
   getMistralApiKey,
@@ -20,17 +19,10 @@ import {
 
 describe("LLM Provider System", () => {
   describe("Provider Registry", () => {
-    it("ALL_PROVIDERS includes all 9 providers", () => {
-      expect(ALL_PROVIDERS).toHaveLength(9);
-      expect(ALL_PROVIDERS).toContain("anthropic");
-      expect(ALL_PROVIDERS).toContain("ollama");
-      expect(ALL_PROVIDERS).toContain("groq");
-      expect(ALL_PROVIDERS).toContain("openai");
-      expect(ALL_PROVIDERS).toContain("lmstudio");
-      expect(ALL_PROVIDERS).toContain("xai");
-      expect(ALL_PROVIDERS).toContain("mistral");
-      expect(ALL_PROVIDERS).toContain("openrouter");
-      expect(ALL_PROVIDERS).toContain("custom");
+    it("accepts all nine supported providers through config parsing", () => {
+      for (const provider of ["anthropic", "ollama", "groq", "openai", "lmstudio", "xai", "mistral", "openrouter", "custom"]) {
+        expect(GnosysConfigSchema.parse({ llm: { defaultProvider: provider } }).llm.defaultProvider).toBe(provider);
+      }
     });
   });
 
@@ -141,6 +133,7 @@ describe("LLM Provider System", () => {
     });
 
     it("getXAIApiKey reads from config first", () => {
+      process.env.XAI_API_KEY = "competing-xai-env";
       const config = GnosysConfigSchema.parse({
         llm: { xai: { model: "grok-2", apiKey: "xai-from-config" } },
       });
@@ -154,6 +147,7 @@ describe("LLM Provider System", () => {
     });
 
     it("getMistralApiKey reads from config first", () => {
+      process.env.MISTRAL_API_KEY = "competing-mistral-env";
       const config = GnosysConfigSchema.parse({
         llm: { mistral: { model: "mistral-large-latest", apiKey: "mis-from-config" } },
       });
@@ -187,13 +181,26 @@ describe("LLM Provider System", () => {
   });
 
   describe("createProvider", () => {
-    it("creates xAI provider with correct baseUrl", () => {
+    const fetchMock = vi.fn<typeof fetch>();
+    beforeEach(() => {
+      fetchMock.mockReset();
+      fetchMock.mockResolvedValue(Response.json({ choices: [{ message: { content: "The provider replied" } }] }));
+      vi.stubGlobal("fetch", fetchMock);
+    });
+    afterEach(() => vi.unstubAllGlobals());
+    it("creates xAI provider with correct baseUrl", async () => {
       const config = GnosysConfigSchema.parse({
         llm: { xai: { model: "grok-2", apiKey: "test-key" } },
       });
       const provider = createProvider("xai", "grok-2", config);
       expect(provider.name).toBe("xai");
       expect(provider.model).toBe("grok-2");
+      expect(await provider.generate("Explain the decision")).toBe("The provider replied");
+      expect(fetchMock).toHaveBeenCalledExactlyOnceWith("https://api.x.ai/v1/chat/completions", expect.objectContaining({
+        method: "POST",
+        headers: {"Content-Type": "application/json", Authorization: "Bearer test-key"},
+        body: JSON.stringify({ model: "grok-2", messages: [{ role: "user", content: "Explain the decision" }], max_tokens: 4096, stream: false }),
+      }));
     });
 
     it("creates OpenRouter provider", () => {
@@ -214,16 +221,22 @@ describe("LLM Provider System", () => {
       expect(provider.model).toBe("nvidia/nemotron-3-super-120b-a12b:free");
     });
 
-    it("creates Mistral provider with correct baseUrl", () => {
+    it("creates Mistral provider with correct baseUrl", async () => {
       const config = GnosysConfigSchema.parse({
         llm: { mistral: { model: "mistral-large-latest", apiKey: "test-key" } },
       });
       const provider = createProvider("mistral", "mistral-large-latest", config);
       expect(provider.name).toBe("mistral");
       expect(provider.model).toBe("mistral-large-latest");
+      expect(await provider.generate("Explain the decision")).toBe("The provider replied");
+      expect(fetchMock).toHaveBeenCalledExactlyOnceWith("https://api.mistral.ai/v1/chat/completions", expect.objectContaining({
+        method: "POST",
+        headers: {"Content-Type": "application/json", Authorization: "Bearer test-key"},
+        body: JSON.stringify({ model: "mistral-large-latest", messages: [{ role: "user", content: "Explain the decision" }], max_tokens: 4096, stream: false }),
+      }));
     });
 
-    it("creates custom provider with user-provided baseUrl", () => {
+    it("creates custom provider with user-provided baseUrl", async () => {
       const config = GnosysConfigSchema.parse({
         llm: {
           custom: {
@@ -236,6 +249,12 @@ describe("LLM Provider System", () => {
       const provider = createProvider("custom", "meta-llama/Llama-3-70b", config);
       expect(provider.name).toBe("custom");
       expect(provider.model).toBe("meta-llama/Llama-3-70b");
+      expect(await provider.generate("Explain the decision")).toBe("The provider replied");
+      expect(fetchMock).toHaveBeenCalledExactlyOnceWith("https://api.together.xyz/v1/chat/completions", expect.objectContaining({
+        method: "POST",
+        headers: {"Content-Type": "application/json", Authorization: "Bearer tok-test"},
+        body: JSON.stringify({ model: "meta-llama/Llama-3-70b", messages: [{ role: "user", content: "Explain the decision" }], max_tokens: 4096, stream: false }),
+      }));
     });
 
     it("throws when xAI has no API key", () => {
@@ -255,7 +274,7 @@ describe("LLM Provider System", () => {
       expect(() => createProvider("custom", "model", config)).toThrow(/Custom provider not configured/i);
     });
 
-    it("custom provider works without API key (local endpoints)", () => {
+    it("custom provider works without API key (local endpoints)", async () => {
       const config = GnosysConfigSchema.parse({
         llm: {
           custom: {
@@ -266,6 +285,12 @@ describe("LLM Provider System", () => {
       });
       const provider = createProvider("custom", "local-model", config);
       expect(provider.name).toBe("custom");
+      expect(await provider.generate("Explain the decision")).toBe("The provider replied");
+      expect(fetchMock).toHaveBeenCalledExactlyOnceWith("http://localhost:8080/v1/chat/completions", expect.objectContaining({
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ model: "local-model", messages: [{ role: "user", content: "Explain the decision" }], max_tokens: 4096, stream: false }),
+      }));
     });
   });
 

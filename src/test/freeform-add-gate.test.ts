@@ -1,53 +1,50 @@
-/**
- * v5.15.4 — gnosys_add freeform gate.
- *
- * Decision (Edward, 2026-07-04, deci-01KWP25KKJYP7M3YCPFRPWEEYN): LLM agents
- * must ALWAYS use gnosys_add_structured. Advisory wording in tool
- * descriptions and generated IDE rules was not enough — agents still called
- * the freeform tool. The MCP gnosys_add handler now hard-rejects unless
- * GNOSYS_ALLOW_FREEFORM_ADD=1 (genuine non-agent scripts/cron), returning an
- * actionable redirect that tells the agent to retry with
- * gnosys_add_structured and lists the required fields.
- *
- * These tests assert the gate at the source level (the handler's guard and
- * message) and that the generated agent rules carry the matching hard-ban
- * wording, without booting a full MCP server.
- */
+import { afterEach, describe, it, expect, vi } from "vitest";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
+import { z } from "zod";
+import { registerCapabilities } from "../index.js";
+import { generateRulesBlock } from "../lib/rulesGen.js";
 
-import { describe, it, expect } from "vitest";
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
+const textResult = z.object({ isError: z.boolean(), content: z.array(z.object({ type: z.literal("text"), text: z.string() })) });
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const SRC = path.resolve(__dirname, "..");
+afterEach(() => vi.unstubAllEnvs());
 
-describe("gnosys_add freeform gate (source-level contract)", () => {
-  it("index.ts gates the gnosys_add handler behind GNOSYS_ALLOW_FREEFORM_ADD", async () => {
-    const src = await fs.readFile(path.join(SRC, "index.ts"), "utf-8");
-    // The guard must exist and must redirect to the structured tool.
-    expect(src).toContain('process.env.GNOSYS_ALLOW_FREEFORM_ADD !== "1"');
-    expect(src).toContain("gnosys_add is disabled for LLM agents");
-    expect(src).toContain("Retry now with gnosys_add_structured");
-    // The tool description must warn agents off before they ever call it.
-    expect(src).toContain("DO NOT USE if you are an LLM agent");
+async function freeformCall() {
+  vi.stubEnv("GNOSYS_ALLOW_FREEFORM_ADD", "");
+  const server = new McpServer({ name: "gate-test", version: "1.0.0" });
+  registerCapabilities(server, "full");
+  const client = new Client({ name: "gate-client", version: "1.0.0" });
+  const [st, ct] = InMemoryTransport.createLinkedPair();
+  try {
+    await Promise.all([server.connect(st), client.connect(ct)]);
+    return textResult.parse(await client.callTool({ name: "gnosys_add", arguments: { input: "Keep this decision" } }));
+  } finally {
+    await client.close();
+    await server.close();
+  }
+}
+
+describe("gnosys_add freeform gate", () => {
+  it("rejects freeform MCP writes by default", async () => {
+    const result = await freeformCall();
+    expect(result.isError).toBe(true);
+    expect(result.content[0].text).toContain("gnosys_add is disabled for LLM agents");
+    expect(result.content[0].text).toContain("Retry now with gnosys_add_structured");
   });
 
   it("redirect message lists the structured fields agents must supply", async () => {
-    const src = await fs.readFile(path.join(SRC, "index.ts"), "utf-8");
-    for (const marker of [
-      "title (string)",
-      "tags (object of string arrays",
-      "content (markdown body)",
-      "GNOSYS_ALLOW_FREEFORM_ADD=1",
-    ]) {
-      expect(src).toContain(marker);
+    const result = await freeformCall();
+    expect(result.isError).toBe(true);
+    for (const field of ["title (string)", "tags (object of string arrays", "content (markdown body)", "relevance (space-separated keyword cloud", "GNOSYS_ALLOW_FREEFORM_ADD=1"]) {
+      expect(result.content[0].text).toContain(field);
     }
   });
 
-  it("generated agent rules state the server rejects freeform gnosys_add", async () => {
-    const rulesGen = await fs.readFile(path.join(SRC, "lib", "rulesGen.ts"), "utf-8");
-    expect(rulesGen).toContain("rejects it with an error");
-    expect(rulesGen).toContain("GNOSYS_ALLOW_FREEFORM_ADD=1");
+  it("generated agent rules state the server rejects freeform gnosys_add", () => {
+    const rules = generateRulesBlock([], []);
+    expect(rules).toContain("NEVER call the freeform `gnosys_add`");
+    expect(rules).toContain("rejects it with an error");
+    expect(rules).toContain("GNOSYS_ALLOW_FREEFORM_ADD=1");
   });
 });

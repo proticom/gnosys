@@ -1,0 +1,150 @@
+{
+  "base": "203c4e7e488cea66bfd9a3ad687d9d1dda309d16",
+  "privateWorktree": "/private/tmp/gnosys-test-audit-group2",
+  "files": [
+    {
+      "path": "src/test/atomic-config-write.test.ts",
+      "sha256": "7dd7c0e038ce7d14b827baa8c502408ba0704e0f0efa7288aced3c11891d75b6"
+    },
+    {
+      "path": "src/test/attachments-inline.test.ts",
+      "sha256": "a1ddaceba023c129ca9684115b91b3f49605675e0d696920466e48ce4f896b78"
+    },
+    {
+      "path": "src/test/bootstrap.test.ts",
+      "sha256": "07e70b7d7fdc980278e7e6f05c9d7f8bc2c0298f76db661eb60d481c23900f04"
+    },
+    {
+      "path": "src/test/centralize-network.test.ts",
+      "sha256": "7cf98a1c5356eca29ef673dc88029df995f4f0ad33e1da677213da3fb01cd4e4"
+    },
+    {
+      "path": "src/test/docs-web-flags.test.ts",
+      "sha256": "92a7abb6bdc2a121173b3b2a00f6ae1f28484a8c0c3a2de32b6b4b84936c9a35"
+    },
+    {
+      "path": "src/test/export-archive-flag.test.ts",
+      "sha256": "5477d70a1b31d653a7830625436173c59c914572e33081cbbdce45cdc90385de"
+    },
+    {
+      "path": "src/test/federated.test.ts",
+      "sha256": "cf9b3f176705c08ca90dbe480a53a5be1c3c2499859a96c1b63439d3dd500280"
+    },
+    {
+      "path": "src/test/freeform-add-gate.test.ts",
+      "sha256": "1ff841a3552bc772b31d5b575b6d709130ae615e43608d8dd1db8c14de1b70f2"
+    },
+    {
+      "path": "src/test/graph-invoke.test.ts",
+      "sha256": "adf9f8d5106910a8ffd81036ac638dc596c007c488f42a44c0e768d9f8290999"
+    },
+    {
+      "path": "src/test/list-invoke.test.ts",
+      "sha256": "7aca26d9ce56d99fce8a33f036812530e96520a8123a08d1550dc95c41449561"
+    },
+    {
+      "path": "src/test/llm-providers.test.ts",
+      "sha256": "8a35df32a6a0a7b2c5eef80f3cf60300f89b1a97edb2c3bbfdc7bd328c1758a4"
+    },
+    {
+      "path": "src/test/openrouterTiers.test.ts",
+      "sha256": "047e83f63351d13fd47835df885c938f5424060537e80cfbd7549a6bb1ead152"
+    },
+    {
+      "path": "src/test/phase8d.federated.test.ts",
+      "sha256": "c96efab2c371e16515e5a50ccf85225da57e522a43eba28f767e845dbcb2b851"
+    },
+    {
+      "path": "src/test/stores-invoke.test.ts",
+      "sha256": "51b6a06fe902cb390e0cc81bfee7c9b65ba857e760bad500ffac5238e7f0337c"
+    },
+    {
+      "path": "src/test/syncClientRead.test.ts",
+      "sha256": "c72f618e77f7743a6f5b63f0223ae7b10809f65c9bf817d812b49b9d37042920"
+    },
+    {
+      "path": "src/test/syncIngestAutomation.test.ts",
+      "sha256": "4cffb576183062cb20c458b29661b5e247def37a0acb7307af92a09aadf34e42"
+    },
+    {
+      "path": "src/test/syncStaging.test.ts",
+      "sha256": "445a4c958b1e993e9a34a80a9b251bd244d06e32732511d946de8d57a01370a5"
+    },
+    {
+      "path": "src/test/timeline-invoke.test.ts",
+      "sha256": "5ac74de50150ed8a6fa67d180ca9e8ba31b2b43a6dfe184b53e332a884f385ef"
+    },
+    {
+      "path": "src/test/v512-centralize.test.ts",
+      "sha256": "c67c5f352565413a6c7a2da05789479b37e5b8988563f7961ae2f9db6ab1d71d"
+    },
+    {
+      "path": "src/test/v512-http-cors.test.ts",
+      "sha256": "8c4c4ec0b2482393b382282c39dd4ca23a58c200e9d56e95360ac284d4eb5452"
+    },
+    {
+      "path": "src/test/v512-mcpHttp.test.ts",
+      "sha256": "fe64ab8f50e095bd779c7bf6a6c6353ac9b3b681221af705ac1774e0f5ebb3a7"
+    },
+    {
+      "path": "src/test/v592-serve-stdout-clean.test.ts",
+      "sha256": "a3faafa2090f9f0174b5616c0264bf703ddf58a41f335b6b96c162e00e7f092c"
+    },
+    {
+      "path": "src/test/v594-panel-edges.test.ts",
+      "sha256": "bee94ac5069ef5df288a0f551c25a5aca042fefd6f1f0ffb26eebe2b289926ed"
+    },
+    {
+      "path": "src/test/web-remove-invoke.test.ts",
+      "sha256": "8c29a540ddf93b5a31b362b806963049ffeac9acf9671f2b460906012fbc6e95"
+    },
+    {
+      "path": "src/test/webIntegration.test.ts",
+      "sha256": "ac16b874f5dafad2be7408c3d8d7301744f747022b65b3fd823a4b063afeaa86"
+    },
+    {
+      "path": "src/test/wikilinks.test.ts",
+      "sha256": "7aec11c9acba02d19211f27f889b496660ed270bd7048171be91edaa47b45f74"
+    }
+  ],
+  "originalDeclarations": 191,
+  "actions": {
+    "kept": 117,
+    "rewritten": 68,
+    "deleted": 6
+  },
+  "passedRuntimeTests": 187,
+  "wholeFileReports": [
+    {
+      "path": "unit1.json",
+      "passedTests": 42
+    },
+    {
+      "path": "unit2.json",
+      "passedTests": 50
+    },
+    {
+      "path": "unit3.json",
+      "passedTests": 25
+    },
+    {
+      "path": "unit4.json",
+      "passedTests": 16
+    },
+    {
+      "path": "unit5.json",
+      "passedTests": 32
+    },
+    {
+      "path": "unit6.json",
+      "passedTests": 22
+    }
+  ],
+  "validation": [
+    "tsc --noEmit passed",
+    "biome check all 26 files passed",
+    "No modified tracked production file"
+  ],
+  "patchSha256": "1df9184cc7e2f81589f0f855e757dc63a5f73b30076de668baab5775733895f4",
+  "excludedLocalHelper": "src/test/_helpers.ts (root owns cwd isolation fix)"
+}

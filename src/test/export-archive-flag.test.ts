@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { mkdtempSync, rmSync } from "fs";
+import { mkdtempSync, rmSync, readdirSync, readFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 import { GnosysDB } from "../lib/db.js";
@@ -96,7 +96,9 @@ describe("export archive visibility", () => {
     expect(result.archivedExcluded).toBe(2);
 
     const bundle = readBundle(bundlePath);
-    expect(bundle.memories).toHaveLength(3);
+    expect(bundle.memories.map(memory => [memory.id, memory.content]).sort()).toEqual([
+      ["mem-arch-002", "Content 2"], ["mem-arch-003", "Content 3"], ["mem-arch-004", "Content 4"],
+    ]);
   });
 
   it("includeArchived exports all with status preserved and archivedExcluded 0", () => {
@@ -115,7 +117,12 @@ describe("export archive visibility", () => {
     expect(result.archivedExcluded).toBe(0);
 
     const bundle = readBundle(bundlePath);
-    expect(bundle.memories).toHaveLength(4);
+    expect(bundle.memories.map(memory => [memory.id, memory.content, memory.status, memory.tier]).sort()).toEqual([
+      ["mem-arch-000", "Content 0", "archived", "active"],
+      ["mem-arch-001", "Content 1", "active", "archive"],
+      ["mem-arch-002", "Content 2", "active", "active"],
+      ["mem-arch-003", "Content 3", "active", "active"],
+    ]);
     const archived = bundle.memories.filter((m) => m.status === "archived");
     expect(archived.length).toBeGreaterThanOrEqual(1);
   });
@@ -132,5 +139,9 @@ describe("export archive visibility", () => {
 
     expect(report.memoriesExported).toBe(2);
     expect(report.archivedExcluded).toBe(1);
+    const category = join(workspace.tmp, "vault-out", "test");
+    expect(readdirSync(category).sort()).toEqual(["memory-1.md", "memory-2.md"]);
+    expect(readFileSync(join(category, "memory-1.md"), "utf8")).toContain("# Memory 1\n\nContent 1");
+    expect(readFileSync(join(category, "memory-2.md"), "utf8")).toContain("# Memory 2\n\nContent 2");
   });
 });
