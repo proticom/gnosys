@@ -39,11 +39,22 @@ function activate(context) {
       // Find the .gnosys root
       const gnosysIndex = memoryDirectory.index + memoryDirectory[0].indexOf(".gnosys");
       const storePath = filePath.substring(0, gnosysIndex + ".gnosys".length);
-      const relativePath = path.relative(storePath, filePath);
+      let memoryId;
+      try {
+        const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/.exec(editor.document.getText());
+        const identity = frontmatter && /^id:[ \t]*(?:"([^"\r\n]+)"|'([^'\r\n]+)'|([^\s"'#][^\r\n]*?))[ \t]*(?:#.*)?$/m.exec(frontmatter[1]);
+        memoryId = identity && (identity[1] ?? identity[2] ?? identity[3]).trim();
+      } catch {
+        memoryId = undefined;
+      }
+      if (!memoryId) {
+        vscode.window.showWarningMessage("This document has no readable memory ID in its frontmatter.");
+        return;
+      }
 
       try {
-        execFileSync("npx", ["gnosys", "reinforce", relativePath], {
-          cwd: path.dirname(storePath),
+        execFileSync("npx", ["gnosys", "reinforce", memoryId, "--signal", "useful"], {
+          cwd: path.dirname(storePath.replaceAll("\\", path.sep)),
           timeout: 10000,
         });
         vscode.window.showInformationMessage(

@@ -35,7 +35,8 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 24
+          # Node native-addon cleanup regression: https://github.com/nodejs/node/pull/65042
+          node-version: "24.18.1"
           cache: npm
 
       - name: Run npm update
@@ -81,7 +82,7 @@ jobs:
             confirmation. If audit failed, this PR would not have
             been opened — investigate manually instead.
 
-            Tests run on Node 24 against the updated lockfile.
+            Tests run on Node 24.18.1 against the updated lockfile.
           labels: |
             chore
             dependencies

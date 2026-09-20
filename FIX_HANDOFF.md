@@ -1,5 +1,37 @@
 # Audit repair handoff
 
+## Release follow-up after QA reconciled the test contracts
+
+The original handoff below records the first application pass. QA subsequently
+corrected the conflicting test contracts, allowing these two requested repairs:
+
+- `5834a4b` fixes D-VSC-001. The extension reads the selected document's frontmatter
+  ID and passes it with `--signal useful` through `execFileSync`. Missing or
+  unreadable IDs produce a warning without launching a subprocess. Nested paths
+  and Windows separators retain the project root. All 16 expected-failure cases
+  now pass their assertions; the other 15 extension cases still pass. The real CLI
+  checks confirm only the selected database memory's date changes.
+- `518785a` fixes DEF-G1-001. Routing reset clears the raw local `taskModels`
+  object through the existing explicit-clear helper, without changing
+  `updateConfig` deep-merge semantics or unrelated raw values. Inherited global
+  overrides remain in effect and produce a warning. All four expected-failure
+  cases now pass their assertions; the eight other targeted setup/config cases
+  still pass. Reset followed by a new override does not restore the old entries.
+
+QA owns marker promotion and independent fault replay. Its release review records
+the final verification. No data migration is needed for these two repairs.
+
+Release CI also exposed the upstream Node native-addon cleanup regression
+[nodejs/node#65446](https://github.com/nodejs/node/issues/65446). QA pinned existing
+Node 24 jobs to 24.18.1 in `8914299`, preserving all coverage conditions and Node
+20/22 jobs. Node 24.20.0 and 24.21.0 reproduced the native abort; 24.18.1 completed
+every case. Initial diagnostic logging contaminated three clean-stderr assertions,
+so final full-suite and coverage verification must run without that preload.
+Dependencies, schema version and minimum supported Node version are unchanged.
+
+The failed public v6.2.2 tag remains unchanged. The corrected release is 6.2.3;
+publication is complete only after the OIDC workflow and registry checks succeed.
+
 ## Starting working-tree state
 
 Audit worktree started on `test-audit` at `ec1955434bbd43136d8bbf3b92ef8d696aa78a38` with:

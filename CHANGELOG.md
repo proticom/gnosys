@@ -5,7 +5,10 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [6.2.2] - 2026-09-20
+## [6.2.3] - 2026-09-20
+
+Includes the fixes prepared for 6.2.2, whose npm publication failed. The 6.2.2
+Git tag remains unchanged; that version was not published to npm.
 
 ### Fixed
 
@@ -20,28 +23,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pass extension reinforcement arguments without a shell, require an exact
   `.gnosys` path component, and open the supported system-status command.
   Preserve literal values in key storage and other input-bearing subprocesses.
+- Reinforce the selected document's frontmatter memory ID with the required
+  signal. Warn without launching a subprocess when the ID cannot be read.
 - Clear local task overrides when choosing a default provider or model, while
   preserving inherited settings and reporting global overrides that still apply.
+- Clear local task overrides when resetting routing, preserving unrelated config
+  and the existing deep-merge behavior for ordinary updates.
 - Return exit status 130 for cancelled main setup and web-init prompts, while
   preserving successful completion.
 
 ### Changed
 
 - Strengthen behavioral and mutation checks for the repaired paths. The combined
-  suite has 1,746 cases, including 24 expected failures for documented defects.
+  suite retains expected-failure cases for the documented defects below.
 - Make the new-file coverage guard fail when its comparison base is unavailable.
 - Remove three unused internal test-hook exports.
+- Pin CI and publishing to Node 24.18.1 to avoid the
+  [Node native-addon cleanup regression](https://github.com/nodejs/node/issues/65446).
+  Existing Node 20 support and dependency versions are unchanged.
 
 ### Known issues
 
-- VS Code reinforcement still needs correct memory-ID and signal handling, and
-  the separate routing-reset action still retains task overrides.
 - JSON config display can expose a stored provider key; generated dashboard
   handlers do not safely handle every project name.
 - Reopening a database after complete loss of its central FTS table can leave an
   empty index. The deferred FNV-1a arithmetic defect also remains.
 - Restart long-lived Gnosys processes after upgrading so all writers use the
   repaired index code. Database index repairs run automatically on open.
+- Node 24.19.0 through 24.21.0 can crash SQLite during garbage collection.
+  Use Node 22 and reinstall Gnosys after switching runtimes.
 
 ## [6.2.1] — 2026-07-16
 
