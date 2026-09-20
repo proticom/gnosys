@@ -676,11 +676,11 @@ export async function updateConfig(
 
 export async function setDefaultAndClearTaskOverrides(
   storePath: string,
-  llm: { defaultProvider?: LLMProviderName } & Partial<Record<LLMProviderName, { model: string }>>,
+  llm?: { defaultProvider?: LLMProviderName } & Partial<Record<LLMProviderName, { model: string }>>,
 ): Promise<void> {
   const configPath = path.join(storePath, "gnosys.json");
   const rawExisting = (await readRawConfig(configPath)) ?? {};
-  const merged = { ...deepMergeConfig(rawExisting, { llm }), taskModels: {} };
+  const merged = { ...(llm === undefined ? rawExisting : deepMergeConfig(rawExisting, { llm })), taskModels: {} };
   const globalPath = path.join(getGnosysHome(), "gnosys.json");
   const inherited = path.resolve(configPath) === path.resolve(globalPath)
     ? {}

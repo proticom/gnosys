@@ -196,8 +196,12 @@ export async function runRoutingSetup(opts: RoutingOptions): Promise<boolean> {
       console.log(`${DIM}Cancelled.${RESET}`);
       return false;
     }
-    await updateConfig(storePath, { taskModels: {} });
-    printStatus("ok", "routing reset", "all tasks now use the global default provider/model");
+    await setDefaultAndClearTaskOverrides(storePath);
+    printStatus("ok", "routing reset", "task overrides in this config cleared");
+    const updated = await loadConfig(storePath);
+    if (Object.keys(updated.taskModels).length > 0) {
+      printStatus("warn", "global task overrides still apply", "task routing shows the effective provider and model for each task");
+    }
     console.log(Footer("press enter to return"));
     return true;
   }
