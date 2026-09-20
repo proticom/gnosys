@@ -36,8 +36,10 @@ program
           const stores = resolver.getStores();
           if (stores.length > 0) {
             const cfg = await loadConfig(stores[0].path);
-            const engine = new GnosysMaintenanceEngine(resolver, cfg);
-            const report = await engine.maintain({ autoApply: true });
+            const { GnosysDB } = await import("../lib/db.js");
+            const centralDb = GnosysDB.openCentral();
+            const engine = new GnosysMaintenanceEngine(resolver, cfg, centralDb);
+            const report = await engine.maintain({ autoApply: true }).finally(() => centralDb.close());
             console.error(`[maintenance] Completed: ${report.actions.length} action(s), ${report.duplicates.length} duplicate(s), ${report.staleMemories.length} stale`);
           }
         } catch (err) {

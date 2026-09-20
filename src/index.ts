@@ -2566,7 +2566,8 @@ regTool(
       const { GnosysMaintenanceEngine, formatMaintenanceReport } = await import(
         "./lib/maintenance.js"
       );
-      const engine = new GnosysMaintenanceEngine(ctx.resolver, ctx.config);
+      if (!ctx.centralDb?.isAvailable()) throw new Error("Central DB not available.");
+      const engine = new GnosysMaintenanceEngine(ctx.resolver, ctx.config, ctx.centralDb);
       const report = await engine.maintain({
         dryRun: dryRun ?? true,
         autoApply: autoApply ?? false,

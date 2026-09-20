@@ -17,6 +17,8 @@ import { type LLMProvider, getLLMProvider } from "./llm.js";
 import type { GnosysResolver, ResolvedStore } from "./resolver.js";
 import { GnosysArchive, getArchiveEligible } from "./archive.js";
 import type { GnosysDB } from "./db.js";
+import path from "path";
+import { readProjectIdentity } from "./projectIdentity.js";
 import { syncMemoryToDb, syncUpdateToDb, syncConfidenceToDb, syncReinforcementToDb } from "./dbWrite.js";
 import { acquireWriteLock } from "./lock.js";
 import { auditLog } from "./audit.js";
@@ -136,6 +138,10 @@ export class GnosysMaintenanceEngine {
       throw new Error("No writable store found. Run gnosys init first.");
     }
 
+    if (this.db && !this.db.isAvailable()) {
+      releaseLock?.();
+      throw new Error("Central DB not available. Maintenance was not applied.");
+    }
     const allMemories = await this.loadAllActiveMemories();
     log("info", `Found ${allMemories.length} active memories across ${stores.length} store(s)`);
 
@@ -428,17 +434,18 @@ Merged content:`;
     const filename = `${mergedTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}.md`;
     const sourcePath = `${category}/${filename}`;
 
-    if (this.db) {
-      syncMemoryToDb(this.db, newFrontmatter, mergedContent, sourcePath);
-
-      // Mark originals as superseded in DB
-      syncUpdateToDb(this.db, pair.memoryA.frontmatter.id, {
-        status: "superseded",
-        superseded_by: newId,
-      });
-      syncUpdateToDb(this.db, pair.memoryB.frontmatter.id, {
-        status: "superseded",
-        superseded_by: newId,
+    const db = this.db;
+    if (db) {
+      db.transaction(() => {
+        const sourceA = db.getMemory(pair.memoryA.frontmatter.id);
+        const sourceB = db.getMemory(pair.memoryB.frontmatter.id);
+        if (!sourceA || !sourceB) throw new Error("A memory was removed before consolidation.");
+        if (sourceA.project_id !== sourceB.project_id || sourceA.scope !== sourceB.scope) {
+          throw new Error("Cannot consolidate memories from different projects or scopes.");
+        }
+        syncMemoryToDb(db, newFrontmatter, mergedContent, sourcePath, sourceA.project_id, sourceA.scope);
+        syncUpdateToDb(db, sourceA.id, { status: "superseded", superseded_by: newId });
+        syncUpdateToDb(db, sourceB.id, { status: "superseded", superseded_by: newId });
       });
     }
 
@@ -550,7 +557,7 @@ Merged content:`;
     } else if (autoApply) {
       for (const m of eligible) {
         try {
-          const success = await archive.archiveMemory(m);
+          const success = await archive.archiveMemory(m, this.db);
           if (success) {
             archived++;
             const action = `Archived: "${m.frontmatter.title}" → archive.db`;
@@ -565,7 +572,7 @@ Merged content:`;
       }
 
       // Git commit archived changes (file deletions)
-      if (archived > 0) {
+      if (archived > 0 && !this.db) {
         try {
           execFileSync("git", ["add", "-A"], { cwd: writeTarget.path, stdio: "pipe" });
           execFileSync("git", ["commit", "-m", `maintenance: archive ${archived} old memories`], { cwd: writeTarget.path, stdio: "pipe" });
@@ -641,6 +648,45 @@ Merged content:`;
    * Load all active (non-superseded, non-archived) memories from all stores.
    */
   private async loadAllActiveMemories(): Promise<Memory[]> {
+    if (this.db?.isAvailable()) {
+      const target = this.resolver.getWriteTarget();
+      if (!target) return [];
+      const identity = target.layer === "project"
+        ? await readProjectIdentity(path.dirname(target.path)) : null;
+      const projectId = identity?.projectId ?? null;
+      const scope = target.layer === "personal" ? "user" : "project";
+      return this.db.getActiveMemories()
+        .filter((row) => row.project_id === projectId && row.scope === scope)
+        .map((row): Memory => {
+          let tags: string[] = [];
+          try {
+            const parsed: unknown = JSON.parse(row.tags);
+            const values = Array.isArray(parsed) ? parsed
+              : typeof parsed === "object" && parsed !== null ? Object.values(parsed).flat() : [];
+            tags = values.filter((tag): tag is string => typeof tag === "string");
+          } catch {
+            // Legacy tag strings may not be JSON.
+          }
+          return {
+            frontmatter: {
+              id: row.id, title: row.title, category: row.category, tags,
+              relevance: row.relevance,
+              author: row.author === "human" || row.author === "user" ? "human"
+                : row.author === "human+ai" ? "human+ai" : "ai",
+              authority: row.authority === "declared" || row.authority === "observed" || row.authority === "inferred"
+                ? row.authority : "imported",
+              confidence: row.confidence, created: row.created, modified: row.modified,
+              status: "active", supersedes: row.supersedes, superseded_by: row.superseded_by,
+              reinforcement_count: row.reinforcement_count, last_reinforced: row.last_reinforced,
+              source_file: row.source_file, source_page: row.source_page, source_timerange: row.source_timerange,
+              project_id: row.project_id, scope: row.scope,
+            },
+            content: row.content,
+            filePath: "",
+            relativePath: row.source_path || `${row.category}/${row.id}.md`,
+          };
+        });
+    }
     const layered = await this.resolver.getAllMemories();
     return layered.filter((m) => m.frontmatter.status === "active");
   }
