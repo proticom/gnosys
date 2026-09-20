@@ -2196,6 +2196,11 @@ regTool(
       const importTags = new GnosysTagRegistry(writeTarget.store.getStorePath());
       await importTags.load();
       const importIngestion = new GnosysIngestion(writeTarget.store, importTags, ctx.config);
+      const writeScope = resolveWriteScope(ctx, targetStore);
+      if (!dryRun && !writeScope.ok) throw new Error(writeScope.error);
+      const importDb = ctx.centralDb?.isAvailable() ? ctx.centralDb : undefined;
+      if (!dryRun && !importDb) throw new Error("Central DB not available. No memories were imported.");
+      const scope = targetStore === "personal" ? "user" : targetStore ?? "project";
       const result = await performImport(writeTarget.store, importIngestion, {
         format: format as "csv" | "json" | "jsonl",
         data,
@@ -2208,7 +2213,7 @@ regTool(
         // v5.15: explicit param wins; otherwise config importConcurrency.
         concurrency: concurrency ?? ctx.config?.importConcurrency,
         batchCommit: true,
-      });
+      }, importDb, writeScope.ok ? writeScope.projectId : ctx.projectId, scope);
 
       // Reindex after import
       if (!dryRun && result.imported.length > 0 && search) {
@@ -2216,8 +2221,8 @@ regTool(
       }
 
       // DB-only: audit the import (no local migrate — all writes go to central DB)
-      if (!dryRun && result.imported.length > 0 && gnosysDb?.isAvailable()) {
-        auditToDb(gnosysDb, "ingest", undefined, { format, count: result.imported.length, mode: effectiveMode });
+      if (!dryRun && result.imported.length > 0 && importDb) {
+        auditToDb(importDb, "ingest", undefined, { format, count: result.imported.length, mode: effectiveMode });
       }
 
       let response = formatImportSummary(result);

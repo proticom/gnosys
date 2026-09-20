@@ -1,5 +1,8 @@
 import type { GnosysResolver } from "./resolver.js";
 import { GnosysTagRegistry } from "./tags.js";
+import { GnosysDB } from "./db.js";
+import { readProjectIdentity } from "./projectIdentity.js";
+import path from "path";
 
 export type ImportCommandOptions = {
   format?: string;
@@ -100,7 +103,18 @@ export async function runImportCommand(
           }
         };
   
+        let centralDb: GnosysDB | undefined;
         try {
+          try {
+            centralDb = GnosysDB.openCentral();
+          } catch (error) {
+            if (!opts.dryRun) throw error;
+          }
+          if (!opts.dryRun && !centralDb?.isAvailable()) throw new Error("Central DB not available. No memories were imported.");
+          const scope = opts.store === "personal" ? "user" : opts.store === "global" ? "global" : "project";
+          const identity = scope === "project"
+            ? await readProjectIdentity(path.dirname(writeTarget.store.getStorePath())) : null;
+          if (!opts.dryRun && scope === "project" && !identity) throw new Error("No project identity found. Run 'gnosys init' before importing into this project.");
           const result = await performImport(writeTarget.store, ingestion, {
             format,
             data: fileOrUrl,
@@ -113,7 +127,7 @@ export async function runImportCommand(
             batchCommit: opts.batchCommit,
             concurrency,
             onProgress,
-          });
+          }, centralDb?.isAvailable() ? centralDb : undefined, identity?.projectId ?? null, scope);
   
           // Clear progress line
           process.stderr.write("\r" + " ".repeat(80) + "\r");
@@ -135,5 +149,7 @@ export async function runImportCommand(
             `\nImport failed: ${err instanceof Error ? err.message : String(err)}`
           );
           process.exit(1);
+        } finally {
+          centralDb?.close();
         }
 }
