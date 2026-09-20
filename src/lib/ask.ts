@@ -382,18 +382,12 @@ export class GnosysAsk {
       let restored: string[];
       try {
         restored = await archive.dearchiveBatch(usedArchiveIds, writeTarget.store, centralDb);
+        if (restored.length > 0) {
+          await GnosysMaintenanceEngine.reinforceBatch(writeTarget.store, restored, centralDb).catch(() => {});
+        }
       } finally {
         centralDb.close();
         archive.close();
-      }
-
-      // Reinforce the restored memories
-      if (restored.length > 0) {
-        try {
-          await GnosysMaintenanceEngine.reinforceBatch(writeTarget.store, restored);
-        } catch {
-          // Reinforcement is best-effort
-        }
       }
 
       return usedArchiveIds;

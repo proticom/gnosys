@@ -2344,16 +2344,19 @@ regTool(
         )
         .join("\n\n");
 
-      // Reinforce used memories (best-effort, non-blocking)
-      // Use default resolver here since hybridSearch operates across all stores
-      const writeTarget = resolver.getWriteTarget();
-      if (writeTarget) {
-        // v5.9.1 (#100): lazy-load the maintenance module here too.
-        const { GnosysMaintenanceEngine } = await import("./lib/maintenance.js");
-        GnosysMaintenanceEngine.reinforceBatch(
-          writeTarget.store,
-          results.map((r) => r.relativePath)
-        ).catch(() => {}); // Fire-and-forget
+      try {
+        const ctx = await resolveToolContext(projectRoot);
+        const writeTarget = ctx.resolver.getWriteTarget();
+        if (writeTarget) {
+          const { GnosysMaintenanceEngine } = await import("./lib/maintenance.js");
+          await GnosysMaintenanceEngine.reinforceBatch(
+            writeTarget.store,
+            results.map((r) => r.relativePath),
+            ctx.centralDb,
+          );
+        }
+      } catch {
+        // Reinforcement is best-effort.
       }
 
       const embCount = hybridSearch.embeddingCount();
@@ -2506,15 +2509,19 @@ regTool(
         mode: (mode as "keyword" | "semantic" | "hybrid") || "hybrid",
       });
 
-      // Reinforce used memories (best-effort, non-blocking)
-      const writeTarget = resolver.getWriteTarget();
-      if (writeTarget && result.sources.length > 0) {
-        // v5.9.1 (#100): lazy-load the maintenance module here too.
-        const { GnosysMaintenanceEngine } = await import("./lib/maintenance.js");
-        GnosysMaintenanceEngine.reinforceBatch(
-          writeTarget.store,
-          result.sources.map((s) => s.relativePath)
-        ).catch(() => {}); // Fire-and-forget
+      try {
+        const ctx = await resolveToolContext(projectRoot);
+        const writeTarget = ctx.resolver.getWriteTarget();
+        if (writeTarget && result.sources.length > 0) {
+          const { GnosysMaintenanceEngine } = await import("./lib/maintenance.js");
+          await GnosysMaintenanceEngine.reinforceBatch(
+            writeTarget.store,
+            result.sources.map((s) => s.relativePath),
+            ctx.centralDb,
+          );
+        }
+      } catch {
+        // Reinforcement is best-effort.
       }
 
       const sourcesText = result.sources.length > 0

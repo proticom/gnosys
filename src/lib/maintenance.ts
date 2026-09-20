@@ -482,15 +482,7 @@ Merged content:`;
     relativePath: string,
     db?: GnosysDB | null
   ): Promise<void> {
-    const memory = await store.readMemory(relativePath);
-    if (!memory) return;
-
-    const currentCount = memory.frontmatter.reinforcement_count || 0;
-    const newCount = currentCount + 1;
-
-    if (db) {
-      syncReinforcementToDb(db, memory.frontmatter.id, newCount);
-    }
+    await GnosysMaintenanceEngine.reinforceBatch(store, [relativePath], db);
   }
 
   /**
@@ -502,26 +494,36 @@ Merged content:`;
     relativePaths: string[],
     db?: GnosysDB | null
   ): Promise<number> {
-    let reinforced = 0;
+    if (!db?.isAvailable()) return 0;
+    const identity = await readProjectIdentity(path.dirname(store.getStorePath()));
+    const projectId = identity?.projectId ?? null;
 
-    for (const rp of relativePaths) {
-      try {
-        const memory = await store.readMemory(rp);
-        if (!memory) continue;
-
-        const currentCount = memory.frontmatter.reinforcement_count || 0;
-        const newCount = currentCount + 1;
-
-        if (db) {
-          syncReinforcementToDb(db, memory.frontmatter.id, newCount);
+    return db.transaction(() => {
+      const memories = db.getActiveMemories().filter((memory) =>
+        memory.project_id === projectId || memory.scope === "user" || memory.scope === "global",
+      );
+      let reinforced = 0;
+      for (const relativePath of relativePaths) {
+        const labeled = /^(project|personal|global):(.+)$/.exec(relativePath);
+        const reference = labeled?.[2] ?? relativePath;
+        const scope = labeled?.[1] === "personal" ? "user" : labeled?.[1];
+        const scoped = scope ? memories.filter((memory) => memory.scope === scope) : memories;
+        const byId = scoped.find((memory) => memory.id === reference);
+        const matches = byId ? [byId] : scoped.filter((memory) =>
+          memory.source_path === reference || `${memory.category}/${memory.id}.md` === reference,
+        );
+        if (matches.length !== 1) continue;
+        try {
+          const memory = db.getMemory(matches[0].id);
+          if (!memory) continue;
+          syncReinforcementToDb(db, memory.id, memory.reinforcement_count + 1);
+          reinforced++;
+        } catch {
+          // Reinforcement is best-effort.
         }
-        reinforced++;
-      } catch {
-        // Skip — reinforcement is best-effort
       }
-    }
-
-    return reinforced;
+      return reinforced;
+    });
   }
 
   // ─── Archive Operations ──────────────────────────────────────────────
@@ -673,8 +675,9 @@ Merged content:`;
               relevance: row.relevance,
               author: row.author === "human" || row.author === "user" ? "human"
                 : row.author === "human+ai" ? "human+ai" : "ai",
-              authority: row.authority === "declared" || row.authority === "observed" || row.authority === "inferred"
-                ? row.authority : "imported",
+              authority: row.authority === "user" ? "declared"
+                : row.authority === "declared" || row.authority === "observed" || row.authority === "inferred"
+                  ? row.authority : "imported",
               confidence: row.confidence, created: row.created, modified: row.modified,
               status: "active", supersedes: row.supersedes, superseded_by: row.superseded_by,
               reinforcement_count: row.reinforcement_count, last_reinforced: row.last_reinforced,
