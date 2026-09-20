@@ -58,14 +58,14 @@ export async function runImportCommand(
         await tagRegistry.load();
         const { GnosysIngestion } = await import("./ingest.js");
         const { performImport, formatImportSummary } = await import("./import.js");
-        const ingestion = new GnosysIngestion(writeTarget.store, tagRegistry);
+        const { loadConfig } = await import("./config.js");
+        const config = await loadConfig(writeTarget.store.getStorePath());
+        const ingestion = new GnosysIngestion(writeTarget.store, tagRegistry, config);
   
         const format = opts.format as "csv" | "json" | "jsonl";
         const mode = opts.mode as "llm" | "structured";
         // v5.15: --concurrency CLI flag wins; otherwise the config's
         // importConcurrency (schema default 5) applies.
-        const { loadConfig } = await import("./config.js");
-        const config = await loadConfig(writeTarget.store.getStorePath());
         const concurrency = opts.concurrency || config.importConcurrency;
   
         // Show estimate for LLM mode
