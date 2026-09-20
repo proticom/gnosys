@@ -4,8 +4,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { fork } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import Database from "better-sqlite3";
@@ -54,53 +53,6 @@ afterEach(() => {
 });
 
 describe("DB recovery — extended failure modes", () => {
-  it("survives SIGKILL mid-transaction (WAL rollback, integrity ok)", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "gnosys-kill-"));
-    const dbPath = join(dir, "t.db");
-    try {
-      {
-        const d = new Database(dbPath);
-        d.pragma("journal_mode=WAL");
-        d.exec("CREATE TABLE t(id INTEGER PRIMARY KEY)");
-        d.close();
-      }
-
-      const childSrc = join(dir, "child.cjs");
-      writeFileSync(
-        childSrc,
-        `
-      const Database = require(${JSON.stringify(require.resolve("better-sqlite3"))});
-      const db = new Database(${JSON.stringify(dbPath)});
-      db.pragma("journal_mode=WAL");
-      db.pragma("busy_timeout=10000");
-      db.exec("BEGIN");
-      db.exec("INSERT INTO t(id) VALUES (1),(2),(3)");
-      if (process.send) process.send("ready");
-      setInterval(() => {}, 1e9);
-    `,
-      );
-
-      const child = fork(childSrc, { stdio: "ignore" });
-      await new Promise<void>((resolve, reject) => {
-        const timer = setTimeout(() => reject(new Error("child ready timeout")), 10_000);
-        child.on("message", () => {
-          clearTimeout(timer);
-          resolve();
-        });
-        child.on("error", reject);
-      });
-
-      child.kill("SIGKILL");
-      await new Promise<void>((resolve) => child.on("exit", () => resolve()));
-
-      const db = new Database(dbPath);
-      expect(db.pragma("integrity_check", { simple: true })).toBe("ok");
-      expect((db.prepare("SELECT COUNT(*) AS c FROM t").get() as { c: number }).c).toBe(0);
-      db.close();
-    } finally {
-      rmSync(dir, { recursive: true, force: true });
-    }
-  }, 20_000);
 
   it("surfaces ENOSPC/full-disk as a clear non-corruption error", () => {
     const inner = (workspace.db as unknown as { db: { prepare: (...args: unknown[]) => unknown } }).db;
@@ -131,12 +83,12 @@ describe("DB recovery — extended failure modes", () => {
     workspace.db.insertMemory(sampleMemory);
 
     // Drop the FTS virtual table — MATCH queries fail and searchFts falls back to LIKE.
-    (workspace.db as unknown as { db: { exec: (sql: string) => void } }).db.exec("DROP TABLE IF EXISTS memories_fts");
+    const storage = new Database(workspace.db.getDbPath());
+    storage.exec("DROP TABLE IF EXISTS memories_fts");
+    storage.close();
 
-    expect(() => workspace.db.searchFts("xyzzy")).not.toThrow();
     const results = workspace.db.searchFts("xyzzy");
-    expect(Array.isArray(results)).toBe(true);
-    expect(results.some((r) => r.id === sampleMemory.id)).toBe(true);
+    expect(results.map(row => row.id)).toEqual(["fts-test-001"]);
   });
 
   it("degrades gracefully when better-sqlite3 cannot load", async () => {

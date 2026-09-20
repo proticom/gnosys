@@ -1,0 +1,25 @@
+{
+  "base": "203c4e7",
+  "files": [
+    "src/test/acceptance.test.ts",
+    "src/test/db-recovery-extended.test.ts",
+    "src/test/export-path-traversal.test.ts",
+    "src/test/federated-client-read.test.ts",
+    "src/test/phase0-6.regression.test.ts",
+    "src/test/phase7a.migration.test.ts",
+    "src/test/phase7c.dual-write.test.ts",
+    "src/test/remoteWizard.test.ts",
+    "src/test/setup-ui-screen13.test.ts",
+    "src/test/staticSearchSemantic.test.ts"
+  ],
+  "fileCount": 10,
+  "originalDeclarations": 95,
+  "runtimeTests": 88,
+  "passedRuntimeTests": 88,
+  "typecheckExit": 0,
+  "lintExit": 0,
+  "lintWarnings": 22,
+  "applicationDiffClean": true,
+  "frozen": true,
+  "patchSha256": "a3f6cda20590fdb5cf3a05a86664db78cf6863c4fa26c75d835c3772a541313d"
+}

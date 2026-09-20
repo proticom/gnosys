@@ -1,40 +1,38 @@
 /**
- * Phase 7a: GnosysDB + Migration
- * Test Plan Reference: "Phase 7 Sub-Phase Tests — 7a"
- *
- *   TC-7a.1: gnosys migrate moves memories to gnosys.db
- *   TC-7a.2: Old commands (ask, dashboard) still work unchanged
- *   TC-7a.3: gnosys doctor shows migration status
- *   TC-7a.4: Schema is correct (6 tables, all columns present)
- */
+      * Phase 7a: GnosysDB + Migration
+      * Test Plan Reference: "Phase 7 Sub-Phase Tests — 7a"
+      *
+      *   TC-7a.1: gnosys migrate moves memories to gnosys.db
+      *   TC-7a.2: Old commands (ask, dashboard) still work unchanged
+      *   TC-7a.3: gnosys doctor shows migration status
+      *   TC-7a.4: Schema is correct (6 tables, all columns present)
+      */
 
+import { GnosysDB } from "../lib/db.js";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
-  createTestEnv,
-  cleanupTestEnv,
-  makeMemory,
-  makeFrontmatter,
-  type TestEnv,
+        createTestEnv,
+        cleanupTestEnv,
+        makeMemory,
+        makeProject,
+        makeFrontmatter,
+        type TestEnv,
 } from "./_helpers.js";
 
 let env: TestEnv;
 
 beforeEach(async () => {
-  env = await createTestEnv("phase7a", { withStore: true });
-});
+        env = await createTestEnv("phase7a", { withStore: true });
+    });
 
 afterEach(async () => {
-  await cleanupTestEnv(env);
-});
+        await cleanupTestEnv(env);
+    });
 
 describe("Phase 7a: GnosysDB + Migration", () => {
-  // ─── TC-7a.1: Migration ───────────────────────────────────────────────
+        // ─── TC-7a.1: Migration ───────────────────────────────────────────────
 
-  describe("TC-7a.1: Migration of markdown memories to SQLite", () => {
-    it("migrate module can be imported", async () => {
-      const migrateModule = await import("../lib/migrate.js");
-      expect(migrateModule).toHaveProperty("migrate");
-    });
+        describe("TC-7a.1: Migration of markdown memories to SQLite", () => {
 
     it("memories written to store can be read into DB via migrate", async () => {
       // Write memories to the markdown store
@@ -89,11 +87,11 @@ describe("Phase 7a: GnosysDB + Migration", () => {
       const count = env.db.getMemoryCount();
       expect(count.total).toBe(1);
     });
-  });
+        });
 
-  // ─── TC-7a.2: Old commands still work ─────────────────────────────────
+        // ─── TC-7a.2: Old commands still work ─────────────────────────────────
 
-  describe("TC-7a.2: Post-migration command compatibility", () => {
+        describe("TC-7a.2: Post-migration command compatibility", () => {
     it("DB search works after inserting memories", () => {
       env.db.insertMemory(
         makeMemory({
@@ -109,23 +107,18 @@ describe("Phase 7a: GnosysDB + Migration", () => {
       expect(results[0].id).toBe("compat-001");
     });
 
-    it("getMemoryCount returns correct totals after migration", () => {
-      env.db.insertMemory(
-        makeMemory({ id: "cnt-001", status: "active", tier: "active" })
-      );
-      env.db.insertMemory(
-        makeMemory({ id: "cnt-002", status: "active", tier: "active" })
-      );
-
-      const counts = env.db.getMemoryCount();
-      expect(counts.total).toBe(2);
-      expect(counts.active).toBe(2);
+    it("getMemoryCount returns correct totals after migration", async () => {
+      await env.store!.writeMemory("decisions", "count.md", makeFrontmatter({ id: "migrated-count" }), "counted memory body");
+      const { migrate } = await import("../lib/migrate.js");
+      await migrate(env.tmpDir);
+      expect(env.db.getMemoryCount()).toMatchObject({ total: 1, active: 1, archived: 0 });
+      expect(env.db.getMemory("migrated-count")?.content).toContain("counted memory body");
     });
-  });
+        });
 
-  // ─── TC-7a.3: Doctor / migration status ───────────────────────────────
+        // ─── TC-7a.3: Doctor / migration status ───────────────────────────────
 
-  describe("TC-7a.3: Migration status detection", () => {
+        describe("TC-7a.3: Migration status detection", () => {
     it("isMigrated returns false for empty DB, true after adding data", () => {
       // isMigrated checks for data presence (count > 0)
       expect(env.db.isMigrated()).toBe(false);
@@ -139,61 +132,26 @@ describe("Phase 7a: GnosysDB + Migration", () => {
 
     it("getSchemaVersion returns current version", () => {
       const version = env.db.getSchemaVersion();
-      expect(version).toBeGreaterThanOrEqual(2);
+      expect(version).toBe(5);
     });
-  });
+        });
 
-  // ─── TC-7a.4: Schema correctness ─────────────────────────────────────
+        // ─── TC-7a.4: Schema correctness ─────────────────────────────────────
 
-  describe("TC-7a.4: Schema validation", () => {
-    it("has all 6 tables (memories, fts, relationships, summaries, audit_log, projects)", () => {
-      // Query sqlite_master for tables
-      const tables = (env.db as any).db
-        .prepare(
-          "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name"
-        )
-        .all()
-        .map((r: any) => r.name);
+        describe("TC-7a.4: Schema validation", () => {
 
-      expect(tables).toContain("memories");
-      expect(tables).toContain("memories_fts");
-      expect(tables).toContain("relationships");
-      expect(tables).toContain("summaries");
-      expect(tables).toContain("audit_log");
-      expect(tables).toContain("projects");
+    it("memories retain scope and project after reopen", () => {
+      env.db.insertMemory(makeMemory({ id: "scoped-roundtrip", project_id: "alpha", scope: "user", title: "Scoped memory", content: "literal persisted body" }));
+      env.db.close();
+      env.db = new GnosysDB(env.tmpDir);
+      expect(env.db.getMemory("scoped-roundtrip")).toMatchObject({ id: "scoped-roundtrip", project_id: "alpha", scope: "user", title: "Scoped memory", content: "literal persisted body" });
     });
 
-    it("memories table has project_id and scope columns", () => {
-      const columns = (env.db as any).db
-        .prepare("PRAGMA table_info(memories)")
-        .all()
-        .map((c: any) => c.name);
-
-      expect(columns).toContain("id");
-      expect(columns).toContain("title");
-      expect(columns).toContain("category");
-      expect(columns).toContain("content");
-      expect(columns).toContain("confidence");
-      expect(columns).toContain("project_id");
-      expect(columns).toContain("scope");
-      expect(columns).toContain("embedding");
-      expect(columns).toContain("tier");
-    });
-
-    it("projects table has correct columns", () => {
-      const columns = (env.db as any).db
-        .prepare("PRAGMA table_info(projects)")
-        .all()
-        .map((c: any) => c.name);
-
-      expect(columns).toContain("id");
-      expect(columns).toContain("name");
-      expect(columns).toContain("working_directory");
-      expect(columns).toContain("user");
-      expect(columns).toContain("agent_rules_target");
-      expect(columns).toContain("obsidian_vault");
-      expect(columns).toContain("created");
-      expect(columns).toContain("modified");
+    it("projects persist identity fields", () => {
+      env.db.insertProject(makeProject({ id: "project-roundtrip", name: "Stored project", working_directory: "/workspace/project", user: "test-user", agent_rules_target: "CLAUDE.md", obsidian_vault: "/workspace/vault" }));
+      env.db.close();
+      env.db = new GnosysDB(env.tmpDir);
+      expect(env.db.getProject("project-roundtrip")).toMatchObject({ id: "project-roundtrip", name: "Stored project", working_directory: "/workspace/project", user: "test-user", agent_rules_target: "CLAUDE.md", obsidian_vault: "/workspace/vault" });
     });
 
     it("FTS5 virtual table is set up with porter tokenizer", () => {
@@ -208,25 +166,14 @@ describe("Phase 7a: GnosysDB + Migration", () => {
 
       // Porter stemming should match "verifying" with "verify"
       const results = env.db.searchFts("verify", 10);
-      expect(results.length).toBeGreaterThan(0);
+      expect(results.map(row => row.id)).toEqual(["fts-check"]);
     });
 
     it("audit_log table accepts entries", () => {
-      env.db.logAudit({
-        timestamp: new Date().toISOString(),
-        operation: "test",
-        memory_id: null,
-        details: JSON.stringify({ test: true }),
-        duration_ms: 10,
-        trace_id: "test-trace-001",
-      });
-
-      // Verify it was inserted
-      const entries = (env.db as any).db
-        .prepare("SELECT * FROM audit_log WHERE trace_id = ?")
-        .all("test-trace-001");
-      expect(entries.length).toBe(1);
-      expect(entries[0].operation).toBe("test");
+      env.db.logAudit({ timestamp: "2026-06-01T00:00:00Z", operation: "test", memory_id: "audit-memory", details: '{"test":true}', duration_ms: 10, trace_id: "test-trace-001" });
+      expect(env.db.getAuditLog("audit-memory").map(({ timestamp, operation, details, duration_ms, trace_id }) => ({ timestamp, operation, details, duration_ms, trace_id }))).toEqual([
+      { timestamp: "2026-06-01T00:00:00Z", operation: "test", details: '{"test":true}', duration_ms: 10, trace_id: "test-trace-001" }
+      ]);
     });
-  });
-});
+        });
+    });

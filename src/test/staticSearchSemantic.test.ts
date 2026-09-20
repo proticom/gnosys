@@ -3,8 +3,10 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { mkdtempSync, readFileSync, writeFileSync } from "fs";
+import { mkdtempSync, copyFileSync, writeFileSync } from "fs";
 import { rm } from "fs/promises";
+import { execFileSync } from "child_process";
+import { pathToFileURL } from "url";
 import os from "os";
 import path from "path";
 import {
@@ -107,16 +109,14 @@ function makeVectors(overrides: Partial<GnosysWebVectors> = {}): GnosysWebVector
 }
 
 describe("staticSearch dependency boundary", () => {
-  it("imports only Node builtins", () => {
-    const source = readFileSync(new URL("../lib/staticSearch.ts", import.meta.url), "utf-8");
-    const specifiers = [...source.matchAll(/from\s+["']([^"']+)["']/g)].map((match) => match[1]);
-
-    for (const specifier of specifiers) {
-      expect(
-        specifier === "fs" || specifier === "path" || specifier.startsWith("node:"),
-        `staticSearch.ts imports "${specifier}" which is not a Node.js builtin`
-      ).toBe(true);
-    }
+  it("runs copied static search without installed packages", () => {
+    const standalone = path.join(tmpDir, "standalone.mjs");
+    copyFileSync(path.resolve("dist/lib/staticSearch.js"), standalone);
+    const index = JSON.stringify(makeSemanticIndex());
+    const script = `import { search } from ${JSON.stringify(pathToFileURL(standalone).href)};
+      process.stdout.write(JSON.stringify(search(${index}, "orchard").map(row => row.document.id)));`;
+    const output = execFileSync(process.execPath, ["--input-type=module", "-e", script], { cwd: tmpDir, encoding: "utf8" });
+    expect(JSON.parse(output)).toEqual(["lex-a", "lex-b"]);
   });
 });
 
@@ -129,15 +129,14 @@ describe("loadVectors", () => {
     expect(loaded.vectors["lex-b"]).toEqual([100, 0]);
   });
 
-  it("loads vectors from a file path and caches repeated calls", () => {
+  it("retains loaded vectors until the caller clears the cache", () => {
     const filePath = path.join(tmpDir, "gnosys-vectors.json");
-    writeFileSync(filePath, JSON.stringify(makeVectors()), "utf-8");
-
-    const first = loadVectors(filePath);
-    const second = loadVectors(filePath);
-
-    expect(first).toBe(second);
-    expect(first.dims).toBe(2);
+    writeFileSync(filePath, JSON.stringify(makeVectors()));
+    expect(loadVectors(filePath).vectors["lex-b"]).toEqual([100, 0]);
+    writeFileSync(filePath, JSON.stringify(makeVectors({ vectors: { "lex-b": [0, 100] } })));
+    expect(loadVectors(filePath).vectors["lex-b"]).toEqual([100, 0]);
+    clearVectorsCache();
+    expect(loadVectors(filePath).vectors["lex-b"]).toEqual([0, 100]);
   });
 
   it("throws on invalid JSON", () => {

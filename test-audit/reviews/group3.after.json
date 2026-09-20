@@ -2280,6 +2280,1227 @@
       "afterClassification": "STRONG",
       "evidence": "Replacing target block preserves literal other command/args and writes timeout 90.",
       "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/acceptance.test.ts:68",
+      "beforeName": "initializes project A and B successfully",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Final Acceptance Tests TC-A.1: gnosys init in two separate projects initializes project A and B successfully"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Checks literal public output or persisted content; concrete relevant mutations survive original assertions and fail the replacement (see mutationIds and before/after records).",
+      "mutationIds": [
+        "init-invalid-identity"
+      ]
+    },
+    {
+      "beforeId": "src/test/acceptance.test.ts:84",
+      "beforeName": "both projects have unique projectIds",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Final Acceptance Tests TC-A.1: gnosys init in two separate projects both projects have unique projectIds"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Checks literal public output or persisted content; concrete relevant mutations survive original assertions and fail the replacement (see mutationIds and before/after records).",
+      "mutationIds": [
+        "init-invalid-identity"
+      ]
+    },
+    {
+      "beforeId": "src/test/acceptance.test.ts:108",
+      "beforeName": "adds project-scoped memories to project A",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Final Acceptance Tests TC-A.2: Memories and preferences in project A adds project-scoped memories to project A"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real project insert/query returns exactly one memory with literal Project A Decision title.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/acceptance.test.ts:137",
+      "beforeName": "adds user-scoped preferences",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Final Acceptance Tests TC-A.2: Memories and preferences in project A adds user-scoped preferences"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Checks literal public output or persisted content; concrete relevant mutations survive original assertions and fail the replacement (see mutationIds and before/after records).",
+      "mutationIds": [
+        "preference-drop-value"
+      ]
+    },
+    {
+      "beforeId": "src/test/acceptance.test.ts:149",
+      "beforeName": "user preferences are accessible regardless of project context",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Final Acceptance Tests TC-A.3: Preferences visible from project B user preferences are accessible regardless of project context"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real preference lookup returns the literal value and persisted user scope with null project ID.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/acceptance.test.ts:162",
+      "beforeName": "generated rules include user preferences regardless of project",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Final Acceptance Tests TC-A.3: Preferences visible from project B generated rules include user preferences regardless of project"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Rules generated from a real persisted preference contain Functional TypeScript.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/acceptance.test.ts:174",
+      "beforeName": "federated search returns results from both projects",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Final Acceptance Tests TC-A.4: Cross-project search federated search returns results from both projects"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Federated search across two real projects returns exactly their two seeded memory IDs.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/acceptance.test.ts:227",
+      "beforeName": "dream engine module loads without errors",
+      "beforeClassification": "WEAK",
+      "action": "deleted",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.3: Dream Mode configuration dream reports an empty database before calling a provider",
+        "Phase 0-6 Regression TC-R.3: Dream Mode configuration dream reports the configured minimum active-memory requirement"
+      ],
+      "afterClassification": "DEAD",
+      "evidence": "Deleted module/constant-only smoke; public dream cycle failure cases cover actual startup guards.",
+      "mutationIds": [],
+      "structuralReason": "Imports the module and checks export presence, type, or a default constant; never invokes the advertised feature, so a no-op implementation preserving exports passes these assertions."
+    },
+    {
+      "beforeId": "src/test/acceptance.test.ts:239",
+      "beforeName": "exports memories to Obsidian vault",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Final Acceptance Tests TC-A.6: Obsidian export exports memories to Obsidian vault"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Checks literal public output or persisted content; concrete relevant mutations survive original assertions and fail the replacement (see mutationIds and before/after records).",
+      "mutationIds": [
+        "export-drop-body"
+      ]
+    },
+    {
+      "beforeId": "src/test/acceptance.test.ts:263",
+      "beforeName": "backs up the central database",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Final Acceptance Tests TC-A.7: Backup and restore backs up the central database"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Checks literal public output or persisted content; concrete relevant mutations survive original assertions and fail the replacement (see mutationIds and before/after records).",
+      "mutationIds": [
+        "backup-garbage"
+      ]
+    },
+    {
+      "beforeId": "src/test/acceptance.test.ts:281",
+      "beforeName": "separate projects have independent memory spaces",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Final Acceptance Tests TC-A.8: Multi-root project scenario separate projects have independent memory spaces"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Project-specific reads return exactly one literal title each without the other project's memory.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/acceptance.test.ts:308",
+      "beforeName": "user preferences span all project roots",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Final Acceptance Tests TC-A.8: Multi-root project scenario user preferences span all project roots"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Shared preference lookup returns Available everywhere and its persisted scope is user.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/acceptance.test.ts:320",
+      "beforeName": "CLI list command works on initialized project",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Final Acceptance Tests TC-A.9: CLI and library API both functional CLI list command works on initialized project"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Seeded data and literal CLI results verify registered projects, shared/scoped list behavior, stats, preferences, audit and DB-to-CLI parity.",
+      "mutationIds": [
+        "cli-list-empty"
+      ]
+    },
+    {
+      "beforeId": "src/test/acceptance.test.ts:337",
+      "beforeName": "library API (GnosysDB) and CLI produce consistent results",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "Final Acceptance Tests TC-A.9: CLI and library API both functional library API (GnosysDB) and CLI produce consistent results"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Seeded data and literal CLI results verify registered projects, shared/scoped list behavior, stats, preferences, audit and DB-to-CLI parity.",
+      "mutationIds": [
+        "cli-list-empty"
+      ]
+    },
+    {
+      "beforeId": "src/test/acceptance.test.ts:358",
+      "beforeName": "all major DB operations work in sequence",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Final Acceptance Tests TC-A.9: CLI and library API both functional all major DB operations work in sequence"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real insert/update/search/delete sequence asserts confidence 0.8 then 0.95, reinforcement 1, one search match and deleted row absence.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/db-recovery-extended.test.ts:57",
+      "beforeName": "survives SIGKILL mid-transaction (WAL rollback, integrity ok)",
+      "beforeClassification": "MISLABELED",
+      "action": "deleted",
+      "afterNames": [],
+      "afterClassification": "DEAD",
+      "evidence": "Deleted SQLite-only SIGKILL test: it imports no application path and validates only better-sqlite3 transaction rollback.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/db-recovery-extended.test.ts:105",
+      "beforeName": "surfaces ENOSPC/full-disk as a clear non-corruption error",
+      "beforeClassification": "COUPLED",
+      "action": "kept",
+      "afterNames": [
+        "DB recovery — extended failure modes surfaces ENOSPC/full-disk as a clear non-corruption error"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Fault injection replaces actual external better-sqlite3 statement.run, not a Gnosys method; public insertMemory surfaces literal disk-full error and classifies it non-corruption.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/db-recovery-extended.test.ts:130",
+      "beforeName": "searchFts degrades gracefully when the FTS index is corrupted",
+      "beforeClassification": "STRONG",
+      "action": "rewritten",
+      "afterNames": [
+        "DB recovery — extended failure modes searchFts degrades gracefully when the FTS index is corrupted"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "External SQLite connection removes FTS index; public search returns exact persisted memory ID through fallback.",
+      "mutationIds": [
+        "fts-no-like-fallback"
+      ]
+    },
+    {
+      "beforeId": "src/test/db-recovery-extended.test.ts:142",
+      "beforeName": "degrades gracefully when better-sqlite3 cannot load",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "DB recovery — extended failure modes degrades gracefully when better-sqlite3 cannot load"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Mocks an unavailable native dependency boundary; public DB reports unavailable, null metadata, and rejects backup with Database not available.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/export-path-traversal.test.ts:65",
+      "beforeName": "slugifies traversal category and writes inside export dir",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "export path traversal slugifies traversal category and writes inside export dir"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Export of a traversal category writes escape/escape-attempt.md inside vault and creates no sibling escape path.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/export-path-traversal.test.ts:94",
+      "beforeName": "assertWithin allows paths inside target and blocks outside",
+      "beforeClassification": "COUPLED",
+      "action": "deleted",
+      "afterNames": [
+        "export path traversal slugifies traversal category and writes inside export dir"
+      ],
+      "afterClassification": "DEAD",
+      "evidence": "Deleted private-method duplicate; named public export test exercises malicious category and inside-root file creation.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/federated-client-read.test.ts:16",
+      "beforeName": "`${file} resolves client read for federated queries`",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "federated paths use client read context 'discover' reads the accepted snapshot while the master is offline",
+        "federated paths use client read context 'search' reads the accepted snapshot while the master is offline",
+        "federated paths use client read context 'recall' reads the accepted snapshot while the master is offline",
+        "federated paths use client read context 'hybrid-search' reads the accepted snapshot while the master is offline",
+        "federated paths use client read context 'fsearch' reads the accepted snapshot while the master is offline",
+        "federated paths use client read context ask sends accepted snapshot content to the configured provider while offline"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Five CLI handlers read the accepted offline snapshot ID/title; ask sends snapshot body to the configured Ollama HTTP boundary. Local decoy makes wrong-database routing observable.",
+      "mutationIds": [
+        "federated-cli-local-instead-snapshot"
+      ]
+    },
+    {
+      "beforeId": "src/test/federated-client-read.test.ts:26",
+      "beforeName": "gnosys_federated_search MCP tool uses resolveToolContext and cleanup",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "federated paths use client read context gnosys_federated_search returns accepted snapshot content over MCP while offline"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real stdio MCP federated search returns snapshot title/body and excludes the local decoy while master is absent.",
+      "mutationIds": [
+        "federated-mcp-local-instead-snapshot"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:42",
+      "beforeName": "inserts a memory into the database and retrieves it",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.1: Basic CRUD operations inserts a memory into the database and retrieves it"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Inserted row is read with literal title, content and decisions category.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:58",
+      "beforeName": "updates a memory's fields",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.1: Basic CRUD operations updates a memory's fields"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Public update persists literal Updated Title and confidence 0.95.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:73",
+      "beforeName": "deletes a memory and its FTS entry",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.1: Basic CRUD operations deletes a memory and its FTS entry"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Public delete removes the memory and its corresponding search hit.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:88",
+      "beforeName": "reinforces a memory by incrementing reinforcement_count",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.1: Basic CRUD operations updates persisted reinforcement fields"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Names and asserts the actual public DB update contract, not maintenance reinforcement.",
+      "mutationIds": [
+        "update-drop-reinforcement"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:103",
+      "beforeName": "reads memories by category",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.1: Basic CRUD operations reads memories by category"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Category filtering returns exactly two rows and every category is decisions.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:113",
+      "beforeName": "writes and reads a memory file via GnosysStore",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.1: Basic CRUD operations writes and reads a memory file via GnosysStore"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Filesystem store round trip preserves literal ID store-001 and Content here body.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:132",
+      "beforeName": "FTS5 search finds memories by keyword",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.2: Search operations FTS5 search finds memories by keyword"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Concrete JWT query returns seeded search-001 as first hit.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:155",
+      "beforeName": "discover finds memories by relevance keywords",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.2: Search operations discover finds memories by relevance keywords"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Discovery query returns the literal OAuth memory ID disc-001.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:169",
+      "beforeName": "GnosysSearch indexes and searches store memories",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.2: Search operations GnosysSearch indexes and searches store memories"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real store reindex and search return Redis Caching Decision first.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:190",
+      "beforeName": "returns empty results for non-matching queries",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.2: Search operations returns empty results for non-matching queries"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Public FTS search of an empty database returns literal [].",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:199",
+      "beforeName": "dream module can be imported without errors",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.3: Dream Mode configuration dream reports an empty database before calling a provider"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Public dream cycle returns literal empty-database reason and zero provider calls.",
+      "mutationIds": [
+        "dream-drop-empty-error"
+      ],
+      "structuralReason": "Imports the module and checks export presence, type, or a default constant; never invokes the advertised feature, so a no-op implementation preserving exports passes these assertions."
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:204",
+      "beforeName": "dream engine initializes with default config (disabled)",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.3: Dream Mode configuration dream reports the configured minimum active-memory requirement"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Public dream cycle on one memory returns literal configured minimum failure, replacing uninstantiated constructor claim.",
+      "mutationIds": [
+        "dream-drop-minimum-error"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:215",
+      "beforeName": "stores memories with distinct project_id values",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.4: Multi-project support stores memories with distinct project_id values"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Project filters return one literal project-specific title for each seeded project.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:242",
+      "beforeName": "registers and retrieves projects",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.4: Multi-project support registers and retrieves projects"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Registered project reread preserves literal Alpha name and /tmp/alpha working path.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:261",
+      "beforeName": "separates memories by scope",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.4: Multi-project support separates memories by scope"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Asserts literal scoped IDs or persisted exported/archived body, killing the original surviving wrong-scope/dropped-body mutation.",
+      "mutationIds": [
+        "scope-always-project"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:285",
+      "beforeName": "export module can be imported",
+      "beforeClassification": "WEAK",
+      "action": "deleted",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.5: Obsidian export exporter creates output directory and writes memories"
+      ],
+      "afterClassification": "DEAD",
+      "evidence": "Deleted module-only duplicate of real export-body test.",
+      "mutationIds": [
+        "regression-export-drop-body"
+      ],
+      "structuralReason": "Imports the module and checks export presence, type, or a default constant; never invokes the advertised feature, so a no-op implementation preserving exports passes these assertions."
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:290",
+      "beforeName": "exporter creates output directory and writes memories",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.5: Obsidian export exporter creates output directory and writes memories"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Asserts literal scoped IDs or persisted exported/archived body, killing the original surviving wrong-scope/dropped-body mutation.",
+      "mutationIds": [
+        "regression-export-drop-body"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:324",
+      "beforeName": "getMemoryCount returns correct totals",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.6: Dashboard and doctor stats getMemoryCount returns correct totals"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Mixed active/archive fixture reports exact active 2, archived 1 and total 3.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:341",
+      "beforeName": "getCategories returns distinct categories",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.6: Dashboard and doctor stats getCategories returns distinct categories"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Category listing contains exactly decisions and concepts despite duplicate category rows.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:352",
+      "beforeName": "dashboard module can be imported",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.6: Dashboard and doctor stats dashboard reports literal active and archived database counts"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Calls real dashboard collector with active/archived rows and asserts literal DB summary.",
+      "mutationIds": [
+        "dashboard-wrong-active-count"
+      ],
+      "structuralReason": "Imports the module and checks export presence, type, or a default constant; never invokes the advertised feature, so a no-op implementation preserving exports passes these assertions."
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:361",
+      "beforeName": "maintenance module exports expected functions",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.7: Maintain and dearchive maintenance rejects a resolver with no writable store"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real maintenance call fails with actionable literal missing-store error.",
+      "mutationIds": [
+        "maintenance-wrong-no-store-error"
+      ],
+      "structuralReason": "Imports the module and checks export presence, type, or a default constant; never invokes the advertised feature, so a no-op implementation preserving exports passes these assertions."
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:366",
+      "beforeName": "archive module can be imported and instantiated",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.7: Maintain and dearchive archive module can be imported and instantiated"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Asserts literal scoped IDs or persisted exported/archived body, killing the original surviving wrong-scope/dropped-body mutation.",
+      "mutationIds": [
+        "archive-empty-content"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:397",
+      "beforeName": "memory tier can be changed from active to archive and back",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.7: Maintain and dearchive memory tier can be changed from active to archive and back"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Generic update transitions persisted tier/status to archive/archived and back to active/active.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase0-6.regression.test.ts:415",
+      "beforeName": "confidence decay is computable",
+      "beforeClassification": "HOLLOW",
+      "action": "deleted",
+      "afterNames": [],
+      "afterClassification": "DEAD",
+      "evidence": "Deleted fixture-only Math.exp demonstration; no production import or observable app behavior.",
+      "mutationIds": [],
+      "structuralReason": "Computes Math.exp on local literals without importing or invoking application code."
+    },
+    {
+      "beforeId": "src/test/phase7a.migration.test.ts:34",
+      "beforeName": "migrate module can be imported",
+      "beforeClassification": "WEAK",
+      "action": "deleted",
+      "afterNames": [
+        "Phase 7a: GnosysDB + Migration TC-7a.1: Migration of markdown memories to SQLite memories written to store can be read into DB via migrate"
+      ],
+      "afterClassification": "DEAD",
+      "evidence": "Deleted import-only duplicate of migration body round trip.",
+      "mutationIds": [],
+      "structuralReason": "Imports the module and checks export presence, type, or a default constant; never invokes the advertised feature, so a no-op implementation preserving exports passes these assertions."
+    },
+    {
+      "beforeId": "src/test/phase7a.migration.test.ts:39",
+      "beforeName": "memories written to store can be read into DB via migrate",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 7a: GnosysDB + Migration TC-7a.1: Migration of markdown memories to SQLite memories written to store can be read into DB via migrate"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Migrates two actual Markdown files and reads literal Decision Alpha and Concept Beta titles from SQLite.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase7a.migration.test.ts:74",
+      "beforeName": "migration is idempotent (re-migrate skips existing)",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 7a: GnosysDB + Migration TC-7a.1: Migration of markdown memories to SQLite migration is idempotent (re-migrate skips existing)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Two migration runs leave exactly one persisted memory after first-run count 1.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase7a.migration.test.ts:97",
+      "beforeName": "DB search works after inserting memories",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 7a: GnosysDB + Migration TC-7a.2: Post-migration command compatibility DB search works after inserting memories"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "FTS query returns concrete compat-001 memory ID after insertion.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase7a.migration.test.ts:112",
+      "beforeName": "getMemoryCount returns correct totals after migration",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 7a: GnosysDB + Migration TC-7a.2: Post-migration command compatibility getMemoryCount returns correct totals after migration"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Runs actual migration before checking literal totals and migrated content.",
+      "mutationIds": [
+        "migration-drop-body"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase7a.migration.test.ts:129",
+      "beforeName": "isMigrated returns false for empty DB, true after adding data",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 7a: GnosysDB + Migration TC-7a.3: Migration status detection isMigrated returns false for empty DB, true after adding data"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Public isMigrated transitions false to true after inserting a concrete memory.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase7a.migration.test.ts:140",
+      "beforeName": "getSchemaVersion returns current version",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 7a: GnosysDB + Migration TC-7a.3: Migration status detection getSchemaVersion returns current version"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal schema version 5 / Porter-stemmed matching ID replaces open-ended bound.",
+      "mutationIds": [
+        "schema-version-future"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase7a.migration.test.ts:149",
+      "beforeName": "has all 6 tables (memories, fts, relationships, summaries, audit_log, projects)",
+      "beforeClassification": "COUPLED",
+      "action": "deleted",
+      "afterNames": [
+        "Phase 7a: GnosysDB + Migration TC-7a.4: Schema validation audit_log table accepts entries",
+        "Phase 7a: GnosysDB + Migration TC-7a.4: Schema validation projects persist identity fields",
+        "Phase 7a: GnosysDB + Migration TC-7a.4: Schema validation memories retain scope and project after reopen"
+      ],
+      "afterClassification": "DEAD",
+      "evidence": "Deleted private schema-table census; public CRUD/migration, stemming, project and audit cases below exercise stored behavior.",
+      "mutationIds": [
+        "audit-drop-details",
+        "memory-drop-scope-project",
+        "project-drop-vault"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase7a.migration.test.ts:166",
+      "beforeName": "memories table has project_id and scope columns",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 7a: GnosysDB + Migration TC-7a.4: Schema validation memories retain scope and project after reopen"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Public memory insert/reopen/read validates stored project/scope/content fields.",
+      "mutationIds": [
+        "memory-drop-scope-project"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase7a.migration.test.ts:183",
+      "beforeName": "projects table has correct columns",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 7a: GnosysDB + Migration TC-7a.4: Schema validation projects persist identity fields"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Public project insert/reopen/read validates persisted identity fields.",
+      "mutationIds": [
+        "project-drop-vault"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase7a.migration.test.ts:199",
+      "beforeName": "FTS5 virtual table is set up with porter tokenizer",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 7a: GnosysDB + Migration TC-7a.4: Schema validation FTS5 virtual table is set up with porter tokenizer"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal schema version 5 / Porter-stemmed matching ID replaces open-ended bound.",
+      "mutationIds": [
+        "fts-wrong-row-id"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase7a.migration.test.ts:214",
+      "beforeName": "audit_log table accepts entries",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 7a: GnosysDB + Migration TC-7a.4: Schema validation audit_log table accepts entries"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Public audit write/read checks literal stored payload without private SQLite handle.",
+      "mutationIds": [
+        "audit-drop-details"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase7c.dual-write.test.ts:36",
+      "beforeName": "memory exists in both DB and filesystem after write",
+      "beforeClassification": "MISLABELED",
+      "action": "deleted",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.1: Basic CRUD operations writes and reads a memory file via GnosysStore",
+        "Phase 0-6 Regression TC-R.1: Basic CRUD operations updates persisted reinforcement fields"
+      ],
+      "afterClassification": "DEAD",
+      "evidence": "Deleted manually simulated dual-write/reinforcement claim; duplicate public CRUD coverage is named.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase7c.dual-write.test.ts:71",
+      "beforeName": "DB content matches store content for the same memory",
+      "beforeClassification": "HOLLOW",
+      "action": "deleted",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.1: Basic CRUD operations writes and reads a memory file via GnosysStore",
+        "Phase 0-6 Regression TC-R.1: Basic CRUD operations updates persisted reinforcement fields"
+      ],
+      "afterClassification": "DEAD",
+      "evidence": "Deleted manually simulated dual-write/reinforcement claim; duplicate public CRUD coverage is named.",
+      "mutationIds": [],
+      "structuralReason": "Manually writes the same fixture separately to the database and Markdown store, then compares those fixtures; never invokes automatic dual-write or synchronization behavior."
+    },
+    {
+      "beforeId": "src/test/phase7c.dual-write.test.ts:100",
+      "beforeName": "edited markdown file is reflected after reindex",
+      "beforeClassification": "MISLABELED",
+      "action": "deleted",
+      "afterNames": [
+        "Phase 7c: Dual-Write TC-7c.2: Manual markdown edits picked up on reindex search index reflects manual edits after reindex"
+      ],
+      "afterClassification": "DEAD",
+      "evidence": "Deleted readMemory-only duplicate mislabeled as reindex; replacement below performs both initial and edited index reads.",
+      "mutationIds": [
+        "reindex-ignore-second-call"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase7c.dual-write.test.ts:121",
+      "beforeName": "search index reflects manual edits after reindex",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 7c: Dual-Write TC-7c.2: Manual markdown edits picked up on reindex search index reflects manual edits after reindex"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Distinct old/new tokens and literal result title prove edited content is indexed and stale content removed.",
+      "mutationIds": [
+        "reindex-ignore-second-call"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase7c.dual-write.test.ts:160",
+      "beforeName": "updating DB memory fields reflects correct state",
+      "beforeClassification": "MISLABELED",
+      "action": "deleted",
+      "afterNames": [
+        "Phase 0-6 Regression TC-R.1: Basic CRUD operations writes and reads a memory file via GnosysStore",
+        "Phase 0-6 Regression TC-R.1: Basic CRUD operations updates persisted reinforcement fields"
+      ],
+      "afterClassification": "DEAD",
+      "evidence": "Deleted manually simulated dual-write/reinforcement claim; duplicate public CRUD coverage is named.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase7c.dual-write.test.ts:183",
+      "beforeName": "updating store memory updates modified date",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 7c: Dual-Write TC-7c.3: Updates propagate to both layers updating store memory updates modified date"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Public store update returns the current modified date instead of the seeded old date.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remoteWizard.test.ts:24",
+      "beforeName": "matchesTypedPhrase requires exact match after trim",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "remoteWizard v13 helpers matchesTypedPhrase requires exact match after trim"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Public phrase comparator accepts exact/trimmed phrase and rejects literal wrong input.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remoteWizard.test.ts:31",
+      "beforeName": "detectClonedStagingPresence uses the per-client presence file",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "remoteWizard v13 helpers detectClonedStagingPresence uses the per-client presence file"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Creates the documented literal staging presence path, then checks public detector false/true.",
+      "mutationIds": [
+        "presence-wrong-filename"
+      ]
+    },
+    {
+      "beforeId": "src/test/remoteWizard.test.ts:45",
+      "beforeName": "BACKUP_RISK_PHRASE is shared with remoteRender",
+      "beforeClassification": "COUPLED",
+      "action": "deleted",
+      "afterNames": [
+        "remoteWizard v13 render screens renderBackupDeclineAckPrompt requires the v13 typed phrase"
+      ],
+      "afterClassification": "DEAD",
+      "evidence": "Deleted shared-constant identity duplicate; rendered prompt test asserts the literal acknowledgment phrase.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remoteWizard.test.ts:55",
+      "beforeName": "renderV13ExplanationScreen includes key v13 rules",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "remoteWizard v13 render screens renderV13ExplanationScreen includes key v13 rules"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Public explanation renderer contains documented reachable/unreachable master rules and Tailscale guidance.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remoteWizard.test.ts:64",
+      "beforeName": "renderMasterBackupWarning includes daily snapshot copy",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "remoteWizard v13 render screens renderMasterBackupWarning includes daily snapshot copy"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Public backup warning includes ONLY copy of your brain and master-folder/backups text.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/remoteWizard.test.ts:70",
+      "beforeName": "renderBackupDeclineAckPrompt requires the v13 typed phrase",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "remoteWizard v13 render screens renderBackupDeclineAckPrompt requires the v13 typed phrase"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Public acknowledgment prompt includes the independently written full data-loss acceptance phrase.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-screen13.test.ts:20",
+      "beforeName": "KNOWN_CONFIG_KEYS includes the documented keys",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "Screen 13 — config set helpers suggests documented keys for misspelled config inputs"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Concrete misspelled user inputs produce six literal key suggestions.",
+      "mutationIds": [
+        "config-suggestions-null"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-ui-screen13.test.ts:30",
+      "beforeName": "suggestConfigKey returns null on exact match",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Screen 13 — config set helpers suggestConfigKey returns null on exact match"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact provider and xai-model keys return null suggestion.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-screen13.test.ts:36",
+      "beforeName": "suggestConfigKey suggests close matches on typo",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Screen 13 — config set helpers suggestConfigKey suggests close matches on typo"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Concrete spelling errors resolve to literal provider/model/xai-model suggestions.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-screen13.test.ts:43",
+      "beforeName": "suggestConfigKey returns null on wild miss",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Screen 13 — config set helpers suggestConfigKey returns null on wild miss"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "A distant invalid key returns null rather than an unrelated suggestion.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-screen13.test.ts:49",
+      "beforeName": "classifyStore returns 'global' for ~/.gnosys",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Screen 13 — config set helpers classifyStore returns 'global' for ~/.gnosys"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Home .gnosys path classifies as literal global scope.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-screen13.test.ts:54",
+      "beforeName": "classifyStore returns 'project' for any other path",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Screen 13 — config set helpers classifyStore returns 'project' for any other path"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Two other store paths classify as literal project scope.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-screen13.test.ts:60",
+      "beforeName": "levenshtein computes edit distance correctly",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Screen 13 — config set helpers levenshtein computes edit distance correctly"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Edit-distance helper returns independently specified 0, 3, 2 and 0 for concrete string pairs.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:110",
+      "beforeName": "imports only Node builtins",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "staticSearch dependency boundary runs copied static search without installed packages"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Executes copied built JavaScript outside package/dependencies; literal lexical result IDs prove usable standalone artifact.",
+      "mutationIds": [
+        "standalone-search-empty"
+      ]
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:124",
+      "beforeName": "loads vectors from a raw JSON string",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "loadVectors loads vectors from a raw JSON string"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Vector JSON loader returns literal model, version 1 and lex-b vector [100,0].",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:132",
+      "beforeName": "loads vectors from a file path and caches repeated calls",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "loadVectors retains loaded vectors until the caller clears the cache"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Changing source vector JSON remains cached, then clearing reloads the literal changed vector.",
+      "mutationIds": [
+        "vectors-cache-clear-noop"
+      ]
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:143",
+      "beforeName": "throws on invalid JSON",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "loadVectors throws on invalid JSON"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Invalid vector JSON rejects with Invalid JSON.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:147",
+      "beforeName": "throws on missing version",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "loadVectors throws on missing version"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Missing vector version rejects with missing or invalid version.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:154",
+      "beforeName": "throws on unsupported version",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "loadVectors throws on unsupported version"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Unsupported vector version 2 rejects with explicit version message.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:160",
+      "beforeName": "throws on wrong quantization",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "loadVectors throws on wrong quantization"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Wrong quantization float32 rejects with quantization must be int8.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:166",
+      "beforeName": "throws on missing file path",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "loadVectors throws on missing file path"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Missing vector file rejects with not found.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:172",
+      "beforeName": "keeps lexical search behavior unchanged when semantic inputs are absent",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "semantic search fusion keeps lexical search behavior unchanged when semantic inputs are absent"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Lexical-only search returns exact lex-a/lex-b IDs, scores 10/9 and orchard tokens.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:187",
+      "beforeName": "falls back to lexical search when one semantic input is absent",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "semantic search fusion falls back to lexical search when one semantic input is absent"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Missing vector collection falls back to exact lexical ID order with first score 10.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:197",
+      "beforeName": "fuses lexical and semantic rankings with RRF k=60",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "semantic search fusion fuses lexical and semantic rankings with RRF k=60"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real fusion returns lex-b/lex-a/sem-c order and independent RRF fractions plus cosine 1.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:212",
+      "beforeName": "allows semantic-only documents with empty matched tokens",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "semantic search fusion allows semantic-only documents with empty matched tokens"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Semantic-only query returns exact lex-b/sem-c IDs with empty lexical tokens.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:223",
+      "beforeName": "skips vector doc ids that are not in the index",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "semantic search fusion skips vector doc ids that are not in the index"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Unknown vector ID ghost is excluded and exactly three real indexed results remain.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:241",
+      "beforeName": "falls back to lexical search and warns on model mismatch",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "semantic search fusion falls back to lexical search and warns on model mismatch"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Model mismatch emits literal warning and exact lexical IDs/scores.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:256",
+      "beforeName": "falls back to lexical search and warns on dimension mismatch",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "semantic search fusion falls back to lexical search and warns on dimension mismatch"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Dimension mismatch emits literal warning and exact lexical IDs/scores.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:270",
+      "beforeName": "dequantizes int8 vectors with scale and offset before cosine ranking",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "semantic search fusion dequantizes int8 vectors with scale and offset before cosine ranking"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Scale/offset dequantization ranks lex-a first with semantic score 1.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearchSemantic.test.ts:291",
+      "beforeName": "returns zero cosine for zero-magnitude vectors and dimension mismatches",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "semantic search fusion returns zero cosine for zero-magnitude vectors and dimension mismatches"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Zero-magnitude and dimension-mismatched cosine inputs both return exact 0.",
+      "mutationIds": []
     }
   ]
 }
