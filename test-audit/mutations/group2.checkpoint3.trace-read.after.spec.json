@@ -1,0 +1,90 @@
+[
+  {
+    "id": "g2-trace-body",
+    "file": "src/lib/trace.ts",
+    "search": "      category: \"how\",\n      content,",
+    "replace": "      category: \"how\",\n      content: \"WRONG\",",
+    "tests": [
+      "src/test/mcp-trace-tools.test.ts"
+    ],
+    "testName": "traces a codebase and reports created memories",
+    "description": "Keep trace counts but corrupt persisted procedure bodies."
+  },
+  {
+    "id": "g2-traverse-root",
+    "file": "src/sandbox/server.ts",
+    "search": "            nodes,\n            total: nodes.length,",
+    "replace": "            nodes: nodes.filter(node => node.depth > 0),\n            total: nodes.length,",
+    "tests": [
+      "src/test/mcp-trace-tools.test.ts"
+    ],
+    "testName": "respects direction=in",
+    "description": "Drop the root node from traversal output."
+  },
+  {
+    "id": "g2-reflect-required",
+    "file": "src/index.ts",
+    "search": "outcome: z.string().describe(\"What happened (the outcome to reflect on)\"),",
+    "replace": "outcome: z.string().optional().describe(\"What happened (the outcome to reflect on)\"),",
+    "tests": [
+      "src/test/mcp-trace-tools.test.ts"
+    ],
+    "testName": "rejects a call without the required outcome",
+    "description": "Allow missing outcome past MCP validation and return a different handler error."
+  },
+  {
+    "id": "g2-reflect-auto-discovery",
+    "file": "src/sandbox/server.ts",
+    "search": "          targetIds = results.map((r) => r.id);",
+    "replace": "          targetIds = results.filter(() => false).map((r) => r.id);",
+    "tests": [
+      "src/test/phase10.reflect-trace-traverse.test.ts"
+    ],
+    "testName": "searches FTS to find related memories",
+    "description": "Drop every automatically discovered related memory."
+  },
+  {
+    "id": "g2-trace-memory-ids",
+    "file": "src/lib/trace.ts",
+    "search": "    filesScanned: filesToScan.length,\n    memoryIds,",
+    "replace": "    filesScanned: filesToScan.length,\n    memoryIds: [],",
+    "tests": [
+      "src/test/phase10.reflect-trace-traverse.test.ts"
+    ],
+    "testName": "stores functions as category 'how' memories",
+    "description": "Return no memory IDs while retaining count and inserted rows."
+  },
+  {
+    "id": "g2-trace-self-edge",
+    "file": "src/lib/trace.ts",
+    "search": "          target_id: targetMemId,\n          rel_type: \"leads_to\",",
+    "replace": "          target_id: sourceMemId,\n          rel_type: \"leads_to\",",
+    "tests": [
+      "src/test/phase10.reflect-trace-traverse.test.ts"
+    ],
+    "testName": "creates call-chain relationships between functions|traces code, reflects on outcome, then traverses the chain",
+    "description": "Write self-loop leads_to links instead of the actual callee."
+  },
+  {
+    "id": "g2-recall-bypass-db",
+    "file": "src/lib/recall.ts",
+    "search": "  if (options.gnosysDb?.isAvailable() && options.gnosysDb?.isMigrated()) {",
+    "replace": "  if (false && options.gnosysDb?.isAvailable() && options.gnosysDb?.isMigrated()) {",
+    "tests": [
+      "src/test/phase7b.read-paths.test.ts"
+    ],
+    "testName": "recall returns the matching SQLite memory",
+    "description": "Disable database-backed recall."
+  },
+  {
+    "id": "g2-search-limit",
+    "file": "src/lib/db.ts",
+    "search": "        `).all(match, limit) as Array<{",
+    "replace": "        `).all(match, Math.min(limit, 1)) as Array<{",
+    "tests": [
+      "src/test/phase7b.read-paths.test.ts"
+    ],
+    "testName": "FTS5 search on 100 memories completes in under 50ms",
+    "description": "Truncate search results to one regardless of requested limit."
+  }
+]

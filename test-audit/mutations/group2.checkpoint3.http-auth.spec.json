@@ -1,0 +1,13 @@
+[
+  {
+    "id": "g2-http-auth-gate",
+    "file": "src/lib/mcpHttp.ts",
+    "search": "      if (req.headers[\"authorization\"] !== `Bearer ${opts.authToken}`) {",
+    "replace": "      if (false) {",
+    "tests": [
+      "src/test/v512-mcpHttp.test.ts"
+    ],
+    "testName": "rejects requests without the bearer token",
+    "description": "Disable bearer authentication and expose initialize to an unauthenticated client."
+  }
+]

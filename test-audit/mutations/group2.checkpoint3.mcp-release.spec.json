@@ -1,0 +1,62 @@
+[
+  {
+    "file": "src/index.ts",
+    "tests": [
+      "src/test/mcp-context-release.test.ts"
+    ],
+    "build": true,
+    "id": "g2-mcp-release-finally",
+    "search": "        for (const c of opened) releaseClientReadFromContext(c);",
+    "replace": "        for (const c of opened) void c;",
+    "testName": "early missing-memory return",
+    "description": "Leak all contexts from central cleanup on early return."
+  },
+  {
+    "file": "src/index.ts",
+    "tests": [
+      "src/test/mcp-context-release.test.ts"
+    ],
+    "build": true,
+    "id": "g2-mcp-error-envelope",
+    "search": "text: formatMcpError(`in ${toolName}`, err)",
+    "replace": "text: formatMcpError(`during operation`, err)",
+    "testName": "handler throws",
+    "description": "Drop tool identity from unexpected handler error envelope."
+  },
+  {
+    "file": "src/index.ts",
+    "tests": [
+      "src/test/mcp-context-release.test.ts"
+    ],
+    "build": true,
+    "id": "g2-mcp-release-default",
+    "search": "    activeToolContexts.getStore()?.push(ctx);",
+    "replace": "    void ctx;",
+    "testName": "default and project-scoped",
+    "description": "Omit default context from central cleanup."
+  },
+  {
+    "file": "src/index.ts",
+    "tests": [
+      "src/test/mcp-context-release.test.ts"
+    ],
+    "build": true,
+    "id": "g2-mcp-release-shared",
+    "search": "    ctx.clientRead = null;",
+    "replace": "    centralDb?.close();\n    ctx.clientRead = null;",
+    "testName": "shared local database",
+    "description": "Incorrectly close the shared local connection when releasing owned remote handles."
+  },
+  {
+    "file": "src/index.ts",
+    "tests": [
+      "src/test/mcp-context-release.test.ts"
+    ],
+    "build": true,
+    "id": "g2-mcp-async-stderr",
+    "search": "    console.error(`Gnosys MCP: uncaught exception \u2014 ${err.stack || err.message}`);",
+    "replace": "    console.log(`Gnosys MCP: uncaught exception \u2014 ${err.stack || err.message}`);",
+    "testName": "escaped async errors",
+    "description": "Write escaped exception diagnostics to the JSON-RPC stdout channel."
+  }
+]

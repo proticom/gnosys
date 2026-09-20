@@ -1,0 +1,462 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "g2-trace-body",
+      "file": "src/lib/trace.ts",
+      "description": "Keep trace counts but corrupt persisted procedure bodies.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 819,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_trace traces a codebase and reports created memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 800,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_trace traces a codebase and reports created memories",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ { …(2) }, { …(2) } ] to deeply equal [ { …(2) }, { …(2) } ]\n    at <repo>/src/test/mcp-trace-tools.test.ts:116:160\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 738,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_trace traces a codebase and reports created memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/mcp-trace-tools.test.ts",
+          "name": "gnosys_trace traces a codebase and reports created memories"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-traverse-root",
+      "file": "src/sandbox/server.ts",
+      "description": "Drop the root node from traversal output.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 804,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_traverse respects direction=in (no outgoing edges followed)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 801,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_traverse respects direction=in (no outgoing edges followed)",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Traversal from mem-trace-a (depth: 3,…' to be 'Traversal from mem-trace-a (depth: 3,…' // Object.is equality\n    at <repo>/src/test/mcp-trace-tools.test.ts:155:17\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 822,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_traverse respects direction=in (no outgoing edges followed)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/mcp-trace-tools.test.ts",
+          "name": "gnosys_traverse respects direction=in (no outgoing edges followed)"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-reflect-required",
+      "file": "src/index.ts",
+      "description": "Allow missing outcome past MCP validation and return a different handler error.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 883,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_reflect rejects a call without the required outcome",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 853,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_reflect rejects a call without the required outcome",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Reflect failed: outcome is required' to contain 'Input validation error: Invalid argum…'\n    at <repo>/src/test/mcp-trace-tools.test.ts:195:23\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 873,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_reflect rejects a call without the required outcome",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/mcp-trace-tools.test.ts",
+          "name": "gnosys_reflect rejects a call without the required outcome"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-reflect-auto-discovery",
+      "file": "src/sandbox/server.ts",
+      "description": "Drop every automatically discovered related memory.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 636,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.5: Reflection API — auto-discovers memories when no IDs provided searches FTS to find related memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 648,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.5: Reflection API — auto-discovers memories when no IDs provided searches FTS to find related memories",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { …(5) } to match object { memories_updated: [ { …(3) } ] }\n(4 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/phase10.reflect-trace-traverse.test.ts:167:24\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 564,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.5: Reflection API — auto-discovers memories when no IDs provided searches FTS to find related memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+          "name": "TC-10.5: Reflection API — auto-discovers memories when no IDs provided searches FTS to find related memories"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-trace-memory-ids",
+      "file": "src/lib/trace.ts",
+      "description": "Return no memory IDs while retaining count and inserted rows.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 552,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.7: Process Tracing — creates procedural 'how' memories stores functions as category 'how' memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 539,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.7: Process Tracing — creates procedural 'how' memories stores functions as category 'how' memories",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to have a length of 2 but got +0\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1389:20)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/phase10.reflect-trace-traverse.test.ts:221:30\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 590,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.7: Process Tracing — creates procedural 'how' memories stores functions as category 'how' memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+          "name": "TC-10.7: Process Tracing — creates procedural 'how' memories stores functions as category 'how' memories"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-trace-self-edge",
+      "file": "src/lib/trace.ts",
+      "description": "Write self-loop leads_to links instead of the actual callee.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 586,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.8: Process Tracing — creates leads_to and follows_from relationships creates call-chain relationships between functions",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.14: End-to-end — trace → reflect → traverse chain traces code, reflects on outcome, then traverses the chain",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 617,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.8: Process Tracing — creates leads_to and follows_from relationships creates call-chain relationships between functions",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ [ …(3) ], [ …(3) ], [ …(3) ], …(1) ] to deeply equal [ [ …(3) ], [ …(3) ], [ …(3) ], …(1) ]\n    at <repo>/src/test/phase10.reflect-trace-traverse.test.ts:260:19\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.14: End-to-end — trace → reflect → traverse chain traces code, reflects on outcome, then traverses the chain",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ [ …(3) ], [ …(3) ], [ …(3) ], …(1) ] to deeply equal [ [ …(3) ], [ …(3) ], [ …(3) ], …(1) ]\n    at <repo>/src/test/phase10.reflect-trace-traverse.test.ts:421:138\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 561,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.8: Process Tracing — creates leads_to and follows_from relationships creates call-chain relationships between functions",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.14: End-to-end — trace → reflect → traverse chain traces code, reflects on outcome, then traverses the chain",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+          "name": "TC-10.8: Process Tracing — creates leads_to and follows_from relationships creates call-chain relationships between functions"
+        },
+        {
+          "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+          "name": "TC-10.14: End-to-end — trace → reflect → traverse chain traces code, reflects on outcome, then traverses the chain"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-recall-bypass-db",
+      "file": "src/lib/recall.ts",
+      "description": "Disable database-backed recall.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 435,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite recall returns the matching SQLite memory",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 440,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite recall returns the matching SQLite memory",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ { id: 'recall-001', …(2) } ]\n    at <repo>/src/test/phase7b.read-paths.test.ts:80:112\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 450,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite recall returns the matching SQLite memory",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase7b.read-paths.test.ts",
+          "name": "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite recall returns the matching SQLite memory"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-search-limit",
+      "file": "src/lib/db.ts",
+      "description": "Truncate search results to one regardless of requested limit.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 401,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.2: SQLite read performance FTS5 search on 100 memories completes in under 50ms",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 397,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.2: SQLite read performance FTS5 search on 100 memories completes in under 50ms",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 1 to be 20 // Object.is equality\n    at <repo>/src/test/phase7b.read-paths.test.ts:123:30\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 440,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.2: SQLite read performance FTS5 search on 100 memories completes in under 50ms",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase7b.read-paths.test.ts",
+          "name": "Phase 7b: Read Paths Rewired TC-7b.2: SQLite read performance FTS5 search on 100 memories completes in under 50ms"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

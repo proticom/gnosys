@@ -1,0 +1,14 @@
+[
+  {
+    "file": "src/index.ts",
+    "tests": [
+      "src/test/mcp-context-release.test.ts"
+    ],
+    "build": true,
+    "id": "g2-mcp-release-shared",
+    "search": "    ctx.clientRead = null;",
+    "replace": "    centralDb?.close();\n    ctx.clientRead = null;",
+    "testName": "repeated remote reads return content",
+    "description": "Incorrectly close the shared local connection when releasing owned remote handles."
+  }
+]

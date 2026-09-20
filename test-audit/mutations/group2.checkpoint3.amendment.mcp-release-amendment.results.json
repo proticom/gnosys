@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "g2-mcp-release-shared",
+      "file": "src/index.ts",
+      "description": "Incorrectly close the shared local connection when releasing owned remote handles.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1012,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release repeated remote reads return content and release owned resources",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 892,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release repeated remote reads return content and release owned resources",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected true not to be true // Object.is equality\n    at <repo>/src/test/mcp-context-release.test.ts:109:34\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 990,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release repeated remote reads return content and release owned resources",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/mcp-context-release.test.ts",
+          "name": "MCP central ToolContext release repeated remote reads return content and release owned resources"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

@@ -1,60 +1,126 @@
-/**
- * v5.12.1 — central ToolContext release (MCP resource-leak fix).
- *
- * Before this fix only 8 of 52 tool handlers released the v13 clientRead
- * context (owned DB handle) — every other handler leaked it on early returns
- * and errors. The fix enforces release centrally: resolveToolContext()
- * registers each context in a per-call AsyncLocalStorage store, and regTool
- * wraps every handler in withContextRelease() which releases all registered
- * contexts when the handler settles.
- *
- * These are marker tests on src/index.ts (same idiom as the command-handler
- * wiring tests): they pin the invariant so a refactor cannot silently drop it.
- */
+import fs from "fs";
+import os from "os";
+import path from "path";
+import { pathToFileURL } from "url";
+import { execFileSync } from "child_process";
+import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { z } from "zod";
+import { GnosysDB } from "../lib/db.js";
+import { defaultMachineConfig, writeMachineConfig } from "../lib/machineConfig.js";
+import { makeMemory } from "./_helpers.js";
 
-import { readFileSync } from "fs";
-import { join } from "path";
-import { describe, expect, it } from "vitest";
+let base: string;
+let project: string;
+let master: string;
+let client: Client;
+let transport: StdioClientTransport;
+let stderr: string;
+let protocolErrors: string[];
+
+function toolText(result: Awaited<ReturnType<Client["callTool"]>>): string {
+  return z.array(z.object({ type: z.literal("text"), text: z.string() })).parse(result.content).map(item => item.text).join("\n");
+}
+
+function ownedDatabasePaths(): string[] {
+  const pid = transport.pid;
+  if (pid === null) throw new Error("MCP child is not running");
+  const names = process.platform === "darwin"
+    ? execFileSync("/usr/sbin/lsof", ["-a", "-p", String(pid), "-Fn"], { encoding: "utf-8" }).split("\n").filter(line => line.startsWith("n/")).map(line => line.slice(1))
+    : fs.readdirSync(`/proc/${pid}/fd`).flatMap(fd => {
+      try { return [fs.readlinkSync(`/proc/${pid}/fd/${fd}`)]; }
+      catch { return []; }
+    });
+  return names.filter(name => name.endsWith(".db") || name.endsWith(".db-wal") || name.endsWith(".db-shm"))
+    .map(name => fs.realpathSync(name))
+    .filter(name => name.startsWith(fs.realpathSync(master) + path.sep) || name.startsWith(fs.realpathSync(project) + path.sep));
+}
+
+beforeEach(async () => {
+  base = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-mcp-release-"));
+  const home = path.join(base, "local");
+  const boot = path.join(base, "boot");
+  project = path.join(base, "project");
+  master = path.join(base, "master");
+  for (const root of [boot, project]) {
+    fs.mkdirSync(path.join(root, ".gnosys", ".config"), { recursive: true });
+    fs.writeFileSync(path.join(root, ".gnosys", "gnosys.json"), JSON.stringify({ projectId: path.basename(root), projectName: path.basename(root), dream: { enabled: false } }));
+  }
+  vi.stubEnv("GNOSYS_HOME", home);
+  vi.stubEnv("GNOSYS_CONFIG_DIR", path.join(base, "config"));
+  const localDb = new GnosysDB(home);
+  localDb.insertMemory(makeMemory({ id: "local-release", title: "Local target" }));
+  localDb.close();
+  const masterDb = new GnosysDB(master);
+  masterDb.insertMemory(makeMemory({ id: "remote-release", title: "Remote release target", content: "remote release body", scope: "global", created: "2026-01-01", modified: "2026-01-01" }));
+  masterDb.close();
+  const machine = defaultMachineConfig();
+  machine.machineId = "release-machine";
+  machine.remote = { enabled: true, path: master, role: "client" };
+  writeMachineConfig(machine);
+  const preload = path.join(base, "faults.mjs");
+  fs.writeFileSync(preload, 'process.on("SIGHUP", () => { void Promise.reject(new Error("audit rejection")); });\nprocess.on("SIGUSR2", () => { setTimeout(() => { throw new Error("audit exception"); }, 0); });\n');
+  stderr = "";
+  protocolErrors = [];
+  const env = Object.fromEntries(Object.entries(process.env).filter((entry): entry is [string, string] => typeof entry[1] === "string"));
+  transport = new StdioClientTransport({ command: process.execPath, args: ["--import", pathToFileURL(preload).href, path.resolve("dist/cli.js"), "serve"], cwd: boot,
+    env: { ...env, HOME: base, GNOSYS_LOCAL_ONLY: "1", GNOSYS_MCP_TOOLSET: "full", GNOSYS_SKIP_UPGRADE_NUDGE: "1" }, stderr: "pipe" });
+  transport.stderr?.on("data", (data: Buffer) => { stderr += data.toString(); });
+  client = new Client({ name: "release-audit", version: "test" });
+  client.onerror = error => { protocolErrors.push(error.message); };
+  await client.connect(transport);
+});
+
+afterEach(async () => {
+  await client?.close();
+  vi.unstubAllEnvs();
+  fs.rmSync(base, { recursive: true, force: true });
+});
 
 describe("MCP central ToolContext release", () => {
-  const src = readFileSync(join(process.cwd(), "src/index.ts"), "utf-8");
-
-  it("wraps every tool handler with withContextRelease at registration", () => {
-    expect(src).toContain("const activeToolContexts = new AsyncLocalStorage<ToolContext[]>()");
-    expect(src).toContain("function withContextRelease(");
-    // regTool must wrap the trailing handler argument before collecting the
-    // thunk (marker updated for Phase 5: the call gained a toolName arg)
-    expect(src).toContain("args[last] = withContextRelease(");
-    // the wrapper must release every opened context in a finally
-    expect(src).toMatch(/finally \{\s*for \(const c of opened\) releaseClientReadFromContext\(c\);/);
+  it("closes scoped database resources after an early missing-memory return", async () => {
+    const result = await client.callTool({ name: "gnosys_history", arguments: { path: "missing", projectRoot: project } });
+    expect(result.isError).toBe(true);
+    expect(toolText(result)).toBe("Memory not found: missing");
+    expect(ownedDatabasePaths()).toEqual([]);
   });
 
-  it("provides a last-resort error envelope for handlers without their own catch", () => {
-    // v5.12.x Phase 5: throws that escape a handler become isError content
-    // with corruption-recovery formatting, logged to stderr — never a raw
-    // JSON-RPC error and never stdout.
-    expect(src).toContain('logError(err, { module: "mcp", op: toolName })');
-    expect(src).toContain("formatMcpError(`in ${toolName}`, err)");
+  it("returns a tool error envelope when a handler throws", async () => {
+    const blocked = path.join(base, "file-not-directory");
+    fs.writeFileSync(blocked, "occupied");
+    const result = await client.callTool({ name: "gnosys_init", arguments: { directory: blocked } });
+    expect(result.isError).toBe(true);
+    expect(toolText(result)).toBe(`Error in gnosys_init: ENOTDIR: not a directory, mkdir '${blocked}/.gnosys'`);
+    expect(protocolErrors).toEqual([]);
   });
 
-  it("registers contexts from BOTH resolveToolContext return paths", () => {
-    const registrations = src.match(/activeToolContexts\.getStore\(\)\?\.push\(ctx\)/g) ?? [];
-    expect(registrations.length).toBe(2); // default path + projectRoot-scoped path
+  it("closes owned remote handles after default and project-scoped calls", async () => {
+    for (const args of [{ path: "remote-release" }, { path: "remote-release", projectRoot: project }]) {
+      const result = await client.callTool({ name: "gnosys_history", arguments: args });
+      expect(toolText(result)).toBe("Memory found: **Remote release target** (remote-release)\nCreated: 2026-01-01\nModified: 2026-01-01\nNo audit history recorded.");
+      expect(ownedDatabasePaths()).toEqual([]);
+    }
   });
 
-  it("release is idempotent so per-handler finally blocks remain safe", () => {
-    expect(src).toContain("ctx.clientRead = null;");
+  it("repeated remote reads return content and release owned resources", async () => {
+    for (let call = 0; call < 2; call++) {
+      const result = await client.callTool({ name: "gnosys_read", arguments: { path: "remote-release", projectRoot: project } });
+      expect(result.isError).not.toBe(true);
+      expect(toolText(result)).toContain("title: 'Remote release target'");
+      expect(toolText(result)).toContain("\n\nremote release body");
+      expect(ownedDatabasePaths()).toEqual([]);
+    }
   });
 
-  it("installs process-level guards in serve mode (stderr only, no stdout)", () => {
-    expect(src).toContain('process.on("unhandledRejection"');
-    expect(src).toContain('process.on("uncaughtException"');
-    // guards must log via console.error — never stdout (JSON-RPC framing)
-    const guardBlock = src.slice(
-      src.indexOf('process.on("unhandledRejection"'),
-      src.indexOf("startUpgradeMarkerWatcher()"),
-    );
-    expect(guardBlock).not.toContain("console.log");
-    expect(guardBlock).not.toContain("process.stdout");
+  it("keeps serving after escaped async errors and writes diagnostics only to stderr", async () => {
+    const pid = transport.pid;
+    if (pid === null) throw new Error("MCP child is not running");
+    process.kill(pid, "SIGHUP");
+    await expect.poll(() => stderr).toContain("Gnosys MCP: unhandled rejection — Error: audit rejection");
+    process.kill(pid, "SIGUSR2");
+    await expect.poll(() => stderr).toContain("Gnosys MCP: uncaught exception — Error: audit exception");
+    expect((await client.listTools()).tools.map(tool => tool.name)).toContain("gnosys_read");
+    expect(protocolErrors).toEqual([]);
   });
 });

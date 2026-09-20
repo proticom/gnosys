@@ -45,7 +45,7 @@ describe("Phase 7b: Read Paths Rewired", () => {
       expect(results[0].title).toBe("API Gateway Design");
     });
 
-    it("discoverFts searches relevance column preferentially", () => {
+    it("discoverFts prefers metadata matches over content-only matches", () => {
       env.db.insertMemory(
         makeMemory({
           id: "disc-001",
@@ -55,9 +55,9 @@ describe("Phase 7b: Read Paths Rewired", () => {
         })
       );
 
+      env.db.insertMemory(makeMemory({ id: "disc-content", title: "Content match", relevance: "", content: "Datadog observability" }));
       const results = env.db.discoverFts("Datadog observability", 10);
-      expect(results.length).toBe(1);
-      expect(results[0].relevance).toContain("Datadog");
+      expect(results.map(memory => memory.id)).toEqual(["disc-001"]);
     });
 
     it("getActiveMemories returns only active-tier memories", () => {
@@ -73,9 +73,11 @@ describe("Phase 7b: Read Paths Rewired", () => {
       expect(active[0].id).toBe("active-001");
     });
 
-    it("recall module can be imported and has expected exports", async () => {
-      const recallModule = await import("../lib/recall.js");
-      expect(recallModule).toHaveProperty("recall");
+    it("recall returns the matching SQLite memory", async () => {
+      const { recall } = await import("../lib/recall.js");
+      env.db.insertMemory(makeMemory({ id: "recall-001", title: "Gateway choice", content: "Choose Kong", relevance: "Kong gateway" }));
+      const result = await recall("Kong gateway", { gnosysDb: env.db });
+      expect(result.memories.map(memory => ({ id: memory.id, title: memory.title, snippet: memory.snippet }))).toEqual([{ id: "recall-001", title: "Gateway choice", snippet: "Choose Kong" }]);
     });
   });
 
@@ -118,7 +120,7 @@ describe("Phase 7b: Read Paths Rewired", () => {
       const results = env.db.searchFts("microservices scalability", 20);
       const elapsed = performance.now() - start;
 
-      expect(results.length).toBeGreaterThan(0);
+      expect(results.length).toBe(20);
       expect(elapsed).toBeLessThan(50); // 50ms budget
     });
   });
@@ -161,7 +163,7 @@ describe("Phase 7b: Read Paths Rewired", () => {
       expect(beta[0].id).toBe("mp-b-001");
     });
 
-    it("user-scoped memories are accessible regardless of project", () => {
+    it("returns user-scoped memories without project or global memories", () => {
       env.db.insertMemory(
         makeMemory({
           id: "user-001",
@@ -171,6 +173,8 @@ describe("Phase 7b: Read Paths Rewired", () => {
         })
       );
 
+      env.db.insertMemory(makeMemory({ id: "project-001", scope: "project", project_id: "project-a" }));
+      env.db.insertMemory(makeMemory({ id: "global-001", scope: "global" }));
       const userMems = env.db.getMemoriesByScope("user");
       expect(userMems.length).toBe(1);
       expect(userMems[0].id).toBe("user-001");

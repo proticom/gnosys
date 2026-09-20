@@ -1,0 +1,400 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "g2-trace-body",
+      "file": "src/lib/trace.ts",
+      "description": "Keep trace counts but corrupt persisted procedure bodies.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 683,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_trace traces a codebase and reports created memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 692,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_trace traces a codebase and reports created memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 698,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_trace traces a codebase and reports created memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-traverse-root",
+      "file": "src/sandbox/server.ts",
+      "description": "Drop the root node from traversal output.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 691,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_traverse respects direction=in (no outgoing edges followed)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 699,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_traverse respects direction=in (no outgoing edges followed)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 702,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_traverse respects direction=in (no outgoing edges followed)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-reflect-required",
+      "file": "src/index.ts",
+      "description": "Allow missing outcome past MCP validation and return a different handler error.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 655,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_reflect rejects a call without the required outcome",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 695,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_reflect rejects a call without the required outcome",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 658,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_reflect rejects a call without the required outcome",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-reflect-auto-discovery",
+      "file": "src/sandbox/server.ts",
+      "description": "Drop every automatically discovered related memory.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 495,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.5: Reflection API — auto-discovers memories when no IDs provided searches FTS to find related memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 507,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.5: Reflection API — auto-discovers memories when no IDs provided searches FTS to find related memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 500,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.5: Reflection API — auto-discovers memories when no IDs provided searches FTS to find related memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-trace-memory-ids",
+      "file": "src/lib/trace.ts",
+      "description": "Return no memory IDs while retaining count and inserted rows.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 496,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.7: Process Tracing — creates procedural 'how' memories stores functions as category 'how' memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 492,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.7: Process Tracing — creates procedural 'how' memories stores functions as category 'how' memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 501,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.7: Process Tracing — creates procedural 'how' memories stores functions as category 'how' memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-trace-self-edge",
+      "file": "src/lib/trace.ts",
+      "description": "Write self-loop leads_to links instead of the actual callee.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 501,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.8: Process Tracing — creates leads_to and follows_from relationships creates call-chain relationships between functions",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.14: End-to-end — trace → reflect → traverse chain traces code, reflects on outcome, then traverses the chain",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 495,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.8: Process Tracing — creates leads_to and follows_from relationships creates call-chain relationships between functions",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.14: End-to-end — trace → reflect → traverse chain traces code, reflects on outcome, then traverses the chain",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 489,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.8: Process Tracing — creates leads_to and follows_from relationships creates call-chain relationships between functions",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/phase10.reflect-trace-traverse.test.ts",
+            "name": "TC-10.14: End-to-end — trace → reflect → traverse chain traces code, reflects on outcome, then traverses the chain",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-recall-bypass-db",
+      "file": "src/lib/recall.ts",
+      "description": "Disable database-backed recall.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 441,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite recall module can be imported and has expected exports",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 427,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite recall module can be imported and has expected exports",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 432,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite recall module can be imported and has expected exports",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-search-limit",
+      "file": "src/lib/db.ts",
+      "description": "Truncate search results to one regardless of requested limit.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 395,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.2: SQLite read performance FTS5 search on 100 memories completes in under 50ms",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 399,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.2: SQLite read performance FTS5 search on 100 memories completes in under 50ms",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 391,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.2: SQLite read performance FTS5 search on 100 memories completes in under 50ms",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    }
+  ]
+}

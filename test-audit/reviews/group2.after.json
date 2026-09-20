@@ -40,10 +40,10 @@
     },
     {
       "beforeId": "src/test/attachments-inline.test.ts:45",
-      "beforeName": "inline attachments — round-trip attaches a file and reads back identical bytes, mime, and name",
+      "beforeName": "inline attachments \u2014 round-trip attaches a file and reads back identical bytes, mime, and name",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "inline attachments — round-trip attaches a file and reads back identical bytes, mime, and name"
+        "inline attachments \u2014 round-trip attaches a file and reads back identical bytes, mime, and name"
       ],
       "evidence": "Real DB attachment roundtrip preserves exact SVG bytes, MIME, name and size.",
       "mutationIds": [],
@@ -52,10 +52,10 @@
     },
     {
       "beforeId": "src/test/attachments-inline.test.ts:64",
-      "beforeName": "inline attachments — round-trip returns null when a memory has no attachment",
+      "beforeName": "inline attachments \u2014 round-trip returns null when a memory has no attachment",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "inline attachments — round-trip returns null when a memory has no attachment"
+        "inline attachments \u2014 round-trip returns null when a memory has no attachment"
       ],
       "evidence": "A persisted memory without attachment returns null.",
       "mutationIds": [],
@@ -64,10 +64,10 @@
     },
     {
       "beforeId": "src/test/attachments-inline.test.ts:69",
-      "beforeName": "inline attachments — round-trip detaches an attachment but keeps the memory",
+      "beforeName": "inline attachments \u2014 round-trip detaches an attachment but keeps the memory",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "inline attachments — round-trip detaches an attachment but keeps the memory"
+        "inline attachments \u2014 round-trip detaches an attachment but keeps the memory"
       ],
       "evidence": "Detach removes bytes, retains memory and returns false on the second detach.",
       "mutationIds": [],
@@ -76,10 +76,10 @@
     },
     {
       "beforeId": "src/test/attachments-inline.test.ts:84",
-      "beforeName": "inline attachments — guardrails rejects files larger than the size cap",
+      "beforeName": "inline attachments \u2014 guardrails rejects files larger than the size cap",
       "beforeClassification": "COUPLED",
       "afterNames": [
-        "inline attachments — guardrails rejects files larger than the size cap"
+        "inline attachments \u2014 guardrails rejects files larger than the size cap"
       ],
       "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-attachment-cap",
       "mutationIds": [
@@ -90,10 +90,10 @@
     },
     {
       "beforeId": "src/test/attachments-inline.test.ts:91",
-      "beforeName": "inline attachments — guardrails dedups identical bytes (no rewrite on re-attach)",
+      "beforeName": "inline attachments \u2014 guardrails dedups identical bytes (no rewrite on re-attach)",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "inline attachments — guardrails dedups identical bytes (no rewrite on re-attach)"
+        "inline attachments \u2014 guardrails dedups identical bytes (no rewrite on re-attach)"
       ],
       "evidence": "Repeated real attachment returns unchanged=false then unchanged=true.",
       "mutationIds": [],
@@ -102,10 +102,10 @@
     },
     {
       "beforeId": "src/test/attachments-inline.test.ts:102",
-      "beforeName": "inline attachments — guardrails throws when the target memory does not exist",
+      "beforeName": "inline attachments \u2014 guardrails throws when the target memory does not exist",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "inline attachments — guardrails throws when the target memory does not exist"
+        "inline attachments \u2014 guardrails throws when the target memory does not exist"
       ],
       "evidence": "Public attach API rejects missing memory with not-found error.",
       "mutationIds": [],
@@ -114,10 +114,10 @@
     },
     {
       "beforeId": "src/test/attachments-inline.test.ts:109",
-      "beforeName": "inline attachments — machine-to-machine (row copy) survives the insertMemory row-copy that remote sync uses",
+      "beforeName": "inline attachments \u2014 machine-to-machine (row copy) survives the insertMemory row-copy that remote sync uses",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "inline attachments — machine-to-machine (row copy) survives the insertMemory row-copy that remote sync uses"
+        "inline attachments \u2014 machine-to-machine (row copy) survives the insertMemory row-copy that remote sync uses"
       ],
       "evidence": "Row copied into a second real DB retains exact SVG bytes, name and MIME.",
       "mutationIds": [],
@@ -1683,10 +1683,10 @@
     },
     {
       "beforeId": "src/test/v512-http-cors.test.ts:33",
-      "beforeName": "v5.12 Origin guard disallowed Origin → 403",
+      "beforeName": "v5.12 Origin guard disallowed Origin \u2192 403",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "v5.12 Origin guard disallowed Origin → 403"
+        "v5.12 Origin guard disallowed Origin \u2192 403"
       ],
       "evidence": "An evil.example Origin receives literal HTTP 403 from the real HTTP server.",
       "mutationIds": [],
@@ -1695,7 +1695,7 @@
     },
     {
       "beforeId": "src/test/v512-http-cors.test.ts:43",
-      "beforeName": "v5.12 Origin guard no Origin header → not 403",
+      "beforeName": "v5.12 Origin guard no Origin header \u2192 not 403",
       "beforeClassification": "WEAK",
       "afterNames": [
         "v5.12 Origin guard no Origin header permits MCP initialization"
@@ -1709,7 +1709,7 @@
     },
     {
       "beforeId": "src/test/v512-http-cors.test.ts:49",
-      "beforeName": "v5.12 Origin guard allowlisted Origin → not 403",
+      "beforeName": "v5.12 Origin guard allowlisted Origin \u2192 not 403",
       "beforeClassification": "WEAK",
       "afterNames": [
         "v5.12 Origin guard allowlisted Origin permits MCP initialization"
@@ -1835,10 +1835,10 @@
     },
     {
       "beforeId": "src/test/v594-panel-edges.test.ts:27",
-      "beforeName": "Panel — v5.9.4 edge cases (Bugs 1+2) top and bottom borders have identical printable widths",
+      "beforeName": "Panel \u2014 v5.9.4 edge cases (Bugs 1+2) top and bottom borders have identical printable widths",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "Panel — v5.9.4 edge cases (Bugs 1+2) top and bottom borders have identical printable widths"
+        "Panel \u2014 v5.9.4 edge cases (Bugs 1+2) top and bottom borders have identical printable widths"
       ],
       "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-panel-width",
       "mutationIds": [
@@ -1849,10 +1849,10 @@
     },
     {
       "beforeId": "src/test/v594-panel-edges.test.ts:43",
-      "beforeName": "Panel — v5.9.4 edge cases (Bugs 1+2) ANSI in the title does not shift the right rule",
+      "beforeName": "Panel \u2014 v5.9.4 edge cases (Bugs 1+2) ANSI in the title does not shift the right rule",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "Panel — v5.9.4 edge cases (Bugs 1+2) ANSI in the title does not shift the right rule"
+        "Panel \u2014 v5.9.4 edge cases (Bugs 1+2) ANSI in the title does not shift the right rule"
       ],
       "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-panel-title",
       "mutationIds": [
@@ -1863,10 +1863,10 @@
     },
     {
       "beforeId": "src/test/v594-panel-edges.test.ts:51",
-      "beforeName": "Panel — v5.9.4 edge cases (Bugs 1+2) very long titles fall back to a 1-char clamp instead of negative pad",
+      "beforeName": "Panel \u2014 v5.9.4 edge cases (Bugs 1+2) very long titles fall back to a 1-char clamp instead of negative pad",
       "beforeClassification": "MISLABELED",
       "afterNames": [
-        "Panel — v5.9.4 edge cases (Bugs 1+2) very long titles fall back to a 1-char clamp instead of negative pad"
+        "Panel \u2014 v5.9.4 edge cases (Bugs 1+2) very long titles fall back to a 1-char clamp instead of negative pad"
       ],
       "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-panel-clamp",
       "mutationIds": [
@@ -1877,10 +1877,10 @@
     },
     {
       "beforeId": "src/test/v594-panel-edges.test.ts:63",
-      "beforeName": "Panel — v5.9.4 edge cases (Bugs 1+2) uses rounded glyphs + accent-dim border per design",
+      "beforeName": "Panel \u2014 v5.9.4 edge cases (Bugs 1+2) uses rounded glyphs + accent-dim border per design",
       "beforeClassification": "MISLABELED",
       "afterNames": [
-        "Panel — v5.9.4 edge cases (Bugs 1+2) uses rounded glyphs + accent-dim border per design"
+        "Panel \u2014 v5.9.4 edge cases (Bugs 1+2) uses rounded glyphs + accent-dim border per design"
       ],
       "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-panel-color",
       "mutationIds": [
@@ -1976,10 +1976,10 @@
     },
     {
       "beforeId": "src/test/webIntegration.test.ts:103",
-      "beforeName": "Full pipeline: directory ingest → build index → search ingests markdown files and builds a searchable index",
+      "beforeName": "Full pipeline: directory ingest \u2192 build index \u2192 search ingests markdown files and builds a searchable index",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Full pipeline: directory ingest → build index → search ingests markdown files and builds a searchable index"
+        "Full pipeline: directory ingest \u2192 build index \u2192 search ingests markdown files and builds a searchable index"
       ],
       "evidence": "The real index build/write/load/search pipeline yields five documents and an Agentic top hit for automation agents workflow.",
       "mutationIds": [],
@@ -1988,10 +1988,10 @@
     },
     {
       "beforeId": "src/test/webIntegration.test.ts:117",
-      "beforeName": "Full pipeline: directory ingest → build index → search search respects category filter",
+      "beforeName": "Full pipeline: directory ingest \u2192 build index \u2192 search search respects category filter",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "Full pipeline: directory ingest → build index → search search respects category filter"
+        "Full pipeline: directory ingest \u2192 build index \u2192 search search respects category filter"
       ],
       "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-web-category",
       "mutationIds": [
@@ -2002,10 +2002,10 @@
     },
     {
       "beforeId": "src/test/webIntegration.test.ts:129",
-      "beforeName": "Full pipeline: directory ingest → build index → search search respects tag filter",
+      "beforeName": "Full pipeline: directory ingest \u2192 build index \u2192 search search respects tag filter",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "Full pipeline: directory ingest → build index → search search respects tag filter"
+        "Full pipeline: directory ingest \u2192 build index \u2192 search search respects tag filter"
       ],
       "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-web-tags",
       "mutationIds": [
@@ -2016,10 +2016,10 @@
     },
     {
       "beforeId": "src/test/webIntegration.test.ts:139",
-      "beforeName": "Full pipeline: directory ingest → build index → search getDocument retrieves specific document from built index",
+      "beforeName": "Full pipeline: directory ingest \u2192 build index \u2192 search getDocument retrieves specific document from built index",
       "beforeClassification": "COUPLED",
       "afterNames": [
-        "Full pipeline: directory ingest → build index → search getDocument retrieves specific document from built index"
+        "Full pipeline: directory ingest \u2192 build index \u2192 search getDocument retrieves specific document from built index"
       ],
       "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-web-getdoc",
       "mutationIds": [
@@ -2030,10 +2030,10 @@
     },
     {
       "beforeId": "src/test/webIntegration.test.ts:150",
-      "beforeName": "Full pipeline: directory ingest → build index → search listDocuments filters by category on built index",
+      "beforeName": "Full pipeline: directory ingest \u2192 build index \u2192 search listDocuments filters by category on built index",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "Full pipeline: directory ingest → build index → search listDocuments filters by category on built index"
+        "Full pipeline: directory ingest \u2192 build index \u2192 search listDocuments filters by category on built index"
       ],
       "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-web-list-category",
       "mutationIds": [
@@ -2044,10 +2044,10 @@
     },
     {
       "beforeId": "src/test/webIntegration.test.ts:166",
-      "beforeName": "Structured ingest: HTML → frontmatter extraction extracts title and category from HTML content",
+      "beforeName": "Structured ingest: HTML \u2192 frontmatter extraction extracts title and category from HTML content",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Structured ingest: HTML → frontmatter extraction extracts title and category from HTML content"
+        "Structured ingest: HTML \u2192 frontmatter extraction extracts title and category from HTML content"
       ],
       "evidence": "Real structured extraction of about-page HTML yields an About title and literal mapped company category.",
       "mutationIds": [],
@@ -2056,10 +2056,10 @@
     },
     {
       "beforeId": "src/test/webIntegration.test.ts:179",
-      "beforeName": "Structured ingest: HTML → frontmatter extraction extracts category from URL patterns for blog posts",
+      "beforeName": "Structured ingest: HTML \u2192 frontmatter extraction extracts category from URL patterns for blog posts",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Structured ingest: HTML → frontmatter extraction extracts category from URL patterns for blog posts"
+        "Structured ingest: HTML \u2192 frontmatter extraction extracts category from URL patterns for blog posts"
       ],
       "evidence": "Real extraction maps a matching blog URL to literal category blog.",
       "mutationIds": [],
@@ -2068,10 +2068,10 @@
     },
     {
       "beforeId": "src/test/webIntegration.test.ts:192",
-      "beforeName": "Structured ingest: HTML → frontmatter extraction falls back to general category for unmatched URLs",
+      "beforeName": "Structured ingest: HTML \u2192 frontmatter extraction falls back to general category for unmatched URLs",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Structured ingest: HTML → frontmatter extraction falls back to general category for unmatched URLs"
+        "Structured ingest: HTML \u2192 frontmatter extraction falls back to general category for unmatched URLs"
       ],
       "evidence": "An unmatched URL maps to literal fallback category general.",
       "mutationIds": [],
@@ -2457,10 +2457,10 @@
     },
     {
       "beforeId": "src/test/embed-queue.test.ts:80",
-      "beforeName": "embedQueue never throws when the embedder fails — warns on stderr instead",
+      "beforeName": "embedQueue never throws when the embedder fails \u2014 warns on stderr instead",
       "beforeClassification": "MISLABELED",
       "afterNames": [
-        "embedQueue never throws when the embedder fails — warns on stderr instead"
+        "embedQueue never throws when the embedder fails \u2014 warns on stderr instead"
       ],
       "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-queue-warning",
       "mutationIds": [
@@ -2471,10 +2471,10 @@
     },
     {
       "beforeId": "src/test/embed-queue.test.ts:96",
-      "beforeName": "embedQueue syncMemoryToDb feeds the queue — a plain DB write gets a vector",
+      "beforeName": "embedQueue syncMemoryToDb feeds the queue \u2014 a plain DB write gets a vector",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "embedQueue syncMemoryToDb feeds the queue — a plain DB write gets a vector"
+        "embedQueue syncMemoryToDb feeds the queue \u2014 a plain DB write gets a vector"
       ],
       "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-queue-vector",
       "mutationIds": [
@@ -2497,7 +2497,7 @@
     },
     {
       "beforeId": "src/test/lifecycle-invariants.test.ts:57",
-      "beforeName": "lifecycle invariants — one primary row, ≤1 sidecar row per id holds after every lifecycle op",
+      "beforeName": "lifecycle invariants \u2014 one primary row, \u22641 sidecar row per id holds after every lifecycle op",
       "beforeClassification": "COUPLED",
       "afterNames": [
         "memory lifecycle through database reads and search preserves current content, visibility and reinforcement across lifecycle operations"
@@ -2887,10 +2887,10 @@
     },
     {
       "beforeId": "src/test/setup-ctrlc.test.ts:75",
-      "beforeName": "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT",
+      "beforeName": "Phase B \u2014 Ctrl+C clean exit gnosys setup exits cleanly on SIGINT",
       "beforeClassification": "MISLABELED",
       "afterNames": [
-        "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT"
+        "Phase B \u2014 Ctrl+C clean exit gnosys setup exits cleanly on SIGINT"
       ],
       "evidence": "Actual PTY Ctrl+C at the visible provider prompt returns exit0. Expected exit130 retained with it.fails; temporary close-listener repair makes the case unexpectedly pass.",
       "mutationIds": [
@@ -2902,10 +2902,10 @@
     },
     {
       "beforeId": "src/test/setup-ctrlc.test.ts:92",
-      "beforeName": "Phase B — Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT",
+      "beforeName": "Phase B \u2014 Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT",
       "beforeClassification": "MISLABELED",
       "afterNames": [
-        "Phase B — Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT"
+        "Phase B \u2014 Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT"
       ],
       "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-pty-cancel-status",
       "mutationIds": [
@@ -2916,10 +2916,10 @@
     },
     {
       "beforeId": "src/test/setup-ctrlc.test.ts:107",
-      "beforeName": "Phase B — Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT",
+      "beforeName": "Phase B \u2014 Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT",
       "beforeClassification": "MISLABELED",
       "afterNames": [
-        "Phase B — Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT"
+        "Phase B \u2014 Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT"
       ],
       "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-pty-cancel-status",
       "mutationIds": [
@@ -2966,10 +2966,10 @@
     },
     {
       "beforeId": "src/test/setup-models-routing.test.ts:114",
-      "beforeName": "setup models task routing buildTaskModelsPatchFromAccepted regression: vision+dream only — patch touches only those tasks",
+      "beforeName": "setup models task routing buildTaskModelsPatchFromAccepted regression: vision+dream only \u2014 patch touches only those tasks",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "setup models task routing buildTaskModelsPatchFromAccepted regression: vision+dream only — patch touches only those tasks"
+        "setup models task routing buildTaskModelsPatchFromAccepted regression: vision+dream only \u2014 patch touches only those tasks"
       ],
       "evidence": "Accepted vision/dream selection yields exact vision-only task patch and preserves unrelated provider/model routing after merge.",
       "mutationIds": [],
@@ -3058,10 +3058,10 @@
     },
     {
       "beforeId": "src/test/setup-ui-config-init.test.ts:40",
-      "beforeName": "Phase E — Screen 14 — config init without --force prints deprecation warning and does NOT write template",
+      "beforeName": "Phase E \u2014 Screen 14 \u2014 config init without --force prints deprecation warning and does NOT write template",
       "beforeClassification": "WEAK",
       "afterNames": [
-        "Phase E — Screen 14 — config init without --force prints deprecation warning and does NOT write template"
+        "Phase E \u2014 Screen 14 \u2014 config init without --force prints deprecation warning and does NOT write template"
       ],
       "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-config-unforced-write",
       "mutationIds": [
@@ -3072,10 +3072,10 @@
     },
     {
       "beforeId": "src/test/setup-ui-config-init.test.ts:54",
-      "beforeName": "Phase E — Screen 14 — config init with --force writes a template without defaultProvider hardcoded",
+      "beforeName": "Phase E \u2014 Screen 14 \u2014 config init with --force writes a template without defaultProvider hardcoded",
       "beforeClassification": "STRONG",
       "afterNames": [
-        "Phase E — Screen 14 — config init with --force writes a template without defaultProvider hardcoded"
+        "Phase E \u2014 Screen 14 \u2014 config init with --force writes a template without defaultProvider hardcoded"
       ],
       "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-config-template",
       "mutationIds": [
@@ -3230,6 +3230,446 @@
       "evidence": "Actual write/read preserves literal supersedes ID and null superseded_by.",
       "mutationIds": [],
       "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-context-release.test.ts:22",
+      "beforeName": "MCP central ToolContext release wraps every tool handler with withContextRelease at registration",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "MCP central ToolContext release closes scoped database resources after an early missing-memory return"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-mcp-release-finally",
+      "mutationIds": [
+        "g2-mcp-release-finally"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-context-release.test.ts:32",
+      "beforeName": "MCP central ToolContext release provides a last-resort error envelope for handlers without their own catch",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "MCP central ToolContext release returns a tool error envelope when a handler throws"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-mcp-error-envelope",
+      "mutationIds": [
+        "g2-mcp-error-envelope"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-context-release.test.ts:40",
+      "beforeName": "MCP central ToolContext release registers contexts from BOTH resolveToolContext return paths",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "MCP central ToolContext release closes owned remote handles after default and project-scoped calls"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-mcp-release-default",
+      "mutationIds": [
+        "g2-mcp-release-default"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-context-release.test.ts:45",
+      "beforeName": "MCP central ToolContext release release is idempotent so per-handler finally blocks remain safe",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "MCP central ToolContext release repeated remote reads return content and release owned resources"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-mcp-release-shared",
+      "mutationIds": [
+        "g2-mcp-release-shared"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-context-release.test.ts:49",
+      "beforeName": "MCP central ToolContext release installs process-level guards in serve mode (stderr only, no stdout)",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "MCP central ToolContext release keeps serving after escaped async errors and writes diagnostics only to stderr"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-mcp-async-stderr",
+      "mutationIds": [
+        "g2-mcp-async-stderr"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-trace-tools.test.ts:104",
+      "beforeName": "gnosys_trace traces a codebase and reports created memories",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "gnosys_trace traces a codebase and reports created memories"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-trace-body",
+      "mutationIds": [
+        "g2-trace-body"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-trace-tools.test.ts:116",
+      "beforeName": "gnosys_trace returns a zero-count result for a directory with no source files",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "gnosys_trace returns a zero-count result for a directory with no source files"
+      ],
+      "evidence": "Actual empty-directory MCP trace returns no error and literal zero creation count.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-trace-tools.test.ts:129",
+      "beforeName": "gnosys_traverse walks the chain from a seeded memory",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "gnosys_traverse walks the chain from a seeded memory"
+      ],
+      "evidence": "Actual traversal response includes seeded target mem-trace-b and leads_to edge type.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-trace-tools.test.ts:141",
+      "beforeName": "gnosys_traverse respects direction=in (no outgoing edges followed)",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "gnosys_traverse respects direction=in (no outgoing edges followed)"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-traverse-root",
+      "mutationIds": [
+        "g2-traverse-root"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-trace-tools.test.ts:151",
+      "beforeName": "gnosys_traverse errors on an unknown memory id",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "gnosys_traverse errors on an unknown memory id"
+      ],
+      "evidence": "Unknown traversal root returns isError=true and Memory not found.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-trace-tools.test.ts:162",
+      "beforeName": "gnosys_reflect records an outcome against explicit memory ids",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "gnosys_reflect records an outcome against explicit memory ids"
+      ],
+      "evidence": "Reflection through MCP reports success and real DB confidence rises from 0.7 to literal 0.75.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/mcp-trace-tools.test.ts:185",
+      "beforeName": "gnosys_reflect rejects a call without the required outcome",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "gnosys_reflect rejects a call without the required outcome"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-reflect-required",
+      "mutationIds": [
+        "g2-reflect-required"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:65",
+      "beforeName": "TC-10.1: Reflection API \u2014 success outcome updates confidence boosts confidence on success",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "TC-10.1: Reflection API \u2014 success outcome updates confidence boosts confidence on success"
+      ],
+      "evidence": "Sandbox reflection returns success, positive confidence change, reinforcement one and literal delta 0.05.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:86",
+      "beforeName": "TC-10.2: Reflection API \u2014 failure outcome decreases confidence decreases confidence on failure",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "TC-10.2: Reflection API \u2014 failure outcome decreases confidence decreases confidence on failure"
+      ],
+      "evidence": "Failure reflection returns failure, decreased confidence and literal delta -0.1.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:105",
+      "beforeName": "TC-10.3: Reflection API \u2014 creates reflection memory with relationships creates a new reflection memory",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "TC-10.3: Reflection API \u2014 creates reflection memory with relationships creates a new reflection memory"
+      ],
+      "evidence": "Reads persisted reflection category/outcome/notes and literal validates edge to seeded architecture memory.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:137",
+      "beforeName": "TC-10.4: Reflection API \u2014 consolidation links related memories on success creates corroborates links between multiple memories",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "TC-10.4: Reflection API \u2014 consolidation links related memories on success creates corroborates links between multiple memories"
+      ],
+      "evidence": "Successful multi-memory reflection persists a corroborates edge to the second seeded ID.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:158",
+      "beforeName": "TC-10.5: Reflection API \u2014 auto-discovers memories when no IDs provided searches FTS to find related memories",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "TC-10.5: Reflection API \u2014 auto-discovers memories when no IDs provided searches FTS to find related memories"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-reflect-auto-discovery",
+      "mutationIds": [
+        "g2-reflect-auto-discovery"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:176",
+      "beforeName": "TC-10.6: Process Tracing \u2014 discovers functions from source files finds function declarations in TS files",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "TC-10.6: Process Tracing \u2014 discovers functions from source files finds function declarations in TS files"
+      ],
+      "evidence": "Real TS source trace reports exactly one file and three function declarations.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:205",
+      "beforeName": "TC-10.7: Process Tracing \u2014 creates procedural 'how' memories stores functions as category 'how' memories",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "TC-10.7: Process Tracing \u2014 creates procedural 'how' memories stores functions as category 'how' memories"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-trace-memory-ids",
+      "mutationIds": [
+        "g2-trace-memory-ids"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:236",
+      "beforeName": "TC-10.8: Process Tracing \u2014 creates leads_to and follows_from relationships creates call-chain relationships between functions",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "TC-10.8: Process Tracing \u2014 creates leads_to and follows_from relationships creates call-chain relationships between functions"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-trace-self-edge",
+      "mutationIds": [
+        "g2-trace-self-edge"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:275",
+      "beforeName": "TC-10.9: Process Tracing \u2014 handles empty directory returns zero counts for empty directory",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "TC-10.9: Process Tracing \u2014 handles empty directory returns zero counts for empty directory"
+      ],
+      "evidence": "Empty real directory returns literal zero files/functions/memories/relationships.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:290",
+      "beforeName": "TC-10.10: Traversal \u2014 BFS follows relationships depth-limited traverses chain up to specified depth",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "TC-10.10: Traversal \u2014 BFS follows relationships depth-limited traverses chain up to specified depth"
+      ],
+      "evidence": "Depth-two traversal returns A/B/C and excludes D; depth three reaches all four.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:330",
+      "beforeName": "TC-10.11: Traversal \u2014 respects rel_types filter only follows specified relationship types",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "TC-10.11: Traversal \u2014 respects rel_types filter only follows specified relationship types"
+      ],
+      "evidence": "Type filter includes leads_to target filter-b and excludes requires target filter-c.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:353",
+      "beforeName": "TC-10.12: Traversal \u2014 handles non-existent memory returns error for non-existent memory",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "TC-10.12: Traversal \u2014 handles non-existent memory returns error for non-existent memory"
+      ],
+      "evidence": "Unknown traversal root returns ok=false with not-found error.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:363",
+      "beforeName": "TC-10.13: Traversal \u2014 follows bidirectional relationships follows both outgoing and incoming edges",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "TC-10.13: Traversal \u2014 follows bidirectional relationships follows both outgoing and incoming edges"
+      ],
+      "evidence": "Default bidirectional traversal includes both seeded incoming and outgoing neighbors and total three.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase10.reflect-trace-traverse.test.ts:388",
+      "beforeName": "TC-10.14: End-to-end \u2014 trace \u2192 reflect \u2192 traverse chain traces code, reflects on outcome, then traverses the chain",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "TC-10.14: End-to-end \u2014 trace \u2192 reflect \u2192 traverse chain traces code, reflects on outcome, then traverses the chain"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-trace-self-edge",
+      "mutationIds": [
+        "g2-trace-self-edge"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase7b.read-paths.test.ts:32",
+      "beforeName": "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite searchFts returns results from DB",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite searchFts returns results from DB"
+      ],
+      "evidence": "Real FTS returns exact read-001 ID and API Gateway Design title.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase7b.read-paths.test.ts:48",
+      "beforeName": "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite discoverFts searches relevance column preferentially",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite discoverFts prefers metadata matches over content-only matches"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-discover-metadata",
+      "mutationIds": [
+        "g2-discover-metadata"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase7b.read-paths.test.ts:63",
+      "beforeName": "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite getActiveMemories returns only active-tier memories",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite getActiveMemories returns only active-tier memories"
+      ],
+      "evidence": "Active-memory read returns only active-001 from mixed active/archive seeds.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase7b.read-paths.test.ts:76",
+      "beforeName": "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite recall module can be imported and has expected exports",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite recall returns the matching SQLite memory"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-recall-bypass-db",
+      "mutationIds": [
+        "g2-recall-bypass-db"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase7b.read-paths.test.ts:85",
+      "beforeName": "Phase 7b: Read Paths Rewired TC-7b.2: SQLite read performance fetches 100 memories in under 100ms",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Phase 7b: Read Paths Rewired TC-7b.2: SQLite read performance fetches 100 memories in under 100ms"
+      ],
+      "evidence": "Reads exactly 100 actual DB records within explicit 100ms budget.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase7b.read-paths.test.ts:105",
+      "beforeName": "Phase 7b: Read Paths Rewired TC-7b.2: SQLite read performance FTS5 search on 100 memories completes in under 50ms",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "Phase 7b: Read Paths Rewired TC-7b.2: SQLite read performance FTS5 search on 100 memories completes in under 50ms"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-search-limit",
+      "mutationIds": [
+        "g2-search-limit"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase7b.read-paths.test.ts:129",
+      "beforeName": "Phase 7b: Read Paths Rewired TC-7b.3: Multi-project recall with projectRoot getMemoriesByProject returns only that project's memories",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "Phase 7b: Read Paths Rewired TC-7b.3: Multi-project recall with projectRoot getMemoriesByProject returns only that project's memories"
+      ],
+      "evidence": "Project-specific reads return exact Alpha/Beta IDs and exclude another project/user record.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase7b.read-paths.test.ts:164",
+      "beforeName": "Phase 7b: Read Paths Rewired TC-7b.3: Multi-project recall with projectRoot user-scoped memories are accessible regardless of project",
+      "beforeClassification": "MISLABELED",
+      "afterNames": [
+        "Phase 7b: Read Paths Rewired TC-7b.3: Multi-project recall with projectRoot returns user-scoped memories without project or global memories"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-scope-filter",
+      "mutationIds": [
+        "g2-scope-filter"
+      ],
+      "action": "rewritten",
       "afterClassification": "STRONG"
     }
   ],

@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "g2-http-auth-gate",
+      "file": "src/lib/mcpHttp.ts",
+      "description": "Disable bearer authentication and expose initialize to an unauthenticated client.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 459,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v512-mcpHttp.test.ts",
+            "name": "v5.12 MCP HTTP auth (Phase C) rejects requests without the bearer token",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 411,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v512-mcpHttp.test.ts",
+            "name": "v5.12 MCP HTTP auth (Phase C) rejects requests without the bearer token",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 400 to be 401 // Object.is equality\n    at <repo>/src/test/v512-mcpHttp.test.ts:98:22\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 409,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v512-mcpHttp.test.ts",
+            "name": "v5.12 MCP HTTP auth (Phase C) rejects requests without the bearer token",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/v512-mcpHttp.test.ts",
+          "name": "v5.12 MCP HTTP auth (Phase C) rejects requests without the bearer token"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

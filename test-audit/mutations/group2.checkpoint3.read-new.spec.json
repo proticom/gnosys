@@ -1,0 +1,24 @@
+[
+  {
+    "id": "g2-discover-metadata",
+    "file": "src/lib/db.ts",
+    "search": "const colScoped = (expr: string) => `{relevance title tags} : (${expr})`;",
+    "replace": "const colScoped = (expr: string) => expr;",
+    "tests": [
+      "src/test/phase7b.read-paths.test.ts"
+    ],
+    "testName": "discoverFts prefers metadata matches over content-only matches",
+    "description": "Remove metadata preference and include content-only competing memories."
+  },
+  {
+    "id": "g2-scope-filter",
+    "file": "src/lib/db.ts",
+    "search": "\"SELECT * FROM memories WHERE scope = ? AND tier = 'active' AND status = 'active'\"",
+    "replace": "\"SELECT * FROM memories WHERE (scope = ? OR scope = 'global') AND tier = 'active' AND status = 'active'\"",
+    "tests": [
+      "src/test/phase7b.read-paths.test.ts"
+    ],
+    "testName": "returns user-scoped memories without project or global memories",
+    "description": "Include a global-scoped row in the user-scope read."
+  }
+]

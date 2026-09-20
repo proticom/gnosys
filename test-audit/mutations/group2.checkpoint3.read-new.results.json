@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "g2-discover-metadata",
+      "file": "src/lib/db.ts",
+      "description": "Remove metadata preference and include content-only competing memories.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 406,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite discoverFts prefers metadata matches over content-only matches",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 401,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite discoverFts prefers metadata matches over content-only matches",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'disc-content', 'disc-001' ] to deeply equal [ 'disc-001' ]\n    at <repo>/src/test/phase7b.read-paths.test.ts:60:48\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 411,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite discoverFts prefers metadata matches over content-only matches",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase7b.read-paths.test.ts",
+          "name": "Phase 7b: Read Paths Rewired TC-7b.1: Search and recall read from SQLite discoverFts prefers metadata matches over content-only matches"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-scope-filter",
+      "file": "src/lib/db.ts",
+      "description": "Include a global-scoped row in the user-scope read.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 407,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.3: Multi-project recall with projectRoot returns user-scoped memories without project or global memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 402,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.3: Multi-project recall with projectRoot returns user-scoped memories without project or global memories",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 2 to be 1 // Object.is equality\n    at <repo>/src/test/phase7b.read-paths.test.ts:179:31\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 394,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase7b.read-paths.test.ts",
+            "name": "Phase 7b: Read Paths Rewired TC-7b.3: Multi-project recall with projectRoot returns user-scoped memories without project or global memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase7b.read-paths.test.ts",
+          "name": "Phase 7b: Read Paths Rewired TC-7b.3: Multi-project recall with projectRoot returns user-scoped memories without project or global memories"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

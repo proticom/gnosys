@@ -110,7 +110,14 @@ describe("gnosys_trace", () => {
     const out = text(res);
     expect(out).toContain("Trace complete");
     expect(out).toMatch(/Functions found:\s+2/);
-    expect(out).toMatch(/Memories created:\s+[1-9]/);
+    expect(out).toMatch(/Memories created:\s+2/);
+    const db = new GnosysDB(join(base, ".gnosys"));
+    try {
+      expect(db.getMemoriesByCategory("how").map(memory => ({ title: memory.title, content: memory.content })).sort((a, b) => a.title.localeCompare(b.title))).toEqual([
+        { title: "How: alpha (app.ts)", content: "## function: alpha\n**File:** `app.ts` (line 1)\n**Calls:** `beta`\n**Called by:** (none)" },
+        { title: "How: beta (app.ts)", content: "## function: beta\n**File:** `app.ts` (line 2)\n**Calls:** (none)\n**Called by:** `alpha`" },
+      ]);
+    } finally { db.close(); }
   });
 
   it("returns a zero-count result for a directory with no source files", async () => {
@@ -145,7 +152,7 @@ describe("gnosys_traverse", () => {
     });
     expect(res.isError).toBeFalsy();
     const out = text(res);
-    expect(out).not.toContain("mem-trace-b — ");
+    expect(out).toBe("Traversal from mem-trace-a (depth: 3, nodes: 1):\n  mem-trace-a — Trace seed A (0.70) (root)");
   });
 
   it("errors on an unknown memory id", async () => {
@@ -183,13 +190,10 @@ describe("gnosys_reflect", () => {
   });
 
   it("rejects a call without the required outcome", async () => {
-    let rejected = false;
-    try {
-      const res = await client.callTool({ name: "gnosys_reflect", arguments: {} });
-      rejected = res.isError === true;
-    } catch {
-      rejected = true;
-    }
-    expect(rejected).toBe(true);
+    const res = await client.callTool({ name: "gnosys_reflect", arguments: {} });
+    expect(res.isError).toBe(true);
+    expect(text(res)).toContain("Input validation error: Invalid arguments for tool gnosys_reflect");
+    expect(text(res)).toContain('"outcome"');
+    expect(text(res)).toContain('"expected": "string"');
   });
 });

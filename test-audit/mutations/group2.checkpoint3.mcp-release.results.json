@@ -1,0 +1,276 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "g2-mcp-release-finally",
+      "file": "src/index.ts",
+      "description": "Leak all contexts from central cleanup on early return.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1147,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release closes scoped database resources after an early missing-memory return",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 961,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release closes scoped database resources after an early missing-memory return",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ …(5) ] to deeply equal []\n    at <repo>/src/test/mcp-context-release.test.ts:86:34\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 912,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release closes scoped database resources after an early missing-memory return",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/mcp-context-release.test.ts",
+          "name": "MCP central ToolContext release closes scoped database resources after an early missing-memory return"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-mcp-error-envelope",
+      "file": "src/index.ts",
+      "description": "Drop tool identity from unexpected handler error envelope.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 712,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release returns a tool error envelope when a handler throws",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 837,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release returns a tool error envelope when a handler throws",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Error during operation: ENOTDIR: not …' to be 'Error in gnosys_init: ENOTDIR: not a …' // Object.is equality\n    at <repo>/src/test/mcp-context-release.test.ts:94:30\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 797,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release returns a tool error envelope when a handler throws",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/mcp-context-release.test.ts",
+          "name": "MCP central ToolContext release returns a tool error envelope when a handler throws"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-mcp-release-default",
+      "file": "src/index.ts",
+      "description": "Omit default context from central cleanup.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 851,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release closes owned remote handles after default and project-scoped calls",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 892,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release closes owned remote handles after default and project-scoped calls",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ …(4) ] to deeply equal []\n    at <repo>/src/test/mcp-context-release.test.ts:102:36\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 983,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release closes owned remote handles after default and project-scoped calls",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/mcp-context-release.test.ts",
+          "name": "MCP central ToolContext release closes owned remote handles after default and project-scoped calls"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-mcp-release-shared",
+      "file": "src/index.ts",
+      "description": "Incorrectly close the shared local connection when releasing owned remote handles.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 876,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release keeps the shared local database usable after repeated remote reads",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1008,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release keeps the shared local database usable after repeated remote reads",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected true not to be true // Object.is equality\n    at <repo>/src/test/mcp-context-release.test.ts:109:34\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1045,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release keeps the shared local database usable after repeated remote reads",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/mcp-context-release.test.ts",
+          "name": "MCP central ToolContext release keeps the shared local database usable after repeated remote reads"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-mcp-async-stderr",
+      "file": "src/index.ts",
+      "description": "Write escaped exception diagnostics to the JSON-RPC stdout channel.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 864,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release keeps serving after escaped async errors and writes diagnostics only to stderr",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1946,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release keeps serving after escaped async errors and writes diagnostics only to stderr",
+            "status": "failed",
+            "failures": [
+              "Error: expected 'Central DB: ready ✓ (0 projects regis…' to contain 'Gnosys MCP: uncaught exception — Erro…'\n    at Proxy.__VITEST_POLL_CHAIN__ (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/vitest/dist/chunks/test.DNmyFkvJ.js:3748:47)\n    at <repo>/src/test/mcp-context-release.test.ts:122:37\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1112,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-context-release.test.ts",
+            "name": "MCP central ToolContext release keeps serving after escaped async errors and writes diagnostics only to stderr",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/mcp-context-release.test.ts",
+          "name": "MCP central ToolContext release keeps serving after escaped async errors and writes diagnostics only to stderr"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}
