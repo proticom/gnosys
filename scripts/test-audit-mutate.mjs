@@ -25,12 +25,14 @@ function build() {
 
 function run(spec, phase) {
   const json = path.join(temporary, `${spec.id}-${phase}.json`);
-  const args = ["node_modules/vitest/vitest.mjs", "run", ...spec.tests, "--reporter=json", `--outputFile=${json}`];
+  const args = spec.command
+    ? spec.command.map((argument) => argument.replaceAll("{report}", json))
+    : ["node_modules/vitest/vitest.mjs", "run", ...spec.tests, "--reporter=json", `--outputFile=${json}`];
   if (spec.testName) args.push("-t", spec.testName);
   const started = Date.now();
   const child = spawnSync(process.execPath, args, { cwd: root, encoding: "utf8", timeout: spec.timeoutMs || 180_000, maxBuffer: 16 * 1024 * 1024 });
   const report = fs.existsSync(json) ? JSON.parse(fs.readFileSync(json, "utf8")) : null;
-  const tests = report?.testResults.flatMap((file) => file.assertionResults.map((test) => ({
+  const tests = report?.tests || report?.testResults.flatMap((file) => file.assertionResults.map((test) => ({
     file: path.relative(root, file.name),
     name: test.fullName,
     status: test.status,

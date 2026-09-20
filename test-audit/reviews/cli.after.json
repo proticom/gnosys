@@ -1,0 +1,2882 @@
+{
+  "tests": [
+    {
+      "beforeId": "src/test/add-command-handler.test.ts:13",
+      "beforeName": "wires add to runAddCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents add"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerCore"
+      ]
+    },
+    {
+      "beforeId": "src/test/add-command-handler.test.ts:29",
+      "beforeName": "exports runAddCommand with correct module imports",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents add"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerCore"
+      ]
+    },
+    {
+      "beforeId": "src/test/add-structured-command-handler.test.ts:13",
+      "beforeName": "wires add-structured to runAddStructuredCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents add-structured"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/add-structured-command-handler.test.ts:32",
+      "beforeName": "exports runAddStructuredCommand with tags JSON validation",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents add-structured"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/ambiguity-command-handler.test.ts:13",
+      "beforeName": "wires ambiguity to runAmbiguityCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents ambiguity"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerAgent"
+      ]
+    },
+    {
+      "beforeId": "src/test/ambiguity-command-handler.test.ts:22",
+      "beforeName": "exports runAmbiguityCommand with ambiguity markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents ambiguity"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerAgent"
+      ]
+    },
+    {
+      "beforeId": "src/test/ask-command-handler.test.ts:13",
+      "beforeName": "wires ask to runAskCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents ask"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/ask-command-handler.test.ts:25",
+      "beforeName": "exports runAskCommand with LLM, federated, stream, and cleanup markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents ask"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/audit-command-handler.test.ts:13",
+      "beforeName": "wires audit to runAuditCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents audit"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRuntime"
+      ]
+    },
+    {
+      "beforeId": "src/test/audit-command-handler.test.ts:25",
+      "beforeName": "exports runAuditCommand with audit markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents audit"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRuntime"
+      ]
+    },
+    {
+      "beforeId": "src/test/backup-command-handler.test.ts:13",
+      "beforeName": "wires backup to runBackupCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents backup"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRuntime"
+      ]
+    },
+    {
+      "beforeId": "src/test/backup-command-handler.test.ts:24",
+      "beforeName": "exports runBackupCommand with backup markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents backup"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRuntime"
+      ]
+    },
+    {
+      "beforeId": "src/test/bootstrap-command-handler.test.ts:13",
+      "beforeName": "wires bootstrap to runBootstrapCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents bootstrap"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/bootstrap-command-handler.test.ts:27",
+      "beforeName": "exports runBootstrapCommand with discoverFiles and bootstrap markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents bootstrap"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/briefing-command-handler.test.ts:13",
+      "beforeName": "wires briefing to runBriefingCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents briefing"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerAgent"
+      ]
+    },
+    {
+      "beforeId": "src/test/briefing-command-handler.test.ts:25",
+      "beforeName": "exports runBriefingCommand with briefing markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents briefing"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerAgent"
+      ]
+    },
+    {
+      "beforeId": "src/test/centralize-command-handler.test.ts:13",
+      "beforeName": "wires centralize to runCentralizeCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents centralize"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRemote"
+      ]
+    },
+    {
+      "beforeId": "src/test/centralize-command-handler.test.ts:24",
+      "beforeName": "exports runCentralizeCommand with centralize markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents centralize"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRemote"
+      ]
+    },
+    {
+      "beforeId": "src/test/check-command-handler.test.ts:13",
+      "beforeName": "wires check to runCheckCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents check"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMaintenance"
+      ]
+    },
+    {
+      "beforeId": "src/test/check-command-handler.test.ts:22",
+      "beforeName": "exports runCheckCommand with check markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents check"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMaintenance"
+      ]
+    },
+    {
+      "beforeId": "src/test/commit-context-command-handler.test.ts:13",
+      "beforeName": "wires commit-context to runCommitContextCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents commit-context"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/commit-context-command-handler.test.ts:25",
+      "beforeName": "exports runCommitContextCommand with extraction and commit markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents commit-context"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/config-command-handler.test.ts:13",
+      "beforeName": "wires config subcommands to extracted handlers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents config",
+        "CLI help contract documents config init",
+        "CLI help contract documents config set",
+        "CLI help contract documents config show"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/config-command-handler.test.ts:39",
+      "beforeName": "exports named config handler functions",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents config",
+        "CLI help contract documents config init",
+        "CLI help contract documents config set",
+        "CLI help contract documents config show"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/connect-command-handler.test.ts:10",
+      "beforeName": "wires connect to runConnectCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents connect"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRemote"
+      ]
+    },
+    {
+      "beforeId": "src/test/connect-command-handler.test.ts:23",
+      "beforeName": "exports runConnectCommand with connect markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents connect"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRemote"
+      ]
+    },
+    {
+      "beforeId": "src/test/dearchive-command-handler.test.ts:13",
+      "beforeName": "wires dearchive to runDearchiveCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents dearchive"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMaintenance"
+      ]
+    },
+    {
+      "beforeId": "src/test/dearchive-command-handler.test.ts:22",
+      "beforeName": "exports runDearchiveCommand with dearchive markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents dearchive"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMaintenance"
+      ]
+    },
+    {
+      "beforeId": "src/test/discover-command-handler.test.ts:13",
+      "beforeName": "wires discover to runDiscoverCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents discover"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerCore"
+      ]
+    },
+    {
+      "beforeId": "src/test/discover-command-handler.test.ts:26",
+      "beforeName": "exports runDiscoverCommand with federated and default FTS markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents discover"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerCore"
+      ]
+    },
+    {
+      "beforeId": "src/test/doctor-command-handler.test.ts:13",
+      "beforeName": "wires doctor to runDoctorCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents doctor"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMaintenance"
+      ]
+    },
+    {
+      "beforeId": "src/test/doctor-command-handler.test.ts:27",
+      "beforeName": "exports runDoctorCommand handler",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents doctor"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMaintenance"
+      ]
+    },
+    {
+      "beforeId": "src/test/doctor-command-handler.test.ts:31",
+      "beforeName": "uses correct relative imports for archive and embeddings",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents doctor"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMaintenance"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-log-command-handler.test.ts:13",
+      "beforeName": "wires dream log to runDreamLogCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents dream log"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerDream"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-log-command-handler.test.ts:26",
+      "beforeName": "exports runDreamLogCommand with dream log markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents dream log"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerDream"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-report-command-handler.test.ts:13",
+      "beforeName": "wires dream report to runDreamReportCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents dream report"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerDream"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-report-command-handler.test.ts:24",
+      "beforeName": "exports runDreamReportCommand with dream report markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents dream report"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerDream"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-run-command-handler.test.ts:13",
+      "beforeName": "wires bare dream and dream run to runDreamCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents dream run"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerDream"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-run-command-handler.test.ts:29",
+      "beforeName": "exports runDreamCommand with dream cycle markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents dream run"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerDream"
+      ]
+    },
+    {
+      "beforeId": "src/test/export-command-handler.test.ts:13",
+      "beforeName": "wires export parent, vault, and project via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents export",
+        "CLI help contract documents export project",
+        "CLI help contract documents export vault"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerExport"
+      ]
+    },
+    {
+      "beforeId": "src/test/export-command-handler.test.ts:24",
+      "beforeName": "exports export handlers with cleanup-safe markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents export",
+        "CLI help contract documents export project",
+        "CLI help contract documents export vault"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerExport"
+      ]
+    },
+    {
+      "beforeId": "src/test/fsearch-command-handler.test.ts:13",
+      "beforeName": "wires fsearch to runFsearchCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents fsearch"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerAgent"
+      ]
+    },
+    {
+      "beforeId": "src/test/fsearch-command-handler.test.ts:24",
+      "beforeName": "exports runFsearchCommand with federated and output markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents fsearch"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerAgent"
+      ]
+    },
+    {
+      "beforeId": "src/test/graph-command-handler.test.ts:13",
+      "beforeName": "wires graph to runGraphCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents graph"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerBrowse"
+      ]
+    },
+    {
+      "beforeId": "src/test/graph-command-handler.test.ts:22",
+      "beforeName": "exports runGraphCommand with graph markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents graph"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerBrowse"
+      ]
+    },
+    {
+      "beforeId": "src/test/helper-command-handler.test.ts:7",
+      "beforeName": "declares helper as a parent container with generate subcommand handler",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents helper",
+        "CLI help contract documents helper generate"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSandbox"
+      ]
+    },
+    {
+      "beforeId": "src/test/helper-command-handler.test.ts:21",
+      "beforeName": "has no parent action between helper declaration and generate subcommand",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents helper",
+        "CLI help contract documents helper generate"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSandbox"
+      ]
+    },
+    {
+      "beforeId": "src/test/helper-generate-command-handler.test.ts:13",
+      "beforeName": "wires helper generate to runHelperGenerateCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents helper generate"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSandbox"
+      ]
+    },
+    {
+      "beforeId": "src/test/helper-generate-command-handler.test.ts:24",
+      "beforeName": "exports runHelperGenerateCommand with helper generate markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents helper generate"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSandbox"
+      ]
+    },
+    {
+      "beforeId": "src/test/history-command-handler.test.ts:13",
+      "beforeName": "wires history to runHistoryCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents history"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerBrowse"
+      ]
+    },
+    {
+      "beforeId": "src/test/history-command-handler.test.ts:23",
+      "beforeName": "exports runHistoryCommand with history markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents history"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerBrowse"
+      ]
+    },
+    {
+      "beforeId": "src/test/hybrid-search-command-handler.test.ts:13",
+      "beforeName": "wires hybrid-search to runHybridSearchCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents hybrid-search"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/hybrid-search-command-handler.test.ts:27",
+      "beforeName": "exports runHybridSearchCommand with federated and local hybrid markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents hybrid-search"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/import-command-handler.test.ts:13",
+      "beforeName": "wires parent import to runImportCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents import",
+        "CLI help contract documents import project"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/import-command-handler.test.ts:25",
+      "beforeName": "exports runImportCommand with validation and import markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents import",
+        "CLI help contract documents import project"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/import-project-command-handler.test.ts:13",
+      "beforeName": "wires import project to runImportProjectCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents import project"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/import-project-command-handler.test.ts:23",
+      "beforeName": "exports runImportProjectCommand with cleanup-safe import markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents import project"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-command-handler.test.ts:13",
+      "beforeName": "wires ingest to runIngestCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents ingest"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-command-handler.test.ts:25",
+      "beforeName": "exports runIngestCommand with list-attachments and file branches",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents ingest"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/init-command-handler.test.ts:7",
+      "beforeName": "wires init options, project registration, and IDE hooks",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents init"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerProject"
+      ]
+    },
+    {
+      "beforeId": "src/test/lens-command-handler.test.ts:13",
+      "beforeName": "wires lens to runLensCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents lens"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/lens-command-handler.test.ts:26",
+      "beforeName": "exports runLensCommand with lens markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents lens"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/links-command-handler.test.ts:13",
+      "beforeName": "wires links to runLinksCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents links"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerBrowse"
+      ]
+    },
+    {
+      "beforeId": "src/test/links-command-handler.test.ts:22",
+      "beforeName": "exports runLinksCommand with links markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents links"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerBrowse"
+      ]
+    },
+    {
+      "beforeId": "src/test/list-command-handler.test.ts:13",
+      "beforeName": "wires list to runListCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents list"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerCore"
+      ]
+    },
+    {
+      "beforeId": "src/test/list-command-handler.test.ts:26",
+      "beforeName": "exports runListCommand with list markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents list"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerCore"
+      ]
+    },
+    {
+      "beforeId": "src/test/machine-command-handler.test.ts:7",
+      "beforeName": "declares machine as a parent container with show and migrate subcommands",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents machine",
+        "CLI help contract documents machine forget",
+        "CLI help contract documents machine list",
+        "CLI help contract documents machine ls",
+        "CLI help contract documents machine migrate",
+        "CLI help contract documents machine show"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRemote"
+      ]
+    },
+    {
+      "beforeId": "src/test/machine-command-handler.test.ts:23",
+      "beforeName": "has no parent action between machine declaration and first leaf command",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents machine",
+        "CLI help contract documents machine forget",
+        "CLI help contract documents machine list",
+        "CLI help contract documents machine ls",
+        "CLI help contract documents machine migrate",
+        "CLI help contract documents machine show"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRemote"
+      ]
+    },
+    {
+      "beforeId": "src/test/machine-show-command-handler.test.ts:7",
+      "beforeName": "wires machine show subcommand for local machine.json (machineId, roots, remote for network)",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents machine show"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRemote"
+      ]
+    },
+    {
+      "beforeId": "src/test/maintain-command-handler.test.ts:13",
+      "beforeName": "wires maintain to runMaintainCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents maintain"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMaintenance"
+      ]
+    },
+    {
+      "beforeId": "src/test/maintain-command-handler.test.ts:23",
+      "beforeName": "exports runMaintainCommand with maintain markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents maintain"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMaintenance"
+      ]
+    },
+    {
+      "beforeId": "src/test/migrate-command-handler.test.ts:13",
+      "beforeName": "wires migrate to runMigrateCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents migrate"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerProject"
+      ]
+    },
+    {
+      "beforeId": "src/test/migrate-command-handler.test.ts:25",
+      "beforeName": "exports runMigrateCommand with migrate markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents migrate"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerProject"
+      ]
+    },
+    {
+      "beforeId": "src/test/migrate-db-command-handler.test.ts:13",
+      "beforeName": "wires migrate-db to runMigrateDbCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents migrate-db"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRuntime"
+      ]
+    },
+    {
+      "beforeId": "src/test/migrate-db-command-handler.test.ts:23",
+      "beforeName": "exports runMigrateDbCommand with migrate-db markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents migrate-db"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRuntime"
+      ]
+    },
+    {
+      "beforeId": "src/test/pref-command-handler.test.ts:13",
+      "beforeName": "wires pref subcommands to handlers via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents pref",
+        "CLI help contract documents pref delete",
+        "CLI help contract documents pref get",
+        "CLI help contract documents pref set"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerAgent"
+      ]
+    },
+    {
+      "beforeId": "src/test/pref-command-handler.test.ts:35",
+      "beforeName": "exports pref handlers with preference markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents pref",
+        "CLI help contract documents pref delete",
+        "CLI help contract documents pref get",
+        "CLI help contract documents pref set"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerAgent"
+      ]
+    },
+    {
+      "beforeId": "src/test/projects-command-handler.test.ts:13",
+      "beforeName": "wires projects to runProjectsCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents projects"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRemote"
+      ]
+    },
+    {
+      "beforeId": "src/test/projects-command-handler.test.ts:26",
+      "beforeName": "exports runProjectsCommand with projects markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents projects"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRemote"
+      ]
+    },
+    {
+      "beforeId": "src/test/read-command-handler.test.ts:13",
+      "beforeName": "wires read to runReadCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents read"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerCore"
+      ]
+    },
+    {
+      "beforeId": "src/test/read-command-handler.test.ts:22",
+      "beforeName": "exports runReadCommand with DB-first and resolver fallback markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents read"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerCore"
+      ]
+    },
+    {
+      "beforeId": "src/test/recall-command-handler.test.ts:13",
+      "beforeName": "wires recall to runRecallCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents recall"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRuntime"
+      ]
+    },
+    {
+      "beforeId": "src/test/recall-command-handler.test.ts:25",
+      "beforeName": "exports runRecallCommand with federated and legacy audit markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents recall"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRuntime"
+      ]
+    },
+    {
+      "beforeId": "src/test/reflect-command-handler.test.ts:13",
+      "beforeName": "wires reflect to runReflectCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents reflect"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerTrace"
+      ]
+    },
+    {
+      "beforeId": "src/test/reflect-command-handler.test.ts:26",
+      "beforeName": "exports runReflectCommand with reflect markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents reflect"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerTrace"
+      ]
+    },
+    {
+      "beforeId": "src/test/reindex-command-handler.test.ts:13",
+      "beforeName": "wires reindex to runReindexCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents reindex"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/reindex-command-handler.test.ts:21",
+      "beforeName": "exports runReindexCommand with reindex markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents reindex"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/reindex-graph-command-handler.test.ts:13",
+      "beforeName": "wires reindex-graph to runReindexGraphCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents reindex-graph"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/reindex-graph-command-handler.test.ts:21",
+      "beforeName": "exports runReindexGraphCommand with reindex-graph markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents reindex-graph"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/reinforce-command-handler.test.ts:13",
+      "beforeName": "wires reinforce to runReinforceCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents reinforce"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/reinforce-command-handler.test.ts:23",
+      "beforeName": "exports runReinforceCommand with reinforce markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents reinforce"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/restore-command-handler.test.ts:13",
+      "beforeName": "wires restore to runRestoreCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents restore"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRuntime"
+      ]
+    },
+    {
+      "beforeId": "src/test/restore-command-handler.test.ts:23",
+      "beforeName": "exports runRestoreCommand with restore markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents restore"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRuntime"
+      ]
+    },
+    {
+      "beforeId": "src/test/sandbox-command-handler.test.ts:7",
+      "beforeName": "declares sandbox as a parent container with leaf subcommand handlers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents sandbox",
+        "CLI help contract documents sandbox start",
+        "CLI help contract documents sandbox status",
+        "CLI help contract documents sandbox stop"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSandbox"
+      ]
+    },
+    {
+      "beforeId": "src/test/sandbox-command-handler.test.ts:33",
+      "beforeName": "has no parent action between sandbox declaration and first leaf command",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents sandbox",
+        "CLI help contract documents sandbox start",
+        "CLI help contract documents sandbox status",
+        "CLI help contract documents sandbox stop"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSandbox"
+      ]
+    },
+    {
+      "beforeId": "src/test/sandbox-start-command-handler.test.ts:13",
+      "beforeName": "wires sandbox start to runSandboxStartCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents sandbox start"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSandbox"
+      ]
+    },
+    {
+      "beforeId": "src/test/sandbox-start-command-handler.test.ts:25",
+      "beforeName": "exports runSandboxStartCommand with sandbox start markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents sandbox start"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSandbox"
+      ]
+    },
+    {
+      "beforeId": "src/test/sandbox-status-command-handler.test.ts:13",
+      "beforeName": "wires sandbox status to runSandboxStatusCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents sandbox status"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSandbox"
+      ]
+    },
+    {
+      "beforeId": "src/test/sandbox-status-command-handler.test.ts:23",
+      "beforeName": "exports runSandboxStatusCommand with sandbox status markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents sandbox status"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSandbox"
+      ]
+    },
+    {
+      "beforeId": "src/test/sandbox-stop-command-handler.test.ts:13",
+      "beforeName": "wires sandbox stop to runSandboxStopCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents sandbox stop"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSandbox"
+      ]
+    },
+    {
+      "beforeId": "src/test/sandbox-stop-command-handler.test.ts:23",
+      "beforeName": "exports runSandboxStopCommand with sandbox stop markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents sandbox stop"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSandbox"
+      ]
+    },
+    {
+      "beforeId": "src/test/scan-command-handler.test.ts:13",
+      "beforeName": "wires scan to ensureMachineConfig, getMachineConfigPath, and scanProjects",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents scan"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRemote"
+      ]
+    },
+    {
+      "beforeId": "src/test/scan-command-handler.test.ts:33",
+      "beforeName": "exports scanProjects with project discovery markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents scan"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerRemote"
+      ]
+    },
+    {
+      "beforeId": "src/test/search-command-handler.test.ts:13",
+      "beforeName": "wires search to runSearchCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents search"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerCore"
+      ]
+    },
+    {
+      "beforeId": "src/test/search-command-handler.test.ts:26",
+      "beforeName": "exports runSearchCommand with federated and default FTS markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents search"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerCore"
+      ]
+    },
+    {
+      "beforeId": "src/test/semantic-search-command-handler.test.ts:13",
+      "beforeName": "wires semantic-search to runSemanticSearchCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents semantic-search"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/semantic-search-command-handler.test.ts:25",
+      "beforeName": "exports runSemanticSearchCommand with semantic-only and cleanup markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents semantic-search"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-command-handler.test.ts:7",
+      "beforeName": "wires bare setup to runSetup and summary wizard paths",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup",
+        "CLI help contract documents setup dream",
+        "CLI help contract documents setup ides",
+        "CLI help contract documents setup keys",
+        "CLI help contract documents setup models",
+        "CLI help contract documents setup preferences",
+        "CLI help contract documents setup providers",
+        "CLI help contract documents setup remote",
+        "CLI help contract documents setup remote doctor",
+        "CLI help contract documents setup remote pull",
+        "CLI help contract documents setup remote push",
+        "CLI help contract documents setup remote resolve",
+        "CLI help contract documents setup remote status",
+        "CLI help contract documents setup remote sync",
+        "CLI help contract documents setup remote timer",
+        "CLI help contract documents setup routing",
+        "CLI help contract documents setup sync-projects"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup",
+        "cli-registerMaintenance"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-dream-command-handler.test.ts:7",
+      "beforeName": "wires setup dream to runDreamSetup with the current directory",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup dream"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-ides-command-handler.test.ts:7",
+      "beforeName": "wires setup ides to interactive and --all IDE setup handlers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup ides"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-keys-command-handler.test.ts:7",
+      "beforeName": "wires setup keys to the table UI (provider table, keychain actions)",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup keys"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-models-command-handler.test.ts:7",
+      "beforeName": "wires setup models to runModelsSetup with provider/model/validate options",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup models"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-preferences-command-handler.test.ts:7",
+      "beforeName": "wires setup preferences to runPreferencesReview with readline cleanup",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup preferences"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-providers-command-handler.test.ts:7",
+      "beforeName": "wires setup providers to runProvidersSetup",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup providers"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-remote-command-handler.test.ts:13",
+      "beforeName": "wires bare setup remote to runSetupRemoteCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup remote",
+        "CLI help contract documents setup remote doctor",
+        "CLI help contract documents setup remote pull",
+        "CLI help contract documents setup remote push",
+        "CLI help contract documents setup remote resolve",
+        "CLI help contract documents setup remote status",
+        "CLI help contract documents setup remote sync",
+        "CLI help contract documents setup remote timer"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-remote-command-handler.test.ts:22",
+      "beforeName": "exports runSetupRemoteCommand with setup-remote markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup remote",
+        "CLI help contract documents setup remote doctor",
+        "CLI help contract documents setup remote pull",
+        "CLI help contract documents setup remote push",
+        "CLI help contract documents setup remote resolve",
+        "CLI help contract documents setup remote status",
+        "CLI help contract documents setup remote sync",
+        "CLI help contract documents setup remote timer"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-remote-doctor-command-handler.test.ts:10",
+      "beforeName": "documents `gnosys setup remote doctor --ingest` for Windows / manual timer users",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup remote doctor"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-remote-pull-command-handler.test.ts:13",
+      "beforeName": "wires setup remote pull to runSetupRemotePullCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup remote pull"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-remote-pull-command-handler.test.ts:23",
+      "beforeName": "exports runSetupRemotePullCommand with pull markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup remote pull"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-remote-push-command-handler.test.ts:13",
+      "beforeName": "wires setup remote push to runSetupRemotePushCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup remote push"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-remote-push-command-handler.test.ts:23",
+      "beforeName": "exports runSetupRemotePushCommand with push markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup remote push"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-remote-resolve-command-handler.test.ts:13",
+      "beforeName": "wires setup remote resolve to runSetupRemoteResolveCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup remote resolve"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-remote-resolve-command-handler.test.ts:22",
+      "beforeName": "exports runSetupRemoteResolveCommand with resolve markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup remote resolve"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-remote-status-command-handler.test.ts:13",
+      "beforeName": "wires setup remote status to runSetupRemoteStatusCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup remote status"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-remote-status-command-handler.test.ts:22",
+      "beforeName": "exports runSetupRemoteStatusCommand with remote status markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup remote status"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-remote-sync-command-handler.test.ts:13",
+      "beforeName": "wires setup remote sync to runSetupRemoteSyncCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup remote sync"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-remote-sync-command-handler.test.ts:24",
+      "beforeName": "exports runSetupRemoteSyncCommand with sync markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup remote sync"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-remote-timer-command-handler.test.ts:13",
+      "beforeName": "wires setup remote timer to runSyncIngestTimerCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup remote timer"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-remote-timer-command-handler.test.ts:25",
+      "beforeName": "exports runSyncIngestTimerCommand with install/uninstall/status paths",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup remote timer"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-routing-command-handler.test.ts:7",
+      "beforeName": "wires setup routing to runRoutingSetup with readline cleanup",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup routing"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerSetup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-sync-projects-command-handler.test.ts:13",
+      "beforeName": "wires setup sync-projects to runSetupSyncProjectsCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup sync-projects"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMaintenance"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-sync-projects-command-handler.test.ts:22",
+      "beforeName": "exports runSetupSyncProjectsCommand with sync-projects operational markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents setup sync-projects"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMaintenance"
+      ]
+    },
+    {
+      "beforeId": "src/test/stale-command-handler.test.ts:13",
+      "beforeName": "wires stale to runStaleCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents stale"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/stale-command-handler.test.ts:23",
+      "beforeName": "exports runStaleCommand with stale markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents stale"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/stats-command-handler.test.ts:13",
+      "beforeName": "wires stats to runStatsCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents stats"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerBrowse"
+      ]
+    },
+    {
+      "beforeId": "src/test/stats-command-handler.test.ts:24",
+      "beforeName": "exports runStatsCommand with stats markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents stats"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerBrowse"
+      ]
+    },
+    {
+      "beforeId": "src/test/status-command-handler.test.ts:10",
+      "beforeName": "wires status to runStatusCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents status"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerAgent"
+      ]
+    },
+    {
+      "beforeId": "src/test/status-command-handler.test.ts:24",
+      "beforeName": "exports runStatusCommand with status markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents status"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerAgent"
+      ]
+    },
+    {
+      "beforeId": "src/test/stores-command-handler.test.ts:7",
+      "beforeName": "wires stores to runStoresCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents stores"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerData"
+      ]
+    },
+    {
+      "beforeId": "src/test/sync-command-handler.test.ts:13",
+      "beforeName": "wires sync to runSyncCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents sync"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerAgent"
+      ]
+    },
+    {
+      "beforeId": "src/test/sync-command-handler.test.ts:24",
+      "beforeName": "exports runSyncCommand with sync markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents sync"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerAgent"
+      ]
+    },
+    {
+      "beforeId": "src/test/tags-add-command-handler.test.ts:13",
+      "beforeName": "wires tags-add to runTagsAddCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents tags-add"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/tags-add-command-handler.test.ts:23",
+      "beforeName": "exports runTagsAddCommand with tags-add markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents tags-add"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/tags-command-handler.test.ts:13",
+      "beforeName": "wires tags to runTagsCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents tags"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/tags-command-handler.test.ts:22",
+      "beforeName": "exports runTagsCommand with tags markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents tags"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/timeline-command-handler.test.ts:13",
+      "beforeName": "wires timeline to runTimelineCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents timeline"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerBrowse"
+      ]
+    },
+    {
+      "beforeId": "src/test/timeline-command-handler.test.ts:25",
+      "beforeName": "exports runTimelineCommand with timeline markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents timeline"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerBrowse"
+      ]
+    },
+    {
+      "beforeId": "src/test/trace-command-handler.test.ts:13",
+      "beforeName": "wires trace to runTraceCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents trace"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerTrace"
+      ]
+    },
+    {
+      "beforeId": "src/test/trace-command-handler.test.ts:24",
+      "beforeName": "exports runTraceCommand with trace markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents trace"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerTrace"
+      ]
+    },
+    {
+      "beforeId": "src/test/traverse-command-handler.test.ts:13",
+      "beforeName": "wires traverse to runTraverseCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents traverse"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerTrace"
+      ]
+    },
+    {
+      "beforeId": "src/test/traverse-command-handler.test.ts:24",
+      "beforeName": "exports runTraverseCommand with traverse markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents traverse"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerTrace"
+      ]
+    },
+    {
+      "beforeId": "src/test/update-command-handler.test.ts:13",
+      "beforeName": "wires update to runUpdateCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents update"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/update-command-handler.test.ts:28",
+      "beforeName": "exports runUpdateCommand with update markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents update"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMemory"
+      ]
+    },
+    {
+      "beforeId": "src/test/update-status-command-handler.test.ts:13",
+      "beforeName": "wires update-status to runUpdateStatusCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents update-status"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerAgent"
+      ]
+    },
+    {
+      "beforeId": "src/test/update-status-command-handler.test.ts:23",
+      "beforeName": "exports runUpdateStatusCommand with update-status markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents update-status"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerAgent"
+      ]
+    },
+    {
+      "beforeId": "src/test/upgrade-command-handler.test.ts:7",
+      "beforeName": "registers upgrade options and helpers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents upgrade"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMaintenance"
+      ]
+    },
+    {
+      "beforeId": "src/test/upgrade-command-handler.test.ts:21",
+      "beforeName": "covers sync prompt and failure paths",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents upgrade"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerMaintenance"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-add-command-handler.test.ts:13",
+      "beforeName": "wires web add to runWebAddCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web add"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-add-command-handler.test.ts:26",
+      "beforeName": "exports runWebAddCommand with web add markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web add"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-build-command-handler.test.ts:13",
+      "beforeName": "wires web build to runWebBuildCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web build"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-build-command-handler.test.ts:28",
+      "beforeName": "exports runWebBuildCommand with web build markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web build"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-build-index-command-handler.test.ts:13",
+      "beforeName": "wires web build-index to runWebBuildIndexCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web build-index"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-build-index-command-handler.test.ts:26",
+      "beforeName": "exports runWebBuildIndexCommand with web build-index markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web build-index"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-command-handler.test.ts:7",
+      "beforeName": "declares web as a parent container with leaf subcommand handlers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web",
+        "CLI help contract documents web add",
+        "CLI help contract documents web build",
+        "CLI help contract documents web build-index",
+        "CLI help contract documents web ingest",
+        "CLI help contract documents web init",
+        "CLI help contract documents web remove",
+        "CLI help contract documents web status",
+        "CLI help contract documents web update"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-command-handler.test.ts:63",
+      "beforeName": "has no parent action between web declaration and first leaf command",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web",
+        "CLI help contract documents web add",
+        "CLI help contract documents web build",
+        "CLI help contract documents web build-index",
+        "CLI help contract documents web ingest",
+        "CLI help contract documents web init",
+        "CLI help contract documents web remove",
+        "CLI help contract documents web status",
+        "CLI help contract documents web update"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-ingest-command-handler.test.ts:13",
+      "beforeName": "wires web ingest to runWebIngestCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web ingest"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-ingest-command-handler.test.ts:29",
+      "beforeName": "exports runWebIngestCommand with web ingest markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web ingest"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-init-command-handler.test.ts:13",
+      "beforeName": "wires web init to runWebInitCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web init"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-init-command-handler.test.ts:27",
+      "beforeName": "exports runWebInitCommand with web init markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web init"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-remove-command-handler.test.ts:13",
+      "beforeName": "wires web remove to runWebRemoveCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web remove"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-remove-command-handler.test.ts:23",
+      "beforeName": "exports runWebRemoveCommand with web remove markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web remove"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-status-command-handler.test.ts:13",
+      "beforeName": "wires web status to runWebStatusCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web status"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-status-command-handler.test.ts:23",
+      "beforeName": "exports runWebStatusCommand with web status markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web status"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-update-command-handler.test.ts:13",
+      "beforeName": "wires web update to runWebUpdateCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web update"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/web-update-command-handler.test.ts:25",
+      "beforeName": "exports runWebUpdateCommand with web update markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents web update"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerWeb"
+      ]
+    },
+    {
+      "beforeId": "src/test/working-set-command-handler.test.ts:13",
+      "beforeName": "wires working-set to runWorkingSetCommand via dynamic import",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents working-set"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerAgent"
+      ]
+    },
+    {
+      "beforeId": "src/test/working-set-command-handler.test.ts:24",
+      "beforeName": "exports runWorkingSetCommand with working-set markers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents working-set"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated source-string registration checks into literal command-path, usage, description, and option assertions against the built CLI. Handler effects are assessed separately in the feature matrix.",
+      "mutationIds": [
+        "cli-registerAgent"
+      ]
+    },
+    {
+      "beforeId": "src/test/cli-command-wiring.test.ts:16",
+      "beforeName": "every .command() declared in source is registered at runtime",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI help contract documents add",
+        "CLI help contract documents add-structured",
+        "CLI help contract documents ambiguity",
+        "CLI help contract documents ask",
+        "CLI help contract documents attach",
+        "CLI help contract documents audit",
+        "CLI help contract documents backup",
+        "CLI help contract documents bootstrap",
+        "CLI help contract documents briefing",
+        "CLI help contract documents centralize",
+        "CLI help contract documents check",
+        "CLI help contract documents cleanup",
+        "CLI help contract documents commit-context",
+        "CLI help contract documents config",
+        "CLI help contract documents config init",
+        "CLI help contract documents config set",
+        "CLI help contract documents config show",
+        "CLI help contract documents connect",
+        "CLI help contract documents dearchive",
+        "CLI help contract documents discover",
+        "CLI help contract documents doctor",
+        "CLI help contract documents dream",
+        "CLI help contract documents dream log",
+        "CLI help contract documents dream report",
+        "CLI help contract documents dream run",
+        "CLI help contract documents export",
+        "CLI help contract documents export project",
+        "CLI help contract documents export vault",
+        "CLI help contract documents fsearch",
+        "CLI help contract documents get-attachment",
+        "CLI help contract documents graph",
+        "CLI help contract documents helper",
+        "CLI help contract documents helper generate",
+        "CLI help contract documents history",
+        "CLI help contract documents hybrid-search",
+        "CLI help contract documents import",
+        "CLI help contract documents import project",
+        "CLI help contract documents ingest",
+        "CLI help contract documents init",
+        "CLI help contract documents lens",
+        "CLI help contract documents links",
+        "CLI help contract documents list",
+        "CLI help contract documents machine",
+        "CLI help contract documents machine forget",
+        "CLI help contract documents machine list",
+        "CLI help contract documents machine ls",
+        "CLI help contract documents machine migrate",
+        "CLI help contract documents machine show",
+        "CLI help contract documents maintain",
+        "CLI help contract documents migrate",
+        "CLI help contract documents migrate-db",
+        "CLI help contract documents pref",
+        "CLI help contract documents pref delete",
+        "CLI help contract documents pref get",
+        "CLI help contract documents pref set",
+        "CLI help contract documents projects",
+        "CLI help contract documents read",
+        "CLI help contract documents recall",
+        "CLI help contract documents recall-hook",
+        "CLI help contract documents reflect",
+        "CLI help contract documents reindex",
+        "CLI help contract documents reindex-graph",
+        "CLI help contract documents reinforce",
+        "CLI help contract documents restore",
+        "CLI help contract documents sandbox",
+        "CLI help contract documents sandbox start",
+        "CLI help contract documents sandbox status",
+        "CLI help contract documents sandbox stop",
+        "CLI help contract documents scan",
+        "CLI help contract documents search",
+        "CLI help contract documents semantic-search",
+        "CLI help contract documents serve",
+        "CLI help contract documents setup",
+        "CLI help contract documents setup dream",
+        "CLI help contract documents setup ides",
+        "CLI help contract documents setup keys",
+        "CLI help contract documents setup models",
+        "CLI help contract documents setup preferences",
+        "CLI help contract documents setup providers",
+        "CLI help contract documents setup remote",
+        "CLI help contract documents setup remote doctor",
+        "CLI help contract documents setup remote pull",
+        "CLI help contract documents setup remote push",
+        "CLI help contract documents setup remote resolve",
+        "CLI help contract documents setup remote status",
+        "CLI help contract documents setup remote sync",
+        "CLI help contract documents setup remote timer",
+        "CLI help contract documents setup routing",
+        "CLI help contract documents setup sync-projects",
+        "CLI help contract documents stale",
+        "CLI help contract documents stats",
+        "CLI help contract documents status",
+        "CLI help contract documents stores",
+        "CLI help contract documents sync",
+        "CLI help contract documents tags",
+        "CLI help contract documents tags-add",
+        "CLI help contract documents timeline",
+        "CLI help contract documents trace",
+        "CLI help contract documents traverse",
+        "CLI help contract documents update",
+        "CLI help contract documents update-status",
+        "CLI help contract documents upgrade",
+        "CLI help contract documents web",
+        "CLI help contract documents web add",
+        "CLI help contract documents web build",
+        "CLI help contract documents web build-index",
+        "CLI help contract documents web ingest",
+        "CLI help contract documents web init",
+        "CLI help contract documents web remove",
+        "CLI help contract documents web status",
+        "CLI help contract documents web update",
+        "CLI help contract documents working-set"
+      ],
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Literal full paths preserve parent-child relationships. All 112 command and alias cases fail when their registration is omitted and pass after restoration.",
+      "mutationIds": [
+        "cli-registerCore",
+        "cli-registerSetup",
+        "cli-registerProject",
+        "cli-registerMemory",
+        "cli-registerBrowse",
+        "cli-registerData",
+        "cli-registerMaintenance",
+        "cli-registerDream",
+        "cli-registerExport",
+        "cli-registerRuntime",
+        "cli-registerRemote",
+        "cli-registerAgent",
+        "cli-registerSandbox",
+        "cli-registerTrace",
+        "cli-registerWeb"
+      ]
+    }
+  ]
+}

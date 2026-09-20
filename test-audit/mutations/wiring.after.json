@@ -1,0 +1,25 @@
+[
+  {
+    "id": "cli-parent-path",
+    "file": "src/cli/setup.ts",
+    "description": "Register remote setup under the root command instead of setup; leaf names still exist.",
+    "search": "const setupRemoteCmd = setupCmd",
+    "replace": "const setupRemoteCmd = program",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "build": true,
+    "testName": "^CLI help contract documents setup remote"
+  },
+  {
+    "id": "web-index-skip-write",
+    "file": "src/lib/webBuildIndexCommand.ts",
+    "description": "Skip writing the search index unless embeddings were requested.",
+    "search": "await writeIndex(index, outputPath);",
+    "replace": "if (opts.embeddings) await writeIndex(index, outputPath);",
+    "tests": [
+      "src/test/webVectors-command-handler.test.ts"
+    ],
+    "testName": "writes a searchable index when embeddings are absent"
+  }
+]

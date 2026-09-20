@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "framework": "CI Bash",
+  "suite": "ci:network-share",
+  "baseline": true,
+  "durationMs": 478,
+  "exitCode": 0,
+  "error": null,
+  "tests": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "name": "Network share simulation (tmpfs)",
+      "status": "passed",
+      "failures": []
+    }
+  ],
+  "stdout": "Using simulated share at <isolated-home>/tmp.aktebwQI46\nGnosys store initialized at <isolated-home>/tmp.aktebwQI46/.gnosys\n\nProject Identity:\n  ID:        175a973f-7c59-43b2-a7e3-7e65aad476f2\n  Name:      tmp.aktebwQI46\n  Directory: <isolated-home>/tmp.aktebwQI46\n  Agent:     none detected\n  Central DB: registered ✓\n\nCreated:\n  gnosys.json   (project identity)\n  .config/      (internal config)\n  tags.json     (tag registry)\n\nIDE hooks: No supported IDE detected (.claude/, .cursor/, or .codex/ not found)\n\nWire IDE MCP servers: gnosys setup ides\nStart adding memories with: gnosys add \"your knowledge here\"\nMemory added: Shared Knowledge\nID: conc-01M2YJHFWAJNB9KZD1TCJ6PDH0\nSearch result: {\n  \"query\": \"network share\",\n  \"count\": 1,\n  \"results\": [\n    {\n      \"id\": \"conc-01M2YJHFWAJNB9KZD1TCJ6PDH0\",\n      \"title\": \"Shared Knowledge\",\n      \"snippet\": \"# >>>Shared<<< Knowledge\\n\\nThis memory lives on a >>>network<<< >>>share<<<.\",\n      \"rank\": -0.000003067307692307692,\n      \"project_id\": \"1b0c16c7-7e79-4551-be9a-655745e64165\"\n    }\n  ]\n}\nStats: {\n  \"totalCount\": 1,\n  \"byCategory\": {\n    \"concepts\": 1\n  },\n  \"byStatus\": {\n    \"active\": 1\n  },\n  \"byAuthor\": {\n    \"human\": 1\n  },\n  \"byAuthority\": {\n    \"declared\": 1\n  },\n  \"averageConfidence\": 0.8,\n  \"oldestCreated\": \"2026-09-20T04:52:39.435Z\",\n  \"newestCreated\": \"2026-09-20T04:52:39.435Z\",\n  \"lastModified\": \"2026-09-20T04:52:39.435Z\"\n}\nNetwork share simulation passed\n",
+  "stderr": ""
+}

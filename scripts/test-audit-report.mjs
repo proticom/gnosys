@@ -32,6 +32,7 @@ const mutations = fs.readdirSync("test-audit/mutations")
 const features = JSON.parse(fs.readFileSync("test-audit/features.json", "utf8"));
 const featureList = Array.isArray(features) ? features : features.features;
 const collection = JSON.parse(fs.readFileSync("test-audit/collection.json", "utf8"));
+const defects = fs.existsSync("test-audit/defects.json") ? JSON.parse(fs.readFileSync("test-audit/defects.json", "utf8")) : [];
 const externalRows = collection.test_cases_outside_vitest.map((test) =>
   `| ${escape(test.path)} | ${escape(test.name)} | ${test.classification} | Pending | ${escape(test.reason)} | ${escape(test.action)} |`,
 );
@@ -61,11 +62,11 @@ ${classes.map((name) => `| ${name} | ${counts[name]} | Pending full verification
 
 The unit above is a source test declaration, including loop-generated test families. Vitest collected 1,802 runtime cases. Final runtime classification totals will be reconciled separately. The eight shell/CI cases are listed in the table below and excluded from TypeScript counts.
 
-The committed baseline passed 296 files, 1,801 tests, one skipped, and zero failures in 109.83 seconds. The Docker setup suite passed six cases in 11.12 seconds. Build and TypeScript checking passed. The full Vitest suite after the first web rewrite passed the same 1,801 cases plus one skip in 105.18 seconds. See [baseline JSON](test-audit/evidence/baseline.json), [setup log](test-audit/evidence/setup-baseline.log), and [web rewrite full suite](test-audit/evidence/web-full-suite.json).
+The committed baseline passed 296 files, 1,801 tests, one skipped, and zero failures in 109.83 seconds. The Docker setup suite passed six cases in 11.12 seconds. The original CI scenarios passed in 1.844 seconds and 0.478 seconds, despite the isolation assertions being incomplete. After web and CLI rewrites, 202 files pass with 1,735 tests passed, one skipped, zero failed, in 82.03 seconds. Build, TypeScript, and Knip checks passed. Lint exited zero with 21 existing warnings; the rewritten web/CLI tests pass their targeted lint check. See [baseline JSON](test-audit/evidence/baseline.json), [setup log](test-audit/evidence/setup-baseline.log), and [latest full suite](test-audit/evidence/cli-full-suite.json).
 
 ## Defects found
 
-No application defect has yet been confirmed. Review findings below concern test protection until a restored-code reproduction proves otherwise.
+${defects.length ? defects.map((defect) => `### ${defect.id}: ${defect.title}\n\n${defect.evidence}\n\nReproduce after building with \`${defect.reproduction}\`. Expected \`${defect.expected}\`; observed \`${defect.actual}\`.\n\n${defect.status}`).join("\n\n") : "No application defect has yet been confirmed."}
 
 ## Feature protection matrix
 

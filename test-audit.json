@@ -29,6 +29,16 @@
       "passed": 6,
       "failed": 0,
       "durationSeconds": 11.12
+    },
+    "ciMultiProject": {
+      "passed": 1,
+      "failed": 0,
+      "durationSeconds": 1.844
+    },
+    "ciLocalStorage": {
+      "passed": 1,
+      "failed": 0,
+      "durationSeconds": 0.478
     }
   },
   "inventory": {
@@ -42,9 +52,31 @@
     "testDeclarationsReviewed": 1748,
     "featureGroups": 41,
     "weakRatingsProved": 3,
-    "rewrittenCasesProved": 12
+    "rewrittenCasesProved": 124,
+    "commandCasesProved": 112,
+    "originalDeclarationsResolved": 190
   },
   "blocked": [],
   "applicationCodeChanged": false,
-  "classificationEvidenceStatus": "WEAK and nonstructural HOLLOW ratings remain provisional until their mutation evidence is recorded."
+  "classificationEvidenceStatus": "WEAK and nonstructural HOLLOW ratings remain provisional until their mutation evidence is recorded.",
+  "latestFullSuite": {
+    "files": 202,
+    "passed": 1735,
+    "failed": 0,
+    "skipped": 1,
+    "durationSeconds": 82.03
+  },
+  "defects": [
+    {
+      "id": "D-G3-001",
+      "title": "Exported fnv1a does not compute the documented 32-bit FNV-1a hash",
+      "module": "src/lib/db.ts:389",
+      "reproduction": "node --input-type=module -e 'import { fnv1a } from \"./dist/lib/db.js\"; console.log(fnv1a(\"hello\"));'",
+      "expected": "4f9f2cab",
+      "actual": "a82fb4a1",
+      "evidence": "Independently reproduced in the root audit worktree. BigInt XOR/multiply/modulo-2^32 arithmetic gives 4f9f2cab; the exported function returns a82fb4a1. Its floating-point multiplication loses low bits.",
+      "test": "src/test/chunk-splitter.test.ts",
+      "status": "Confirmed. Expected-failure regression is in the group3 worktree pending review and merge; application code remains unchanged."
+    }
+  ]
 }

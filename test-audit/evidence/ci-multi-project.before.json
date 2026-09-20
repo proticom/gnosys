@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "framework": "CI Bash",
+  "suite": "ci:multi-project",
+  "baseline": true,
+  "durationMs": 1844,
+  "exitCode": 0,
+  "error": null,
+  "tests": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "name": "Multi-project scenario test",
+      "status": "passed",
+      "failures": []
+    }
+  ],
+  "stdout": "=== Initializing three projects ===\nGnosys store initialized at <isolated-home>/tmp.n8fKkxlDOm/.gnosys\n\nProject Identity:\n  ID:        49ce1303-8307-44db-ad33-b499a3fd279f\n  Name:      tmp.n8fKkxlDOm\n  Directory: <isolated-home>/tmp.n8fKkxlDOm\n  Agent:     none detected\n  Central DB: registered ✓\n\nCreated:\n  gnosys.json   (project identity)\n  .config/      (internal config)\n  tags.json     (tag registry)\n\nIDE hooks: No supported IDE detected (.claude/, .cursor/, or .codex/ not found)\n\nWire IDE MCP servers: gnosys setup ides\nStart adding memories with: gnosys add \"your knowledge here\"\nGnosys store initialized at <isolated-home>/tmp.wHQUy0bS17/.gnosys\n\nProject Identity:\n  ID:        87544168-6ea0-4cb9-8d55-a1738af0065c\n  Name:      tmp.wHQUy0bS17\n  Directory: <isolated-home>/tmp.wHQUy0bS17\n  Agent:     none detected\n  Central DB: registered ✓\n\nCreated:\n  gnosys.json   (project identity)\n  .config/      (internal config)\n  tags.json     (tag registry)\n\nIDE hooks: No supported IDE detected (.claude/, .cursor/, or .codex/ not found)\n\nWire IDE MCP servers: gnosys setup ides\nStart adding memories with: gnosys add \"your knowledge here\"\nGnosys store initialized at <isolated-home>/tmp.Zt5nu1CJ11/.gnosys\n\nProject Identity:\n  ID:        8db18582-3ffa-4789-94be-658578edbb20\n  Name:      tmp.Zt5nu1CJ11\n  Directory: <isolated-home>/tmp.Zt5nu1CJ11\n  Agent:     none detected\n  Central DB: registered ✓\n\nCreated:\n  gnosys.json   (project identity)\n  .config/      (internal config)\n  tags.json     (tag registry)\n\nIDE hooks: No supported IDE detected (.claude/, .cursor/, or .codex/ not found)\n\nWire IDE MCP servers: gnosys setup ides\nStart adding memories with: gnosys add \"your knowledge here\"\n=== Adding memories to each project ===\nMemory added: Alpha Architecture\nID: arch-01M2YJHE7SDN29EN4G45VDZ4JV\nMemory added: Beta Testing Strategy\nID: requ-01M2YJHEB4EJ00GVEGQTPMVSPR\nMemory added: Gamma Deployment\nID: deci-01M2YJHEECX7EWMN56NBHWEYSK\n=== Verifying project isolation ===\nProject A: 3 memories\nProject B: 3 memories\nProject C: 3 memories\n=== Cross-project search isolation ===\nSearch 'microservices' in A: 1 results\nSearch 'microservices' in B: 1 results\n=== CLI commands work across projects ===\nMulti-project scenario passed\n",
+  "stderr": ""
+}

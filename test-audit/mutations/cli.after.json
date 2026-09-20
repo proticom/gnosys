@@ -1,0 +1,182 @@
+[
+  {
+    "id": "cli-registerCore",
+    "file": "src/cli.ts",
+    "search": "registerCore(program);",
+    "replace": "if (false) registerCore(program);",
+    "description": "Omit src/cli/core.ts from the CLI composition.",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "testName": "^CLI help contract documents (?:add|discover|list|read|search)$",
+    "build": true
+  },
+  {
+    "id": "cli-registerSetup",
+    "file": "src/cli.ts",
+    "search": "registerSetup(program);",
+    "replace": "if (false) registerSetup(program);",
+    "description": "Omit src/cli/setup.ts from the CLI composition.",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "testName": "^CLI help contract documents (?:setup|setup dream|setup ides|setup keys|setup models|setup preferences|setup providers|setup remote|setup remote doctor|setup remote pull|setup remote push|setup remote resolve|setup remote status|setup remote sync|setup remote timer|setup routing)$",
+    "build": true
+  },
+  {
+    "id": "cli-registerProject",
+    "file": "src/cli.ts",
+    "search": "registerProject(program);",
+    "replace": "if (false) registerProject(program);",
+    "description": "Omit src/cli/project.ts from the CLI composition.",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "testName": "^CLI help contract documents (?:init|migrate)$",
+    "build": true
+  },
+  {
+    "id": "cli-registerMemory",
+    "file": "src/cli.ts",
+    "search": "registerMemory(program);",
+    "replace": "if (false) registerMemory(program);",
+    "description": "Omit src/cli/memory.ts from the CLI composition.",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "testName": "^CLI help contract documents (?:add-structured|attach|commit-context|get-attachment|ingest|lens|reinforce|stale|tags|tags-add|update)$",
+    "build": true
+  },
+  {
+    "id": "cli-registerBrowse",
+    "file": "src/cli.ts",
+    "search": "registerBrowse(program);",
+    "replace": "if (false) registerBrowse(program);",
+    "description": "Omit src/cli/browse.ts from the CLI composition.",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "testName": "^CLI help contract documents (?:graph|history|links|stats|timeline)$",
+    "build": true
+  },
+  {
+    "id": "cli-registerData",
+    "file": "src/cli.ts",
+    "search": "registerData(program);",
+    "replace": "if (false) registerData(program);",
+    "description": "Omit src/cli/data.ts from the CLI composition.",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "testName": "^CLI help contract documents (?:ask|bootstrap|config|config init|config set|config show|hybrid-search|import|import project|reindex|reindex-graph|semantic-search|stores)$",
+    "build": true
+  },
+  {
+    "id": "cli-registerMaintenance",
+    "file": "src/cli.ts",
+    "search": "registerMaintenance(program);",
+    "replace": "if (false) registerMaintenance(program);",
+    "description": "Omit src/cli/maintenance.ts from the CLI composition.",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "testName": "^CLI help contract documents (?:check|cleanup|dearchive|doctor|maintain|setup sync-projects|upgrade)$",
+    "build": true
+  },
+  {
+    "id": "cli-registerDream",
+    "file": "src/cli.ts",
+    "search": "registerDream(program);",
+    "replace": "if (false) registerDream(program);",
+    "description": "Omit src/cli/dream.ts from the CLI composition.",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "testName": "^CLI help contract documents (?:dream|dream log|dream report|dream run)$",
+    "build": true
+  },
+  {
+    "id": "cli-registerExport",
+    "file": "src/cli.ts",
+    "search": "registerExport(program);",
+    "replace": "if (false) registerExport(program);",
+    "description": "Omit src/cli/exportCmds.ts from the CLI composition.",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "testName": "^CLI help contract documents (?:export|export project|export vault)$",
+    "build": true
+  },
+  {
+    "id": "cli-registerRuntime",
+    "file": "src/cli.ts",
+    "search": "registerRuntime(program);",
+    "replace": "if (false) registerRuntime(program);",
+    "description": "Omit src/cli/runtime.ts from the CLI composition.",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "testName": "^CLI help contract documents (?:audit|backup|migrate-db|recall|recall-hook|restore|serve)$",
+    "build": true
+  },
+  {
+    "id": "cli-registerRemote",
+    "file": "src/cli.ts",
+    "search": "registerRemote(program);",
+    "replace": "if (false) registerRemote(program);",
+    "description": "Omit src/cli/remote.ts from the CLI composition.",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "testName": "^CLI help contract documents (?:centralize|connect|machine|machine forget|machine list|machine ls|machine migrate|machine show|projects|scan)$",
+    "build": true
+  },
+  {
+    "id": "cli-registerAgent",
+    "file": "src/cli.ts",
+    "search": "registerAgent(program);",
+    "replace": "if (false) registerAgent(program);",
+    "description": "Omit src/cli/agent.ts from the CLI composition.",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "testName": "^CLI help contract documents (?:ambiguity|briefing|fsearch|pref|pref delete|pref get|pref set|status|sync|update-status|working-set)$",
+    "build": true
+  },
+  {
+    "id": "cli-registerSandbox",
+    "file": "src/cli.ts",
+    "search": "registerSandbox(program);",
+    "replace": "if (false) registerSandbox(program);",
+    "description": "Omit src/cli/sandbox.ts from the CLI composition.",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "testName": "^CLI help contract documents (?:helper|helper generate|sandbox|sandbox start|sandbox status|sandbox stop)$",
+    "build": true
+  },
+  {
+    "id": "cli-registerTrace",
+    "file": "src/cli.ts",
+    "search": "registerTrace(program);",
+    "replace": "if (false) registerTrace(program);",
+    "description": "Omit src/cli/trace.ts from the CLI composition.",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "testName": "^CLI help contract documents (?:reflect|trace|traverse)$",
+    "build": true
+  },
+  {
+    "id": "cli-registerWeb",
+    "file": "src/cli.ts",
+    "search": "registerWeb(program);",
+    "replace": "if (false) registerWeb(program);",
+    "description": "Omit src/cli/web.ts from the CLI composition.",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "testName": "^CLI help contract documents (?:web|web add|web build|web build-index|web ingest|web init|web remove|web status|web update)$",
+    "build": true
+  }
+]

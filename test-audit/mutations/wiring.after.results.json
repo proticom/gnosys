@@ -1,0 +1,282 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "cli-parent-path",
+      "file": "src/cli/setup.ts",
+      "description": "Register remote setup under the root command instead of setup; leaf names still exist.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1015,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote doctor",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote pull",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote push",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote resolve",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote status",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote sync",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote timer",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1069,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Usage: gnosys setup [options] [comman…' to be 'Usage: gnosys setup remote [options] …' // Object.is equality\n    at <repo>/src/test/cli-command-wiring.test.ts:12:37\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote doctor",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Usage: gnosys setup [options] [comman…' to be 'Usage: gnosys setup remote doctor [op…' // Object.is equality\n    at <repo>/src/test/cli-command-wiring.test.ts:12:37\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote pull",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Usage: gnosys setup [options] [comman…' to be 'Usage: gnosys setup remote pull [opti…' // Object.is equality\n    at <repo>/src/test/cli-command-wiring.test.ts:12:37\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote push",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Usage: gnosys setup [options] [comman…' to be 'Usage: gnosys setup remote push [opti…' // Object.is equality\n    at <repo>/src/test/cli-command-wiring.test.ts:12:37\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote resolve",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Usage: gnosys setup [options] [comman…' to be 'Usage: gnosys setup remote resolve [o…' // Object.is equality\n    at <repo>/src/test/cli-command-wiring.test.ts:12:37\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote status",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Usage: gnosys setup [options] [comman…' to be 'Usage: gnosys setup remote status [op…' // Object.is equality\n    at <repo>/src/test/cli-command-wiring.test.ts:12:37\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote sync",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Usage: gnosys setup [options] [comman…' to be 'Usage: gnosys setup remote sync [opti…' // Object.is equality\n    at <repo>/src/test/cli-command-wiring.test.ts:12:37\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote timer",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Usage: gnosys setup [options] [comman…' to be 'Usage: gnosys setup remote timer [opt…' // Object.is equality\n    at <repo>/src/test/cli-command-wiring.test.ts:12:37\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1099,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote doctor",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote pull",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote push",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote resolve",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote status",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote sync",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "CLI help contract documents setup remote timer",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/cli-command-wiring.test.ts",
+          "name": "CLI help contract documents setup remote"
+        },
+        {
+          "file": "src/test/cli-command-wiring.test.ts",
+          "name": "CLI help contract documents setup remote doctor"
+        },
+        {
+          "file": "src/test/cli-command-wiring.test.ts",
+          "name": "CLI help contract documents setup remote pull"
+        },
+        {
+          "file": "src/test/cli-command-wiring.test.ts",
+          "name": "CLI help contract documents setup remote push"
+        },
+        {
+          "file": "src/test/cli-command-wiring.test.ts",
+          "name": "CLI help contract documents setup remote resolve"
+        },
+        {
+          "file": "src/test/cli-command-wiring.test.ts",
+          "name": "CLI help contract documents setup remote status"
+        },
+        {
+          "file": "src/test/cli-command-wiring.test.ts",
+          "name": "CLI help contract documents setup remote sync"
+        },
+        {
+          "file": "src/test/cli-command-wiring.test.ts",
+          "name": "CLI help contract documents setup remote timer"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "web-index-skip-write",
+      "file": "src/lib/webBuildIndexCommand.ts",
+      "description": "Skip writing the search index unless embeddings were requested.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 431,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 426,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "failed",
+            "failures": [
+              "Error: ENOENT: no such file or directory, open '/var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-web-command-audit-4gBHWE/knowledge/gnosys-index.json'\n    at readFileSync (node:fs:441:20)\n    at readJson (<repo>/src/test/webVectors-command-handler.test.ts:19:56)\n    at <repo>/src/test/webVectors-command-handler.test.ts:71:12\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 433,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build-index output writes a searchable index when embeddings are absent"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}
