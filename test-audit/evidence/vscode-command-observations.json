@@ -1,0 +1,81 @@
+{
+  "observations": [
+    {
+      "id": "D-VSC-001",
+      "result": {
+        "warnings": [],
+        "information": [],
+        "errors": [
+          "Reinforce failed: Command failed: npx gnosys reinforce \"decisions/vscode-memory.md\"\nerror: required option '--signal <signal>' not specified\n"
+        ],
+        "terminals": []
+      }
+    },
+    {
+      "id": "D-VSC-002",
+      "result": {
+        "warnings": [],
+        "information": [],
+        "errors": [
+          "Reinforce failed: Command failed: npx gnosys reinforce \"../.gnosys-other/memory.md\"\nerror: required option '--signal <signal>' not specified\n"
+        ],
+        "terminals": []
+      }
+    },
+    {
+      "id": "D-VSC-003",
+      "result": {
+        "warnings": [],
+        "information": [],
+        "errors": [
+          "Reinforce failed: Command failed: npx gnosys reinforce \"decisions/$(touch audit-injected).md\"\nerror: required option '--signal <signal>' not specified\n"
+        ],
+        "terminals": []
+      }
+    },
+    {
+      "id": "D-VSC-004",
+      "result": {
+        "warnings": [],
+        "information": [],
+        "errors": [],
+        "terminals": [
+          {
+            "name": "Gnosys Dashboard",
+            "shown": true,
+            "runs": [
+              {
+                "command": "npx gnosys dashboard",
+                "status": 1,
+                "stdout": "",
+                "stderr": "error: unknown command 'dashboard'\n"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "shellMarkerCreated": true,
+  "invocations": [
+    [
+      "gnosys",
+      "reinforce",
+      "decisions/vscode-memory.md"
+    ],
+    [
+      "gnosys",
+      "reinforce",
+      "../.gnosys-other/memory.md"
+    ],
+    [
+      "gnosys",
+      "reinforce",
+      "decisions/.md"
+    ],
+    [
+      "gnosys",
+      "dashboard"
+    ]
+  ]
+}

@@ -4,14 +4,14 @@
 - [x] Run Vitest and Docker setup baselines.
 - [x] Inventory features independently of tests.
 - [x] Review all 296 TypeScript files, 1,748 declaration sites, and eight external shell/CI cases.
-- [ ] Replay and correct inline CI scenarios.
+- [x] Replay and correct inline CI scenarios.
 - [ ] Prove all proposed WEAK/HOLLOW ratings and critical features with mutations.
 - [ ] Rewrite deficient tests and fill feature gaps in independently verified units.
 - [ ] Prove every new or rewritten test against broken and restored code.
 - [ ] Merge reviewed test changes, run final suites, and verify no application changes.
 - [ ] Reconcile final counts, feature protection, and evidence.
 
-The baseline passes, but source review found substantial gaps in behavior protection. Of 1,748 TypeScript test declarations, reviewers rated 1,076 STRONG, 294 WEAK, 45 HOLLOW, 285 COUPLED, one DEAD, and 47 MISLABELED. These are provisional audit ratings: WEAK and nonstructural HOLLOW ratings require surviving mutation evidence before the verdict is final. The first three suspected gaps survived mutations. All 12 rewritten web-command tests now pass on restored code and fail under relevant mutations. The audit remains in progress.
+The baseline passes, but source review found substantial gaps in behavior protection. Of 1,748 TypeScript test declarations, reviewers rated 1,076 STRONG, 294 WEAK, 45 HOLLOW, 285 COUPLED, one DEAD, and 47 MISLABELED. These are provisional audit ratings: WEAK and nonstructural HOLLOW ratings require surviving mutation evidence before the verdict is final. The rewritten web and CLI contracts have passing mutation proofs. Five Docker setup checks and both CI scenarios survived broken application behavior before correction and now reject it. New VS Code extension tests expose four confirmed defects and retain them as expected failures. The audit remains in progress.
 
 ## Counts before and after
 
@@ -26,7 +26,7 @@ The baseline passes, but source review found substantial gaps in behavior protec
 
 The unit above is a source test declaration, including loop-generated test families. Vitest collected 1,802 runtime cases. Final runtime classification totals will be reconciled separately. The eight shell/CI cases are listed in the table below and excluded from TypeScript counts.
 
-The committed baseline passed 296 files, 1,801 tests, one skipped, and zero failures in 109.83 seconds. The Docker setup suite passed six cases in 11.12 seconds. The original CI scenarios passed in 1.844 seconds and 0.478 seconds, despite the isolation assertions being incomplete. After web and CLI rewrites, 202 files pass with 1,735 tests passed, one skipped, zero failed, in 82.03 seconds. Build, TypeScript, and Knip checks passed. Lint exited zero with 21 existing warnings; the rewritten web/CLI tests pass their targeted lint check. See [baseline JSON](test-audit/evidence/baseline.json), [setup log](test-audit/evidence/setup-baseline.log), and [latest full suite](test-audit/evidence/cli-full-suite.json).
+The committed baseline passed 296 files, 1,801 tests, one skipped, and zero failures in 109.83 seconds. The Docker setup suite passed six cases in 11.12 seconds. The original CI scenarios passed in 1.844 seconds and 0.478 seconds, despite the isolation assertions being incomplete. After web, CLI, external-scenario, and extension changes, 203 files pass with 1,742 tests passed (including four expected failures), one skipped, zero unexpected failures, in 80.235 seconds. Build, TypeScript, and Knip checks passed. Lint exited zero with 21 existing warnings; the rewritten web/CLI tests pass their targeted lint check. See [baseline JSON](test-audit/evidence/baseline.json), [setup log](test-audit/evidence/setup-baseline.log), and [latest full suite](test-audit/evidence/external-extension-full-suite.json).
 
 ## Defects found
 
@@ -38,6 +38,38 @@ Reproduce after building with `node --input-type=module -e 'import { fnv1a } fro
 
 Confirmed. Expected-failure regression is in the group3 worktree pending review and merge; application code remains unchanged.
 
+### D-VSC-001: VS Code reinforcement omits the required signal and supplies a file path as a memory ID
+
+The public extension command was invoked through a VS Code host boundary double and executed the local CLI. A temporary probe supplying --signal useful and the fixture memory ID makes the expected-failure test unexpectedly pass.
+
+Reproduce after building with `node scripts/test-audit-defect.mjs D-VSC-001`. Expected `The selected memory receives useful reinforcement and its persisted modified date becomes today.`; observed `The real CLI rejects the command because --signal is required; the memory remains dated 2000-01-01.`.
+
+Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.
+
+### D-VSC-002: VS Code memory-directory validation accepts names such as .gnosys-other
+
+The selected path ends in .gnosys-other/memory.md. Requiring an exact path component makes the expected-failure test unexpectedly pass.
+
+Reproduce after building with `node scripts/test-audit-defect.mjs D-VSC-002`. Expected `The outside-memory-directory warning appears and reinforcement is not invoked.`; observed `Substring validation accepts .gnosys-other and invokes the reinforcement subprocess.`.
+
+Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.
+
+### D-VSC-003: VS Code reinforcement evaluates shell syntax in selected filenames
+
+The real shell ran only a harmless touch command inside the temporary test project. Replacing shell interpolation with execFileSync argument passing makes the expected-failure test unexpectedly pass.
+
+Reproduce after building with `node scripts/test-audit-defect.mjs D-VSC-003`. Expected `The literal argument decisions/$(touch audit-injected).md reaches the CLI without evaluating the shell expression.`; observed `The argument becomes decisions/.md and a harmless audit-injected marker is created in the isolated fixture directory.`.
+
+Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.
+
+### D-VSC-004: VS Code dashboard action invokes a removed CLI command
+
+The terminal host double executes the real built CLI through a local npx shim. A temporary supported status --system command makes the expected-failure test unexpectedly pass.
+
+Reproduce after building with `node scripts/test-audit-defect.mjs D-VSC-004`. Expected `The terminal runs a supported CLI command and exits successfully.`; observed `npx gnosys dashboard exits 1 because dashboard is not a registered command.`.
+
+Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.
+
 ## Feature protection matrix
 
 The independent inventory contains 41 feature groups, 132 checked source references, and 164 success, failure, boundary, and permission obligations. See [feature inventory](test-audit/features.json). Protection mapping is pending the verified fixes. Passing source-string tests do not count as feature protection.
@@ -46,6 +78,10 @@ The independent inventory contains 41 feature groups, 132 checked source referen
 
 | Mutation | Application target | Result | Cases killed | Evidence |
 | --- | --- | --- | ---: | --- |
+| ci-multi-project-empty-search | src/lib/searchCommand.ts | killed | 1 | [ci.after.results.json](test-audit/mutations/ci.after.results.json) |
+| ci-network-share-empty-search | src/lib/searchCommand.ts | killed | 1 | [ci.after.results.json](test-audit/mutations/ci.after.results.json) |
+| ci-multi-project-empty-search | src/lib/searchCommand.ts | survived | 0 | [ci.before.results.json](test-audit/mutations/ci.before.results.json) |
+| ci-network-share-empty-search | src/lib/searchCommand.ts | survived | 0 | [ci.before.results.json](test-audit/mutations/ci.before.results.json) |
 | cli-registerCore | src/cli.ts | killed | 5 | [cli.after.results.json](test-audit/mutations/cli.after.results.json) |
 | cli-registerSetup | src/cli.ts | killed | 16 | [cli.after.results.json](test-audit/mutations/cli.after.results.json) |
 | cli-registerProject | src/cli.ts | killed | 2 | [cli.after.results.json](test-audit/mutations/cli.after.results.json) |
@@ -61,6 +97,25 @@ The independent inventory contains 41 feature groups, 132 checked source referen
 | cli-registerSandbox | src/cli.ts | killed | 6 | [cli.after.results.json](test-audit/mutations/cli.after.results.json) |
 | cli-registerTrace | src/cli.ts | killed | 3 | [cli.after.results.json](test-audit/mutations/cli.after.results.json) |
 | cli-registerWeb | src/cli.ts | killed | 9 | [cli.after.results.json](test-audit/mutations/cli.after.results.json) |
+| setup-web-config | src/lib/webInitCommand.ts | survived | 0 | [setup-remainder.before.results.json](test-audit/mutations/setup-remainder.before.results.json) |
+| setup-stray-write | src/lib/webInitCommand.ts | survived | 0 | [setup-remainder.before.results.json](test-audit/mutations/setup-remainder.before.results.json) |
+| setup-version | src/cli.ts | killed | 1 | [setup.after.results.json](test-audit/mutations/setup.after.results.json) |
+| setup-identity-name | src/lib/projectIdentity.ts | killed | 1 | [setup.after.results.json](test-audit/mutations/setup.after.results.json) |
+| setup-default-model | src/lib/setup.ts | killed | 1 | [setup.after.results.json](test-audit/mutations/setup.after.results.json) |
+| setup-web-config | src/lib/webInitCommand.ts | killed | 1 | [setup.after.results.json](test-audit/mutations/setup.after.results.json) |
+| setup-stray-write | src/lib/webInitCommand.ts | killed | 1 | [setup.after.results.json](test-audit/mutations/setup.after.results.json) |
+| setup-cancel-message | src/lib/setup/ui/safePrompt.ts | killed | 1 | [setup.after.results.json](test-audit/mutations/setup.after.results.json) |
+| setup-version | src/cli.ts | survived | 0 | [setup.before.results.json](test-audit/mutations/setup.before.results.json) |
+| setup-identity-name | src/lib/projectIdentity.ts | survived | 0 | [setup.before.results.json](test-audit/mutations/setup.before.results.json) |
+| setup-default-model | src/lib/setup.ts | survived | 0 | [setup.before.results.json](test-audit/mutations/setup.before.results.json) |
+| setup-web-config | src/lib/webInitCommand.ts | invalid-run | 0 | [setup.before.results.json](test-audit/mutations/setup.before.results.json) |
+| vscode-no-editor | extensions/vscode/extension.js | killed | 1 | [vscode.after.results.json](test-audit/mutations/vscode.after.results.json) |
+| vscode-outside-memory | extensions/vscode/extension.js | killed | 1 | [vscode.after.results.json](test-audit/mutations/vscode.after.results.json) |
+| vscode-command-error | extensions/vscode/extension.js | killed | 1 | [vscode.after.results.json](test-audit/mutations/vscode.after.results.json) |
+| repair-D-VSC-001 | extensions/vscode/extension.js | killed | 1 | [vscode.repairs.results.json](test-audit/mutations/vscode.repairs.results.json) |
+| repair-D-VSC-002 | extensions/vscode/extension.js | killed | 1 | [vscode.repairs.results.json](test-audit/mutations/vscode.repairs.results.json) |
+| repair-D-VSC-003 | extensions/vscode/extension.js | killed | 1 | [vscode.repairs.results.json](test-audit/mutations/vscode.repairs.results.json) |
+| repair-D-VSC-004 | extensions/vscode/extension.js | killed | 1 | [vscode.repairs.results.json](test-audit/mutations/vscode.repairs.results.json) |
 | web-index-write | src/lib/webBuildIndexCommand.ts | killed | 5 | [web.after.results.json](test-audit/mutations/web.after.results.json) |
 | web-index-validation | src/lib/webBuildIndexCommand.ts | killed | 1 | [web.after.results.json](test-audit/mutations/web.after.results.json) |
 | web-build-write | src/lib/webBuildCommand.ts | killed | 1 | [web.after.results.json](test-audit/mutations/web.after.results.json) |
@@ -1831,14 +1886,14 @@ Every original TypeScript declaration and every external logical test appears be
 | src/test/working-set-command-handler.test.ts:24 | exports runWorkingSetCommand with working-set markers | COUPLED | STRONG | Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior. | rewritten |
 | src/test/working-set-invoke.test.ts:98 | returns the recently modified project memory (--json) | STRONG | Pending | Real command JSON returns exact project ID, count one and literal recently modified memory ID. | Planned: Keep behavioral assertion |
 | src/test/working-set-invoke.test.ts:106 | returns an empty working set for a zero-hour window (--json) | STRONG | Pending | Zero-hour window produces exact zero-count JSON for the seeded older memory. | Planned: Keep behavioral assertion |
-| e2e-setup/tests/version.sh | cli-installs-and-reports-version | WEAK | Pending | Only a nonempty semver prefix is required; version does not have to equal the packed package version despite the file comment. | Read-only audit. Compare with packed package.json version in a corrected test, then mutation-test. |
-| e2e-setup/tests/init.exp | init-creates-isolated-store | WEAK | Pending | An exit-zero init that creates only an empty .gnosys directory passes; identity contents and registry record are never checked. | Read-only audit. Assert identity plus a CLI observable project registration, then mutation-test. |
-| e2e-setup/tests/setup-wizard.exp | setup-wizard-first-screen | STRONG | Pending | Expect drives a real PTY, requires a setup/provider/step prompt and exact cancellation-message shape, fails timeout or stack trace. The no-writes promise inside the message is not itself verified. | Keep narrow prompt/cancel protection; verify cancellation leaves persistent state unchanged if that guarantee is included. |
-| e2e-setup/tests/setup-non-interactive.sh | setup-non-interactive | WEAK | Pending | Only exit status and absence of a JS stack are checked. An empty successful no-op passes; no required config/state is checked. | Read-only audit. Define and assert persisted setup outcomes, then mutation-test. |
-| e2e-setup/tests/web-init.exp | web-init-wizard | WEAK | Pending | Real prompts and success are checked, but only knowledge directory existence is asserted; no web configuration or answers are checked. | Read-only audit. Assert saved sitemap URL, enrichment=false and directory path, then mutation-test. |
-| e2e-setup/tests/isolation.sh | isolation-no-stray-writes | MISLABELED | Pending | Only /home/tester files newer than run-all.sh are rejected. /tmp gnosys paths only produce a note. No other writable directory outside HOME is checked, despite claiming all writes confined to HOME. Prefix allowlist also accepts sibling names such as .gnosys-unexpected. | Replace with baseline filesystem diff over approved writable roots or narrow the claim. |
-| .github/workflows/ci.yml | Multi-project scenario test | WEAK | Pending | Counts only require >=1 so returning every project is accepted; A_SEARCH and B_SEARCH are calculated and echoed, never asserted. Thus the named cross-project search isolation subcase has no assertion. | Assert exact per-project memory IDs and zero Beta matches for Alpha terms. Isolate HOME for local replay. |
-| .github/workflows/ci.yml | Network share simulation (tmpfs) | MISLABELED | Pending | Only mktemp runs; no tmpfs/network mount or latency/failure simulation exists. DB is central HOME. Search failure is converted to empty results, and both search/stats outputs are merely printed. | Rename as local initialization smoke with literal data assertions or implement an actual mounted/faulted share case. |
+| e2e-setup/tests/version.sh | cli-installs-and-reports-version | WEAK | STRONG | Only a nonempty semver prefix is required; version does not have to equal the packed package version despite the file comment. | rewritten |
+| e2e-setup/tests/init.exp | init-creates-isolated-store | WEAK | STRONG | An exit-zero init that creates only an empty .gnosys directory passes; identity contents and registry record are never checked. | rewritten |
+| e2e-setup/tests/setup-wizard.exp | setup-wizard-first-screen | STRONG | STRONG | Expect drives a real PTY, requires a setup/provider/step prompt and exact cancellation-message shape, fails timeout or stack trace. The no-writes promise inside the message is not itself verified. | kept |
+| e2e-setup/tests/setup-non-interactive.sh | setup-non-interactive | WEAK | STRONG | Only exit status and absence of a JS stack are checked. An empty successful no-op passes; no required config/state is checked. | rewritten |
+| e2e-setup/tests/web-init.exp | web-init-wizard | WEAK | STRONG | Real prompts and success are checked, but only knowledge directory existence is asserted; no web configuration or answers are checked. | rewritten |
+| e2e-setup/tests/isolation.sh | isolation-no-stray-writes | MISLABELED | STRONG | Only /home/tester files newer than run-all.sh are rejected. /tmp gnosys paths only produce a note. No other writable directory outside HOME is checked, despite claiming all writes confined to HOME. Prefix allowlist also accepts sibling names such as .gnosys-unexpected. | rewritten |
+| .github/workflows/ci.yml | Multi-project scenario test | WEAK | STRONG | Counts only require >=1 so returning every project is accepted; A_SEARCH and B_SEARCH are calculated and echoed, never asserted. Thus the named cross-project search isolation subcase has no assertion. | rewritten |
+| .github/workflows/ci.yml | Network share simulation (tmpfs) | MISLABELED | STRONG | Only mktemp runs; no tmpfs/network mount or latency/failure simulation exists. DB is central HOME. Search failure is converted to empty results, and both search/stats outputs are merely printed. | rewritten |
 
 ## Repeated patterns
 
@@ -1855,4 +1910,4 @@ The workspace root is not a Git repository. This audit targets `gnosys-public`, 
 
 Node 22.17.1 runs the suite. Installed Vitest 4.1.9, TypeScript 5.9.3, tsx 4.22.4, better-sqlite3 11.10.0, and MCP SDK 1.29.0 match the committed lockfile. Each mutation worktree builds its own `dist/`.
 
-The first sandboxed baseline was stopped after a direct loopback-listener probe returned `EPERM`. Re-running with local HTTP/socket access produced the passing baseline. Docker 29.4.3 runs setup tests without container networking or host mounts. The encrypted-PDF test is skipped because its fixture is absent; resolution is pending. Remote services and cross-platform behavior will be recorded as blocked where unavailable.
+The first sandboxed baseline was stopped after a direct loopback-listener probe returned `EPERM`. Re-running with local HTTP/socket access produced the passing baseline. Docker 29.4.3 runs setup tests without container networking or host mounts. The baseline encrypted-PDF test is skipped because its fixture is absent; a deterministic fixture and passing replacement are verified in the group1 checkpoint, pending integration. Remote services and cross-platform behavior will be recorded as blocked where unavailable.

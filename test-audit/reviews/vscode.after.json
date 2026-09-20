@@ -1,0 +1,82 @@
+{
+  "tests": [],
+  "additionalTests": [
+    {
+      "file": "src/test/vscode-extension.test.ts",
+      "name": "VS Code extension public commands warns when no editor is open",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "vscode-no-editor"
+      ],
+      "evidence": "Literal editor notification changes fail under recorded application mutations; restored code passes."
+    },
+    {
+      "file": "src/test/vscode-extension.test.ts",
+      "name": "VS Code extension public commands warns when the active file is outside a memory directory",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "vscode-outside-memory"
+      ],
+      "evidence": "Literal editor notification changes fail under recorded application mutations; restored code passes."
+    },
+    {
+      "file": "src/test/vscode-extension.test.ts",
+      "name": "VS Code extension public commands reports a process launch failure to the editor",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "vscode-command-error"
+      ],
+      "evidence": "Literal editor notification changes fail under recorded application mutations; restored code passes."
+    },
+    {
+      "file": "src/test/vscode-extension.test.ts",
+      "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-001",
+      "mutationIds": [
+        "repair-D-VSC-001"
+      ],
+      "evidence": "Public extension command drives real local CLI; only VS Code host services are replaced. Expected-failure repair probes become unexpected passes and restored code returns to expected failure."
+    },
+    {
+      "file": "src/test/vscode-extension.test.ts",
+      "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-002",
+      "mutationIds": [
+        "repair-D-VSC-002"
+      ],
+      "evidence": "Public extension command drives real local CLI; only VS Code host services are replaced. Expected-failure repair probes become unexpected passes and restored code returns to expected failure."
+    },
+    {
+      "file": "src/test/vscode-extension.test.ts",
+      "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-003",
+      "mutationIds": [
+        "repair-D-VSC-003"
+      ],
+      "evidence": "Public extension command drives real local CLI; only VS Code host services are replaced. Expected-failure repair probes become unexpected passes and restored code returns to expected failure."
+    },
+    {
+      "file": "src/test/vscode-extension.test.ts",
+      "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-VSC-004",
+      "mutationIds": [
+        "repair-D-VSC-004"
+      ],
+      "evidence": "Public extension command drives real local CLI; only VS Code host services are replaced. Expected-failure repair probes become unexpected passes and restored code returns to expected failure."
+    }
+  ]
+}

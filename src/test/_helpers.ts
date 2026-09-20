@@ -84,7 +84,8 @@ export function cli(
   const centralDir = opts.centralDir || defaultCentralDir(projectDir);
   return execSync(cmd, {
     encoding: "utf-8",
-    env: { ...process.env, GNOSYS_PROJECT: projectDir, GNOSYS_HOME: centralDir },
+    cwd: projectDir,
+    env: { ...process.env, GNOSYS_HOME: centralDir },
     stdio: ["pipe", "pipe", "pipe"],
   });
 }

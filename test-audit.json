@@ -54,17 +54,20 @@
     "weakRatingsProved": 3,
     "rewrittenCasesProved": 124,
     "commandCasesProved": 112,
-    "originalDeclarationsResolved": 190
+    "originalDeclarationsResolved": 190,
+    "externalCasesProved": 8,
+    "newExtensionCasesProved": 7
   },
   "blocked": [],
   "applicationCodeChanged": false,
   "classificationEvidenceStatus": "WEAK and nonstructural HOLLOW ratings remain provisional until their mutation evidence is recorded.",
   "latestFullSuite": {
-    "files": 202,
-    "passed": 1735,
+    "files": 203,
+    "passed": 1742,
     "failed": 0,
     "skipped": 1,
-    "durationSeconds": 82.03
+    "expectedFailureRegressions": 4,
+    "durationSeconds": 80.235
   },
   "defects": [
     {
@@ -77,6 +80,70 @@
       "evidence": "Independently reproduced in the root audit worktree. BigInt XOR/multiply/modulo-2^32 arithmetic gives 4f9f2cab; the exported function returns a82fb4a1. Its floating-point multiplication loses low bits.",
       "test": "src/test/chunk-splitter.test.ts",
       "status": "Confirmed. Expected-failure regression is in the group3 worktree pending review and merge; application code remains unchanged."
+    },
+    {
+      "id": "D-VSC-001",
+      "title": "VS Code reinforcement omits the required signal and supplies a file path as a memory ID",
+      "module": "extensions/vscode/extension.js:45",
+      "expected": "The selected memory receives useful reinforcement and its persisted modified date becomes today.",
+      "actual": "The real CLI rejects the command because --signal is required; the memory remains dated 2000-01-01.",
+      "evidence": "The public extension command was invoked through a VS Code host boundary double and executed the local CLI. A temporary probe supplying --signal useful and the fixture memory ID makes the expected-failure test unexpectedly pass.",
+      "reproduction": "node scripts/test-audit-defect.mjs D-VSC-001",
+      "test": "src/test/vscode-extension.test.ts",
+      "status": "Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.",
+      "evidenceFiles": [
+        "test-audit/evidence/vscode-defect-reproduction.json",
+        "test-audit/mutations/vscode.repairs.results.json",
+        "test-audit/evidence/D-VSC-001.reproduced.json"
+      ]
+    },
+    {
+      "id": "D-VSC-002",
+      "title": "VS Code memory-directory validation accepts names such as .gnosys-other",
+      "module": "extensions/vscode/extension.js:31",
+      "expected": "The outside-memory-directory warning appears and reinforcement is not invoked.",
+      "actual": "Substring validation accepts .gnosys-other and invokes the reinforcement subprocess.",
+      "evidence": "The selected path ends in .gnosys-other/memory.md. Requiring an exact path component makes the expected-failure test unexpectedly pass.",
+      "reproduction": "node scripts/test-audit-defect.mjs D-VSC-002",
+      "test": "src/test/vscode-extension.test.ts",
+      "status": "Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.",
+      "evidenceFiles": [
+        "test-audit/evidence/vscode-defect-reproduction.json",
+        "test-audit/mutations/vscode.repairs.results.json",
+        "test-audit/evidence/D-VSC-002.reproduced.json"
+      ]
+    },
+    {
+      "id": "D-VSC-003",
+      "title": "VS Code reinforcement evaluates shell syntax in selected filenames",
+      "module": "extensions/vscode/extension.js:45",
+      "expected": "The literal argument decisions/$(touch audit-injected).md reaches the CLI without evaluating the shell expression.",
+      "actual": "The argument becomes decisions/.md and a harmless audit-injected marker is created in the isolated fixture directory.",
+      "evidence": "The real shell ran only a harmless touch command inside the temporary test project. Replacing shell interpolation with execFileSync argument passing makes the expected-failure test unexpectedly pass.",
+      "reproduction": "node scripts/test-audit-defect.mjs D-VSC-003",
+      "test": "src/test/vscode-extension.test.ts",
+      "status": "Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.",
+      "evidenceFiles": [
+        "test-audit/evidence/vscode-defect-reproduction.json",
+        "test-audit/mutations/vscode.repairs.results.json",
+        "test-audit/evidence/D-VSC-003.reproduced.json"
+      ]
+    },
+    {
+      "id": "D-VSC-004",
+      "title": "VS Code dashboard action invokes a removed CLI command",
+      "module": "extensions/vscode/extension.js:66",
+      "expected": "The terminal runs a supported CLI command and exits successfully.",
+      "actual": "npx gnosys dashboard exits 1 because dashboard is not a registered command.",
+      "evidence": "The terminal host double executes the real built CLI through a local npx shim. A temporary supported status --system command makes the expected-failure test unexpectedly pass.",
+      "reproduction": "node scripts/test-audit-defect.mjs D-VSC-004",
+      "test": "src/test/vscode-extension.test.ts",
+      "status": "Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.",
+      "evidenceFiles": [
+        "test-audit/evidence/vscode-defect-reproduction.json",
+        "test-audit/mutations/vscode.repairs.results.json",
+        "test-audit/evidence/D-VSC-004.reproduced.json"
+      ]
     }
   ]
 }

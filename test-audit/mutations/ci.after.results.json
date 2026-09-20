@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "ci-multi-project-empty-search",
+      "file": "src/lib/searchCommand.ts",
+      "description": "Return empty results for every keyword search.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1738,
+        "error": null,
+        "tests": [
+          {
+            "file": ".github/workflows/ci.yml",
+            "name": "Multi-project scenario test",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1084,
+        "error": null,
+        "tests": [
+          {
+            "file": ".github/workflows/ci.yml",
+            "name": "Multi-project scenario test",
+            "status": "failed",
+            "failures": [
+              "node:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   {\n-     projectId: '27746a84-4b5d-4820-982c-61d4b5a14564',\n-     title: 'Alpha Architecture'\n-   }\n- ]\n\n    at file:///Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit/scripts/test-ci-scenarios.mjs:54:12\n    at ModuleJob.run (node:internal/modules/esm/module_job:329:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:644:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: [],\n  expected: [\n    {\n      title: 'Alpha Architecture',\n      projectId: '27746a84-4b5d-4820-982c-61d4b5a14564'\n    }\n  ],\n  operator: 'deepStrictEqual'\n}\n\nNode.js v22.17.1\n"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1684,
+        "error": null,
+        "tests": [
+          {
+            "file": ".github/workflows/ci.yml",
+            "name": "Multi-project scenario test",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": ".github/workflows/ci.yml",
+          "name": "Multi-project scenario test"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "ci-network-share-empty-search",
+      "file": "src/lib/searchCommand.ts",
+      "description": "Return empty results for every keyword search.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 594,
+        "error": null,
+        "tests": [
+          {
+            "file": ".github/workflows/ci.yml",
+            "name": "Local storage round trip",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 612,
+        "error": null,
+        "tests": [
+          {
+            "file": ".github/workflows/ci.yml",
+            "name": "Local storage round trip",
+            "status": "failed",
+            "failures": [
+              "node:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   {\n-     projectId: '5402c789-9778-445c-883c-d5a3eab70688',\n-     title: 'Shared Knowledge'\n-   }\n- ]\n\n    at file:///Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit/scripts/test-ci-scenarios.mjs:54:12\n    at ModuleJob.run (node:internal/modules/esm/module_job:329:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:644:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: [],\n  expected: [\n    {\n      title: 'Shared Knowledge',\n      projectId: '5402c789-9778-445c-883c-d5a3eab70688'\n    }\n  ],\n  operator: 'deepStrictEqual'\n}\n\nNode.js v22.17.1\n"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 626,
+        "error": null,
+        "tests": [
+          {
+            "file": ".github/workflows/ci.yml",
+            "name": "Local storage round trip",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": ".github/workflows/ci.yml",
+          "name": "Local storage round trip"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

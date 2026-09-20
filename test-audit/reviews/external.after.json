@@ -1,0 +1,116 @@
+{
+  "tests": [
+    {
+      "beforeId": "e2e:version",
+      "beforeName": "cli-installs-and-reports-version",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "cli-installs-and-reports-version"
+      ],
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "setup-version"
+      ],
+      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes."
+    },
+    {
+      "beforeId": "e2e:init",
+      "beforeName": "init-creates-isolated-store",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "init-creates-isolated-store"
+      ],
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "setup-identity-name"
+      ],
+      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes."
+    },
+    {
+      "beforeId": "e2e:setup-first-screen",
+      "beforeName": "setup-wizard-first-screen",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "setup-wizard-first-screen"
+      ],
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "setup-cancel-message"
+      ],
+      "evidence": "Real PTY cancellation check rejects removal of the promised confirmation."
+    },
+    {
+      "beforeId": "e2e:setup-noninteractive",
+      "beforeName": "setup-non-interactive",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "setup-non-interactive"
+      ],
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "setup-default-model"
+      ],
+      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes."
+    },
+    {
+      "beforeId": "e2e:web-init",
+      "beforeName": "web-init-wizard",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "web-init-wizard"
+      ],
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "setup-web-config"
+      ],
+      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes."
+    },
+    {
+      "beforeId": "e2e:isolation",
+      "beforeName": "isolation-no-stray-writes",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "isolation-no-stray-writes"
+      ],
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "setup-stray-write"
+      ],
+      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes."
+    },
+    {
+      "beforeId": "ci:multi-project",
+      "beforeName": "Multi-project scenario test",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Multi-project scenario test"
+      ],
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "ci-multi-project-empty-search"
+      ],
+      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes."
+    },
+    {
+      "beforeId": "ci:network-share",
+      "beforeName": "Network share simulation (tmpfs)",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "Local storage round trip"
+      ],
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "ci-network-share-empty-search"
+      ],
+      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes."
+    }
+  ]
+}

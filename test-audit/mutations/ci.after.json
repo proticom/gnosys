@@ -1,0 +1,30 @@
+[
+  {
+    "id": "ci-multi-project-empty-search",
+    "file": "src/lib/searchCommand.ts",
+    "search": "const results = searchWithOverlay(resolved, query, parseInt(opts.limit, 10));",
+    "replace": "const results = searchWithOverlay(resolved, query, parseInt(opts.limit, 10)).slice(0, 0);",
+    "description": "Return empty results for every keyword search.",
+    "build": true,
+    "command": [
+      "scripts/test-audit-external.mjs",
+      "ci:multi-project",
+      "--report",
+      "{report}"
+    ]
+  },
+  {
+    "id": "ci-network-share-empty-search",
+    "file": "src/lib/searchCommand.ts",
+    "search": "const results = searchWithOverlay(resolved, query, parseInt(opts.limit, 10));",
+    "replace": "const results = searchWithOverlay(resolved, query, parseInt(opts.limit, 10)).slice(0, 0);",
+    "description": "Return empty results for every keyword search.",
+    "build": true,
+    "command": [
+      "scripts/test-audit-external.mjs",
+      "ci:network-share",
+      "--report",
+      "{report}"
+    ]
+  }
+]

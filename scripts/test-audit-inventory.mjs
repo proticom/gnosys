@@ -3,9 +3,9 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import ts from "typescript";
 
-const paths = execFileSync("git", ["ls-files", "*.test.ts"], {
+const paths = [...new Set(execFileSync("git", ["ls-files", "--cached", "--others", "--exclude-standard", "*.test.ts"], {
   encoding: "utf8",
-}).trim().split("\n");
+}).trim().split("\n"))].filter((file) => file && fs.existsSync(file)).sort();
 
 function rootName(expression) {
   if (ts.isIdentifier(expression)) return expression.text;

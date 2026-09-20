@@ -130,66 +130,9 @@ jobs:
       - run: npm run build
 
       - name: Multi-project scenario test
-        run: |
-          set -e
+        run: node scripts/test-ci-scenarios.mjs multi-project
 
-          # Create three separate "projects" in temp dirs
-          PROJ_A=$(mktemp -d)
-          PROJ_B=$(mktemp -d)
-          PROJ_C=$(mktemp -d)
-
-          echo "=== Initializing three projects ==="
-          node dist/cli.js init --directory "$PROJ_A"
-          node dist/cli.js init --directory "$PROJ_B"
-          node dist/cli.js init --directory "$PROJ_C"
-
-          echo "=== Adding memories to each project ==="
-          GNOSYS_PROJECT="$PROJ_A" node dist/cli.js add-structured \
-            --title "Alpha Architecture" \
-            --content "Project Alpha uses microservices with gRPC." \
-            --category architecture
-
-          GNOSYS_PROJECT="$PROJ_B" node dist/cli.js add-structured \
-            --title "Beta Testing Strategy" \
-            --content "Project Beta uses integration testing with TestContainers." \
-            --category requirements
-
-          GNOSYS_PROJECT="$PROJ_C" node dist/cli.js add-structured \
-            --title "Gamma Deployment" \
-            --content "Project Gamma deploys to Kubernetes with Helm charts." \
-            --category decisions
-
-          echo "=== Verifying project isolation ==="
-          A_COUNT=$(GNOSYS_PROJECT="$PROJ_A" node dist/cli.js stats --json | node -e "process.stdout.write(String(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).totalCount))")
-          B_COUNT=$(GNOSYS_PROJECT="$PROJ_B" node dist/cli.js stats --json | node -e "process.stdout.write(String(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).totalCount))")
-          C_COUNT=$(GNOSYS_PROJECT="$PROJ_C" node dist/cli.js stats --json | node -e "process.stdout.write(String(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).totalCount))")
-
-          echo "Project A: $A_COUNT memories"
-          echo "Project B: $B_COUNT memories"
-          echo "Project C: $C_COUNT memories"
-
-          [ "$A_COUNT" -ge 1 ] || { echo "FAIL: Project A has $A_COUNT memories"; exit 1; }
-          [ "$B_COUNT" -ge 1 ] || { echo "FAIL: Project B has $B_COUNT memories"; exit 1; }
-          [ "$C_COUNT" -ge 1 ] || { echo "FAIL: Project C has $C_COUNT memories"; exit 1; }
-
-          echo "=== Cross-project search isolation ==="
-          A_SEARCH=$(GNOSYS_PROJECT="$PROJ_A" node dist/cli.js search "microservices" --json | node -e "process.stdout.write(String(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).results?.length ?? 0))")
-          B_SEARCH=$(GNOSYS_PROJECT="$PROJ_B" node dist/cli.js search "microservices" --json | node -e "process.stdout.write(String(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).results?.length ?? 0))")
-
-          echo "Search 'microservices' in A: $A_SEARCH results"
-          echo "Search 'microservices' in B: $B_SEARCH results"
-
-          echo "=== CLI commands work across projects ==="
-          GNOSYS_PROJECT="$PROJ_A" node dist/cli.js list --json > /dev/null
-          # v5.7.1: `gnosys dashboard` was removed; use `gnosys status --system`.
-          GNOSYS_PROJECT="$PROJ_B" node dist/cli.js status --system --json > /dev/null
-          GNOSYS_PROJECT="$PROJ_C" node dist/cli.js audit --json > /dev/null
-
-          rm -rf "$PROJ_A" "$PROJ_B" "$PROJ_C"
-
-          echo "Multi-project scenario passed"
-
-  network-share-simulation:
+  local-storage-round-trip:
     runs-on: ubuntu-latest
     needs: build-and-test
 
@@ -204,38 +147,8 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-      - name: Network share simulation (tmpfs)
-        run: |
-          set -e
-
-          # Create tmpfs mount to simulate network share latency/behavior
-          SHARE_DIR=$(mktemp -d)
-          echo "Using simulated share at $SHARE_DIR"
-
-          # Initialize project on "network share"
-          node dist/cli.js init --directory "$SHARE_DIR"
-
-          # Verify initialization — DB-only architecture uses central ~/.gnosys/gnosys.db
-          test -d "$SHARE_DIR/.gnosys" || { echo "FAIL: .gnosys dir not created"; exit 1; }
-          test -f "$SHARE_DIR/.gnosys/gnosys.json" || { echo "FAIL: gnosys.json not created"; exit 1; }
-          test -f "$HOME/.gnosys/gnosys.db" || { echo "FAIL: central gnosys.db not created"; exit 1; }
-
-          # Add and search memories
-          GNOSYS_PROJECT="$SHARE_DIR" node dist/cli.js add-structured \
-            --title "Shared Knowledge" \
-            --content "This memory lives on a network share." \
-            --category concepts
-
-          SEARCH_RESULT=$(GNOSYS_PROJECT="$SHARE_DIR" node dist/cli.js search "network share" --json 2>/dev/null || echo '{"results":[]}')
-          echo "Search result: $SEARCH_RESULT"
-
-          # Verify stats
-          STATS=$(GNOSYS_PROJECT="$SHARE_DIR" node dist/cli.js stats --json)
-          echo "Stats: $STATS"
-
-          rm -rf "$SHARE_DIR"
-
-          echo "Network share simulation passed"
+      - name: Local storage round trip
+        run: node scripts/test-ci-scenarios.mjs local-storage
 
   setup-ui-e2e:
     # Isolated Docker suite driving the interactive wizards with expect

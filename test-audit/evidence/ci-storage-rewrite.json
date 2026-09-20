@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "framework": "CI Bash",
+  "suite": "ci:network-share",
+  "baseline": false,
+  "durationMs": 622,
+  "exitCode": 0,
+  "error": null,
+  "tests": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "name": "Local storage round trip",
+      "status": "passed",
+      "failures": []
+    }
+  ],
+  "stdout": "local-storage: project identities, scoped lists/stats, and persisted search results verified\n",
+  "stderr": ""
+}

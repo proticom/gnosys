@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "ci-multi-project-empty-search",
+      "file": "src/lib/searchCommand.ts",
+      "description": "Return empty results for every keyword search.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 2019,
+        "error": null,
+        "tests": [
+          {
+            "file": ".github/workflows/ci.yml",
+            "name": "Multi-project scenario test",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 1983,
+        "error": null,
+        "tests": [
+          {
+            "file": ".github/workflows/ci.yml",
+            "name": "Multi-project scenario test",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1987,
+        "error": null,
+        "tests": [
+          {
+            "file": ".github/workflows/ci.yml",
+            "name": "Multi-project scenario test",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "ci-network-share-empty-search",
+      "file": "src/lib/searchCommand.ts",
+      "description": "Return empty results for every keyword search.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 489,
+        "error": null,
+        "tests": [
+          {
+            "file": ".github/workflows/ci.yml",
+            "name": "Network share simulation (tmpfs)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 511,
+        "error": null,
+        "tests": [
+          {
+            "file": ".github/workflows/ci.yml",
+            "name": "Network share simulation (tmpfs)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 533,
+        "error": null,
+        "tests": [
+          {
+            "file": ".github/workflows/ci.yml",
+            "name": "Network share simulation (tmpfs)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    }
+  ]
+}

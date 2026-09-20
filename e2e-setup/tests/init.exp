@@ -19,9 +19,8 @@ catch wait result
 set exitcode [lindex $result 3]
 if {$exitcode != 0} { puts "init exited $exitcode"; exit 1 }
 
-# Store must exist.
-if {![file isdirectory /home/tester/proj-init/.gnosys]} {
-    puts ".gnosys directory missing"; exit 1
+if {[catch {exec node /home/tester/tests/check-artifacts.cjs init} message]} {
+    puts $message; exit 1
 }
-puts "init OK: .gnosys created"
+puts "init identity and registry verified after repeated initialization"
 exit 0

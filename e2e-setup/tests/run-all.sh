@@ -3,6 +3,7 @@
 # Exit code 0 only when every test passes.
 set -u
 cd /home/tester
+node tests/check-isolation.cjs snapshot || exit 1
 
 PASS=0
 FAIL=0

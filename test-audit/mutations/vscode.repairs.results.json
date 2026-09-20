@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "repair-D-VSC-001",
+      "file": "extensions/vscode/extension.js",
+      "description": "Temporary repair probe resolves the fixture memory ID and supplies the required useful signal.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 819,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 3464,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+            "status": "failed",
+            "failures": [
+              "Error: Expect test to fail\n    at runTest (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3041:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 816,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date"
+        }
+      ],
+      "applicationRestored": true,
+      "kind": "defect-repair-probe"
+    },
+    {
+      "id": "repair-D-VSC-002",
+      "file": "extensions/vscode/extension.js",
+      "description": "Temporary repair probe requires an exact directory component.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 818,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 567,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "failed",
+            "failures": [
+              "Error: Expect test to fail\n    at runTest (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3041:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 826,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys"
+        }
+      ],
+      "applicationRestored": true,
+      "kind": "defect-repair-probe"
+    },
+    {
+      "id": "repair-D-VSC-003",
+      "file": "extensions/vscode/extension.js",
+      "description": "Temporary repair probe passes the filename without shell evaluation.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 809,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 819,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+            "status": "failed",
+            "failures": [
+              "Error: Expect test to fail\n    at runTest (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3041:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 862,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text"
+        }
+      ],
+      "applicationRestored": true,
+      "kind": "defect-repair-probe"
+    },
+    {
+      "id": "repair-D-VSC-004",
+      "file": "extensions/vscode/extension.js",
+      "description": "Temporary repair probe invokes a supported status command.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 838,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 967,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "failed",
+            "failures": [
+              "Error: Expect test to fail\n    at runTest (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3041:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 868,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI"
+        }
+      ],
+      "applicationRestored": true,
+      "kind": "defect-repair-probe"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "repair-D-VSC-001",
+    "search": "execSync(`npx gnosys reinforce \"${relativePath}\"`, {",
+    "replace": "execSync(`npx gnosys reinforce \"${path.basename(relativePath, \".md\")}\" --signal useful`, {",
+    "description": "Temporary repair probe resolves the fixture memory ID and supplies the required useful signal.",
+    "testName": "D-VSC-001",
+    "file": "extensions/vscode/extension.js",
+    "tests": [
+      "src/test/vscode-extension.test.ts"
+    ],
+    "kind": "defect-repair-probe"
+  },
+  {
+    "id": "repair-D-VSC-002",
+    "search": "filePath.includes(\".gnosys\")",
+    "replace": "filePath.split(path.sep).includes(\".gnosys\")",
+    "description": "Temporary repair probe requires an exact directory component.",
+    "testName": "D-VSC-002",
+    "file": "extensions/vscode/extension.js",
+    "tests": [
+      "src/test/vscode-extension.test.ts"
+    ],
+    "kind": "defect-repair-probe"
+  },
+  {
+    "id": "repair-D-VSC-003",
+    "search": "execSync(`npx gnosys reinforce \"${relativePath}\"`, {",
+    "replace": "require(\"child_process\").execFileSync(\"npx\", [\"gnosys\", \"reinforce\", relativePath], {",
+    "description": "Temporary repair probe passes the filename without shell evaluation.",
+    "testName": "D-VSC-003",
+    "file": "extensions/vscode/extension.js",
+    "tests": [
+      "src/test/vscode-extension.test.ts"
+    ],
+    "kind": "defect-repair-probe"
+  },
+  {
+    "id": "repair-D-VSC-004",
+    "search": "\"npx gnosys dashboard\"",
+    "replace": "\"npx gnosys status --system\"",
+    "description": "Temporary repair probe invokes a supported status command.",
+    "testName": "D-VSC-004",
+    "file": "extensions/vscode/extension.js",
+    "tests": [
+      "src/test/vscode-extension.test.ts"
+    ],
+    "kind": "defect-repair-probe"
+  }
+]

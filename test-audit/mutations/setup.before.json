@@ -1,0 +1,72 @@
+[
+  {
+    "id": "setup-version",
+    "file": "src/cli.ts",
+    "search": ".version(pkg.version)",
+    "replace": ".version(\"0.0.0\")",
+    "description": "Report a valid-looking but incorrect package version.",
+    "command": [
+      "scripts/test-audit-external.mjs",
+      "e2e:setup",
+      "--report",
+      "{report}"
+    ],
+    "timeoutMs": 360000
+  },
+  {
+    "id": "setup-identity-name",
+    "file": "src/lib/projectIdentity.ts",
+    "search": "const projectName = opts?.projectName || path.basename(resolvedDir);",
+    "replace": "const projectName = \"wrong-project\";",
+    "description": "Persist the wrong project name during initialization.",
+    "command": [
+      "scripts/test-audit-external.mjs",
+      "e2e:setup",
+      "--report",
+      "{report}"
+    ],
+    "timeoutMs": 360000
+  },
+  {
+    "id": "setup-default-model",
+    "file": "src/lib/setup.ts",
+    "search": "const model = \"claude-sonnet-4-6\";",
+    "replace": "const model = \"wrong-model\";",
+    "description": "Report the wrong default model in noninteractive setup.",
+    "command": [
+      "scripts/test-audit-external.mjs",
+      "e2e:setup",
+      "--report",
+      "{report}"
+    ],
+    "timeoutMs": 360000
+  },
+  {
+    "id": "setup-web-config",
+    "file": "src/lib/webInitCommand.ts",
+    "search": "if (!config.web) {",
+    "replace": "if (false) {",
+    "description": "Prompt successfully but skip saving web wizard answers.",
+    "command": [
+      "scripts/test-audit-external.mjs",
+      "e2e:setup",
+      "--report",
+      "{report}"
+    ],
+    "timeoutMs": 360000
+  },
+  {
+    "id": "setup-stray-write",
+    "file": "src/lib/webInitCommand.ts",
+    "search": "mkdirSync(outputDir, { recursive: true });",
+    "replace": "mkdirSync(outputDir, { recursive: true });\n    (await import(\"fs\")).writeFileSync(\"/tmp/gnosys-audit-stray\", \"leaked\");",
+    "description": "Leave a stray setup file outside the approved HOME locations.",
+    "command": [
+      "scripts/test-audit-external.mjs",
+      "e2e:setup",
+      "--report",
+      "{report}"
+    ],
+    "timeoutMs": 360000
+  }
+]

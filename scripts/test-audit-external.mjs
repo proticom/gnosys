@@ -30,12 +30,15 @@ if (suite === "e2e:setup") {
     : fs.readFileSync(".github/workflows/ci.yml", "utf8");
   const step = workflow.indexOf(`      - name: ${name}\n`);
   if (step < 0) throw new Error(`Missing workflow step: ${name}`);
-  const block = workflow.indexOf("        run: |\n", step);
-  const lines = workflow.slice(block + "        run: |\n".length).split("\n");
-  const scriptLines = [];
-  for (const line of lines) {
-    if (line.trim() && !line.startsWith("          ")) break;
-    scriptLines.push(line.slice(10));
+  const run = /^        run: (.+)$/m.exec(workflow.slice(step));
+  if (!run) throw new Error(`Missing workflow command: ${name}`);
+  const scriptLines = run[1] === "|" ? [] : [run[1]];
+  if (run[1] === "|") {
+    const lines = workflow.slice(step + run.index + run[0].length + 1).split("\n");
+    for (const line of lines) {
+      if (line.trim() && !line.startsWith("          ")) break;
+      scriptLines.push(line.slice(10));
+    }
   }
   const scriptPath = path.join(directory, "scenario.sh");
   fs.writeFileSync(scriptPath, scriptLines.join("\n"));

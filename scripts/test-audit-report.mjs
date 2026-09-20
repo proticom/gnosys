@@ -22,7 +22,7 @@ for (const file of inventory.files) {
     if (!finding || !classes.includes(finding.classification) || !finding.evidence) throw new Error(`Invalid review: ${test.id}`);
     counts[finding.classification]++;
     const action = actionById.get(test.id);
-    rows.push(`| ${escape(test.id)} | ${escape(test.name)} | ${finding.classification} | ${escape(action?.classification || "Pending")} | ${escape(finding.evidence)} | ${escape(action?.action || `Planned: ${finding.action}`)} |`);
+    rows.push(`| ${escape(test.id)} | ${escape(test.name)} | ${finding.classification} | ${escape(action?.afterClassification || action?.classification || "Pending")} | ${escape(finding.evidence)} | ${escape(action?.action || `Planned: ${finding.action}`)} |`);
   }
 }
 
@@ -34,7 +34,7 @@ const featureList = Array.isArray(features) ? features : features.features;
 const collection = JSON.parse(fs.readFileSync("test-audit/collection.json", "utf8"));
 const defects = fs.existsSync("test-audit/defects.json") ? JSON.parse(fs.readFileSync("test-audit/defects.json", "utf8")) : [];
 const externalRows = collection.test_cases_outside_vitest.map((test) =>
-  `| ${escape(test.path)} | ${escape(test.name)} | ${test.classification} | Pending | ${escape(test.reason)} | ${escape(test.action)} |`,
+  `| ${escape(test.path)} | ${escape(test.name)} | ${test.classification} | ${actionById.get(test.id)?.afterClassification || "Pending"} | ${escape(test.reason)} | ${escape(actionById.get(test.id)?.action || test.action)} |`,
 );
 const mutationRows = mutations.map((mutation) =>
   `| ${mutation.id} | ${mutation.file} | ${mutation.outcome} | ${mutation.killedBy.length} | [${mutation.evidence}](test-audit/mutations/${mutation.evidence}) |`,
@@ -45,14 +45,14 @@ const text = `# Test audit
 - [x] Run Vitest and Docker setup baselines.
 - [x] Inventory features independently of tests.
 - [x] Review all 296 TypeScript files, 1,748 declaration sites, and eight external shell/CI cases.
-- [ ] Replay and correct inline CI scenarios.
+- [x] Replay and correct inline CI scenarios.
 - [ ] Prove all proposed WEAK/HOLLOW ratings and critical features with mutations.
 - [ ] Rewrite deficient tests and fill feature gaps in independently verified units.
 - [ ] Prove every new or rewritten test against broken and restored code.
 - [ ] Merge reviewed test changes, run final suites, and verify no application changes.
 - [ ] Reconcile final counts, feature protection, and evidence.
 
-The baseline passes, but source review found substantial gaps in behavior protection. Of 1,748 TypeScript test declarations, reviewers rated 1,076 STRONG, 294 WEAK, 45 HOLLOW, 285 COUPLED, one DEAD, and 47 MISLABELED. These are provisional audit ratings: WEAK and nonstructural HOLLOW ratings require surviving mutation evidence before the verdict is final. The first three suspected gaps survived mutations. All 12 rewritten web-command tests now pass on restored code and fail under relevant mutations. The audit remains in progress.
+The baseline passes, but source review found substantial gaps in behavior protection. Of 1,748 TypeScript test declarations, reviewers rated 1,076 STRONG, 294 WEAK, 45 HOLLOW, 285 COUPLED, one DEAD, and 47 MISLABELED. These are provisional audit ratings: WEAK and nonstructural HOLLOW ratings require surviving mutation evidence before the verdict is final. The rewritten web and CLI contracts have passing mutation proofs. Five Docker setup checks and both CI scenarios survived broken application behavior before correction and now reject it. New VS Code extension tests expose four confirmed defects and retain them as expected failures. The audit remains in progress.
 
 ## Counts before and after
 
@@ -62,7 +62,7 @@ ${classes.map((name) => `| ${name} | ${counts[name]} | Pending full verification
 
 The unit above is a source test declaration, including loop-generated test families. Vitest collected 1,802 runtime cases. Final runtime classification totals will be reconciled separately. The eight shell/CI cases are listed in the table below and excluded from TypeScript counts.
 
-The committed baseline passed 296 files, 1,801 tests, one skipped, and zero failures in 109.83 seconds. The Docker setup suite passed six cases in 11.12 seconds. The original CI scenarios passed in 1.844 seconds and 0.478 seconds, despite the isolation assertions being incomplete. After web and CLI rewrites, 202 files pass with 1,735 tests passed, one skipped, zero failed, in 82.03 seconds. Build, TypeScript, and Knip checks passed. Lint exited zero with 21 existing warnings; the rewritten web/CLI tests pass their targeted lint check. See [baseline JSON](test-audit/evidence/baseline.json), [setup log](test-audit/evidence/setup-baseline.log), and [latest full suite](test-audit/evidence/cli-full-suite.json).
+The committed baseline passed 296 files, 1,801 tests, one skipped, and zero failures in 109.83 seconds. The Docker setup suite passed six cases in 11.12 seconds. The original CI scenarios passed in 1.844 seconds and 0.478 seconds, despite the isolation assertions being incomplete. After web, CLI, external-scenario, and extension changes, 203 files pass with 1,742 tests passed (including four expected failures), one skipped, zero unexpected failures, in 80.235 seconds. Build, TypeScript, and Knip checks passed. Lint exited zero with 21 existing warnings; the rewritten web/CLI tests pass their targeted lint check. See [baseline JSON](test-audit/evidence/baseline.json), [setup log](test-audit/evidence/setup-baseline.log), and [latest full suite](test-audit/evidence/external-extension-full-suite.json).
 
 ## Defects found
 
@@ -104,7 +104,7 @@ The workspace root is not a Git repository. This audit targets \`gnosys-public\`
 
 Node 22.17.1 runs the suite. Installed Vitest 4.1.9, TypeScript 5.9.3, tsx 4.22.4, better-sqlite3 11.10.0, and MCP SDK 1.29.0 match the committed lockfile. Each mutation worktree builds its own \`dist/\`.
 
-The first sandboxed baseline was stopped after a direct loopback-listener probe returned \`EPERM\`. Re-running with local HTTP/socket access produced the passing baseline. Docker 29.4.3 runs setup tests without container networking or host mounts. The encrypted-PDF test is skipped because its fixture is absent; resolution is pending. Remote services and cross-platform behavior will be recorded as blocked where unavailable.
+The first sandboxed baseline was stopped after a direct loopback-listener probe returned \`EPERM\`. Re-running with local HTTP/socket access produced the passing baseline. Docker 29.4.3 runs setup tests without container networking or host mounts. The baseline encrypted-PDF test is skipped because its fixture is absent; a deterministic fixture and passing replacement are verified in the group1 checkpoint, pending integration. Remote services and cross-platform behavior will be recorded as blocked where unavailable.
 `;
 fs.writeFileSync("TEST_AUDIT.md", text);
 process.stdout.write(`Reconciled ${reviews.length} files and ${rows.length} declarations; ${mutations.length} mutation experiments.\n`);

@@ -39,7 +39,7 @@ function run(spec, phase) {
     failures: test.failureMessages.map((message) => message.replaceAll(root, "<repo>").slice(0, 2000)),
   }))).filter((test) => !["pending", "skipped", "todo"].includes(test.status)) || [];
   return { exitCode: child.status, durationMs: Date.now() - started, error: child.error?.message || null, tests,
-    diagnostic: !report ? `${child.stdout}${child.stderr}`.slice(-4000).replaceAll(root, "<repo>") : undefined };
+    diagnostic: (!report || !tests.length) ? `${report?.stdout || child.stdout}${report?.stderr || child.stderr}`.slice(-4000).replaceAll(root, "<repo>") : undefined };
 }
 
 try {
@@ -47,7 +47,7 @@ try {
     if (!productionPaths.includes(spec.file)) throw new Error(`Mutation target is not application code: ${spec.file}`);
     const original = fs.readFileSync(spec.file, "utf8");
     if (original.split(spec.search).length !== 2) throw new Error(`Mutation ${spec.id} must match exactly once`);
-    const result = { id: spec.id, file: spec.file, description: spec.description, before: run(spec, "before") };
+    const result = { id: spec.id, file: spec.file, kind: spec.kind || "fault-injection", description: spec.description, before: run(spec, "before") };
     if (result.before.exitCode !== 0 || !result.before.tests.length) throw new Error(`Baseline failed or selected no tests for ${spec.id}`);
     try {
       fs.writeFileSync(spec.file, original.replace(spec.search, spec.replace));

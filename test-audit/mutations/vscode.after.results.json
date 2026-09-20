@@ -1,0 +1,492 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "vscode-no-editor",
+      "file": "extensions/vscode/extension.js",
+      "description": "Display a wrong success-like message when no editor exists.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 2467,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when no editor is open",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when the active file is outside a memory directory",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands reports a process launch failure to the editor",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 2466,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when no editor is open",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { warnings: [ 'Ready.' ], …(3) } to deeply equal { …(4) }\n    at <repo>/src/test/vscode-extension.test.ts:54:43\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when the active file is outside a memory directory",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands reports a process launch failure to the editor",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 2459,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when no editor is open",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when the active file is outside a memory directory",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands reports a process launch failure to the editor",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands warns when no editor is open"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "vscode-outside-memory",
+      "file": "extensions/vscode/extension.js",
+      "description": "Replace the actionable outside-directory warning with wrong output.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 2442,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when no editor is open",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when the active file is outside a memory directory",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands reports a process launch failure to the editor",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 2425,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when no editor is open",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when the active file is outside a memory directory",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { warnings: [ 'Memory ready.' ], …(3) } to deeply equal { …(4) }\n    at <repo>/src/test/vscode-extension.test.ts:60:77\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands reports a process launch failure to the editor",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 2457,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when no editor is open",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when the active file is outside a memory directory",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands reports a process launch failure to the editor",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands warns when the active file is outside a memory directory"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "vscode-command-error",
+      "file": "extensions/vscode/extension.js",
+      "description": "Route failed CLI execution through the wrong notification surface.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 2449,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when no editor is open",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when the active file is outside a memory directory",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands reports a process launch failure to the editor",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 2433,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when no editor is open",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when the active file is outside a memory directory",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands reports a process launch failure to the editor",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ Array(1) ] to deeply equal []\n    at <repo>/src/test/vscode-extension.test.ts:67:29\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 2488,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when no editor is open",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands warns when the active file is outside a memory directory",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands reports a process launch failure to the editor",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands reports a process launch failure to the editor"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

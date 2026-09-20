@@ -1,0 +1,32 @@
+[
+  {
+    "id": "vscode-no-editor",
+    "search": "\"No active editor.\"",
+    "replace": "\"Ready.\"",
+    "description": "Display a wrong success-like message when no editor exists.",
+    "file": "extensions/vscode/extension.js",
+    "tests": [
+      "src/test/vscode-extension.test.ts"
+    ]
+  },
+  {
+    "id": "vscode-outside-memory",
+    "search": "\"This file is not inside a .gnosys/ directory.\"",
+    "replace": "\"Memory ready.\"",
+    "description": "Replace the actionable outside-directory warning with wrong output.",
+    "file": "extensions/vscode/extension.js",
+    "tests": [
+      "src/test/vscode-extension.test.ts"
+    ]
+  },
+  {
+    "id": "vscode-command-error",
+    "search": "vscode.window.showErrorMessage(",
+    "replace": "vscode.window.showWarningMessage(",
+    "description": "Route failed CLI execution through the wrong notification surface.",
+    "file": "extensions/vscode/extension.js",
+    "tests": [
+      "src/test/vscode-extension.test.ts"
+    ]
+  }
+]

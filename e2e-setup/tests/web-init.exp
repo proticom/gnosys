@@ -38,8 +38,8 @@ catch wait result
 set exitcode [lindex $result 3]
 if {$exitcode != 0} { puts "web init exited $exitcode"; exit 1 }
 
-if {![file isdirectory /home/tester/proj-web/knowledge]} {
-    puts "knowledge/ directory missing"; exit 1
+if {[catch {exec node /home/tester/tests/check-artifacts.cjs web} message]} {
+    puts $message; exit 1
 }
-puts "web init wizard OK"
+puts "web init directory and saved answers verified"
 exit 0

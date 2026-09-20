@@ -1,0 +1,517 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "setup-version",
+      "file": "src/cli.ts",
+      "description": "Report a valid-looking but incorrect package version.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 10040,
+        "error": null,
+        "tests": [
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "cli-installs-and-reports-version",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "init-creates-isolated-store",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-wizard-first-screen",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-non-interactive",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "web-init-wizard",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "isolation-no-stray-writes",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 24111,
+        "error": null,
+        "tests": [
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "cli-installs-and-reports-version",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "init-creates-isolated-store",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-wizard-first-screen",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-non-interactive",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "web-init-wizard",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "isolation-no-stray-writes",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 9294,
+        "error": null,
+        "tests": [
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "cli-installs-and-reports-version",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "init-creates-isolated-store",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-wizard-first-screen",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-non-interactive",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "web-init-wizard",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "isolation-no-stray-writes",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "setup-identity-name",
+      "file": "src/lib/projectIdentity.ts",
+      "description": "Persist the wrong project name during initialization.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 9024,
+        "error": null,
+        "tests": [
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "cli-installs-and-reports-version",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "init-creates-isolated-store",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-wizard-first-screen",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-non-interactive",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "web-init-wizard",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "isolation-no-stray-writes",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 25593,
+        "error": null,
+        "tests": [
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "cli-installs-and-reports-version",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "init-creates-isolated-store",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-wizard-first-screen",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-non-interactive",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "web-init-wizard",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "isolation-no-stray-writes",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 10247,
+        "error": null,
+        "tests": [
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "cli-installs-and-reports-version",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "init-creates-isolated-store",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-wizard-first-screen",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-non-interactive",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "web-init-wizard",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "isolation-no-stray-writes",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "setup-default-model",
+      "file": "src/lib/setup.ts",
+      "description": "Report the wrong default model in noninteractive setup.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 9976,
+        "error": null,
+        "tests": [
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "cli-installs-and-reports-version",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "init-creates-isolated-store",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-wizard-first-screen",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-non-interactive",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "web-init-wizard",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "isolation-no-stray-writes",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 23491,
+        "error": null,
+        "tests": [
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "cli-installs-and-reports-version",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "init-creates-isolated-store",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-wizard-first-screen",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-non-interactive",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "web-init-wizard",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "isolation-no-stray-writes",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 9642,
+        "error": null,
+        "tests": [
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "cli-installs-and-reports-version",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "init-creates-isolated-store",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-wizard-first-screen",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-non-interactive",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "web-init-wizard",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "isolation-no-stray-writes",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "setup-web-config",
+      "file": "src/lib/webInitCommand.ts",
+      "description": "Prompt successfully but skip saving web wizard answers.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 9414,
+        "error": null,
+        "tests": [
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "cli-installs-and-reports-version",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "init-creates-isolated-store",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-wizard-first-screen",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-non-interactive",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "web-init-wizard",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "isolation-no-stray-writes",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 3070,
+        "error": null,
+        "tests": []
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 9122,
+        "error": null,
+        "tests": [
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "cli-installs-and-reports-version",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "init-creates-isolated-store",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-wizard-first-screen",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "setup-non-interactive",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "web-init-wizard",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "e2e-setup/tests/run-all.sh",
+            "name": "isolation-no-stray-writes",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "invalid-run",
+      "killedBy": [],
+      "applicationRestored": true
+    }
+  ]
+}
