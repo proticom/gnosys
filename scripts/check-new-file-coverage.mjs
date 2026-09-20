@@ -21,7 +21,7 @@
 
 import fs from "fs";
 import path from "path";
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 
 const BASE_REF = process.env.COVERAGE_BASE_REF || "origin/master";
 const REPO_ROOT = path.resolve(new URL(".", import.meta.url).pathname, "..");
@@ -39,7 +39,7 @@ function loadCoverageSummary() {
 function diffAddedFiles() {
   try {
     // `--diff-filter=A` returns only ADDED paths.
-    const out = execSync(`git diff --name-only --diff-filter=A ${BASE_REF}...HEAD`, {
+    const out = execFileSync("git", ["diff", "--name-only", "--diff-filter=A", `${BASE_REF}...HEAD`], {
       cwd: REPO_ROOT,
       encoding: "utf8",
     });
@@ -48,10 +48,7 @@ function diffAddedFiles() {
     console.error(`! could not run \`git diff\` against ${BASE_REF}.`);
     console.error(`  ${err instanceof Error ? err.message : err}`);
     console.error(`  Set COVERAGE_BASE_REF if the default isn't right.`);
-    // Don't fail the build for a diff failure — the global threshold
-    // already gates against catastrophic regressions; this script is an
-    // additional, targeted check that's worth skipping if env is wrong.
-    process.exit(0);
+    process.exit(2);
   }
 }
 

@@ -1,0 +1,10 @@
+{
+  "command": [
+    "node",
+    "scripts/check-new-file-coverage.mjs"
+  ],
+  "baseRef": "refs/heads/test-audit-missing-ref-20260920",
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": "fatal: ambiguous argument 'refs/heads/test-audit-missing-ref-20260920...HEAD': unknown revision or path not in the working tree.\nUse '--' to separate paths from revisions, like this:\n'git <command> [<revision>...] -- [<file>...]'\n! could not run `git diff` against refs/heads/test-audit-missing-ref-20260920.\n  Command failed: git diff --name-only --diff-filter=A refs/heads/test-audit-missing-ref-20260920...HEAD\nfatal: ambiguous argument 'refs/heads/test-audit-missing-ref-20260920...HEAD': unknown revision or path not in the working tree.\nUse '--' to separate paths from revisions, like this:\n'git <command> [<revision>...] -- [<file>...]'\n\n  Set COVERAGE_BASE_REF if the default isn't right.\n"
+}

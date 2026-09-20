@@ -12,7 +12,10 @@ const lock = path.join(root, "test-audit/.mutation-lock");
 const temporary = fs.mkdtempSync("/tmp/gnosys-audit-mutation-");
 const productionPaths = execFileSync("git", ["ls-files", "src", "prompts", "extensions"], { encoding: "utf8" })
   .trim().split("\n").filter((file) => !file.startsWith("src/test/") && !file.endsWith(".test.ts"));
-const digest = () => createHash("sha256").update(productionPaths.map((file) => `${file}\0${fs.readFileSync(file).toString("base64")}`).join("\0")).digest("hex");
+const trackedScripts = new Set(execFileSync("git", ["ls-files", "scripts"], { encoding: "utf8" }).trim().split("\n"));
+const ciPaths = specs.filter((spec) => spec.kind === "ci-fault-injection" && trackedScripts.has(spec.file)).map((spec) => spec.file);
+const targetPaths = [...new Set([...productionPaths, ...ciPaths])];
+const digest = () => createHash("sha256").update(targetPaths.map((file) => `${file}\0${fs.readFileSync(file).toString("base64")}`).join("\0")).digest("hex");
 const originalDigest = digest();
 execFileSync("git", ["diff", "--exit-code", "HEAD", "--", ...productionPaths], { stdio: "pipe" });
 fs.mkdirSync(lock);
@@ -44,7 +47,9 @@ function run(spec, phase) {
 
 try {
   for (const spec of specs) {
-    if (!productionPaths.includes(spec.file)) throw new Error(`Mutation target is not application code: ${spec.file}`);
+    if (!productionPaths.includes(spec.file) && !(spec.kind === "ci-fault-injection" && ciPaths.includes(spec.file))) {
+      throw new Error(`Mutation target is not application code or an explicit tracked CI script: ${spec.file}`);
+    }
     const original = fs.readFileSync(spec.file, "utf8");
     if (original.split(spec.search).length !== 2) throw new Error(`Mutation ${spec.id} must match exactly once`);
     const result = { id: spec.id, file: spec.file, kind: spec.kind || "fault-injection", description: spec.description, before: run(spec, "before") };

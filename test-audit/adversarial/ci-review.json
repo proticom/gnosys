@@ -1,0 +1,25 @@
+{
+  "localStorageWorkflow": {
+    "job": "local-storage-round-trip",
+    "name": "Local storage round trip",
+    "unfoundedNetworkShareClaims": []
+  },
+  "hostedRunnerFlakeRisks": [
+    {
+      "file": "src/test/phase7b.read-paths.test.ts",
+      "line": 104,
+      "name": "fetches 100 memories in under 100ms",
+      "thresholdMs": 100,
+      "assertion": "toBeLessThan(100)"
+    },
+    {
+      "file": "src/test/phase7b.read-paths.test.ts",
+      "line": 124,
+      "name": "FTS5 search on 100 memories completes in under 50ms",
+      "thresholdMs": 50,
+      "assertion": "toBeLessThan(50)"
+    }
+  ],
+  "risk": "Wall-clock budgets can fail under hosted-runner contention, scheduler pauses or cold SQLite/cache state. Watch the first CI run; no assertion or budget was loosened.",
+  "performanceTestsByteIdentical": true
+}

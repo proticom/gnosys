@@ -1,0 +1,36 @@
+[
+  {
+    "id": "coverage-base-fail-open",
+    "file": "scripts/check-new-file-coverage.mjs",
+    "kind": "ci-fault-injection",
+    "description": "Silently pass when git cannot resolve the comparison base.",
+    "search": "    process.exit(2);\n  }\n}\n\nfunction isCovered",
+    "replace": "    process.exit(0);\n  }\n}\n\nfunction isCovered",
+    "tests": [
+      "src/test/coverage-guard.test.ts"
+    ],
+    "testName": "cannot be resolved"
+  },
+  {
+    "id": "coverage-empty-diff-fails",
+    "file": "scripts/check-new-file-coverage.mjs",
+    "kind": "ci-fault-injection",
+    "description": "Reject an empty application diff despite a valid comparison base.",
+    "search": "    console.log(\"\u2713 No new src/lib or src/sandbox files in this diff.\");\n    return;",
+    "replace": "    console.log(\"\u2713 No new src/lib or src/sandbox files in this diff.\");\n    process.exit(1);",
+    "tests": [
+      "src/test/coverage-guard.test.ts"
+    ],
+    "testName": "compared with itself"
+  },
+  {
+    "id": "http-malformed-json-500",
+    "file": "src/lib/mcpHttp.ts",
+    "description": "Classify malformed client JSON as an internal server error.",
+    "search": "jsonRpcError(res, 400, -32700, \"Parse error\");",
+    "replace": "jsonRpcError(res, 500, -32700, \"Parse error\");",
+    "tests": [
+      "src/test/http-json-adversarial.test.ts"
+    ]
+  }
+]
