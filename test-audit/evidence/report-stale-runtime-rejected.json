@@ -1,0 +1,6 @@
+{
+  "case": "Report rejects runtime evidence different from reconciliation before writing outputs",
+  "exitCode": 1,
+  "expectedError": "Report and reconciliation must use the same runtime evidence",
+  "outputsUnchanged": true
+}

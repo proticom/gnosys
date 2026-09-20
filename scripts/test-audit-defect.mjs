@@ -5,22 +5,29 @@ const id = process.argv[2];
 const defect = JSON.parse(fs.readFileSync("test-audit/defects.json", "utf8")).find((entry) => entry.id === id);
 if (!defect) throw new Error("Provide a defect ID from test-audit/defects.json");
 const original = fs.readFileSync(defect.test, "utf8");
-const name = defect.testName || id;
-const search = `it.fails("${name}`;
-if (original.split(search).length !== 2) throw new Error(`Expected one regression for ${id}`);
+const names = defect.testNames || [defect.testName || id];
+let ordinary = original;
+for (const name of names) {
+  const search = `it.fails("${name}`;
+  if (ordinary.split(search).length !== 2) throw new Error(`Expected one regression for ${id}: ${name}`);
+  ordinary = ordinary.replace(search, `it("${name}`);
+}
+const selection = names.map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
 const lock = "test-audit/.mutation-lock";
 fs.mkdirSync(lock);
 const reportPath = `test-audit/evidence/${id}.reproduced.json`;
 try {
-  fs.writeFileSync(defect.test, original.replace(search, `it("${name}`));
-  const run = spawnSync(process.execPath, ["node_modules/vitest/vitest.mjs", "run", defect.test, "-t", name, "--reporter=json", `--outputFile=${reportPath}`], {
+  fs.writeFileSync(defect.test, ordinary);
+  const run = spawnSync(process.execPath, ["node_modules/vitest/vitest.mjs", "run", defect.test, "-t", selection, "--reporter=json", `--outputFile=${reportPath}`], {
     encoding: "utf8", timeout: 60_000,
   });
   if (run.error || !fs.existsSync(reportPath)) throw new Error(`${run.error || "No test report"}\n${run.stdout}${run.stderr}`);
   const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
-  const test = report.testResults.flatMap((file) => file.assertionResults).find((test) => test.fullName.includes(name));
-  if (test?.status !== "failed" || run.status === 0) throw new Error(`${id} no longer reproduces`);
-  process.stdout.write(`${test.fullName}\n${test.failureMessages.join("\n")}\n`);
+  for (const name of names) {
+    const test = report.testResults.flatMap((file) => file.assertionResults).find((test) => test.fullName.includes(name));
+    if (test?.status !== "failed" || run.status === 0) throw new Error(`${id} no longer reproduces: ${name}`);
+    process.stdout.write(`${test.fullName}\n${test.failureMessages.join("\n")}\n`);
+  }
 } finally {
   fs.writeFileSync(defect.test, original);
   fs.rmdirSync(lock);

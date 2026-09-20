@@ -53,7 +53,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch1.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch1.after.results.json"
     },
     {
       "id": "g2-panel-title",
@@ -108,7 +109,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch1.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch1.after.results.json"
     },
     {
       "id": "g2-web-remove-index",
@@ -163,7 +165,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch1.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch1.after.results.json"
     },
     {
       "id": "g2-panel-width",
@@ -211,7 +214,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch1.before.spec.results.json"
+      "stage": "before",
+      "originArtifact": "batch1.before.spec.results.json"
     },
     {
       "id": "g2-panel-title",
@@ -259,7 +263,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch1.before.spec.results.json"
+      "stage": "before",
+      "originArtifact": "batch1.before.spec.results.json"
     },
     {
       "id": "g2-web-remove-index",
@@ -307,7 +312,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch1.before.spec.results.json"
+      "stage": "before",
+      "originArtifact": "batch1.before.spec.results.json"
     },
     {
       "id": "g2-web-load-title",
@@ -355,7 +361,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch1.before.spec.results.json"
+      "stage": "before",
+      "originArtifact": "batch1.before.spec.results.json"
     },
     {
       "id": "g2-web-category",
@@ -403,7 +410,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch1.before.spec.results.json"
+      "stage": "before",
+      "originArtifact": "batch1.before.spec.results.json"
     },
     {
       "id": "g2-web-tags",
@@ -451,7 +459,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch1.before.spec.results.json"
+      "stage": "before",
+      "originArtifact": "batch1.before.spec.results.json"
     },
     {
       "id": "g2-web-list-category",
@@ -499,7 +508,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch1.before.spec.results.json"
+      "stage": "before",
+      "originArtifact": "batch1.before.spec.results.json"
     },
     {
       "id": "g2-web-tfidf",
@@ -547,7 +557,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch1.before.spec.results.json"
+      "stage": "before",
+      "originArtifact": "batch1.before.spec.results.json"
     },
     {
       "id": "g2-wiki-graph-outgoing",
@@ -595,7 +606,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch1.before.spec.results.json"
+      "stage": "before",
+      "originArtifact": "batch1.before.spec.results.json"
     },
     {
       "id": "g2-wiki-backlinks",
@@ -643,7 +655,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch1.before.spec.results.json"
+      "stage": "before",
+      "originArtifact": "batch1.before.spec.results.json"
     },
     {
       "id": "g2-wiki-outgoing",
@@ -691,7 +704,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch1.before.spec.results.json"
+      "stage": "before",
+      "originArtifact": "batch1.before.spec.results.json"
     },
     {
       "id": "g2-web-load-title",
@@ -746,7 +760,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch1.remaining.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch1.remaining.after.results.json"
     },
     {
       "id": "g2-web-category",
@@ -801,7 +816,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch1.remaining.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch1.remaining.after.results.json"
     },
     {
       "id": "g2-web-tags",
@@ -856,7 +872,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch1.remaining.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch1.remaining.after.results.json"
     },
     {
       "id": "g2-web-list-category",
@@ -911,7 +928,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch1.remaining.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch1.remaining.after.results.json"
     },
     {
       "id": "g2-web-tfidf",
@@ -966,7 +984,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch1.remaining.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch1.remaining.after.results.json"
     },
     {
       "id": "g2-wiki-graph-outgoing",
@@ -1021,7 +1040,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch1.remaining.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch1.remaining.after.results.json"
     },
     {
       "id": "g2-wiki-backlinks",
@@ -1076,7 +1096,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch1.remaining.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch1.remaining.after.results.json"
     },
     {
       "id": "g2-wiki-outgoing",
@@ -1131,7 +1152,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch1.remaining.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch1.remaining.after.results.json"
     },
     {
       "id": "g2-bootstrap-discovery",
@@ -1210,7 +1232,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch2.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch2.after.results.json"
     },
     {
       "id": "g2-bootstrap-content",
@@ -1265,7 +1288,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch2.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch2.after.results.json"
     },
     {
       "id": "g2-bootstrap-pattern",
@@ -1320,7 +1344,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch2.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch2.after.results.json"
     },
     {
       "id": "g2-export-bundle-content",
@@ -1399,7 +1424,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch2.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch2.after.results.json"
     },
     {
       "id": "g2-export-vault-write",
@@ -1454,7 +1480,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch2.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch2.after.results.json"
     },
     {
       "id": "g2-federated-recency",
@@ -1533,7 +1560,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch2.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch2.after.results.json"
     },
     {
       "id": "g2-federated-reinforcement",
@@ -1612,7 +1640,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch2.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch2.after.results.json"
     },
     {
       "id": "g2-federated-global",
@@ -1691,7 +1720,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch2.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch2.after.results.json"
     },
     {
       "id": "g2-federated-cross-project",
@@ -1746,7 +1776,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch2.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch2.after.results.json"
     },
     {
       "id": "g2-bootstrap-discovery",
@@ -1812,7 +1843,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch2.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch2.before.results.json"
     },
     {
       "id": "g2-bootstrap-content",
@@ -1860,7 +1892,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch2.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch2.before.results.json"
     },
     {
       "id": "g2-bootstrap-pattern",
@@ -1908,7 +1941,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch2.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch2.before.results.json"
     },
     {
       "id": "g2-export-bundle-content",
@@ -1974,7 +2008,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch2.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch2.before.results.json"
     },
     {
       "id": "g2-export-vault-write",
@@ -2022,7 +2057,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch2.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch2.before.results.json"
     },
     {
       "id": "g2-federated-recency",
@@ -2088,7 +2124,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch2.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch2.before.results.json"
     },
     {
       "id": "g2-federated-reinforcement",
@@ -2154,7 +2191,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch2.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch2.before.results.json"
     },
     {
       "id": "g2-federated-global",
@@ -2220,7 +2258,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch2.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch2.before.results.json"
     },
     {
       "id": "g2-federated-cross-project",
@@ -2268,7 +2307,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch2.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch2.before.results.json"
     },
     {
       "id": "g2-centralize-force",
@@ -2323,7 +2363,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch4.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch4.after.results.json"
     },
     {
       "id": "g2-graph-nodes",
@@ -2378,7 +2419,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch4.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch4.after.results.json"
     },
     {
       "id": "g2-list-tag",
@@ -2433,7 +2475,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch4.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch4.after.results.json"
     },
     {
       "id": "g2-timeline-period",
@@ -2488,7 +2531,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch4.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch4.after.results.json"
     },
     {
       "id": "g2-stores-output",
@@ -2567,7 +2611,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch4.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch4.after.results.json"
     },
     {
       "id": "g2-centralize-force",
@@ -2615,7 +2660,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch4.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch4.before.results.json"
     },
     {
       "id": "g2-graph-nodes",
@@ -2663,7 +2709,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch4.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch4.before.results.json"
     },
     {
       "id": "g2-list-tag",
@@ -2711,7 +2758,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch4.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch4.before.results.json"
     },
     {
       "id": "g2-timeline-period",
@@ -2759,7 +2807,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch4.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch4.before.results.json"
     },
     {
       "id": "g2-stores-output",
@@ -2825,7 +2874,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch4.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch4.before.results.json"
     },
     {
       "id": "g2-key-xai",
@@ -2880,7 +2930,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch5.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch5.after.results.json"
     },
     {
       "id": "g2-key-mistral",
@@ -2935,7 +2986,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch5.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch5.after.results.json"
     },
     {
       "id": "g2-openrouter-catalog",
@@ -2990,7 +3042,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch5.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch5.after.results.json"
     },
     {
       "id": "g2-key-xai",
@@ -3038,7 +3091,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch5.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch5.before.results.json"
     },
     {
       "id": "g2-key-mistral",
@@ -3086,7 +3140,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch5.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch5.before.results.json"
     },
     {
       "id": "g2-openrouter-catalog",
@@ -3134,7 +3189,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch5.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch5.before.results.json"
     },
     {
       "id": "g2-snapshot-read",
@@ -3189,7 +3245,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch6.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch6.after.results.json"
     },
     {
       "id": "g2-pending-content",
@@ -3244,7 +3301,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch6.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch6.after.results.json"
     },
     {
       "id": "g2-pending-receipt",
@@ -3299,7 +3357,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch6.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch6.after.results.json"
     },
     {
       "id": "g2-staging-copy",
@@ -3354,7 +3413,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch6.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch6.after.results.json"
     },
     {
       "id": "g2-quiet-noop",
@@ -3409,7 +3469,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch6.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch6.after.results.json"
     },
     {
       "id": "g2-ingest-json",
@@ -3464,7 +3525,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch6.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch6.after.results.json"
     },
     {
       "id": "g2-ingest-body",
@@ -3519,7 +3581,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "batch6.after.results.json"
+      "stage": "after",
+      "originArtifact": "batch6.after.results.json"
     },
     {
       "id": "g2-snapshot-read",
@@ -3567,7 +3630,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch6.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch6.before.results.json"
     },
     {
       "id": "g2-pending-content",
@@ -3615,7 +3679,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch6.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch6.before.results.json"
     },
     {
       "id": "g2-pending-receipt",
@@ -3663,7 +3728,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch6.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch6.before.results.json"
     },
     {
       "id": "g2-staging-copy",
@@ -3719,7 +3785,8 @@
       ],
       "applicationRestored": true,
       "invalidReason": "The trial referenced writeFileSync without importing it; excluded from mutation proof.",
-      "artifact": "batch6.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch6.before.results.json"
     },
     {
       "id": "g2-quiet-noop",
@@ -3767,7 +3834,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch6.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch6.before.results.json"
     },
     {
       "id": "g2-ingest-json",
@@ -3815,7 +3883,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch6.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch6.before.results.json"
     },
     {
       "id": "g2-ingest-body",
@@ -3863,7 +3932,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "batch6.before.results.json"
+      "stage": "before",
+      "originArtifact": "batch6.before.results.json"
     },
     {
       "id": "g2-docs-build-index",
@@ -3918,7 +3988,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "docs.results.json"
+      "stage": "after",
+      "originArtifact": "docs.results.json"
     },
     {
       "id": "g2-docs-build",
@@ -3973,7 +4044,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "docs.results.json"
+      "stage": "after",
+      "originArtifact": "docs.results.json"
     },
     {
       "id": "g2-docs-status",
@@ -4028,7 +4100,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "docs.results.json"
+      "stage": "after",
+      "originArtifact": "docs.results.json"
     },
     {
       "id": "g2-http-session-isolation",
@@ -4083,7 +4156,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "http-session.results.json"
+      "stage": "after",
+      "originArtifact": "http-session.results.json"
     },
     {
       "id": "g2-cors-no-origin",
@@ -4138,7 +4212,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "http.after.results.json"
+      "stage": "after",
+      "originArtifact": "http.after.results.json"
     },
     {
       "id": "g2-cors-allowed",
@@ -4193,7 +4268,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "http.after.results.json"
+      "stage": "after",
+      "originArtifact": "http.after.results.json"
     },
     {
       "id": "g2-cors-no-origin",
@@ -4241,7 +4317,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "http.before.results.json"
+      "stage": "before",
+      "originArtifact": "http.before.results.json"
     },
     {
       "id": "g2-cors-allowed",
@@ -4289,7 +4366,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "http.before.results.json"
+      "stage": "before",
+      "originArtifact": "http.before.results.json"
     },
     {
       "id": "g2-staging-copy",
@@ -4337,7 +4415,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "staging.before.results.json"
+      "stage": "before",
+      "originArtifact": "staging.before.results.json"
     },
     {
       "id": "g2-serve-exit",
@@ -4392,7 +4471,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "stdio.after.results.json"
+      "stage": "after",
+      "originArtifact": "stdio.after.results.json"
     },
     {
       "id": "g2-serve-exit",
@@ -4440,7 +4520,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "stdio.before.results.json"
+      "stage": "before",
+      "originArtifact": "stdio.before.results.json"
     },
     {
       "id": "g2-panel-clamp",
@@ -4495,7 +4576,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit1-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit1-new.results.json"
     },
     {
       "id": "g2-panel-color",
@@ -4550,7 +4632,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit1-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit1-new.results.json"
     },
     {
       "id": "g2-web-getdoc",
@@ -4605,7 +4688,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit1-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit1-new.results.json"
     },
     {
       "id": "g2-web-determinism",
@@ -4660,7 +4744,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit1-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit1-new.results.json"
     },
     {
       "id": "g2-web-native-isolation",
@@ -4715,7 +4800,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit1-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit1-new.results.json"
     },
     {
       "id": "g2-wiki-exact-title",
@@ -4770,7 +4856,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit1-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit1-new.results.json"
     },
     {
       "id": "g2-wiki-id",
@@ -4825,7 +4912,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit1-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit1-new.results.json"
     },
     {
       "id": "g2-atomic-destination-first",
@@ -4880,7 +4968,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit3-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit3-new.results.json"
     },
     {
       "id": "g2-attachment-cap",
@@ -4935,7 +5024,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit3-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit3-new.results.json"
     },
     {
       "id": "g2-freeform-gate",
@@ -4990,7 +5080,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit3-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit3-new.results.json"
     },
     {
       "id": "g2-freeform-guidance",
@@ -5045,7 +5136,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit3-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit3-new.results.json"
     },
     {
       "id": "g2-freeform-rules",
@@ -5100,7 +5192,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit3-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit3-new.results.json"
     },
     {
       "id": "g2-provider-schema",
@@ -5155,7 +5248,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit5-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit5-new.results.json"
     },
     {
       "id": "g2-xai-url",
@@ -5210,7 +5304,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit5-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit5-new.results.json"
     },
     {
       "id": "g2-mistral-url",
@@ -5265,7 +5360,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit5-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit5-new.results.json"
     },
     {
       "id": "g2-custom-url",
@@ -5320,7 +5416,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit5-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit5-new.results.json"
     },
     {
       "id": "g2-custom-no-key",
@@ -5375,7 +5472,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit5-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit5-new.results.json"
     },
     {
       "id": "g2-openrouter-fallback",
@@ -5430,7 +5528,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit5-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit5-new.results.json"
     },
     {
       "id": "g2-centralize-cli-force",
@@ -5485,7 +5584,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit5-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit5-new.results.json"
     },
     {
       "id": "g2-staging-checksum",
@@ -5540,7 +5640,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit6-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit6-new.results.json"
     },
     {
       "id": "g2-staging-quarantine",
@@ -5595,7 +5696,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit6-new.results.json"
+      "stage": "after",
+      "originArtifact": "unit6-new.results.json"
     },
     {
       "id": "g2-startup-client",
@@ -5650,7 +5752,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit6-remaining.results.json"
+      "stage": "after",
+      "originArtifact": "unit6-remaining.results.json"
     },
     {
       "id": "g2-startup-disabled",
@@ -5705,7 +5808,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit6-remaining.results.json"
+      "stage": "after",
+      "originArtifact": "unit6-remaining.results.json"
     },
     {
       "id": "g2-docs-build-index",
@@ -5760,7 +5864,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit6-remaining.results.json"
+      "stage": "after",
+      "originArtifact": "unit6-remaining.results.json"
     },
     {
       "id": "g2-docs-build",
@@ -5815,7 +5920,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "unit6-remaining.results.json"
+      "stage": "after",
+      "originArtifact": "unit6-remaining.results.json"
     },
     {
       "id": "g2-web-deterministic-corruption",
@@ -5870,7 +5976,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "web-determinism-review.after.results.json"
+      "stage": "after",
+      "originArtifact": "web-determinism-review.after.results.json"
     },
     {
       "id": "g2-web-deterministic-corruption",
@@ -5918,7 +6025,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "web-determinism-review.before.results.json"
+      "stage": "before",
+      "originArtifact": "web-determinism-review.before.results.json"
     }
   ]
 }

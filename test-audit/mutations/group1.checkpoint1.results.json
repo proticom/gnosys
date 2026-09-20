@@ -47,7 +47,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-e.json"
+      "stage": "before",
+      "originArtifact": "survival-e.json"
     },
     {
       "id": "G1-text-empty",
@@ -95,7 +96,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-e.json"
+      "stage": "before",
+      "originArtifact": "survival-e.json"
     },
     {
       "id": "G1-docx-error",
@@ -143,7 +145,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-e.json"
+      "stage": "before",
+      "originArtifact": "survival-e.json"
     },
     {
       "id": "G1-pdf-js",
@@ -191,7 +194,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-e.json"
+      "stage": "before",
+      "originArtifact": "survival-e.json"
     },
     {
       "id": "G1-text-bom",
@@ -239,7 +243,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-e.json"
+      "stage": "before",
+      "originArtifact": "survival-e.json"
     },
     {
       "id": "G1-special-paths",
@@ -341,7 +346,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-e.json"
+      "stage": "before",
+      "originArtifact": "survival-e.json"
     },
     {
       "id": "G1-lens-author-corrected",
@@ -389,7 +395,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c2.json"
+      "stage": "before",
+      "originArtifact": "survival-c2.json"
     },
     {
       "id": "G1-lens-authority-corrected",
@@ -437,7 +444,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c2.json"
+      "stage": "before",
+      "originArtifact": "survival-c2.json"
     },
     {
       "id": "G1-color",
@@ -485,7 +493,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-b.json"
+      "stage": "before",
+      "originArtifact": "survival-b.json"
     },
     {
       "id": "G1-failed-rows",
@@ -533,7 +542,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-b.json"
+      "stage": "before",
+      "originArtifact": "survival-b.json"
     },
     {
       "id": "G1-dashboard-paths",
@@ -581,7 +591,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-b.json"
+      "stage": "before",
+      "originArtifact": "survival-b.json"
     },
     {
       "id": "G1-dream-disabled",
@@ -629,7 +640,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-b.json"
+      "stage": "before",
+      "originArtifact": "survival-b.json"
     },
     {
       "id": "G1-structured-fields",
@@ -677,7 +689,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-b.json"
+      "stage": "before",
+      "originArtifact": "survival-b.json"
     },
     {
       "id": "G1-tfidf-score",
@@ -725,7 +738,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-b.json"
+      "stage": "before",
+      "originArtifact": "survival-b.json"
     },
     {
       "id": "G1-tfidf-frequency",
@@ -773,7 +787,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-b.json"
+      "stage": "before",
+      "originArtifact": "survival-b.json"
     },
     {
       "id": "G1-tfidf-topn",
@@ -821,7 +836,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-b.json"
+      "stage": "before",
+      "originArtifact": "survival-b.json"
     },
     {
       "id": "G1-tag-category",
@@ -869,7 +885,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-b.json"
+      "stage": "before",
+      "originArtifact": "survival-b.json"
     },
     {
       "id": "G1-tag-default",
@@ -917,7 +934,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-b.json"
+      "stage": "before",
+      "originArtifact": "survival-b.json"
     },
     {
       "id": "G1-local-ack",
@@ -965,7 +983,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-b.json"
+      "stage": "before",
+      "originArtifact": "survival-b.json"
     },
     {
       "id": "G1-embedding-values",
@@ -1013,7 +1032,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-b.json"
+      "stage": "before",
+      "originArtifact": "survival-b.json"
     },
     {
       "id": "G1-lens-status",
@@ -1061,7 +1081,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-lens-statuses",
@@ -1109,7 +1130,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-lens-confidence",
@@ -1157,7 +1179,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-lens-created",
@@ -1205,7 +1228,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-lens-modified",
@@ -1253,7 +1277,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-lens-combined",
@@ -1301,7 +1326,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-chunk-paragraph",
@@ -1349,7 +1375,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-chunk-sentence",
@@ -1397,7 +1424,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-chunk-target",
@@ -1445,7 +1473,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-chunk-index",
@@ -1493,7 +1522,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-chunk-page",
@@ -1541,7 +1571,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-chunk-timerange",
@@ -1589,7 +1620,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-chunk-merge",
@@ -1637,7 +1669,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-chunk-empty",
@@ -1685,7 +1718,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-attachment-bytes",
@@ -1733,7 +1767,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-multimodal-defaults",
@@ -1781,7 +1816,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-embedding-incremental",
@@ -1829,7 +1865,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-embedding-reindex",
@@ -1877,7 +1914,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-embedding-single",
@@ -1925,7 +1963,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-c.json"
+      "stage": "before",
+      "originArtifact": "survival-c.json"
     },
     {
       "id": "G1-timeline-day",
@@ -1973,7 +2012,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-timeline-week",
@@ -2021,7 +2061,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-timeline-sort",
@@ -2069,7 +2110,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-timeline-modified",
@@ -2117,7 +2159,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-id-projectless",
@@ -2165,7 +2208,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-id-default",
@@ -2213,7 +2257,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-id-nontty",
@@ -2261,7 +2306,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-id-tty",
@@ -2309,7 +2355,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-id-projectless-tty",
@@ -2357,7 +2404,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-progress-noop",
@@ -2405,7 +2453,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-web-weight",
@@ -2453,7 +2502,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-web-stop",
@@ -2501,7 +2551,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-web-stop-disabled",
@@ -2549,7 +2600,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-web-archived",
@@ -2597,7 +2649,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-web-hash",
@@ -2645,7 +2698,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-web-determinism",
@@ -2693,7 +2747,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-web-async",
@@ -2741,7 +2796,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-web-write",
@@ -2789,7 +2845,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-web-overwrite",
@@ -2837,7 +2894,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-a.json"
+      "stage": "before",
+      "originArtifact": "survival-a.json"
     },
     {
       "id": "G1-import-jsonl",
@@ -2885,7 +2943,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-f.json"
+      "stage": "before",
+      "originArtifact": "survival-f.json"
     },
     {
       "id": "G1-import-extra",
@@ -2933,7 +2992,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-f.json"
+      "stage": "before",
+      "originArtifact": "survival-f.json"
     },
     {
       "id": "G1-import-dryrun",
@@ -2981,7 +3041,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-f.json"
+      "stage": "before",
+      "originArtifact": "survival-f.json"
     },
     {
       "id": "G1-import-batch",
@@ -3029,7 +3090,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-f.json"
+      "stage": "before",
+      "originArtifact": "survival-f.json"
     },
     {
       "id": "G1-import-failure",
@@ -3077,7 +3139,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-f.json"
+      "stage": "before",
+      "originArtifact": "survival-f.json"
     },
     {
       "id": "G1-duration-structured",
@@ -3125,7 +3188,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-f.json"
+      "stage": "before",
+      "originArtifact": "survival-f.json"
     },
     {
       "id": "G1-duration-llm",
@@ -3173,7 +3237,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-f.json"
+      "stage": "before",
+      "originArtifact": "survival-f.json"
     },
     {
       "id": "G1-audit-empty",
@@ -3221,7 +3286,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-f.json"
+      "stage": "before",
+      "originArtifact": "survival-f.json"
     },
     {
       "id": "G1-recovery-insert",
@@ -3269,7 +3335,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-f.json"
+      "stage": "before",
+      "originArtifact": "survival-f.json"
     },
     {
       "id": "G1-recovery-audit",
@@ -3317,7 +3384,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-f.json"
+      "stage": "before",
+      "originArtifact": "survival-f.json"
     },
     {
       "id": "G1-recovery-error",
@@ -3365,7 +3433,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "survival-f.json"
+      "stage": "before",
+      "originArtifact": "survival-f.json"
     },
     {
       "id": "G1-timeline-day",
@@ -3420,7 +3489,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-timeline-week",
@@ -3475,7 +3545,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-timeline-sort",
@@ -3530,7 +3601,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-timeline-modified",
@@ -3585,7 +3657,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-id-projectless",
@@ -3640,7 +3713,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-id-default",
@@ -3695,7 +3769,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-id-nontty",
@@ -3750,7 +3825,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-id-tty",
@@ -3805,7 +3881,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-id-projectless-tty",
@@ -3860,7 +3937,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-progress-noop",
@@ -3915,7 +3993,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-web-weight",
@@ -3970,7 +4049,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-web-stop",
@@ -4025,7 +4105,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-web-stop-disabled",
@@ -4080,7 +4161,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-web-archived",
@@ -4135,7 +4217,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-web-hash",
@@ -4190,7 +4273,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-web-determinism",
@@ -4245,7 +4329,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-web-async",
@@ -4300,7 +4385,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-web-write",
@@ -4355,7 +4441,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-web-overwrite",
@@ -4410,7 +4497,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-a.json"
+      "stage": "after",
+      "originArtifact": "killed-a.json"
     },
     {
       "id": "G1-lens-author-corrected",
@@ -4465,7 +4553,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c2.json"
+      "stage": "after",
+      "originArtifact": "killed-c2.json"
     },
     {
       "id": "G1-lens-authority-corrected",
@@ -4520,7 +4609,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c2.json"
+      "stage": "after",
+      "originArtifact": "killed-c2.json"
     },
     {
       "id": "G1-pdf-password",
@@ -4575,7 +4665,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-e2.json"
+      "stage": "after",
+      "originArtifact": "killed-e2.json"
     },
     {
       "id": "G1-pdf-js-execution",
@@ -4630,7 +4721,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-e2.json"
+      "stage": "after",
+      "originArtifact": "killed-e2.json"
     },
     {
       "id": "G1-file-size-error",
@@ -4685,7 +4777,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-e2.json"
+      "stage": "after",
+      "originArtifact": "killed-e2.json"
     },
     {
       "id": "G1-missing-file-error",
@@ -4740,7 +4833,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-e2.json"
+      "stage": "after",
+      "originArtifact": "killed-e2.json"
     },
     {
       "id": "G1-embedding-values",
@@ -4795,7 +4889,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-b2.json"
+      "stage": "after",
+      "originArtifact": "killed-b2.json"
     },
     {
       "id": "G1-import-jsonl",
@@ -4860,7 +4955,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-f2.json"
+      "stage": "after",
+      "originArtifact": "killed-f2.json"
     },
     {
       "id": "G1-import-extra",
@@ -4925,7 +5021,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-f2.json"
+      "stage": "after",
+      "originArtifact": "killed-f2.json"
     },
     {
       "id": "G1-import-dryrun",
@@ -4990,7 +5087,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-f2.json"
+      "stage": "after",
+      "originArtifact": "killed-f2.json"
     },
     {
       "id": "G1-import-batch",
@@ -5055,7 +5153,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-f2.json"
+      "stage": "after",
+      "originArtifact": "killed-f2.json"
     },
     {
       "id": "G1-import-failure",
@@ -5120,7 +5219,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-f2.json"
+      "stage": "after",
+      "originArtifact": "killed-f2.json"
     },
     {
       "id": "G1-duration-structured",
@@ -5185,7 +5285,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-f2.json"
+      "stage": "after",
+      "originArtifact": "killed-f2.json"
     },
     {
       "id": "G1-duration-llm",
@@ -5250,7 +5351,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-f2.json"
+      "stage": "after",
+      "originArtifact": "killed-f2.json"
     },
     {
       "id": "G1-audit-empty",
@@ -5315,7 +5417,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-f2.json"
+      "stage": "after",
+      "originArtifact": "killed-f2.json"
     },
     {
       "id": "G1-recovery-insert",
@@ -5380,7 +5483,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-f2.json"
+      "stage": "after",
+      "originArtifact": "killed-f2.json"
     },
     {
       "id": "G1-recovery-audit",
@@ -5445,7 +5549,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-f2.json"
+      "stage": "after",
+      "originArtifact": "killed-f2.json"
     },
     {
       "id": "G1-recovery-error",
@@ -5510,7 +5615,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-f2.json"
+      "stage": "after",
+      "originArtifact": "killed-f2.json"
     },
     {
       "id": "G1-pdf-normal",
@@ -5565,7 +5671,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-e.json"
+      "stage": "after",
+      "originArtifact": "killed-e.json"
     },
     {
       "id": "G1-text-empty",
@@ -5620,7 +5727,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-e.json"
+      "stage": "after",
+      "originArtifact": "killed-e.json"
     },
     {
       "id": "G1-docx-error",
@@ -5675,7 +5783,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-e.json"
+      "stage": "after",
+      "originArtifact": "killed-e.json"
     },
     {
       "id": "G1-pdf-js",
@@ -5730,7 +5839,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-e.json"
+      "stage": "after",
+      "originArtifact": "killed-e.json"
     },
     {
       "id": "G1-text-bom",
@@ -5785,7 +5895,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-e.json"
+      "stage": "after",
+      "originArtifact": "killed-e.json"
     },
     {
       "id": "G1-special-paths",
@@ -5912,7 +6023,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-e.json"
+      "stage": "after",
+      "originArtifact": "killed-e.json"
     },
     {
       "id": "G1-key-list",
@@ -5967,7 +6079,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-d.json"
+      "stage": "after",
+      "originArtifact": "killed-d.json"
     },
     {
       "id": "G1-key-locations",
@@ -6022,7 +6135,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-d.json"
+      "stage": "after",
+      "originArtifact": "killed-d.json"
     },
     {
       "id": "G1-key-local",
@@ -6077,7 +6191,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-d.json"
+      "stage": "after",
+      "originArtifact": "killed-d.json"
     },
     {
       "id": "G1-key-custom",
@@ -6132,7 +6247,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-d.json"
+      "stage": "after",
+      "originArtifact": "killed-d.json"
     },
     {
       "id": "G1-key-remove-selected",
@@ -6187,7 +6303,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-d.json"
+      "stage": "after",
+      "originArtifact": "killed-d.json"
     },
     {
       "id": "G1-key-save-dotenv",
@@ -6242,7 +6359,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-d.json"
+      "stage": "after",
+      "originArtifact": "killed-d.json"
     },
     {
       "id": "G1-key-reject-update",
@@ -6297,7 +6415,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-d.json"
+      "stage": "after",
+      "originArtifact": "killed-d.json"
     },
     {
       "id": "G1-key-destinations",
@@ -6352,7 +6471,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-d.json"
+      "stage": "after",
+      "originArtifact": "killed-d.json"
     },
     {
       "id": "G1-key-copy-cleanup",
@@ -6407,7 +6527,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-d.json"
+      "stage": "after",
+      "originArtifact": "killed-d.json"
     },
     {
       "id": "G1-key-reject-copy",
@@ -6462,7 +6583,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-d.json"
+      "stage": "after",
+      "originArtifact": "killed-d.json"
     },
     {
       "id": "G1-key-copy-idempotent",
@@ -6517,7 +6639,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-d.json"
+      "stage": "after",
+      "originArtifact": "killed-d.json"
     },
     {
       "id": "G1-key-delete-dotenv",
@@ -6572,7 +6695,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-d.json"
+      "stage": "after",
+      "originArtifact": "killed-d.json"
     },
     {
       "id": "G1-key-delete-keychain",
@@ -6627,7 +6751,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-d.json"
+      "stage": "after",
+      "originArtifact": "killed-d.json"
     },
     {
       "id": "G1-key-delete-both",
@@ -6682,7 +6807,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-d.json"
+      "stage": "after",
+      "originArtifact": "killed-d.json"
     },
     {
       "id": "G1-lens-status",
@@ -6737,7 +6863,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-lens-statuses",
@@ -6792,7 +6919,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-lens-confidence",
@@ -6847,7 +6975,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-lens-created",
@@ -6902,7 +7031,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-lens-modified",
@@ -6957,7 +7087,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-lens-combined",
@@ -7012,7 +7143,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-chunk-paragraph",
@@ -7067,7 +7199,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-chunk-sentence",
@@ -7122,7 +7255,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-chunk-target",
@@ -7177,7 +7311,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-chunk-index",
@@ -7232,7 +7367,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-chunk-page",
@@ -7287,7 +7423,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-chunk-timerange",
@@ -7342,7 +7479,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-chunk-merge",
@@ -7397,7 +7535,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-chunk-empty",
@@ -7452,7 +7591,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-attachment-bytes",
@@ -7507,7 +7647,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-multimodal-defaults",
@@ -7562,7 +7703,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-embedding-incremental",
@@ -7617,7 +7759,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-embedding-reindex",
@@ -7672,7 +7815,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-embedding-single",
@@ -7727,7 +7871,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-c.json"
+      "stage": "after",
+      "originArtifact": "killed-c.json"
     },
     {
       "id": "G1-color",
@@ -7782,7 +7927,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-b.json"
+      "stage": "after",
+      "originArtifact": "killed-b.json"
     },
     {
       "id": "G1-failed-rows",
@@ -7837,7 +7983,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-b.json"
+      "stage": "after",
+      "originArtifact": "killed-b.json"
     },
     {
       "id": "G1-dashboard-paths",
@@ -7892,7 +8039,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-b.json"
+      "stage": "after",
+      "originArtifact": "killed-b.json"
     },
     {
       "id": "G1-dream-disabled",
@@ -7947,7 +8095,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-b.json"
+      "stage": "after",
+      "originArtifact": "killed-b.json"
     },
     {
       "id": "G1-structured-fields",
@@ -8002,7 +8151,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-b.json"
+      "stage": "after",
+      "originArtifact": "killed-b.json"
     },
     {
       "id": "G1-tfidf-score",
@@ -8057,7 +8207,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-b.json"
+      "stage": "after",
+      "originArtifact": "killed-b.json"
     },
     {
       "id": "G1-tfidf-frequency",
@@ -8112,7 +8263,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-b.json"
+      "stage": "after",
+      "originArtifact": "killed-b.json"
     },
     {
       "id": "G1-tfidf-topn",
@@ -8167,7 +8319,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-b.json"
+      "stage": "after",
+      "originArtifact": "killed-b.json"
     },
     {
       "id": "G1-tag-category",
@@ -8222,7 +8375,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-b.json"
+      "stage": "after",
+      "originArtifact": "killed-b.json"
     },
     {
       "id": "G1-tag-default",
@@ -8277,7 +8431,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-b.json"
+      "stage": "after",
+      "originArtifact": "killed-b.json"
     },
     {
       "id": "G1-local-ack",
@@ -8332,7 +8487,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "killed-b.json"
+      "stage": "after",
+      "originArtifact": "killed-b.json"
     }
   ]
 }

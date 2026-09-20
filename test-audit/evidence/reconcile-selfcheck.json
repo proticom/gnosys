@@ -1,0 +1,259 @@
+{
+  "syntheticFixture": "/private/tmp/gnosys-reconcile-fixture-cuggj0nn",
+  "scriptSha256": "6d21ec78217a18b642a3163d1971c4d80f4740565de5b1a916faa236892e006e",
+  "scenarios": [
+    {
+      "case": "literal, printf, template and explicit WEAK classification",
+      "exitCode": 0,
+      "counts": {
+        "originalDeclarations": 4,
+        "currentDeclarations": 4,
+        "runtimeCases": 5,
+        "originalActions": 4,
+        "declarationClassifications": {
+          "STRONG": 3,
+          "WEAK": 1
+        },
+        "runtimeClassifications": {
+          "STRONG": 3,
+          "WEAK": 2
+        },
+        "changes": {
+          "unchanged": 4
+        },
+        "issues": {}
+      }
+    },
+    {
+      "case": "comments and formatting are unchanged",
+      "exitCode": 0,
+      "counts": {
+        "originalDeclarations": 4,
+        "currentDeclarations": 4,
+        "runtimeCases": 5,
+        "originalActions": 4,
+        "declarationClassifications": {
+          "STRONG": 3,
+          "WEAK": 1
+        },
+        "runtimeClassifications": {
+          "STRONG": 3,
+          "WEAK": 2
+        },
+        "changes": {
+          "unchanged": 4
+        },
+        "issues": {}
+      }
+    },
+    {
+      "case": "changed kept body is rejected",
+      "exitCode": 1,
+      "counts": {
+        "originalDeclarations": 4,
+        "currentDeclarations": 4,
+        "runtimeCases": 5,
+        "originalActions": 4,
+        "declarationClassifications": {
+          "STRONG": 3,
+          "WEAK": 1
+        },
+        "runtimeClassifications": {
+          "STRONG": 3,
+          "WEAK": 2
+        },
+        "changes": {
+          "changed_or_renamed": 1,
+          "unchanged": 3
+        },
+        "issues": {
+          "changedBodyWithoutChangeAction": 1,
+          "keptDeclarationChanged": 1
+        }
+      }
+    },
+    {
+      "case": "changed body requires explicit classification",
+      "exitCode": 0,
+      "counts": {
+        "originalDeclarations": 4,
+        "currentDeclarations": 4,
+        "runtimeCases": 5,
+        "originalActions": 4,
+        "declarationClassifications": {
+          "WEAK": 2,
+          "STRONG": 2
+        },
+        "runtimeClassifications": {
+          "WEAK": 3,
+          "STRONG": 2
+        },
+        "changes": {
+          "changed_or_renamed": 1,
+          "unchanged": 3
+        },
+        "issues": {}
+      }
+    },
+    {
+      "case": "renamed kept case is rejected",
+      "exitCode": 1,
+      "counts": {
+        "originalDeclarations": 4,
+        "currentDeclarations": 4,
+        "runtimeCases": 5,
+        "originalActions": 4,
+        "declarationClassifications": {
+          "STRONG": 3,
+          "WEAK": 1
+        },
+        "runtimeClassifications": {
+          "STRONG": 3,
+          "WEAK": 2
+        },
+        "changes": {
+          "changed_or_renamed": 1,
+          "unchanged": 3
+        },
+        "issues": {
+          "newRuntimeCaseWithoutChangeAction": 1,
+          "changedBodyWithoutChangeAction": 1,
+          "keptDeclarationChanged": 1
+        }
+      }
+    },
+    {
+      "case": "missing original action is rejected",
+      "exitCode": 1,
+      "counts": {
+        "originalDeclarations": 4,
+        "currentDeclarations": 4,
+        "runtimeCases": 5,
+        "originalActions": 3,
+        "declarationClassifications": {
+          "INCOMPLETE": 1,
+          "WEAK": 1,
+          "STRONG": 2
+        },
+        "runtimeClassifications": {
+          "UNMAPPED": 1,
+          "WEAK": 2,
+          "STRONG": 2
+        },
+        "changes": {
+          "unchanged": 4
+        },
+        "issues": {
+          "missingOriginalActions": 1,
+          "runtimeClassificationGaps": 1
+        }
+      }
+    },
+    {
+      "case": "duplicate original action is rejected",
+      "exitCode": 1,
+      "counts": {
+        "originalDeclarations": 4,
+        "currentDeclarations": 4,
+        "runtimeCases": 5,
+        "originalActions": 3,
+        "declarationClassifications": {
+          "STRONG": 3,
+          "WEAK": 1
+        },
+        "runtimeClassifications": {
+          "STRONG": 3,
+          "WEAK": 2
+        },
+        "changes": {
+          "unchanged": 4
+        },
+        "issues": {
+          "duplicateOriginalActions": 1
+        }
+      }
+    },
+    {
+      "case": "new test without an action is rejected",
+      "exitCode": 1,
+      "counts": {
+        "originalDeclarations": 4,
+        "currentDeclarations": 5,
+        "runtimeCases": 6,
+        "originalActions": 4,
+        "declarationClassifications": {
+          "STRONG": 3,
+          "WEAK": 1,
+          "INCOMPLETE": 1
+        },
+        "runtimeClassifications": {
+          "STRONG": 3,
+          "WEAK": 2,
+          "UNMAPPED": 1
+        },
+        "changes": {
+          "unchanged": 4,
+          "new": 1
+        },
+        "issues": {
+          "runtimeClassificationGaps": 1,
+          "newRuntimeCaseWithoutChangeAction": 1,
+          "changedBodyWithoutChangeAction": 1
+        }
+      }
+    },
+    {
+      "case": "new test with explicit COUPLED is never promoted",
+      "exitCode": 0,
+      "counts": {
+        "originalDeclarations": 4,
+        "currentDeclarations": 5,
+        "runtimeCases": 6,
+        "originalActions": 4,
+        "declarationClassifications": {
+          "STRONG": 3,
+          "WEAK": 1,
+          "COUPLED": 1
+        },
+        "runtimeClassifications": {
+          "STRONG": 3,
+          "WEAK": 2,
+          "COUPLED": 1
+        },
+        "changes": {
+          "unchanged": 4,
+          "new": 1
+        },
+        "issues": {}
+      }
+    },
+    {
+      "case": "new expanded parameter case requires change action",
+      "exitCode": 1,
+      "counts": {
+        "originalDeclarations": 4,
+        "currentDeclarations": 4,
+        "runtimeCases": 6,
+        "originalActions": 4,
+        "declarationClassifications": {
+          "STRONG": 3,
+          "WEAK": 1
+        },
+        "runtimeClassifications": {
+          "STRONG": 3,
+          "WEAK": 3
+        },
+        "changes": {
+          "unchanged": 3,
+          "changed_or_renamed": 1
+        },
+        "issues": {
+          "newRuntimeCaseWithoutChangeAction": 1,
+          "changedBodyWithoutChangeAction": 3,
+          "keptDeclarationChanged": 1
+        }
+      }
+    }
+  ],
+  "allAssertionsPassed": true
+}

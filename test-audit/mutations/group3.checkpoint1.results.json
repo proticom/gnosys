@@ -54,7 +54,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "boundaries-after.results.json"
+      "stage": "after",
+      "originArtifact": "boundaries-after.results.json"
     },
     {
       "id": "log-file-suppresses-stderr",
@@ -109,7 +110,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "boundaries-after.results.json"
+      "stage": "after",
+      "originArtifact": "boundaries-after.results.json"
     },
     {
       "id": "recall-empty-truncation",
@@ -164,7 +166,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "boundaries-after.results.json"
+      "stage": "after",
+      "originArtifact": "boundaries-after.results.json"
     },
     {
       "id": "grok-empty-block",
@@ -267,7 +270,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "boundaries-after.results.json"
+      "stage": "after",
+      "originArtifact": "boundaries-after.results.json"
     },
     {
       "id": "claude-skip-install",
@@ -322,7 +326,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "boundaries-after.results.json"
+      "stage": "after",
+      "originArtifact": "boundaries-after.results.json"
     },
     {
       "id": "machine-damage-peer",
@@ -377,7 +382,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "boundaries-after.results.json"
+      "stage": "after",
+      "originArtifact": "boundaries-after.results.json"
     },
     {
       "id": "machine-empty-persistence",
@@ -432,7 +438,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "boundaries-after.results.json"
+      "stage": "after",
+      "originArtifact": "boundaries-after.results.json"
     },
     {
       "id": "links-wrong-target",
@@ -487,7 +494,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "boundaries-after.results.json"
+      "stage": "after",
+      "originArtifact": "boundaries-after.results.json"
     },
     {
       "id": "launchd-always-absent",
@@ -542,7 +550,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "boundaries-after.results.json"
+      "stage": "after",
+      "originArtifact": "boundaries-after.results.json"
     },
     {
       "id": "log-invert-gate",
@@ -590,7 +599,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "boundaries-before.results.json"
+      "stage": "before",
+      "originArtifact": "boundaries-before.results.json"
     },
     {
       "id": "log-file-suppresses-stderr",
@@ -638,7 +648,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "boundaries-before.results.json"
+      "stage": "before",
+      "originArtifact": "boundaries-before.results.json"
     },
     {
       "id": "recall-empty-truncation",
@@ -686,7 +697,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "boundaries-before.results.json"
+      "stage": "before",
+      "originArtifact": "boundaries-before.results.json"
     },
     {
       "id": "grok-empty-block",
@@ -770,7 +782,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "boundaries-before.results.json"
+      "stage": "before",
+      "originArtifact": "boundaries-before.results.json"
     },
     {
       "id": "claude-skip-install",
@@ -818,7 +831,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "boundaries-before.results.json"
+      "stage": "before",
+      "originArtifact": "boundaries-before.results.json"
     },
     {
       "id": "machine-damage-peer",
@@ -866,7 +880,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "boundaries-before.results.json"
+      "stage": "before",
+      "originArtifact": "boundaries-before.results.json"
     },
     {
       "id": "machine-empty-persistence",
@@ -914,7 +929,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "boundaries-before.results.json"
+      "stage": "before",
+      "originArtifact": "boundaries-before.results.json"
     },
     {
       "id": "links-wrong-target",
@@ -962,7 +978,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "boundaries-before.results.json"
+      "stage": "before",
+      "originArtifact": "boundaries-before.results.json"
     },
     {
       "id": "launchd-always-absent",
@@ -1010,7 +1027,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "boundaries-before.results.json"
+      "stage": "before",
+      "originArtifact": "boundaries-before.results.json"
     },
     {
       "id": "chunks-empty-output",
@@ -1161,7 +1179,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "chunks-after.results.json"
+      "stage": "after",
+      "originArtifact": "chunks-after.results.json"
     },
     {
       "id": "chunks-whitespace",
@@ -1216,7 +1235,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "chunks-after.results.json"
+      "stage": "after",
+      "originArtifact": "chunks-after.results.json"
     },
     {
       "id": "hash-length",
@@ -1271,7 +1291,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "chunks-after.results.json"
+      "stage": "after",
+      "originArtifact": "chunks-after.results.json"
     },
     {
       "id": "chunks-empty-output",
@@ -1391,7 +1412,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "chunks-before.results.json"
+      "stage": "before",
+      "originArtifact": "chunks-before.results.json"
     },
     {
       "id": "cli-list-empty",
@@ -1560,7 +1582,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "cli-after.results.json"
+      "stage": "after",
+      "originArtifact": "cli-after.results.json"
     },
     {
       "id": "cli-stats-bogus",
@@ -1633,7 +1656,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "cli-after.results.json"
+      "stage": "after",
+      "originArtifact": "cli-after.results.json"
     },
     {
       "id": "cli-projects-omit-rows",
@@ -1712,7 +1736,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "cli-after.results.json"
+      "stage": "after",
+      "originArtifact": "cli-after.results.json"
     },
     {
       "id": "cli-pref-phantom",
@@ -1767,7 +1792,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "cli-after.results.json"
+      "stage": "after",
+      "originArtifact": "cli-after.results.json"
     },
     {
       "id": "cli-pref-human-empty",
@@ -1822,7 +1848,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "cli-after.results.json"
+      "stage": "after",
+      "originArtifact": "cli-after.results.json"
     },
     {
       "id": "cli-identity-invalid",
@@ -1901,7 +1928,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "cli-after.results.json"
+      "stage": "after",
+      "originArtifact": "cli-after.results.json"
     },
     {
       "id": "cli-audit-phantom",
@@ -1956,7 +1984,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "cli-after.results.json"
+      "stage": "after",
+      "originArtifact": "cli-after.results.json"
     },
     {
       "id": "cli-list-empty",
@@ -2094,7 +2123,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "cli-before.results.json"
+      "stage": "before",
+      "originArtifact": "cli-before.results.json"
     },
     {
       "id": "cli-stats-bogus",
@@ -2196,7 +2226,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "cli-before.results.json"
+      "stage": "before",
+      "originArtifact": "cli-before.results.json"
     },
     {
       "id": "cli-projects-omit-rows",
@@ -2280,7 +2311,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "cli-before.results.json"
+      "stage": "before",
+      "originArtifact": "cli-before.results.json"
     },
     {
       "id": "cli-pref-phantom",
@@ -2346,7 +2378,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "cli-before.results.json"
+      "stage": "before",
+      "originArtifact": "cli-before.results.json"
     },
     {
       "id": "cli-pref-human-empty",
@@ -2394,7 +2427,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "cli-before.results.json"
+      "stage": "before",
+      "originArtifact": "cli-before.results.json"
     },
     {
       "id": "cli-identity-invalid",
@@ -2460,7 +2494,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "cli-before.results.json"
+      "stage": "before",
+      "originArtifact": "cli-before.results.json"
     },
     {
       "id": "cli-audit-phantom",
@@ -2508,7 +2543,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "cli-before.results.json"
+      "stage": "before",
+      "originArtifact": "cli-before.results.json"
     },
     {
       "id": "cli-stats-human-output",
@@ -2563,7 +2599,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "cli-human-after.results.json"
+      "stage": "after",
+      "originArtifact": "cli-human-after.results.json"
     },
     {
       "id": "cli-stats-human-output",
@@ -2611,7 +2648,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "cli-human-before.results.json"
+      "stage": "before",
+      "originArtifact": "cli-human-before.results.json"
     },
     {
       "id": "export-drop-body",
@@ -2738,7 +2776,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "export-after.results.json"
+      "stage": "after",
+      "originArtifact": "export-after.results.json"
     },
     {
       "id": "export-omit-wikilink-source",
@@ -2793,7 +2832,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "export-after.results.json"
+      "stage": "after",
+      "originArtifact": "export-after.results.json"
     },
     {
       "id": "backup-garbage",
@@ -2896,7 +2936,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "export-after.results.json"
+      "stage": "after",
+      "originArtifact": "export-after.results.json"
     },
     {
       "id": "bundle-drop-body",
@@ -2951,7 +2992,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "export-after.results.json"
+      "stage": "after",
+      "originArtifact": "export-after.results.json"
     },
     {
       "id": "merge-delete-existing",
@@ -3006,7 +3048,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "export-after.results.json"
+      "stage": "after",
+      "originArtifact": "export-after.results.json"
     },
     {
       "id": "export-drop-body",
@@ -3108,7 +3151,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "export-before.results.json"
+      "stage": "before",
+      "originArtifact": "export-before.results.json"
     },
     {
       "id": "export-omit-wikilink-source",
@@ -3156,7 +3200,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "export-before.results.json"
+      "stage": "before",
+      "originArtifact": "export-before.results.json"
     },
     {
       "id": "backup-garbage",
@@ -3240,7 +3285,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "export-before.results.json"
+      "stage": "before",
+      "originArtifact": "export-before.results.json"
     },
     {
       "id": "bundle-drop-body",
@@ -3288,7 +3334,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "export-before.results.json"
+      "stage": "before",
+      "originArtifact": "export-before.results.json"
     },
     {
       "id": "merge-delete-existing",
@@ -3336,7 +3383,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "export-before.results.json"
+      "stage": "before",
+      "originArtifact": "export-before.results.json"
     },
     {
       "id": "hash-length",
@@ -3384,7 +3432,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "hash-before.results.json"
+      "stage": "before",
+      "originArtifact": "hash-before.results.json"
     },
     {
       "id": "heartbeat-cleanup",
@@ -3463,7 +3512,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "heartbeat-after.results.json"
+      "stage": "after",
+      "originArtifact": "heartbeat-after.results.json"
     },
     {
       "id": "heartbeat-cleanup",
@@ -3529,7 +3579,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "heartbeat-before.results.json"
+      "stage": "before",
+      "originArtifact": "heartbeat-before.results.json"
     },
     {
       "id": "init-noop",
@@ -3584,7 +3635,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "init-after.results.json"
+      "stage": "after",
+      "originArtifact": "init-after.results.json"
     },
     {
       "id": "init-null-tags",
@@ -3639,7 +3691,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "init-after.results.json"
+      "stage": "after",
+      "originArtifact": "init-after.results.json"
     },
     {
       "id": "init-invalid-identity",
@@ -3814,7 +3867,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "init-after.results.json"
+      "stage": "after",
+      "originArtifact": "init-after.results.json"
     },
     {
       "id": "init-future-schema",
@@ -3869,7 +3923,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "init-after.results.json"
+      "stage": "after",
+      "originArtifact": "init-after.results.json"
     },
     {
       "id": "init-resync-noop",
@@ -3924,7 +3979,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "init-after.results.json"
+      "stage": "after",
+      "originArtifact": "init-after.results.json"
     },
     {
       "id": "preference-drop-value",
@@ -3979,7 +4035,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "init-after.results.json"
+      "stage": "after",
+      "originArtifact": "init-after.results.json"
     },
     {
       "id": "init-skip-registration",
@@ -4058,7 +4115,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "init-after.results.json"
+      "stage": "after",
+      "originArtifact": "init-after.results.json"
     },
     {
       "id": "init-noop",
@@ -4160,7 +4218,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "init-before.results.json"
+      "stage": "before",
+      "originArtifact": "init-before.results.json"
     },
     {
       "id": "init-null-tags",
@@ -4208,7 +4267,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "init-before.results.json"
+      "stage": "before",
+      "originArtifact": "init-before.results.json"
     },
     {
       "id": "init-invalid-identity",
@@ -4346,7 +4406,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "init-before.results.json"
+      "stage": "before",
+      "originArtifact": "init-before.results.json"
     },
     {
       "id": "init-future-schema",
@@ -4394,7 +4455,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "init-before.results.json"
+      "stage": "before",
+      "originArtifact": "init-before.results.json"
     },
     {
       "id": "init-resync-noop",
@@ -4442,7 +4504,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "init-before.results.json"
+      "stage": "before",
+      "originArtifact": "init-before.results.json"
     },
     {
       "id": "preference-drop-value",
@@ -4490,7 +4553,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "init-before.results.json"
+      "stage": "before",
+      "originArtifact": "init-before.results.json"
     },
     {
       "id": "fingerprint-ignore-identity",
@@ -4545,7 +4609,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "pure-after.results.json"
+      "stage": "after",
+      "originArtifact": "pure-after.results.json"
     },
     {
       "id": "dream-cost-constant",
@@ -4600,7 +4665,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "pure-after.results.json"
+      "stage": "after",
+      "originArtifact": "pure-after.results.json"
     },
     {
       "id": "ingestion-empty-long-slug",
@@ -4655,7 +4721,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "pure-after.results.json"
+      "stage": "after",
+      "originArtifact": "pure-after.results.json"
     },
     {
       "id": "docx-empty-output",
@@ -4710,7 +4777,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "pure-after.results.json"
+      "stage": "after",
+      "originArtifact": "pure-after.results.json"
     },
     {
       "id": "ingestion-available-always",
@@ -4765,7 +4833,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "pure-after.results.json"
+      "stage": "after",
+      "originArtifact": "pure-after.results.json"
     },
     {
       "id": "fingerprint-ignore-identity",
@@ -4813,7 +4882,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "pure-before.results.json"
+      "stage": "before",
+      "originArtifact": "pure-before.results.json"
     },
     {
       "id": "dream-cost-constant",
@@ -4861,7 +4931,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "pure-before.results.json"
+      "stage": "before",
+      "originArtifact": "pure-before.results.json"
     },
     {
       "id": "ingestion-empty-long-slug",
@@ -4909,7 +4980,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "pure-before.results.json"
+      "stage": "before",
+      "originArtifact": "pure-before.results.json"
     },
     {
       "id": "docx-empty-output",
@@ -4957,7 +5029,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "pure-before.results.json"
+      "stage": "before",
+      "originArtifact": "pure-before.results.json"
     },
     {
       "id": "static-load-empty-documents",
@@ -5036,7 +5109,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "static-after.results.json"
+      "stage": "after",
+      "originArtifact": "static-after.results.json"
     },
     {
       "id": "static-search-empty",
@@ -5163,7 +5237,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "static-after.results.json"
+      "stage": "after",
+      "originArtifact": "static-after.results.json"
     },
     {
       "id": "static-reverse-rank",
@@ -5218,7 +5293,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "static-after.results.json"
+      "stage": "after",
+      "originArtifact": "static-after.results.json"
     },
     {
       "id": "static-ignore-limit",
@@ -5273,7 +5349,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "static-after.results.json"
+      "stage": "after",
+      "originArtifact": "static-after.results.json"
     },
     {
       "id": "static-wrong-document",
@@ -5352,7 +5429,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "static-after.results.json"
+      "stage": "after",
+      "originArtifact": "static-after.results.json"
     },
     {
       "id": "static-repeat-documents",
@@ -5407,7 +5485,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "static-after.results.json"
+      "stage": "after",
+      "originArtifact": "static-after.results.json"
     },
     {
       "id": "static-bypass-cache",
@@ -5462,7 +5541,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "static-after.results.json"
+      "stage": "after",
+      "originArtifact": "static-after.results.json"
     },
     {
       "id": "static-load-empty-documents",
@@ -5528,7 +5608,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "static-before.results.json"
+      "stage": "before",
+      "originArtifact": "static-before.results.json"
     },
     {
       "id": "static-search-empty",
@@ -5630,7 +5711,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "static-before.results.json"
+      "stage": "before",
+      "originArtifact": "static-before.results.json"
     },
     {
       "id": "static-reverse-rank",
@@ -5678,7 +5760,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "static-before.results.json"
+      "stage": "before",
+      "originArtifact": "static-before.results.json"
     },
     {
       "id": "static-ignore-limit",
@@ -5726,7 +5809,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "static-before.results.json"
+      "stage": "before",
+      "originArtifact": "static-before.results.json"
     },
     {
       "id": "static-wrong-document",
@@ -5792,7 +5876,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "static-before.results.json"
+      "stage": "before",
+      "originArtifact": "static-before.results.json"
     },
     {
       "id": "static-repeat-documents",
@@ -5840,7 +5925,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "static-before.results.json"
+      "stage": "before",
+      "originArtifact": "static-before.results.json"
     },
     {
       "id": "splash-double-v",
@@ -5895,7 +5981,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "ui-machine-after.results.json"
+      "stage": "after",
+      "originArtifact": "ui-machine-after.results.json"
     },
     {
       "id": "table-strip-cell-color",
@@ -5950,7 +6037,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "ui-machine-after.results.json"
+      "stage": "after",
+      "originArtifact": "ui-machine-after.results.json"
     },
     {
       "id": "machine-invalid-fresh-id",
@@ -6005,7 +6093,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "ui-machine-after.results.json"
+      "stage": "after",
+      "originArtifact": "ui-machine-after.results.json"
     },
     {
       "id": "machine-drop-existing-roots",
@@ -6060,7 +6149,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "ui-machine-after.results.json"
+      "stage": "after",
+      "originArtifact": "ui-machine-after.results.json"
     },
     {
       "id": "machine-constant-id",
@@ -6115,7 +6205,8 @@
         }
       ],
       "applicationRestored": true,
-      "artifact": "ui-machine-after.results.json"
+      "stage": "after",
+      "originArtifact": "ui-machine-after.results.json"
     },
     {
       "id": "splash-double-v",
@@ -6163,7 +6254,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "ui-machine-before.results.json"
+      "stage": "before",
+      "originArtifact": "ui-machine-before.results.json"
     },
     {
       "id": "table-strip-cell-color",
@@ -6211,7 +6303,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "ui-machine-before.results.json"
+      "stage": "before",
+      "originArtifact": "ui-machine-before.results.json"
     },
     {
       "id": "machine-invalid-fresh-id",
@@ -6259,7 +6352,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "ui-machine-before.results.json"
+      "stage": "before",
+      "originArtifact": "ui-machine-before.results.json"
     },
     {
       "id": "machine-drop-existing-roots",
@@ -6307,7 +6401,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "ui-machine-before.results.json"
+      "stage": "before",
+      "originArtifact": "ui-machine-before.results.json"
     },
     {
       "id": "machine-constant-id",
@@ -6355,7 +6450,8 @@
       "outcome": "survived",
       "killedBy": [],
       "applicationRestored": true,
-      "artifact": "ui-machine-before.results.json"
+      "stage": "before",
+      "originArtifact": "ui-machine-before.results.json"
     }
   ]
 }

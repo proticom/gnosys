@@ -27,9 +27,9 @@ const experiments = new Map();
 for (const file of fs.readdirSync("test-audit/mutations").filter((file) => file.endsWith(".results.json")).sort()) {
   const data = read(`test-audit/mutations/${file}`);
   for (const record of Array.isArray(data) ? data : data.results || []) {
-    const kind = record.kind || "fault-injection";
-    const artifact = record.artifact || file;
-    const stage = record.phase || (/before|survival/.test(artifact) ? "before" : "after");
+    const kind = record.kind === "regression-mutation" ? "fault-injection" : record.kind || "fault-injection";
+    const artifact = record.artifact || record.evidencePath || file;
+    const stage = record.stage || record.phase || (/before|survival/.test(artifact) ? "before" : "after");
     const tests = (record.mutated?.tests || []).map(({ file, name, status }) => ({ file, name, status }));
     const identity = JSON.stringify([record.id, record.file, kind, stage, tests]);
     const key = createHash("sha256").update(identity).digest("hex").slice(0, 16);
