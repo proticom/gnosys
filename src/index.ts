@@ -1242,23 +1242,20 @@ regTool(
       await fs.appendFile(logPath, entry + "\n", "utf-8");
     }
 
-    // If 'useful', find the memory across all stores and update if writable
     if (signal === "useful") {
-      const allMemories = await ctx.resolver.getAllMemories();
-      const memory = allMemories.find((m) => m.frontmatter.id === memory_id);
-      if (memory) {
-        const sourceStore = ctx.resolver
-          .getStores()
-          .find((s) => s.label === memory.sourceLabel);
-        if (sourceStore) {
-          const count = (memory.frontmatter.reinforcement_count || 0) + 1;
-
-          // Write reinforcement to DB only (SQLite is sole source of truth)
-          if (ctx.centralDb?.isAvailable()) {
-            syncReinforcementToDb(ctx.centralDb, memory_id, count);
-            auditToDb(ctx.centralDb, "reinforce", memory_id, { signal, context });
-          }
-        }
+      const db = ctx.centralDb;
+      if (!db?.isAvailable()) {
+        return { content: [{ type: "text", text: "Central DB not available. Memory was not reinforced." }], isError: true };
+      }
+      const reinforced = db.transaction(() => {
+        const memory = db.getMemory(memory_id);
+        if (!memory) return false;
+        syncReinforcementToDb(db, memory_id, memory.reinforcement_count + 1);
+        auditToDb(db, "reinforce", memory_id, { signal, context });
+        return true;
+      });
+      if (!reinforced) {
+        return { content: [{ type: "text", text: `Memory not found: ${memory_id}` }], isError: true };
       }
     }
 
