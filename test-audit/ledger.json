@@ -23,8 +23,8 @@
   "mutationScore": {
     "method": "targeted-manual",
     "unit": "distinct application file and mutation ID after test repair",
-    "tested": 508,
-    "killed": 505,
+    "tested": 511,
+    "killed": 508,
     "survived": 3,
     "percent": 99.41,
     "limitations": "Selected faults only; not an exhaustive or random mutation score. Before-test experiments and inverse defect repair probes are excluded. Repeated copies of experiment evidence are deduplicated."
@@ -40,11 +40,11 @@
     "missingOrdinaryDefectEvidence": []
   },
   "acceptance": {
-    "manifestSha256": "1e55bd917c2098171395ea17b8656ae90df466dbb7172e0739e97f6eecea5362",
-    "defectsSha256": "111b8b5b1c86971add698d1a50ae6f9aa0bdbd66a1c73d8b2e0da618610a8166",
+    "manifestSha256": "a9ec11e3c3d1c191ef3474f96ddd3be979fbd6faf9e9be9bc253d925d33e6011",
+    "defectsSha256": "9fcfb524a8b26812004d20a937992ee6413f751379c2bef74f4266638eb788b1",
     "application": {
       "baseCommit": "ec1955434bbd43136d8bbf3b92ef8d696aa78a38",
-      "applicationFixRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+      "applicationFixRef": "e9d605f66268a6599c6064d54bc4df6f4f094369",
       "applicationFixCommits": [
         "b8ac52bb1f18e6977fc45c1914e07610888cf652",
         "13756f2c1aab1873ba7d68a39727b16b11251a29",
@@ -54,9 +54,29 @@
         "a420e3b727c33a578aed2c089d72841f5a4441f9",
         "29a59b0b8ecdeb6e0796515d787aada530fe7335",
         "6a69746dabf618e212c23e5530b474903d19df07",
-        "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906"
+        "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+        "49d7a31cce6363dbaec5bcd39560aa94ff6e2151",
+        "526e2a973f95f26efe3d520003fc94e3e4cf84ff",
+        "3817d8f29bbead5ad7187022149e736575df510c",
+        "4907fc3e1b01353273698ec7475a643bc93c9615",
+        "9a9880001714ba71660cfb89b38dd66482c7fa70",
+        "a3f0c619004542c54821371c08e8fc968db40b9d",
+        "8db9dd8daa377ad7d2afbe9c486747753f43b2ca",
+        "d5a7aa9d8a1d8b3c91b3364c67886c08d41c9ed5",
+        "0e381a2488db96c56eab1b4941081c2519177b91",
+        "f6616751d8cacdab92e82b558d38cc38c7d43e82",
+        "1384029886c74bc4bd63af0cecbea715c6ba2f76",
+        "0cc57079fede5abd97800137c7c595932d83943f",
+        "38e2ee89178fd73fe17345f33dc06d4146e12cf3",
+        "9c317730d097b0373b154accd976791b86d7ff9b",
+        "f66643fafed3f93a15393100e6b59b2082fbdf1c",
+        "69777d745a2d96223b67197c137cbe86e279dc2b",
+        "0f66898d7b346792d4abdb55ea1309d695ed4c54",
+        "b867c33d092d08a35e95a25c225d866655d0fc2a",
+        "ad874e2363ed71a800521acc638a9ed9fc7658a3",
+        "2606b057943a8795313c035f025501d7565aacfc"
       ],
-      "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
       "issues": []
     },
     "cases": [
@@ -68,7 +88,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-001",
@@ -78,7 +98,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-001",
@@ -88,7 +108,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-001",
@@ -98,7 +118,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-001",
@@ -108,7 +128,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-001",
@@ -118,7 +138,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-001",
@@ -128,7 +148,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-001",
@@ -138,7 +158,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-001",
@@ -148,7 +168,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-001",
@@ -158,7 +178,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-001",
@@ -168,7 +188,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-001",
@@ -178,7 +198,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-001",
@@ -188,7 +208,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-001",
@@ -198,7 +218,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-001",
@@ -208,7 +228,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-001",
@@ -218,7 +238,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-001",
@@ -228,7 +248,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "D-VSC-002",
@@ -238,7 +258,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "vscode-e2-directory-substring",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-VSC-002",
@@ -248,7 +268,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "vscode-e2-directory-substring",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-VSC-002",
@@ -258,7 +278,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "vscode-e2-directory-substring",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-VSC-002",
@@ -268,7 +288,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "vscode-e2-directory-substring",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-VSC-002",
@@ -278,7 +298,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "vscode-e2-directory-substring",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-VSC-002",
@@ -288,7 +308,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "vscode-e2-directory-substring",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-VSC-002",
@@ -298,7 +318,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "vscode-e2-directory-substring",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-VSC-002",
@@ -308,7 +328,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "vscode-e2-directory-substring",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-VSC-002",
@@ -318,17 +338,17 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "vscode-e2-directory-substring",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-VSC-003",
         "file": "src/test/vscode-adversarial.test.ts",
-        "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
-        "kind": "open",
-        "expectedFailure": true,
+        "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
+        "kind": "fixed",
+        "expectedFailure": false,
         "ordinaryVerified": true,
-        "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "directFaultId": "vscode-release-variable-shell",
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-VSC-004",
@@ -338,7 +358,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "vscode-e2-removed-dashboard-command",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-VSC-004",
@@ -348,7 +368,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "vscode-e2-removed-dashboard-command",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "DEF-G1-001",
@@ -358,7 +378,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "DEF-G1-001",
@@ -368,7 +388,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "DEF-G1-001",
@@ -378,7 +398,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "DEF-G1-001",
@@ -388,7 +408,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "G2-D001",
@@ -398,7 +418,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "setup-cancellation-success-regression",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "G2-D001",
@@ -408,7 +428,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "setup-cancellation-success-regression",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "G2-D002",
@@ -418,7 +438,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "ADV-FTS-repeat-insert",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "G2-D002",
@@ -428,7 +448,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "ADV-FTS-repeat-insert",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "G2-D002",
@@ -438,7 +458,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "ADV-FTS-skip-legacy-healing",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-CTX-001",
@@ -448,7 +468,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "ADV-CTX-D001-provider-f4b9135",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-CTX-001",
@@ -458,7 +478,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "ADV-CTX-D001-provider-f4b9135",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-CTX-001",
@@ -468,7 +488,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "ADV-CTX-D001-guidance-f4b9135",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-CTX-002",
@@ -478,7 +498,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "ADV-CTX-D002-lookup-f4b9135",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-CTX-002",
@@ -488,7 +508,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "ADV-CTX-D002-lookup-f4b9135",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "G2-D003",
@@ -498,7 +518,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "ADV-CTX-G2D003-provider-f4b9135",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "G2-D003",
@@ -508,7 +528,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "ADV-CTX-G2D003-provider-f4b9135",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "G2-D003",
@@ -518,7 +538,7 @@
         "expectedFailure": false,
         "ordinaryVerified": true,
         "directFaultId": "ADV-CTX-G2D003-provider-f4b9135",
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json"
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "D-DASH-001",
@@ -528,7 +548,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "ADV-FTS-001",
@@ -538,7 +558,7 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "ADV-CTX-001",
@@ -548,27 +568,27 @@
         "expectedFailure": true,
         "ordinaryVerified": true,
         "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json"
       },
       {
         "defectId": "ADV-CTX-002",
         "file": "src/test/context-adversarial.test.ts",
         "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
-        "kind": "open",
-        "expectedFailure": true,
+        "kind": "fixed",
+        "expectedFailure": false,
         "ordinaryVerified": true,
-        "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "directFaultId": "RELEASE-CTX-cli-persistence-e9d605f",
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       },
       {
         "defectId": "ADV-CTX-002",
         "file": "src/test/context-adversarial.test.ts",
         "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
-        "kind": "open",
-        "expectedFailure": true,
+        "kind": "fixed",
+        "expectedFailure": false,
         "ordinaryVerified": true,
-        "directFaultId": null,
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json"
+        "directFaultId": "RELEASE-CTX-mcp-persistence-e9d605f",
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json"
       }
     ],
     "issues": {
@@ -6155,9 +6175,10 @@
       "afterNames": [
         "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests"
       ],
-      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) ADV-CTX-G2D003-provider-f4b9135; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) ADV-CTX-G2D003-provider-f4b9135; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
       "mutationIds": [
-        "ADV-CTX-G2D003-provider-f4b9135"
+        "ADV-CTX-G2D003-provider-f4b9135",
+        "RELEASE-CTX-G2D003-provider-e9d605f"
       ],
       "structuralReason": null
     },
@@ -6190,9 +6211,10 @@
       "afterNames": [
         "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency"
       ],
-      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) ADV-CTX-G2D003-provider-f4b9135; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) ADV-CTX-G2D003-provider-f4b9135; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
       "mutationIds": [
-        "ADV-CTX-G2D003-provider-f4b9135"
+        "ADV-CTX-G2D003-provider-f4b9135",
+        "RELEASE-CTX-G2D003-provider-e9d605f"
       ],
       "structuralReason": null
     },
@@ -18387,7 +18409,7 @@
       "afterNames": [
         "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT"
       ],
-      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) setup-cancellation-success-regression; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) setup-cancellation-success-regression; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
       "mutationIds": [
         "setup-cancellation-success-regression"
       ],
@@ -20218,7 +20240,7 @@
       "afterNames": [
         "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config"
       ],
-      "evidence": "Ordinary failure reproduced for DEF-G1-001; see test-audit/adversarial/final-open-ordinary.json. This detects an open defect and does not prove successful behavior.",
+      "evidence": "Ordinary failure reproduced for DEF-G1-001; see test-audit/release-review/open-ordinary.json. This detects an open defect and does not prove successful behavior.",
       "mutationIds": [],
       "structuralReason": null
     },
@@ -28533,7 +28555,7 @@
       "mutationIds": [
         "ADV-CTX-human-key-leak-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-human-key-leak-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-human-key-leak-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28543,7 +28565,7 @@
       "action": "expected_failure",
       "defectId": "ADV-CTX-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces ADV-CTX-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces ADV-CTX-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28555,7 +28577,7 @@
       "mutationIds": [
         "ADV-CTX-D001-provider-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-D001-provider-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-D001-provider-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28567,7 +28589,7 @@
       "mutationIds": [
         "ADV-CTX-mcp-content-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-mcp-content-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-mcp-content-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28579,7 +28601,7 @@
       "mutationIds": [
         "ADV-CTX-G2D003-provider-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-G2D003-provider-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-G2D003-provider-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28591,27 +28613,31 @@
       "mutationIds": [
         "ADV-CTX-import-concurrency-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-import-concurrency-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-import-concurrency-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
       "file": "src/test/context-adversarial.test.ts",
       "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "ADV-CTX-002",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces ADV-CTX-002; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "mutationIds": [
+        "RELEASE-CTX-cli-persistence-e9d605f"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) RELEASE-CTX-cli-persistence-e9d605f. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
       "file": "src/test/context-adversarial.test.ts",
       "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "ADV-CTX-002",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces ADV-CTX-002; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "mutationIds": [
+        "RELEASE-CTX-mcp-persistence-e9d605f"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) RELEASE-CTX-mcp-persistence-e9d605f. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28623,7 +28649,7 @@
       "mutationIds": [
         "ADV-CTX-D001-guidance-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-D001-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-D001-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28635,7 +28661,7 @@
       "mutationIds": [
         "ADV-CTX-import-setup-guidance-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-import-setup-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-import-setup-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28647,7 +28673,7 @@
       "mutationIds": [
         "ADV-CTX-context-setup-guidance-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-context-setup-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-context-setup-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28659,7 +28685,7 @@
       "mutationIds": [
         "ADV-CTX-import-setup-guidance-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-import-setup-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-import-setup-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28672,7 +28698,7 @@
         "ADV-CTX-project-scope-f4b9135",
         "ADV-CTX-D002-cross-project-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-project-scope-f4b9135, ADV-CTX-D002-cross-project-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-project-scope-f4b9135, ADV-CTX-D002-cross-project-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28684,7 +28710,7 @@
       "mutationIds": [
         "ADV-CTX-D002-lookup-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-D002-lookup-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-D002-lookup-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28696,7 +28722,7 @@
       "mutationIds": [
         "ADV-CTX-startup-dedup-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-startup-dedup-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-startup-dedup-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28708,7 +28734,7 @@
       "mutationIds": [
         "ADV-CTX-explicit-update-project-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-explicit-update-project-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-explicit-update-project-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28720,7 +28746,7 @@
       "mutationIds": [
         "coverage-base-fail-open"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) coverage-base-fail-open. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) coverage-base-fail-open. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28732,7 +28758,7 @@
       "mutationIds": [
         "coverage-empty-diff-fails"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) coverage-empty-diff-fails. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) coverage-empty-diff-fails. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28744,7 +28770,7 @@
       "mutationIds": [
         "dashboard-unescaped-stored-content"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) dashboard-unescaped-stored-content. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) dashboard-unescaped-stored-content. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28756,7 +28782,7 @@
       "mutationIds": [
         "dashboard-unescaped-stored-content"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) dashboard-unescaped-stored-content. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) dashboard-unescaped-stored-content. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28766,7 +28792,7 @@
       "action": "expected_failure",
       "defectId": "D-DASH-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-DASH-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces D-DASH-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28778,7 +28804,7 @@
       "mutationIds": [
         "ADV-FTS-repeat-insert"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-FTS-repeat-insert. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-FTS-repeat-insert. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28791,7 +28817,7 @@
         "ADV-FTS-skip-legacy-healing",
         "ADV-FTS-repeat-healing"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-FTS-skip-legacy-healing, ADV-FTS-repeat-healing. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-FTS-skip-legacy-healing, ADV-FTS-repeat-healing. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28801,7 +28827,7 @@
       "action": "expected_failure",
       "defectId": "ADV-FTS-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces ADV-FTS-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces ADV-FTS-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28813,7 +28839,7 @@
       "mutationIds": [
         "http-malformed-json-500"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) http-malformed-json-500. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) http-malformed-json-500. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28823,7 +28849,7 @@
       "action": "expected_failure",
       "defectId": "DEF-G1-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces DEF-G1-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces DEF-G1-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28833,7 +28859,7 @@
       "action": "expected_failure",
       "defectId": "DEF-G1-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces DEF-G1-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces DEF-G1-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28845,7 +28871,7 @@
       "mutationIds": [
         "setup-cancellation-success-regression"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) setup-cancellation-success-regression. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) setup-cancellation-success-regression. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28857,7 +28883,7 @@
       "mutationIds": [
         "setup-completion-exit-status"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) setup-completion-exit-status. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) setup-completion-exit-status. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28867,7 +28893,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28877,7 +28903,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28887,7 +28913,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28897,7 +28923,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28909,7 +28935,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28921,7 +28947,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28933,7 +28959,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28945,7 +28971,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28955,7 +28981,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28967,7 +28993,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28979,7 +29005,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -28991,7 +29017,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -29003,7 +29029,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -29013,7 +29039,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -29023,7 +29049,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -29033,7 +29059,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -29043,7 +29069,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -29053,7 +29079,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -29063,7 +29089,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -29073,7 +29099,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -29083,7 +29109,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -29093,17 +29119,19 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
       "artifact": "adversarial.after.json"
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
-      "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
+      "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-003",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-003; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed.",
+      "mutationIds": [
+        "vscode-release-variable-shell"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-release-variable-shell. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -29115,7 +29143,7 @@
       "mutationIds": [
         "vscode-e2-removed-dashboard-command"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-removed-dashboard-command. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-removed-dashboard-command. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json.",
       "artifact": "adversarial.after.json"
     },
     {
@@ -29185,9 +29213,10 @@
       "action": "added",
       "defectId": "D-CTX-001",
       "mutationIds": [
-        "ADV-CTX-D001-provider-f4b9135"
+        "ADV-CTX-D001-provider-f4b9135",
+        "RELEASE-CTX-D001-provider-e9d605f"
       ],
-      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) ADV-CTX-D001-provider-f4b9135; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) ADV-CTX-D001-provider-f4b9135; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
       "artifact": "context.after.json"
     },
     {
@@ -29197,9 +29226,10 @@
       "action": "added",
       "defectId": "D-CTX-002",
       "mutationIds": [
-        "ADV-CTX-D002-lookup-f4b9135"
+        "ADV-CTX-D002-lookup-f4b9135",
+        "RELEASE-CTX-D002-lookup-e9d605f"
       ],
-      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) ADV-CTX-D002-lookup-f4b9135; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) ADV-CTX-D002-lookup-f4b9135; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
       "artifact": "context.after.json"
     },
     {
@@ -29211,7 +29241,7 @@
       "action": "expected_failure",
       "defectId": "DEF-G1-001",
       "mutationIds": [],
-      "evidence": "Ordinary failure reproduced for DEF-G1-001; see test-audit/adversarial/final-open-ordinary.json. This detects an open defect and does not prove successful behavior.",
+      "evidence": "Ordinary failure reproduced for DEF-G1-001; see test-audit/release-review/open-ordinary.json. This detects an open defect and does not prove successful behavior.",
       "artifact": "group1.after.json"
     },
     {
@@ -29224,7 +29254,7 @@
       "mutationIds": [
         "ADV-FTS-repeat-insert"
       ],
-      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) ADV-FTS-repeat-insert; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) ADV-FTS-repeat-insert; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
       "afterClassification": "STRONG",
       "artifact": "group2.after.json"
     },
@@ -29306,7 +29336,7 @@
         "vscode-command-error",
         "vscode-e2-launch-error-hidden"
       ],
-      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) vscode-e2-launch-error-hidden; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) vscode-e2-launch-error-hidden; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
       "artifact": "vscode.after.json"
     },
     {
@@ -29316,7 +29346,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failure reproduced for D-VSC-001; see test-audit/adversarial/final-open-ordinary.json. This detects an open defect and does not prove successful behavior.",
+      "evidence": "Ordinary failure reproduced for D-VSC-001; see test-audit/release-review/open-ordinary.json. This detects an open defect and does not prove successful behavior.",
       "artifact": "vscode.after.json"
     },
     {
@@ -29328,7 +29358,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) vscode-e2-directory-substring; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) vscode-e2-directory-substring; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
       "artifact": "vscode.after.json"
     },
     {
@@ -29338,7 +29368,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failure reproduced for D-VSC-001; see test-audit/adversarial/final-open-ordinary.json. This detects an open defect and does not prove successful behavior.",
+      "evidence": "Ordinary failure reproduced for D-VSC-001; see test-audit/release-review/open-ordinary.json. This detects an open defect and does not prove successful behavior.",
       "artifact": "vscode.after.json"
     },
     {
@@ -29350,7 +29380,7 @@
       "mutationIds": [
         "vscode-e2-removed-dashboard-command"
       ],
-      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) vscode-e2-removed-dashboard-command; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json.",
+      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) vscode-e2-removed-dashboard-command; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
       "artifact": "vscode.after.json"
     }
   ],
@@ -33812,7 +33842,8 @@
       ],
       "classification": "STRONG",
       "mutationIds": [
-        "ADV-CTX-D002-lookup-f4b9135"
+        "ADV-CTX-D002-lookup-f4b9135",
+        "RELEASE-CTX-D002-lookup-e9d605f"
       ],
       "killedByProof": true,
       "defectResolution": "fixed",
@@ -33853,7 +33884,8 @@
       ],
       "classification": "STRONG",
       "mutationIds": [
-        "ADV-CTX-D001-provider-f4b9135"
+        "ADV-CTX-D001-provider-f4b9135",
+        "RELEASE-CTX-D001-provider-e9d605f"
       ],
       "killedByProof": true,
       "defectResolution": "fixed",
@@ -33971,9 +34003,11 @@
         "added:adversarial.after.json"
       ],
       "classification": "STRONG",
-      "mutationIds": [],
-      "killedByProof": false,
-      "defectResolution": "open",
+      "mutationIds": [
+        "RELEASE-CTX-cli-persistence-e9d605f"
+      ],
+      "killedByProof": true,
+      "defectResolution": "fixed",
       "ordinaryDefectEvidence": true
     },
     {
@@ -33984,9 +34018,11 @@
         "added:adversarial.after.json"
       ],
       "classification": "STRONG",
-      "mutationIds": [],
-      "killedByProof": false,
-      "defectResolution": "open",
+      "mutationIds": [
+        "RELEASE-CTX-mcp-persistence-e9d605f"
+      ],
+      "killedByProof": true,
+      "defectResolution": "fixed",
       "ordinaryDefectEvidence": true
     },
     {
@@ -36640,7 +36676,8 @@
       ],
       "classification": "STRONG",
       "mutationIds": [
-        "ADV-CTX-G2D003-provider-f4b9135"
+        "ADV-CTX-G2D003-provider-f4b9135",
+        "RELEASE-CTX-G2D003-provider-e9d605f"
       ],
       "killedByProof": true,
       "defectResolution": "fixed",
@@ -36669,7 +36706,8 @@
       ],
       "classification": "STRONG",
       "mutationIds": [
-        "ADV-CTX-G2D003-provider-f4b9135"
+        "ADV-CTX-G2D003-provider-f4b9135",
+        "RELEASE-CTX-G2D003-provider-e9d605f"
       ],
       "killedByProof": true,
       "defectResolution": "fixed",
@@ -50420,15 +50458,17 @@
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
-      "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
+      "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
       "status": "passed",
       "actions": [
         "added:adversarial.after.json"
       ],
       "classification": "STRONG",
-      "mutationIds": [],
-      "killedByProof": false,
-      "defectResolution": "open",
+      "mutationIds": [
+        "vscode-release-variable-shell"
+      ],
+      "killedByProof": true,
+      "defectResolution": "fixed",
       "ordinaryDefectEvidence": true
     },
     {
@@ -61477,7 +61517,8 @@
       "survivingMutation": false,
       "structuralReason": null,
       "mutationIds": [
-        "ADV-CTX-G2D003-provider-f4b9135"
+        "ADV-CTX-G2D003-provider-f4b9135",
+        "RELEASE-CTX-G2D003-provider-e9d605f"
       ],
       "missingKillNames": []
     },
@@ -61502,7 +61543,8 @@
       "survivingMutation": false,
       "structuralReason": null,
       "mutationIds": [
-        "ADV-CTX-G2D003-provider-f4b9135"
+        "ADV-CTX-G2D003-provider-f4b9135",
+        "RELEASE-CTX-G2D003-provider-e9d605f"
       ],
       "missingKillNames": []
     },
@@ -71215,21 +71257,25 @@
     {
       "beforeId": null,
       "artifact": "adversarial.after.json",
-      "action": "expected_failure",
+      "action": "added",
       "beforeClassification": null,
       "survivingMutation": false,
       "structuralReason": null,
-      "mutationIds": [],
+      "mutationIds": [
+        "RELEASE-CTX-cli-persistence-e9d605f"
+      ],
       "missingKillNames": []
     },
     {
       "beforeId": null,
       "artifact": "adversarial.after.json",
-      "action": "expected_failure",
+      "action": "added",
       "beforeClassification": null,
       "survivingMutation": false,
       "structuralReason": null,
-      "mutationIds": [],
+      "mutationIds": [
+        "RELEASE-CTX-mcp-persistence-e9d605f"
+      ],
       "missingKillNames": []
     },
     {
@@ -71717,11 +71763,13 @@
     {
       "beforeId": null,
       "artifact": "adversarial.after.json",
-      "action": "expected_failure",
+      "action": "added",
       "beforeClassification": null,
       "survivingMutation": false,
       "structuralReason": null,
-      "mutationIds": [],
+      "mutationIds": [
+        "vscode-release-variable-shell"
+      ],
       "missingKillNames": []
     },
     {
@@ -71804,7 +71852,8 @@
       "survivingMutation": false,
       "structuralReason": null,
       "mutationIds": [
-        "ADV-CTX-D001-provider-f4b9135"
+        "ADV-CTX-D001-provider-f4b9135",
+        "RELEASE-CTX-D001-provider-e9d605f"
       ],
       "missingKillNames": []
     },
@@ -71816,7 +71865,8 @@
       "survivingMutation": false,
       "structuralReason": null,
       "mutationIds": [
-        "ADV-CTX-D002-lookup-f4b9135"
+        "ADV-CTX-D002-lookup-f4b9135",
+        "RELEASE-CTX-D002-lookup-e9d605f"
       ],
       "missingKillNames": []
     },
@@ -71954,7 +72004,8 @@
       "file": "src/lib/mcpHttp.ts",
       "outcome": "killed",
       "experiments": [
-        "f4a196b29e8afccb"
+        "f4a196b29e8afccb",
+        "ce0bc202baf783a7"
       ]
     },
     {
@@ -71962,7 +72013,8 @@
       "file": "src/index.ts",
       "outcome": "killed",
       "experiments": [
-        "5f65a0fa52eae92b"
+        "5f65a0fa52eae92b",
+        "a705d5b6629210ef"
       ]
     },
     {
@@ -71970,7 +72022,8 @@
       "file": "src/index.ts",
       "outcome": "killed",
       "experiments": [
-        "a85e1821ba156251"
+        "a85e1821ba156251",
+        "5a983411ded338ff"
       ]
     },
     {
@@ -71978,7 +72031,8 @@
       "file": "src/lib/import.ts",
       "outcome": "killed",
       "experiments": [
-        "c4510ffc8c759d06"
+        "c4510ffc8c759d06",
+        "9de5faab3d5e14af"
       ]
     },
     {
@@ -71986,7 +72040,8 @@
       "file": "src/lib/config.ts",
       "outcome": "killed",
       "experiments": [
-        "2dbf4c42725e3206"
+        "2dbf4c42725e3206",
+        "8a31087fd46a17fa"
       ]
     },
     {
@@ -71994,7 +72049,8 @@
       "file": "src/index.ts",
       "outcome": "killed",
       "experiments": [
-        "af02c1570006a19b"
+        "af02c1570006a19b",
+        "73d2fdd2cacb5107"
       ]
     },
     {
@@ -72002,7 +72058,8 @@
       "file": "src/index.ts",
       "outcome": "killed",
       "experiments": [
-        "28e0f3a9a11d211f"
+        "28e0f3a9a11d211f",
+        "7fda71b63e9a3302"
       ]
     },
     {
@@ -72010,7 +72067,8 @@
       "file": "src/index.ts",
       "outcome": "killed",
       "experiments": [
-        "53321f36851d98a9"
+        "53321f36851d98a9",
+        "e70b0024c20fa89c"
       ]
     },
     {
@@ -72018,7 +72076,8 @@
       "file": "src/lib/configCommand.ts",
       "outcome": "killed",
       "experiments": [
-        "b2d7800561de62b8"
+        "b2d7800561de62b8",
+        "da9a8df4ccf77374"
       ]
     },
     {
@@ -72026,7 +72085,8 @@
       "file": "src/lib/commitContextCommand.ts",
       "outcome": "killed",
       "experiments": [
-        "04fff092ad684af8"
+        "04fff092ad684af8",
+        "bd7512bb722a93d2"
       ]
     },
     {
@@ -72034,7 +72094,8 @@
       "file": "src/lib/commitContextCommand.ts",
       "outcome": "killed",
       "experiments": [
-        "e952e1565b79f4a7"
+        "e952e1565b79f4a7",
+        "c8c4d4d98d871574"
       ]
     },
     {
@@ -72042,7 +72103,8 @@
       "file": "src/lib/importCommand.ts",
       "outcome": "killed",
       "experiments": [
-        "c2545547a57367cc"
+        "c2545547a57367cc",
+        "3f06b14bcd1c6d8e"
       ]
     },
     {
@@ -72050,7 +72112,8 @@
       "file": "src/index.ts",
       "outcome": "killed",
       "experiments": [
-        "266b8827267122b8"
+        "266b8827267122b8",
+        "c32b64229e8ecd37"
       ]
     },
     {
@@ -72058,7 +72121,8 @@
       "file": "src/index.ts",
       "outcome": "killed",
       "experiments": [
-        "60d72ca33509d226"
+        "60d72ca33509d226",
+        "d9d810259603bf5d"
       ]
     },
     {
@@ -72066,7 +72130,8 @@
       "file": "src/lib/db.ts",
       "outcome": "killed",
       "experiments": [
-        "e18b14dd41000a09"
+        "e18b14dd41000a09",
+        "c43069e98a2855f0"
       ]
     },
     {
@@ -72074,7 +72139,8 @@
       "file": "src/lib/db.ts",
       "outcome": "killed",
       "experiments": [
-        "f6e97034d1c18041"
+        "f6e97034d1c18041",
+        "f9fb035492736e8b"
       ]
     },
     {
@@ -72082,7 +72148,8 @@
       "file": "src/lib/db.ts",
       "outcome": "killed",
       "experiments": [
-        "f53e39c548e479e7"
+        "f53e39c548e479e7",
+        "bb6a81cff305dc89"
       ]
     },
     {
@@ -72090,7 +72157,8 @@
       "file": "src/lib/setup.ts",
       "outcome": "killed",
       "experiments": [
-        "c9609ab9f0a5a927"
+        "c9609ab9f0a5a927",
+        "dfeb7a0b19c9d8a0"
       ]
     },
     {
@@ -72098,7 +72166,8 @@
       "file": "src/lib/setup.ts",
       "outcome": "killed",
       "experiments": [
-        "f6b8ed94881d75dc"
+        "f6b8ed94881d75dc",
+        "af18d9c463720647"
       ]
     },
     {
@@ -72106,7 +72175,8 @@
       "file": "extensions/vscode/extension.js",
       "outcome": "killed",
       "experiments": [
-        "85c9e0d5f0085db5"
+        "85c9e0d5f0085db5",
+        "2cfbe2dcbd06acb8"
       ]
     },
     {
@@ -72114,7 +72184,8 @@
       "file": "extensions/vscode/extension.js",
       "outcome": "killed",
       "experiments": [
-        "1b77d0c7fd554a03"
+        "1b77d0c7fd554a03",
+        "12d8bd38c26867cb"
       ]
     },
     {
@@ -72122,7 +72193,8 @@
       "file": "extensions/vscode/extension.js",
       "outcome": "killed",
       "experiments": [
-        "cc80ed2ecb86a075"
+        "cc80ed2ecb86a075",
+        "95d5e568fbb70c59"
       ]
     },
     {
@@ -72130,7 +72202,8 @@
       "file": "src/lib/portfolioHtml.ts",
       "outcome": "killed",
       "experiments": [
-        "70a75d2e1ad8563a"
+        "70a75d2e1ad8563a",
+        "a86a9a6ef5e4a95b"
       ]
     },
     {
@@ -75929,6 +76002,30 @@
       "outcome": "killed",
       "experiments": [
         "0b2235314853e4e9"
+      ]
+    },
+    {
+      "id": "RELEASE-CTX-cli-persistence-e9d605f",
+      "file": "src/lib/importCommand.ts",
+      "outcome": "killed",
+      "experiments": [
+        "fc3e81ffe8689a1a"
+      ]
+    },
+    {
+      "id": "RELEASE-CTX-mcp-persistence-e9d605f",
+      "file": "src/index.ts",
+      "outcome": "killed",
+      "experiments": [
+        "012f00b53317db24"
+      ]
+    },
+    {
+      "id": "vscode-release-variable-shell",
+      "file": "extensions/vscode/extension.js",
+      "outcome": "killed",
+      "experiments": [
+        "cdd781c243e52e2b"
       ]
     },
     {
@@ -136385,6 +136482,2135 @@
       "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
       "evidence": [
         "phase8c-list.before.results.json"
+      ]
+    },
+    {
+      "id": "coverage-base-fail-open",
+      "file": "scripts/check-new-file-coverage.mjs",
+      "kind": "ci-fault-injection",
+      "description": "Silently pass when git cannot resolve the comparison base.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 325,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/coverage-guard.test.ts",
+            "name": "new-file coverage guard fails when the comparison base cannot be resolved",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 320,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/coverage-guard.test.ts",
+            "name": "new-file coverage guard fails when the comparison base cannot be resolved",
+            "status": "failed",
+            "failures": [
+              "AssertionError: fatal: ambiguous argument 'refs/heads/test-audit-missing-ref-20260920...HEAD': unknown revision or path not in the working tree.\nUse '--' to separate paths from revisions, like this:\n'git <command> [<revision>...] -- [<file>...]'\n! could not run `git diff` against refs/heads/test-audit-missing-ref-20260920.\n  Command failed: git diff --name-only --diff-filter=A refs/heads/test-audit-missing-ref-20260920...HEAD\nfatal: ambiguous argument 'refs/heads/test-audit-missing-ref-20260920...HEAD': unknown revision or path not in the working tree.\nUse '--' to separate paths from revisions, like this:\n'git <command> [<revision>...] -- [<file>...]'\n\n  Set COVERAGE_BASE_REF if the default isn't right.\n: expected +0 to be 2 // Object.is equality\n    at <repo>/src/test/coverage-guard.test.ts:14:42\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 324,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/coverage-guard.test.ts",
+            "name": "new-file coverage guard fails when the comparison base cannot be resolved",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/coverage-guard.test.ts",
+          "name": "new-file coverage guard fails when the comparison base cannot be resolved"
+        }
+      ],
+      "applicationRestored": true,
+      "key": "293c4072332751d1",
+      "stage": "after",
+      "applicationDigest": "a0578323f644e73297d7106e4133f4c54545347bf8c4203e92ec9187d5db9208",
+      "evidence": [
+        "release.ci-http.results.json"
+      ]
+    },
+    {
+      "id": "coverage-empty-diff-fails",
+      "file": "scripts/check-new-file-coverage.mjs",
+      "kind": "ci-fault-injection",
+      "description": "Reject an empty application diff despite a valid comparison base.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 328,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/coverage-guard.test.ts",
+            "name": "new-file coverage guard passes when HEAD has no added application modules compared with itself",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 335,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/coverage-guard.test.ts",
+            "name": "new-file coverage guard passes when HEAD has no added application modules compared with itself",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 1 to be +0 // Object.is equality\n    at <repo>/src/test/coverage-guard.test.ts:25:42\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 324,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/coverage-guard.test.ts",
+            "name": "new-file coverage guard passes when HEAD has no added application modules compared with itself",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/coverage-guard.test.ts",
+          "name": "new-file coverage guard passes when HEAD has no added application modules compared with itself"
+        }
+      ],
+      "applicationRestored": true,
+      "key": "9e5248a6ca8811fc",
+      "stage": "after",
+      "applicationDigest": "a0578323f644e73297d7106e4133f4c54545347bf8c4203e92ec9187d5db9208",
+      "evidence": [
+        "release.ci-http.results.json"
+      ]
+    },
+    {
+      "id": "http-malformed-json-500",
+      "file": "src/lib/mcpHttp.ts",
+      "kind": "fault-injection",
+      "description": "Classify malformed client JSON as an internal server error.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 392,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/http-json-adversarial.test.ts",
+            "name": "HTTP MCP malformed JSON rejects a malformed POST with HTTP 400 and keeps the server healthy",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 393,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/http-json-adversarial.test.ts",
+            "name": "HTTP MCP malformed JSON rejects a malformed POST with HTTP 400 and keeps the server healthy",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 500 to be 400 // Object.is equality\n    at <repo>/src/test/http-json-adversarial.test.ts:22:29\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 392,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/http-json-adversarial.test.ts",
+            "name": "HTTP MCP malformed JSON rejects a malformed POST with HTTP 400 and keeps the server healthy",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/http-json-adversarial.test.ts",
+          "name": "HTTP MCP malformed JSON rejects a malformed POST with HTTP 400 and keeps the server healthy"
+        }
+      ],
+      "applicationRestored": true,
+      "key": "ce0bc202baf783a7",
+      "stage": "after",
+      "applicationDigest": "a0578323f644e73297d7106e4133f4c54545347bf8c4203e92ec9187d5db9208",
+      "evidence": [
+        "release.ci-http.results.json"
+      ]
+    },
+    {
+      "id": "ADV-CTX-mcp-content-f4b9135",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Truncate the persisted context heading while retaining successful response and metadata",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1232,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing custom-provider MCP context commits the same journal decision",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1031,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing custom-provider MCP context commits the same journal decision",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ { …(5) } ] to deeply equal [ { …(5) } ]\n    at expectSaved (<repo>/src/test/context-adversarial.test.ts:14:6)\n    at <repo>/src/test/context-adversarial.test.ts:41:5\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1080,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing custom-provider MCP context commits the same journal decision",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing custom-provider MCP context commits the same journal decision"
+        }
+      ],
+      "applicationRestored": true,
+      "sourceId": "RELEASE-CTX-mcp-content-e9d605f",
+      "key": "a705d5b6629210ef",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.context.results.json"
+      ]
+    },
+    {
+      "id": "ADV-CTX-import-concurrency-f4b9135",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Ignore configured parallelism and serialize provider requests",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1046,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1274,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 1 to be 2 // Object.is equality\n    at expectImportRequests (<repo>/src/test/context-adversarial.test.ts:25:27)\n    at <repo>/src/test/context-adversarial.test.ts:60:5\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1156,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency"
+        }
+      ],
+      "applicationRestored": true,
+      "sourceId": "RELEASE-CTX-import-concurrency-e9d605f",
+      "key": "5a983411ded338ff",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.context.results.json"
+      ]
+    },
+    {
+      "id": "ADV-CTX-import-setup-guidance-f4b9135",
+      "file": "src/lib/import.ts",
+      "kind": "fault-injection",
+      "description": "Remove actionable setup guidance while retaining failure status",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1408,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing CLI import without a provider fails with setup guidance",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing MCP import without a provider fails with setup guidance",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1534,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing CLI import without a provider fails with setup guidance",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Mode: LLM (concurrency: 2)\\nDRY RUN —…' to contain 'Run \\'gnosys setup\\''\n    at <repo>/src/test/context-adversarial.test.ts:98:27\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing MCP import without a provider fails with setup guidance",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Import failed: LLM mode requires a pr…' to contain 'Run \\'gnosys setup\\''\n    at <repo>/src/test/context-adversarial.test.ts:117:25\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1474,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing CLI import without a provider fails with setup guidance",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing MCP import without a provider fails with setup guidance",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing CLI import without a provider fails with setup guidance"
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing MCP import without a provider fails with setup guidance"
+        }
+      ],
+      "applicationRestored": true,
+      "sourceId": "RELEASE-CTX-import-setup-guidance-e9d605f",
+      "key": "9de5faab3d5e14af",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.context.results.json"
+      ]
+    },
+    {
+      "id": "ADV-CTX-context-setup-guidance-f4b9135",
+      "file": "src/lib/config.ts",
+      "kind": "fault-injection",
+      "description": "Remove context setup guidance while retaining a provider-resolution error",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 981,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing MCP context without a provider fails with setup guidance",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1022,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing MCP context without a provider fails with setup guidance",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'LLM not available: No provider config…' to contain 'No default LLM provider configured. R…'\n    at <repo>/src/test/context-adversarial.test.ts:108:25\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1055,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing MCP context without a provider fails with setup guidance",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing MCP context without a provider fails with setup guidance"
+        }
+      ],
+      "applicationRestored": true,
+      "sourceId": "RELEASE-CTX-context-setup-guidance-e9d605f",
+      "key": "8a31087fd46a17fa",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.context.results.json"
+      ]
+    },
+    {
+      "id": "ADV-CTX-project-scope-f4b9135",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Drop the explicitly selected project from persisted context memories",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1140,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection the same context is saved independently in projects A and B",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1337,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection the same context is saved independently in projects A and B",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ { …(5) } ]\n    at expectSaved (<repo>/src/test/context-adversarial.test.ts:14:6)\n    at <repo>/src/test/context-adversarial.test.ts:128:7\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1335,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection the same context is saved independently in projects A and B",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection the same context is saved independently in projects A and B"
+        }
+      ],
+      "applicationRestored": true,
+      "sourceId": "RELEASE-CTX-project-scope-e9d605f",
+      "key": "73d2fdd2cacb5107",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.context.results.json"
+      ]
+    },
+    {
+      "id": "ADV-CTX-startup-dedup-f4b9135",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Disable the working startup-project novelty check",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1126,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection startup-project context skips its already saved journal",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1283,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection startup-project context skips its already saved journal",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Context committed — 1 candidates extr…' to contain 'Context committed — 1 candidates extr…'\n    at <repo>/src/test/context-adversarial.test.ts:146:25\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1148,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection startup-project context skips its already saved journal",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection startup-project context skips its already saved journal"
+        }
+      ],
+      "applicationRestored": true,
+      "sourceId": "RELEASE-CTX-startup-dedup-e9d605f",
+      "key": "7fda71b63e9a3302",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.context.results.json"
+      ]
+    },
+    {
+      "id": "ADV-CTX-explicit-update-project-f4b9135",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Ignore explicit projectRoot on update and select the startup project",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 970,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection explicit project B update resolves the shared relative path inside B",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1090,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection explicit project B update resolves the shared relative path inside B",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ { …(3) }, { …(3) } ] to deeply equal [ { …(3) }, { …(3) } ]\n    at <repo>/src/test/context-adversarial.test.ts:165:100\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1114,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection explicit project B update resolves the shared relative path inside B",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection explicit project B update resolves the shared relative path inside B"
+        }
+      ],
+      "applicationRestored": true,
+      "sourceId": "RELEASE-CTX-explicit-update-project-e9d605f",
+      "key": "e70b0024c20fa89c",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.context.results.json"
+      ]
+    },
+    {
+      "id": "ADV-CTX-human-key-leak-f4b9135",
+      "file": "src/lib/configCommand.ts",
+      "kind": "fault-injection",
+      "description": "Expose the fake stored key in human config output",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 611,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/config-display-adversarial.test.ts",
+            "name": "adversarial config display human config output names the key source without exposing stored key bytes",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 742,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/config-display-adversarial.test.ts",
+            "name": "adversarial config display human config output names the key source without exposing stored key bytes",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'System of Cognition (SOC) — LLM Confi…' to contain 'Custom:     model=display-canary-mode…'\n    at <repo>/src/test/config-display-adversarial.test.ts:30:27\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 763,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/config-display-adversarial.test.ts",
+            "name": "adversarial config display human config output names the key source without exposing stored key bytes",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/config-display-adversarial.test.ts",
+          "name": "adversarial config display human config output names the key source without exposing stored key bytes"
+        }
+      ],
+      "applicationRestored": true,
+      "sourceId": "RELEASE-CTX-human-key-leak-e9d605f",
+      "key": "da9a8df4ccf77374",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.context.results.json"
+      ]
+    },
+    {
+      "id": "ADV-CTX-D001-provider-f4b9135",
+      "file": "src/lib/commitContextCommand.ts",
+      "kind": "fault-injection",
+      "description": "Reintroduce the repaired CLI ingestion constructor missing the selected config",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1805,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1731,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
+            "status": "failed",
+            "failures": [
+              "AssertionError: Error: No LLM provider available. Run 'gnosys setup' to configure a provider and its credentials.\n: expected 1 to be +0 // Object.is equality\n    at <repo>/src/test/commit-context.test.ts:147:40\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+            "status": "failed",
+            "failures": [
+              "AssertionError: Error: No LLM provider available. Run 'gnosys setup' to configure a provider and its credentials.\n: expected 1 to be +0 // Object.is equality\n    at <repo>/src/test/context-adversarial.test.ts:31:40\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1880,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context"
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision"
+        }
+      ],
+      "applicationRestored": true,
+      "sourceId": "RELEASE-CTX-D001-provider-e9d605f",
+      "key": "bd7512bb722a93d2",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.context.results.json"
+      ]
+    },
+    {
+      "id": "ADV-CTX-D001-guidance-f4b9135",
+      "file": "src/lib/commitContextCommand.ts",
+      "kind": "fault-injection",
+      "description": "Remove setup guidance from repaired CLI context provider failure",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 848,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1150,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Error: No LLM provider available. Con…' to contain 'gnosys setup'\n    at <repo>/src/test/context-adversarial.test.ts:90:27\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 986,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance"
+        }
+      ],
+      "applicationRestored": true,
+      "sourceId": "RELEASE-CTX-D001-guidance-e9d605f",
+      "key": "c8c4d4d98d871574",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.context.results.json"
+      ]
+    },
+    {
+      "id": "ADV-CTX-G2D003-provider-f4b9135",
+      "file": "src/lib/importCommand.ts",
+      "kind": "fault-injection",
+      "description": "Reintroduce repaired bulk-import constructor missing selected provider config",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 3083,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1654,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+            "status": "failed",
+            "failures": [
+              "AssertionError: Mode: LLM (concurrency: 2)\nDRY RUN — no files will be written\n\n\r[░░░░░░░░░░░░░░░░░░░░] 0/0 | Loading data...\nImport failed: LLM mode requires a configured LLM provider. Run 'gnosys setup' to configure one (Anthropic, OpenAI, Groq, xAI, Mistral, Ollama, LM Studio), or re-run with --mode structured.\n: expected 1 to be +0 // Object.is equality\n    at <repo>/src/test/context-adversarial.test.ts:50:40\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
+            "status": "failed",
+            "failures": [
+              "AssertionError: Mode: LLM (concurrency: 2)\nDRY RUN — no files will be written\n\n\r[░░░░░░░░░░░░░░░░░░░░] 0/0 | Loading data...\nImport failed: LLM mode requires a configured LLM provider. Run 'gnosys setup' to configure one (Anthropic, OpenAI, Groq, xAI, Mistral, Ollama, LM Studio), or re-run with --mode structured.\n: expected 1 to be +0 // Object.is equality\n    at <repo>/src/test/import-concurrency-wiring.test.ts:83:40\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
+            "status": "failed",
+            "failures": [
+              "AssertionError: Mode: LLM (concurrency: 1)\nDRY RUN — no files will be written\n\n\r[░░░░░░░░░░░░░░░░░░░░] 0/0 | Loading data...\nImport failed: LLM mode requires a configured LLM provider. Run 'gnosys setup' to configure one (Anthropic, OpenAI, Groq, xAI, Mistral, Ollama, LM Studio), or re-run with --mode structured.\n: expected 1 to be +0 // Object.is equality\n    at <repo>/src/test/import-concurrency-wiring.test.ts:108:40\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 3060,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/import-concurrency-wiring.test.ts",
+            "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency"
+        },
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests"
+        },
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency"
+        }
+      ],
+      "applicationRestored": true,
+      "sourceId": "RELEASE-CTX-G2D003-provider-e9d605f",
+      "key": "3f06b14bcd1c6d8e",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.context.results.json"
+      ]
+    },
+    {
+      "id": "ADV-CTX-D002-lookup-f4b9135",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Reintroduce filesystem-only scoped context novelty lookup",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1870,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 2064,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
+            "status": "failed",
+            "failures": [
+              "AssertionError: {\"text\":\"Context committed — 2 candidates extracted, 2 added, 0 duplicates skipped:\\n\\n➕ ADDED: \\\"Quartz ledgers\\\"\\n  ID: deci-01M2Z3BD0FW01WG3DRZMVH4C0M\\n\\n➕ ADDED: \\\"Cobalt receipts\\\"\\n  ID: requ-01M2Z3BD0HF88B19N54SZN7G8W\",\"memories\":[{\"title\":\"Cobalt receipts\",\"content\":\"# Cobalt receipts\\n\\nKeep cobalt receipts for seven years.\",\"category\":\"requirements\",\"author\":\"ai\",\"authority\":\"observed\",\"scope\":\"project\",\"project_id\":\"6ecb2922-e2b4-43c2-a03a-04207acad2fd\"},{\"title\":\"Cobalt receipts\",\"content\":\"# Cobalt receipts\\n\\nKeep cobalt receipts for seven years.\",\"category\":\"requirements\",\"author\":\"ai\",\"authority\":\"observed\",\"scope\":\"project\",\"project_id\":\"6ecb2922-e2b4-43c2-a03a-04207acad2fd\"},{\"title\":\"Quartz ledgers\",\"content\":\"# Quartz ledgers\\n\\nStore decisions in quartz ledgers.\",\"category\":\"decisions\",\"author\":\"ai\",\"authority\":\"observed\",\"scope\":\"project\",\"project_id\":\"6ecb2922-e2b4-43c2-a03a-04207acad2fd\"},{\"title\":\"Quartz ledgers\",\"content\":\"# Quartz ledgers\\n\\nStore decisions in quartz ledgers.\",\"category\":\"decisions\",\"author\":\"ai\",\"authority\":\"observed\",\"scope\":\"project\",\"project_id\":\"6ecb2922-e2b4-43c2-a03a-04207acad2fd\"}]}: expected 'Context committed — 2 candidates extr…' to contain 'Context committed — 2 candidates extr…'\n    at <repo>/src/test/commit-context.test.ts:116:108\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Context committed — 1 candidates extr…' to contain 'Context committed — 1 candidates extr…'\n    at <repo>/src/test/context-adversarial.test.ts:137:25\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 2219,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories"
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal"
+        }
+      ],
+      "applicationRestored": true,
+      "sourceId": "RELEASE-CTX-D002-lookup-e9d605f",
+      "key": "c32b64229e8ecd37",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.context.results.json"
+      ]
+    },
+    {
+      "id": "ADV-CTX-D002-cross-project-f4b9135",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Remove selected-project filter so prior project A falsely suppresses new project B context",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1151,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection the same context is saved independently in projects A and B",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1243,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection the same context is saved independently in projects A and B",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Context committed — 1 candidates extr…' to contain 'Context committed — 1 candidates extr…'\n    at <repo>/src/test/context-adversarial.test.ts:127:27\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1244,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial project selection the same context is saved independently in projects A and B",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection the same context is saved independently in projects A and B"
+        }
+      ],
+      "applicationRestored": true,
+      "sourceId": "RELEASE-CTX-D002-cross-project-e9d605f",
+      "key": "d9d810259603bf5d",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.context.results.json"
+      ]
+    },
+    {
+      "id": "RELEASE-CTX-cli-persistence-e9d605f",
+      "file": "src/lib/importCommand.ts",
+      "kind": "fault-injection",
+      "description": "Drop the real CLI database argument while retaining successful provider requests and import report",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 910,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1118,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+            "status": "failed",
+            "failures": [
+              "AssertionError: {\"result\":{\"code\":0,\"stdout\":\"✓ Import complete in 0.1s\\n  Imported: 2\\n  Skipped:  0\\n  Failed:   0\\n  Total:    2\\n\",\"stderr\":\"Mode: LLM (concurrency: 2)\\n\\r[░░░░░░░░░░░░░░░░░░░░] 0/0 | Loading data...\\r[░░░░░░░░░░░░░░░░░░░░] 0/2 | Verdigris runbooks\\r[██████████░░░░░░░░░░] 1/2 | Cerulean manifests\\r                                                                                \\r\"},\"memories\":[]}: expected [] to deeply equal [ { …(2) }, { …(2) } ]\n    at <repo>/src/test/context-adversarial.test.ts:69:187\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1160,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories"
+        }
+      ],
+      "applicationRestored": true,
+      "key": "fc3e81ffe8689a1a",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.context.results.json"
+      ]
+    },
+    {
+      "id": "RELEASE-CTX-mcp-persistence-e9d605f",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Drop the real MCP database argument while retaining successful provider requests and import report",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1088,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1187,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+            "status": "failed",
+            "failures": [
+              "AssertionError: {\"result\":{\"isError\":false,\"text\":\"Import complete in 0.1s\\n  Imported: 2\\n  Skipped:  0\\n  Failed:   0\\n  Total:    2\"},\"memories\":[]}: expected [] to deeply equal [ { …(2) }, { …(2) } ]\n    at <repo>/src/test/context-adversarial.test.ts:80:187\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1252,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/context-adversarial.test.ts",
+            "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories"
+        }
+      ],
+      "applicationRestored": true,
+      "key": "012f00b53317db24",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.context.results.json"
+      ]
+    },
+    {
+      "id": "ADV-FTS-repeat-insert",
+      "file": "src/lib/db.ts",
+      "kind": "fault-injection",
+      "description": "Remove INSERT trigger FTS replacement so repeated writes append index rows.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 593,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/lifecycle-invariants.test.ts",
+            "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 604,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search",
+            "status": "failed",
+            "failures": [
+              "AssertionError: {\"stored\":[[\"fts-repeat\",\"cobalt lantern evidence\"],[\"semantic-anchor\",\"unrelated active record\"]],\"fts\":[\"fts-repeat\",\"fts-repeat\",\"fts-repeat\"],\"discover\":[\"fts-repeat\",\"fts-repeat\",\"fts-repeat\"],\"archive\":[\"fts-repeat\",\"fts-repeat\",\"fts-repeat\"],\"hybrid\":[\"fts-repeat\",\"fts-repeat\",\"fts-repeat\"]}: expected { Object (stored, fts, ...) } to deeply equal { Object (stored, fts, ...) }\n    at <repo>/src/test/fts-adversarial.test.ts:27:48\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/lifecycle-invariants.test.ts",
+            "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'repeat-001', 'repeat-001' ] to deeply equal [ 'repeat-001' ]\n    at <repo>/src/test/lifecycle-invariants.test.ts:59:69\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 564,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/lifecycle-invariants.test.ts",
+            "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/fts-adversarial.test.ts",
+          "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search"
+        },
+        {
+          "file": "src/test/lifecycle-invariants.test.ts",
+          "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result"
+        }
+      ],
+      "applicationRestored": true,
+      "stage": "after",
+      "key": "c43069e98a2855f0",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.fts.results.json"
+      ]
+    },
+    {
+      "id": "ADV-FTS-skip-legacy-healing",
+      "file": "src/lib/db.ts",
+      "kind": "fault-injection",
+      "description": "Skip legacy index repair on application open.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 435,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 399,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+            "status": "failed",
+            "failures": [
+              "AssertionError: {\"indexRows\":[{\"id\":\"legacy-cobalt\",\"hits\":3},{\"id\":\"legacy-quartz\",\"hits\":1}],\"cobalt\":[\"legacy-cobalt\",\"legacy-cobalt\",\"legacy-cobalt\"],\"quartz\":[\"legacy-quartz\"],\"contents\":[[\"legacy-cobalt\",\"cobalt legacy evidence\"],[\"legacy-quartz\",\"quartz untouched evidence\"]],\"version\":5}: expected { …(6) } to deeply equal { …(6) }\n    at <repo>/src/test/fts-adversarial.test.ts:83:46\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 393,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/fts-adversarial.test.ts",
+          "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories"
+        }
+      ],
+      "applicationRestored": true,
+      "stage": "after",
+      "key": "f9fb035492736e8b",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.fts.results.json"
+      ]
+    },
+    {
+      "id": "ADV-FTS-repeat-healing",
+      "file": "src/lib/db.ts",
+      "kind": "fault-injection",
+      "description": "Rebuild already repaired FTS and overwrite its marker on every open.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 405,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 414,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { dataVersion: 4, …(3) } to deeply equal { dataVersion: 3, …(3) }\n    at <repo>/src/test/fts-adversarial.test.ts:98:10\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 418,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/fts-adversarial.test.ts",
+          "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories"
+        }
+      ],
+      "applicationRestored": true,
+      "stage": "after",
+      "key": "bb6a81cff305dc89",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.fts.results.json"
+      ]
+    },
+    {
+      "id": "setup-cancellation-success-regression",
+      "file": "src/lib/setup.ts",
+      "kind": "fault-injection",
+      "description": "Return success on cancellation at both provider and later IDE prompts.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1298,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-adversarial.test.ts",
+            "name": "setup exit status after the provider prompt G2-D001 Ctrl+C at IDE integration exits 130",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/setup-ctrlc.test.ts",
+            "name": "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1364,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-adversarial.test.ts",
+            "name": "setup exit status after the provider prompt G2-D001 Ctrl+C at IDE integration exits 130",
+            "status": "failed",
+            "failures": [
+              "AssertionError: \r\n ⬢ gnosys ▸ setup                                                         v6.2.1\r\n ───────────────────────────────────────────────────────────────────────────────\r\n\r\n Welcome.\r\n\r\n gnosys gives your AI agents persistent memory — a centralized brain\r\n they keep across sessions. This wizard takes about 90 seconds.\r\n\r\n   step 1   pick a default LLM provider\r\n   step 2   validate the API key\r\n   step 3   wire up MCP for detected IDEs\r\n   step 4   (optional) task routing & dream mode\r\n\r\n                                                   ^C exits cleanly at any time\r\n\r\nFetching latest model pricing...\r\nUsing bundled model data (offline or fetch failed)\r\n\r\n\r\n ⬢ gnosys ▸ setup ▸ provider                               step 1 of 4    v6.2.1\r\n ───────────────────────────────────────────────────────────────────────────────\r\n\r\n Choose your LLM provider\r\n prices are per-1M-tokens (input – output)\r\n\r\n\r\nChoose your LLM provider\r\n\r\n  1. Anthropic (Claude)      $0.80–$25.00/M tokens\r\n  2. OpenAI (GPT-5.4)      $0.20–$15.00/M tokens\r\n  3. Ollama (local, free)\r\n  4. Groq (fast, cheap)      $0.05–$0.79/M tokens\r\n  5. xAI (Grok)      $0.10–$3.20/M tokens\r\n  6. Mistral      $0.05–$8.00/M tokens\r\n  7. LM Studio (local, free)\r\n  8. OpenRouter (free + paid models)\r\n  9. Custom (any OpenAI-compatible API)\r\n  10. Skip (core memory works without LLM)\r\n\r\n> 10\r\r\n\r\nStep 2/5 — Model tier: skipped\r\n\r\nStep 3/5 — API key: not needed (local provider)\r\n\r\nStep 4/5 — Task routing: skipped (no provider)\r\n\r\nStep 5/5 — IDE Integration\r\n\r\nDetected: Claude Code, Cursor, Codex, Gemini CLI, Claude Desktop\r\n\r\n\r\n  1. Claude Code (detected)\r\n  2. Claude Desktop (detected)\r\n  3. Cursor (detected)\r\n  4. Codex (detected)\r\n  5. Gemini CLI (detected)\r\n  6. Antigravity (not detected — will configure anyway)\r\n  7. Grok Build (not detected — will configure anyway)\r\n  8. All\r\n  9. Skip\r\n\r\n> \r\n cancelled · no changes written\r\n\r\n\r\nSetup cancelled.\r\n: expected +0 to be 130 // Object.is equality\n    at <repo>/s"
+            ]
+          },
+          {
+            "file": "src/test/setup-ctrlc.test.ts",
+            "name": "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT",
+            "status": "failed",
+            "failures": [
+              "AssertionError: \r\n \u001b[38;5;167m⬢\u001b[0m \u001b[1mgnosys\u001b[0m \u001b[38;5;242m▸\u001b[0m \u001b[38;5;242msetup\u001b[0m                                                         \u001b[38;5;242mv6.2.1\u001b[0m\r\n \u001b[38;5;238m───────────────────────────────────────────────────────────────────────────────\u001b[0m\r\n\r\n \u001b[1mWelcome.\u001b[0m\r\n\r\n gnosys gives your AI agents persistent memory — a centralized brain\r\n they keep across sessions. This wizard takes about 90 seconds.\r\n\r\n   step 1   pick a default LLM provider\r\n   step 2   validate the API key\r\n   step 3   wire up MCP for detected IDEs\r\n   step 4   (optional) task routing & dream mode\r\n\r\n                                                   \u001b[38;5;242m^C exits cleanly at any time\u001b[0m\r\n\r\n\u001b[2mFetching latest model pricing...\u001b[0m\r\n\u001b[2mUsing bundled model data (offline or fetch failed)\u001b[0m\r\n\r\n\r\n \u001b[38;5;167m⬢\u001b[0m \u001b[1mgnosys\u001b[0m \u001b[38;5;242m▸\u001b[0m \u001b[38;5;242msetup\u001b[0m \u001b[38;5;242m▸\u001b[0m \u001b[38;5;242mprovider\u001b[0m                               \u001b[38;5;242mstep 1 of 4    v6.2.1\u001b[0m\r\n \u001b[38;5;238m───────────────────────────────────────────────────────────────────────────────\u001b[0m\r\n\r\n \u001b[1mChoose your LLM provider\u001b[0m\r\n \u001b[38;5;246mprices are per-1M-tokens (input – output)\u001b[0m\r\n\r\n\r\nChoose your LLM provider\r\n\r\n  \u001b[1m1.\u001b[0m Anthropic (Claude)      \u001b[2m$0.80–$25.00/M tokens\u001b[0m\r\n  \u001b[1m2.\u001b[0m OpenAI (GPT-5.4)      \u001b[2m$0.20–$15.00/M tokens\u001b[0m\r\n  \u001b[1m3.\u001b[0m Ollama (local, free)\r\n  \u001b[1m4.\u001b[0m Groq (fast, cheap)      \u001b[2m$0.05–$0.79/M tokens\u001b[0m\r\n  \u001b[1m5.\u001b[0m xAI (Grok)      \u001b[2m$0.10–$3.20/M tokens\u001b[0m\r\n  \u001b[1m6.\u001b[0m Mistral      \u001b[2m$0.05–$8.00/M tokens\u001b[0m\r\n  \u001b[1m7.\u001b[0m LM Studio (local, free)\r\n  \u001b[1m8.\u001b[0m OpenRouter (free + paid models)\r\n  \u001b[1m9.\u001b[0m Custom (any OpenAI-compatible API)\r\n  \u001b[1m10.\u001b[0m Skip (core memory works without LLM)\r\n\r\n\u001b[2m>\u001b[0m \r\n \u001b[38;5;242mcancelled · no changes written\u001b[0m\r\n\r\n\r\nSetup cancelled.\r\n: expected +0 to be 130 // Object.is equality\n    at <repo>/src/test/setup-ctrlc.test.ts:73:52\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1362,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-adversarial.test.ts",
+            "name": "setup exit status after the provider prompt G2-D001 Ctrl+C at IDE integration exits 130",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/setup-ctrlc.test.ts",
+            "name": "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-adversarial.test.ts",
+          "name": "setup exit status after the provider prompt G2-D001 Ctrl+C at IDE integration exits 130"
+        },
+        {
+          "file": "src/test/setup-ctrlc.test.ts",
+          "name": "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT"
+        }
+      ],
+      "applicationRestored": true,
+      "key": "dfeb7a0b19c9d8a0",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.setup.results.json"
+      ]
+    },
+    {
+      "id": "setup-completion-exit-status",
+      "file": "src/lib/setup.ts",
+      "kind": "fault-injection",
+      "description": "Return a failing status after successful interactive setup completion.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 541,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-adversarial.test.ts",
+            "name": "setup exit status after the provider prompt completes the interactive core-memory setup with exit 0",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 533,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-adversarial.test.ts",
+            "name": "setup exit status after the provider prompt completes the interactive core-memory setup with exit 0",
+            "status": "failed",
+            "failures": [
+              "AssertionError: \r\n ⬢ gnosys ▸ setup                                                         v6.2.1\r\n ───────────────────────────────────────────────────────────────────────────────\r\n\r\n Welcome.\r\n\r\n gnosys gives your AI agents persistent memory — a centralized brain\r\n they keep across sessions. This wizard takes about 90 seconds.\r\n\r\n   step 1   pick a default LLM provider\r\n   step 2   validate the API key\r\n   step 3   wire up MCP for detected IDEs\r\n   step 4   (optional) task routing & dream mode\r\n\r\n                                                   ^C exits cleanly at any time\r\n\r\nFetching latest model pricing...\r\nUsing bundled model data (offline or fetch failed)\r\n\r\n\r\n ⬢ gnosys ▸ setup ▸ provider                               step 1 of 4    v6.2.1\r\n ───────────────────────────────────────────────────────────────────────────────\r\n\r\n Choose your LLM provider\r\n prices are per-1M-tokens (input – output)\r\n\r\n\r\nChoose your LLM provider\r\n\r\n  1. Anthropic (Claude)      $0.80–$25.00/M tokens\r\n  2. OpenAI (GPT-5.4)      $0.20–$15.00/M tokens\r\n  3. Ollama (local, free)\r\n  4. Groq (fast, cheap)      $0.05–$0.79/M tokens\r\n  5. xAI (Grok)      $0.10–$3.20/M tokens\r\n  6. Mistral      $0.05–$8.00/M tokens\r\n  7. LM Studio (local, free)\r\n  8. OpenRouter (free + paid models)\r\n  9. Custom (any OpenAI-compatible API)\r\n  10. Skip (core memory works without LLM)\r\n\r\n> 10\r\r\n\r\nStep 2/5 — Model tier: skipped\r\n\r\nStep 3/5 — API key: not needed (local provider)\r\n\r\nStep 4/5 — Task routing: skipped (no provider)\r\n\r\nStep 5/5 — IDE Integration\r\n\r\nDetected: Claude Code, Cursor, Codex, Gemini CLI, Claude Desktop\r\n\r\n\r\n  1. Claude Code (detected)\r\n  2. Claude Desktop (detected)\r\n  3. Cursor (detected)\r\n  4. Codex (detected)\r\n  5. Gemini CLI (detected)\r\n  6. Antigravity (not detected — will configure anyway)\r\n  7. Grok Build (not detected — will configure anyway)\r\n  8. All\r\n  9. Skip\r\n\r\n> 9\r\r\n\r\n┌────────────────────────────────────┐\r\n│  Setup Complete                    │\r\n├───────────────────────────────"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 534,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-adversarial.test.ts",
+            "name": "setup exit status after the provider prompt completes the interactive core-memory setup with exit 0",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-adversarial.test.ts",
+          "name": "setup exit status after the provider prompt completes the interactive core-memory setup with exit 0"
+        }
+      ],
+      "applicationRestored": true,
+      "key": "af18d9c463720647",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.setup.results.json"
+      ]
+    },
+    {
+      "id": "vscode-e2-directory-substring",
+      "file": "extensions/vscode/extension.js",
+      "kind": "fault-injection",
+      "description": "Accept .gnosys as a substring rather than an exact path component.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1774,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 4129,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ Array(1) ]\n    at <repo>/src/test/vscode-adversarial.test.ts:177:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ Array(1) ]\n    at <repo>/src/test/vscode-adversarial.test.ts:177:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ Array(1) ]\n    at <repo>/src/test/vscode-adversarial.test.ts:177:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ Array(1) ]\n    at <repo>/src/test/vscode-adversarial.test.ts:177:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ Array(1) ]\n    at <repo>/src/test/vscode-adversarial.test.ts:177:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ Array(1) ]\n    at <repo>/src/test/vscode-adversarial.test.ts:177:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ Array(1) ]\n    at <repo>/src/test/vscode-adversarial.test.ts:177:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ Array(1) ]\n    at <repo>/src/test/vscode-adversarial.test.ts:177:33\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { warnings: [], information: [], …(2) } to deeply equal { …(4) }\n    at <repo>/src/test/vscode-extension.test.ts:82:92\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 2043,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators"
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators"
+        },
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys"
+        }
+      ],
+      "applicationRestored": true,
+      "key": "2cfbe2dcbd06acb8",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.vscode.results.json"
+      ]
+    },
+    {
+      "id": "vscode-e2-removed-dashboard-command",
+      "file": "extensions/vscode/extension.js",
+      "kind": "fault-injection",
+      "description": "Launch removed dashboard command instead of registered status successor.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1911,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1495,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'read', 'discover', 'search', …(65) ] to include 'dashboard'\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1319:15)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/vscode-adversarial.test.ts:235:24\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20"
+            ]
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 1 ] to deeply equal [ +0 ]\n    at <repo>/src/test/vscode-extension.test.ts:99:96\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1781,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully"
+        },
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI"
+        }
+      ],
+      "applicationRestored": true,
+      "key": "12d8bd38c26867cb",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.vscode.results.json"
+      ]
+    },
+    {
+      "id": "vscode-e2-launch-error-hidden",
+      "file": "extensions/vscode/extension.js",
+      "kind": "fault-injection",
+      "description": "Downgrade a failed process launch to a warning so the user no longer receives the error notification.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 553,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands reports a process launch failure to the editor",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 548,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands reports a process launch failure to the editor",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ Array(1) ] to deeply equal []\n    at <repo>/src/test/vscode-extension.test.ts:68:29\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 565,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-extension.test.ts",
+            "name": "VS Code extension public commands reports a process launch failure to the editor",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands reports a process launch failure to the editor"
+        }
+      ],
+      "applicationRestored": true,
+      "key": "95d5e568fbb70c59",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.vscode.results.json"
+      ]
+    },
+    {
+      "id": "dashboard-unescaped-stored-content",
+      "file": "src/lib/portfolioHtml.ts",
+      "kind": "fault-injection",
+      "description": "Drop output escaping so stored memory titles are emitted as live HTML in roadmap, activity and action cards.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 418,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 431,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '<!DOCTYPE html>\\n<html lang=\"en\">\\n<h…' to contain '<strong>&lt;/span&gt;&lt;script&gt;gl…'\n    at <repo>/src/test/dashboard-html-adversarial.test.ts:42:18\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '<!DOCTYPE html>\\n<html lang=\"en\">\\n<h…' to contain '<div class=\"action-text\">&lt;/span&gt…'\n    at <repo>/src/test/dashboard-html-adversarial.test.ts:49:18\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 413,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/dashboard-html-adversarial.test.ts",
+            "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dashboard-html-adversarial.test.ts",
+          "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text"
+        },
+        {
+          "file": "src/test/dashboard-html-adversarial.test.ts",
+          "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text"
+        }
+      ],
+      "applicationRestored": true,
+      "key": "a86a9a6ef5e4a95b",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.vscode.results.json"
+      ]
+    },
+    {
+      "id": "vscode-release-variable-shell",
+      "file": "extensions/vscode/extension.js",
+      "kind": "fault-injection",
+      "description": "Reintroduce shell evaluation of the variable selected filename; constant dashboard command is still permitted.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1283,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 977,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ true ] to deeply equal [ false ]\n    at <repo>/src/test/vscode-adversarial.test.ts:214:74\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 3045,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/vscode-adversarial.test.ts",
+            "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs"
+        }
+      ],
+      "applicationRestored": true,
+      "key": "cdd781c243e52e2b",
+      "stage": "after",
+      "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+      "evidence": [
+        "release.vscode.results.json"
       ]
     },
     {

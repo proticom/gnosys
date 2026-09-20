@@ -1,0 +1,1182 @@
+{
+  "applicationRef": "e9d605f66268a6599c6064d54bc4df6f4f094369",
+  "originalKnownDefectRows": [
+    {
+      "featureId": "F03",
+      "obligationKind": "boundary",
+      "before": "KNOWN_DEFECT",
+      "after": "KNOWN_DEFECT",
+      "reason": "DEF-G1-001 remains open. Reset retains multiple overrides and reset-then-one-override retains old tasks. The corrected summary expects all ollama and fails. Serialized bytes of every unrelated JSON value, including llm and dream, remain unchanged. Whole-file whitespace is not asserted. Original v584 deep-merge tests remain byte-identical and pass.",
+      "tests": [
+        {
+          "file": "src/test/v600-chat-config-backcompat.test.ts",
+          "name": "v6.0.0 chat config backward compatibility loads a config file containing chat and taskModels.chat keys without crashing",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/v600-chat-config-backcompat.test.ts",
+          "name": "v6.0.0 chat config backward compatibility schema parse strips chat keys directly",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/v584-updateConfig.test.ts",
+          "name": "updateConfig — v5.8.4 anthropic-revert regression deep-merges nested objects rather than replacing them outright",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/v584-updateConfig.test.ts",
+          "name": "updateConfig — v5.8.4 anthropic-revert regression preserves explicit values already in the file when adding a new section",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/v584-updateConfig.test.ts",
+          "name": "updateConfig — v5.8.4 anthropic-revert regression writes only the keys the caller supplied + any that were already in the file (no defaults seeded)",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/setup-ui-summary.test.ts",
+          "name": "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/routing-reset-adversarial.test.ts",
+          "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/routing-reset-adversarial.test.ts",
+          "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/setup-ui-summary.test.ts",
+          "name": "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config",
+          "mutationIds": []
+        }
+      ]
+    },
+    {
+      "featureId": "F04",
+      "obligationKind": "failure",
+      "before": "KNOWN_DEFECT",
+      "after": "PARTIAL",
+      "reason": "Actual credential validation rejects invalid keys. Main setup Ctrl+C now exits130 at both the provider and later IDE prompt; models and ides still exit130. The cancellation fault is killed by both repaired ordinary cases. Other model validation/recovery combinations remain outside this subset.",
+      "tests": [
+        {
+          "file": "src/test/setupKeys.test.ts",
+          "name": "setup keys rejects an invalid key before choosing a storage destination",
+          "mutationIds": [
+            "G1-key-reject-update"
+          ]
+        },
+        {
+          "file": "src/test/setupKeys.test.ts",
+          "name": "setup keys does not copy to keychain or change dotenv when validation fails",
+          "mutationIds": [
+            "G1-key-reject-copy"
+          ]
+        },
+        {
+          "file": "src/test/setup-models-routing.test.ts",
+          "name": "setup models task routing validateTaskCombo does not persist keys on validation failure",
+          "mutationIds": [
+            "g2-setup-validation-failure"
+          ]
+        },
+        {
+          "file": "src/test/setup-ctrlc.test.ts",
+          "name": "Phase B — Ctrl+C clean exit gnosys setup models exits cleanly on SIGINT",
+          "mutationIds": [
+            "g2-pty-cancel-status"
+          ]
+        },
+        {
+          "file": "src/test/setup-ctrlc.test.ts",
+          "name": "Phase B — Ctrl+C clean exit gnosys setup ides exits cleanly on SIGINT",
+          "mutationIds": [
+            "g2-pty-cancel-status"
+          ]
+        },
+        {
+          "file": "src/test/setup-ctrlc.test.ts",
+          "name": "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT",
+          "mutationIds": [
+            "setup-cancellation-success-regression"
+          ]
+        },
+        {
+          "file": "e2e-setup/tests/run-all.sh",
+          "name": "setup-wizard-first-screen",
+          "mutationIds": [
+            "setup-cancel-message"
+          ]
+        },
+        {
+          "file": "src/test/setup-adversarial.test.ts",
+          "name": "setup exit status after the provider prompt G2-D001 Ctrl+C at IDE integration exits 130",
+          "mutationIds": [
+            "setup-cancellation-success-regression"
+          ]
+        }
+      ]
+    },
+    {
+      "featureId": "F09",
+      "obligationKind": "boundary",
+      "before": "KNOWN_DEFECT",
+      "after": "PARTIAL",
+      "reason": "Repeated writes now yield exactly one hit in searchFts, discoverFts, archive fallback and hybrid keyword mode. A raw SQLite database with duplicate FTS rows heals on open, retains both memories, remains user_version5, and makes no database write on the second open. Three direct FTS faults are killed. Existing punctuation/limit/update cases remain mapped; broader Unicode/ID/tie behavior is not fully established. The unchanged 50ms FTS assertion is a hosted-runner flake risk.",
+      "tests": [
+        {
+          "file": "src/test/fts-or-fallback.test.ts",
+          "name": "GnosysDB FTS OR fallback (central DB) discoverFts punctuation-only and empty queries return empty, not throw",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/fts-or-fallback.test.ts",
+          "name": "GnosysDB FTS OR fallback (central DB) discoverFts FTS5-hostile characters no longer cause syntax errors",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/fts-or-fallback.test.ts",
+          "name": "GnosysDB FTS OR fallback (central DB) searchFts punctuation-only queries return empty",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/fts-or-fallback.test.ts",
+          "name": "GnosysSearch FTS OR fallback (per-store index) discover: punctuation-only query returns empty, not throw",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/fts-or-fallback.test.ts",
+          "name": "GnosysArchive FTS OR fallback (archive tier) punctuation-only query returns empty",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/phase7b.read-paths.test.ts",
+          "name": "Phase 7b: Read Paths Rewired TC-7b.2: SQLite read performance FTS5 search on 100 memories completes in under 50ms",
+          "mutationIds": [
+            "g2-search-limit"
+          ]
+        },
+        {
+          "file": "src/test/phase9d.coverage-overhaul.test.ts",
+          "name": "TC-9d.1: GnosysDbSearch — FTS5 adapter search respects limit parameter",
+          "mutationIds": [
+            "db-search-empty-limit"
+          ]
+        },
+        {
+          "file": "src/test/phase7c.dual-write.test.ts",
+          "name": "Phase 7c: Dual-Write TC-7c.2: Manual markdown edits picked up on reindex search index reflects manual edits after reindex",
+          "mutationIds": [
+            "reindex-ignore-second-call"
+          ]
+        },
+        {
+          "file": "src/test/lifecycle-invariants.test.ts",
+          "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result",
+          "mutationIds": [
+            "ADV-FTS-repeat-insert"
+          ]
+        },
+        {
+          "file": "src/test/fts-adversarial.test.ts",
+          "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search",
+          "mutationIds": [
+            "ADV-FTS-repeat-insert"
+          ]
+        },
+        {
+          "file": "src/test/fts-adversarial.test.ts",
+          "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+          "mutationIds": [
+            "ADV-FTS-skip-legacy-healing",
+            "ADV-FTS-repeat-healing"
+          ]
+        }
+      ]
+    },
+    {
+      "featureId": "F18",
+      "obligationKind": "success",
+      "before": "KNOWN_DEFECT",
+      "after": "PARTIAL",
+      "reason": "CLI and MCP save literal extracted context through Ollama and custom-provider HTTP boundaries. The second fixture uses different journal text. Direct configured-provider and content faults are killed. Changed-knowledge augmentation is not independently verified.",
+      "tests": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts MCP saves both novel memories with observed provenance in the requested project",
+          "mutationIds": [
+            "context-wrong-provenance"
+          ]
+        },
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
+          "mutationIds": [
+            "ADV-CTX-D001-provider-f4b9135",
+            "RELEASE-CTX-D001-provider-e9d605f"
+          ]
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+          "mutationIds": [
+            "ADV-CTX-D001-provider-f4b9135"
+          ]
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing custom-provider MCP context commits the same journal decision",
+          "mutationIds": [
+            "ADV-CTX-mcp-content-f4b9135"
+          ]
+        }
+      ]
+    },
+    {
+      "featureId": "F18",
+      "obligationKind": "boundary",
+      "before": "KNOWN_DEFECT",
+      "after": "PARTIAL",
+      "reason": "MCP dry-run writes nothing. Both startup-project tests skip repeated context. Identical text saves separately in A then B, and repeating in B skips B's existing memory. Scoped-dedup and cross-project false-skip faults are killed. CLI repetition and augmentation are outside these cases.",
+      "tests": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts MCP dry run describes candidates without structuring or writing memories",
+          "mutationIds": [
+            "context-ignore-dry-run"
+          ]
+        },
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts MCP skips repeated context in its startup project",
+          "mutationIds": [
+            "context-ignore-overlap"
+          ]
+        },
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
+          "mutationIds": [
+            "ADV-CTX-D002-lookup-f4b9135",
+            "RELEASE-CTX-D002-lookup-e9d605f"
+          ]
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection the same context is saved independently in projects A and B",
+          "mutationIds": [
+            "ADV-CTX-project-scope-f4b9135",
+            "ADV-CTX-D002-cross-project-f4b9135"
+          ]
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+          "mutationIds": [
+            "ADV-CTX-D002-lookup-f4b9135"
+          ]
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial project selection startup-project context skips its already saved journal",
+          "mutationIds": [
+            "ADV-CTX-startup-dedup-f4b9135"
+          ]
+        }
+      ]
+    },
+    {
+      "featureId": "F19",
+      "obligationKind": "success",
+      "before": "KNOWN_DEFECT",
+      "after": "PARTIAL",
+      "reason": "Normal CLI and MCP imports now persist both literal records in the target central database and report Imported:2. Removing the database argument from each caller fails its ordinary persistence test; restoration passes. ADV-CTX-002 is fixed. Existing direct import-module and bootstrap persistence cases remain mapped. This does not establish every format, optional store or remote provider.",
+      "tests": [
+        {
+          "file": "src/test/import.test.ts",
+          "name": "JSONL import imports JSONL (one JSON object per line)",
+          "mutationIds": [
+            "G1-import-jsonl"
+          ]
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "field mapping includes unmapped fields as extra context",
+          "mutationIds": [
+            "G1-import-extra"
+          ]
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "batch commit persists every record of a batch in the central database",
+          "mutationIds": [
+            "G1-import-batch"
+          ]
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "JSON import imports a JSON array of records",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "JSON import handles nested JSON with common array keys",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "CSV import imports a CSV file",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "field mapping slugifies category names",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "formatImportSummary produces readable summary",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/bootstrap.test.ts",
+          "name": "bootstrap imports files into the store",
+          "mutationIds": [
+            "g2-bootstrap-content"
+          ]
+        },
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP MCP uses configured concurrency and honors the explicit override",
+          "mutationIds": [
+            "g2-import-mcp-default",
+            "g2-import-mcp-override"
+          ]
+        },
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
+          "mutationIds": [
+            "ADV-CTX-G2D003-provider-f4b9135",
+            "RELEASE-CTX-G2D003-provider-e9d605f"
+          ]
+        },
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
+          "mutationIds": [
+            "ADV-CTX-G2D003-provider-f4b9135",
+            "RELEASE-CTX-G2D003-provider-e9d605f"
+          ]
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+          "mutationIds": [
+            "RELEASE-CTX-cli-persistence-e9d605f"
+          ]
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+          "mutationIds": [
+            "RELEASE-CTX-mcp-persistence-e9d605f"
+          ]
+        }
+      ]
+    },
+    {
+      "featureId": "F19",
+      "obligationKind": "boundary",
+      "before": "KNOWN_DEFECT",
+      "after": "PARTIAL",
+      "reason": "Original CLI provider requests honor configured concurrency2 and explicit override1. Custom-provider CLI and MCP dry-run cases also exercise literal records and measured concurrency2 without writes. Direct concurrency/provider faults are killed. Existing skip/offset/limit cases remain mapped; exhaustive input formats and frontmatter combinations are not claimed.",
+      "tests": [
+        {
+          "file": "src/test/import.test.ts",
+          "name": "dry run reports what would be imported without writing",
+          "mutationIds": [
+            "G1-import-dryrun"
+          ]
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "deduplication skips records that already exist when skipExisting is true",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "limit and offset respects limit",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "limit and offset respects offset",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/bootstrap.test.ts",
+          "name": "bootstrap supports dry run mode",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/bootstrap.test.ts",
+          "name": "bootstrap skips existing memories when skipExisting is true",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
+          "mutationIds": [
+            "ADV-CTX-G2D003-provider-f4b9135",
+            "RELEASE-CTX-G2D003-provider-e9d605f"
+          ]
+        },
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
+          "mutationIds": [
+            "ADV-CTX-G2D003-provider-f4b9135",
+            "RELEASE-CTX-G2D003-provider-e9d605f"
+          ]
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+          "mutationIds": [
+            "ADV-CTX-G2D003-provider-f4b9135"
+          ]
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency",
+          "mutationIds": [
+            "ADV-CTX-import-concurrency-f4b9135"
+          ]
+        }
+      ]
+    },
+    {
+      "featureId": "F41",
+      "obligationKind": "success",
+      "before": "KNOWN_DEFECT",
+      "after": "KNOWN_DEFECT",
+      "reason": "The dashboard invokes a command derived from built CLI registration and exits0; a removed-command fault is killed. D-VSC-001 remains open: reinforcement passes a file path and omits the useful signal. A fresh unrelated UUID and decoy records expose hardcoded or wrong-ID behavior. Native VS Code is represented by a host boundary double while the actual local CLI runs.",
+      "tests": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+          "mutationIds": [
+            "vscode-e2-removed-dashboard-command"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+          "mutationIds": [
+            "vscode-e2-removed-dashboard-command"
+          ]
+        }
+      ]
+    },
+    {
+      "featureId": "F41",
+      "obligationKind": "boundary",
+      "before": "KNOWN_DEFECT",
+      "after": "KNOWN_DEFECT",
+      "reason": "All eight hostile filename forms remain exercised. Variable reinforcement arguments use shell-free argv; transport preserves the supplied bytes and creates no execution marker. A direct variable-shell fault fails the ordinary transport test. The user's clarified ruling permits the exact constant dashboard command, which is registered by the built CLI and exits0. Complete selected-ID reinforcement still fails under D-VSC-001. The passing transport test does not pin a filename where the CLI requires a memory ID.",
+      "tests": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: backticks in the selected path cannot execute shell text or change the selected ID",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: command substitution in the selected path cannot execute shell text or change the selected ID",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: semicolon in the selected path cannot execute shell text or change the selected ID",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: and operator in the selected path cannot execute shell text or change the selected ID",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: pipe in the selected path cannot execute shell text or change the selected ID",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: quotes in the selected path cannot execute shell text or change the selected ID",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: spaces in the selected path cannot execute shell text or change the selected ID",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: newline in the selected path cannot execute shell text or change the selected ID",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
+          "mutationIds": [
+            "vscode-release-variable-shell"
+          ]
+        }
+      ]
+    },
+    {
+      "featureId": "F41",
+      "obligationKind": "permissions",
+      "before": "KNOWN_DEFECT",
+      "after": "KNOWN_DEFECT",
+      "reason": "All four lookalike components reject with both separator styles; the substring fault fails nine ordinary cases. Deep exact .gnosys paths reach reinforcement, but successful ID resolution remains blocked by D-VSC-001. D-VSC-003 is fixed under the clarified variable-argument ruling: constant dashboard shell text is permitted. Backslash paths are tested on a POSIX host, not native Windows.",
+      "tests": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with POSIX separators",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with Windows separators",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
+          "mutationIds": [
+            "vscode-release-variable-shell"
+          ]
+        }
+      ]
+    }
+  ],
+  "previousReviewKnownDefectRows": [
+    {
+      "featureId": "F03",
+      "obligationKind": "boundary",
+      "before": "KNOWN_DEFECT",
+      "after": "KNOWN_DEFECT",
+      "reason": "DEF-G1-001 remains open. Reset retains multiple overrides and reset-then-one-override retains old tasks. The corrected summary expects all ollama and fails. Serialized bytes of every unrelated JSON value, including llm and dream, remain unchanged. Whole-file whitespace is not asserted. Original v584 deep-merge tests remain byte-identical and pass.",
+      "tests": [
+        {
+          "file": "src/test/v600-chat-config-backcompat.test.ts",
+          "name": "v6.0.0 chat config backward compatibility loads a config file containing chat and taskModels.chat keys without crashing",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/v600-chat-config-backcompat.test.ts",
+          "name": "v6.0.0 chat config backward compatibility schema parse strips chat keys directly",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/v584-updateConfig.test.ts",
+          "name": "updateConfig — v5.8.4 anthropic-revert regression deep-merges nested objects rather than replacing them outright",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/v584-updateConfig.test.ts",
+          "name": "updateConfig — v5.8.4 anthropic-revert regression preserves explicit values already in the file when adding a new section",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/v584-updateConfig.test.ts",
+          "name": "updateConfig — v5.8.4 anthropic-revert regression writes only the keys the caller supplied + any that were already in the file (no defaults seeded)",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/setup-ui-summary.test.ts",
+          "name": "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/routing-reset-adversarial.test.ts",
+          "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/routing-reset-adversarial.test.ts",
+          "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/setup-ui-summary.test.ts",
+          "name": "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config",
+          "mutationIds": []
+        }
+      ]
+    },
+    {
+      "featureId": "F03",
+      "obligationKind": "permissions",
+      "before": "KNOWN_DEFECT",
+      "after": "KNOWN_DEFECT",
+      "reason": "Human config display identifies the key source without exposing the fake stored key. JSON display prints the stored custom-provider apiKey, reproduced as ADV-CTX-001. The expected failure does not prove redaction; other provider key fields are not individually exercised.",
+      "tests": [
+        {
+          "file": "src/test/config-display-adversarial.test.ts",
+          "name": "adversarial config display human config output names the key source without exposing stored key bytes",
+          "mutationIds": [
+            "ADV-CTX-human-key-leak-f4b9135"
+          ]
+        },
+        {
+          "file": "src/test/config-display-adversarial.test.ts",
+          "name": "adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes",
+          "mutationIds": []
+        }
+      ]
+    },
+    {
+      "featureId": "F19",
+      "obligationKind": "success",
+      "before": "KNOWN_DEFECT",
+      "after": "PARTIAL",
+      "reason": "Normal CLI and MCP imports now persist both literal records in the target central database and report Imported:2. Removing the database argument from each caller fails its ordinary persistence test; restoration passes. ADV-CTX-002 is fixed. Existing direct import-module and bootstrap persistence cases remain mapped. This does not establish every format, optional store or remote provider.",
+      "tests": [
+        {
+          "file": "src/test/import.test.ts",
+          "name": "JSONL import imports JSONL (one JSON object per line)",
+          "mutationIds": [
+            "G1-import-jsonl"
+          ]
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "field mapping includes unmapped fields as extra context",
+          "mutationIds": [
+            "G1-import-extra"
+          ]
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "batch commit persists every record of a batch in the central database",
+          "mutationIds": [
+            "G1-import-batch"
+          ]
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "JSON import imports a JSON array of records",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "JSON import handles nested JSON with common array keys",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "CSV import imports a CSV file",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "field mapping slugifies category names",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/import.test.ts",
+          "name": "formatImportSummary produces readable summary",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/bootstrap.test.ts",
+          "name": "bootstrap imports files into the store",
+          "mutationIds": [
+            "g2-bootstrap-content"
+          ]
+        },
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP MCP uses configured concurrency and honors the explicit override",
+          "mutationIds": [
+            "g2-import-mcp-default",
+            "g2-import-mcp-override"
+          ]
+        },
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
+          "mutationIds": [
+            "ADV-CTX-G2D003-provider-f4b9135",
+            "RELEASE-CTX-G2D003-provider-e9d605f"
+          ]
+        },
+        {
+          "file": "src/test/import-concurrency-wiring.test.ts",
+          "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
+          "mutationIds": [
+            "ADV-CTX-G2D003-provider-f4b9135",
+            "RELEASE-CTX-G2D003-provider-e9d605f"
+          ]
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+          "mutationIds": [
+            "RELEASE-CTX-cli-persistence-e9d605f"
+          ]
+        },
+        {
+          "file": "src/test/context-adversarial.test.ts",
+          "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+          "mutationIds": [
+            "RELEASE-CTX-mcp-persistence-e9d605f"
+          ]
+        }
+      ]
+    },
+    {
+      "featureId": "F26",
+      "obligationKind": "permissions",
+      "before": "KNOWN_DEFECT",
+      "after": "KNOWN_DEFECT",
+      "reason": "Memory titles are escaped, but a stored project name executes JavaScript through a generated click handler (D-DASH-001). The actual emitted handler is entity-decoded and evaluated in an isolated VM; a full browser is not claimed. Report project-scope controls remain outside this probe.",
+      "tests": [
+        {
+          "file": "src/test/dashboard-html-adversarial.test.ts",
+          "name": "dashboard HTML adversarial stored content renders malicious roadmap memory titles as literal escaped text",
+          "mutationIds": [
+            "dashboard-unescaped-stored-content"
+          ]
+        },
+        {
+          "file": "src/test/dashboard-html-adversarial.test.ts",
+          "name": "dashboard HTML adversarial stored content renders malicious open-question titles as escaped action text",
+          "mutationIds": [
+            "dashboard-unescaped-stored-content"
+          ]
+        },
+        {
+          "file": "src/test/dashboard-html-adversarial.test.ts",
+          "name": "dashboard HTML adversarial stored content D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript",
+          "mutationIds": []
+        }
+      ]
+    },
+    {
+      "featureId": "F29",
+      "obligationKind": "failure",
+      "before": "KNOWN_DEFECT",
+      "after": "KNOWN_DEFECT",
+      "reason": "Existing native SQLite retry, unavailable-module, corrupt-handle and FTS fallback cases remain mapped. ADV-FTS-001 still reproduces at e9d605f: a lost central FTS table is recreated empty on reopen, leaving stored content present but search empty. db.ts is unchanged from f4b9135; final archive and search-sidecar repairs do not repair this distinct case. Real network-share locking and power-loss durability remain unverified.",
+      "tests": [
+        {
+          "file": "src/test/db-recovery.test.ts",
+          "name": "DB recovery from SQLITE_CORRUPT throws a clear message if reopen also fails",
+          "mutationIds": [
+            "G1-recovery-error"
+          ]
+        },
+        {
+          "file": "src/test/phase9e.network-share-polish.test.ts",
+          "name": "TC-9e.1: GnosysDB constructor retry logic retries transient native open failures before persisting data",
+          "mutationIds": [
+            "G1-native-retries"
+          ]
+        },
+        {
+          "file": "src/test/phase9e.network-share-polish.test.ts",
+          "name": "TC-9e.1: GnosysDB constructor retry logic returns unavailable when Database module is absent (constructor guard)",
+          "mutationIds": [
+            "G1-native-absent"
+          ]
+        },
+        {
+          "file": "src/test/phase9e.network-share-polish.test.ts",
+          "name": "TC-9e.2: GnosysDB constructor with retry options default retry count is 3 (no opts)",
+          "mutationIds": [
+            "G1-native-default-retries"
+          ]
+        },
+        {
+          "file": "src/test/phase9e.network-share-polish.test.ts",
+          "name": "TC-9e.7: busy_timeout pragma is set new GnosysDB sets busy_timeout to 10000",
+          "mutationIds": [
+            "G1-busy-timeout-guard",
+            "G1-native-timeout"
+          ]
+        },
+        {
+          "file": "src/test/db-recovery.test.ts",
+          "name": "DB recovery from SQLITE_CORRUPT getMemory() retries successfully after a corrupt-handle error",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/db-recovery.test.ts",
+          "name": "DB recovery from SQLITE_CORRUPT getAllProjects() retries successfully after a corrupt-handle error",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/db-recovery.test.ts",
+          "name": "DB recovery from SQLITE_CORRUPT rethrows non-corrupt errors without retry",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/phase3-hardening-pins.test.ts",
+          "name": "SQLite recovery through public reads and search retries a native SQLITE_NOTADB read and returns persisted content",
+          "mutationIds": [
+            "g2-notadb-recovery"
+          ]
+        },
+        {
+          "file": "src/test/phase3-hardening-pins.test.ts",
+          "name": "SQLite recovery through public reads and search reopens cached reads and restores FTS insert, update and delete behavior",
+          "mutationIds": [
+            "g2-reopen-cache",
+            "g2-reopen-triggers"
+          ]
+        },
+        {
+          "file": "src/test/db-recovery-extended.test.ts",
+          "name": "DB recovery — extended failure modes searchFts degrades gracefully when the FTS index is corrupted",
+          "mutationIds": [
+            "fts-no-like-fallback"
+          ]
+        },
+        {
+          "file": "src/test/fts-adversarial.test.ts",
+          "name": "FTS duplicate attacks ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable",
+          "mutationIds": []
+        }
+      ]
+    },
+    {
+      "featureId": "F41",
+      "obligationKind": "success",
+      "before": "KNOWN_DEFECT",
+      "after": "KNOWN_DEFECT",
+      "reason": "The dashboard invokes a command derived from built CLI registration and exits0; a removed-command fault is killed. D-VSC-001 remains open: reinforcement passes a file path and omits the useful signal. A fresh unrelated UUID and decoy records expose hardcoded or wrong-ID behavior. Native VS Code is represented by a host boundary double while the actual local CLI runs.",
+      "tests": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+          "mutationIds": [
+            "vscode-e2-removed-dashboard-command"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
+          "mutationIds": [
+            "vscode-e2-removed-dashboard-command"
+          ]
+        }
+      ]
+    },
+    {
+      "featureId": "F41",
+      "obligationKind": "failure",
+      "before": "KNOWN_DEFECT",
+      "after": "KNOWN_DEFECT",
+      "reason": "No-editor/outside-store notifications and a real missing-executable error are protected. The launch-error fixture now supplies a valid memory document, so it does not require launching for unreadable IDs. Missing, empty and body-only IDs still fail the required warning/no-subprocess contract under D-VSC-001. Native VS Code UI is not launched.",
+      "tests": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands warns when no editor is open",
+          "mutationIds": [
+            "vscode-no-editor"
+          ]
+        },
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands warns when the active file is outside a memory directory",
+          "mutationIds": [
+            "vscode-outside-memory"
+          ]
+        },
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands reports a process launch failure to the editor",
+          "mutationIds": [
+            "vscode-command-error",
+            "vscode-e2-launch-error-hidden"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-001: absent ID warns without launching a subprocess",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-001: empty ID warns without launching a subprocess",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-001: body-only ID warns without launching a subprocess",
+          "mutationIds": []
+        }
+      ]
+    },
+    {
+      "featureId": "F41",
+      "obligationKind": "boundary",
+      "before": "KNOWN_DEFECT",
+      "after": "KNOWN_DEFECT",
+      "reason": "All eight hostile filename forms remain exercised. Variable reinforcement arguments use shell-free argv; transport preserves the supplied bytes and creates no execution marker. A direct variable-shell fault fails the ordinary transport test. The user's clarified ruling permits the exact constant dashboard command, which is registered by the built CLI and exits0. Complete selected-ID reinforcement still fails under D-VSC-001. The passing transport test does not pin a filename where the CLI requires a memory ID.",
+      "tests": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: backticks in the selected path cannot execute shell text or change the selected ID",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: command substitution in the selected path cannot execute shell text or change the selected ID",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: semicolon in the selected path cannot execute shell text or change the selected ID",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: and operator in the selected path cannot execute shell text or change the selected ID",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: pipe in the selected path cannot execute shell text or change the selected ID",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: quotes in the selected path cannot execute shell text or change the selected ID",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: spaces in the selected path cannot execute shell text or change the selected ID",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: newline in the selected path cannot execute shell text or change the selected ID",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
+          "mutationIds": [
+            "vscode-release-variable-shell"
+          ]
+        }
+      ]
+    },
+    {
+      "featureId": "F41",
+      "obligationKind": "permissions",
+      "before": "KNOWN_DEFECT",
+      "after": "KNOWN_DEFECT",
+      "reason": "All four lookalike components reject with both separator styles; the substring fault fails nine ordinary cases. Deep exact .gnosys paths reach reinforcement, but successful ID resolution remains blocked by D-VSC-001. D-VSC-003 is fixed under the clarified variable-argument ruling: constant dashboard shell text is permitted. Backslash paths are tested on a POSIX host, not native Windows.",
+      "tests": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with POSIX separators",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with POSIX separators",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with POSIX separators",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with POSIX separators",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with POSIX separators",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosys-other with Windows separators",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects .gnosysx with Windows separators",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects my.gnosys with Windows separators",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators",
+          "mutationIds": [
+            "vscode-e2-directory-substring"
+          ]
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with Windows separators",
+          "mutationIds": []
+        },
+        {
+          "file": "src/test/vscode-adversarial.test.ts",
+          "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
+          "mutationIds": [
+            "vscode-release-variable-shell"
+          ]
+        }
+      ]
+    }
+  ],
+  "inventory": {
+    "groups": 41,
+    "obligations": 164
+  },
+  "inverseRepairCredit": false
+}

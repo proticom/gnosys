@@ -1,0 +1,168 @@
+{
+  "checkoutRef": "5dac0725bde036e1eea5689ed1977d23b73a364f",
+  "applicationRef": "e9d605f66268a6599c6064d54bc4df6f4f094369",
+  "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+  "applicationNetDiff": "",
+  "changedTests": [
+    {
+      "path": "src/test/context-adversarial.test.ts",
+      "beforeSha256": "30e0f03556ebc841192442bd72cd5fb6c2f797c7d5a4172f724d438d9e9f3144",
+      "afterSha256": "7dfafd0dccf519ba4059aef8d6bba2584eb1005bcafb04923443937a924e195d"
+    }
+  ],
+  "counts": {
+    "unitPassed": 26,
+    "unitFailed": 0,
+    "unitSkipped": 0,
+    "expectedFailures": 1,
+    "markersPromoted": 2,
+    "priorFaultsKilled": 13,
+    "newPersistenceFaultsKilled": 2,
+    "faultsKilled": 15,
+    "survivors": 0,
+    "uniqueKilledCases": 19
+  },
+  "staticChecks": {
+    "typecheckExitCode": 0,
+    "biomeExitCode": 0
+  },
+  "testOutcomes": [
+    {
+      "file": "src/test/commit-context.test.ts",
+      "name": "context sweep public contracts MCP saves both novel memories with observed provenance in the requested project",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/commit-context.test.ts",
+      "name": "context sweep public contracts MCP dry run describes candidates without structuring or writing memories",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/commit-context.test.ts",
+      "name": "context sweep public contracts MCP rejects malformed extraction output without writing memories",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/commit-context.test.ts",
+      "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/commit-context.test.ts",
+      "name": "context sweep public contracts MCP skips repeated context in its startup project",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/commit-context.test.ts",
+      "name": "context sweep public contracts MCP reports an individual storage failure and retains the successful candidate",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/commit-context.test.ts",
+      "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/config-display-adversarial.test.ts",
+      "name": "adversarial config display human config output names the key source without exposing stored key bytes",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/config-display-adversarial.test.ts",
+      "name": "adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing custom-provider MCP context commits the same journal decision",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing CLI import without a provider fails with setup guidance",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing MCP context without a provider fails with setup guidance",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial context and provider routing MCP import without a provider fails with setup guidance",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial project selection the same context is saved independently in projects A and B",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial project selection startup-project context skips its already saved journal",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/context-adversarial.test.ts",
+      "name": "adversarial project selection explicit project B update resolves the shared relative path inside B",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/import-concurrency-wiring.test.ts",
+      "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/import-concurrency-wiring.test.ts",
+      "name": "bulk import concurrency through CLI and MCP MCP uses configured concurrency and honors the explicit override",
+      "status": "passed"
+    },
+    {
+      "file": "src/test/import-concurrency-wiring.test.ts",
+      "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
+      "status": "passed"
+    }
+  ],
+  "patch": "test-audit/release-review/release-context-tests.patch",
+  "actions": "test-audit/release-review/release-context-actions.json",
+  "features": "test-audit/release-review/release-context-feature-coverage.json",
+  "defects": "test-audit/release-review/release-context-defects.json",
+  "mutationSpecs": "test-audit/release-review/release-context-mutations.json",
+  "mutationResults": "test-audit/release-review/release-context-mutations.results.json",
+  "unitEvidence": "test-audit/release-review/release-context-unit.json"
+}

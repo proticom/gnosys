@@ -1,0 +1,44 @@
+{
+  "applicationRef": "e9d605f66268a6599c6064d54bc4df6f4f094369",
+  "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+  "defects": [
+    {
+      "id": "ADV-CTX-002",
+      "status": "verified_fixed",
+      "tests": [
+        {
+          "beforeId": "src/test/context-adversarial.test.ts:64",
+          "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+          "action": "expected_failure_to_ordinary",
+          "defectId": "ADV-CTX-002",
+          "ordinaryStatus": "passed",
+          "mutationIds": [
+            "RELEASE-CTX-cli-persistence-e9d605f"
+          ],
+          "applicationRef": "e9d605f66268a6599c6064d54bc4df6f4f094369",
+          "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693"
+        },
+        {
+          "beforeId": "src/test/context-adversarial.test.ts:75",
+          "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+          "action": "expected_failure_to_ordinary",
+          "defectId": "ADV-CTX-002",
+          "ordinaryStatus": "passed",
+          "mutationIds": [
+            "RELEASE-CTX-mcp-persistence-e9d605f"
+          ],
+          "applicationRef": "e9d605f66268a6599c6064d54bc4df6f4f094369",
+          "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693"
+        }
+      ],
+      "evidence": "test-audit/release-review/release-context-import-ordinary.json"
+    },
+    {
+      "id": "ADV-CTX-001",
+      "status": "open",
+      "expectedFailureRetained": true,
+      "actual": "JSON config show prints the fake stored custom-provider API key; the stored config bytes remain unchanged.",
+      "evidence": "test-audit/release-review/release-context-config-ordinary.json"
+    }
+  ]
+}

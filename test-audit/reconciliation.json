@@ -3,7 +3,7 @@
   "base": "203c4e7",
   "cwd": "/Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit-qa",
   "evidence": {
-    "runtime": "test-audit/adversarial/repair-unit-full.json",
+    "runtime": "test-audit/release-review/full-suite.json",
     "baselineRuntime": "test-audit/evidence/baseline.json",
     "actionFiles": [
       "adversarial.after.json",
@@ -6574,8 +6574,8 @@
       "runtimePattern": "^adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories$",
       "dynamicName": false,
       "bodyHash": "a15b77c43094a46d6d8adfb261b0a7bbfd2443d9babd636d8988571aa744cab9",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
@@ -6586,7 +6586,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:6",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -6606,8 +6606,8 @@
       "runtimePattern": "^adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories$",
       "dynamicName": false,
       "bodyHash": "ac22f65c9d0cb48a2c0ffc9a298c024bcebf696221b9749d2ee138cc1c8ccd80",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
@@ -6618,7 +6618,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:7",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -53171,27 +53171,27 @@
       "id": "src/test/vscode-adversarial.test.ts:210",
       "file": "src/test/vscode-adversarial.test.ts",
       "line": 210,
-      "name": "D-VSC-003: every extension command launches processes without a shell",
+      "name": "D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
       "suites": [
         "VS Code adversarial public commands"
       ],
-      "sourceName": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
-      "runtimePattern": "^VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell$",
+      "sourceName": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
+      "runtimePattern": "^VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs$",
       "dynamicName": false,
-      "bodyHash": "71d2b3ab6e0c136231b24a33678194b80ce947c5e7c2337a2df9848d8cebc50d",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "bodyHash": "18ef6ba27a79459596adc45cf73e79774ea65043b4121e0f7483d11a7e4a3eae",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
       "runtimeCases": [
         {
-          "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
+          "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
           "classification": "STRONG",
           "actions": [
             {
               "ref": "adversarial.after.json#additional:51",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -53200,9 +53200,9 @@
       ]
     },
     {
-      "id": "src/test/vscode-adversarial.test.ts:217",
+      "id": "src/test/vscode-adversarial.test.ts:229",
       "file": "src/test/vscode-adversarial.test.ts",
-      "line": 217,
+      "line": 229,
       "name": "D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully",
       "suites": [
         "VS Code adversarial public commands"
@@ -62425,7 +62425,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:6",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -62441,7 +62441,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:7",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84827,7 +84827,7 @@
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
-      "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
+      "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
       "status": "passed",
       "classification": "STRONG",
       "isNew": true,
@@ -84835,7 +84835,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:51",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84847,7 +84847,7 @@
       "status": "passed",
       "classification": "STRONG",
       "isNew": true,
-      "declarationId": "src/test/vscode-adversarial.test.ts:217",
+      "declarationId": "src/test/vscode-adversarial.test.ts:229",
       "actions": [
         {
           "ref": "adversarial.after.json#additional:52",

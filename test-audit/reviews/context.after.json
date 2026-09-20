@@ -63,9 +63,10 @@
       "action": "added",
       "defectId": "D-CTX-001",
       "mutationIds": [
-        "ADV-CTX-D001-provider-f4b9135"
+        "ADV-CTX-D001-provider-f4b9135",
+        "RELEASE-CTX-D001-provider-e9d605f"
       ],
-      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) ADV-CTX-D001-provider-f4b9135; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) ADV-CTX-D001-provider-f4b9135; exact application restoration passes. See test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/commit-context.test.ts",
@@ -74,9 +75,10 @@
       "action": "added",
       "defectId": "D-CTX-002",
       "mutationIds": [
-        "ADV-CTX-D002-lookup-f4b9135"
+        "ADV-CTX-D002-lookup-f4b9135",
+        "RELEASE-CTX-D002-lookup-e9d605f"
       ],
-      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) ADV-CTX-D002-lookup-f4b9135; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) ADV-CTX-D002-lookup-f4b9135; exact application restoration passes. See test-audit/mutations/release.*.results.json."
     }
   ]
 }

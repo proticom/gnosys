@@ -207,11 +207,23 @@ describe("VS Code adversarial public commands", () => {
     });
   }
 
-  it.fails("D-VSC-003: every extension command launches processes without a shell", () => {
-    const file = writeMemory(".gnosys/decisions/unrelated-filename.md");
+  it("D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs", () => {
+    const filename = "$(touch audit-variable) \"quoted\" ; && | `touch audit-backtick-variable`\n spaced.md";
+    const file = writeMemory(`.gnosys/decisions/${filename}`);
     const reinforce = run("gnosys.reinforceMemory", file);
-    const dashboard = run("gnosys.runDashboard");
-    expect([reinforce, dashboard].map(result => [...new Set(result.launches.map(launch => launch.shell))])).toEqual([[false], [false]]);
+    expect([...new Set(reinforce.launches.map(launch => launch.shell))]).toEqual([false]);
+    expect(calls().map(args => args.slice(0, 2))).toEqual([["gnosys", "reinforce"]]);
+    expect(calls()).toEqual(reinforce.launches.map(launch => launch.args));
+    expect(fs.existsSync(path.join(directory, "audit-variable"))).toBe(false);
+    expect(fs.existsSync(path.join(directory, "audit-backtick-variable"))).toBe(false);
+
+    const help = execFileSync(process.execPath, [cli, "--help"], { cwd: directory, env, encoding: "utf8" });
+    const registered = help.split("\n").map(line => /^ {2}([a-z][a-z-]*)\b/.exec(line)?.[1]).filter(value => value !== undefined);
+    const dashboard = run("gnosys.runDashboard", file);
+    expect(dashboard.terminals.flatMap(terminal => terminal.runs.map(run => run.command))).toEqual(["npx gnosys status --system"]);
+    expect(calls().slice(1)).toEqual([["gnosys", "status", "--system"]]);
+    expect(registered).toContain(calls()[1][1]);
+    expect(dashboard.terminals.flatMap(terminal => terminal.runs.map(run => run.status))).toEqual([0]);
   });
 
   it("D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully", () => {

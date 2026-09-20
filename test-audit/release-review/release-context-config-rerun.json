@@ -1,0 +1,14 @@
+[
+  {
+    "reportPath": "/var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-release-config-report-WsZEvk/ordinary.json",
+    "defectId": "ADV-CTX-001",
+    "ordinaryAssertionStatus": "failed",
+    "configBytesUnchanged": true
+  },
+  {
+    "reportPath": "/var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-release-config-report-ClZBx4/ordinary.json",
+    "defectId": "ADV-CTX-001",
+    "ordinaryAssertionStatus": "failed",
+    "configBytesUnchanged": true
+  }
+]

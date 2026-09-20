@@ -1,0 +1,17 @@
+{
+  "defectId": "ADV-CTX-001",
+  "ordinaryAssertionStatus": "failed",
+  "command": [
+    "config",
+    "show",
+    "--json"
+  ],
+  "exitCode": 0,
+  "stdout": "{\n  \"llm\": {\n    \"defaultProvider\": \"custom\",\n    \"anthropic\": {\n      \"model\": \"claude-sonnet-4-6\"\n    },\n    \"ollama\": {\n      \"model\": \"llama3.2\",\n      \"baseUrl\": \"http://localhost:11434\"\n    },\n    \"groq\": {\n      \"model\": \"llama-3.3-70b-versatile\"\n    },\n    \"openai\": {\n      \"model\": \"gpt-5.4-mini\",\n      \"baseUrl\": \"https://api.openai.com/v1\"\n    },\n    \"lmstudio\": {\n      \"model\": \"default\",\n      \"baseUrl\": \"http://localhost:1234/v1\"\n    },\n    \"xai\": {\n      \"model\": \"grok-4.20\"\n    },\n    \"mistral\": {\n      \"model\": \"mistral-small-4\"\n    },\n    \"openrouter\": {\n      \"model\": \"nvidia/nemotron-3-super-120b-a12b:free\",\n      \"baseUrl\": \"https://openrouter.ai/api/v1\"\n    },\n    \"custom\": {\n      \"model\": \"display-canary-model\",\n      \"baseUrl\": \"http://provider.invalid/v1\",\n      \"apiKey\": \"fixture-only-config-key-7f94a31c\"\n    }\n  },\n  \"taskModels\": {},\n  \"importConcurrency\": 5,\n  \"autoCommit\": true,\n  \"llmRetryAttempts\": 3,\n  \"llmRetryBaseDelayMs\": 1000,\n  \"defaultAuthor\": \"ai\",\n  \"defaultAuthority\": \"imported\",\n  \"defaultConfidence\": 0.8,\n  \"archive\": {\n    \"maxActiveDays\": 90,\n    \"minConfidence\": 0.3\n  },\n  \"recall\": {\n    \"aggressive\": true,\n    \"maxMemories\": 8,\n    \"minRelevance\": 0.4\n  },\n  \"dream\": {\n    \"enabled\": false,\n    \"idleMinutes\": 10,\n    \"maxRuntimeMinutes\": 30,\n    \"provider\": \"custom\",\n    \"selfCritique\": true,\n    \"generateSummaries\": true,\n    \"discoverRelationships\": true,\n    \"minMemories\": 10,\n    \"schedule\": {\n      \"startHour\": 2,\n      \"endHour\": 5\n    },\n    \"systemIdleMinutes\": 30,\n    \"minNewMemoriesToDream\": 10,\n    \"minHoursBetweenRuns\": 20,\n    \"maxLLMCallsPerRun\": 12\n  },\n  \"multimodal\": {\n    \"transcriptionProvider\": \"groq\",\n    \"whisperModel\": \"Xenova/whisper-small\",\n    \"chunkSize\": 1500,\n    \"maxFileSizeMb\": 100\n  }\n}\n",
+  "stderr": "",
+  "configBytesUnchanged": true,
+  "failure": {
+    "name": "AssertionError",
+    "message": "JSON config display must not expose stored key bytes\n\ntrue !== false\n"
+  }
+}

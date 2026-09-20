@@ -1,0 +1,245 @@
+[
+  {
+    "featureId": "F03",
+    "obligationKind": "failure",
+    "obligation": "Invalid config or missing default provider returns actionable error",
+    "status": "PARTIAL",
+    "tests": [
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing CLI import without a provider fails with setup guidance",
+        "mutationIds": [
+          "RELEASE-CTX-import-setup-guidance-e9d605f"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing MCP context without a provider fails with setup guidance",
+        "mutationIds": [
+          "RELEASE-CTX-context-setup-guidance-e9d605f"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing MCP import without a provider fails with setup guidance",
+        "mutationIds": [
+          "RELEASE-CTX-import-setup-guidance-e9d605f"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance",
+        "mutationIds": [
+          "RELEASE-CTX-D001-guidance-e9d605f"
+        ]
+      }
+    ],
+    "limitations": "Real CLI context/import and MCP context/import reject an absent provider with setup guidance. Invalid-config behavior is not covered."
+  },
+  {
+    "featureId": "F03",
+    "obligationKind": "permissions",
+    "obligation": "Secrets are not printed by config display",
+    "status": "KNOWN_DEFECT",
+    "tests": [
+      {
+        "file": "src/test/config-display-adversarial.test.ts",
+        "name": "adversarial config display human config output names the key source without exposing stored key bytes",
+        "mutationIds": [
+          "RELEASE-CTX-human-key-leak-e9d605f"
+        ]
+      },
+      {
+        "file": "src/test/config-display-adversarial.test.ts",
+        "name": "adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes",
+        "mutationIds": []
+      }
+    ],
+    "limitations": "Human custom-provider display uses the literal key source marker. JSON leaks the fake stored key, reproduced as ADV-CTX-001; its expected-failure test is evidence of the defect, not correct redaction. Other provider key fields are not individually exercised."
+  },
+  {
+    "featureId": "F06",
+    "obligationKind": "success",
+    "obligation": "Each supported provider returns complete text and ordered stream tokens using selected task model; vision includes image",
+    "status": "PARTIAL",
+    "tests": [
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing custom-provider MCP context commits the same journal decision",
+        "mutationIds": [
+          "RELEASE-CTX-mcp-content-e9d605f"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency",
+        "mutationIds": [
+          "RELEASE-CTX-import-concurrency-e9d605f"
+        ]
+      }
+    ],
+    "limitations": "Real custom-provider HTTP request/response path carries the configured model and literal prompts. A temporary local HTTP server stands in for the external model service. No live vendor, streaming or vision claim."
+  },
+  {
+    "featureId": "F08",
+    "obligationKind": "permissions",
+    "obligation": "No cross-project write caused by cwd fallback when project is supplied",
+    "status": "PARTIAL",
+    "tests": [
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial project selection explicit project B update resolves the shared relative path inside B",
+        "mutationIds": [
+          "RELEASE-CTX-explicit-update-project-e9d605f"
+        ]
+      }
+    ],
+    "limitations": "Real MCP server starts in A; both A/B contain the same legacy relative filename linked to distinct database IDs. An explicit B update changes only B persisted content and keeps A unchanged. ID-based authorization and optional-store rules are outside this path."
+  },
+  {
+    "featureId": "F18",
+    "obligationKind": "success",
+    "obligation": "Sweep extracts atomic novel memories and augments changed knowledge",
+    "status": "PARTIAL",
+    "tests": [
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing custom-provider MCP context commits the same journal decision",
+        "mutationIds": [
+          "RELEASE-CTX-mcp-content-e9d605f"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial project selection the same context is saved independently in projects A and B",
+        "mutationIds": [
+          "RELEASE-CTX-project-scope-e9d605f",
+          "RELEASE-CTX-D002-cross-project-e9d605f"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing D-CTX-001 custom-provider CLI context commits the new journal decision",
+        "mutationIds": [
+          "RELEASE-CTX-D001-provider-e9d605f"
+        ]
+      }
+    ],
+    "limitations": "CLI and MCP persist the literal new journal through the custom HTTP provider. Explicit A/B calls preserve separate project records. Changed-knowledge augmentation is not demonstrated; the model service is a local HTTP boundary fixture."
+  },
+  {
+    "featureId": "F18",
+    "obligationKind": "boundary",
+    "obligation": "Dry-run has no writes; repeated identical context creates no duplicate",
+    "status": "PARTIAL",
+    "tests": [
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial project selection startup-project context skips its already saved journal",
+        "mutationIds": [
+          "RELEASE-CTX-startup-dedup-e9d605f"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal",
+        "mutationIds": [
+          "RELEASE-CTX-D002-lookup-e9d605f"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial project selection the same context is saved independently in projects A and B",
+        "mutationIds": [
+          "RELEASE-CTX-project-scope-e9d605f",
+          "RELEASE-CTX-D002-cross-project-e9d605f"
+        ]
+      },
+      {
+        "file": "src/test/commit-context.test.ts",
+        "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
+        "mutationIds": [
+          "RELEASE-CTX-D002-lookup-e9d605f"
+        ]
+      }
+    ],
+    "limitations": "Ordinary repeat tests now skip in the original/new scoped fixtures and startup project; A context does not falsely suppress the same new B context. Reintroducing the old lookup and removing the project filter independently kill these protections. Dry-run and changed-context augmentation are not established by these new cases."
+  },
+  {
+    "featureId": "F18",
+    "obligationKind": "permissions",
+    "obligation": "Target store and declared/imported provenance preserved",
+    "status": "PARTIAL",
+    "tests": [
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial project selection the same context is saved independently in projects A and B",
+        "mutationIds": [
+          "RELEASE-CTX-project-scope-e9d605f",
+          "RELEASE-CTX-D002-cross-project-e9d605f"
+        ]
+      }
+    ],
+    "limitations": "Real explicit-context calls persist each project ID with project scope and observed authority. Caller-selectable declared/imported authority is not demonstrated by this tool path."
+  },
+  {
+    "featureId": "F19",
+    "obligationKind": "success",
+    "obligation": "Markdown bootstrap and CSV/JSON/JSONL import persist mapped title/content/tags/category; summary counts reflect actual writes",
+    "status": "PARTIAL",
+    "tests": [
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
+        "mutationIds": [
+          "RELEASE-CTX-mcp-persistence-e9d605f"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+        "mutationIds": [
+          "RELEASE-CTX-cli-persistence-e9d605f"
+        ]
+      }
+    ],
+    "limitations": "Real normal CLI and MCP LLM imports through the local custom HTTP provider persist the two literal JSON-derived titles and bodies in the reopened central DB and report Imported:2/Failed:0/Total:2. Separate omission of each caller DB argument kills its ordinary case. CSV, JSONL, Markdown bootstrap, mapped tags/category and other records are not demonstrated by these two cases."
+  },
+  {
+    "featureId": "F19",
+    "obligationKind": "boundary",
+    "obligation": "Dry-run, skip-existing, offset/limit, concurrency, empty input, frontmatter preservation",
+    "status": "PARTIAL",
+    "tests": [
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing custom-provider MCP bulk import uses configured concurrency",
+        "mutationIds": [
+          "RELEASE-CTX-import-concurrency-e9d605f"
+        ]
+      },
+      {
+        "file": "src/test/context-adversarial.test.ts",
+        "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency",
+        "mutationIds": [
+          "RELEASE-CTX-G2D003-provider-e9d605f"
+        ]
+      },
+      {
+        "file": "src/test/import-concurrency-wiring.test.ts",
+        "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
+        "mutationIds": [
+          "RELEASE-CTX-G2D003-provider-e9d605f"
+        ]
+      },
+      {
+        "file": "src/test/import-concurrency-wiring.test.ts",
+        "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
+        "mutationIds": [
+          "RELEASE-CTX-G2D003-provider-e9d605f"
+        ]
+      }
+    ],
+    "limitations": "CLI and MCP honor configured provider/concurrency2, and the original CLI override1 passes. The MCP dry-run case leaves the central DB empty while the normal MCP control persists two rows. CLI dry-run write protection, skip-existing, offset/limit and other concurrency values are outside this subset."
+  }
+]

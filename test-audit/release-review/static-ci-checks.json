@@ -1,0 +1,98 @@
+[
+  {
+    "name": "typecheck",
+    "command": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "environmentOverrides": {},
+    "exitCode": 0,
+    "expectedExit": 0,
+    "durationSeconds": 3.09,
+    "stdout": "\n> gnosys@6.2.1 typecheck\n> tsc --noEmit\n\n",
+    "stderr": ""
+  },
+  {
+    "name": "lint",
+    "command": [
+      "npm",
+      "run",
+      "lint"
+    ],
+    "environmentOverrides": {},
+    "exitCode": 0,
+    "expectedExit": 0,
+    "durationSeconds": 0.32,
+    "stdout": "\n> gnosys@6.2.1 lint\n> biome check src/\n\nThe number of diagnostics exceeds the limit allowed. Use --max-diagnostics to increase it.\nDiagnostics not shown: 3.\nChecked 462 files in 129ms. No fixes applied.\nFound 23 warnings.\n",
+    "stderr": "src/cli/agent.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! All these imports are only used as types.\n  \n    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.\n    4 │  */\n  > 5 │ import { Command } from \"commander\";\n      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    6 │ import { loadConfig } from \"../lib/config.js\";\n    7 │ import { getResolver, pkg } from \"./_shared.js\";\n  \n  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.\n  \n  i Safe fix: Use import type.\n  \n    5 │ import·type·{·Command·}·from·\"commander\";\n      │        +++++                             \n\nsrc/cli/browse.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! All these imports are only used as types.\n  \n    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.\n    4 │  */\n  > 5 │ import { Command } from \"commander\";\n      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    6 │ import { getResolver } from \"./_shared.js\";\n    7 │ \n  \n  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.\n  \n  i Safe fix: Use import type.\n  \n    5 │ import·type·{·Command·}·from·\"commander\";\n      │        +++++                             \n\nsrc/cli/core.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! All these imports are only used as types.\n  \n    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.\n    4 │  */\n  > 5 │ import { Command } from \"commander\";\n      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    6 │ import { getResolver, resolveProjectId } from \"./_shared.js\";\n    7 │ \n  \n  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.\n  \n  i Safe fix: Use import type.\n  \n    5 │ import·type·{·Command·}·from·\"commander\";\n      │        +++++                             \n\nsrc/cli/data.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! All these imports are only used as types.\n  \n    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.\n    4 │  */\n  > 5 │ import { Command } from \"commander\";\n      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    6 │ import { getResolver } from \"./_shared.js\";\n    7 │ \n  \n  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.\n  \n  i Safe fix: Use import type.\n  \n    5 │ import·type·{·Command·}·from·\"commander\";\n      │        +++++                             \n\nsrc/cli/dream.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! All these imports are only used as types.\n  \n    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.\n    4 │  */\n  > 5 │ import { Command } from \"commander\";\n      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    6 │ \n    7 │ export function registerDream(program: Command): void {\n  \n  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.\n  \n  i Safe fix: Use import type.\n  \n    5 │ import·type·{·Command·}·from·\"commander\";\n      │        +++++                             \n\nsrc/cli/exportCmds.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! All these imports are only used as types.\n  \n    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.\n    4 │  */\n  > 5 │ import { Command } from \"commander\";\n      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    6 │ \n    7 │ export function registerExport(program: Command): void {\n  \n  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.\n  \n  i Safe fix: Use import type.\n  \n    5 │ import·type·{·Command·}·from·\"commander\";\n      │        +++++                             \n\nsrc/cli/maintenance.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! All these imports are only used as types.\n  \n    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.\n    4 │  */\n  > 5 │ import { Command } from \"commander\";\n      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    6 │ import path from \"path\";\n    7 │ import { getResolver, pkg } from \"./_shared.js\";\n  \n  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.\n  \n  i Safe fix: Use import type.\n  \n    5 │ import·type·{·Command·}·from·\"commander\";\n      │        +++++                             \n\nsrc/cli/memory.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! All these imports are only used as types.\n  \n    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.\n    4 │  */\n  > 5 │ import { Command } from \"commander\";\n      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    6 │ import { getResolver, resolveProjectId } from \"./_shared.js\";\n    7 │ \n  \n  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.\n  \n  i Safe fix: Use import type.\n  \n    5 │ import·type·{·Command·}·from·\"commander\";\n      │        +++++                             \n\nsrc/cli/project.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! All these imports are only used as types.\n  \n    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.\n    4 │  */\n  > 5 │ import { Command } from \"commander\";\n      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    6 │ import path from \"path\";\n    7 │ import fs from \"fs/promises\";\n  \n  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.\n  \n  i Safe fix: Use import type.\n  \n    5 │ import·type·{·Command·}·from·\"commander\";\n      │        +++++                             \n\nsrc/cli/remote.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! All these imports are only used as types.\n  \n    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.\n    4 │  */\n  > 5 │ import { Command } from \"commander\";\n      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    6 │ import { GnosysDB } from \"../lib/db.js\";\n    7 │ import { outputResult } from \"./_shared.js\";\n  \n  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.\n  \n  i Safe fix: Use import type.\n  \n    5 │ import·type·{·Command·}·from·\"commander\";\n      │        +++++                             \n\nsrc/cli/runtime.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! All these imports are only used as types.\n  \n    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.\n    4 │  */\n  > 5 │ import { Command } from \"commander\";\n      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    6 │ import { loadConfig } from \"../lib/config.js\";\n    7 │ import { getResolver } from \"./_shared.js\";\n  \n  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.\n  \n  i Safe fix: Use import type.\n  \n    5 │ import·type·{·Command·}·from·\"commander\";\n      │        +++++                             \n\nsrc/cli/sandbox.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! All these imports are only used as types.\n  \n    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.\n    4 │  */\n  > 5 │ import { Command } from \"commander\";\n      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    6 │ \n    7 │ export function registerSandbox(program: Command): void {\n  \n  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.\n  \n  i Safe fix: Use import type.\n  \n    5 │ import·type·{·Command·}·from·\"commander\";\n      │        +++++                             \n\nsrc/cli/setup.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! All these imports are only used as types.\n  \n    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.\n    4 │  */\n  > 5 │ import { Command } from \"commander\";\n      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    6 │ import path from \"path\";\n    7 │ import os from \"os\";\n  \n  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.\n  \n  i Safe fix: Use import type.\n  \n    5 │ import·type·{·Command·}·from·\"commander\";\n      │        +++++                             \n\nsrc/cli/trace.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! All these imports are only used as types.\n  \n    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.\n    4 │  */\n  > 5 │ import { Command } from \"commander\";\n      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    6 │ \n    7 │ export function registerTrace(program: Command): void {\n  \n  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.\n  \n  i Safe fix: Use import type.\n  \n    5 │ import·type·{·Command·}·from·\"commander\";\n      │        +++++                             \n\nsrc/cli/web.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! All these imports are only used as types.\n  \n    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.\n    4 │  */\n  > 5 │ import { Command } from \"commander\";\n      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    6 │ import path from \"path\";\n    7 │ import { getResolver } from \"./_shared.js\";\n  \n  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.\n  \n  i Safe fix: Use import type.\n  \n    5 │ import·type·{·Command·}·from·\"commander\";\n      │        +++++                             \n\nsrc/lib/federated.ts:121:9 lint/complexity/useOptionalChain  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! Change to an optional chain.\n  \n    119 │     const r = rawResults[i];\n    120 │     const mem = db.getMemory(r.id);\n  > 121 │     if (!mem || mem.status !== \"active\") continue;\n        │         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    122 │ \n    123 │     const scope = (mem.scope || \"project\") as MemoryScope;\n  \n  i Unsafe fix: Change to an optional chain.\n  \n    119 119 │       const r = rawResults[i];\n    120 120 │       const mem = db.getMemory(r.id);\n    121     │ - ····if·(!mem·||·mem.status·!==·\"active\")·continue;\n        121 │ + ····if·(mem?.status·!==·\"active\")·continue;\n    122 122 │   \n    123 123 │       const scope = (mem.scope || \"project\") as MemoryScope;\n  \n\nsrc/lib/preferences.ts:123:7 lint/complexity/useOptionalChain  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! Change to an optional chain.\n  \n    121 │   const id = `pref-${key}`;\n    122 │   const mem = db.getMemory(id);\n  > 123 │   if (!mem || mem.category !== \"preferences\") return null;\n        │       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    124 │   return memoryToPreference(mem);\n    125 │ }\n  \n  i Unsafe fix: Change to an optional chain.\n  \n    121 121 │     const id = `pref-${key}`;\n    122 122 │     const mem = db.getMemory(id);\n    123     │ - ··if·(!mem·||·mem.category·!==·\"preferences\")·return·null;\n        123 │ + ··if·(mem?.category·!==·\"preferences\")·return·null;\n    124 124 │     return memoryToPreference(mem);\n    125 125 │   }\n  \n\nsrc/lib/preferences.ts:143:7 lint/complexity/useOptionalChain  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! Change to an optional chain.\n  \n    141 │   const id = `pref-${key}`;\n    142 │   const mem = db.getMemory(id);\n  > 143 │   if (!mem || mem.category !== \"preferences\") return false;\n        │       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    144 │   db.deleteMemory(id);\n    145 │   return true;\n  \n  i Unsafe fix: Change to an optional chain.\n  \n    141 141 │     const id = `pref-${key}`;\n    142 142 │     const mem = db.getMemory(id);\n    143     │ - ··if·(!mem·||·mem.category·!==·\"preferences\")·return·false;\n        143 │ + ··if·(mem?.category·!==·\"preferences\")·return·false;\n    144 144 │     db.deleteMemory(id);\n    145 145 │     return true;\n  \n\nsrc/lib/setupSyncProjectsCommand.ts:60:3 lint/style/useConst  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! This let declares a variable that is only assigned once.\n  \n    58 │   // capture project titles so the Screen 10 row labels can use the\n    59 │   // human-readable name where available.\n  > 60 │   let dbProjects: string[] = [];\n       │   ^^^\n    61 │   const titleByDir = new Map<string, string>();\n    62 │   try {\n  \n  i 'dbProjects' is never reassigned.\n  \n    58 │   // capture project titles so the Screen 10 row labels can use the\n    59 │   // human-readable name where available.\n  > 60 │   let dbProjects: string[] = [];\n       │       ^^^^^^^^^^\n    61 │   const titleByDir = new Map<string, string>();\n    62 │   try {\n  \n  i Safe fix: Use const instead.\n  \n     58  58 │     // capture project titles so the Screen 10 row labels can use the\n     59  59 │     // human-readable name where available.\n     60     │ - ··let·dbProjects:·string[]·=·[];\n         60 │ + ··const·dbProjects:·string[]·=·[];\n     61  61 │     const titleByDir = new Map<string, string>();\n     62  62 │     try {\n  \n\nsrc/postinstall.ts:71:13 lint/complexity/useOptionalChain  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n  ! Change to an optional chain.\n  \n    69 │         rl.close();\n    70 │ \n  > 71 │         if (!answer || answer.trim().toLowerCase() !== \"n\") {\n       │             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    72 │           out();\n    73 │           execSync(\"gnosys upgrade\", { stdio: \"inherit\" });\n  \n  i Unsafe fix: Change to an optional chain.\n  \n     69  69 │           rl.close();\n     70  70 │   \n     71     │ - ········if·(!answer·||·answer.trim().toLowerCase()·!==·\"n\")·{\n         71 │ + ········if·(answer?.trim().toLowerCase()·!==·\"n\")·{\n     72  72 │             out();\n     73  73 │             execSync(\"gnosys upgrade\", { stdio: \"inherit\" });\n  \n\n"
+  },
+  {
+    "name": "knip",
+    "command": [
+      "npm",
+      "run",
+      "knip"
+    ],
+    "environmentOverrides": {},
+    "exitCode": 0,
+    "expectedExit": 0,
+    "durationSeconds": 0.74,
+    "stdout": "\n> gnosys@6.2.1 knip\n> knip\n\n",
+    "stderr": ""
+  },
+  {
+    "name": "ci-multi-project",
+    "command": [
+      "node",
+      "scripts/test-ci-scenarios.mjs",
+      "multi-project"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 1.61,
+    "stdout": "multi-project: project identities, scoped lists/stats, and persisted search results verified\n",
+    "stderr": ""
+  },
+  {
+    "name": "ci-local-storage",
+    "command": [
+      "node",
+      "scripts/test-ci-scenarios.mjs",
+      "local-storage"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.56,
+    "stdout": "local-storage: project identities, scoped lists/stats, and persisted search results verified\n",
+    "stderr": ""
+  },
+  {
+    "name": "coverage-base-pinned",
+    "command": [
+      "node",
+      "scripts/check-new-file-coverage.mjs"
+    ],
+    "environmentOverrides": {
+      "COVERAGE_BASE_REF": "203c4e7"
+    },
+    "exitCode": 0,
+    "expectedExit": 0,
+    "durationSeconds": 0.15,
+    "stdout": "✓ No new src/lib or src/sandbox files in this diff.\n",
+    "stderr": ""
+  },
+  {
+    "name": "coverage-base-missing",
+    "command": [
+      "node",
+      "scripts/check-new-file-coverage.mjs"
+    ],
+    "environmentOverrides": {
+      "COVERAGE_BASE_REF": "audit-ref-that-does-not-exist"
+    },
+    "exitCode": 2,
+    "expectedExit": 2,
+    "durationSeconds": 0.04,
+    "stdout": "",
+    "stderr": "fatal: ambiguous argument 'audit-ref-that-does-not-exist...HEAD': unknown revision or path not in the working tree.\nUse '--' to separate paths from revisions, like this:\n'git <command> [<revision>...] -- [<file>...]'\n! could not run `git diff` against audit-ref-that-does-not-exist.\n  Command failed: git diff --name-only --diff-filter=A audit-ref-that-does-not-exist...HEAD\nfatal: ambiguous argument 'audit-ref-that-does-not-exist...HEAD': unknown revision or path not in the working tree.\nUse '--' to separate paths from revisions, like this:\n'git <command> [<revision>...] -- [<file>...]'\n\n  Set COVERAGE_BASE_REF if the default isn't right.\n"
+  }
+]

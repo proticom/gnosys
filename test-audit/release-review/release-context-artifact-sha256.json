@@ -1,0 +1,78 @@
+{
+  "files": [
+    {
+      "path": "test-audit/release-review/release-context-HANDOFF.md",
+      "sha256": "6d34359ffd9d786d50a384b61bd239d2cbcfddf6ec476e58b6c3d291a9d62c31"
+    },
+    {
+      "path": "test-audit/release-review/release-context-actions.json",
+      "sha256": "ad8188d95ba5d786bc679d0d3f2b48b1a0cb8cfc2a528ad9be85cfdc670cc061"
+    },
+    {
+      "path": "test-audit/release-review/release-context-before-test.ts.txt",
+      "sha256": "30e0f03556ebc841192442bd72cd5fb6c2f797c7d5a4172f724d438d9e9f3144"
+    },
+    {
+      "path": "test-audit/release-review/release-context-config-ordinary.json",
+      "sha256": "bd2de064239c2d8b907606713ca663ff1c8a99c31dcc71f5499d7829b9afd8c7"
+    },
+    {
+      "path": "test-audit/release-review/release-context-config-recording.mjs",
+      "sha256": "21e5731ed8cd549429edd5bc0805a8e05aa30238eb9b4120a075deb1ac0dd8b3"
+    },
+    {
+      "path": "test-audit/release-review/release-context-config-repro.mjs",
+      "sha256": "d35df4b5045a3afaa8c76a3b187584dc5bc5e8bc53e21062cca052473258d2c3"
+    },
+    {
+      "path": "test-audit/release-review/release-context-config-rerun.json",
+      "sha256": "d116e5d462094fc63ef2cf83221de8c27fb2f90bdf7402a8bf0c10ad35ba86f8"
+    },
+    {
+      "path": "test-audit/release-review/release-context-defects.json",
+      "sha256": "b6cf7fdc7b416caf54f2d8c0610b0502d49a048d5cb28687ae5a4a1646c70c92"
+    },
+    {
+      "path": "test-audit/release-review/release-context-feature-coverage.json",
+      "sha256": "41907fe708e22b2b365a4bc74c80c120e50f872d2adb766d6d6b0a384d9d4d70"
+    },
+    {
+      "path": "test-audit/release-review/release-context-final.json",
+      "sha256": "067f3c28bf1a4024988edf3e94b9de09143eea5127c2974171fae9a40b0b5832"
+    },
+    {
+      "path": "test-audit/release-review/release-context-finalize.py",
+      "sha256": "c9b8b02ef7c3661c34b4fd163903c683ccd15ed072cd1e3376306a62beaee506"
+    },
+    {
+      "path": "test-audit/release-review/release-context-import-ordinary.json",
+      "sha256": "0b56743f63365661966596c4467972a4024463f694da49f6d07b7aee98d9f6e2"
+    },
+    {
+      "path": "test-audit/release-review/release-context-mutations.json",
+      "sha256": "197dad7a3a2596358fbf2b971aee7d2887e98dfc7c8b11e774ade87b2c6cb458"
+    },
+    {
+      "path": "test-audit/release-review/release-context-mutations.results.json",
+      "sha256": "dea0a97741d267c1e574eae79be22e9cb052543055e164b98dd8e03392006b7b"
+    },
+    {
+      "path": "test-audit/release-review/release-context-promote.py",
+      "sha256": "506b651bcb95b73150345da7127a98d2813ae3b3e05fb44d3c1d47f0d2eb8431"
+    },
+    {
+      "path": "test-audit/release-review/release-context-promotion.json",
+      "sha256": "ddeee72f937c46e9840513d10ef516c525789e7a645d842f98bc94276060d4bb"
+    },
+    {
+      "path": "test-audit/release-review/release-context-tests.patch",
+      "sha256": "615f3a2b887a8bf6f6d86faa3092526a25013a1ef855a01421442d554ad44b9a",
+      "originalSha256": "a9103ae2fbfe07c0c8587234ad52640ac0120d9a82164c5c45a8fe52fef3f8a3",
+      "normalization": "Blank context lines omit trailing spaces; git apply --reverse --check confirms identical test patch."
+    },
+    {
+      "path": "test-audit/release-review/release-context-unit.json",
+      "sha256": "571e8c23af9d98906d71ac68edf54d5c0c391b2cc7f0ff57758c8d0d0ff5317f"
+    }
+  ]
+}

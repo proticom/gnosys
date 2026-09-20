@@ -1,0 +1,12 @@
+{
+  "checkoutRef": "5dac0725bde036e1eea5689ed1977d23b73a364f",
+  "applicationRef": "e9d605f",
+  "file": "src/test/context-adversarial.test.ts",
+  "beforeSha256": "30e0f03556ebc841192442bd72cd5fb6c2f797c7d5a4172f724d438d9e9f3144",
+  "afterSha256": "7dfafd0dccf519ba4059aef8d6bba2584eb1005bcafb04923443937a924e195d",
+  "markersPromoted": 2,
+  "ordinaryPasses": [
+    "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
+    "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories"
+  ]
+}

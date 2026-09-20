@@ -1,0 +1,57 @@
+{
+  "reason": "Identical file/search/replacement replays retain their prior logical IDs so repeat verification does not inflate the distinct mutation score.",
+  "aliases": [
+    {
+      "sourceId": "RELEASE-CTX-mcp-content-e9d605f",
+      "canonicalId": "ADV-CTX-mcp-content-f4b9135"
+    },
+    {
+      "sourceId": "RELEASE-CTX-import-concurrency-e9d605f",
+      "canonicalId": "ADV-CTX-import-concurrency-f4b9135"
+    },
+    {
+      "sourceId": "RELEASE-CTX-import-setup-guidance-e9d605f",
+      "canonicalId": "ADV-CTX-import-setup-guidance-f4b9135"
+    },
+    {
+      "sourceId": "RELEASE-CTX-context-setup-guidance-e9d605f",
+      "canonicalId": "ADV-CTX-context-setup-guidance-f4b9135"
+    },
+    {
+      "sourceId": "RELEASE-CTX-project-scope-e9d605f",
+      "canonicalId": "ADV-CTX-project-scope-f4b9135"
+    },
+    {
+      "sourceId": "RELEASE-CTX-startup-dedup-e9d605f",
+      "canonicalId": "ADV-CTX-startup-dedup-f4b9135"
+    },
+    {
+      "sourceId": "RELEASE-CTX-explicit-update-project-e9d605f",
+      "canonicalId": "ADV-CTX-explicit-update-project-f4b9135"
+    },
+    {
+      "sourceId": "RELEASE-CTX-human-key-leak-e9d605f",
+      "canonicalId": "ADV-CTX-human-key-leak-f4b9135"
+    },
+    {
+      "sourceId": "RELEASE-CTX-D001-provider-e9d605f",
+      "canonicalId": "ADV-CTX-D001-provider-f4b9135"
+    },
+    {
+      "sourceId": "RELEASE-CTX-D001-guidance-e9d605f",
+      "canonicalId": "ADV-CTX-D001-guidance-f4b9135"
+    },
+    {
+      "sourceId": "RELEASE-CTX-G2D003-provider-e9d605f",
+      "canonicalId": "ADV-CTX-G2D003-provider-f4b9135"
+    },
+    {
+      "sourceId": "RELEASE-CTX-D002-lookup-e9d605f",
+      "canonicalId": "ADV-CTX-D002-lookup-f4b9135"
+    },
+    {
+      "sourceId": "RELEASE-CTX-D002-cross-project-e9d605f",
+      "canonicalId": "ADV-CTX-D002-cross-project-f4b9135"
+    }
+  ]
+}

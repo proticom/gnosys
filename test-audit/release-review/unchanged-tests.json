@@ -1,0 +1,12 @@
+[
+  {
+    "file": "src/test/v584-updateConfig.test.ts",
+    "byteIdentical": true,
+    "sha256": "6a4d9a12d42cf5ec3d2c5406c36351b8d118d3fc603bcda2b9497bb3eac7a41b"
+  },
+  {
+    "file": "src/test/phase7b.read-paths.test.ts",
+    "byteIdentical": true,
+    "sha256": "ece14588b2bb2a417724daacb6fb254df42083b34ab13ad3a426b4bd61a3c203"
+  }
+]

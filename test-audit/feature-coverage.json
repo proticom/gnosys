@@ -2688,7 +2688,8 @@
         "file": "src/test/commit-context.test.ts",
         "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
         "mutationIds": [
-          "ADV-CTX-D001-provider-f4b9135"
+          "ADV-CTX-D001-provider-f4b9135",
+          "RELEASE-CTX-D001-provider-e9d605f"
         ]
       },
       {
@@ -2755,7 +2756,8 @@
         "file": "src/test/commit-context.test.ts",
         "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
         "mutationIds": [
-          "ADV-CTX-D002-lookup-f4b9135"
+          "ADV-CTX-D002-lookup-f4b9135",
+          "RELEASE-CTX-D002-lookup-e9d605f"
         ]
       },
       {
@@ -2811,7 +2813,7 @@
     "featureId": "F19",
     "obligationKind": "success",
     "obligation": "Markdown bootstrap and CSV/JSON/JSONL import persist mapped title/content/tags/category; summary counts reflect actual writes",
-    "status": "KNOWN_DEFECT",
+    "status": "PARTIAL",
     "tests": [
       {
         "file": "src/test/import.test.ts",
@@ -2878,28 +2880,34 @@
         "file": "src/test/import-concurrency-wiring.test.ts",
         "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
         "mutationIds": [
-          "ADV-CTX-G2D003-provider-f4b9135"
+          "ADV-CTX-G2D003-provider-f4b9135",
+          "RELEASE-CTX-G2D003-provider-e9d605f"
         ]
       },
       {
         "file": "src/test/import-concurrency-wiring.test.ts",
         "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
         "mutationIds": [
-          "ADV-CTX-G2D003-provider-f4b9135"
+          "ADV-CTX-G2D003-provider-f4b9135",
+          "RELEASE-CTX-G2D003-provider-e9d605f"
         ]
       },
       {
         "file": "src/test/context-adversarial.test.ts",
         "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
-        "mutationIds": []
+        "mutationIds": [
+          "RELEASE-CTX-cli-persistence-e9d605f"
+        ]
       },
       {
         "file": "src/test/context-adversarial.test.ts",
         "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
-        "mutationIds": []
+        "mutationIds": [
+          "RELEASE-CTX-mcp-persistence-e9d605f"
+        ]
       }
     ],
-    "limitations": "Direct import-module and bootstrap tests persist their mapped data. Configured CLI and MCP provider/concurrency paths pass, but normal CLI and MCP entry points report Imported:2 while reopening the database finds zero memories. ADV-CTX-002 remains an expected failure for both surfaces. Provider repair does not establish durable import writes."
+    "limitations": "Normal CLI and MCP imports now persist both literal records in the target central database and report Imported:2. Removing the database argument from each caller fails its ordinary persistence test; restoration passes. ADV-CTX-002 is fixed. Existing direct import-module and bootstrap persistence cases remain mapped. This does not establish every format, optional store or remote provider."
   },
   {
     "featureId": "F19",
@@ -2969,14 +2977,16 @@
         "file": "src/test/import-concurrency-wiring.test.ts",
         "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
         "mutationIds": [
-          "ADV-CTX-G2D003-provider-f4b9135"
+          "ADV-CTX-G2D003-provider-f4b9135",
+          "RELEASE-CTX-G2D003-provider-e9d605f"
         ]
       },
       {
         "file": "src/test/import-concurrency-wiring.test.ts",
         "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
         "mutationIds": [
-          "ADV-CTX-G2D003-provider-f4b9135"
+          "ADV-CTX-G2D003-provider-f4b9135",
+          "RELEASE-CTX-G2D003-provider-e9d605f"
         ]
       },
       {
@@ -4666,7 +4676,7 @@
         "mutationIds": []
       }
     ],
-    "limitations": "Existing native SQLite retry, unavailable-module, corrupt-handle and FTS fallback cases remain mapped. New ADV-FTS-001 shows a lost FTS table is recreated empty on reopen: stored content survives but search returns no hit. Comparison with the predecessor reproduces the regression. Real network-share locking and power-loss durability remain unverified."
+    "limitations": "Existing native SQLite retry, unavailable-module, corrupt-handle and FTS fallback cases remain mapped. ADV-FTS-001 still reproduces at e9d605f: a lost central FTS table is recreated empty on reopen, leaving stored content present but search empty. db.ts is unchanged from f4b9135; final archive and search-sidecar repairs do not repair this distinct case. Real network-share locking and power-loss durability remain unverified."
   },
   {
     "featureId": "F29",
@@ -6811,11 +6821,13 @@
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
-        "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
-        "mutationIds": []
+        "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
+        "mutationIds": [
+          "vscode-release-variable-shell"
+        ]
       }
     ],
-    "limitations": "All eight hostile filename forms are exercised. The reinforcement subprocess is shell-free and harmless marker commands do not run, but complete filename-to-selected-ID reinforcement still fails under D-VSC-001. Dashboard launch still uses a shell under the extension-wide D-VSC-003 requirement. The CLI expects a memory ID, so the literal selected file supplies that ID rather than being pinned as an obsolete positional filename. Native activation is unverified."
+    "limitations": "All eight hostile filename forms remain exercised. Variable reinforcement arguments use shell-free argv; transport preserves the supplied bytes and creates no execution marker. A direct variable-shell fault fails the ordinary transport test. The user's clarified ruling permits the exact constant dashboard command, which is registered by the built CLI and exits0. Complete selected-ID reinforcement still fails under D-VSC-001. The passing transport test does not pin a filename where the CLI requires a memory ID."
   },
   {
     "featureId": "F41",
@@ -6903,10 +6915,12 @@
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
-        "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
-        "mutationIds": []
+        "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
+        "mutationIds": [
+          "vscode-release-variable-shell"
+        ]
       }
     ],
-    "limitations": "All four lookalike components reject with both separator styles; reintroducing substring matching fails nine ordinary cases. Deep exact .gnosys paths reach reinforcement, but successful ID resolution remains blocked by D-VSC-001. The dashboard still uses terminal.sendText and a shell, so the user's all-command shell-free requirement remains open. Backslash paths are exercised on the POSIX host, not native Windows."
+    "limitations": "All four lookalike components reject with both separator styles; the substring fault fails nine ordinary cases. Deep exact .gnosys paths reach reinforcement, but successful ID resolution remains blocked by D-VSC-001. D-VSC-003 is fixed under the clarified variable-argument ruling: constant dashboard shell text is permitted. Backslash paths are tested on a POSIX host, not native Windows."
   }
 ]

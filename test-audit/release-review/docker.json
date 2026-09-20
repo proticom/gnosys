@@ -1,0 +1,11 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test:e2e-setup"
+  ],
+  "exitCode": 1,
+  "durationSeconds": 5.09,
+  "stdout": "\n> gnosys@6.2.1 test:e2e-setup\n> bash e2e-setup/run.sh\n\n[e2e-setup] packing CLI…\n[e2e-setup] building image…\n[e2e-setup] running isolated suite (no network)…\n── cli-installs-and-reports-version ──────────────────────────────────────\nInstalled package 6.2.1; CLI reported 6.2.1\nok - cli-installs-and-reports-version\n\n── init-creates-isolated-store ──────────────────────────────────────\nnot ok - init-creates-isolated-store\n\n── setup-wizard-first-screen ──────────────────────────────────────\nnot ok - setup-wizard-first-screen\n\n── setup-non-interactive ──────────────────────────────────────\nnot ok - setup-non-interactive\n\n── web-init-wizard ──────────────────────────────────────\nnot ok - web-init-wizard\n\n── isolation-no-stray-writes ──────────────────────────────────────\nNo unexpected changes in HOME, /tmp, /var/tmp, or /dev/shm\nok - isolation-no-stray-writes\n\n══════════════════════════════════════════════════\nsetup UI tests: 2 passed, 4 failed\nfailed: init-creates-isolated-store\nfailed: setup-wizard-first-screen\nfailed: setup-non-interactive\nfailed: web-init-wizard\n",
+  "stderr": "mkdir: cannot create directory '/home/tester/proj-init': No space left on device\n    while executing\n\"exec mkdir -p /home/tester/proj-init\"\n    (file \"tests/init.exp\" line 7)\r\nmkdir: cannot create directory '/home/tester/proj-wizard': No space left on device\n    while executing\n\"exec mkdir -p /home/tester/proj-wizard\"\n    (file \"tests/setup-wizard.exp\" line 8)\r\nmkdir: cannot create directory '/home/tester/proj-ni': No space left on device\nmkdir: cannot create directory '/home/tester/proj-web': No space left on device\n    while executing\n\"exec mkdir -p /home/tester/proj-web\"\n    (file \"tests/web-init.exp\" line 6)\r\n"
+}

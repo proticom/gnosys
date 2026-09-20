@@ -55,8 +55,8 @@
   "mutationScore": {
     "method": "targeted-manual",
     "unit": "distinct application file and mutation ID after test repair",
-    "tested": 508,
-    "killed": 505,
+    "tested": 511,
+    "killed": 508,
     "survived": 3,
     "percent": 99.41,
     "limitations": "Selected faults only; not an exhaustive or random mutation score. Before-test experiments and inverse defect repair probes are excluded. Repeated copies of experiment evidence are deduplicated."
@@ -97,9 +97,9 @@
     "passed": 1746,
     "failed": 0,
     "skipped": 0,
-    "expectedFailureRegressions": 27,
-    "durationSeconds": 109.49,
-    "evidence": "test-audit/adversarial/repair-unit-full.json"
+    "expectedFailureRegressions": 24,
+    "durationSeconds": 107.45,
+    "evidence": "test-audit/release-review/full-suite.json"
   },
   "currentInventory": {
     "files": 214,
@@ -118,14 +118,6 @@
       {
         "file": "src/test/config-display-adversarial.test.ts",
         "name": "adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes"
-      },
-      {
-        "file": "src/test/context-adversarial.test.ts",
-        "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories"
-      },
-      {
-        "file": "src/test/context-adversarial.test.ts",
-        "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories"
       },
       {
         "file": "src/test/dashboard-html-adversarial.test.ts",
@@ -206,10 +198,6 @@
       {
         "file": "src/test/vscode-adversarial.test.ts",
         "name": "VS Code adversarial public commands D-VSC-003: newline in the selected path cannot execute shell text or change the selected ID"
-      },
-      {
-        "file": "src/test/vscode-adversarial.test.ts",
-        "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell"
       },
       {
         "file": "src/test/vscode-extension.test.ts",
@@ -2920,7 +2908,8 @@
           "file": "src/test/commit-context.test.ts",
           "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
           "mutationIds": [
-            "ADV-CTX-D001-provider-f4b9135"
+            "ADV-CTX-D001-provider-f4b9135",
+            "RELEASE-CTX-D001-provider-e9d605f"
           ]
         },
         {
@@ -2987,7 +2976,8 @@
           "file": "src/test/commit-context.test.ts",
           "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
           "mutationIds": [
-            "ADV-CTX-D002-lookup-f4b9135"
+            "ADV-CTX-D002-lookup-f4b9135",
+            "RELEASE-CTX-D002-lookup-e9d605f"
           ]
         },
         {
@@ -3043,7 +3033,7 @@
       "featureId": "F19",
       "obligationKind": "success",
       "obligation": "Markdown bootstrap and CSV/JSON/JSONL import persist mapped title/content/tags/category; summary counts reflect actual writes",
-      "status": "KNOWN_DEFECT",
+      "status": "PARTIAL",
       "tests": [
         {
           "file": "src/test/import.test.ts",
@@ -3110,28 +3100,34 @@
           "file": "src/test/import-concurrency-wiring.test.ts",
           "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
           "mutationIds": [
-            "ADV-CTX-G2D003-provider-f4b9135"
+            "ADV-CTX-G2D003-provider-f4b9135",
+            "RELEASE-CTX-G2D003-provider-e9d605f"
           ]
         },
         {
           "file": "src/test/import-concurrency-wiring.test.ts",
           "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
           "mutationIds": [
-            "ADV-CTX-G2D003-provider-f4b9135"
+            "ADV-CTX-G2D003-provider-f4b9135",
+            "RELEASE-CTX-G2D003-provider-e9d605f"
           ]
         },
         {
           "file": "src/test/context-adversarial.test.ts",
           "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
-          "mutationIds": []
+          "mutationIds": [
+            "RELEASE-CTX-cli-persistence-e9d605f"
+          ]
         },
         {
           "file": "src/test/context-adversarial.test.ts",
           "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
-          "mutationIds": []
+          "mutationIds": [
+            "RELEASE-CTX-mcp-persistence-e9d605f"
+          ]
         }
       ],
-      "limitations": "Direct import-module and bootstrap tests persist their mapped data. Configured CLI and MCP provider/concurrency paths pass, but normal CLI and MCP entry points report Imported:2 while reopening the database finds zero memories. ADV-CTX-002 remains an expected failure for both surfaces. Provider repair does not establish durable import writes."
+      "limitations": "Normal CLI and MCP imports now persist both literal records in the target central database and report Imported:2. Removing the database argument from each caller fails its ordinary persistence test; restoration passes. ADV-CTX-002 is fixed. Existing direct import-module and bootstrap persistence cases remain mapped. This does not establish every format, optional store or remote provider."
     },
     {
       "featureId": "F19",
@@ -3201,14 +3197,16 @@
           "file": "src/test/import-concurrency-wiring.test.ts",
           "name": "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests",
           "mutationIds": [
-            "ADV-CTX-G2D003-provider-f4b9135"
+            "ADV-CTX-G2D003-provider-f4b9135",
+            "RELEASE-CTX-G2D003-provider-e9d605f"
           ]
         },
         {
           "file": "src/test/import-concurrency-wiring.test.ts",
           "name": "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency",
           "mutationIds": [
-            "ADV-CTX-G2D003-provider-f4b9135"
+            "ADV-CTX-G2D003-provider-f4b9135",
+            "RELEASE-CTX-G2D003-provider-e9d605f"
           ]
         },
         {
@@ -4898,7 +4896,7 @@
           "mutationIds": []
         }
       ],
-      "limitations": "Existing native SQLite retry, unavailable-module, corrupt-handle and FTS fallback cases remain mapped. New ADV-FTS-001 shows a lost FTS table is recreated empty on reopen: stored content survives but search returns no hit. Comparison with the predecessor reproduces the regression. Real network-share locking and power-loss durability remain unverified."
+      "limitations": "Existing native SQLite retry, unavailable-module, corrupt-handle and FTS fallback cases remain mapped. ADV-FTS-001 still reproduces at e9d605f: a lost central FTS table is recreated empty on reopen, leaving stored content present but search empty. db.ts is unchanged from f4b9135; final archive and search-sidecar repairs do not repair this distinct case. Real network-share locking and power-loss durability remain unverified."
     },
     {
       "featureId": "F29",
@@ -7043,11 +7041,13 @@
         },
         {
           "file": "src/test/vscode-adversarial.test.ts",
-          "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
-          "mutationIds": []
+          "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
+          "mutationIds": [
+            "vscode-release-variable-shell"
+          ]
         }
       ],
-      "limitations": "All eight hostile filename forms are exercised. The reinforcement subprocess is shell-free and harmless marker commands do not run, but complete filename-to-selected-ID reinforcement still fails under D-VSC-001. Dashboard launch still uses a shell under the extension-wide D-VSC-003 requirement. The CLI expects a memory ID, so the literal selected file supplies that ID rather than being pinned as an obsolete positional filename. Native activation is unverified."
+      "limitations": "All eight hostile filename forms remain exercised. Variable reinforcement arguments use shell-free argv; transport preserves the supplied bytes and creates no execution marker. A direct variable-shell fault fails the ordinary transport test. The user's clarified ruling permits the exact constant dashboard command, which is registered by the built CLI and exits0. Complete selected-ID reinforcement still fails under D-VSC-001. The passing transport test does not pin a filename where the CLI requires a memory ID."
     },
     {
       "featureId": "F41",
@@ -7135,11 +7135,13 @@
         },
         {
           "file": "src/test/vscode-adversarial.test.ts",
-          "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
-          "mutationIds": []
+          "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
+          "mutationIds": [
+            "vscode-release-variable-shell"
+          ]
         }
       ],
-      "limitations": "All four lookalike components reject with both separator styles; reintroducing substring matching fails nine ordinary cases. Deep exact .gnosys paths reach reinforcement, but successful ID resolution remains blocked by D-VSC-001. The dashboard still uses terminal.sendText and a shell, so the user's all-command shell-free requirement remains open. Backslash paths are exercised on the POSIX host, not native Windows."
+      "limitations": "All four lookalike components reject with both separator styles; the substring fault fails nine ordinary cases. Deep exact .gnosys paths reach reinforcement, but successful ID resolution remains blocked by D-VSC-001. D-VSC-003 is fixed under the clarified variable-argument ruling: constant dashboard shell text is permitted. Backslash paths are tested on a POSIX host, not native Windows."
     }
   ],
   "featureSummary": [
@@ -7362,10 +7364,10 @@
     {
       "id": "F19",
       "name": "Bulk bootstrap and structured data import",
-      "status": "PARTIAL_WITH_KNOWN_DEFECTS",
-      "strongBehaviorCases": 25,
+      "status": "PARTIAL",
+      "strongBehaviorCases": 27,
       "obligationStatuses": {
-        "success": "KNOWN_DEFECT",
+        "success": "PARTIAL",
         "failure": "PARTIAL",
         "boundary": "PARTIAL",
         "permissions": "PARTIAL"
@@ -7627,7 +7629,7 @@
       "id": "F41",
       "name": "VS Code extension commands",
       "status": "PARTIAL_WITH_KNOWN_DEFECTS",
-      "strongBehaviorCases": 14,
+      "strongBehaviorCases": 15,
       "obligationStatuses": {
         "success": "KNOWN_DEFECT",
         "failure": "KNOWN_DEFECT",
@@ -7637,9 +7639,9 @@
     }
   ],
   "obligationStatusCounts": {
-    "PARTIAL": 129,
+    "PARTIAL": 130,
     "NO_STRONG_COVERAGE": 21,
-    "KNOWN_DEFECT": 9,
+    "KNOWN_DEFECT": 8,
     "PARTIAL_WITH_SERVICE_OR_PLATFORM_BLOCK": 3,
     "PROTECTED": 2
   },
@@ -7751,22 +7753,22 @@
       "passed": 1746,
       "failed": 0,
       "skipped": 0,
-      "expectedFailureCases": 27,
-      "durationSeconds": 109.49,
-      "evidence": "test-audit/adversarial/repair-unit-full.json"
+      "expectedFailureCases": 24,
+      "durationSeconds": 107.45,
+      "evidence": "test-audit/release-review/full-suite.json"
     },
     {
       "name": "coverage",
       "exitCode": 0,
       "passed": 1746,
-      "durationSeconds": 118.04,
+      "durationSeconds": 120.2,
       "percentages": {
-        "statements": 71.64,
-        "branches": 61.39,
-        "functions": 81.18,
-        "lines": 73.57
+        "statements": 71.54,
+        "branches": 61.28,
+        "functions": 80.89,
+        "lines": 73.46
       },
-      "evidence": "test-audit/adversarial/final-coverage-suite.json"
+      "evidence": "test-audit/release-review/coverage-suite.json"
     },
     {
       "name": "typecheck",
@@ -7775,10 +7777,11 @@
         "run",
         "typecheck"
       ],
+      "environmentOverrides": {},
       "exitCode": 0,
       "expectedExit": 0,
-      "durationSeconds": 3.38,
-      "evidence": "test-audit/adversarial/final-static-ci-checks.json"
+      "durationSeconds": 3.09,
+      "evidence": "test-audit/release-review/static-ci-checks.json"
     },
     {
       "name": "lint",
@@ -7787,10 +7790,11 @@
         "run",
         "lint"
       ],
+      "environmentOverrides": {},
       "exitCode": 0,
       "expectedExit": 0,
-      "durationSeconds": 0.35,
-      "evidence": "test-audit/adversarial/final-static-ci-checks.json"
+      "durationSeconds": 0.32,
+      "evidence": "test-audit/release-review/static-ci-checks.json"
     },
     {
       "name": "knip",
@@ -7799,10 +7803,11 @@
         "run",
         "knip"
       ],
+      "environmentOverrides": {},
       "exitCode": 0,
       "expectedExit": 0,
-      "durationSeconds": 0.76,
-      "evidence": "test-audit/adversarial/final-static-ci-checks.json"
+      "durationSeconds": 0.74,
+      "evidence": "test-audit/release-review/static-ci-checks.json"
     },
     {
       "name": "ci-multi-project",
@@ -7812,9 +7817,8 @@
         "multi-project"
       ],
       "exitCode": 0,
-      "expectedExit": 0,
-      "durationSeconds": 1.55,
-      "evidence": "test-audit/adversarial/final-static-ci-checks.json"
+      "durationSeconds": 1.61,
+      "evidence": "test-audit/release-review/static-ci-checks.json"
     },
     {
       "name": "ci-local-storage",
@@ -7824,9 +7828,8 @@
         "local-storage"
       ],
       "exitCode": 0,
-      "expectedExit": 0,
-      "durationSeconds": 0.53,
-      "evidence": "test-audit/adversarial/final-static-ci-checks.json"
+      "durationSeconds": 0.56,
+      "evidence": "test-audit/release-review/static-ci-checks.json"
     },
     {
       "name": "coverage-base-pinned",
@@ -7834,10 +7837,13 @@
         "node",
         "scripts/check-new-file-coverage.mjs"
       ],
+      "environmentOverrides": {
+        "COVERAGE_BASE_REF": "203c4e7"
+      },
       "exitCode": 0,
       "expectedExit": 0,
-      "durationSeconds": 0.14,
-      "evidence": "test-audit/adversarial/final-static-ci-checks.json"
+      "durationSeconds": 0.15,
+      "evidence": "test-audit/release-review/static-ci-checks.json"
     },
     {
       "name": "coverage-base-missing",
@@ -7845,60 +7851,88 @@
         "node",
         "scripts/check-new-file-coverage.mjs"
       ],
+      "environmentOverrides": {
+        "COVERAGE_BASE_REF": "audit-ref-that-does-not-exist"
+      },
       "exitCode": 2,
       "expectedExit": 2,
       "durationSeconds": 0.04,
-      "evidence": "test-audit/adversarial/final-static-ci-checks.json"
+      "evidence": "test-audit/release-review/static-ci-checks.json"
     },
     {
       "name": "e2e:setup:default",
       "exitCode": 1,
       "passed": 2,
       "failed": 4,
-      "failureKind": "fixture creation ENOSPC",
-      "evidence": "test-audit/adversarial/final-docker-setup.json"
+      "failureKind": "fixture mkdir ENOSPC",
+      "evidence": "test-audit/release-review/docker.json"
     },
     {
       "name": "e2e:setup:tmpfs",
       "exitCode": 0,
       "passed": 6,
-      "durationSeconds": 5.39,
-      "evidence": "test-audit/adversarial/final-docker-tmpfs.json"
+      "durationSeconds": 5.18,
+      "evidence": "test-audit/release-review/docker-tmpfs.json"
     }
   ],
   "blocked": [
     {
-      "kind": "hosted_runner_flake_risks",
-      "description": "First CI run watchlist: src/test/phase7b.read-paths.test.ts:104 requires reading 100 memories in under 100 ms; line124 requires FTS search in under 50 ms. Hosted-runner contention, scheduling and cold caches may exceed these wall-clock limits. Both assertions remain unchanged."
+      "kind": "known_application_defects",
+      "description": "The automated suite has zero unexpected failures, but five open defects remain: D-VSC-001 selected-memory ID/signal handling, DEF-G1-001 routing reset, ADV-CTX-001 JSON config key disclosure, D-DASH-001 generated project-name click-handler injection, and ADV-FTS-001 central FTS recovery after table loss. D-G3-001 is explicitly deferred. These are documented release risks, not successful behavior."
     },
     {
       "kind": "local_docker_disk_full",
-      "description": "The default Docker run encountered a 100%-full overlay filesystem (0 bytes available, inodes48% used). Four scenarios failed while creating fixture directories. The same image and unchanged six tests passed with ephemeral tmpfs fixture directories. No Docker data was deleted; the normal local Docker runner remains capacity-limited."
+      "description": "The default Docker runner fails four fixture-directory creations with ENOSPC. The same final packed image and unchanged six tests pass with ephemeral tmpfs fixture directories. No Docker data was deleted; the ordinary local runner remains capacity-limited."
     },
     {
-      "kind": "platform_and_service_limits",
-      "description": "Live provider credentials/services, native keychain and scheduler integration, a running VS Code extension host, native Windows path handling and physical network-share behavior were not exercised. Tests use local HTTP boundaries, host doubles, real subprocesses and isolated temporary storage. The feature matrix names these limits."
+      "kind": "hosted_runner_flake_risks",
+      "description": "First-CI-run watchlist: src/test/phase7b.read-paths.test.ts:104 requires 100-memory reads below 100 ms; line124 requires FTS below 50 ms. Both thresholds are unchanged. Hosted contention and cold caches may exceed them."
+    },
+    {
+      "kind": "platform_and_class_review_limits",
+      "description": "Live provider credentials, native keychain/scheduler actions, native Windows/VS Code and physical network shares were not exercised. The 25 changed final application files were source-reviewed, but this bounded QA pass does not independently prove every class-sweep scenario in FIX_HANDOFF.md. Existing combined tests and named direct fault replays define the verified scope."
     },
     {
       "kind": "ci_matrix_not_executed",
-      "description": "Verification used local macOS Node22.17.1 and the isolated Node22 Docker image. Other configured remote CI matrix combinations were not run; no push or PR was authorized."
+      "description": "Local macOS Node 22.17.1 and the isolated Node 22 Docker image were exercised. No remote CI run, push, version bump, tag or publish was performed."
     },
     {
       "kind": "existing_coverage_scope_limit",
-      "description": "The unresolved-base behavior is fixed. The coverage guard still skips added files absent from its coverage summary; the pinned-base pass adds no application modules and does not establish coverage for excluded modules. The original COLL-03 record is historical evidence; this is its remaining limit."
+      "description": "Unresolved coverage bases fail correctly. Added modules absent from coverage-summary remain skipped by the pre-existing scope rule; the pinned baseline check adds no application module and does not establish excluded-module coverage."
     }
   ],
   "applicationCodeChanged": true,
   "changedApplicationPaths": [
     "extensions/vscode/extension.js",
+    "src/cli/runtime.ts",
     "src/index.ts",
+    "src/lib/addCommand.ts",
+    "src/lib/apiKeyVault.ts",
+    "src/lib/archive.ts",
+    "src/lib/ask.ts",
+    "src/lib/askCommand.ts",
     "src/lib/commitContextCommand.ts",
+    "src/lib/config.ts",
+    "src/lib/dashboard.ts",
     "src/lib/db.ts",
+    "src/lib/dearchiveCommand.ts",
+    "src/lib/graph.ts",
+    "src/lib/hybridSearchCommand.ts",
+    "src/lib/import.ts",
     "src/lib/importCommand.ts",
+    "src/lib/localDiskCheck.ts",
+    "src/lib/maintainCommand.ts",
+    "src/lib/maintenance.ts",
     "src/lib/remoteWizard.ts",
+    "src/lib/search.ts",
     "src/lib/setup.ts",
+    "src/lib/setup/sections/providers.ts",
+    "src/lib/setup/sections/routing.ts",
     "src/lib/setup/summary.ts",
-    "src/lib/setupKeys.ts"
+    "src/lib/setupKeys.ts",
+    "src/lib/syncIngestLaunchd.ts",
+    "src/lib/webInitCommand.ts",
+    "src/sandbox/helper-template.ts"
   ],
   "defects": [
     {
@@ -7926,7 +7960,7 @@
             "name": "fnv1a D-G3-001: matches the multi-character 32-bit FNV-1a vector"
           }
         ],
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json",
         "reason": "DEFERRED at the user's direction. The ordinary FNV regression still fails; no hash repair was incorporated."
       }
     },
@@ -8015,7 +8049,7 @@
             "name": "VS Code adversarial public commands D-VSC-003: newline in the selected path cannot execute shell text or change the selected ID"
           }
         ],
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json",
         "reason": "OPEN. The selected ID and useful signal are still missing. Corrected QA fixtures supply real document text and no longer require launching for unreadable IDs. This also blocks positive nested-path and hostile-filename reinforcement cases."
       }
     },
@@ -8076,7 +8110,7 @@
             "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators"
           }
         ],
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json",
         "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
         "fixCommits": [
           "13756f2c1aab1873ba7d68a39727b16b11251a29"
@@ -8095,7 +8129,7 @@
       "evidence": "The real shell ran only a harmless touch command inside the temporary test project. Replacing shell interpolation with execFileSync argument passing makes the expected-failure test unexpectedly pass.",
       "reproduction": "node scripts/test-audit-reproduce-current.mjs D-VSC-003",
       "test": "src/test/vscode-extension.test.ts",
-      "status": "OPEN",
+      "status": "FIXED",
       "evidenceFiles": [
         "test-audit/evidence/vscode-defect-reproduction.json",
         "test-audit/mutations/vscode.repairs.results.json",
@@ -8104,15 +8138,21 @@
       "historicalStatus": "Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.",
       "historicalReproduction": "node scripts/test-audit-defect.mjs D-VSC-003",
       "resolution": {
-        "kind": "open",
+        "kind": "fixed",
         "cases": [
           {
             "file": "src/test/vscode-adversarial.test.ts",
-            "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell"
+            "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs"
           }
         ],
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
-        "reason": "OPEN, partially repaired. Reinforcement uses shell-free argv, but the dashboard still invokes a shell through terminal.sendText. The user's extension-wide requirement fails. The CLI accepts a memory ID, so filename cases now require reading that literal selected file and passing its real ID."
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json",
+        "reason": "FIXED under the clarified user ruling. Variable process arguments bypass the shell and reach the real CLI shim intact. The dashboard runs the exact constant registered command; constant shell text is permitted. Selected-memory ID and signal correctness remain separately OPEN under D-VSC-001.",
+        "fixCommits": [
+          "b8ac52bb1f18e6977fc45c1914e07610888cf652"
+        ],
+        "faultMutationIds": [
+          "vscode-release-variable-shell"
+        ]
       }
     },
     {
@@ -8144,7 +8184,7 @@
             "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully"
           }
         ],
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json",
         "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
         "fixCommits": [
           "e2c08a37e7c69745e1dd4effc1bbe97f6e01b8b7"
@@ -8190,7 +8230,7 @@
             "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config"
           }
         ],
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json",
         "reason": "OPEN. Reset retains task overrides. Four ordinary wizard regressions fail, including the corrected all-ollama summary. Unrelated serialized config values remain unchanged; v584 tests remain byte-identical."
       }
     },
@@ -8223,7 +8263,7 @@
             "name": "setup exit status after the provider prompt G2-D001 Ctrl+C at IDE integration exits 130"
           }
         ],
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json",
         "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
         "fixCommits": [
           "6a69746dabf618e212c23e5530b474903d19df07"
@@ -8266,7 +8306,7 @@
             "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories"
           }
         ],
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json",
         "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
         "fixCommits": [
           "29a59b0b8ecdeb6e0796515d787aada530fe7335"
@@ -8310,7 +8350,7 @@
             "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance"
           }
         ],
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json",
         "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
         "fixCommits": [
           "636e03271db7ee670374c846cff747ecd0318d85"
@@ -8349,7 +8389,7 @@
             "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal"
           }
         ],
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json",
         "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
         "fixCommits": [
           "a420e3b727c33a578aed2c089d72841f5a4441f9"
@@ -8395,7 +8435,7 @@
             "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency"
           }
         ],
-        "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json",
         "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
         "fixCommits": [
           "3021bf5c88d5ec11ab3b61f311a68ba5c15a7f07"
@@ -8432,8 +8472,8 @@
             "name": "dashboard HTML adversarial stored content D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript"
           }
         ],
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
-        "reason": "New ordinary failure reproduced and retained as an expected failure. No application repair was incorporated."
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json",
+        "reason": "OPEN. A stored project name still injects executable JavaScript into the generated dashboard click handler."
       },
       "evidence": "Click handler calls scrollToProject with QA and then sets dashboardInjected=true. JavaScript evaluated in isolated VM from actual generated onclick attribute, without a full DOM/browser."
     },
@@ -8461,8 +8501,8 @@
             "name": "FTS duplicate attacks ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable"
           }
         ],
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
-        "reason": "New ordinary failure reproduced and retained as an expected failure. No application repair was incorporated."
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json",
+        "reason": "OPEN. Central db.ts is unchanged from f4b9135. After FTS table loss, reopening still leaves the stored memory unsearchable. The archive and sidecar class repairs do not repair this central-index recovery case."
       },
       "historicalReproduction": "node test-audit/adversarial/fts-routing-reproduce.mjs",
       "status": "OPEN",
@@ -8500,8 +8540,8 @@
             "name": "adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes"
           }
         ],
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
-        "reason": "New ordinary failure reproduced and retained as an expected failure. No application repair was incorporated."
+        "ordinaryEvidence": "test-audit/release-review/open-ordinary.json",
+        "reason": "OPEN. Real config show --json still prints the fake stored custom-provider key."
       },
       "evidence": "runConfigShowCommand writes JSON.stringify(cfg) without redacting apiKey fields."
     },
@@ -8519,7 +8559,7 @@
         "src/lib/importCommand.ts:106"
       ],
       "reproduction": "node scripts/test-audit-reproduce-current.mjs ADV-CTX-002",
-      "status": "OPEN",
+      "status": "FIXED",
       "featureIds": [
         "F19"
       ],
@@ -8536,7 +8576,7 @@
       "historicalStatus": "OPEN; ordinary failure measured on the frozen application ref; expected-failure test retained; no application repair included.",
       "historicalReproduction": "node test-audit/adversarial/context-f4b9135-ordinary.mjs",
       "resolution": {
-        "kind": "open",
+        "kind": "fixed",
         "cases": [
           {
             "file": "src/test/context-adversarial.test.ts",
@@ -8547,20 +8587,27 @@
             "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories"
           }
         ],
-        "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
-        "reason": "New ordinary failure reproduced and retained as an expected failure. No application repair was incorporated."
+        "ordinaryEvidence": "test-audit/release-review/full-suite.json",
+        "reason": "FIXED. Both normal CLI and MCP imports persist the two literal records in the target central database. Removing each callers database argument makes its ordinary persistence case fail; restoration passes.",
+        "fixCommits": [
+          "9a9880001714ba71660cfb89b38dd66482c7fa70"
+        ],
+        "faultMutationIds": [
+          "RELEASE-CTX-cli-persistence-e9d605f",
+          "RELEASE-CTX-mcp-persistence-e9d605f"
+        ]
       },
       "evidence": "Both callers omit the optional DB argument to performImport, whose persistence block runs only when db is supplied. Both affected surfaces are now measured, not inferred."
     }
   ],
   "defectCounts": {
-    "fixed": 7,
-    "open": 7,
+    "fixed": 9,
+    "open": 5,
     "deferred": 1
   },
   "applicationAcceptance": {
     "baseCommit": "ec1955434bbd43136d8bbf3b92ef8d696aa78a38",
-    "applicationFixRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+    "applicationFixRef": "e9d605f66268a6599c6064d54bc4df6f4f094369",
     "applicationFixCommits": [
       "b8ac52bb1f18e6977fc45c1914e07610888cf652",
       "13756f2c1aab1873ba7d68a39727b16b11251a29",
@@ -8570,9 +8617,29 @@
       "a420e3b727c33a578aed2c089d72841f5a4441f9",
       "29a59b0b8ecdeb6e0796515d787aada530fe7335",
       "6a69746dabf618e212c23e5530b474903d19df07",
-      "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906"
+      "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+      "49d7a31cce6363dbaec5bcd39560aa94ff6e2151",
+      "526e2a973f95f26efe3d520003fc94e3e4cf84ff",
+      "3817d8f29bbead5ad7187022149e736575df510c",
+      "4907fc3e1b01353273698ec7475a643bc93c9615",
+      "9a9880001714ba71660cfb89b38dd66482c7fa70",
+      "a3f0c619004542c54821371c08e8fc968db40b9d",
+      "8db9dd8daa377ad7d2afbe9c486747753f43b2ca",
+      "d5a7aa9d8a1d8b3c91b3364c67886c08d41c9ed5",
+      "0e381a2488db96c56eab1b4941081c2519177b91",
+      "f6616751d8cacdab92e82b558d38cc38c7d43e82",
+      "1384029886c74bc4bd63af0cecbea715c6ba2f76",
+      "0cc57079fede5abd97800137c7c595932d83943f",
+      "38e2ee89178fd73fe17345f33dc06d4146e12cf3",
+      "9c317730d097b0373b154accd976791b86d7ff9b",
+      "f66643fafed3f93a15393100e6b59b2082fbdf1c",
+      "69777d745a2d96223b67197c137cbe86e279dc2b",
+      "0f66898d7b346792d4abdb55ea1309d695ed4c54",
+      "b867c33d092d08a35e95a25c225d866655d0fc2a",
+      "ad874e2363ed71a800521acc638a9ed9fc7658a3",
+      "2606b057943a8795313c035f025501d7565aacfc"
     ],
-    "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+    "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
     "issues": []
   },
   "acceptanceIssues": {

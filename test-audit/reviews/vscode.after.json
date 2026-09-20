@@ -33,7 +33,7 @@
         "vscode-command-error",
         "vscode-e2-launch-error-hidden"
       ],
-      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) vscode-e2-launch-error-hidden; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) vscode-e2-launch-error-hidden; exact application restoration passes. See test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-extension.test.ts",
@@ -42,7 +42,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failure reproduced for D-VSC-001; see test-audit/adversarial/final-open-ordinary.json. This detects an open defect and does not prove successful behavior."
+      "evidence": "Ordinary failure reproduced for D-VSC-001; see test-audit/release-review/open-ordinary.json. This detects an open defect and does not prove successful behavior."
     },
     {
       "file": "src/test/vscode-extension.test.ts",
@@ -53,7 +53,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) vscode-e2-directory-substring; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) vscode-e2-directory-substring; exact application restoration passes. See test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-extension.test.ts",
@@ -62,7 +62,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failure reproduced for D-VSC-001; see test-audit/adversarial/final-open-ordinary.json. This detects an open defect and does not prove successful behavior."
+      "evidence": "Ordinary failure reproduced for D-VSC-001; see test-audit/release-review/open-ordinary.json. This detects an open defect and does not prove successful behavior."
     },
     {
       "file": "src/test/vscode-extension.test.ts",
@@ -73,7 +73,7 @@
       "mutationIds": [
         "vscode-e2-removed-dashboard-command"
       ],
-      "evidence": "Ordinary case passes at f4b9135 and fails under direct fault(s) vscode-e2-removed-dashboard-command; exact application restoration passes. See test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) vscode-e2-removed-dashboard-command; exact application restoration passes. See test-audit/mutations/release.*.results.json."
     }
   ]
 }

@@ -24,7 +24,7 @@
           "name": "fnv1a D-G3-001: matches the multi-character 32-bit FNV-1a vector"
         }
       ],
-      "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
+      "ordinaryEvidence": "test-audit/release-review/open-ordinary.json",
       "reason": "DEFERRED at the user's direction. The ordinary FNV regression still fails; no hash repair was incorporated."
     }
   },
@@ -113,7 +113,7 @@
           "name": "VS Code adversarial public commands D-VSC-003: newline in the selected path cannot execute shell text or change the selected ID"
         }
       ],
-      "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
+      "ordinaryEvidence": "test-audit/release-review/open-ordinary.json",
       "reason": "OPEN. The selected ID and useful signal are still missing. Corrected QA fixtures supply real document text and no longer require launching for unreadable IDs. This also blocks positive nested-path and hostile-filename reinforcement cases."
     }
   },
@@ -174,7 +174,7 @@
           "name": "VS Code adversarial public commands D-VSC-002: rejects x.gnosys with Windows separators"
         }
       ],
-      "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+      "ordinaryEvidence": "test-audit/release-review/full-suite.json",
       "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
       "fixCommits": [
         "13756f2c1aab1873ba7d68a39727b16b11251a29"
@@ -193,7 +193,7 @@
     "evidence": "The real shell ran only a harmless touch command inside the temporary test project. Replacing shell interpolation with execFileSync argument passing makes the expected-failure test unexpectedly pass.",
     "reproduction": "node scripts/test-audit-reproduce-current.mjs D-VSC-003",
     "test": "src/test/vscode-extension.test.ts",
-    "status": "OPEN",
+    "status": "FIXED",
     "evidenceFiles": [
       "test-audit/evidence/vscode-defect-reproduction.json",
       "test-audit/mutations/vscode.repairs.results.json",
@@ -202,15 +202,21 @@
     "historicalStatus": "Confirmed. Retained as it.fails; passing restoration and inverse repair probes recorded. Application code unchanged.",
     "historicalReproduction": "node scripts/test-audit-defect.mjs D-VSC-003",
     "resolution": {
-      "kind": "open",
+      "kind": "fixed",
       "cases": [
         {
           "file": "src/test/vscode-adversarial.test.ts",
-          "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell"
+          "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs"
         }
       ],
-      "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
-      "reason": "OPEN, partially repaired. Reinforcement uses shell-free argv, but the dashboard still invokes a shell through terminal.sendText. The user's extension-wide requirement fails. The CLI accepts a memory ID, so filename cases now require reading that literal selected file and passing its real ID."
+      "ordinaryEvidence": "test-audit/release-review/full-suite.json",
+      "reason": "FIXED under the clarified user ruling. Variable process arguments bypass the shell and reach the real CLI shim intact. The dashboard runs the exact constant registered command; constant shell text is permitted. Selected-memory ID and signal correctness remain separately OPEN under D-VSC-001.",
+      "fixCommits": [
+        "b8ac52bb1f18e6977fc45c1914e07610888cf652"
+      ],
+      "faultMutationIds": [
+        "vscode-release-variable-shell"
+      ]
     }
   },
   {
@@ -242,7 +248,7 @@
           "name": "VS Code adversarial public commands D-VSC-004: dashboard invocation is registered by the installed CLI and exits successfully"
         }
       ],
-      "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+      "ordinaryEvidence": "test-audit/release-review/full-suite.json",
       "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
       "fixCommits": [
         "e2c08a37e7c69745e1dd4effc1bbe97f6e01b8b7"
@@ -288,7 +294,7 @@
           "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config"
         }
       ],
-      "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
+      "ordinaryEvidence": "test-audit/release-review/open-ordinary.json",
       "reason": "OPEN. Reset retains task overrides. Four ordinary wizard regressions fail, including the corrected all-ollama summary. Unrelated serialized config values remain unchanged; v584 tests remain byte-identical."
     }
   },
@@ -321,7 +327,7 @@
           "name": "setup exit status after the provider prompt G2-D001 Ctrl+C at IDE integration exits 130"
         }
       ],
-      "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+      "ordinaryEvidence": "test-audit/release-review/full-suite.json",
       "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
       "fixCommits": [
         "6a69746dabf618e212c23e5530b474903d19df07"
@@ -364,7 +370,7 @@
           "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories"
         }
       ],
-      "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+      "ordinaryEvidence": "test-audit/release-review/full-suite.json",
       "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
       "fixCommits": [
         "29a59b0b8ecdeb6e0796515d787aada530fe7335"
@@ -408,7 +414,7 @@
           "name": "adversarial context and provider routing D-CTX-001 context without a provider fails with setup guidance"
         }
       ],
-      "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+      "ordinaryEvidence": "test-audit/release-review/full-suite.json",
       "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
       "fixCommits": [
         "636e03271db7ee670374c846cff747ecd0318d85"
@@ -447,7 +453,7 @@
           "name": "adversarial project selection D-CTX-002 repeated B context skips only B's already saved journal"
         }
       ],
-      "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+      "ordinaryEvidence": "test-audit/release-review/full-suite.json",
       "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
       "fixCommits": [
         "a420e3b727c33a578aed2c089d72841f5a4441f9"
@@ -493,7 +499,7 @@
           "name": "adversarial context and provider routing G2-D003 custom-provider CLI bulk import uses configured concurrency"
         }
       ],
-      "ordinaryEvidence": "test-audit/adversarial/repair-unit-full.json",
+      "ordinaryEvidence": "test-audit/release-review/full-suite.json",
       "reason": "Ordinary passing cases and direct fault replays verify the accepted repair.",
       "fixCommits": [
         "3021bf5c88d5ec11ab3b61f311a68ba5c15a7f07"
@@ -530,8 +536,8 @@
           "name": "dashboard HTML adversarial stored content D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript"
         }
       ],
-      "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
-      "reason": "New ordinary failure reproduced and retained as an expected failure. No application repair was incorporated."
+      "ordinaryEvidence": "test-audit/release-review/open-ordinary.json",
+      "reason": "OPEN. A stored project name still injects executable JavaScript into the generated dashboard click handler."
     },
     "evidence": "Click handler calls scrollToProject with QA and then sets dashboardInjected=true. JavaScript evaluated in isolated VM from actual generated onclick attribute, without a full DOM/browser."
   },
@@ -559,8 +565,8 @@
           "name": "FTS duplicate attacks ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable"
         }
       ],
-      "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
-      "reason": "New ordinary failure reproduced and retained as an expected failure. No application repair was incorporated."
+      "ordinaryEvidence": "test-audit/release-review/open-ordinary.json",
+      "reason": "OPEN. Central db.ts is unchanged from f4b9135. After FTS table loss, reopening still leaves the stored memory unsearchable. The archive and sidecar class repairs do not repair this central-index recovery case."
     },
     "historicalReproduction": "node test-audit/adversarial/fts-routing-reproduce.mjs",
     "status": "OPEN",
@@ -598,8 +604,8 @@
           "name": "adversarial config display ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes"
         }
       ],
-      "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
-      "reason": "New ordinary failure reproduced and retained as an expected failure. No application repair was incorporated."
+      "ordinaryEvidence": "test-audit/release-review/open-ordinary.json",
+      "reason": "OPEN. Real config show --json still prints the fake stored custom-provider key."
     },
     "evidence": "runConfigShowCommand writes JSON.stringify(cfg) without redacting apiKey fields."
   },
@@ -617,7 +623,7 @@
       "src/lib/importCommand.ts:106"
     ],
     "reproduction": "node scripts/test-audit-reproduce-current.mjs ADV-CTX-002",
-    "status": "OPEN",
+    "status": "FIXED",
     "featureIds": [
       "F19"
     ],
@@ -634,7 +640,7 @@
     "historicalStatus": "OPEN; ordinary failure measured on the frozen application ref; expected-failure test retained; no application repair included.",
     "historicalReproduction": "node test-audit/adversarial/context-f4b9135-ordinary.mjs",
     "resolution": {
-      "kind": "open",
+      "kind": "fixed",
       "cases": [
         {
           "file": "src/test/context-adversarial.test.ts",
@@ -645,8 +651,15 @@
           "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories"
         }
       ],
-      "ordinaryEvidence": "test-audit/adversarial/final-open-ordinary.json",
-      "reason": "New ordinary failure reproduced and retained as an expected failure. No application repair was incorporated."
+      "ordinaryEvidence": "test-audit/release-review/full-suite.json",
+      "reason": "FIXED. Both normal CLI and MCP imports persist the two literal records in the target central database. Removing each callers database argument makes its ordinary persistence case fail; restoration passes.",
+      "fixCommits": [
+        "9a9880001714ba71660cfb89b38dd66482c7fa70"
+      ],
+      "faultMutationIds": [
+        "RELEASE-CTX-cli-persistence-e9d605f",
+        "RELEASE-CTX-mcp-persistence-e9d605f"
+      ]
     },
     "evidence": "Both callers omit the optional DB argument to performImport, whose persistence block runs only when db is supplied. Both affected surfaces are now measured, not inferred."
   }

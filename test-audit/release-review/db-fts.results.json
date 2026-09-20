@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+  "results": [
+    {
+      "id": "ADV-FTS-repeat-insert",
+      "file": "src/lib/db.ts",
+      "kind": "fault-injection",
+      "description": "Remove INSERT trigger FTS replacement so repeated writes append index rows.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 593,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/lifecycle-invariants.test.ts",
+            "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 604,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search",
+            "status": "failed",
+            "failures": [
+              "AssertionError: {\"stored\":[[\"fts-repeat\",\"cobalt lantern evidence\"],[\"semantic-anchor\",\"unrelated active record\"]],\"fts\":[\"fts-repeat\",\"fts-repeat\",\"fts-repeat\"],\"discover\":[\"fts-repeat\",\"fts-repeat\",\"fts-repeat\"],\"archive\":[\"fts-repeat\",\"fts-repeat\",\"fts-repeat\"],\"hybrid\":[\"fts-repeat\",\"fts-repeat\",\"fts-repeat\"]}: expected { Object (stored, fts, ...) } to deeply equal { Object (stored, fts, ...) }\n    at <repo>/src/test/fts-adversarial.test.ts:27:48\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/lifecycle-invariants.test.ts",
+            "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'repeat-001', 'repeat-001' ] to deeply equal [ 'repeat-001' ]\n    at <repo>/src/test/lifecycle-invariants.test.ts:59:69\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 564,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/lifecycle-invariants.test.ts",
+            "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/fts-adversarial.test.ts",
+          "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search"
+        },
+        {
+          "file": "src/test/lifecycle-invariants.test.ts",
+          "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result"
+        }
+      ],
+      "applicationRestored": true,
+      "stage": "after"
+    },
+    {
+      "id": "ADV-FTS-skip-legacy-healing",
+      "file": "src/lib/db.ts",
+      "kind": "fault-injection",
+      "description": "Skip legacy index repair on application open.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 435,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 399,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+            "status": "failed",
+            "failures": [
+              "AssertionError: {\"indexRows\":[{\"id\":\"legacy-cobalt\",\"hits\":3},{\"id\":\"legacy-quartz\",\"hits\":1}],\"cobalt\":[\"legacy-cobalt\",\"legacy-cobalt\",\"legacy-cobalt\"],\"quartz\":[\"legacy-quartz\"],\"contents\":[[\"legacy-cobalt\",\"cobalt legacy evidence\"],[\"legacy-quartz\",\"quartz untouched evidence\"]],\"version\":5}: expected { \u2026(6) } to deeply equal { \u2026(6) }\n    at <repo>/src/test/fts-adversarial.test.ts:83:46\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 393,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/fts-adversarial.test.ts",
+          "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories"
+        }
+      ],
+      "applicationRestored": true,
+      "stage": "after"
+    },
+    {
+      "id": "ADV-FTS-repeat-healing",
+      "file": "src/lib/db.ts",
+      "kind": "fault-injection",
+      "description": "Rebuild already repaired FTS and overwrite its marker on every open.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 405,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 414,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { dataVersion: 4, \u2026(3) } to deeply equal { dataVersion: 3, \u2026(3) }\n    at <repo>/src/test/fts-adversarial.test.ts:98:10\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 418,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/fts-adversarial.test.ts",
+            "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/fts-adversarial.test.ts",
+          "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories"
+        }
+      ],
+      "applicationRestored": true,
+      "stage": "after"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+diff --git a/src/test/context-adversarial.test.ts b/src/test/context-adversarial.test.ts
+index 829834e..d4af618 100644
+--- a/src/test/context-adversarial.test.ts
++++ b/src/test/context-adversarial.test.ts
+@@ -61,7 +61,7 @@ describe("adversarial context and provider routing", () => {
+     expect(harness.memories()).toEqual([]);
+   });
+
+-  it.fails("ADV-CTX-002 normal CLI bulk import persists the reported memories", async () => {
++  it("ADV-CTX-002 normal CLI bulk import persists the reported memories", async () => {
+     const result = await harness.run(harness.importArgs(false));
+     expect(result.code, result.stderr).toBe(0);
+     expect(result.stdout).toContain("  Imported: 2\n  Skipped:  0\n  Failed:   0\n  Total:    2");
+@@ -72,7 +72,7 @@ describe("adversarial context and provider routing", () => {
+     ]);
+   });
+
+-  it.fails("ADV-CTX-002 normal MCP bulk import persists the reported memories", async () => {
++  it("ADV-CTX-002 normal MCP bulk import persists the reported memories", async () => {
+     const client = await harness.connect();
+     const result = await call(client, "gnosys_import", { format: "json", data: JSON.stringify(records), mapping, mode: "llm" });
+     expect(result.isError).toBe(false);

@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "a0578323f644e73297d7106e4133f4c54545347bf8c4203e92ec9187d5db9208",
+  "results": [
+    {
+      "id": "coverage-base-fail-open",
+      "file": "scripts/check-new-file-coverage.mjs",
+      "kind": "ci-fault-injection",
+      "description": "Silently pass when git cannot resolve the comparison base.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 325,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/coverage-guard.test.ts",
+            "name": "new-file coverage guard fails when the comparison base cannot be resolved",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 320,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/coverage-guard.test.ts",
+            "name": "new-file coverage guard fails when the comparison base cannot be resolved",
+            "status": "failed",
+            "failures": [
+              "AssertionError: fatal: ambiguous argument 'refs/heads/test-audit-missing-ref-20260920...HEAD': unknown revision or path not in the working tree.\nUse '--' to separate paths from revisions, like this:\n'git <command> [<revision>...] -- [<file>...]'\n! could not run `git diff` against refs/heads/test-audit-missing-ref-20260920.\n  Command failed: git diff --name-only --diff-filter=A refs/heads/test-audit-missing-ref-20260920...HEAD\nfatal: ambiguous argument 'refs/heads/test-audit-missing-ref-20260920...HEAD': unknown revision or path not in the working tree.\nUse '--' to separate paths from revisions, like this:\n'git <command> [<revision>...] -- [<file>...]'\n\n  Set COVERAGE_BASE_REF if the default isn't right.\n: expected +0 to be 2 // Object.is equality\n    at <repo>/src/test/coverage-guard.test.ts:14:42\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 324,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/coverage-guard.test.ts",
+            "name": "new-file coverage guard fails when the comparison base cannot be resolved",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/coverage-guard.test.ts",
+          "name": "new-file coverage guard fails when the comparison base cannot be resolved"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "coverage-empty-diff-fails",
+      "file": "scripts/check-new-file-coverage.mjs",
+      "kind": "ci-fault-injection",
+      "description": "Reject an empty application diff despite a valid comparison base.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 328,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/coverage-guard.test.ts",
+            "name": "new-file coverage guard passes when HEAD has no added application modules compared with itself",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 335,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/coverage-guard.test.ts",
+            "name": "new-file coverage guard passes when HEAD has no added application modules compared with itself",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 1 to be +0 // Object.is equality\n    at <repo>/src/test/coverage-guard.test.ts:25:42\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 324,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/coverage-guard.test.ts",
+            "name": "new-file coverage guard passes when HEAD has no added application modules compared with itself",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/coverage-guard.test.ts",
+          "name": "new-file coverage guard passes when HEAD has no added application modules compared with itself"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "http-malformed-json-500",
+      "file": "src/lib/mcpHttp.ts",
+      "kind": "fault-injection",
+      "description": "Classify malformed client JSON as an internal server error.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 392,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/http-json-adversarial.test.ts",
+            "name": "HTTP MCP malformed JSON rejects a malformed POST with HTTP 400 and keeps the server healthy",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 393,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/http-json-adversarial.test.ts",
+            "name": "HTTP MCP malformed JSON rejects a malformed POST with HTTP 400 and keeps the server healthy",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 500 to be 400 // Object.is equality\n    at <repo>/src/test/http-json-adversarial.test.ts:22:29\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 392,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/http-json-adversarial.test.ts",
+            "name": "HTTP MCP malformed JSON rejects a malformed POST with HTTP 400 and keeps the server healthy",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/http-json-adversarial.test.ts",
+          "name": "HTTP MCP malformed JSON rejects a malformed POST with HTTP 400 and keeps the server healthy"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

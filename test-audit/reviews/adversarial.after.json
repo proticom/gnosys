@@ -10,7 +10,7 @@
       "mutationIds": [
         "ADV-CTX-human-key-leak-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-human-key-leak-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-human-key-leak-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/config-display-adversarial.test.ts",
@@ -19,7 +19,7 @@
       "action": "expected_failure",
       "defectId": "ADV-CTX-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces ADV-CTX-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces ADV-CTX-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/context-adversarial.test.ts",
@@ -30,7 +30,7 @@
       "mutationIds": [
         "ADV-CTX-D001-provider-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-D001-provider-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-D001-provider-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/context-adversarial.test.ts",
@@ -41,7 +41,7 @@
       "mutationIds": [
         "ADV-CTX-mcp-content-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-mcp-content-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-mcp-content-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/context-adversarial.test.ts",
@@ -52,7 +52,7 @@
       "mutationIds": [
         "ADV-CTX-G2D003-provider-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-G2D003-provider-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-G2D003-provider-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/context-adversarial.test.ts",
@@ -63,25 +63,29 @@
       "mutationIds": [
         "ADV-CTX-import-concurrency-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-import-concurrency-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-import-concurrency-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/context-adversarial.test.ts",
       "name": "adversarial context and provider routing ADV-CTX-002 normal CLI bulk import persists the reported memories",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "ADV-CTX-002",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces ADV-CTX-002; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "RELEASE-CTX-cli-persistence-e9d605f"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) RELEASE-CTX-cli-persistence-e9d605f. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/context-adversarial.test.ts",
       "name": "adversarial context and provider routing ADV-CTX-002 normal MCP bulk import persists the reported memories",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "ADV-CTX-002",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces ADV-CTX-002; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "RELEASE-CTX-mcp-persistence-e9d605f"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) RELEASE-CTX-mcp-persistence-e9d605f. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/context-adversarial.test.ts",
@@ -92,7 +96,7 @@
       "mutationIds": [
         "ADV-CTX-D001-guidance-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-D001-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-D001-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/context-adversarial.test.ts",
@@ -103,7 +107,7 @@
       "mutationIds": [
         "ADV-CTX-import-setup-guidance-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-import-setup-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-import-setup-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/context-adversarial.test.ts",
@@ -114,7 +118,7 @@
       "mutationIds": [
         "ADV-CTX-context-setup-guidance-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-context-setup-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-context-setup-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/context-adversarial.test.ts",
@@ -125,7 +129,7 @@
       "mutationIds": [
         "ADV-CTX-import-setup-guidance-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-import-setup-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-import-setup-guidance-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/context-adversarial.test.ts",
@@ -137,7 +141,7 @@
         "ADV-CTX-project-scope-f4b9135",
         "ADV-CTX-D002-cross-project-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-project-scope-f4b9135, ADV-CTX-D002-cross-project-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-project-scope-f4b9135, ADV-CTX-D002-cross-project-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/context-adversarial.test.ts",
@@ -148,7 +152,7 @@
       "mutationIds": [
         "ADV-CTX-D002-lookup-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-D002-lookup-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-D002-lookup-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/context-adversarial.test.ts",
@@ -159,7 +163,7 @@
       "mutationIds": [
         "ADV-CTX-startup-dedup-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-startup-dedup-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-startup-dedup-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/context-adversarial.test.ts",
@@ -170,7 +174,7 @@
       "mutationIds": [
         "ADV-CTX-explicit-update-project-f4b9135"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-explicit-update-project-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-CTX-explicit-update-project-f4b9135. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/coverage-guard.test.ts",
@@ -181,7 +185,7 @@
       "mutationIds": [
         "coverage-base-fail-open"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) coverage-base-fail-open. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) coverage-base-fail-open. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/coverage-guard.test.ts",
@@ -192,7 +196,7 @@
       "mutationIds": [
         "coverage-empty-diff-fails"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) coverage-empty-diff-fails. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) coverage-empty-diff-fails. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/dashboard-html-adversarial.test.ts",
@@ -203,7 +207,7 @@
       "mutationIds": [
         "dashboard-unescaped-stored-content"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) dashboard-unescaped-stored-content. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) dashboard-unescaped-stored-content. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/dashboard-html-adversarial.test.ts",
@@ -214,7 +218,7 @@
       "mutationIds": [
         "dashboard-unescaped-stored-content"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) dashboard-unescaped-stored-content. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) dashboard-unescaped-stored-content. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/dashboard-html-adversarial.test.ts",
@@ -223,7 +227,7 @@
       "action": "expected_failure",
       "defectId": "D-DASH-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-DASH-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces D-DASH-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/fts-adversarial.test.ts",
@@ -234,7 +238,7 @@
       "mutationIds": [
         "ADV-FTS-repeat-insert"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-FTS-repeat-insert. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-FTS-repeat-insert. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/fts-adversarial.test.ts",
@@ -246,7 +250,7 @@
         "ADV-FTS-skip-legacy-healing",
         "ADV-FTS-repeat-healing"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-FTS-skip-legacy-healing, ADV-FTS-repeat-healing. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) ADV-FTS-skip-legacy-healing, ADV-FTS-repeat-healing. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/fts-adversarial.test.ts",
@@ -255,7 +259,7 @@
       "action": "expected_failure",
       "defectId": "ADV-FTS-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces ADV-FTS-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces ADV-FTS-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/http-json-adversarial.test.ts",
@@ -266,7 +270,7 @@
       "mutationIds": [
         "http-malformed-json-500"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) http-malformed-json-500. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) http-malformed-json-500. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/routing-reset-adversarial.test.ts",
@@ -275,7 +279,7 @@
       "action": "expected_failure",
       "defectId": "DEF-G1-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces DEF-G1-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces DEF-G1-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/routing-reset-adversarial.test.ts",
@@ -284,7 +288,7 @@
       "action": "expected_failure",
       "defectId": "DEF-G1-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces DEF-G1-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces DEF-G1-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/setup-adversarial.test.ts",
@@ -295,7 +299,7 @@
       "mutationIds": [
         "setup-cancellation-success-regression"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) setup-cancellation-success-regression. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) setup-cancellation-success-regression. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/setup-adversarial.test.ts",
@@ -306,7 +310,7 @@
       "mutationIds": [
         "setup-completion-exit-status"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) setup-completion-exit-status. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) setup-completion-exit-status. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -315,7 +319,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -324,7 +328,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -333,7 +337,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -342,7 +346,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -353,7 +357,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -364,7 +368,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -375,7 +379,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -386,7 +390,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -395,7 +399,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -406,7 +410,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -417,7 +421,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -428,7 +432,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -439,7 +443,7 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-directory-substring. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -448,7 +452,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -457,7 +461,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -466,7 +470,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -475,7 +479,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -484,7 +488,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -493,7 +497,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -502,7 +506,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -511,7 +515,7 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -520,16 +524,18 @@
       "action": "expected_failure",
       "defectId": "D-VSC-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
-      "name": "VS Code adversarial public commands D-VSC-003: every extension command launches processes without a shell",
+      "name": "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-003",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-003; test-audit/adversarial/final-open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "vscode-release-variable-shell"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-release-variable-shell. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -540,7 +546,7 @@
       "mutationIds": [
         "vscode-e2-removed-dashboard-command"
       ],
-      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-removed-dashboard-command. The actual failing assertions and restored runs are in test-audit/mutations/adversarial.*.results.json."
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-e2-removed-dashboard-command. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     }
   ]
 }

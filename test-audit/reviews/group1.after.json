@@ -8358,7 +8358,7 @@
         "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config"
       ],
       "afterClassification": "STRONG",
-      "evidence": "Ordinary failure reproduced for DEF-G1-001; see test-audit/adversarial/final-open-ordinary.json. This detects an open defect and does not prove successful behavior.",
+      "evidence": "Ordinary failure reproduced for DEF-G1-001; see test-audit/release-review/open-ordinary.json. This detects an open defect and does not prove successful behavior.",
       "mutationIds": [],
       "productionModules": [
         "src/lib/setup/summary.ts"
@@ -11701,7 +11701,7 @@
       "action": "expected_failure",
       "defectId": "DEF-G1-001",
       "mutationIds": [],
-      "evidence": "Ordinary failure reproduced for DEF-G1-001; see test-audit/adversarial/final-open-ordinary.json. This detects an open defect and does not prove successful behavior."
+      "evidence": "Ordinary failure reproduced for DEF-G1-001; see test-audit/release-review/open-ordinary.json. This detects an open defect and does not prove successful behavior."
     }
   ]
 }

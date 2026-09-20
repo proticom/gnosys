@@ -1,0 +1,243 @@
+{
+  "schemaVersion": 1,
+  "qaHead": "5dac0725bde036e1eea5689ed1977d23b73a364f",
+  "applicationRef": "e9d605f66268a6599c6064d54bc4df6f4f094369",
+  "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+  "comparisonBase": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+  "privateWorktree": "/private/tmp/gnosys-release-db-review",
+  "reviewInputs": [
+    "FIX_HANDOFF.md",
+    "git diff f4b9135..e9d605f -- src :!src/test prompts extensions"
+  ],
+  "changedApplicationFiles": [
+    "src/cli/runtime.ts",
+    "src/index.ts",
+    "src/lib/addCommand.ts",
+    "src/lib/apiKeyVault.ts",
+    "src/lib/archive.ts",
+    "src/lib/ask.ts",
+    "src/lib/askCommand.ts",
+    "src/lib/commitContextCommand.ts",
+    "src/lib/config.ts",
+    "src/lib/dashboard.ts",
+    "src/lib/dearchiveCommand.ts",
+    "src/lib/graph.ts",
+    "src/lib/hybridSearchCommand.ts",
+    "src/lib/import.ts",
+    "src/lib/importCommand.ts",
+    "src/lib/localDiskCheck.ts",
+    "src/lib/maintainCommand.ts",
+    "src/lib/maintenance.ts",
+    "src/lib/search.ts",
+    "src/lib/setup.ts",
+    "src/lib/setup/sections/providers.ts",
+    "src/lib/setup/sections/routing.ts",
+    "src/lib/syncIngestLaunchd.ts",
+    "src/lib/webInitCommand.ts",
+    "src/sandbox/helper-template.ts"
+  ],
+  "runtimeVerification": {
+    "build": {
+      "command": "node node_modules/typescript/bin/tsc -p tsconfig.build.json",
+      "exitCode": 0
+    },
+    "node": "v22.17.1",
+    "suite": {
+      "path": "test-audit/release-review/db-routing-fts.suite.json",
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0,
+      "expectedFailureCases": 5
+    },
+    "directFaults": {
+      "specs": "test-audit/release-review/db-fts.spec.json",
+      "results": "test-audit/release-review/db-fts.results.json",
+      "tested": 3,
+      "killed": 3,
+      "survived": 0,
+      "exactKilledCases": [
+        {
+          "id": "ADV-FTS-repeat-insert",
+          "cases": [
+            {
+              "file": "src/test/fts-adversarial.test.ts",
+              "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search"
+            },
+            {
+              "file": "src/test/lifecycle-invariants.test.ts",
+              "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result"
+            }
+          ]
+        },
+        {
+          "id": "ADV-FTS-skip-legacy-healing",
+          "cases": [
+            {
+              "file": "src/test/fts-adversarial.test.ts",
+              "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories"
+            }
+          ]
+        },
+        {
+          "id": "ADV-FTS-repeat-healing",
+          "cases": [
+            {
+              "file": "src/test/fts-adversarial.test.ts",
+              "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories"
+            }
+          ]
+        }
+      ]
+    },
+    "ordinaryReproductions": {
+      "db-fts-recovery.ordinary.json": [
+        {
+          "file": "src/test/fts-adversarial.test.ts",
+          "name": "FTS duplicate attacks ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable",
+          "status": "failed"
+        }
+      ],
+      "db-routing-reset.ordinary.json": [
+        {
+          "file": "src/test/routing-reset-adversarial.test.ts",
+          "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+          "status": "failed"
+        },
+        {
+          "file": "src/test/routing-reset-adversarial.test.ts",
+          "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+          "status": "failed"
+        },
+        {
+          "file": "src/test/setup-ui-summary.test.ts",
+          "name": "Phase C \u2014 settings panel (summary) marks an edited routing section after saving and reloading its config",
+          "status": "failed"
+        },
+        {
+          "file": "src/test/setup-ui-summary.test.ts",
+          "name": "Phase C \u2014 settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides",
+          "status": "failed"
+        }
+      ]
+    }
+  },
+  "defectDisposition": [
+    {
+      "id": "G2-D002",
+      "status": "fixed",
+      "evidence": "Both existing and triple-write public tests pass; physical legacy index healing preserves memory/search/user_version5 and second-open data_version. Three final-app direct faults kill the corresponding ordinary tests and restoration passes."
+    },
+    {
+      "id": "ADV-FTS-001",
+      "status": "open",
+      "evidence": "Before native index deletion and after deletion fallback search returns fts-recovery. After reopen content remains saffron survives index loss and user_version5, but search returns[].",
+      "ordinaryEvidence": "test-audit/release-review/db-fts-recovery.ordinary.json",
+      "testMarker": "it.fails retained"
+    },
+    {
+      "id": "DEF-G1-001",
+      "status": "open",
+      "evidence": "Four real wizard ordinary cases fail: reset retains all4overrides; reset then new structuring retains3old overrides; summary remains mixed(xai,ollama); original reset retains xai override. Canonical serialized unrelated fields still match before values.",
+      "ordinaryEvidence": "test-audit/release-review/db-routing-reset.ordinary.json",
+      "testMarker": "existing it.fails markers retained"
+    }
+  ],
+  "releaseBlockersVisibleInOwnedTests": [
+    "ADV-FTS-001: index-loss recovery can leave persisted memory unsearchable after reopen.",
+    "DEF-G1-001: reset reports success but leaves old task routing overrides."
+  ],
+  "broaderRepairs": [
+    {
+      "class": "Configured provider construction and imports",
+      "files": [
+        "src/lib/addCommand.ts",
+        "src/lib/import.ts",
+        "src/lib/importCommand.ts",
+        "src/lib/commitContextCommand.ts",
+        "src/index.ts"
+      ],
+      "sourceReviewed": "Pass scoped config to ingestion; supply target database/project/scope to import and title deduplication; use central scoped FTS for CLI context novelty.",
+      "limit": "Context owner/root covers final public ordinary and direct-fault proof; this review does not claim all nine live vendors or every scope."
+    },
+    {
+      "class": "Central memory reads and maintenance",
+      "files": [
+        "src/index.ts",
+        "src/lib/graph.ts",
+        "src/lib/maintenance.ts",
+        "src/lib/maintainCommand.ts",
+        "src/lib/dashboard.ts",
+        "src/cli/runtime.ts"
+      ],
+      "sourceReviewed": "MCP view/graph helpers read current-project plus user/global central rows with pending overlays; maintenance callers pass the central DB; engine selects the writable target and consolidates same-project/scope rows transactionally.",
+      "limit": "Reviewed changed paths, without a new exhaustive MCP class test suite. Handoff identifies boot-engine retrieval and some scope contracts as remaining risks."
+    },
+    {
+      "class": "Archive restore and automatic reinforcement",
+      "files": [
+        "src/lib/archive.ts",
+        "src/lib/dearchiveCommand.ts",
+        "src/lib/ask.ts",
+        "src/lib/askCommand.ts",
+        "src/lib/hybridSearchCommand.ts",
+        "src/lib/maintenance.ts",
+        "src/index.ts"
+      ],
+      "sourceReviewed": "Archive restoration writes central memory before deleting its archive copy; automatic reinforcement uses central rows and supplied DB handles; existing central content/metadata is retained when reactivating.",
+      "limit": "Archive and central databases are separate transactions. This bounded review does not independently prove crash durability or every retained blob."
+    },
+    {
+      "class": "Archive and sidecar FTS replacement",
+      "files": [
+        "src/lib/archive.ts",
+        "src/lib/search.ts"
+      ],
+      "sourceReviewed": "Archive base/index replacement is transactional, first-open repair is marker-gated, and additive per-store search replaces exact labeled paths.",
+      "limit": "The existing three direct replays here target central db.ts only. Archive/sidecar class repair claims remain source-reviewed rather than mutation-proven by this delivery."
+    },
+    {
+      "class": "Local default selection versus reset",
+      "files": [
+        "src/lib/config.ts",
+        "src/lib/setup/sections/routing.ts",
+        "src/lib/setup/sections/providers.ts"
+      ],
+      "sourceReviewed": "New setDefaultAndClearTaskOverrides explicitly replaces local taskModels and validates inherited config for default selection. Generic updateConfig and the separate reset branch remain unchanged.",
+      "limit": "Four reset ordinary cases still fail. v584 generic deep-merge tests pass unchanged. This delivery does not claim default-selection cancellation or all inherited-routing variants."
+    },
+    {
+      "class": "Literal subprocess input and cancellation",
+      "files": [
+        "src/lib/apiKeyVault.ts",
+        "src/lib/setup.ts",
+        "src/lib/localDiskCheck.ts",
+        "src/lib/syncIngestLaunchd.ts",
+        "src/sandbox/helper-template.ts",
+        "src/lib/webInitCommand.ts"
+      ],
+      "sourceReviewed": "Secure-store strings escape shell-significant bytes; disk/launchd/helper paths use argv; web-init prompts use safeQuestion with finally-close.",
+      "limit": "Root owns PTY/runtime checks. Initial concern about provider-picker Ctrl+C saving was withdrawn because safeQuestion exits130 before the broad catch under the actual cancellation contract."
+    }
+  ],
+  "integrity": {
+    "applicationDiffFromFinalRef": "empty",
+    "testDiffFromQaHead": "empty",
+    "v584DiffFromAuditBase": "empty",
+    "centralDbDiffFromF4": "empty",
+    "changedTestFiles": [],
+    "files": {
+      "src/test/fts-adversarial.test.ts": "a5d9ba8e7eed35ab41c0bbdb6739f57ce261ba5f2c1b0a8287119850ec6143cb",
+      "src/test/routing-reset-adversarial.test.ts": "711201ca29e79a589417b5eaaa8f3cef9c7d1ff7004e4241f22dd78e0ef30259",
+      "src/test/setup-ui-summary.test.ts": "169124065c3f5c03f36b4d11b7755646112edb09c604a906e3b6ac076edd7084",
+      "src/test/lifecycle-invariants.test.ts": "10f32d8ff64a6f4814678d77810616652fe4f7082f232fae7f3436c64a97d983",
+      "src/test/v584-updateConfig.test.ts": "6a4d9a12d42cf5ec3d2c5406c36351b8d118d3fc603bcda2b9497bb3eac7a41b"
+    },
+    "noRootWorktreeEdits": true,
+    "noCommits": true
+  },
+  "limitations": [
+    "No full-suite run in this private copy; root owns final combined suite and static/report gates.",
+    "Targeted ordinary reproductions intentionally select known cases; other unselected cases appear skipped in those narrow JSON reports. The five-file suite has zero skipped cases.",
+    "No new application repair or new expected-failure test was added."
+  ]
+}

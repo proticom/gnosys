@@ -1,0 +1,22 @@
+{
+  "suitePath": "test-audit/release-review/full-suite.json",
+  "ordinaryFailurePath": "test-audit/release-review/open-ordinary.json",
+  "reconciliationPath": "test-audit/reconciliation.json",
+  "applicationFixRef": "e9d605f66268a6599c6064d54bc4df6f4f094369",
+  "applicationDigest": "e5fde6e407d5f212260c04c748ad8d21f73f57ef99db2518b3ca21d2cf8ea693",
+  "proofPrefix": "release.",
+  "fixRefs": {
+    "D-VSC-003": "b8ac52b",
+    "ADV-CTX-002": "9a98800"
+  },
+  "reasons": {
+    "D-VSC-003": "FIXED under the clarified user ruling. Variable process arguments bypass the shell and reach the real CLI shim intact. The dashboard runs the exact constant registered command; constant shell text is permitted. Selected-memory ID and signal correctness remain separately OPEN under D-VSC-001.",
+    "ADV-CTX-002": "FIXED. Both normal CLI and MCP imports persist the two literal records in the target central database. Removing each callers database argument makes its ordinary persistence case fail; restoration passes.",
+    "ADV-FTS-001": "OPEN. Central db.ts is unchanged from f4b9135. After FTS table loss, reopening still leaves the stored memory unsearchable. The archive and sidecar class repairs do not repair this central-index recovery case.",
+    "ADV-CTX-001": "OPEN. Real config show --json still prints the fake stored custom-provider key.",
+    "D-DASH-001": "OPEN. A stored project name still injects executable JavaScript into the generated dashboard click handler."
+  },
+  "caseDefects": {
+    "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs": "D-VSC-003"
+  }
+}
