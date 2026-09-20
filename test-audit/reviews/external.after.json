@@ -12,7 +12,8 @@
       "mutationIds": [
         "setup-version"
       ],
-      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes."
+      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes.",
+      "file": "e2e-setup/tests/run-all.sh"
     },
     {
       "beforeId": "e2e:init",
@@ -26,7 +27,8 @@
       "mutationIds": [
         "setup-identity-name"
       ],
-      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes."
+      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes.",
+      "file": "e2e-setup/tests/run-all.sh"
     },
     {
       "beforeId": "e2e:setup-first-screen",
@@ -40,7 +42,8 @@
       "mutationIds": [
         "setup-cancel-message"
       ],
-      "evidence": "Real PTY cancellation check rejects removal of the promised confirmation."
+      "evidence": "Real PTY cancellation check rejects removal of the promised confirmation.",
+      "file": "e2e-setup/tests/run-all.sh"
     },
     {
       "beforeId": "e2e:setup-noninteractive",
@@ -54,7 +57,8 @@
       "mutationIds": [
         "setup-default-model"
       ],
-      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes."
+      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes.",
+      "file": "e2e-setup/tests/run-all.sh"
     },
     {
       "beforeId": "e2e:web-init",
@@ -68,7 +72,8 @@
       "mutationIds": [
         "setup-web-config"
       ],
-      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes."
+      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes.",
+      "file": "e2e-setup/tests/run-all.sh"
     },
     {
       "beforeId": "e2e:isolation",
@@ -82,7 +87,8 @@
       "mutationIds": [
         "setup-stray-write"
       ],
-      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes."
+      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes.",
+      "file": "e2e-setup/tests/run-all.sh"
     },
     {
       "beforeId": "ci:multi-project",
@@ -96,7 +102,8 @@
       "mutationIds": [
         "ci-multi-project-empty-search"
       ],
-      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes."
+      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes.",
+      "file": ".github/workflows/ci.yml"
     },
     {
       "beforeId": "ci:network-share",
@@ -110,7 +117,8 @@
       "mutationIds": [
         "ci-network-share-empty-search"
       ],
-      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes."
+      "evidence": "The original case survived its recorded mutation. The replacement asserts literal output or persisted state and now rejects that mutation; restored code passes.",
+      "file": ".github/workflows/ci.yml"
     }
   ]
 }

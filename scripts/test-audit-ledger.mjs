@@ -29,7 +29,7 @@ for (const file of fs.readdirSync("test-audit/mutations").filter((file) => file.
   for (const record of Array.isArray(data) ? data : data.results || []) {
     const kind = record.kind || "fault-injection";
     const artifact = record.artifact || file;
-    const stage = /before|survival/.test(artifact) ? "before" : "after";
+    const stage = record.phase || (/before|survival/.test(artifact) ? "before" : "after");
     const tests = (record.mutated?.tests || []).map(({ file, name, status }) => ({ file, name, status }));
     const identity = JSON.stringify([record.id, record.file, kind, stage, tests]);
     const key = createHash("sha256").update(identity).digest("hex").slice(0, 16);
@@ -46,12 +46,15 @@ const valid = (record) => record.applicationRestored && record.before?.exitCode 
   && record.before.tests.length > 0 && record.restored?.exitCode === 0
   && record.restored.tests.length > 0 && !record.outcome.startsWith("invalid");
 const namesOf = (action) => action.afterNames || (action.name ? [action.name] : []);
+const fileOf = (action) => action.file || action.beforeId?.replace(/:\d+$/, "");
 const proofRows = [...actions, ...additions].map((action) => {
   const relevant = records.filter((record) => (action.mutationIds || []).includes(record.id) && valid(record));
-  const killed = new Set(relevant.filter((record) => record.outcome === "killed").flatMap((record) => record.killedBy.map((test) => test.name)));
+  const killed = new Set(relevant.filter((record) => record.outcome === "killed").flatMap((record) => record.killedBy
+    .filter((test) => !fileOf(action) || test.file === fileOf(action) || action.afterTests?.some((entry) => entry.file === test.file && entry.name === test.name))
+    .map((test) => test.name)));
   const originalNames = action.beforeNames || (action.beforeName ? [action.beforeName] : []);
   const survival = originalNames.length > 0 && originalNames.every((name) => relevant.some((record) =>
-    record.stage === "before" && record.mutated.tests.some((test) => test.status === "passed"
+    record.stage === "before" && record.mutated.tests.some((test) => test.file === fileOf(action) && test.status === "passed"
       && (test.name === name || test.name.endsWith(` ${name}`)))));
   return {
     beforeId: action.beforeId || null,
@@ -92,9 +95,11 @@ const runtimeRows = suiteFile ? read(suiteFile).testResults.flatMap((file) => fi
 }))) : [];
 const caseActions = [...actions, ...additions];
 for (const test of runtimeRows) {
-  const matches = caseActions.filter((action) => action.action !== "deleted" && namesOf(action).includes(test.name));
+  const matches = caseActions.filter((action) => action.action !== "deleted" && namesOf(action).includes(test.name)
+    && (fileOf(action) === test.file || action.afterTests?.some((entry) => entry.file === test.file && entry.name === test.name)));
   test.actions = matches.map((action) => action.beforeId || `added:${action.artifact}`);
-  test.classification = matches.length ? "STRONG" : "UNMAPPED";
+  const classifications = [...new Set(matches.map((action) => action.afterClassification || action.classification).filter(Boolean))];
+  test.classification = classifications.length === 1 ? classifications[0] : matches.length ? "CONFLICT" : "UNMAPPED";
   test.mutationIds = [...new Set(matches.flatMap((action) => action.mutationIds || []))];
   test.killedByProof = records.some((record) => valid(record) && record.outcome === "killed"
     && test.mutationIds.includes(record.id) && record.killedBy.some((entry) => entry.name === test.name && entry.file === test.file));
@@ -123,6 +128,7 @@ const result = {
     missingCaseKills: proofRows.filter((row) => row.missingKillNames.length),
     missingSurvival: proofRows.filter((row) => ["WEAK", "HOLLOW"].includes(row.beforeClassification) && !row.survivingMutation && !row.structuralReason),
     unmappedRuntime: runtimeRows.filter((row) => row.classification === "UNMAPPED"),
+    conflictingRuntime: runtimeRows.filter((row) => row.classification === "CONFLICT"),
   },
   sourceRows, additions, runtimeRows, proofs: proofRows, mutants, experiments: records,
 };
