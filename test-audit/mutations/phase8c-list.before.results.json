@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "cli-list-wrong-count",
+      "file": "src/lib/listCommand.ts",
+      "kind": "fault-injection",
+      "description": "Return an incorrect list count while preserving the memories array.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 621,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase8c.cli-parity.test.ts",
+            "name": "Phase 8c: CLI Parity TC-8c.2: --json flag produces valid JSON gnosys list --json outputs valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 641,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase8c.cli-parity.test.ts",
+            "name": "Phase 8c: CLI Parity TC-8c.2: --json flag produces valid JSON gnosys list --json outputs valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 616,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase8c.cli-parity.test.ts",
+            "name": "Phase 8c: CLI Parity TC-8c.2: --json flag produces valid JSON gnosys list --json outputs valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    }
+  ]
+}

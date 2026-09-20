@@ -82,15 +82,18 @@ describe("v5.11 machineConfig: ensure & hostname guard", () => {
     const res = ensureMachineConfig();
     expect(res.created).toBe(true);
     expect(res.regenerated).toBe(false);
-    expect(fs.existsSync(getMachineConfigPath())).toBe(true);
+    const saved = JSON.parse(fs.readFileSync(path.join(tmp, "machine.json"), "utf8"));
+    expect(saved.machineId).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+    expect(saved).toMatchObject({ hostname: os.hostname(), roots: {}, remote: { enabled: false }, schemaVersion: 1 });
   });
 
   it("returns the existing config unchanged when the hostname matches", () => {
-    const first = ensureMachineConfig();
-    const second = ensureMachineConfig();
-    expect(second.created).toBe(false);
-    expect(second.regenerated).toBe(false);
-    expect(second.config.machineId).toBe(first.config.machineId);
+    writeMachineConfig({ machineId: "kept-machine-id", hostname: os.hostname(), roots: { dev: "/projects/dev" }, remote: { enabled: true, path: "/brain/master" }, schemaVersion: 1 });
+    const result = ensureMachineConfig();
+    expect(result).toEqual({ created: false, regenerated: false, config: {
+      machineId: "kept-machine-id", hostname: os.hostname(), roots: { dev: "/projects/dev" },
+      remote: { enabled: true, path: "/brain/master" }, schemaVersion: 1,
+    } });
   });
 
   it("regenerates machineId when a foreign (synced-in) config has a different hostname", () => {
@@ -113,9 +116,11 @@ describe("v5.11 machineConfig: ensure & hostname guard", () => {
   });
 
   it("getMachineId is stable across calls", () => {
-    const a = getMachineId();
-    const b = getMachineId();
-    expect(a).toBe(b);
+    writeMachineConfig({ machineId: "machine-a", hostname: os.hostname(), roots: {}, remote: { enabled: false }, schemaVersion: 1 });
+    expect(getMachineId()).toBe("machine-a");
+    expect(getMachineId()).toBe("machine-a");
+    writeMachineConfig({ machineId: "machine-b", hostname: os.hostname(), roots: {}, remote: { enabled: false }, schemaVersion: 1 });
+    expect(getMachineId()).toBe("machine-b");
   });
 
   it("records the old hostname in previousHostnames on a rename", () => {

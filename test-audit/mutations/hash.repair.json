@@ -1,0 +1,14 @@
+[
+  {
+    "id": "D-G3-001-repair",
+    "file": "src/lib/db.ts",
+    "search": "hash = (hash * 0x01000193) >>> 0;",
+    "replace": "hash = Math.imul(hash, 0x01000193) >>> 0;",
+    "description": "Repair integer multiplication temporarily; the expected-failure hash regression must unexpectedly pass.",
+    "kind": "defect-repair-probe",
+    "tests": [
+      "src/test/chunk-splitter.test.ts"
+    ],
+    "testName": "D-G3-001"
+  }
+]

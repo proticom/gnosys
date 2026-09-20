@@ -1,0 +1,14 @@
+[
+  {
+    "id": "cli-list-wrong-count",
+    "file": "src/lib/listCommand.ts",
+    "search": "count: memories.length,",
+    "replace": "count: 999,",
+    "description": "Return an incorrect list count while preserving the memories array.",
+    "tests": [
+      "src/test/phase8c.cli-parity.test.ts"
+    ],
+    "testName": "gnosys list --json outputs valid JSON",
+    "build": true
+  }
+]

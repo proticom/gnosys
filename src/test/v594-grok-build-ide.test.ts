@@ -32,9 +32,7 @@ startup_timeout_sec = 90
 theme = "dark"
 `;
     const out = upsertGrokMcpBlock(before, "gnosys", entry);
-    expect(out).toContain(`[settings]`);
-    expect(out).toContain(`[mcp_servers.gnosys]`);
-    expect(out.indexOf(`[settings]`)).toBeLessThan(out.indexOf(`[mcp_servers.gnosys]`));
+    expect(out).toBe('[settings]\ntheme = "dark"\n\n[mcp_servers.gnosys]\ncommand = "gnosys-mcp"\nargs = []\nstartup_timeout_sec = 90\n');
   });
 
   it("replaces an existing [mcp_servers.gnosys] block instead of duplicating it", () => {
@@ -67,7 +65,8 @@ command = "other"
   it("is idempotent — second run produces identical bytes", () => {
     const once = upsertGrokMcpBlock("", "gnosys", entry);
     const twice = upsertGrokMcpBlock(once, "gnosys", entry);
-    expect(twice).toBe(once);
+    expect(once).toBe('[mcp_servers.gnosys]\ncommand = "gnosys-mcp"\nargs = []\nstartup_timeout_sec = 90\n');
+    expect(twice).toBe('[mcp_servers.gnosys]\ncommand = "gnosys-mcp"\nargs = []\nstartup_timeout_sec = 90\n');
   });
 
   it("removes legacy [mcp.gnosys] and writes [mcp_servers.gnosys]", () => {

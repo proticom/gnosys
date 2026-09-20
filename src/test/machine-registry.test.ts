@@ -8,8 +8,11 @@
  * a stale entry on demand.
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
-import type { GnosysDB } from "../lib/db.js";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import fs from "fs";
+import os from "os";
+import path from "path";
+import { GnosysDB } from "../lib/db.js";
 import {
   readMachineRegistry,
   writeMachineRegistry,
@@ -18,24 +21,20 @@ import {
   type MachineRegistry,
 } from "../lib/machineRegistry.js";
 
-/**
- * Minimal in-memory stand-in for GnosysDB — the registry helpers only touch
- * getMeta/setMeta, so a one-key map is enough and avoids a real sqlite file.
- */
-function fakeDb(): GnosysDB {
-  const store = new Map<string, string>();
-  return {
-    getMeta: (key: string) => store.get(key) ?? null,
-    setMeta: (key: string, value: string) => {
-      store.set(key, value);
-    },
-  } as unknown as GnosysDB;
-}
-
 let db: GnosysDB;
+let tmp: string;
 
 beforeEach(() => {
-  db = fakeDb();
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date("2026-05-30T00:00:00.000Z"));
+  tmp = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-registry-"));
+  db = new GnosysDB(tmp);
+});
+
+afterEach(() => {
+  db.close();
+  fs.rmSync(tmp, { recursive: true, force: true });
+  vi.useRealTimers();
 });
 
 describe("machineRegistry: read/write", () => {
@@ -104,8 +103,10 @@ describe("machineRegistry: recordMachine", () => {
       aliases: ["Edwards-MBP.localdomain"],
     });
 
-    expect(reg.EdsMacStudio).toBeDefined();
-    expect(reg.EdsMBP).toBeDefined();
+    expect(reg).toEqual({
+      EdsMacStudio: { version: "5.11.0", lastSeen: "2026-05-27T00:00:00.000Z", machineId: "studio-id" },
+      EdsMBP: { version: "5.11.4", lastSeen: "2026-05-30T00:00:00.000Z", machineId: "mbp-id" },
+    });
   });
 
   it("persists the result so a re-read sees the pruned registry", () => {
@@ -118,7 +119,11 @@ describe("machineRegistry: recordMachine", () => {
       machineId: "id-1",
       aliases: ["Edwards-MBP.localdomain"],
     });
-    expect(readMachineRegistry(db)["Edwards-MBP.localdomain"]).toBeUndefined();
+    db.close();
+    db = new GnosysDB(tmp);
+    expect(readMachineRegistry(db)).toEqual({
+      EdsMBP: { version: "5.11.4", lastSeen: "2026-05-30T00:00:00.000Z", machineId: "id-1" },
+    });
   });
 });
 

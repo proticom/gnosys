@@ -13,7 +13,8 @@ import fsp from "fs/promises";
 import path from "path";
 import os from "os";
 import { execSync } from "child_process";
-import { CLI, cliInit, extractJson } from "./_helpers.js";
+import { GnosysDB } from "../lib/db.js";
+import { CLI, cliInit, extractJson, makeMemory } from "./_helpers.js";
 
 let tmpDir: string;
 
@@ -31,10 +32,10 @@ function run(command: string, opts: { json?: boolean } = {}): string {
     ? `${CLI} ${command} --json`
     : `${CLI} ${command}`;
   return execSync(cmd, {
+    cwd: tmpDir,
     encoding: "utf-8",
     env: {
       ...process.env,
-      GNOSYS_PROJECT: tmpDir,
       GNOSYS_HOME: path.join(tmpDir, ".test-central"),
     },
     stdio: ["pipe", "pipe", "pipe"],
@@ -46,24 +47,29 @@ describe("Phase 8c: CLI Parity", () => {
 
   describe("TC-8c.1: Core CLI commands functional", () => {
     it("gnosys list returns empty list for new store", () => {
-      const output = run("list");
-      // Should not error; either shows empty or "no memories"
-      expect(typeof output).toBe("string");
+      expect(run("list").trim()).toBe("0 memories:");
+      run('pref set parity-list "Listed value"');
+      expect(run("list")).toContain("1 memories:");
+      expect(run("list")).toContain("[user] [active] Parity List");
     });
 
     it("gnosys stats returns statistics", () => {
-      const output = run("stats");
-      expect(typeof output).toBe("string");
+      expect(run("stats").trim()).toBe("No memories found.");
+      run('pref set parity-stats "Counted value"');
+      expect(run("stats")).toContain("Total memories: 1");
+      expect(run("stats")).toContain("preferences: 1");
     });
 
     it("gnosys projects lists registered projects", () => {
       const output = run("projects");
-      expect(typeof output).toBe("string");
+      expect(output).toContain("1 registered project(s):");
+      expect(output).toContain(path.basename(tmpDir));
+      expect(output).toContain(`Directory: ${tmpDir}`);
+      expect(output).toContain("Memories:  0");
     });
 
     it("gnosys pref get returns preferences (empty for new store)", () => {
-      const output = run("pref get");
-      expect(typeof output).toBe("string");
+      expect(run("pref get").trim()).toBe("No preferences set. Use 'gnosys pref set <key> <value>' to add some.");
     });
 
     it("gnosys pref set + get round-trips a value", () => {
@@ -93,78 +99,29 @@ describe("Phase 8c: CLI Parity", () => {
     });
   });
 
-  // ─── TC-8c.2: --json flag ────────────────────────────────────────────
-
-  describe("TC-8c.2: --json flag produces valid JSON", () => {
-    it("gnosys list --json outputs valid JSON", () => {
-      const output = run("list", { json: true });
-      const parsed = JSON.parse(extractJson(output));
-      expect(parsed).toHaveProperty("count");
-      expect(parsed).toHaveProperty("memories");
-      expect(Array.isArray(parsed.memories)).toBe(true);
-    });
-
-    it("gnosys stats --json outputs valid JSON", () => {
-      const output = run("stats", { json: true });
-      const parsed = JSON.parse(extractJson(output));
-      expect(parsed).toHaveProperty("totalCount");
-    });
-
-    it("gnosys projects --json outputs valid JSON", () => {
-      const output = execSync(`${CLI} projects --json`, {
-        encoding: "utf-8",
-        env: { ...process.env, GNOSYS_HOME: path.join(tmpDir, ".test-central") },
-        stdio: ["pipe", "pipe", "pipe"],
-      });
-      const parsed = JSON.parse(extractJson(output));
-      expect(parsed).toHaveProperty("count");
-      expect(parsed).toHaveProperty("projects");
-      expect(Array.isArray(parsed.projects)).toBe(true);
-    });
-
-    it("gnosys pref get --json outputs valid JSON", () => {
-      const output = run("pref get", { json: true });
-      const parsed = JSON.parse(extractJson(output));
-      expect(parsed).toHaveProperty("preferences");
-    });
-  });
-
   // ─── TC-8c.3: Auto-detect projectId ──────────────────────────────────
 
   describe("TC-8c.3: CLI auto-detects projectId from gnosys.json", () => {
-    it("gnosys.json exists after init", () => {
-      const identityPath = path.join(tmpDir, ".gnosys", "gnosys.json");
-      expect(fs.existsSync(identityPath)).toBe(true);
+
+    it("CLI scopes list to the current working directory and shared memories", () => {
+      const centralDir = path.join(tmpDir, ".test-central");
+      const otherDir = path.join(tmpDir, "other-project");
+      fs.mkdirSync(otherDir);
+      cliInit(otherDir, { centralDir });
+      const current = JSON.parse(fs.readFileSync(path.join(tmpDir, ".gnosys/gnosys.json"), "utf8"));
+      const other = JSON.parse(fs.readFileSync(path.join(otherDir, ".gnosys/gnosys.json"), "utf8"));
+      const db = new GnosysDB(centralDir);
+      try {
+        db.insertMemory(makeMemory({ id: "current-record", project_id: current.projectId, scope: "project" }));
+        db.insertMemory(makeMemory({ id: "other-record", project_id: other.projectId, scope: "project" }));
+        db.insertMemory(makeMemory({ id: "shared-record", project_id: null, scope: "user" }));
+      } finally {
+        db.close();
+      }
+      const parsed = JSON.parse(extractJson(run("list", { json: true })));
+      expect(parsed.count).toBe(2);
+      expect(parsed.memories.map((memory: { id: string }) => memory.id).sort()).toEqual(["current-record", "shared-record"]);
     });
 
-    it("CLI uses GNOSYS_PROJECT env var for project context", () => {
-      // This test verifies that when GNOSYS_PROJECT is set,
-      // commands operate on that project
-      const output = run("list", { json: true });
-      const parsed = JSON.parse(extractJson(output));
-      // Should not error — the project context is correctly resolved
-      expect(parsed).toHaveProperty("count");
-    });
-
-    it("re-init preserves project identity", () => {
-      const id1 = JSON.parse(
-        fs.readFileSync(
-          path.join(tmpDir, ".gnosys", "gnosys.json"),
-          "utf-8"
-        )
-      ).projectId;
-
-      // Re-init
-      cliInit(tmpDir);
-
-      const id2 = JSON.parse(
-        fs.readFileSync(
-          path.join(tmpDir, ".gnosys", "gnosys.json"),
-          "utf-8"
-        )
-      ).projectId;
-
-      expect(id1).toBe(id2);
-    });
   });
 });

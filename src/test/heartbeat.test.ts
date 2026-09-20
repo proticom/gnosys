@@ -24,7 +24,12 @@ describe("withHeartbeat", () => {
 
     await vi.advanceTimersByTimeAsync(600);
     await expect(promise).resolves.toBe(42);
-    expect(writes.some((line) => line.includes("Syncing"))).toBe(true);
+    await vi.advanceTimersByTimeAsync(2_000);
+    expect(writes).toEqual([
+      "\r⠋ Syncing (0.5s)",
+      "\r⠙ Syncing (0.6s)",
+      "\r\x1b[2K",
+    ]);
   });
 
   it("cleans up and rethrows when the wrapped function fails", async () => {
@@ -44,6 +49,11 @@ describe("withHeartbeat", () => {
 
     await vi.advanceTimersByTimeAsync(600);
     await expectation;
-    expect(writes.some((line) => line.includes("Failing"))).toBe(true);
+    await vi.advanceTimersByTimeAsync(2_000);
+    expect(writes).toEqual([
+      "\r⠋ Failing (0.5s)",
+      "\r⠙ Failing (0.6s)",
+      "\r\x1b[2K",
+    ]);
   });
 });

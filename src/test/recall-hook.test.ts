@@ -40,7 +40,7 @@ describe("hookQueryFromStdin", () => {
 
   it("truncates very long prompts", () => {
     const long = "word ".repeat(500);
-    expect(hookQueryFromStdin(JSON.stringify({ prompt_text: long })).length).toBeLessThanOrEqual(400);
+    expect(hookQueryFromStdin(JSON.stringify({ prompt_text: long }))).toBe("word ".repeat(80));
   });
 });
 

@@ -124,8 +124,10 @@ describe("dreamRunLog", () => {
     const a = fingerprintMemories("relationship", [memory("a", "2026-01-01"), memory("b", "2026-01-02")]);
     const b = fingerprintMemories("relationship", [memory("b", "2026-01-02"), memory("a", "2026-01-01")]);
     const c = fingerprintMemories("relationship", [memory("a", "2026-01-03"), memory("b", "2026-01-02")]);
-    expect(a).toBe(b);
-    expect(a).not.toBe(c);
+    expect(a).toBe("relationship:87c234c7e410ab1010b174c2");
+    expect(b).toBe("relationship:87c234c7e410ab1010b174c2");
+    expect(c).not.toBe(a);
+    expect(fingerprintMemories("relationship", [memory("c", "2026-01-01"), memory("b", "2026-01-02")])).not.toBe(a);
   });
 
   it("checks night window and changed memory counts", () => {
@@ -137,7 +139,9 @@ describe("dreamRunLog", () => {
 
   it("estimates tokens and cost, and prevents overlapping locks", () => {
     expect(estimateTokens("abcd")).toBe(1);
-    expect(estimateCost("grok-4.3", 1_000_000, 1_000_000)).toBeGreaterThan(0);
+    expect(estimateCost("grok-4.3", 1_000_000, 1_000_000)).toBe(18);
+    expect(estimateCost("grok-4.3", 500_000, 0)).toBe(1.5);
+    expect(estimateCost("grok-4.3", 0, 250_000)).toBe(3.75);
 
     const first = acquireDreamLock();
     expect(first.acquired).toBe(true);

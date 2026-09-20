@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "D-G3-001-repair",
+      "file": "src/lib/db.ts",
+      "kind": "defect-repair-probe",
+      "description": "Repair integer multiplication temporarily; the expected-failure hash regression must unexpectedly pass.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 393,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/chunk-splitter.test.ts",
+            "name": "fnv1a D-G3-001: matches the multi-character 32-bit FNV-1a vector",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 388,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/chunk-splitter.test.ts",
+            "name": "fnv1a D-G3-001: matches the multi-character 32-bit FNV-1a vector",
+            "status": "failed",
+            "failures": [
+              "Error: Expect test to fail\n    at runTest (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3041:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 388,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/chunk-splitter.test.ts",
+            "name": "fnv1a D-G3-001: matches the multi-character 32-bit FNV-1a vector",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/chunk-splitter.test.ts",
+          "name": "fnv1a D-G3-001: matches the multi-character 32-bit FNV-1a vector"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

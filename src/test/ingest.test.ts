@@ -8,6 +8,7 @@ import path from "path";
 import os from "os";
 import { GnosysStore } from "../lib/store.js";
 import { GnosysTagRegistry } from "../lib/tags.js";
+import { GnosysConfigSchema } from "../lib/config.js";
 import { GnosysIngestion } from "../lib/ingest.js";
 
 let tmpDir: string;
@@ -43,11 +44,15 @@ afterEach(async () => {
 
 describe("GnosysIngestion", () => {
   describe("isLLMAvailable", () => {
-    it("reports false when no API key is set", () => {
-      // In test environment, ANTHROPIC_API_KEY is typically not set
-      // Unless it is — in which case this test is still valid
-      // The property just reports whether the client was initialized
-      expect(typeof ingestion.isLLMAvailable).toBe("boolean");
+    it("reports availability for absent and configured local providers", () => {
+      const unavailable = new GnosysIngestion(store, tagRegistry, GnosysConfigSchema.parse({}));
+      const available = new GnosysIngestion(store, tagRegistry, GnosysConfigSchema.parse({
+        llm: { defaultProvider: "ollama" },
+      }));
+      expect(unavailable.isLLMAvailable).toBe(false);
+      expect(unavailable.providerName).toBe("none");
+      expect(available.isLLMAvailable).toBe(true);
+      expect(available.providerName).toBe("ollama");
     });
   });
 
@@ -93,7 +98,7 @@ describe("GnosysIngestion", () => {
         content: "Content",
       });
 
-      expect(result.filename.length).toBeLessThanOrEqual(60);
+      expect(result.filename).toBe("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     });
 
     it("provides defaults for optional fields", () => {

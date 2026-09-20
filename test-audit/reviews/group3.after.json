@@ -1,0 +1,2285 @@
+{
+  "schemaVersion": 1,
+  "additionalTests": [
+    {
+      "afterNames": [
+        "GnosysIngestion isLLMAvailable reports availability for absent and configured local providers"
+      ],
+      "mutationIds": [
+        "ingestion-available-always"
+      ],
+      "evidence": "Passed in full-file checkpoint run and killed the linked application mutation, except the explicitly documented expected production defect."
+    },
+    {
+      "afterNames": [
+        "Phase 8c: CLI Parity TC-8c.3: CLI auto-detects projectId from gnosys.json CLI scopes list to the current working directory and shared memories"
+      ],
+      "mutationIds": [
+        "cli-list-empty"
+      ],
+      "evidence": "Passed in full-file checkpoint run and killed the linked application mutation, except the explicitly documented expected production defect."
+    },
+    {
+      "afterNames": [
+        "checkDreamLaunchAgent reports missing, healthy, and broken installed agents in an isolated home"
+      ],
+      "mutationIds": [
+        "launchd-always-absent"
+      ],
+      "evidence": "Passed in full-file checkpoint run and killed the linked application mutation, except the explicitly documented expected production defect."
+    },
+    {
+      "afterNames": [
+        "fnv1a D-G3-001: matches the multi-character 32-bit FNV-1a vector"
+      ],
+      "mutationIds": [
+        "hash-length"
+      ],
+      "evidence": "Passed in full-file checkpoint run and killed the linked application mutation, except the explicitly documented expected production defect."
+    },
+    {
+      "afterNames": [
+        "fnv1a matches the empty-input and one-character 32-bit vectors"
+      ],
+      "mutationIds": [
+        "hash-length"
+      ],
+      "evidence": "Passed in full-file checkpoint run and killed the linked application mutation, except the explicitly documented expected production defect."
+    },
+    {
+      "afterNames": [
+        "gnosys init creates a usable registered store without legacy artifacts"
+      ],
+      "mutationIds": [
+        "cli-identity-invalid",
+        "init-invalid-identity",
+        "init-noop",
+        "init-skip-registration"
+      ],
+      "evidence": "Passed in full-file checkpoint run and killed the linked application mutation, except the explicitly documented expected production defect."
+    },
+    {
+      "afterNames": [
+        "gnosys init re-syncs the working directory while retaining a valid project ID"
+      ],
+      "mutationIds": [
+        "cli-identity-invalid",
+        "init-invalid-identity",
+        "init-resync-noop"
+      ],
+      "evidence": "Passed in full-file checkpoint run and killed the linked application mutation, except the explicitly documented expected production defect."
+    },
+    {
+      "afterNames": [
+        "gnosys init writes the default categorized tag registry"
+      ],
+      "mutationIds": [
+        "init-null-tags"
+      ],
+      "evidence": "Passed in full-file checkpoint run and killed the linked application mutation, except the explicitly documented expected production defect."
+    },
+    {
+      "afterNames": [
+        "splitIntoChunks keeps an oversized word intact"
+      ],
+      "mutationIds": [
+        "chunks-empty-output",
+        "chunks-whitespace"
+      ],
+      "evidence": "Passed in full-file checkpoint run and killed the linked application mutation, except the explicitly documented expected production defect."
+    },
+    {
+      "afterNames": [
+        "splitIntoChunks merges a short chunk with its next paragraph"
+      ],
+      "mutationIds": [
+        "chunks-empty-output",
+        "chunks-whitespace"
+      ],
+      "evidence": "Passed in full-file checkpoint run and killed the linked application mutation, except the explicitly documented expected production defect."
+    },
+    {
+      "afterNames": [
+        "splitIntoChunks preserves text and paragraph separators within the target"
+      ],
+      "mutationIds": [
+        "chunks-empty-output",
+        "chunks-whitespace"
+      ],
+      "evidence": "Passed in full-file checkpoint run and killed the linked application mutation, except the explicitly documented expected production defect."
+    },
+    {
+      "afterNames": [
+        "splitIntoChunks returns no chunks for whitespace"
+      ],
+      "mutationIds": [
+        "chunks-empty-output",
+        "chunks-whitespace"
+      ],
+      "evidence": "Passed in full-file checkpoint run and killed the linked application mutation, except the explicitly documented expected production defect."
+    },
+    {
+      "afterNames": [
+        "splitIntoChunks splits an oversized paragraph at sentence boundaries"
+      ],
+      "mutationIds": [
+        "chunks-empty-output",
+        "chunks-whitespace"
+      ],
+      "evidence": "Passed in full-file checkpoint run and killed the linked application mutation, except the explicitly documented expected production defect."
+    },
+    {
+      "afterNames": [
+        "splitIntoChunks splits paragraphs at the target and preserves order"
+      ],
+      "mutationIds": [
+        "chunks-empty-output",
+        "chunks-whitespace"
+      ],
+      "evidence": "Passed in full-file checkpoint run and killed the linked application mutation, except the explicitly documented expected production defect."
+    }
+  ],
+  "defects": [
+    {
+      "id": "D-G3-001",
+      "file": "src/lib/db.ts:389",
+      "test": "fnv1a D-G3-001: matches the multi-character 32-bit FNV-1a vector",
+      "expected": "4f9f2cab",
+      "actual": "a82fb4a1",
+      "reproduction": "node node_modules/vitest/vitest.mjs run src/test/chunk-splitter.test.ts -t D-G3-001; remove .fails to see raw failure; hash-defect-reproduction.json records it.",
+      "cause": "Floating-point multiplication loses low 32-bit precision; independent BigInt FNV-1a arithmetic yields 4f9f2cab.",
+      "status": "it.fails",
+      "applicationChanges": false
+    }
+  ],
+  "tests": [
+    {
+      "beforeId": "src/test/chunk-splitter.test.ts:18",
+      "beforeName": "`input #${i} produces identical chunks across runs`",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "splitIntoChunks returns no chunks for whitespace",
+        "splitIntoChunks preserves text and paragraph separators within the target",
+        "splitIntoChunks splits paragraphs at the target and preserves order",
+        "splitIntoChunks merges a short chunk with its next paragraph",
+        "splitIntoChunks splits an oversized paragraph at sentence boundaries",
+        "splitIntoChunks keeps an oversized word intact"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact literal text/index results cover whitespace, paragraphs, short merging, sentence splitting and oversized words.",
+      "mutationIds": [
+        "chunks-empty-output",
+        "chunks-whitespace"
+      ],
+      "beforeNames": [
+        "chunkSplitter determinism input #0 produces identical chunks across runs",
+        "chunkSplitter determinism input #1 produces identical chunks across runs",
+        "chunkSplitter determinism input #2 produces identical chunks across runs",
+        "chunkSplitter determinism input #3 produces identical chunks across runs"
+      ]
+    },
+    {
+      "beforeId": "src/test/chunk-splitter.test.ts:25",
+      "beforeName": "is stable across many repetitions",
+      "beforeClassification": "HOLLOW",
+      "action": "deleted",
+      "afterNames": [
+        "splitIntoChunks returns no chunks for whitespace",
+        "splitIntoChunks preserves text and paragraph separators within the target",
+        "splitIntoChunks splits paragraphs at the target and preserves order",
+        "splitIntoChunks merges a short chunk with its next paragraph",
+        "splitIntoChunks splits an oversized paragraph at sentence boundaries",
+        "splitIntoChunks keeps an oversized word intact"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Deleted repeated self-equality duplicate; replaced by exact splitIntoChunks output cases.",
+      "mutationIds": [
+        "chunks-empty-output",
+        "chunks-whitespace"
+      ]
+    },
+    {
+      "beforeId": "src/test/chunk-splitter.test.ts:33",
+      "beforeName": "fnv1a content hash is stable for identical content and differs for different content",
+      "beforeClassification": "WEAK",
+      "action": "expected_failure",
+      "afterNames": [
+        "fnv1a matches the empty-input and one-character 32-bit vectors",
+        "fnv1a D-G3-001: matches the multi-character 32-bit FNV-1a vector"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Independent FNV vectors expose the production precision defect; failing hello vector retained with it.fails.",
+      "mutationIds": [
+        "hash-length",
+        "D-G3-001-repair"
+      ],
+      "defectId": "D-G3-001"
+    },
+    {
+      "beforeId": "src/test/cli-json.test.ts:34",
+      "beforeName": "gnosys list --json outputs valid JSON",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI --json flag gnosys list --json outputs valid JSON"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Seeded data and literal CLI results verify registered projects, shared/scoped list behavior, stats, preferences, audit and DB-to-CLI parity.",
+      "mutationIds": [
+        "cli-list-empty"
+      ]
+    },
+    {
+      "beforeId": "src/test/cli-json.test.ts:45",
+      "beforeName": "gnosys stats --json outputs valid JSON",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI --json flag gnosys stats --json outputs valid JSON"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Seeded data and literal CLI results verify registered projects, shared/scoped list behavior, stats, preferences, audit and DB-to-CLI parity.",
+      "mutationIds": [
+        "cli-stats-bogus"
+      ]
+    },
+    {
+      "beforeId": "src/test/cli-json.test.ts:54",
+      "beforeName": "gnosys projects --json outputs valid JSON",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI --json flag gnosys projects --json outputs valid JSON"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Seeded data and literal CLI results verify registered projects, shared/scoped list behavior, stats, preferences, audit and DB-to-CLI parity.",
+      "mutationIds": [
+        "cli-projects-omit-rows"
+      ]
+    },
+    {
+      "beforeId": "src/test/cli-json.test.ts:65",
+      "beforeName": "gnosys pref get --json outputs valid JSON with no prefs",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "CLI --json flag gnosys pref get --json outputs valid JSON with no prefs"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Seeded data and literal CLI results verify registered projects, shared/scoped list behavior, stats, preferences, audit and DB-to-CLI parity.",
+      "mutationIds": [
+        "cli-pref-phantom"
+      ]
+    },
+    {
+      "beforeId": "src/test/cli-json.test.ts:74",
+      "beforeName": "gnosys pref set + get --json round-trips",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "CLI --json flag gnosys pref set + get --json round-trips"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real CLI set/get persists test-key with literal value test value.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/docx-bomb.test.ts:61",
+      "beforeName": "rejects a zip-bomb DOCX before decompression (no OOM)",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "DOCX bomb resistance rejects a zip-bomb DOCX before decompression (no OOM)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real 210 MiB expanded DOCX is rejected with possible zip bomb before extraction succeeds.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/docx-bomb.test.ts:73",
+      "beforeName": "handles billion-laughs entity definitions without exponential expansion",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "DOCX bomb resistance handles billion-laughs entity definitions without exponential expansion"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Checks literal public output or persisted content; concrete relevant mutations survive original assertions and fail the replacement (see mutationIds and before/after records).",
+      "mutationIds": [
+        "docx-empty-output"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-launchd-health.test.ts:45",
+      "beforeName": "extracts node + cli paths from the exact template shape",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "parseDreamPlistPaths extracts node + cli paths from the exact template shape"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Plist parser returns the exact node and CLI paths from the real template shape.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/dream-launchd-health.test.ts:51",
+      "beforeName": "unescapes XML entities in paths",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "parseDreamPlistPaths unescapes XML entities in paths"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Parser decodes ampersand and quoted path XML entities to literal expected strings.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/dream-launchd-health.test.ts:58",
+      "beforeName": "returns undefined paths for an empty or truncated body",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "parseDreamPlistPaths returns undefined paths for an empty or truncated body"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Empty and truncated plist input return both paths explicitly undefined.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/dream-launchd-health.test.ts:71",
+      "beforeName": "returns a coherent all-false shape when unavailable or not installed",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "checkDreamLaunchAgent reports missing, healthy, and broken installed agents in an isolated home"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Concrete literal output or reopened persisted state replaces count/absence/self-equality; all original-selected mutations survived before repair. Scheduler mocks only launchctl process execution.",
+      "mutationIds": [
+        "launchd-always-absent"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-run-log.test.ts:108",
+      "beforeName": "writes state and append-only run records",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "dreamRunLog writes state and append-only run records"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Writes state and two real append-only runs; reads memory ID m1 and skipped run ID two with total count 2.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/dream-run-log.test.ts:123",
+      "beforeName": "creates stable fingerprints from memory identity and modification",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "dreamRunLog creates stable fingerprints from memory identity and modification"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Checks literal public output or persisted content; concrete relevant mutations survive original assertions and fail the replacement (see mutationIds and before/after records).",
+      "mutationIds": [
+        "fingerprint-ignore-identity"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-run-log.test.ts:131",
+      "beforeName": "checks night window and changed memory counts",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "dreamRunLog checks night window and changed memory counts"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal night-window inputs produce true/false including midnight crossover and exactly one changed memory.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/dream-run-log.test.ts:138",
+      "beforeName": "estimates tokens and cost, and prevents overlapping locks",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "dreamRunLog estimates tokens and cost, and prevents overlapping locks"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Checks literal public output or persisted content; concrete relevant mutations survive original assertions and fail the replacement (see mutationIds and before/after records).",
+      "mutationIds": [
+        "dream-cost-constant"
+      ]
+    },
+    {
+      "beforeId": "src/test/export-import-project.test.ts:82",
+      "beforeName": "exports a project to a .json.gz bundle",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "project bundle round-trip exports a project to a .json.gz bundle"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Checks literal public output or persisted content; concrete relevant mutations survive original assertions and fail the replacement (see mutationIds and before/after records).",
+      "mutationIds": [
+        "bundle-drop-body"
+      ]
+    },
+    {
+      "beforeId": "src/test/export-import-project.test.ts:97",
+      "beforeName": "readBundle round-trips the manifest, project, and memories",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "project bundle round-trip readBundle round-trips the manifest, project, and memories"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real exported/read bundle preserves format/version, project ID/name, three memories and their title prefix.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/export-import-project.test.ts:111",
+      "beforeName": "import strategy=merge skips existing memories",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "project bundle round-trip import strategy=merge skips existing memories"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Checks literal public output or persisted content; concrete relevant mutations survive original assertions and fail the replacement (see mutationIds and before/after records).",
+      "mutationIds": [
+        "merge-delete-existing"
+      ]
+    },
+    {
+      "beforeId": "src/test/export-import-project.test.ts:127",
+      "beforeName": "import strategy=new-id remaps the project ID and memory IDs",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "project bundle round-trip import strategy=new-id remaps the project ID and memory IDs"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "New-ID import yields a separate project and three persisted memories while retaining the original three.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/export-import-project.test.ts:148",
+      "beforeName": "import strategy=replace deletes existing project memories",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "project bundle round-trip import strategy=replace deletes existing project memories"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Replace import removes the extra seeded row and leaves exactly two bundle memories.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/export-import-project.test.ts:196",
+      "beforeName": "readBundle rejects malformed bundles",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "project bundle round-trip readBundle rejects malformed bundles"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Actual gzip JSON with wrong shape rejects with Not a Gnosys project bundle.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/export-import-project.test.ts:206",
+      "beforeName": "export with includeArchived=false skips archived memories",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "project bundle round-trip export with includeArchived=false skips archived memories"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real archive/status filtering yields two exported records versus four when archived inclusion is enabled.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/heartbeat.test.ts:11",
+      "beforeName": "returns the wrapped result and cleans up on success",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "withHeartbeat returns the wrapped result and cleans up on success"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal progress frames and terminal-clear sequence remains unchanged two seconds after success/rejection; omitted cleanup mutation killed.",
+      "mutationIds": [
+        "heartbeat-cleanup"
+      ]
+    },
+    {
+      "beforeId": "src/test/heartbeat.test.ts:30",
+      "beforeName": "cleans up and rethrows when the wrapped function fails",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "withHeartbeat cleans up and rethrows when the wrapped function fails"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal progress frames and terminal-clear sequence remains unchanged two seconds after success/rejection; omitted cleanup mutation killed.",
+      "mutationIds": [
+        "heartbeat-cleanup"
+      ]
+    },
+    {
+      "beforeId": "src/test/ide-mcp-install.test.ts:29",
+      "beforeName": "normalizeIdeKey accepts grok alias",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "ideMcpInstall helpers normalizeIdeKey accepts grok alias"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "IDE alias normalization returns grok-build, cursor and null for explicit inputs.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/ide-mcp-install.test.ts:35",
+      "beforeName": "detects stale gnosys serve entries",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "ideMcpInstall helpers detects stale gnosys serve entries"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Legacy gnosys serve entry is stale while gnosys-mcp with empty args is not.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/ide-mcp-install.test.ts:40",
+      "beforeName": "gnosysStdioMcpEntry uses gnosys-mcp command",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "ideMcpInstall helpers gnosysStdioMcpEntry uses gnosys-mcp command"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Public entry generator selects a gnosys-mcp executable and exact empty arguments.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/ide-mcp-install.test.ts:66",
+      "beforeName": "cursor writes project and user mcp.json",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "setupIDE MCP outputs cursor writes project and user mcp.json"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real Cursor install creates project and home JSON entries with gnosys-mcp and empty args.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/ide-mcp-install.test.ts:76",
+      "beforeName": "grok writes mcp_servers.gnosys in ~/.grok/config.toml",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "setupIDE MCP outputs grok writes mcp_servers.gnosys in ~/.grok/config.toml"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real Grok install writes mcp_servers.gnosys, gnosys-mcp and timeout 90, excluding legacy header.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/ide-mcp-install.test.ts:86",
+      "beforeName": "gemini-cli and antigravity write mcpServers.gnosys",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "setupIDE MCP outputs gemini-cli and antigravity write mcpServers.gnosys"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real Gemini and Antigravity config files contain executable gnosys-mcp entries with empty args.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/ide-mcp-install.test.ts:102",
+      "beforeName": "claude-desktop writes mcpServers.gnosys",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "setupIDE MCP outputs claude-desktop writes mcpServers.gnosys"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Concrete literal output or reopened persisted state replaces count/absence/self-equality; all original-selected mutations survived before repair. Scheduler mocks only launchctl process execution.",
+      "mutationIds": [
+        "claude-skip-install"
+      ]
+    },
+    {
+      "beforeId": "src/test/ide-mcp-install.test.ts:115",
+      "beforeName": "removes [gnosys] regardless of field order",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "removeTomlSection — Codex legacy cleanup removes [gnosys] regardless of field order"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "TOML cleanup removes both legacy headers while retaining the unrelated other section.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/ide-mcp-install.test.ts:151",
+      "beforeName": "still writes Claude Desktop when claude CLI is unavailable",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "setupIDE(claude) resilience still writes Claude Desktop when claude CLI is unavailable"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "With unavailable claude binary, real fallback config still contains a gnosys-mcp entry and reports Desktop update.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/ide-mcp-install.test.ts:171",
+      "beforeName": "uses mcp_servers header per Grok Build spec",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "upsertGrokMcpBlock uses mcp_servers header per Grok Build spec"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Concrete literal output or reopened persisted state replaces count/absence/self-equality; all original-selected mutations survived before repair. Scheduler mocks only launchctl process execution.",
+      "mutationIds": [
+        "grok-empty-block"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest.test.ts:46",
+      "beforeName": "reports false when no API key is set",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion isLLMAvailable reports availability for absent and configured local providers"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Explicit config selects absent and local Ollama providers, yielding false/none and true/ollama without network calls.",
+      "mutationIds": [
+        "ingestion-available-always"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest.test.ts:55",
+      "beforeName": "creates a structured IngestResult with all fields",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "GnosysIngestion createStructured creates a structured IngestResult with all fields"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Structured ingestion returns literal title/category/auth tags/relevance/content/confidence and auth-decision filename.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/ingest.test.ts:76",
+      "beforeName": "generates kebab-case filename from title",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "GnosysIngestion createStructured generates kebab-case filename from title"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Mixed-case spaced title becomes the literal kebab-case filename my-complex-title-with-caps.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/ingest.test.ts:87",
+      "beforeName": "truncates filename to 60 characters",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion createStructured truncates filename to 60 characters"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Checks literal public output or persisted content; concrete relevant mutations survive original assertions and fail the replacement (see mutationIds and before/after records).",
+      "mutationIds": [
+        "ingestion-empty-long-slug"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest.test.ts:99",
+      "beforeName": "provides defaults for optional fields",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "GnosysIngestion createStructured provides defaults for optional fields"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Minimal structured input yields exact relevance empty string and confidence 0.8 defaults.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/ingest.test.ts:113",
+      "beforeName": "creates a valid memory file from structured input",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "GnosysIngestion end-to-end structured write creates a valid memory file from structured input"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real structured result is written and reread with literal title, relevance, reviewed date and content.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/init.test.ts:28",
+      "beforeName": "creates .gnosys store directory",
+      "beforeClassification": "STRONG",
+      "action": "rewritten",
+      "afterNames": [
+        "gnosys init creates a usable registered store without legacy artifacts"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated initialization assertions read exact directory entries, tag values, valid identity and matching central project record; re-sync repairs a stale directory while retaining identity.",
+      "mutationIds": [
+        "cli-identity-invalid",
+        "init-invalid-identity",
+        "init-noop",
+        "init-skip-registration"
+      ]
+    },
+    {
+      "beforeId": "src/test/init.test.ts:36",
+      "beforeName": "creates .gnosys/.config internal config directory",
+      "beforeClassification": "STRONG",
+      "action": "rewritten",
+      "afterNames": [
+        "gnosys init creates a usable registered store without legacy artifacts"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated initialization assertions read exact directory entries, tag values, valid identity and matching central project record; re-sync repairs a stale directory while retaining identity.",
+      "mutationIds": [
+        "cli-identity-invalid",
+        "init-invalid-identity",
+        "init-noop",
+        "init-skip-registration"
+      ]
+    },
+    {
+      "beforeId": "src/test/init.test.ts:44",
+      "beforeName": "does NOT create a nested .gnosys/.gnosys",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "gnosys init creates a usable registered store without legacy artifacts"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated initialization assertions read exact directory entries, tag values, valid identity and matching central project record; re-sync repairs a stale directory while retaining identity.",
+      "mutationIds": [
+        "cli-identity-invalid",
+        "init-invalid-identity",
+        "init-noop",
+        "init-skip-registration"
+      ]
+    },
+    {
+      "beforeId": "src/test/init.test.ts:51",
+      "beforeName": "places tags.json inside .gnosys/.config (internal config)",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "gnosys init writes the default categorized tag registry"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated initialization assertions read exact directory entries, tag values, valid identity and matching central project record; re-sync repairs a stale directory while retaining identity.",
+      "mutationIds": [
+        "init-null-tags"
+      ]
+    },
+    {
+      "beforeId": "src/test/init.test.ts:63",
+      "beforeName": "does NOT place tags.json at .gnosys root",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "gnosys init creates a usable registered store without legacy artifacts"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated initialization assertions read exact directory entries, tag values, valid identity and matching central project record; re-sync repairs a stale directory while retaining identity.",
+      "mutationIds": [
+        "cli-identity-invalid",
+        "init-invalid-identity",
+        "init-noop",
+        "init-skip-registration"
+      ]
+    },
+    {
+      "beforeId": "src/test/init.test.ts:70",
+      "beforeName": "does NOT create CHANGELOG.md (removed in DB-only refactor)",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "gnosys init creates a usable registered store without legacy artifacts"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated initialization assertions read exact directory entries, tag values, valid identity and matching central project record; re-sync repairs a stale directory while retaining identity.",
+      "mutationIds": [
+        "cli-identity-invalid",
+        "init-invalid-identity",
+        "init-noop",
+        "init-skip-registration"
+      ]
+    },
+    {
+      "beforeId": "src/test/init.test.ts:77",
+      "beforeName": "does NOT initialize a git repository (removed in DB-only refactor)",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "gnosys init creates a usable registered store without legacy artifacts"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated initialization assertions read exact directory entries, tag values, valid identity and matching central project record; re-sync repairs a stale directory while retaining identity.",
+      "mutationIds": [
+        "cli-identity-invalid",
+        "init-invalid-identity",
+        "init-noop",
+        "init-skip-registration"
+      ]
+    },
+    {
+      "beforeId": "src/test/init.test.ts:84",
+      "beforeName": "re-syncs if .gnosys already exists (no error)",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "gnosys init re-syncs the working directory while retaining a valid project ID"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated initialization assertions read exact directory entries, tag values, valid identity and matching central project record; re-sync repairs a stale directory while retaining identity.",
+      "mutationIds": [
+        "cli-identity-invalid",
+        "init-invalid-identity",
+        "init-resync-noop"
+      ]
+    },
+    {
+      "beforeId": "src/test/init.test.ts:93",
+      "beforeName": "outputs helpful instructions",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "gnosys init outputs helpful instructions"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real CLI init emits Gnosys store and the concrete gnosys add next-step instruction.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/init.test.ts:100",
+      "beforeName": "creates gnosys.json project identity file",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "gnosys init creates a usable registered store without legacy artifacts"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated initialization assertions read exact directory entries, tag values, valid identity and matching central project record; re-sync repairs a stale directory while retaining identity.",
+      "mutationIds": [
+        "cli-identity-invalid",
+        "init-invalid-identity",
+        "init-noop",
+        "init-skip-registration"
+      ]
+    },
+    {
+      "beforeId": "src/test/init.test.ts:112",
+      "beforeName": "generates stable projectId on re-init",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "gnosys init re-syncs the working directory while retaining a valid project ID"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Consolidated initialization assertions read exact directory entries, tag values, valid identity and matching central project record; re-sync repairs a stale directory while retaining identity.",
+      "mutationIds": [
+        "cli-identity-invalid",
+        "init-invalid-identity",
+        "init-resync-noop"
+      ]
+    },
+    {
+      "beforeId": "src/test/links-invoke.test.ts:84",
+      "beforeName": "shows outgoing wikilinks for the source memory (human)",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "runLinksCommand (in-process invoke) shows outgoing wikilinks for the source memory (human)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real seeded source memory produces literal Source memory title and target wikilink in human output.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/links-invoke.test.ts:92",
+      "beforeName": "emits structured JSON with outgoing/backlinks arrays (--json)",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "runLinksCommand (in-process invoke) emits structured JSON with outgoing/backlinks arrays (--json)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Concrete literal output or reopened persisted state replaces count/absence/self-equality; all original-selected mutations survived before repair. Scheduler mocks only launchctl process execution.",
+      "mutationIds": [
+        "links-wrong-target"
+      ]
+    },
+    {
+      "beforeId": "src/test/links-invoke.test.ts:100",
+      "beforeName": "exits with an error for a missing memory path",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "runLinksCommand (in-process invoke) exits with an error for a missing memory path"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Missing memory invocation exits 1 and emits Memory not found.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/log.test.ts:20",
+      "beforeName": "writes plain text to stderr by default",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "structured logger writes plain text to stderr by default"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real logger writes boom to stderr using non-JSON plain text by default.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/log.test.ts:29",
+      "beforeName": "writes JSON lines when GNOSYS_LOG_FORMAT=json",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "structured logger writes JSON lines when GNOSYS_LOG_FORMAT=json"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "JSON logger emits literal error level, boom message, demo context and boom stack.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/log.test.ts:49",
+      "beforeName": "appends JSON lines to GNOSYS_LOG_FILE",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "structured logger appends JSON lines to GNOSYS_LOG_FILE"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real configured log file contains a parsed JSON error with literal file sink message and test module.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/log.test.ts:63",
+      "beforeName": "respects GNOSYS_LOG_LEVEL gating",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "structured logger respects GNOSYS_LOG_LEVEL gating"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Concrete literal output or reopened persisted state replaces count/absence/self-equality; all original-selected mutations survived before repair. Scheduler mocks only launchctl process execution.",
+      "mutationIds": [
+        "log-invert-gate"
+      ]
+    },
+    {
+      "beforeId": "src/test/log.test.ts:72",
+      "beforeName": "never throws on bad file paths",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "structured logger never throws on bad file paths"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Concrete literal output or reopened persisted state replaces count/absence/self-equality; all original-selected mutations survived before repair. Scheduler mocks only launchctl process execution.",
+      "mutationIds": [
+        "log-file-suppresses-stderr"
+      ]
+    },
+    {
+      "beforeId": "src/test/machine-registry.test.ts:42",
+      "beforeName": "returns {} when nothing is stored",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "machineRegistry: read/write returns {} when nothing is stored"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real registry reader returns literal empty object when its metadata storage is absent.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/machine-registry.test.ts:46",
+      "beforeName": "round-trips through write/read",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "machineRegistry: read/write round-trips through write/read"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Registry serializer/reader preserves exact Box version and timestamp through the storage boundary fake.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/machine-registry.test.ts:52",
+      "beforeName": "returns {} for malformed JSON instead of throwing",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "machineRegistry: read/write returns {} for malformed JSON instead of throwing"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Malformed stored JSON produces a literal empty registry.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/machine-registry.test.ts:59",
+      "beforeName": "adds this machine with version, lastSeen, and machineId",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "machineRegistry: recordMachine adds this machine with version, lastSeen, and machineId"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Record operation returns literal version 5.11.4, machine ID id-1 and timestamp format.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/machine-registry.test.ts:66",
+      "beforeName": "prunes the orphaned entry left by a previous hostname (the phantom)",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "machineRegistry: recordMachine prunes the orphaned entry left by a previous hostname (the phantom)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Recording renamed host removes the alias and returns exactly the single EdsMBP key.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/machine-registry.test.ts:84",
+      "beforeName": "prunes a differently-named entry that shares this machineId",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "machineRegistry: recordMachine prunes a differently-named entry that shares this machineId"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Matching physical machine ID prunes OldName and preserves id-1 on NewName.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/machine-registry.test.ts:95",
+      "beforeName": "never removes a different physical machine",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "machineRegistry: recordMachine never removes a different physical machine"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Concrete literal output or reopened persisted state replaces count/absence/self-equality; all original-selected mutations survived before repair. Scheduler mocks only launchctl process execution.",
+      "mutationIds": [
+        "machine-damage-peer"
+      ]
+    },
+    {
+      "beforeId": "src/test/machine-registry.test.ts:111",
+      "beforeName": "persists the result so a re-read sees the pruned registry",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "machineRegistry: recordMachine persists the result so a re-read sees the pruned registry"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Concrete literal output or reopened persisted state replaces count/absence/self-equality; all original-selected mutations survived before repair. Scheduler mocks only launchctl process execution.",
+      "mutationIds": [
+        "machine-empty-persistence"
+      ]
+    },
+    {
+      "beforeId": "src/test/machine-registry.test.ts:126",
+      "beforeName": "removes a named entry and reports true",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "machineRegistry: forgetMachine removes a named entry and reports true"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Forget returns true, removes the named old host, and retains the other host entry.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/machine-registry.test.ts:138",
+      "beforeName": "reports false when the entry doesn't exist",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "machineRegistry: forgetMachine reports false when the entry doesn't exist"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Forgetting a missing ghost host returns literal false.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase7e.export.test.ts:33",
+      "beforeName": "exports memories into target directory",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 7e: Obsidian Export Bridge TC-7e.1: Export creates clean Obsidian vault exports memories into target directory"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Checks literal public output or persisted content; concrete relevant mutations survive original assertions and fail the replacement (see mutationIds and before/after records).",
+      "mutationIds": [
+        "export-drop-body"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase7e.export.test.ts:66",
+      "beforeName": "exported files preserve wikilinks",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 7e: Obsidian Export Bridge TC-7e.1: Export creates clean Obsidian vault exported files preserve wikilinks"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Checks literal public output or persisted content; concrete relevant mutations survive original assertions and fail the replacement (see mutationIds and before/after records).",
+      "mutationIds": [
+        "export-omit-wikilink-source"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase7e.export.test.ts:107",
+      "beforeName": "only exports active memories when activeOnly=true",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 7e: Obsidian Export Bridge TC-7e.1: Export creates clean Obsidian vault only exports active memories when activeOnly=true"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Checks literal public output or persisted content; concrete relevant mutations survive original assertions and fail the replacement (see mutationIds and before/after records).",
+      "mutationIds": [
+        "export-drop-body"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase7e.export.test.ts:142",
+      "beforeName": "exported memory can be read back as valid markdown",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 7e: Obsidian Export Bridge TC-7e.2: Round-trip export and re-import exported memory can be read back as valid markdown"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Checks literal public output or persisted content; concrete relevant mutations survive original assertions and fail the replacement (see mutationIds and before/after records).",
+      "mutationIds": [
+        "export-drop-body"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase8c.cli-parity.test.ts:48",
+      "beforeName": "gnosys list returns empty list for new store",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 8c: CLI Parity TC-8c.1: Core CLI commands functional gnosys list returns empty list for new store"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Seeded data and literal CLI results verify registered projects, shared/scoped list behavior, stats, preferences, audit and DB-to-CLI parity.",
+      "mutationIds": [
+        "cli-list-empty"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase8c.cli-parity.test.ts:54",
+      "beforeName": "gnosys stats returns statistics",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 8c: CLI Parity TC-8c.1: Core CLI commands functional gnosys stats returns statistics"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Seeded data and literal CLI results verify registered projects, shared/scoped list behavior, stats, preferences, audit and DB-to-CLI parity.",
+      "mutationIds": [
+        "cli-stats-human-output"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase8c.cli-parity.test.ts:59",
+      "beforeName": "gnosys projects lists registered projects",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 8c: CLI Parity TC-8c.1: Core CLI commands functional gnosys projects lists registered projects"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Seeded data and literal CLI results verify registered projects, shared/scoped list behavior, stats, preferences, audit and DB-to-CLI parity.",
+      "mutationIds": [
+        "cli-projects-omit-rows"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase8c.cli-parity.test.ts:64",
+      "beforeName": "gnosys pref get returns preferences (empty for new store)",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 8c: CLI Parity TC-8c.1: Core CLI commands functional gnosys pref get returns preferences (empty for new store)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Seeded data and literal CLI results verify registered projects, shared/scoped list behavior, stats, preferences, audit and DB-to-CLI parity.",
+      "mutationIds": [
+        "cli-pref-human-empty"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase8c.cli-parity.test.ts:69",
+      "beforeName": "gnosys pref set + get round-trips a value",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 8c: CLI Parity TC-8c.1: Core CLI commands functional gnosys pref set + get round-trips a value"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real CLI preference set/get returns the literal test value.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase8c.cli-parity.test.ts:78",
+      "beforeName": "gnosys --help shows help text",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 8c: CLI Parity TC-8c.1: Core CLI commands functional gnosys --help shows help text"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Built CLI help emits Gnosys and Commands headings.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase8c.cli-parity.test.ts:87",
+      "beforeName": "gnosys init --help shows init options",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase 8c: CLI Parity TC-8c.1: Core CLI commands functional gnosys init --help shows init options"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Built init help includes the directory option.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/phase8c.cli-parity.test.ts:99",
+      "beforeName": "gnosys list --json outputs valid JSON",
+      "beforeClassification": "WEAK",
+      "action": "deleted",
+      "afterNames": [
+        "CLI --json flag gnosys list --json outputs valid JSON"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Deleted duplicate weak CLI/identity smoke; named replacement asserts literal results and is mutation-proven.",
+      "mutationIds": [
+        "cli-list-wrong-count"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase8c.cli-parity.test.ts:107",
+      "beforeName": "gnosys stats --json outputs valid JSON",
+      "beforeClassification": "WEAK",
+      "action": "deleted",
+      "afterNames": [
+        "CLI --json flag gnosys stats --json outputs valid JSON"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Deleted duplicate weak CLI/identity smoke; named replacement asserts literal results and is mutation-proven.",
+      "mutationIds": [
+        "cli-stats-bogus"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase8c.cli-parity.test.ts:113",
+      "beforeName": "gnosys projects --json outputs valid JSON",
+      "beforeClassification": "WEAK",
+      "action": "deleted",
+      "afterNames": [
+        "CLI --json flag gnosys projects --json outputs valid JSON"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Deleted duplicate weak CLI/identity smoke; named replacement asserts literal results and is mutation-proven.",
+      "mutationIds": [
+        "cli-projects-omit-rows"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase8c.cli-parity.test.ts:125",
+      "beforeName": "gnosys pref get --json outputs valid JSON",
+      "beforeClassification": "WEAK",
+      "action": "deleted",
+      "afterNames": [
+        "CLI --json flag gnosys pref get --json outputs valid JSON with no prefs"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Deleted duplicate weak CLI/identity smoke; named replacement asserts literal results and is mutation-proven.",
+      "mutationIds": [
+        "cli-pref-phantom"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase8c.cli-parity.test.ts:135",
+      "beforeName": "gnosys.json exists after init",
+      "beforeClassification": "WEAK",
+      "action": "deleted",
+      "afterNames": [
+        "gnosys init creates a usable registered store without legacy artifacts"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Deleted duplicate weak CLI/identity smoke; named replacement asserts literal results and is mutation-proven.",
+      "mutationIds": [
+        "cli-identity-invalid"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase8c.cli-parity.test.ts:140",
+      "beforeName": "CLI uses GNOSYS_PROJECT env var for project context",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase 8c: CLI Parity TC-8c.3: CLI auto-detects projectId from gnosys.json CLI scopes list to the current working directory and shared memories"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Original claimed an obsolete GNOSYS_PROJECT contract; replacement selects cwd and verifies current/shared records while excluding the other project.",
+      "mutationIds": [
+        "cli-list-empty"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase8c.cli-parity.test.ts:149",
+      "beforeName": "re-init preserves project identity",
+      "beforeClassification": "WEAK",
+      "action": "deleted",
+      "afterNames": [
+        "gnosys init re-syncs the working directory while retaining a valid project ID"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Deleted duplicate weak CLI/identity smoke; named replacement asserts literal results and is mutation-proven.",
+      "mutationIds": [
+        "cli-identity-invalid"
+      ]
+    },
+    {
+      "beforeId": "src/test/recall-hook.test.ts:21",
+      "beforeName": "extracts prompt_text from UserPromptSubmit events",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "hookQueryFromStdin extracts prompt_text from UserPromptSubmit events"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "UserPromptSubmit JSON parses to literal auth JWT tokens query.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/recall-hook.test.ts:27",
+      "beforeName": "accepts the legacy `prompt` field name",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "hookQueryFromStdin accepts the legacy `prompt` field name"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Legacy prompt field parses to literal database migration query.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/recall-hook.test.ts:31",
+      "beforeName": "SessionStart events (no prompt) become wildcard",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "hookQueryFromStdin SessionStart events (no prompt) become wildcard"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "SessionStart without prompt yields literal wildcard *.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/recall-hook.test.ts:35",
+      "beforeName": "non-JSON and empty stdin become wildcard",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "hookQueryFromStdin non-JSON and empty stdin become wildcard"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Empty/malformed/whitespace prompt input all yield literal wildcard *.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/recall-hook.test.ts:41",
+      "beforeName": "truncates very long prompts",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "hookQueryFromStdin truncates very long prompts"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Concrete literal output or reopened persisted state replaces count/absence/self-equality; all original-selected mutations survived before repair. Scheduler mocks only launchctl process execution.",
+      "mutationIds": [
+        "recall-empty-truncation"
+      ]
+    },
+    {
+      "beforeId": "src/test/recall-hook.test.ts:63",
+      "beforeName": "installs SessionStart AND UserPromptSubmit hooks running gnosys recall-hook",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "configureClaudeCode hook installation (v5.14.0) installs SessionStart AND UserPromptSubmit hooks running gnosys recall-hook"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Actual Claude settings contain recall-hook for both events and no prompt matcher.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/recall-hook.test.ts:76",
+      "beforeName": "heals the broken pre-5.14 hook command in place",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "configureClaudeCode hook installation (v5.14.0) heals the broken pre-5.14 hook command in place"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Existing broken recall options are removed and both real settings events reference recall-hook.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/recall-hook.test.ts:109",
+      "beforeName": "is idempotent and preserves foreign hooks",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "configureClaudeCode hook installation (v5.14.0) is idempotent and preserves foreign hooks"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Second install leaves identical settings, retains foreign hook/permissions, and writes exactly one gnosys prompt entry.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-coldstart.test.ts:21",
+      "beforeName": "renderColdStartSplash includes brand mark, version, and step preview",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase D — cold-start wizard renderers renderColdStartSplash includes brand mark, version, and step preview"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Reviewed compact snapshot and literals show brand/version, four setup steps and clean-exit hint.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-coldstart.test.ts:33",
+      "beforeName": "renderColdStartSplash handles version with leading v",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase D — cold-start wizard renderers renderColdStartSplash handles version with leading v"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact header tokens, raw ANSI cells, serialized valid config and fixed seeded machine IDs replace substring/shape/self-equality checks.",
+      "mutationIds": [
+        "splash-double-v"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-ui-coldstart.test.ts:39",
+      "beforeName": "renderStepHeader includes step counter",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase D — cold-start wizard renderers renderStepHeader includes step counter"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Reviewed header snapshot and literals verify provider breadcrumb and step 1 of 4 placement.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-coldstart.test.ts:48",
+      "beforeName": "renderDonePanelRows aligns labels and shows full summary",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase D — cold-start wizard renderers renderDonePanelRows aligns labels and shows full summary"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Reviewed five-row snapshot contains exact provider/model/key source/IDEs and disabled dream summary with aligned labels.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-coldstart.test.ts:63",
+      "beforeName": "renderDonePanelRows handles no IDEs",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "Phase D — cold-start wizard renderers renderDonePanelRows handles no IDEs"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "No-IDE renderer explicitly includes (none) and enabled dream output.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-table.test.ts:35",
+      "beforeName": "renders header + divider + rows (auto-fit widths)",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "setup/ui Table atom — Phase A renders header + divider + rows (auto-fit widths)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Reviewed five-line table snapshot verifies headers/divider and literal provider/model/cost rows.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-table.test.ts:45",
+      "beforeName": "omits header when showHeader is false",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "setup/ui Table atom — Phase A omits header when showHeader is false"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Reviewed three-line snapshot contains data rows with no header when disabled.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-table.test.ts:54",
+      "beforeName": "renders header without divider when dividerAfterHeader is false",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "setup/ui Table atom — Phase A renders header without divider when dividerAfterHeader is false"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Reviewed snapshot contains header/data and omits divider when disabled.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-table.test.ts:63",
+      "beforeName": "supports fixed column widths",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "setup/ui Table atom — Phase A supports fixed column widths"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Reviewed snapshot verifies requested fixed column spacing and right-aligned costs.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-table.test.ts:73",
+      "beforeName": "supports right-aligned columns",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "setup/ui Table atom — Phase A supports right-aligned columns"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Reviewed snapshot verifies right-aligned single/double dollar costs for concrete rows.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-table.test.ts:82",
+      "beforeName": "handles empty row arrays (header still emitted)",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "setup/ui Table atom — Phase A handles empty row arrays (header still emitted)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Reviewed empty-data snapshot still emits exactly header and divider.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-table.test.ts:91",
+      "beforeName": "handles empty row arrays with showHeader=false (returns no lines)",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "setup/ui Table atom — Phase A handles empty row arrays with showHeader=false (returns no lines)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Empty rows with hidden header return literal [].",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-table.test.ts:99",
+      "beforeName": "respects custom indent + gap",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "setup/ui Table atom — Phase A respects custom indent + gap"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Reviewed snapshot verifies indent 3 and gap 4 on concrete provider rows.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-table.test.ts:108",
+      "beforeName": "preserves coloured cell content while padding to printable width",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "setup/ui Table atom — Phase A preserves coloured cell content while padding to printable width"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact header tokens, raw ANSI cells, serialized valid config and fixed seeded machine IDs replace substring/shape/self-equality checks.",
+      "mutationIds": [
+        "table-strip-cell-color"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-ui-table.test.ts:122",
+      "beforeName": "invokes rowFormatter for per-row markers",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "setup/ui Table atom — Phase A invokes rowFormatter for per-row markers"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Reviewed snapshot shows literal > marker only on synthesis and unmarked vision row.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/setup-ui-table.test.ts:136",
+      "beforeName": "returns [] when columns is empty",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "setup/ui Table atom — Phase A returns [] when columns is empty"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Empty column list yields literal [].",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:156",
+      "beforeName": "loads from a file path",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "loadIndex loads from a file path"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact result IDs, ranks, tokens, recency score and cached-file refresh outcomes replace empty-loop, count-only and self-comparison assertions.",
+      "mutationIds": [
+        "static-load-empty-documents"
+      ]
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:166",
+      "beforeName": "loads from a JSON string",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "loadIndex loads from a JSON string"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact result IDs, ranks, tokens, recency score and cached-file refresh outcomes replace empty-loop, count-only and self-comparison assertions.",
+      "mutationIds": [
+        "static-load-empty-documents"
+      ]
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:173",
+      "beforeName": "caches repeated calls with same source",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "loadIndex caches repeated calls with same source"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact result IDs, ranks, tokens, recency score and cached-file refresh outcomes replace empty-loop, count-only and self-comparison assertions.",
+      "mutationIds": [
+        "static-bypass-cache"
+      ]
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:181",
+      "beforeName": "throws on invalid JSON",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "loadIndex throws on invalid JSON"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Malformed JSON rejects with literal Invalid JSON error.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:185",
+      "beforeName": "throws on missing version field",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "loadIndex throws on missing version field"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Missing version rejects with missing or invalid version error.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:189",
+      "beforeName": "throws on unsupported version",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "loadIndex throws on unsupported version"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Version 99 rejects with explicit unsupported-version message.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:194",
+      "beforeName": "throws on missing file",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "loadIndex throws on missing file"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Missing index file rejects with not found error.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:208",
+      "beforeName": "returns empty array for no matches",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "search returns empty array for no matches"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Unmatched search over a populated index returns literal [].",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:213",
+      "beforeName": "returns results sorted by score descending",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "search returns results sorted by score descending"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact result IDs, ranks, tokens, recency score and cached-file refresh outcomes replace empty-loop, count-only and self-comparison assertions.",
+      "mutationIds": [
+        "static-reverse-rank"
+      ]
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:221",
+      "beforeName": "respects limit option",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "search respects limit option"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact result IDs, ranks, tokens, recency score and cached-file refresh outcomes replace empty-loop, count-only and self-comparison assertions.",
+      "mutationIds": [
+        "static-ignore-limit"
+      ]
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:226",
+      "beforeName": "respects minScore threshold",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "search respects minScore threshold"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "High minimum score 100 excludes the real chatbot hit.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:231",
+      "beforeName": "filters by category",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "search filters by category"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact result IDs, ranks, tokens, recency score and cached-file refresh outcomes replace empty-loop, count-only and self-comparison assertions.",
+      "mutationIds": [
+        "static-search-empty"
+      ]
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:238",
+      "beforeName": "filters by tags",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "search filters by tags"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact result IDs, ranks, tokens, recency score and cached-file refresh outcomes replace empty-loop, count-only and self-comparison assertions.",
+      "mutationIds": [
+        "static-search-empty"
+      ]
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:245",
+      "beforeName": "matches relevance keywords",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "search matches relevance keywords"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Relevance query mavenn returns literal prod-001 first.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:251",
+      "beforeName": "handles multi-word queries",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "search handles multi-word queries"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact result IDs, ranks, tokens, recency score and cached-file refresh outcomes replace empty-loop, count-only and self-comparison assertions.",
+      "mutationIds": [
+        "static-wrong-document"
+      ]
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:257",
+      "beforeName": "returns empty for single-character queries",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "search returns empty for single-character queries"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Single-character query yields literal [].",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:262",
+      "beforeName": "is case-insensitive",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "search is case-insensitive"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact result IDs, ranks, tokens, recency score and cached-file refresh outcomes replace empty-loop, count-only and self-comparison assertions.",
+      "mutationIds": [
+        "static-search-empty"
+      ]
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:271",
+      "beforeName": "strips punctuation from query",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "search strips punctuation from query"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact result IDs, ranks, tokens, recency score and cached-file refresh outcomes replace empty-loop, count-only and self-comparison assertions.",
+      "mutationIds": [
+        "static-search-empty"
+      ]
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:277",
+      "beforeName": "returns matchedTokens in results",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "search returns matchedTokens in results"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Actual matchedTokens include literal chatbot for the chatbot/agent query.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:283",
+      "beforeName": "boosts recent documents when boostRecent is true",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "search boosts recent documents when boostRecent is true"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact result IDs, ranks, tokens, recency score and cached-file refresh outcomes replace empty-loop, count-only and self-comparison assertions.",
+      "mutationIds": [
+        "static-wrong-document"
+      ]
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:300",
+      "beforeName": "returns empty array for empty query",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "search returns empty array for empty query"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Empty and whitespace queries return literal [].",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:315",
+      "beforeName": "returns document by ID",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "getDocument returns document by ID"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "ID lookup returns literal Building AI Chatbots title.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:321",
+      "beforeName": "returns document by path",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "getDocument returns document by path"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Path lookup returns literal blog-001 ID.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:327",
+      "beforeName": "returns null for non-existent document",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "getDocument returns null for non-existent document"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Unknown document lookup returns literal null.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:341",
+      "beforeName": "returns all documents with no filter",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "listDocuments returns all documents with no filter"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact result IDs, ranks, tokens, recency score and cached-file refresh outcomes replace empty-loop, count-only and self-comparison assertions.",
+      "mutationIds": [
+        "static-repeat-documents"
+      ]
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:346",
+      "beforeName": "filters by category",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "listDocuments filters by category"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Blog category listing returns exactly two records and both have literal blog category.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:352",
+      "beforeName": "filters by tags (any match)",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "listDocuments filters by tags (any match)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "AI tag listing returns exactly two records and both contain ai tag.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:358",
+      "beforeName": "filters by status",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "listDocuments filters by status"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Archived status filter returns exactly arch-001.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:364",
+      "beforeName": "combines multiple filters (AND logic)",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "listDocuments combines multiple filters (AND logic)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Combined blog/active filter returns exactly blog-001.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/staticSearch.test.ts:370",
+      "beforeName": "returns empty array when no documents match filter",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "listDocuments returns empty array when no documents match filter"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Unknown category filter returns literal [].",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v511-machineConfig.test.ts:41",
+      "beforeName": "defaultMachineConfig has a UUID, hostname, empty roots, disabled remote",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "v5.11 machineConfig: shape & persistence defaultMachineConfig has a UUID, hostname, empty roots, disabled remote"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Default machine config has UUID layout, actual hostname, literal empty roots and disabled remote.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v511-machineConfig.test.ts:49",
+      "beforeName": "writes machine.json under the config dir and reads it back",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "v5.11 machineConfig: shape & persistence writes machine.json under the config dir and reads it back"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real machine.json round trip preserves machine ID, concrete root path and enabled remote path.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v511-machineConfig.test.ts:64",
+      "beforeName": "readMachineConfig returns null when the file is absent",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "v5.11 machineConfig: shape & persistence readMachineConfig returns null when the file is absent"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Absent machine config returns literal null.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v511-machineConfig.test.ts:68",
+      "beforeName": "normalize drops non-string roots and resolves to absolute",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "v5.11 machineConfig: shape & persistence normalize drops non-string roots and resolves to absolute"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Normalization preserves /a/b root and removes numeric bad root.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v511-machineConfig.test.ts:81",
+      "beforeName": "creates machine.json on first run",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "v5.11 machineConfig: ensure & hostname guard creates machine.json on first run"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact header tokens, raw ANSI cells, serialized valid config and fixed seeded machine IDs replace substring/shape/self-equality checks.",
+      "mutationIds": [
+        "machine-invalid-fresh-id"
+      ]
+    },
+    {
+      "beforeId": "src/test/v511-machineConfig.test.ts:88",
+      "beforeName": "returns the existing config unchanged when the hostname matches",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "v5.11 machineConfig: ensure & hostname guard returns the existing config unchanged when the hostname matches"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact header tokens, raw ANSI cells, serialized valid config and fixed seeded machine IDs replace substring/shape/self-equality checks.",
+      "mutationIds": [
+        "machine-drop-existing-roots"
+      ]
+    },
+    {
+      "beforeId": "src/test/v511-machineConfig.test.ts:96",
+      "beforeName": "regenerates machineId when a foreign (synced-in) config has a different hostname",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "v5.11 machineConfig: ensure & hostname guard regenerates machineId when a foreign (synced-in) config has a different hostname"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Foreign-host config regenerates ID/current hostname while preserving concrete root and remote paths.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v511-machineConfig.test.ts:115",
+      "beforeName": "getMachineId is stable across calls",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "v5.11 machineConfig: ensure & hostname guard getMachineId is stable across calls"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Exact header tokens, raw ANSI cells, serialized valid config and fixed seeded machine IDs replace substring/shape/self-equality checks.",
+      "mutationIds": [
+        "machine-constant-id"
+      ]
+    },
+    {
+      "beforeId": "src/test/v511-machineConfig.test.ts:121",
+      "beforeName": "records the old hostname in previousHostnames on a rename",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "v5.11 machineConfig: ensure & hostname guard records the old hostname in previousHostnames on a rename"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Rename records exact prior hostname in previousHostnames and updates current hostname.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v511-machineConfig.test.ts:150",
+      "beforeName": "absPathFromRoot joins root + rel, returns null when root/rel missing",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "v5.11 machineConfig: root <-> relative path helpers absPathFromRoot joins root + rel, returns null when root/rel missing"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Root-relative resolution yields exact gnosys path and null for missing root/relative inputs.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v511-machineConfig.test.ts:159",
+      "beforeName": "relPathUnderRoot picks the deepest matching root",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "v5.11 machineConfig: root <-> relative path helpers relPathUnderRoot picks the deepest matching root"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Overlapping-root resolution returns exact dev mapping and chooses deeper docs root for guide.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v511-machineConfig.test.ts:168",
+      "beforeName": "relPathUnderRoot returns null for a path outside every root",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "v5.11 machineConfig: root <-> relative path helpers relPathUnderRoot returns null for a path outside every root"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Paths outside all configured roots return literal null.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v594-grok-build-ide.test.ts:19",
+      "beforeName": "appends a fresh block to empty input",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "upsertGrokMcpBlock — v5.9.4 Bug 12 appends a fresh block to empty input"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Empty-input upsert returns exact independently written TOML with command, empty args and timeout 90.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v594-grok-build-ide.test.ts:30",
+      "beforeName": "appends a block to existing content separated by a blank line",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "upsertGrokMcpBlock — v5.9.4 Bug 12 appends a block to existing content separated by a blank line"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Concrete literal output or reopened persisted state replaces count/absence/self-equality; all original-selected mutations survived before repair. Scheduler mocks only launchctl process execution.",
+      "mutationIds": [
+        "grok-empty-block"
+      ]
+    },
+    {
+      "beforeId": "src/test/v594-grok-build-ide.test.ts:40",
+      "beforeName": "replaces an existing [mcp_servers.gnosys] block instead of duplicating it",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "upsertGrokMcpBlock — v5.9.4 Bug 12 replaces an existing [mcp_servers.gnosys] block instead of duplicating it"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Replacement yields one target header, exact new fields, retained other/settings values and no old binary.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v594-grok-build-ide.test.ts:67",
+      "beforeName": "is idempotent — second run produces identical bytes",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "upsertGrokMcpBlock — v5.9.4 Bug 12 is idempotent — second run produces identical bytes"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Concrete literal output or reopened persisted state replaces count/absence/self-equality; all original-selected mutations survived before repair. Scheduler mocks only launchctl process execution.",
+      "mutationIds": [
+        "grok-empty-block"
+      ]
+    },
+    {
+      "beforeId": "src/test/v594-grok-build-ide.test.ts:73",
+      "beforeName": "removes legacy [mcp.gnosys] and writes [mcp_servers.gnosys]",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "upsertGrokMcpBlock — v5.9.4 Bug 12 removes legacy [mcp.gnosys] and writes [mcp_servers.gnosys]"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Legacy TOML header is replaced by mcp_servers.gnosys with literal gnosys-mcp command.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/v594-grok-build-ide.test.ts:84",
+      "beforeName": "preserves the [mcp_servers.other] block when replacing [mcp_servers.gnosys]",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "upsertGrokMcpBlock — v5.9.4 Bug 12 preserves the [mcp_servers.other] block when replacing [mcp_servers.gnosys]"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Replacing target block preserves literal other command/args and writes timeout 90.",
+      "mutationIds": []
+    }
+  ]
+}

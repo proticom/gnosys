@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { readFileSync, mkdtempSync, rmSync, existsSync } from "fs";
+import { readFileSync, mkdtempSync, rmSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 import {
@@ -103,7 +103,6 @@ describe("setupIDE MCP outputs", () => {
     const r = await setupIDE("claude-desktop", projectDir);
     expect(r.success).toBe(true);
     const cfgPath = getClaudeDesktopConfigPath();
-    if (!existsSync(cfgPath)) return;
     const cfg = JSON.parse(readFileSync(cfgPath, "utf-8")) as {
       mcpServers?: Record<string, unknown>;
     };
@@ -174,6 +173,6 @@ describe("upsertGrokMcpBlock", () => {
       args: [],
       startup_timeout_sec: 90,
     });
-    expect(out).toContain("[mcp_servers.gnosys]");
+    expect(out).toBe('[mcp_servers.gnosys]\ncommand = "/usr/local/bin/gnosys-mcp"\nargs = []\nstartup_timeout_sec = 90\n');
   });
 });

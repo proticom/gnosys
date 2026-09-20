@@ -2,7 +2,7 @@
  * Tests for staticSearch.ts — Zero-dependency runtime search module.
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import fs from "fs";
 import fsp from "fs/promises";
 import path from "path";
@@ -141,11 +141,14 @@ function makeSampleIndex(): GnosysWebIndex {
 }
 
 beforeEach(() => {
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date("2026-04-01T00:00:00Z"));
   tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-static-search-"));
   clearIndexCache();
 });
 
 afterEach(async () => {
+  vi.useRealTimers();
   clearIndexCache();
   await fsp.rm(tmpDir, { recursive: true, force: true });
 });
@@ -161,6 +164,7 @@ describe("loadIndex", () => {
     const loaded = loadIndex(filePath);
     expect(loaded.version).toBe(1);
     expect(loaded.documentCount).toBe(5);
+    expect(search(loaded, "chatbot").map(({ document }) => document.id)).toEqual(["blog-001"]);
   });
 
   it("loads from a JSON string", () => {
@@ -168,14 +172,19 @@ describe("loadIndex", () => {
     const loaded = loadIndex(JSON.stringify(index));
     expect(loaded.version).toBe(1);
     expect(loaded.documentCount).toBe(5);
+    expect(search(loaded, "chatbot").map(({ document }) => document.id)).toEqual(["blog-001"]);
   });
 
   it("caches repeated calls with same source", () => {
-    const index = makeSampleIndex();
-    const json = JSON.stringify(index);
-    const loaded1 = loadIndex(json);
-    const loaded2 = loadIndex(json);
-    expect(loaded1).toBe(loaded2); // same reference
+    const filePath = path.join(tmpDir, "gnosys-index.json");
+    fs.writeFileSync(filePath, JSON.stringify(makeSampleIndex()));
+    expect(getDocument(loadIndex(filePath), "blog-001")?.title).toBe("Building AI Chatbots");
+    const updated = makeSampleIndex();
+    updated.documents[0].title = "Updated chatbot guide";
+    fs.writeFileSync(filePath, JSON.stringify(updated));
+    expect(getDocument(loadIndex(filePath), "blog-001")?.title).toBe("Building AI Chatbots");
+    clearIndexCache();
+    expect(getDocument(loadIndex(filePath), "blog-001")?.title).toBe("Updated chatbot guide");
   });
 
   it("throws on invalid JSON", () => {
@@ -211,16 +220,18 @@ describe("search", () => {
   });
 
   it("returns results sorted by score descending", () => {
-    const results = search(index, "chatbot agent");
-    expect(results.length).toBeGreaterThan(0);
-    for (let i = 1; i < results.length; i++) {
-      expect(results[i - 1].score).toBeGreaterThanOrEqual(results[i].score);
-    }
+    const results = search(index, "automation chatbot agent");
+    expect(results.map(({ document, score }) => ({ id: document.id, score }))).toEqual([
+      { id: "blog-001", score: 5.6 },
+      { id: "svc-001", score: 3.5 },
+    ]);
   });
 
   it("respects limit option", () => {
-    const results = search(index, "support help faq questions", { limit: 1 });
-    expect(results.length).toBe(1);
+    expect(search(index, "automation chatbot agent", { limit: 1 }).map(({ document }) => document.id))
+      .toEqual(["blog-001"]);
+    expect(search(index, "automation chatbot agent", { limit: 2 }).map(({ document }) => document.id))
+      .toEqual(["blog-001", "svc-001"]);
   });
 
   it("respects minScore threshold", () => {
@@ -230,16 +241,12 @@ describe("search", () => {
 
   it("filters by category", () => {
     const results = search(index, "chatbot agent automation", { category: "services" });
-    for (const r of results) {
-      expect(r.document.category).toBe("services");
-    }
+    expect(results.map(({ document }) => document.id)).toEqual(["svc-001"]);
   });
 
   it("filters by tags", () => {
     const results = search(index, "chatbot automation mavenn support", { tags: ["ai"] });
-    for (const r of results) {
-      expect(r.document.tags).toContain("ai");
-    }
+    expect(results.map(({ document }) => document.id).sort()).toEqual(["blog-001", "svc-001"]);
   });
 
   it("matches relevance keywords", () => {
@@ -250,8 +257,9 @@ describe("search", () => {
 
   it("handles multi-word queries", () => {
     const results = search(index, "artificial intelligence chatbot");
-    expect(results.length).toBeGreaterThan(0);
-    expect(results[0].matchedTokens.length).toBeGreaterThanOrEqual(2);
+    expect(results.map(({ document, matchedTokens }) => ({ id: document.id, matchedTokens }))).toEqual([
+      { id: "blog-001", matchedTokens: ["artificial", "intelligence", "chatbot"] },
+    ]);
   });
 
   it("returns empty for single-character queries", () => {
@@ -260,18 +268,12 @@ describe("search", () => {
   });
 
   it("is case-insensitive", () => {
-    const lower = search(index, "chatbot");
-    const upper = search(index, "CHATBOT");
-    expect(lower.length).toBe(upper.length);
-    if (lower.length > 0) {
-      expect(lower[0].document.id).toBe(upper[0].document.id);
-    }
+    expect(search(index, "CHATBOT").map(({ document }) => document.id)).toEqual(["blog-001"]);
+    expect(search(index, "chatbot").map(({ document }) => document.id)).toEqual(["blog-001"]);
   });
 
   it("strips punctuation from query", () => {
-    const clean = search(index, "chatbot");
-    const punctuated = search(index, "chatbot!!!");
-    expect(clean.length).toBe(punctuated.length);
+    expect(search(index, "chatbot!!!").map(({ document }) => document.id)).toEqual(["blog-001"]);
   });
 
   it("returns matchedTokens in results", () => {
@@ -281,20 +283,12 @@ describe("search", () => {
   });
 
   it("boosts recent documents when boostRecent is true", () => {
-    // faq-001 has a recent created date
-    const withoutBoost = search(index, "support help", { boostRecent: false });
-    const withBoost = search(index, "support help", { boostRecent: true });
-
-    // Both should return faq-001
-    expect(withoutBoost.length).toBeGreaterThan(0);
-    expect(withBoost.length).toBeGreaterThan(0);
-
-    // Boosted score should be higher
-    const faqWithout = withoutBoost.find((r) => r.document.id === "faq-001");
-    const faqWith = withBoost.find((r) => r.document.id === "faq-001");
-    if (faqWithout && faqWith) {
-      expect(faqWith.score).toBeGreaterThan(faqWithout.score);
-    }
+    const withoutBoost = search(index, "support", { boostRecent: false });
+    const withBoost = search(index, "support", { boostRecent: true });
+    expect(withoutBoost.map(({ document, score }) => ({ id: document.id, score })))
+      .toEqual([{ id: "faq-001", score: 3.5 }]);
+    expect(withBoost.map(({ document, score }) => ({ id: document.id, score })))
+      .toEqual([{ id: "faq-001", score: 5.25 }]);
   });
 
   it("returns empty array for empty query", () => {
@@ -339,8 +333,9 @@ describe("listDocuments", () => {
   });
 
   it("returns all documents with no filter", () => {
-    const docs = listDocuments(index);
-    expect(docs.length).toBe(5);
+    expect(listDocuments(index).map(({ id }) => id)).toEqual([
+      "blog-001", "svc-001", "prod-001", "faq-001", "arch-001",
+    ]);
   });
 
   it("filters by category", () => {

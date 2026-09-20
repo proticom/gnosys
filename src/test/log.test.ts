@@ -62,17 +62,26 @@ describe("structured logger", () => {
 
   it("respects GNOSYS_LOG_LEVEL gating", async () => {
     process.env.GNOSYS_LOG_LEVEL = "error";
+    process.env.GNOSYS_LOG_FORMAT = "json";
     stderrSpy = vi.spyOn(process.stderr, "write").mockImplementation(() => true);
     const { logInfo, logError } = await loadLog();
     logInfo("hidden");
     logError(new Error("shown"));
-    expect(stderrSpy).toHaveBeenCalledTimes(1);
+    expect(stderrSpy.mock.calls.map((call: unknown[]) => {
+      const { level, message } = JSON.parse(String(call[0]));
+      return { level, message };
+    })).toEqual([{ level: "error", message: "shown" }]);
   });
 
   it("never throws on bad file paths", async () => {
-    process.env.GNOSYS_LOG_FILE = "/definitely/not/a/writable/path/gnosys.log";
+    process.env.GNOSYS_LOG_FILE = "/dev/null/gnosys.log";
+    process.env.GNOSYS_LOG_FORMAT = "json";
     stderrSpy = vi.spyOn(process.stderr, "write").mockImplementation(() => true);
     const { logError } = await loadLog();
-    expect(() => logError(new Error("safe"))).not.toThrow();
+    logError(new Error("safe"));
+    expect(stderrSpy.mock.calls.map((call: unknown[]) => {
+      const { level, message } = JSON.parse(String(call[0]));
+      return { level, message };
+    })).toEqual([{ level: "error", message: "safe" }]);
   });
 });

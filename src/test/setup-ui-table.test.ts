@@ -106,16 +106,19 @@ describe("setup/ui Table atom — Phase A", () => {
   });
 
   it("preserves coloured cell content while padding to printable width", async () => {
-    const { renderTable, c, color: paint } = await load();
+    const { renderTable } = await load();
     const rows = [
-      { task: "synthesis", uses: paint(c.accentHi, "anthropic / sonnet") },
-      { task: "vision", uses: paint(c.text, "openai / gpt-5.4") },
+      { task: "synthesis", uses: "\x1b[31manthropic / sonnet\x1b[0m" },
+      { task: "vision", uses: "\x1b[34mopenai / gpt-5.4\x1b[0m" },
     ];
     const out = renderTable(rows, [
-      { header: "task", render: (r) => r.task },
-      { header: "uses", render: (r) => r.uses },
+      { header: "task", color: "", render: (r) => r.task },
+      { header: "uses", color: "", render: (r) => r.uses },
     ]);
-    // After stripping ANSI, column alignment must still be byte-identical.
+    expect(out.slice(2)).toEqual([
+      " synthesis  \x1b[31manthropic / sonnet\x1b[0m",
+      " vision     \x1b[34mopenai / gpt-5.4\x1b[0m",
+    ]);
     expect(out.map(strip).join("\n")).toMatchSnapshot();
   });
 

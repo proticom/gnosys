@@ -33,7 +33,7 @@ describe("Phase D — cold-start wizard renderers", () => {
   it("renderColdStartSplash handles version with leading v", async () => {
     const { renderColdStartSplash } = await load();
     const out = renderColdStartSplash("v5.9.3");
-    expect(strip(out)).toContain("v5.9.3");
+    expect(strip(out).split("\n")[0].trim().split(/\s+/)).toEqual(["⬢", "gnosys", "▸", "setup", "v5.9.3"]);
   });
 
   it("renderStepHeader includes step counter", async () => {
