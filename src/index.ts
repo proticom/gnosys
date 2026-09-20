@@ -1296,7 +1296,7 @@ regTool(
       tagRegistry = new GnosysTagRegistry(writeTarget.store.getStorePath());
       await tagRegistry.load();
       const { GnosysIngestion } = await import("./lib/ingest.js");
-      ingestion = new GnosysIngestion(writeTarget.store, tagRegistry);
+      ingestion = new GnosysIngestion(writeTarget.store, tagRegistry, await loadConfig(writeTarget.store.getStorePath()));
       await reindexAllStores();
     }
 
@@ -1402,7 +1402,7 @@ regTool(
         tagRegistry = new GnosysTagRegistry(writeTarget.store.getStorePath());
         await tagRegistry.load();
         const { GnosysIngestion } = await import("./lib/ingest.js");
-      ingestion = new GnosysIngestion(writeTarget.store, tagRegistry);
+      ingestion = new GnosysIngestion(writeTarget.store, tagRegistry, await loadConfig(writeTarget.store.getStorePath()));
         await reindexAllStores();
       }
 
