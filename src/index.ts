@@ -1703,10 +1703,10 @@ Output ONLY the JSON array, no markdown fences.`,
     for (const candidate of candidates) {
       const searchTerms = candidate.search_terms.join(" ");
 
-      // Check existing memories via discover
-      const existing = ctx.search
-        ? ctx.search.discover(searchTerms, 3)
-        : [];
+      const existing = ctx.centralDb?.isAvailable()
+        ? ctx.centralDb.discoverFts(searchTerms, 3, { projectId: ctx.projectId, scope: "project" })
+          .map((memory) => ({ title: memory.title, relative_path: memory.id }))
+        : ctx.search?.discover(searchTerms, 3) ?? [];
 
       const hasOverlap = existing.length > 0;
 
