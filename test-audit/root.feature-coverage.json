@@ -1,0 +1,334 @@
+{
+  "rows": [
+    {
+      "featureId": "F01",
+      "obligationKind": "success",
+      "obligation": "Installed gnosys and gnosys-mcp execute documented CLI and MCP entry points",
+      "status": "PARTIAL",
+      "tests": [
+        {
+          "file": "e2e-setup/tests.sh",
+          "name": "cli-installs-and-reports-version",
+          "mutationIds": [
+            "setup-version"
+          ]
+        }
+      ],
+      "limitations": "Real npm-packed tarball is installed and its CLI version executed inside the offline Docker container. MCP installed-bin handshake is mapped separately."
+    },
+    {
+      "featureId": "F01",
+      "obligationKind": "boundary",
+      "obligation": "Node >=20.12; package includes runnable dist and executable bins",
+      "status": "PARTIAL",
+      "tests": [
+        {
+          "file": "e2e-setup/tests.sh",
+          "name": "cli-installs-and-reports-version",
+          "mutationIds": [
+            "setup-version"
+          ]
+        }
+      ],
+      "limitations": "Docker Node22 package installation and executable CLI are exercised. Other supported Node/OS versions depend on CI and were not executed locally."
+    },
+    {
+      "featureId": "F02",
+      "obligationKind": "success",
+      "obligation": "Init creates identity, registry and tags and selects the project for subsequent writes",
+      "status": "PARTIAL",
+      "tests": [
+        {
+          "file": "e2e-setup/tests.sh",
+          "name": "init-creates-isolated-store",
+          "mutationIds": [
+            "setup-identity-name"
+          ]
+        }
+      ],
+      "limitations": "Docker init verifies literal project identity and registration. Separate CI assertions exercise subsequent data writes."
+    },
+    {
+      "featureId": "F02",
+      "obligationKind": "boundary",
+      "obligation": "Repeated init preserves config and identity; duplicate paths/project IDs do not duplicate registration",
+      "status": "PARTIAL",
+      "tests": [
+        {
+          "file": "e2e-setup/tests.sh",
+          "name": "init-creates-isolated-store",
+          "mutationIds": [
+            "setup-identity-name"
+          ]
+        }
+      ],
+      "limitations": "Repeated init preserves the registered project ID; arbitrary preexisting config preservation has separate unit evidence."
+    },
+    {
+      "featureId": "F02",
+      "obligationKind": "permissions",
+      "obligation": "Explicit projectRoot routes to requested project",
+      "status": "PARTIAL",
+      "tests": [
+        {
+          "file": ".github/workflows/ci.yml",
+          "name": "Multi-project scenario test",
+          "mutationIds": [
+            "ci-multi-project-empty-search"
+          ]
+        }
+      ],
+      "limitations": "Real CLI commands use each project cwd and isolated central storage. This does not prove every MCP explicit projectRoot route."
+    },
+    {
+      "featureId": "F04",
+      "obligationKind": "failure",
+      "obligation": "Invalid keys/models and unavailable local models provide recovery; cancelled prompts stop cleanly",
+      "status": "PARTIAL",
+      "tests": [
+        {
+          "file": "e2e-setup/tests.sh",
+          "name": "setup-wizard-first-screen",
+          "mutationIds": [
+            "setup-cancel-message"
+          ]
+        }
+      ],
+      "limitations": "The full setup wizard displays the promised Ctrl+C cancellation message. Exit status is covered by the separate PTY regressions, including G2-D001."
+    },
+    {
+      "featureId": "F04",
+      "obligationKind": "boundary",
+      "obligation": "Existing IDE entries survive merge; paths containing spaces work; non-TTY invocation is bounded",
+      "status": "PARTIAL",
+      "tests": [
+        {
+          "file": "e2e-setup/tests.sh",
+          "name": "setup-non-interactive",
+          "mutationIds": [
+            "setup-default-model"
+          ]
+        }
+      ],
+      "limitations": "Noninteractive setup returns the exact configured model/provider summary and completes; it does not persist the configuration."
+    },
+    {
+      "featureId": "F04",
+      "obligationKind": "permissions",
+      "obligation": "Only selected IDE configs are changed; secret destinations and permissions match selection",
+      "status": "PARTIAL",
+      "tests": [
+        {
+          "file": "e2e-setup/tests.sh",
+          "name": "isolation-no-stray-writes",
+          "mutationIds": [
+            "setup-stray-write"
+          ]
+        }
+      ],
+      "limitations": "The offline container snapshots HOME,/tmp,/var/tmp,/dev/shm files and directories before/after wizards and rejects writes outside approved subtrees. Native desktop integration is not exercised."
+    },
+    {
+      "featureId": "F09",
+      "obligationKind": "permissions",
+      "obligation": "Scope/store filters exclude disallowed results",
+      "status": "PARTIAL",
+      "tests": [
+        {
+          "file": ".github/workflows/ci.yml",
+          "name": "Multi-project scenario test",
+          "mutationIds": [
+            "ci-multi-project-empty-search"
+          ]
+        }
+      ],
+      "limitations": "The real CLI scenario asserts per-project list/stats and exact positive/negative search results across three projects. Other retrieval modes are mapped separately."
+    },
+    {
+      "featureId": "F38",
+      "obligationKind": "success",
+      "obligation": "Sitemap/directory/URL source builds knowledge Markdown and usable index; add/update/remove rebuild correct documents",
+      "status": "PARTIAL",
+      "tests": [
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build-index output writes a searchable index when embeddings are absent",
+          "mutationIds": [
+            "web-index-write",
+            "web-index-skip-write"
+          ]
+        },
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+          "mutationIds": [
+            "web-build-write"
+          ]
+        }
+      ],
+      "limitations": "Public handlers ingest local documents, write actual index/vector artifacts, and read their contents. Provider responses use external fetch doubles."
+    },
+    {
+      "featureId": "F38",
+      "obligationKind": "boundary",
+      "obligation": "Dry-run changes nothing; prune only orphaned docs; unchanged content skips; concurrency; empty sites",
+      "status": "PARTIAL",
+      "tests": [
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build reports a dry run and preserves existing index and vector bytes",
+          "mutationIds": [
+            "web-dry-run"
+          ]
+        }
+      ],
+      "limitations": "Dry-run preserves existing index/vector bytes. Pruning, concurrency, and unchanged-site behavior require the other mapped cases."
+    },
+    {
+      "featureId": "F39",
+      "obligationKind": "success",
+      "obligation": "gnosys/web loads v1/v2 index and returns correct TF-IDF rankings; quantized vectors combine with RRF; concept expansion uses 0.5 weight",
+      "status": "PARTIAL",
+      "tests": [
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+          "mutationIds": [
+            "web-index-write"
+          ]
+        },
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build-index output persists concept expansions returned by the configured LLM",
+          "mutationIds": [
+            "web-index-write"
+          ]
+        }
+      ],
+      "limitations": "Real output files contain literal quantized vectors or provider-returned expansions. Ranking/RRF and concept-expansion weight are separate search-unit obligations."
+    },
+    {
+      "featureId": "F39",
+      "obligationKind": "boundary",
+      "obligation": "Absent query vector/vectors retains lexical behavior; zero vectors; quantization round trip; cache invalidation; expandQuery false",
+      "status": "PARTIAL",
+      "tests": [
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build-index output writes a searchable index when embeddings are absent",
+          "mutationIds": [
+            "web-index-write",
+            "web-index-skip-write"
+          ]
+        },
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+          "mutationIds": [
+            "web-index-write"
+          ]
+        },
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build-index output writes a version-one index when no LLM provider is configured",
+          "mutationIds": [
+            "web-index-write"
+          ]
+        }
+      ],
+      "limitations": "Public index build works without embeddings, without expansion configuration, or with expansions disabled. Search vector mismatch/cache boundaries are mapped separately."
+    },
+    {
+      "featureId": "F41",
+      "obligationKind": "success",
+      "obligation": "Reinforce active memory produces persisted reinforcement and feedback; dashboard command launches functioning dashboard",
+      "status": "KNOWN_DEFECT",
+      "tests": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
+          "mutationIds": [
+            "repair-D-VSC-001"
+          ]
+        },
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-004: the dashboard action opens a command supported by the installed CLI",
+          "mutationIds": [
+            "repair-D-VSC-004"
+          ]
+        }
+      ],
+      "limitations": "Both success contracts fail in current application code and are retained as expected failures. Reinforcement omits required arguments; dashboard invokes a removed command. Host API is doubled, actual local CLI is executed."
+    },
+    {
+      "featureId": "F41",
+      "obligationKind": "failure",
+      "obligation": "No editor, outside-store file and CLI error show correct message",
+      "status": "PROTECTED",
+      "tests": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands warns when no editor is open",
+          "mutationIds": [
+            "vscode-no-editor"
+          ]
+        },
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands warns when the active file is outside a memory directory",
+          "mutationIds": [
+            "vscode-outside-memory"
+          ]
+        },
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands reports a process launch failure to the editor",
+          "mutationIds": [
+            "vscode-command-error"
+          ]
+        }
+      ],
+      "limitations": "Literal notifications for missing editor, outside-memory file, and subprocess failure are mutation-proven through public activate/command callbacks. Native VS Code UI is not launched."
+    },
+    {
+      "featureId": "F41",
+      "obligationKind": "boundary",
+      "obligation": "Spaces, quotes and shell metacharacters in selected path; extension activation scope",
+      "status": "KNOWN_DEFECT",
+      "tests": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+          "mutationIds": [
+            "repair-D-VSC-003"
+          ]
+        }
+      ],
+      "limitations": "The shell-substitution filename is exercised using a harmless marker under the temporary project. The vulnerability is retained as an expected failure; quote/space variants and native activation are not independently tested."
+    },
+    {
+      "featureId": "F41",
+      "obligationKind": "permissions",
+      "obligation": "Selected file cannot inject shell commands; store detection uses actual path boundary",
+      "status": "KNOWN_DEFECT",
+      "tests": [
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-002: rejects a directory whose name only starts with .gnosys",
+          "mutationIds": [
+            "repair-D-VSC-002"
+          ]
+        },
+        {
+          "file": "src/test/vscode-extension.test.ts",
+          "name": "VS Code extension public commands D-VSC-003: passes shell syntax in a filename as literal text",
+          "mutationIds": [
+            "repair-D-VSC-003"
+          ]
+        }
+      ],
+      "limitations": "Expected-failure regressions expose substring directory acceptance and shell evaluation of filenames. Both inverse repair probes unexpectedly pass, confirming each failure is specific."
+    }
+  ]
+}

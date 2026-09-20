@@ -7,15 +7,45 @@
   "classificationCounts": {
     "before": {
       "STRONG": 1076,
-      "WEAK": 294,
+      "WEAK": 293,
       "HOLLOW": 45,
       "COUPLED": 285,
       "DEAD": 1,
-      "MISLABELED": 47
+      "MISLABELED": 48
     },
     "after": null
   },
+  "originalDeclarationOutcomes": {
+    "before": {
+      "STRONG": 1076,
+      "WEAK": 293,
+      "HOLLOW": 45,
+      "COUPLED": 285,
+      "DEAD": 1,
+      "MISLABELED": 48
+    },
+    "afterOriginalDeclarations": {
+      "STRONG": 805,
+      "WEAK": 0,
+      "HOLLOW": 0,
+      "COUPLED": 0,
+      "DEAD": 0,
+      "MISLABELED": 0
+    },
+    "deleted": 30,
+    "pending": 913
+  },
+  "runtimeClassificationCounts": null,
   "mutationScore": null,
+  "provisionalMutationScore": {
+    "method": "targeted-manual",
+    "unit": "distinct application file and mutation ID after test repair",
+    "tested": 326,
+    "killed": 326,
+    "survived": 0,
+    "percent": 100,
+    "limitations": "Selected faults only; not an exhaustive or random mutation score. Before-test experiments and inverse defect repair probes are excluded. Repeated copies of experiment evidence are deduplicated."
+  },
   "baseline": {
     "framework": "Vitest",
     "version": "4.1.9",
@@ -47,39 +77,122 @@
     "collectedCases": 1802,
     "externalLogicalCases": 8
   },
+  "latestFullSuite": {
+    "files": 203,
+    "passed": 1711,
+    "failed": 0,
+    "skipped": 0,
+    "expectedFailureRegressions": 8,
+    "durationSeconds": 82.92,
+    "evidence": "test-audit/evidence/integrated-checkpoints-full-suite.json"
+  },
+  "currentInventory": {
+    "files": 203,
+    "testDeclarations": 1550,
+    "runtimeCases": 1711
+  },
   "progress": {
     "reviewedFiles": 296,
     "testDeclarationsReviewed": 1748,
+    "originalDeclarationsResolved": 835,
     "featureGroups": 41,
-    "weakRatingsProved": 3,
-    "rewrittenCasesProved": 124,
-    "commandCasesProved": 112,
-    "originalDeclarationsResolved": 190,
-    "externalCasesProved": 8,
-    "newExtensionCasesProved": 7
+    "missingCaseKills": 0,
+    "missingSurvivalProofs": 0,
+    "unmappedRuntimeCases": 952
   },
+  "featureProtection": [],
+  "externalTests": [
+    {
+      "id": "e2e:version",
+      "name": "cli-installs-and-reports-version",
+      "beforeClassification": "WEAK",
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "setup-version"
+      ]
+    },
+    {
+      "id": "e2e:init",
+      "name": "init-creates-isolated-store",
+      "beforeClassification": "WEAK",
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "setup-identity-name"
+      ]
+    },
+    {
+      "id": "e2e:setup-first-screen",
+      "name": "setup-wizard-first-screen",
+      "beforeClassification": "STRONG",
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "setup-cancel-message"
+      ]
+    },
+    {
+      "id": "e2e:setup-noninteractive",
+      "name": "setup-non-interactive",
+      "beforeClassification": "WEAK",
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "setup-default-model"
+      ]
+    },
+    {
+      "id": "e2e:web-init",
+      "name": "web-init-wizard",
+      "beforeClassification": "WEAK",
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "setup-web-config"
+      ]
+    },
+    {
+      "id": "e2e:isolation",
+      "name": "isolation-no-stray-writes",
+      "beforeClassification": "MISLABELED",
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "setup-stray-write"
+      ]
+    },
+    {
+      "id": "ci:multi-project",
+      "name": "Multi-project scenario test",
+      "beforeClassification": "WEAK",
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "ci-multi-project-empty-search"
+      ]
+    },
+    {
+      "id": "ci:network-share",
+      "name": "Network share simulation (tmpfs)",
+      "beforeClassification": "MISLABELED",
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "ci-network-share-empty-search"
+      ]
+    }
+  ],
   "blocked": [],
   "applicationCodeChanged": false,
-  "classificationEvidenceStatus": "WEAK and nonstructural HOLLOW ratings remain provisional until their mutation evidence is recorded.",
-  "latestFullSuite": {
-    "files": 203,
-    "passed": 1742,
-    "failed": 0,
-    "skipped": 1,
-    "expectedFailureRegressions": 4,
-    "durationSeconds": 80.235
-  },
   "defects": [
     {
       "id": "D-G3-001",
       "title": "Exported fnv1a does not compute the documented 32-bit FNV-1a hash",
       "module": "src/lib/db.ts:389",
-      "reproduction": "node --input-type=module -e 'import { fnv1a } from \"./dist/lib/db.js\"; console.log(fnv1a(\"hello\"));'",
+      "reproduction": "node scripts/test-audit-defect.mjs D-G3-001",
       "expected": "4f9f2cab",
       "actual": "a82fb4a1",
       "evidence": "Independently reproduced in the root audit worktree. BigInt XOR/multiply/modulo-2^32 arithmetic gives 4f9f2cab; the exported function returns a82fb4a1. Its floating-point multiplication loses low bits.",
       "test": "src/test/chunk-splitter.test.ts",
-      "status": "Confirmed. Expected-failure regression is in the group3 worktree pending review and merge; application code remains unchanged."
+      "status": "Confirmed. Retained as it.fails; ordinary failure and inverse repair probe recorded. Application code unchanged.",
+      "evidenceFiles": [
+        "test-audit/evidence/group3-hash-defect.json",
+        "test-audit/evidence/D-G3-001.reproduced.json",
+        "test-audit/mutations/hash.repair.results.json"
+      ]
     },
     {
       "id": "D-VSC-001",
@@ -143,6 +256,53 @@
         "test-audit/evidence/vscode-defect-reproduction.json",
         "test-audit/mutations/vscode.repairs.results.json",
         "test-audit/evidence/D-VSC-004.reproduced.json"
+      ]
+    },
+    {
+      "id": "DEF-G1-001",
+      "title": "Task routing reset reports success but retains persisted overrides",
+      "module": "src/lib/setup/sections/routing.ts:204",
+      "expected": "taskModels is empty after reset.",
+      "actual": "The structuring override remains xai/grok-4.20 despite routing reset success.",
+      "evidence": "The real summary wizard receives 2,4,y,done and its project config is reloaded. updateConfig recursively merges the empty taskModels object, retaining previous keys. A temporary clear-overrides repair makes the expected-failure test unexpectedly pass.",
+      "reproduction": "node scripts/test-audit-defect.mjs DEF-G1-001",
+      "test": "src/test/setup-ui-summary.test.ts",
+      "status": "Confirmed. Retained as it.fails. Application code unchanged.",
+      "evidenceFiles": [
+        "test-audit/mutations/group1.checkpoint2.results.json",
+        "test-audit/evidence/DEF-G1-001.reproduced.json"
+      ]
+    },
+    {
+      "id": "G2-D001",
+      "title": "Main setup cancellation returns success instead of interrupt status",
+      "module": "src/lib/setup.ts:1434",
+      "test": "src/test/setup-ctrlc.test.ts",
+      "testName": "gnosys setup exits cleanly on SIGINT",
+      "expected": "Exit code130 after Ctrl+C at the real provider prompt.",
+      "actual": "The cancellation message appears but the process exits0.",
+      "evidence": "A Python POSIX PTY waits for the real prompt and sends the Ctrl+C byte. The main setup close listener exits0 before safeQuestion can exit130. Models and IDE setup return130 through the same PTY.",
+      "reproduction": "node scripts/test-audit-defect.mjs G2-D001",
+      "status": "Confirmed. Retained as it.fails. Application code unchanged.",
+      "evidenceFiles": [
+        "test-audit/mutations/group2.checkpoint2.results.json",
+        "test-audit/evidence/G2-D001.reproduced.json"
+      ]
+    },
+    {
+      "id": "G2-D002",
+      "title": "Writing the same memory twice duplicates full-text search results",
+      "module": "src/lib/db.ts",
+      "test": "src/test/lifecycle-invariants.test.ts",
+      "testName": "writing the same memory twice keeps one searchable result",
+      "expected": "One stored memory and one search result after repeated syncMemoryToDb writes.",
+      "actual": "One stored memory but two search results with the same ID.",
+      "evidence": "Two public syncMemoryToDb writes followed by getAllMemories and searchFts reproduce the mismatch. A temporary FTS-row replacement repair makes the expected-failure test unexpectedly pass.",
+      "reproduction": "node scripts/test-audit-defect.mjs G2-D002",
+      "status": "Confirmed. Retained as it.fails. Application code unchanged.",
+      "evidenceFiles": [
+        "test-audit/mutations/group2.checkpoint2.results.json",
+        "test-audit/evidence/G2-D002.reproduced.json"
       ]
     }
   ]

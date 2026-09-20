@@ -8,10 +8,14 @@
       "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
       "classification": "STRONG",
       "evidence": "Real config/filesystem/artifact or CLI output assertion; recorded mutation kills this case and restored code passes.",
-      "action": "Rewrote internal collaborator mocks/source checks as public-handler calls with real application modules.",
+      "action": "rewritten",
       "mutationIds": [
         "web-index-write"
-      ]
+      ],
+      "afterNames": [
+        "web build-index output writes an index and quantized vectors for the requested provider and reports their location"
+      ],
+      "afterClassification": "STRONG"
     },
     {
       "beforeId": "src/test/webVectors-command-handler.test.ts:171",
@@ -20,10 +24,14 @@
       "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
       "classification": "STRONG",
       "evidence": "Real config/filesystem/artifact or CLI output assertion; recorded mutation kills this case and restored code passes.",
-      "action": "Rewrote internal collaborator mocks/source checks as public-handler calls with real application modules.",
+      "action": "rewritten",
       "mutationIds": [
         "web-index-validation"
-      ]
+      ],
+      "afterNames": [
+        "web build-index output rejects an invalid embeddings provider without creating an index or vectors"
+      ],
+      "afterClassification": "STRONG"
     },
     {
       "beforeId": "src/test/webVectors-command-handler.test.ts:184",
@@ -32,10 +40,15 @@
       "name": "web build-index output writes a searchable index when embeddings are absent",
       "classification": "STRONG",
       "evidence": "Real config/filesystem/artifact or CLI output assertion; recorded mutation kills this case and restored code passes.",
-      "action": "Rewrote internal collaborator mocks/source checks as public-handler calls with real application modules.",
+      "action": "rewritten",
       "mutationIds": [
-        "web-index-write"
-      ]
+        "web-index-write",
+        "web-index-skip-write"
+      ],
+      "afterNames": [
+        "web build-index output writes a searchable index when embeddings are absent"
+      ],
+      "afterClassification": "STRONG"
     },
     {
       "beforeId": "src/test/webVectors-command-handler.test.ts:194",
@@ -44,10 +57,14 @@
       "name": "web build-index output persists concept expansions returned by the configured LLM",
       "classification": "STRONG",
       "evidence": "Real config/filesystem/artifact or CLI output assertion; recorded mutation kills this case and restored code passes.",
-      "action": "Rewrote internal collaborator mocks/source checks as public-handler calls with real application modules.",
+      "action": "rewritten",
       "mutationIds": [
         "web-index-write"
-      ]
+      ],
+      "afterNames": [
+        "web build-index output persists concept expansions returned by the configured LLM"
+      ],
+      "afterClassification": "STRONG"
     },
     {
       "beforeId": "src/test/webVectors-command-handler.test.ts:210",
@@ -56,10 +73,14 @@
       "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
       "classification": "STRONG",
       "evidence": "Real config/filesystem/artifact or CLI output assertion; recorded mutation kills this case and restored code passes.",
-      "action": "Rewrote internal collaborator mocks/source checks as public-handler calls with real application modules.",
+      "action": "rewritten",
       "mutationIds": [
         "web-index-write"
-      ]
+      ],
+      "afterNames": [
+        "web build-index output writes a version-one index without contacting the LLM when expansions are disabled"
+      ],
+      "afterClassification": "STRONG"
     },
     {
       "beforeId": "src/test/webVectors-command-handler.test.ts:221",
@@ -68,10 +89,14 @@
       "name": "web build-index output writes a version-one index when no LLM provider is configured",
       "classification": "STRONG",
       "evidence": "Real config/filesystem/artifact or CLI output assertion; recorded mutation kills this case and restored code passes.",
-      "action": "Rewrote internal collaborator mocks/source checks as public-handler calls with real application modules.",
+      "action": "rewritten",
       "mutationIds": [
         "web-index-write"
-      ]
+      ],
+      "afterNames": [
+        "web build-index output writes a version-one index when no LLM provider is configured"
+      ],
+      "afterClassification": "STRONG"
     },
     {
       "beforeId": "src/test/webVectors-command-handler.test.ts:236",
@@ -80,10 +105,14 @@
       "name": "web build ingests local content and writes both search and Voyage vector artifacts",
       "classification": "STRONG",
       "evidence": "Real config/filesystem/artifact or CLI output assertion; recorded mutation kills this case and restored code passes.",
-      "action": "Rewrote internal collaborator mocks/source checks as public-handler calls with real application modules.",
+      "action": "rewritten",
       "mutationIds": [
         "web-build-write"
-      ]
+      ],
+      "afterNames": [
+        "web build ingests local content and writes both search and Voyage vector artifacts"
+      ],
+      "afterClassification": "STRONG"
     },
     {
       "beforeId": "src/test/webVectors-command-handler.test.ts:264",
@@ -92,10 +121,14 @@
       "name": "web build reports a dry run and preserves existing index and vector bytes",
       "classification": "STRONG",
       "evidence": "Real config/filesystem/artifact or CLI output assertion; recorded mutation kills this case and restored code passes.",
-      "action": "Rewrote internal collaborator mocks/source checks as public-handler calls with real application modules.",
+      "action": "rewritten",
       "mutationIds": [
         "web-dry-run"
-      ]
+      ],
+      "afterNames": [
+        "web build reports a dry run and preserves existing index and vector bytes"
+      ],
+      "afterClassification": "STRONG"
     },
     {
       "beforeId": "src/test/webVectors-command-handler.test.ts:285",
@@ -104,10 +137,14 @@
       "name": "web status reports vector metadata and exact byte size in text and JSON output",
       "classification": "STRONG",
       "evidence": "Real config/filesystem/artifact or CLI output assertion; recorded mutation kills this case and restored code passes.",
-      "action": "Rewrote internal collaborator mocks/source checks as public-handler calls with real application modules.",
+      "action": "rewritten",
       "mutationIds": [
         "web-status-count"
-      ]
+      ],
+      "afterNames": [
+        "web status reports vector metadata and exact byte size in text and JSON output"
+      ],
+      "afterClassification": "STRONG"
     },
     {
       "beforeId": "src/test/webVectors-command-handler.test.ts:314",
@@ -116,10 +153,14 @@
       "name": "web status reports a missing vectors file with a build hint",
       "classification": "STRONG",
       "evidence": "Real config/filesystem/artifact or CLI output assertion; recorded mutation kills this case and restored code passes.",
-      "action": "Rewrote internal collaborator mocks/source checks as public-handler calls with real application modules.",
+      "action": "rewritten",
       "mutationIds": [
         "web-status-missing"
-      ]
+      ],
+      "afterNames": [
+        "web status reports a missing vectors file with a build hint"
+      ],
+      "afterClassification": "STRONG"
     },
     {
       "beforeId": "src/test/webVectors-command-handler.test.ts:323",
@@ -128,10 +169,14 @@
       "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
       "classification": "STRONG",
       "evidence": "Real config/filesystem/artifact or CLI output assertion; recorded mutation kills this case and restored code passes.",
-      "action": "Rewrote internal collaborator mocks/source checks as public-handler calls with real application modules.",
+      "action": "rewritten",
       "mutationIds": [
         "web-corrupt-size"
-      ]
+      ],
+      "afterNames": [
+        "web status reports corrupt vector JSON with its exact byte size and no invented metadata"
+      ],
+      "afterClassification": "STRONG"
     },
     {
       "beforeId": "src/test/webVectors-command-handler.test.ts:337",
@@ -140,10 +185,14 @@
       "name": "creates web configuration non-interactively and prints the semantic search instructions",
       "classification": "STRONG",
       "evidence": "Real config/filesystem/artifact or CLI output assertion; recorded mutation kills this case and restored code passes.",
-      "action": "Rewrote internal collaborator mocks/source checks as public-handler calls with real application modules.",
+      "action": "rewritten",
       "mutationIds": [
         "web-init-write"
-      ]
+      ],
+      "afterNames": [
+        "creates web configuration non-interactively and prints the semantic search instructions"
+      ],
+      "afterClassification": "STRONG"
     }
   ]
 }

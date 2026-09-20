@@ -2875,7 +2875,8 @@
         "cli-registerAgent",
         "cli-registerSandbox",
         "cli-registerTrace",
-        "cli-registerWeb"
+        "cli-registerWeb",
+        "cli-parent-path"
       ]
     }
   ]
