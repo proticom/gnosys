@@ -28,7 +28,8 @@ function activate(context) {
       const filePath = editor.document.uri.fsPath;
 
       // Check if we're inside a .gnosys directory
-      if (!filePath.includes(".gnosys")) {
+      const memoryDirectory = /(?:^|[\\/])\.gnosys(?:[\\/]|$)/.exec(filePath);
+      if (!memoryDirectory) {
         vscode.window.showWarningMessage(
           "This file is not inside a .gnosys/ directory."
         );
@@ -36,7 +37,7 @@ function activate(context) {
       }
 
       // Find the .gnosys root
-      const gnosysIndex = filePath.indexOf(".gnosys");
+      const gnosysIndex = memoryDirectory.index + memoryDirectory[0].indexOf(".gnosys");
       const storePath = filePath.substring(0, gnosysIndex + ".gnosys".length);
       const relativePath = path.relative(storePath, filePath);
 
