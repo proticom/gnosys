@@ -78,5 +78,20 @@
       "test-audit/mutations/vscode.repairs.results.json",
       "test-audit/evidence/D-VSC-004.reproduced.json"
     ]
+  },
+  {
+    "id": "DEF-G1-001",
+    "title": "Task routing reset reports success but retains persisted overrides",
+    "module": "src/lib/setup/models.ts",
+    "expected": "taskModels is empty after reset.",
+    "actual": "The structuring override remains xai/grok-4.20 despite routing reset success.",
+    "evidence": "The real summary wizard receives 2,4,y,done and its project config is reloaded. updateConfig recursively merges the empty taskModels object, retaining previous keys. A temporary clear-overrides repair makes the expected-failure test unexpectedly pass.",
+    "reproduction": "node scripts/test-audit-defect.mjs DEF-G1-001",
+    "test": "src/test/setup-ui-summary.test.ts",
+    "status": "Confirmed. Retained as it.fails. Application code unchanged.",
+    "evidenceFiles": [
+      "test-audit/mutations/group1.checkpoint2.results.json",
+      "test-audit/evidence/DEF-G1-001.reproduced.json"
+    ]
   }
 ]

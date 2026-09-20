@@ -1,0 +1,66 @@
+[
+  {
+    "path": "src/test/cleanup-rules.test.ts",
+    "sha256": "88d92b328f3b7dd0f94606aedc7d72bab58d43a05c20c0e96fe8b2d9eac68d12"
+  },
+  {
+    "path": "src/test/dream-resume.test.ts",
+    "sha256": "02fc11669b7fb9a294fe9bcf71c4ccffb525abb83d9e5d4152c7a37aa5b882e7"
+  },
+  {
+    "path": "src/test/dream-run-scheduled-flag.test.ts",
+    "sha256": "123f47f10d2eade21bbe0b2db94dd098d22bd2c507fbf2ac23d110d189d1c0a1"
+  },
+  {
+    "path": "src/test/ide-init-golden.test.ts",
+    "sha256": "0ed459b1c60b7a44fee7a63347b2a11cb5cac489b711cdaec7d6b610ff775d75"
+  },
+  {
+    "path": "src/test/mcp-toolset-budget.test.ts",
+    "sha256": "6b55e051c08c3fe41537dd93b83f21710aab313cc659d3d5899cd109481ee37f"
+  },
+  {
+    "path": "src/test/phase9c.cli-federated.test.ts",
+    "sha256": "6739050e583b138f8e129457627f3dc70839a3398ef62df6f6fb3649b0655a0c"
+  },
+  {
+    "path": "src/test/read-command-overlay.test.ts",
+    "sha256": "58b6106ce0b7c9ca0e3e3d4f9319bd44603ea7e8afca2d675b98312556d76206"
+  },
+  {
+    "path": "src/test/recall-wildcard.test.ts",
+    "sha256": "c8094fe31a7f07b58aac34e648c8fabc16a340eb9d09b1a38b8247b3b4c2c607"
+  },
+  {
+    "path": "src/test/remote-audit-sync.test.ts",
+    "sha256": "07c0ac6f0aae33b7eaf019c51f56dc21e1a81d32f66def0ff2dfbe5745431845"
+  },
+  {
+    "path": "src/test/setup-ui-summary.test.ts",
+    "sha256": "257fd379e5d9ec2961d66b63869aad12dc08766846dba9c5571b8690b6da3bfc"
+  },
+  {
+    "path": "src/test/shell-injection-argv.test.ts",
+    "sha256": "a34b592f0d7af4b8ea19aa2603c987517d3444940ec4360886a15f3dc199b4dc"
+  },
+  {
+    "path": "src/test/syncStatusMessages.test.ts",
+    "sha256": "7fd22cadceec2074aca764e46cb175735b24e59f215cfb27703d1eca7863077e"
+  },
+  {
+    "path": "src/test/tags-invoke.test.ts",
+    "sha256": "5cca7b9de1cad4bfcc4c7115e5981ba0869d411cab2e60745fbb91e81be314d4"
+  },
+  {
+    "path": "src/test/v593-no-central-db-pollution.test.ts",
+    "sha256": "3f3b749a47e1aa7a992cc4bd1cca6470f6e094d8596849f6854e417fd40d141b"
+  },
+  {
+    "path": "src/test/v600-no-anthropic-default.test.ts",
+    "sha256": "616e9300b90ec18380e083ab182d4298df69ca31d25ec8a92944fa1de6a6b820"
+  },
+  {
+    "path": "src/test/webVectors.test.ts",
+    "sha256": "9f2797ea0cc26ffac6eed1e5e4b72077b16fe7c4f62db478342665f747b559d7"
+  }
+]

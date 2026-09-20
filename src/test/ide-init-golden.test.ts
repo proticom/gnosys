@@ -2,12 +2,14 @@
  * IDE init golden tests — per-IDE rules block matches fixtures; MCP configs structurally validated.
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { readFileSync, writeFileSync, mkdtempSync, rmSync } from "fs";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { readFileSync, mkdtempSync, rmSync } from "fs";
 import { tmpdir } from "os";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
-import { generateRulesBlock } from "../lib/rulesGen.js";
+import { generateRulesBlock, syncToTarget } from "../lib/rulesGen.js";
+import { GnosysDB } from "../lib/db.js";
+import os from "node:os";
 import { setupIDE } from "../lib/setup.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -43,16 +45,17 @@ function assertMcpServerEntry(server: unknown): void {
 
 describe("IDE init golden fixtures", () => {
   for (const [ide, fixtureFile] of IDE_FIXTURES) {
-    it(`${ide} rules block matches golden (${TARGET_PATHS[ide]})`, () => {
-      const got = wrapRulesBlock(generateRulesBlock([], []));
-      const fixturePath = join(FIXTURE_DIR, fixtureFile);
-
-      if (process.env.UPDATE_GOLDENS === "1") {
-        writeFileSync(fixturePath, got.trim() + "\n", "utf-8");
+    it(`${ide} rules block matches golden (${TARGET_PATHS[ide]})`, async () => {
+      const project = mkdtempSync(join(tmpdir(), "gnosys-ide-rules-"));
+      const db = new GnosysDB(join(project, "db"));
+      try {
+        const results = await syncToTarget(db, project, ide, null);
+        expect(results.map((result) => result.filePath)).toEqual([join(project, TARGET_PATHS[ide])]);
+        expect(readFileSync(join(project, TARGET_PATHS[ide]), "utf8").trim()).toBe(readFileSync(join(FIXTURE_DIR, fixtureFile), "utf8").trim());
+      } finally {
+        db.close();
+        rmSync(project, { recursive: true, force: true });
       }
-
-      const golden = readFileSync(fixturePath, "utf-8");
-      expect(got.trim()).toBe(golden.trim());
     });
   }
 
@@ -60,6 +63,7 @@ describe("IDE init golden fixtures", () => {
     const a = wrapRulesBlock(generateRulesBlock([], []));
     const b = wrapRulesBlock(generateRulesBlock([], []));
     expect(a).toBe(b);
+    expect(a.trim()).toBe(readFileSync(join(FIXTURE_DIR, "claude.md"), "utf8").trim());
   });
 });
 
@@ -70,6 +74,8 @@ describe("IDE init MCP config structure", () => {
   beforeEach(() => {
     projectDir = mkdtempSync(join(tmpdir(), "gnosys-ide-init-mcp-"));
     savedHome = process.env.HOME;
+    process.env.HOME = projectDir;
+    vi.spyOn(os, "homedir").mockImplementation(() => process.env.HOME || projectDir);
   });
 
   afterEach(() => {
@@ -78,6 +84,7 @@ describe("IDE init MCP config structure", () => {
     } else {
       delete process.env.HOME;
     }
+    vi.restoreAllMocks();
     rmSync(projectDir, { recursive: true, force: true });
   });
 
@@ -90,6 +97,7 @@ describe("IDE init MCP config structure", () => {
       mcpServers?: Record<string, unknown>;
     };
     assertMcpServerEntry(config.mcpServers?.gnosys);
+    expect(config.mcpServers?.gnosys).toMatchObject({ args: [] });
     expect((config.mcpServers!.gnosys as { command: string }).command).toMatch(/gnosys-mcp$/);
     expect((config.mcpServers!.gnosys as { args: string[] }).args).toEqual([]);
   });
@@ -106,6 +114,7 @@ describe("IDE init MCP config structure", () => {
       mcpServers?: Record<string, unknown>;
     };
     assertMcpServerEntry(config.mcpServers?.gnosys);
+    expect(config.mcpServers?.gnosys).toMatchObject({ args: [] });
 
     rmSync(fakeHome, { recursive: true, force: true });
   });
@@ -122,6 +131,7 @@ describe("IDE init MCP config structure", () => {
       mcpServers?: Record<string, unknown>;
     };
     assertMcpServerEntry(config.mcpServers?.gnosys);
+    expect(config.mcpServers?.gnosys).toMatchObject({ args: [] });
 
     rmSync(fakeHome, { recursive: true, force: true });
   });

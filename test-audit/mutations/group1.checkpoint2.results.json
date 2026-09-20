@@ -1,0 +1,4252 @@
+{
+  "results": [
+    {
+      "id": "G1-audit-idempotent-write",
+      "file": "src/lib/remote.ts",
+      "description": "Report audit push counts while dropping actual audit records",
+      "sourceChange": {
+        "search": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+        "replace": ""
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-audit-sync.test.ts"
+        ],
+        "testName": "does\\ not\\ double\\-push\\ entries\\ already\\ on\\ the\\ remote$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 436,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync does not double-push entries already on the remote",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 411,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync does not double-push entries already on the remote",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 413,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync does not double-push entries already on the remote",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-h.json"
+    },
+    {
+      "id": "G1-audit-convergence",
+      "file": "src/lib/remote.ts",
+      "description": "Lose audit memory IDs while retaining push count",
+      "sourceChange": {
+        "search": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+        "replace": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: \"wrong-id\",\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n"
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-audit-sync.test.ts"
+        ],
+        "testName": "first\\ push\\ sends\\ ALL\\ local\\ entries\\ regardless\\ of\\ remote\\ contents\\ \\(full\\ convergence\\)$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 403,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync first push sends ALL local entries regardless of remote contents (full convergence)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 406,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync first push sends ALL local entries regardless of remote contents (full convergence)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 406,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync first push sends ALL local entries regardless of remote contents (full convergence)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-h.json"
+    },
+    {
+      "id": "G1-audit-merge",
+      "file": "src/lib/remote.ts",
+      "description": "Lose remote audit operation while retaining row count",
+      "sourceChange": {
+        "search": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+        "replace": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: \"wrong-operation\",\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n"
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-audit-sync.test.ts"
+        ],
+        "testName": "full\\ sync\\ \\(push\\ \\+\\ pull\\)\\ merges\\ audit\\ entries\\ from\\ both\\ sides$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 411,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync full sync (push + pull) merges audit entries from both sides",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 417,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync full sync (push + pull) merges audit entries from both sides",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 408,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync full sync (push + pull) merges audit entries from both sides",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-h.json"
+    },
+    {
+      "id": "G1-dream-rerun",
+      "file": "src/lib/dream.ts",
+      "description": "Skip all confidence decay on completed cycles",
+      "sourceChange": {
+        "search": "const decayResult = this.decaySweep();",
+        "replace": "const decayResult = {count:0,memoryIds:[]};"
+      },
+      "selection": {
+        "tests": [
+          "src/test/dream-resume.test.ts"
+        ],
+        "testName": "re\\-run\\ after\\ a\\ completed\\ cycle\\ picks\\ up\\ cleanly\\ \\(no\\ corruption\\ or\\ dupes\\)$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 485,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-resume.test.ts",
+            "name": "Dream abort and resume re-run after a completed cycle picks up cleanly (no corruption or dupes)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 493,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-resume.test.ts",
+            "name": "Dream abort and resume re-run after a completed cycle picks up cleanly (no corruption or dupes)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 474,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-resume.test.ts",
+            "name": "Dream abort and resume re-run after a completed cycle picks up cleanly (no corruption or dupes)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-h.json"
+    },
+    {
+      "id": "G1-full-tool-names",
+      "file": "src/index.ts",
+      "description": "Rename a full-tier tool while retaining full tool count",
+      "sourceChange": {
+        "search": "  \"gnosys_import\",",
+        "replace": "  \"gnosys_import_wrong\","
+      },
+      "selection": {
+        "tests": [
+          "src/test/mcp-toolset-budget.test.ts"
+        ],
+        "testName": "full\\ tier\\ registers\\ everything,\\ ≤\\ 60\\ tools$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 707,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-toolset-budget.test.ts",
+            "name": "MCP toolset budgets full tier registers everything, ≤ 60 tools",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 700,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-toolset-budget.test.ts",
+            "name": "MCP toolset budgets full tier registers everything, ≤ 60 tools",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 705,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-toolset-budget.test.ts",
+            "name": "MCP toolset budgets full tier registers everything, ≤ 60 tools",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-h.json"
+    },
+    {
+      "id": "G1-ide-args-gemini",
+      "file": "src/lib/ideMcpInstall.ts",
+      "description": "Inject invalid MCP executable arguments",
+      "sourceChange": {
+        "search": "return { command: resolveGnosysMcpCommand(), args: [] };",
+        "replace": "return { command: resolveGnosysMcpCommand(), args: [\"wrong-flag\"] };"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ide-init-golden.test.ts"
+        ],
+        "testName": "gemini\\-cli\\ setupIDE\\ writes\\ mcpServers\\.gnosys\\ under\\ isolated\\ HOME$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 528,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init MCP config structure gemini-cli setupIDE writes mcpServers.gnosys under isolated HOME",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 529,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init MCP config structure gemini-cli setupIDE writes mcpServers.gnosys under isolated HOME",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 550,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init MCP config structure gemini-cli setupIDE writes mcpServers.gnosys under isolated HOME",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-h.json"
+    },
+    {
+      "id": "G1-ide-args-antigravity",
+      "file": "src/lib/ideMcpInstall.ts",
+      "description": "Inject invalid MCP executable arguments",
+      "sourceChange": {
+        "search": "return { command: resolveGnosysMcpCommand(), args: [] };",
+        "replace": "return { command: resolveGnosysMcpCommand(), args: [\"wrong-flag\"] };"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ide-init-golden.test.ts"
+        ],
+        "testName": "antigravity\\ setupIDE\\ writes\\ mcpServers\\.gnosys\\ under\\ isolated\\ HOME$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 552,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init MCP config structure antigravity setupIDE writes mcpServers.gnosys under isolated HOME",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 588,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init MCP config structure antigravity setupIDE writes mcpServers.gnosys under isolated HOME",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 572,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init MCP config structure antigravity setupIDE writes mcpServers.gnosys under isolated HOME",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-h.json"
+    },
+    {
+      "id": "G1-rules-deterministic",
+      "file": "src/lib/rulesGen.ts",
+      "description": "Return incorrect but deterministic instructions",
+      "sourceChange": {
+        "search": "return sections.join(\"\\n\\n\");",
+        "replace": "return \"Wrong constant instructions\";"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ide-init-golden.test.ts"
+        ],
+        "testName": "generateRulesBlock\\ is\\ deterministic\\ with\\ empty\\ preferences$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 575,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init golden fixtures generateRulesBlock is deterministic with empty preferences",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 563,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init golden fixtures generateRulesBlock is deterministic with empty preferences",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 546,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init golden fixtures generateRulesBlock is deterministic with empty preferences",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-h.json"
+    },
+    {
+      "id": "G1-discover-scopes",
+      "file": "src/lib/federated.ts",
+      "description": "Mislabel every discovered memory scope",
+      "sourceChange": {
+        "search": "return buildFederatedResults(db, rawResults, (r) => r.relevance, opts, false);",
+        "replace": "return buildFederatedResults(db, rawResults, (r) => r.relevance, opts, false).map(r=>({...r,scope:\"global\" as const}));"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "federatedDiscover\\ returns\\ results\\ with\\ scope\\ info$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 453,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.3: Federated discover with scope filter federatedDiscover returns results with scope info",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 457,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.3: Federated discover with scope filter federatedDiscover returns results with scope info",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 425,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.3: Federated discover with scope filter federatedDiscover returns results with scope info",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-i.json"
+    },
+    {
+      "id": "G1-cli-list",
+      "file": "src/lib/listCommand.ts",
+      "description": "Report wrong list count",
+      "sourceChange": {
+        "search": "count: memories.length,",
+        "replace": "count: 999,"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "gnosys\\ list\\ \\-\\-json\\ produces\\ valid\\ JSON$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 641,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys list --json produces valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 629,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys list --json produces valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 615,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys list --json produces valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-i.json"
+    },
+    {
+      "id": "G1-cli-search",
+      "file": "src/lib/searchCommand.ts",
+      "description": "Return no matching search records",
+      "sourceChange": {
+        "search": "const results = searchWithOverlay(resolved, query, parseInt(opts.limit, 10));",
+        "replace": "const results = searchWithOverlay(resolved, query, 0);"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "gnosys\\ search\\ \\-\\-json\\ produces\\ valid\\ JSON\\ with\\ results\\ array$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 733,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys search --json produces valid JSON with results array",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 759,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys search --json produces valid JSON with results array",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 720,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys search --json produces valid JSON with results array",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-i.json"
+    },
+    {
+      "id": "G1-cli-stats",
+      "file": "src/lib/statsCommand.ts",
+      "description": "Report incorrect empty memory count",
+      "sourceChange": {
+        "search": "{ totalCount: 0 }",
+        "replace": "{ totalCount: 999 }"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "gnosys\\ stats\\ \\-\\-json\\ produces\\ valid\\ JSON$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 626,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys stats --json produces valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 596,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys stats --json produces valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 642,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys stats --json produces valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-i.json"
+    },
+    {
+      "id": "G1-cli-dashboard",
+      "file": "src/lib/dashboard.ts",
+      "description": "Replace system dashboard with empty object",
+      "sourceChange": {
+        "search": "return JSON.stringify(data, null, 2);",
+        "replace": "return JSON.stringify({}, null, 2);"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "gnosys\\ status\\ \\-\\-system\\ \\-\\-json\\ produces\\ valid\\ JSON$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 699,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys status --system --json produces valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 733,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys status --system --json produces valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 707,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys status --system --json produces valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-i.json"
+    },
+    {
+      "id": "G1-config-template",
+      "file": "src/lib/config.ts",
+      "description": "Return empty template",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 495,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v600-no-anthropic-default.test.ts",
+            "name": "v6.0.0 — no implicit anthropic default (deci-049) generateConfigTemplate() output contains no defaultProvider",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 490,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v600-no-anthropic-default.test.ts",
+            "name": "v6.0.0 — no implicit anthropic default (deci-049) generateConfigTemplate() output contains no defaultProvider",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 496,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v600-no-anthropic-default.test.ts",
+            "name": "v6.0.0 — no implicit anthropic default (deci-049) generateConfigTemplate() output contains no defaultProvider",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-b.json"
+    },
+    {
+      "id": "G1-web-vector-association",
+      "file": "src/lib/webVectors.ts",
+      "description": "Reverse document-to-embedding association",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 530,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors.test.ts",
+            "name": "buildVectors API providers posts OpenAI embedding batches with configured headers and maps vectors by document id",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 523,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors.test.ts",
+            "name": "buildVectors API providers posts OpenAI embedding batches with configured headers and maps vectors by document id",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 532,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors.test.ts",
+            "name": "buildVectors API providers posts OpenAI embedding batches with configured headers and maps vectors by document id",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-b.json"
+    },
+    {
+      "id": "G1-web-vector-int8",
+      "file": "src/lib/webVectors.ts",
+      "description": "Return unquantized floats",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 534,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors.test.ts",
+            "name": "int8 quantization round-trips vectors while preserving cosine ranking order for fixed fixtures",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 620,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors.test.ts",
+            "name": "int8 quantization round-trips vectors while preserving cosine ranking order for fixed fixtures",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 530,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors.test.ts",
+            "name": "int8 quantization round-trips vectors while preserving cosine ranking order for fixed fixtures",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-b.json"
+    },
+    {
+      "id": "G1-cli-tags",
+      "file": "src/lib/tagsCommand.ts",
+      "description": "Omit category headings",
+      "sourceChange": {
+        "search": "console.log(`\\n${category}:`);",
+        "replace": "console.log(\"\"); void category;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "gnosys\\ tags\\ lists\\ the\\ tag\\ registry\\ without\\ error$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 667,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys tags lists the tag registry without error",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 672,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys tags lists the tag registry without error",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 653,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys tags lists the tag registry without error",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-i2.json"
+    },
+    {
+      "id": "G1-cli-lens",
+      "file": "src/lib/lensCommand.ts",
+      "description": "Suppress empty lens result",
+      "sourceChange": {
+        "search": "console.log(\"No memories match the lens filter.\");",
+        "replace": "console.log(\"\");"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "gnosys\\ lens\\ runs\\ without\\ error$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 667,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys lens runs without error",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 669,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys lens runs without error",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 669,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys lens runs without error",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-i2.json"
+    },
+    {
+      "id": "G1-cli-audit",
+      "file": "src/lib/auditCommand.ts",
+      "description": "Discard actual audit entries",
+      "sourceChange": {
+        "search": "console.log(JSON.stringify(entries, null, 2));",
+        "replace": "console.log(JSON.stringify([], null, 2));"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "gnosys\\ audit\\ \\-\\-json\\ outputs\\ valid\\ JSON$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 621,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys audit --json outputs valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 623,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys audit --json outputs valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 644,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys audit --json outputs valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-i2.json"
+    },
+    {
+      "id": "G1-tags-persist",
+      "file": "src/lib/tagsAddCommand.ts",
+      "description": "Skip persisted tag addition",
+      "sourceChange": {
+        "search": "const added = await tagRegistry.addTag(opts.category, opts.tag);",
+        "replace": "const added = true;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/tags-invoke.test.ts"
+        ],
+        "testName": "adds a new tag to a category$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 403,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/tags-invoke.test.ts",
+            "name": "runTagsCommand / runTagsAddCommand (in-process invoke) adds a new tag to a category",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 386,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/tags-invoke.test.ts",
+            "name": "runTagsCommand / runTagsAddCommand (in-process invoke) adds a new tag to a category",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 383,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/tags-invoke.test.ts",
+            "name": "runTagsCommand / runTagsAddCommand (in-process invoke) adds a new tag to a category",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-g.json"
+    },
+    {
+      "id": "G1-recall-empty",
+      "file": "src/lib/recall.ts",
+      "description": "Return no active memories",
+      "sourceChange": {
+        "search": "const top = db.getTopActiveMemories(fetchLimit);",
+        "replace": "const top = db.getTopActiveMemories(0);"
+      },
+      "selection": {
+        "tests": [
+          "src/test/recall-wildcard.test.ts"
+        ],
+        "testName": "archived and superseded memories are excluded from wildcard recall$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 447,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/recall-wildcard.test.ts",
+            "name": "wildcard recall (gnosys://recall resource path) archived and superseded memories are excluded from wildcard recall",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 456,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/recall-wildcard.test.ts",
+            "name": "wildcard recall (gnosys://recall resource path) archived and superseded memories are excluded from wildcard recall",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 456,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/recall-wildcard.test.ts",
+            "name": "wildcard recall (gnosys://recall resource path) archived and superseded memories are excluded from wildcard recall",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-g.json"
+    },
+    {
+      "id": "G1-cli-version-success",
+      "file": "src/cli.ts",
+      "description": "Fail version invocation before producing a version",
+      "sourceChange": {
+        "search": "rewriteLegacyExport();\n",
+        "replace": "rewriteLegacyExport();\nif(process.argv.includes(\"--version\")) process.exit(1);\n"
+      },
+      "selection": {
+        "tests": [
+          "src/test/v593-no-central-db-pollution.test.ts"
+        ],
+        "testName": "running gnosys --version with empty HOME does NOT create gnosys.db$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 384,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-no-central-db-pollution.test.ts",
+            "name": "Phase F — central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 392,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-no-central-db-pollution.test.ts",
+            "name": "Phase F — central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 385,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-no-central-db-pollution.test.ts",
+            "name": "Phase F — central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-g.json"
+    },
+    {
+      "id": "G1-cli-help-success",
+      "file": "src/cli.ts",
+      "description": "Fail help invocation before producing help",
+      "sourceChange": {
+        "search": "rewriteLegacyExport();\n",
+        "replace": "rewriteLegacyExport();\nif(process.argv.includes(\"--help\")) process.exit(1);\n"
+      },
+      "selection": {
+        "tests": [
+          "src/test/v593-no-central-db-pollution.test.ts"
+        ],
+        "testName": "VITEST=true short-circuits maybePrintUpgradeNudge"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 384,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-no-central-db-pollution.test.ts",
+            "name": "Phase F — central DB pollution regression VITEST=true short-circuits maybePrintUpgradeNudge — no DB file at all",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 387,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-no-central-db-pollution.test.ts",
+            "name": "Phase F — central DB pollution regression VITEST=true short-circuits maybePrintUpgradeNudge — no DB file at all",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 388,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-no-central-db-pollution.test.ts",
+            "name": "Phase F — central DB pollution regression VITEST=true short-circuits maybePrintUpgradeNudge — no DB file at all",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-g.json"
+    },
+    {
+      "id": "G1-tags-persist",
+      "file": "src/lib/tagsAddCommand.ts",
+      "description": "Skip persisted tag addition",
+      "sourceChange": {
+        "search": "const added = await tagRegistry.addTag(opts.category, opts.tag);",
+        "replace": "const added = true;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/tags-invoke.test.ts"
+        ],
+        "testName": "adds a new tag to a category$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 457,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/tags-invoke.test.ts",
+            "name": "runTagsCommand / runTagsAddCommand (in-process invoke) adds a new tag to a category",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 377,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/tags-invoke.test.ts",
+            "name": "runTagsCommand / runTagsAddCommand (in-process invoke) adds a new tag to a category",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'auth', 'database', …(23) ] to include 'invoke-test'\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1319:15)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/tags-invoke.test.ts:68:75\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 380,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/tags-invoke.test.ts",
+            "name": "runTagsCommand / runTagsAddCommand (in-process invoke) adds a new tag to a category",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/tags-invoke.test.ts",
+          "name": "runTagsCommand / runTagsAddCommand (in-process invoke) adds a new tag to a category"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-g2.json"
+    },
+    {
+      "id": "G1-recall-empty",
+      "file": "src/lib/recall.ts",
+      "description": "Return no active memories",
+      "sourceChange": {
+        "search": "const top = db.getTopActiveMemories(fetchLimit);",
+        "replace": "const top = db.getTopActiveMemories(0);"
+      },
+      "selection": {
+        "tests": [
+          "src/test/recall-wildcard.test.ts"
+        ],
+        "testName": "archived and superseded memories are excluded from wildcard recall$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 460,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/recall-wildcard.test.ts",
+            "name": "wildcard recall (gnosys://recall resource path) archived and superseded memories are excluded from wildcard recall",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 449,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/recall-wildcard.test.ts",
+            "name": "wildcard recall (gnosys://recall resource path) archived and superseded memories are excluded from wildcard recall",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ 'wild-top', 'wild-mid', 'wild-low' ]\n    at <repo>/src/test/recall-wildcard.test.ts:94:17\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 447,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/recall-wildcard.test.ts",
+            "name": "wildcard recall (gnosys://recall resource path) archived and superseded memories are excluded from wildcard recall",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/recall-wildcard.test.ts",
+          "name": "wildcard recall (gnosys://recall resource path) archived and superseded memories are excluded from wildcard recall"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-g2.json"
+    },
+    {
+      "id": "G1-cli-version-success",
+      "file": "src/cli.ts",
+      "description": "Fail version invocation before producing a version",
+      "sourceChange": {
+        "search": "rewriteLegacyExport();\n",
+        "replace": "rewriteLegacyExport();\nif(process.argv.includes(\"--version\")) process.exit(1);\n"
+      },
+      "selection": {
+        "tests": [
+          "src/test/v593-no-central-db-pollution.test.ts"
+        ],
+        "testName": "running gnosys --version with empty HOME does NOT create gnosys.db$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 391,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-no-central-db-pollution.test.ts",
+            "name": "Phase F — central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 395,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-no-central-db-pollution.test.ts",
+            "name": "Phase F — central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 1 to be +0 // Object.is equality\n    at <repo>/src/test/v593-no-central-db-pollution.test.ts:44:29\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 393,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-no-central-db-pollution.test.ts",
+            "name": "Phase F — central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/v593-no-central-db-pollution.test.ts",
+          "name": "Phase F — central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-g2.json"
+    },
+    {
+      "id": "G1-cli-help-success",
+      "file": "src/cli.ts",
+      "description": "Fail help invocation before producing help",
+      "sourceChange": {
+        "search": "rewriteLegacyExport();\n",
+        "replace": "rewriteLegacyExport();\nif(process.argv.includes(\"--help\")) process.exit(1);\n"
+      },
+      "selection": {
+        "tests": [
+          "src/test/v593-no-central-db-pollution.test.ts"
+        ],
+        "testName": "VITEST=true short-circuits maybePrintUpgradeNudge"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 391,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-no-central-db-pollution.test.ts",
+            "name": "Phase F — central DB pollution regression VITEST=true short-circuits maybePrintUpgradeNudge — no DB file at all",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 377,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-no-central-db-pollution.test.ts",
+            "name": "Phase F — central DB pollution regression VITEST=true short-circuits maybePrintUpgradeNudge — no DB file at all",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 1 to be +0 // Object.is equality\n    at <repo>/src/test/v593-no-central-db-pollution.test.ts:69:29\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 402,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-no-central-db-pollution.test.ts",
+            "name": "Phase F — central DB pollution regression VITEST=true short-circuits maybePrintUpgradeNudge — no DB file at all",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/v593-no-central-db-pollution.test.ts",
+          "name": "Phase F — central DB pollution regression VITEST=true short-circuits maybePrintUpgradeNudge — no DB file at all"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-g2.json"
+    },
+    {
+      "id": "G1-tags-idempotent",
+      "file": "src/lib/tags.ts",
+      "description": "Duplicate persisted tag on second addition",
+      "sourceChange": {
+        "search": "if (this.registry[category].includes(tag)) return false;",
+        "replace": "if (false) return false;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/tags-invoke.test.ts"
+        ],
+        "testName": "reports a duplicate tag without re-adding it$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 387,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/tags-invoke.test.ts",
+            "name": "runTagsCommand / runTagsAddCommand (in-process invoke) reports a duplicate tag without re-adding it",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 383,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/tags-invoke.test.ts",
+            "name": "runTagsCommand / runTagsAddCommand (in-process invoke) reports a duplicate tag without re-adding it",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { domain: [ 'zebra', …(3) ] } to deeply equal { domain: [ 'zebra', …(2) ] }\n    at <repo>/src/test/tags-invoke.test.ts:74:52\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 377,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/tags-invoke.test.ts",
+            "name": "runTagsCommand / runTagsAddCommand (in-process invoke) reports a duplicate tag without re-adding it",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/tags-invoke.test.ts",
+          "name": "runTagsCommand / runTagsAddCommand (in-process invoke) reports a duplicate tag without re-adding it"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-g2.json"
+    },
+    {
+      "id": "G1-tags-sort",
+      "file": "src/lib/tagsCommand.ts",
+      "description": "Print unsorted category tags",
+      "sourceChange": {
+        "search": "${tags.sort().join(\", \")}",
+        "replace": "${tags.join(\", \")}"
+      },
+      "selection": {
+        "tests": [
+          "src/test/tags-invoke.test.ts"
+        ],
+        "testName": "lists the registry including the added tag$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 372,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/tags-invoke.test.ts",
+            "name": "runTagsCommand / runTagsAddCommand (in-process invoke) lists the registry including the added tag",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 363,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/tags-invoke.test.ts",
+            "name": "runTagsCommand / runTagsAddCommand (in-process invoke) lists the registry including the added tag",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '\\ndomain:\\n  zebra, invoke-test, alpha' to be '\\ndomain:\\n  alpha, invoke-test, zebra' // Object.is equality\n    at <repo>/src/test/tags-invoke.test.ts:82:17\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 378,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/tags-invoke.test.ts",
+            "name": "runTagsCommand / runTagsAddCommand (in-process invoke) lists the registry including the added tag",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/tags-invoke.test.ts",
+          "name": "runTagsCommand / runTagsAddCommand (in-process invoke) lists the registry including the added tag"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-g2.json"
+    },
+    {
+      "id": "G1-recall-confidence",
+      "file": "src/lib/db.ts",
+      "description": "Reverse confidence tie break",
+      "sourceChange": {
+        "search": "ORDER BY reinforcement_count DESC, confidence DESC, modified DESC LIMIT ?",
+        "replace": "ORDER BY reinforcement_count DESC, confidence ASC, modified DESC LIMIT ?"
+      },
+      "selection": {
+        "tests": [
+          "src/test/recall-wildcard.test.ts"
+        ],
+        "testName": "wildcard ordering prefers reinforcement, then confidence, then recency$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 456,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/recall-wildcard.test.ts",
+            "name": "wildcard recall (gnosys://recall resource path) wildcard ordering prefers reinforcement, then confidence, then recency",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 454,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/recall-wildcard.test.ts",
+            "name": "wildcard recall (gnosys://recall resource path) wildcard ordering prefers reinforcement, then confidence, then recency",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'reinforced', 'recent', …(2) ] to deeply equal [ 'reinforced', 'confident', …(2) ]\n    at <repo>/src/test/recall-wildcard.test.ts:84:58\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 454,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/recall-wildcard.test.ts",
+            "name": "wildcard recall (gnosys://recall resource path) wildcard ordering prefers reinforcement, then confidence, then recency",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/recall-wildcard.test.ts",
+          "name": "wildcard recall (gnosys://recall resource path) wildcard ordering prefers reinforcement, then confidence, then recency"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-g2.json"
+    },
+    {
+      "id": "G1-recall-recency",
+      "file": "src/lib/db.ts",
+      "description": "Reverse recency tie break",
+      "sourceChange": {
+        "search": "ORDER BY reinforcement_count DESC, confidence DESC, modified DESC LIMIT ?",
+        "replace": "ORDER BY reinforcement_count DESC, confidence DESC, modified ASC LIMIT ?"
+      },
+      "selection": {
+        "tests": [
+          "src/test/recall-wildcard.test.ts"
+        ],
+        "testName": "wildcard ordering prefers reinforcement, then confidence, then recency$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 463,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/recall-wildcard.test.ts",
+            "name": "wildcard recall (gnosys://recall resource path) wildcard ordering prefers reinforcement, then confidence, then recency",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 450,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/recall-wildcard.test.ts",
+            "name": "wildcard recall (gnosys://recall resource path) wildcard ordering prefers reinforcement, then confidence, then recency",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'reinforced', 'confident', …(2) ] to deeply equal [ 'reinforced', 'confident', …(2) ]\n    at <repo>/src/test/recall-wildcard.test.ts:84:58\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 450,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/recall-wildcard.test.ts",
+            "name": "wildcard recall (gnosys://recall resource path) wildcard ordering prefers reinforcement, then confidence, then recency",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/recall-wildcard.test.ts",
+          "name": "wildcard recall (gnosys://recall resource path) wildcard ordering prefers reinforcement, then confidence, then recency"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-g2.json"
+    },
+    {
+      "id": "G1-sync-warning",
+      "file": "src/lib/setup/remoteRender.ts",
+      "description": "Render misleading master connectivity message",
+      "sourceChange": {
+        "search": "\"Master unreachable; existing memories are unavailable until reconnect.\"",
+        "replace": "\"Everything is online.\""
+      },
+      "selection": {
+        "tests": [
+          "src/test/syncStatusMessages.test.ts"
+        ],
+        "testName": "renderClientSyncStatusLines shows unreachable \\+ offline overlay$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 355,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/syncStatusMessages.test.ts",
+            "name": "v13 sync status messages renderClientSyncStatusLines shows unreachable + offline overlay",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 342,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/syncStatusMessages.test.ts",
+            "name": "v13 sync status messages renderClientSyncStatusLines shows unreachable + offline overlay",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected ' ⚠ Everything is online.\\n ◌ Offline …' to contain 'Master unreachable; existing memories…'\n    at <repo>/src/test/syncStatusMessages.test.ts:35:30\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 346,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/syncStatusMessages.test.ts",
+            "name": "v13 sync status messages renderClientSyncStatusLines shows unreachable + offline overlay",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/syncStatusMessages.test.ts",
+          "name": "v13 sync status messages renderClientSyncStatusLines shows unreachable + offline overlay"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-g2.json"
+    },
+    {
+      "id": "G1-no-provider-load",
+      "file": "src/lib/config.ts",
+      "description": "Load implicit provider despite absent configuration",
+      "sourceChange": {
+        "search": "if (raw === null) {\n      return DEFAULT_CONFIG;",
+        "replace": "if (raw === null) {\n      return GnosysConfigSchema.parse({llm:{defaultProvider:\"anthropic\"}});"
+      },
+      "selection": {
+        "tests": [
+          "src/test/v600-no-anthropic-default.test.ts"
+        ],
+        "testName": "loading an unconfigured store requires explicit provider setup$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 384,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v600-no-anthropic-default.test.ts",
+            "name": "v6.0.0 — no implicit anthropic default (deci-049) loading an unconfigured store requires explicit provider setup",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 383,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v600-no-anthropic-default.test.ts",
+            "name": "v6.0.0 — no implicit anthropic default (deci-049) loading an unconfigured store requires explicit provider setup",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'anthropic' to be undefined\n    at <repo>/src/test/v600-no-anthropic-default.test.ts:36:42\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 380,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v600-no-anthropic-default.test.ts",
+            "name": "v6.0.0 — no implicit anthropic default (deci-049) loading an unconfigured store requires explicit provider setup",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/v600-no-anthropic-default.test.ts",
+          "name": "v6.0.0 — no implicit anthropic default (deci-049) loading an unconfigured store requires explicit provider setup"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-g2.json"
+    },
+    {
+      "id": "G1-local-vector-path",
+      "file": "src/lib/embeddings.ts",
+      "description": "Zero actual local embedding vectors",
+      "sourceChange": {
+        "search": "results.push(new Float32Array(vec));",
+        "replace": "results.push(new Float32Array(vec.map(() => 0)));"
+      },
+      "selection": {
+        "tests": [
+          "src/test/webVectors.test.ts"
+        ],
+        "testName": "reuses GnosysEmbeddings.embedBatch and quantizes local vectors$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 433,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors.test.ts",
+            "name": "buildVectors local provider reuses GnosysEmbeddings.embedBatch and quantizes local vectors",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 426,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors.test.ts",
+            "name": "buildVectors local provider reuses GnosysEmbeddings.embedBatch and quantizes local vectors",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ +0, +0 ] to deeply equal [ 64, 127 ]\n    at <repo>/src/test/webVectors.test.ts:187:40\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 426,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors.test.ts",
+            "name": "buildVectors local provider reuses GnosysEmbeddings.embedBatch and quantizes local vectors",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/webVectors.test.ts",
+          "name": "buildVectors local provider reuses GnosysEmbeddings.embedBatch and quantizes local vectors"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-g2.json"
+    },
+    {
+      "id": "G1-discover-scopes",
+      "file": "src/lib/federated.ts",
+      "description": "Mislabel every discovered memory scope",
+      "sourceChange": {
+        "search": "return buildFederatedResults(db, rawResults, (r) => r.relevance, opts, false);",
+        "replace": "return buildFederatedResults(db, rawResults, (r) => r.relevance, opts, false).map(r=>({...r,scope:\"global\" as const}));"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "federatedDiscover\\ returns\\ results\\ with\\ scope\\ info$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 457,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.3: Federated discover with scope filter federatedDiscover returns results with scope info",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 450,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.3: Federated discover with scope filter federatedDiscover returns results with scope info",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ …(2) ] to deeply equal [ { id: 'disc-p1', …(1) }, …(1) ]\n    at <repo>/src/test/phase9c.cli-federated.test.ts:246:61\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 449,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.3: Federated discover with scope filter federatedDiscover returns results with scope info",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9c.cli-federated.test.ts",
+          "name": "TC-9c.3: Federated discover with scope filter federatedDiscover returns results with scope info"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-ij.json"
+    },
+    {
+      "id": "G1-cli-list",
+      "file": "src/lib/listCommand.ts",
+      "description": "Report wrong list count",
+      "sourceChange": {
+        "search": "count: memories.length,",
+        "replace": "count: 999,"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "gnosys\\ list\\ \\-\\-json\\ produces\\ valid\\ JSON$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 695,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys list --json produces valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 657,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys list --json produces valid JSON",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { count: 999, memories: [] } to deeply equal { count: +0, memories: [] }\n    at <repo>/src/test/phase9c.cli-federated.test.ts:332:20\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 629,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys list --json produces valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9c.cli-federated.test.ts",
+          "name": "TC-9c.5: CLI --json output includes scope info gnosys list --json produces valid JSON"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-ij.json"
+    },
+    {
+      "id": "G1-cli-search",
+      "file": "src/lib/searchCommand.ts",
+      "description": "Return no matching search records",
+      "sourceChange": {
+        "search": "const results = searchWithOverlay(resolved, query, parseInt(opts.limit, 10));",
+        "replace": "const results = searchWithOverlay(resolved, query, 0);"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "gnosys\\ search\\ \\-\\-json\\ produces\\ valid\\ JSON\\ with\\ results\\ array$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 744,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys search --json produces valid JSON with results array",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 764,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys search --json produces valid JSON with results array",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to have a length of 1 but got +0\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1389:20)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/phase9c.cli-federated.test.ts:341:28\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 728,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys search --json produces valid JSON with results array",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9c.cli-federated.test.ts",
+          "name": "TC-9c.5: CLI --json output includes scope info gnosys search --json produces valid JSON with results array"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-ij.json"
+    },
+    {
+      "id": "G1-cli-stats",
+      "file": "src/lib/statsCommand.ts",
+      "description": "Report incorrect empty memory count",
+      "sourceChange": {
+        "search": "{ totalCount: 0 }",
+        "replace": "{ totalCount: 999 }"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "gnosys\\ stats\\ \\-\\-json\\ produces\\ valid\\ JSON$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 633,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys stats --json produces valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 601,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys stats --json produces valid JSON",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { totalCount: 999 } to deeply equal { totalCount: +0 }\n    at <repo>/src/test/phase9c.cli-federated.test.ts:349:20\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 584,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys stats --json produces valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9c.cli-federated.test.ts",
+          "name": "TC-9c.5: CLI --json output includes scope info gnosys stats --json produces valid JSON"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-ij.json"
+    },
+    {
+      "id": "G1-cli-dashboard",
+      "file": "src/lib/dashboard.ts",
+      "description": "Replace system dashboard with empty object",
+      "sourceChange": {
+        "search": "return JSON.stringify(data, null, 2);",
+        "replace": "return JSON.stringify({}, null, 2);"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "gnosys\\ status\\ \\-\\-system\\ \\-\\-json\\ produces\\ valid\\ JSON$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 660,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys status --system --json produces valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 659,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys status --system --json produces valid JSON",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected {} to match object { totalMemories: +0, …(2) }\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/phase9c.cli-federated.test.ts:356:20\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 687,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.5: CLI --json output includes scope info gnosys status --system --json produces valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9c.cli-federated.test.ts",
+          "name": "TC-9c.5: CLI --json output includes scope info gnosys status --system --json produces valid JSON"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-ij.json"
+    },
+    {
+      "id": "G1-cli-tags",
+      "file": "src/lib/tagsCommand.ts",
+      "description": "Omit category headings",
+      "sourceChange": {
+        "search": "console.log(`\\n${category}:`);",
+        "replace": "console.log(\"\"); void category;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "gnosys\\ tags\\ lists\\ the\\ tag\\ registry\\ without\\ error$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 647,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys tags lists the tag registry without error",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 641,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys tags lists the tag registry without error",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '\\n  api, architecture, auth, backend,…' to contain '\\ndomain:\\n'\n    at <repo>/src/test/phase9c.cli-federated.test.ts:434:20\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 599,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys tags lists the tag registry without error",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9c.cli-federated.test.ts",
+          "name": "TC-9c.6: CLI parity — all major commands functional gnosys tags lists the tag registry without error"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-ij.json"
+    },
+    {
+      "id": "G1-cli-lens",
+      "file": "src/lib/lensCommand.ts",
+      "description": "Suppress empty lens result",
+      "sourceChange": {
+        "search": "console.log(\"No memories match the lens filter.\");",
+        "replace": "console.log(\"\");"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "gnosys\\ lens\\ runs\\ without\\ error$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 611,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys lens runs without error",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 633,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys lens runs without error",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '\\n' to be 'No memories match the lens filter.\\n' // Object.is equality\n    at <repo>/src/test/phase9c.cli-federated.test.ts:441:20\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 633,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys lens runs without error",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9c.cli-federated.test.ts",
+          "name": "TC-9c.6: CLI parity — all major commands functional gnosys lens runs without error"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-ij.json"
+    },
+    {
+      "id": "G1-cli-audit",
+      "file": "src/lib/auditCommand.ts",
+      "description": "Discard actual audit entries",
+      "sourceChange": {
+        "search": "console.log(JSON.stringify(entries, null, 2));",
+        "replace": "console.log(JSON.stringify([], null, 2));"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "gnosys\\ audit\\ \\-\\-json\\ outputs\\ valid\\ JSON$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 607,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys audit --json outputs valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 622,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys audit --json outputs valid JSON",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ { timestamp: Any<String>, …(5) } ]\n    at <repo>/src/test/phase9c.cli-federated.test.ts:429:20\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 608,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys audit --json outputs valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9c.cli-federated.test.ts",
+          "name": "TC-9c.6: CLI parity — all major commands functional gnosys audit --json outputs valid JSON"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-ij.json"
+    },
+    {
+      "id": "G1-cli-help-public",
+      "file": "src/cli/sandbox.ts",
+      "description": "Remove advertised sandbox command",
+      "sourceChange": {
+        "search": ".command(\"sandbox\")",
+        "replace": ".command(\"sandbox-missing\")"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9c.cli-federated.test.ts"
+        ],
+        "testName": "gnosys\\ \\-\\-help\\ lists\\ public\\ top\\-level\\ commands$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 588,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys --help lists public top-level commands",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 585,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys --help lists public top-level commands",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Usage: gnosys [options] [command]\\n\\n…' to match /^\\s+sandbox(?:\\s|$)/m\n    at <repo>/src/test/phase9c.cli-federated.test.ts:377:22\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 586,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9c.cli-federated.test.ts",
+            "name": "TC-9c.6: CLI parity — all major commands functional gnosys --help lists public top-level commands",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9c.cli-federated.test.ts",
+          "name": "TC-9c.6: CLI parity — all major commands functional gnosys --help lists public top-level commands"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-ij.json"
+    },
+    {
+      "id": "G1-cleanup-rules-cli",
+      "file": "src/cli/maintenance.ts",
+      "description": "Skip CLI rules removal",
+      "sourceChange": {
+        "search": "const cleaned = await removeRulesFromProject(dir);",
+        "replace": "const cleaned: string[] = []; void removeRulesFromProject;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/cleanup-rules.test.ts"
+        ],
+        "testName": "exposes\\ \\-\\-rules\\ on\\ the\\ cleanup\\ command\\ and\\ routes\\ to\\ removeRulesFromProject$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 465,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/cleanup-rules.test.ts",
+            "name": "gnosys cleanup --rules wiring exposes --rules on the cleanup command and routes to removeRulesFromProject",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 484,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/cleanup-rules.test.ts",
+            "name": "gnosys cleanup --rules wiring exposes --rules on the cleanup command and routes to removeRulesFromProject",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'No GNOSYS rules blocks found in /priv…' to be 'Removed GNOSYS block: CLAUDE.md\\n' // Object.is equality\n    at <repo>/src/test/cleanup-rules.test.ts:75:29\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 465,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/cleanup-rules.test.ts",
+            "name": "gnosys cleanup --rules wiring exposes --rules on the cleanup command and routes to removeRulesFromProject",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/cleanup-rules.test.ts",
+          "name": "gnosys cleanup --rules wiring exposes --rules on the cleanup command and routes to removeRulesFromProject"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-ij.json"
+    },
+    {
+      "id": "G1-dream-scheduled-cli",
+      "file": "src/cli/dream.ts",
+      "description": "Lose scheduled parent option",
+      "sourceChange": {
+        "search": "const merged = { ...(this.parent?.opts() ?? {}), ...opts } as DreamRunOpts;",
+        "replace": "const merged = { ...opts } as DreamRunOpts;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/dream-run-scheduled-flag.test.ts"
+        ],
+        "testName": "run\\ action\\ merges\\ parent\\ opts\\ before\\ calling\\ runDreamCommand$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 623,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-run-scheduled-flag.test.ts",
+            "name": "dream run --scheduled flag handling (v5.13.1) run action merges parent opts before calling runDreamCommand",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 635,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-run-scheduled-flag.test.ts",
+            "name": "dream run --scheduled flag handling (v5.13.1) run action merges parent opts before calling runDreamCommand",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Gnosys Dream Report\\n================…' to be '' // Object.is equality\n    at <repo>/src/test/dream-run-scheduled-flag.test.ts:17:22\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 603,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-run-scheduled-flag.test.ts",
+            "name": "dream run --scheduled flag handling (v5.13.1) run action merges parent opts before calling runDreamCommand",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-run-scheduled-flag.test.ts",
+          "name": "dream run --scheduled flag handling (v5.13.1) run action merges parent opts before calling runDreamCommand"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-ij.json"
+    },
+    {
+      "id": "G1-shell-literal-copy",
+      "file": "src/lib/projectIdentity.ts",
+      "description": "Interpret dollar substitution syntax instead of treating it as literal path",
+      "sourceChange": {
+        "search": "execFileSync(\"cp\", [\"-a\", sourceStore, targetStore], { stdio: \"pipe\" });",
+        "replace": "execFileSync(\"cp\", [\"-a\", sourceStore.replace(/\\$\\([^)]*\\)/g, \"\"), targetStore], { stdio: \"pipe\" });"
+      },
+      "selection": {
+        "tests": [
+          "src/test/shell-injection-argv.test.ts"
+        ],
+        "testName": "copies\\ literal\\ shell\\ syntax\\ without\\ executing\\ it$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 381,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/shell-injection-argv.test.ts",
+            "name": "shell injection argv form copies literal shell syntax without executing it",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 345,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/shell-injection-argv.test.ts",
+            "name": "shell injection argv form copies literal shell syntax without executing it",
+            "status": "failed",
+            "failures": [
+              "Error: Command failed: cp -a /var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-shell-syntax-1789881967009/source-/.gnosys /var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-shell-syntax-1789881967009/target/.gnosys\ncp: /var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-shell-syntax-1789881967009/source-/.gnosys: No such file or directory\n\n    at genericNodeError (node:internal/errors:983:15)\n    at wrappedFn (node:internal/errors:537:14)\n    at checkExecSyncError (node:child_process:883:11)\n    at execFileSync (node:child_process:919:15)\n    at migrateProject (<repo>/src/lib/projectIdentity.ts:592:3)\n    at <repo>/src/test/shell-injection-argv.test.ts:65:20\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 400,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/shell-injection-argv.test.ts",
+            "name": "shell injection argv form copies literal shell syntax without executing it",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/shell-injection-argv.test.ts",
+          "name": "shell injection argv form copies literal shell syntax without executing it"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-ij.json"
+    },
+    {
+      "id": "G1-read-overlay-cli",
+      "file": "src/lib/readCommand.ts",
+      "description": "Lose pending offline content in public read response",
+      "sourceChange": {
+        "search": "memory: dbMem",
+        "replace": "memory: { ...dbMem, content: \"wrong body\" }"
+      },
+      "selection": {
+        "tests": [
+          "src/test/read-command-overlay.test.ts"
+        ],
+        "testName": "routes\\ read\\-by\\-id\\ through\\ the\\ client\\ read\\ overlay\\ like\\ its\\ siblings$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 506,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/read-command-overlay.test.ts",
+            "name": "gnosys read command overlay wiring routes read-by-id through the client read overlay like its siblings",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 551,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/read-command-overlay.test.ts",
+            "name": "gnosys read command overlay wiring routes read-by-id through the client read overlay like its siblings",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { path: '01PENDING', …(3) } to match object { path: '01PENDING', …(2) }\n(25 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/read-command-overlay.test.ts:52:20\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 534,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/read-command-overlay.test.ts",
+            "name": "gnosys read command overlay wiring routes read-by-id through the client read overlay like its siblings",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/read-command-overlay.test.ts",
+          "name": "gnosys read command overlay wiring routes read-by-id through the client read overlay like its siblings"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-l.json"
+    },
+    {
+      "id": "G1-read-legacy",
+      "file": "src/lib/readCommand.ts",
+      "description": "Lose fallback markdown content",
+      "sourceChange": {
+        "search": "{ path: memoryPath, source: memory.sourceLabel, content: raw }",
+        "replace": "{ path: memoryPath, source: memory.sourceLabel, content: \"wrong markdown\" }"
+      },
+      "selection": {
+        "tests": [
+          "src/test/read-command-overlay.test.ts"
+        ],
+        "testName": "keeps\\ the\\ legacy\\ resolver\\ fallback\\ for\\ markdown\\ stores$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 519,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/read-command-overlay.test.ts",
+            "name": "gnosys read command overlay wiring keeps the legacy resolver fallback for markdown stores",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 519,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/read-command-overlay.test.ts",
+            "name": "gnosys read command overlay wiring keeps the legacy resolver fallback for markdown stores",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { path: 'concepts/legacy.md', …(2) } to match object { path: 'concepts/legacy.md', …(1) }\n(1 matching property omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/read-command-overlay.test.ts:67:20\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 559,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/read-command-overlay.test.ts",
+            "name": "gnosys read command overlay wiring keeps the legacy resolver fallback for markdown stores",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/read-command-overlay.test.ts",
+          "name": "gnosys read command overlay wiring keeps the legacy resolver fallback for markdown stores"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-l.json"
+    },
+    {
+      "id": "G1-overlay-content",
+      "file": "src/lib/clientReadResolve.ts",
+      "description": "Lose pending memory body",
+      "sourceChange": {
+        "search": "return pending ? pendingAddToDbMemory(pending) : null;",
+        "replace": "return pending ? {...pendingAddToDbMemory(pending),content:\"wrong overlay body\"} : null;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/read-command-overlay.test.ts"
+        ],
+        "testName": "falls\\ back\\ to\\ the\\ pending\\ overlay\\ when\\ the\\ DB\\ misses$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 525,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/read-command-overlay.test.ts",
+            "name": "getMemoryWithOverlay falls back to the pending overlay when the DB misses",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 516,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/read-command-overlay.test.ts",
+            "name": "getMemoryWithOverlay falls back to the pending overlay when the DB misses",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { id: '01PENDING', …(28) } to match object { id: '01PENDING', …(6) }\n(22 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/read-command-overlay.test.ts:74:75\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 507,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/read-command-overlay.test.ts",
+            "name": "getMemoryWithOverlay falls back to the pending overlay when the DB misses",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/read-command-overlay.test.ts",
+          "name": "getMemoryWithOverlay falls back to the pending overlay when the DB misses"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-l.json"
+    },
+    {
+      "id": "G1-overlay-id",
+      "file": "src/lib/clientReadResolve.ts",
+      "description": "Return unrelated pending memory for missing ID",
+      "sourceChange": {
+        "search": "resolved.pendingOverlay.find((p) => p.id === id)",
+        "replace": "resolved.pendingOverlay.find(() => true)"
+      },
+      "selection": {
+        "tests": [
+          "src/test/read-command-overlay.test.ts"
+        ],
+        "testName": "returns\\ null\\ when\\ neither\\ DB\\ nor\\ overlay\\ has\\ the\\ id$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 514,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/read-command-overlay.test.ts",
+            "name": "getMemoryWithOverlay returns null when neither DB nor overlay has the id",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 507,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/read-command-overlay.test.ts",
+            "name": "getMemoryWithOverlay returns null when neither DB nor overlay has the id",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { id: '01PENDING', …(28) } to be null\n    at <repo>/src/test/read-command-overlay.test.ts:81:75\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 489,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/read-command-overlay.test.ts",
+            "name": "getMemoryWithOverlay returns null when neither DB nor overlay has the id",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/read-command-overlay.test.ts",
+          "name": "getMemoryWithOverlay returns null when neither DB nor overlay has the id"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-l.json"
+    },
+    {
+      "id": "G1-web-vector-association",
+      "file": "src/lib/webVectors.ts",
+      "description": "Reverse document-to-embedding association",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 446,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors.test.ts",
+            "name": "buildVectors API providers posts OpenAI embedding batches with configured headers and maps vectors by document id",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 449,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors.test.ts",
+            "name": "buildVectors API providers posts OpenAI embedding batches with configured headers and maps vectors by document id",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ -63, +0, 127 ] to deeply equal [ 32, 63, 95 ]\n    at <repo>/src/test/webVectors.test.ts:138:38\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 424,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors.test.ts",
+            "name": "buildVectors API providers posts OpenAI embedding batches with configured headers and maps vectors by document id",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/webVectors.test.ts",
+          "name": "buildVectors API providers posts OpenAI embedding batches with configured headers and maps vectors by document id"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-b2.json"
+    },
+    {
+      "id": "G1-web-vector-int8",
+      "file": "src/lib/webVectors.ts",
+      "description": "Return unquantized floats",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 416,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors.test.ts",
+            "name": "int8 quantization round-trips vectors while preserving cosine ranking order for fixed fixtures",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 406,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors.test.ts",
+            "name": "int8 quantization round-trips vectors while preserving cosine ranking order for fixed fixtures",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 0.95, 0.22, 0.08, 0.01 ] to deeply equal [ 126, 29, 11, 1 ]\n    at <repo>/src/test/webVectors.test.ts:230:61\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 415,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors.test.ts",
+            "name": "int8 quantization round-trips vectors while preserving cosine ranking order for fixed fixtures",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/webVectors.test.ts",
+          "name": "int8 quantization round-trips vectors while preserving cosine ranking order for fixed fixtures"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-b2.json"
+    },
+    {
+      "id": "G1-summary-real-remote",
+      "file": "src/lib/setup/summary.ts",
+      "description": "Misrender actual persisted remote configuration",
+      "sourceChange": {
+        "search": "return remotePath ?? \"NA (single-machine only)\";",
+        "replace": "return \"Wrong remote status\"; void remotePath;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/setup-ui-summary.test.ts"
+        ],
+        "testName": "describeMultiMachineSyncPanel\\ shows\\ NA\\ with\\ no\\ remote\\ meta\\ or\\ machine\\ config$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 522,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) describeMultiMachineSyncPanel shows NA with no remote meta or machine config",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 521,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) describeMultiMachineSyncPanel shows NA with no remote meta or machine config",
+            "status": "failed",
+            "failures": [
+              "Error: expected 'Wrong remote status' to be 'NA (single-machine only)' // Object.is equality\n    at _Assertion.__VITEST_RESOLVES__ (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1710:17)\n    at _Assertion.propertyGetter (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1570:27)\n    at Reflect.get (<anonymous>)\n    at Object.proxyGetter [as get] (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1659:22)\n    at <repo>/src/test/setup-ui-summary.test.ts:78:49\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 513,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) describeMultiMachineSyncPanel shows NA with no remote meta or machine config",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-ui-summary.test.ts",
+          "name": "Phase C — settings panel (summary) describeMultiMachineSyncPanel shows NA with no remote meta or machine config"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-k.json"
+    },
+    {
+      "id": "G1-summary-na-row",
+      "file": "src/lib/setup/summary.ts",
+      "description": "Mislabel sync panel row",
+      "sourceChange": {
+        "search": "label: \"multi-machine sync\",",
+        "replace": "label: \"wrong sync label\","
+      },
+      "selection": {
+        "tests": [
+          "src/test/setup-ui-summary.test.ts"
+        ],
+        "testName": "renders\\ panel\\ row\\ 4\\ with\\ NA\\ when\\ multi\\-machine\\ sync\\ is\\ not\\ configured$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 627,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) renders panel row 4 with NA when multi-machine sync is not configured",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 624,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) renders panel row 4 with NA when multi-machine sync is not configured",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '\\n ⬢ gnosys ▸ setup                  …' to contain ' 4   multi-machine sync   NA (single-…'\n    at <repo>/src/test/setup-ui-summary.test.ts:88:25\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 603,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) renders panel row 4 with NA when multi-machine sync is not configured",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-ui-summary.test.ts",
+          "name": "Phase C — settings panel (summary) renders panel row 4 with NA when multi-machine sync is not configured"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-k.json"
+    },
+    {
+      "id": "G1-summary-fresh",
+      "file": "src/lib/setup/summary.ts",
+      "description": "Misrepresent unconfigured task routing",
+      "sourceChange": {
+        "search": "return \"not set — configure providers first\";",
+        "replace": "return \"all anthropic\";"
+      },
+      "selection": {
+        "tests": [
+          "src/test/setup-ui-summary.test.ts"
+        ],
+        "testName": "renders\\ panel\\ rows\\ for\\ a\\ fresh\\ config\\ \\(no\\ default\\ provider\\)$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 576,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) renders panel rows for a fresh config (no default provider)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 620,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) renders panel rows for a fresh config (no default provider)",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '\\n ⬢ gnosys ▸ setup                  …' to contain ' 2   task routing         not set — c…'\n    at <repo>/src/test/setup-ui-summary.test.ts:100:28\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 589,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) renders panel rows for a fresh config (no default provider)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-ui-summary.test.ts",
+          "name": "Phase C — settings panel (summary) renders panel rows for a fresh config (no default provider)"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-k.json"
+    },
+    {
+      "id": "G1-summary-xai",
+      "file": "src/lib/setup/summary.ts",
+      "description": "Ignore provider loaded from actual config",
+      "sourceChange": {
+        "search": "return provs.size === 1 ? `all ${[...provs][0]}` : `mixed (${[...provs].join(\", \")})`;",
+        "replace": "return \"all anthropic\"; void provs;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/setup-ui-summary.test.ts"
+        ],
+        "testName": "renders\\ panel\\ rows\\ after\\ a\\ switch\\ to\\ xai$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 626,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) renders panel rows after a switch to xai",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 680,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) renders panel rows after a switch to xai",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '\\n ⬢ gnosys ▸ setup                  …' to contain ' 2   task routing         all xai'\n    at <repo>/src/test/setup-ui-summary.test.ts:107:25\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 700,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) renders panel rows after a switch to xai",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-ui-summary.test.ts",
+          "name": "Phase C — settings panel (summary) renders panel rows after a switch to xai"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-k.json"
+    },
+    {
+      "id": "G1-summary-edited",
+      "file": "src/lib/setup/summary.ts",
+      "description": "Omit edited-section marker",
+      "sourceChange": {
+        "search": "updated.add(section.key);",
+        "replace": "void section.key;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/setup-ui-summary.test.ts"
+        ],
+        "testName": "marks\\ an\\ edited\\ routing\\ section\\ after\\ saving\\ and\\ reloading\\ its\\ config$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 672,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 653,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected ' │  2   task routing         mixed (x…' to match /mixed \\(xai, ollama\\)\\s+✓/\n    at <repo>/src/test/setup-ui-summary.test.ts:118:28\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 639,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-ui-summary.test.ts",
+          "name": "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-k.json"
+    },
+    {
+      "id": "G1-routing-reset-defect",
+      "file": "src/lib/config.ts",
+      "description": "Correct empty task routing reset temporarily; expected-failure must become unexpected success",
+      "sourceChange": {
+        "search": "const merged = deepMergeConfig(rawExisting, updates);",
+        "replace": "const merged = deepMergeConfig(rawExisting, updates);\n  if (updates.taskModels && Object.keys(updates.taskModels as object).length === 0) merged.taskModels = {};"
+      },
+      "selection": {
+        "tests": [
+          "src/test/setup-ui-summary.test.ts"
+        ],
+        "testName": "DEF\\-G1\\-001\\ reset\\ routing\\ clears\\ persisted\\ task\\ overrides$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 624,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 615,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides",
+            "status": "failed",
+            "failures": [
+              "Error: Expect test to fail\n    at runTest (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3041:31)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)\n    at runFiles (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3240:3)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 614,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/setup-ui-summary.test.ts",
+          "name": "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-k.json",
+      "kind": "defect-repair-probe"
+    },
+    {
+      "id": "G1-audit-idempotent-write",
+      "file": "src/lib/remote.ts",
+      "description": "Report audit push counts while dropping actual audit records",
+      "sourceChange": {
+        "search": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+        "replace": ""
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-audit-sync.test.ts"
+        ],
+        "testName": "does\\ not\\ double\\-push\\ entries\\ already\\ on\\ the\\ remote$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 428,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync does not double-push entries already on the remote",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 414,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync does not double-push entries already on the remote",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ { memory_id: 'mem-1', …(1) } ]\n    at <repo>/src/test/remote-audit-sync.test.ts:109:113\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 418,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync does not double-push entries already on the remote",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote-audit-sync.test.ts",
+          "name": "audit_log sync does not double-push entries already on the remote"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-h2.json"
+    },
+    {
+      "id": "G1-audit-convergence",
+      "file": "src/lib/remote.ts",
+      "description": "Lose audit memory IDs while retaining push count",
+      "sourceChange": {
+        "search": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+        "replace": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: \"wrong-id\",\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n"
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-audit-sync.test.ts"
+        ],
+        "testName": "first\\ push\\ sends\\ ALL\\ local\\ entries\\ regardless\\ of\\ remote\\ contents\\ \\(full\\ convergence\\)$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 427,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync first push sends ALL local entries regardless of remote contents (full convergence)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 428,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync first push sends ALL local entries regardless of remote contents (full convergence)",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'remote-only', 'wrong-id', …(2) ] to deeply equal [ 'new1', 'new2', …(2) ]\n    at <repo>/src/test/remote-audit-sync.test.ts:157:96\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 417,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync first push sends ALL local entries regardless of remote contents (full convergence)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote-audit-sync.test.ts",
+          "name": "audit_log sync first push sends ALL local entries regardless of remote contents (full convergence)"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-h2.json"
+    },
+    {
+      "id": "G1-audit-merge",
+      "file": "src/lib/remote.ts",
+      "description": "Lose remote audit operation while retaining row count",
+      "sourceChange": {
+        "search": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+        "replace": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: \"wrong-operation\",\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n"
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-audit-sync.test.ts"
+        ],
+        "testName": "full\\ sync\\ \\(push\\ \\+\\ pull\\)\\ merges\\ audit\\ entries\\ from\\ both\\ sides$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 418,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync full sync (push + pull) merges audit entries from both sides",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 402,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync full sync (push + pull) merges audit entries from both sides",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ …(2) ] to deeply equal [ …(2) ]\n    at <repo>/src/test/remote-audit-sync.test.ts:194:160\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 427,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-audit-sync.test.ts",
+            "name": "audit_log sync full sync (push + pull) merges audit entries from both sides",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote-audit-sync.test.ts",
+          "name": "audit_log sync full sync (push + pull) merges audit entries from both sides"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-h2.json"
+    },
+    {
+      "id": "G1-dream-rerun",
+      "file": "src/lib/dream.ts",
+      "description": "Skip all confidence decay on completed cycles",
+      "sourceChange": {
+        "search": "const decayResult = this.decaySweep();",
+        "replace": "const decayResult = {count:0,memoryIds:[]};"
+      },
+      "selection": {
+        "tests": [
+          "src/test/dream-resume.test.ts"
+        ],
+        "testName": "re\\-run\\ after\\ a\\ completed\\ cycle\\ picks\\ up\\ cleanly\\ \\(no\\ corruption\\ or\\ dupes\\)$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 521,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-resume.test.ts",
+            "name": "Dream abort and resume re-run after a completed cycle picks up cleanly (no corruption or dupes)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 489,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-resume.test.ts",
+            "name": "Dream abort and resume re-run after a completed cycle picks up cleanly (no corruption or dupes)",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected +0 to be 5 // Object.is equality\n    at <repo>/src/test/dream-resume.test.ts:104:32\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 497,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-resume.test.ts",
+            "name": "Dream abort and resume re-run after a completed cycle picks up cleanly (no corruption or dupes)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-resume.test.ts",
+          "name": "Dream abort and resume re-run after a completed cycle picks up cleanly (no corruption or dupes)"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-h2.json"
+    },
+    {
+      "id": "G1-full-tool-names",
+      "file": "src/index.ts",
+      "description": "Rename a full-tier tool while retaining full tool count",
+      "sourceChange": {
+        "search": "  \"gnosys_import\",",
+        "replace": "  \"gnosys_import_wrong\","
+      },
+      "selection": {
+        "tests": [
+          "src/test/mcp-toolset-budget.test.ts"
+        ],
+        "testName": "full\\ tier\\ registers\\ everything,\\ ≤\\ 60\\ tools$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 774,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-toolset-budget.test.ts",
+            "name": "MCP toolset budgets full tier registers everything, ≤ 60 tools",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 706,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-toolset-budget.test.ts",
+            "name": "MCP toolset budgets full tier registers everything, ≤ 60 tools",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'gnosys_add', …(55) ] to deeply equal [ 'gnosys_add', …(55) ]\n    at <repo>/src/test/mcp-toolset-budget.test.ts:59:51\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 720,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/mcp-toolset-budget.test.ts",
+            "name": "MCP toolset budgets full tier registers everything, ≤ 60 tools",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/mcp-toolset-budget.test.ts",
+          "name": "MCP toolset budgets full tier registers everything, ≤ 60 tools"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-h2.json"
+    },
+    {
+      "id": "G1-ide-args-gemini",
+      "file": "src/lib/ideMcpInstall.ts",
+      "description": "Inject invalid MCP executable arguments",
+      "sourceChange": {
+        "search": "return { command: resolveGnosysMcpCommand(), args: [] };",
+        "replace": "return { command: resolveGnosysMcpCommand(), args: [\"wrong-flag\"] };"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ide-init-golden.test.ts"
+        ],
+        "testName": "gemini\\-cli\\ setupIDE\\ writes\\ mcpServers\\.gnosys\\ under\\ isolated\\ HOME$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 528,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init MCP config structure gemini-cli setupIDE writes mcpServers.gnosys under isolated HOME",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 537,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init MCP config structure gemini-cli setupIDE writes mcpServers.gnosys under isolated HOME",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { …(2) } to match object { args: [] }\n(1 matching property omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/ide-init-golden.test.ts:117:39\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 550,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init MCP config structure gemini-cli setupIDE writes mcpServers.gnosys under isolated HOME",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/ide-init-golden.test.ts",
+          "name": "IDE init MCP config structure gemini-cli setupIDE writes mcpServers.gnosys under isolated HOME"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-h2.json"
+    },
+    {
+      "id": "G1-ide-args-antigravity",
+      "file": "src/lib/ideMcpInstall.ts",
+      "description": "Inject invalid MCP executable arguments",
+      "sourceChange": {
+        "search": "return { command: resolveGnosysMcpCommand(), args: [] };",
+        "replace": "return { command: resolveGnosysMcpCommand(), args: [\"wrong-flag\"] };"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ide-init-golden.test.ts"
+        ],
+        "testName": "antigravity\\ setupIDE\\ writes\\ mcpServers\\.gnosys\\ under\\ isolated\\ HOME$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 542,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init MCP config structure antigravity setupIDE writes mcpServers.gnosys under isolated HOME",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 549,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init MCP config structure antigravity setupIDE writes mcpServers.gnosys under isolated HOME",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { …(2) } to match object { args: [] }\n(1 matching property omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/ide-init-golden.test.ts:134:39\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 564,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init MCP config structure antigravity setupIDE writes mcpServers.gnosys under isolated HOME",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/ide-init-golden.test.ts",
+          "name": "IDE init MCP config structure antigravity setupIDE writes mcpServers.gnosys under isolated HOME"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-h2.json"
+    },
+    {
+      "id": "G1-rules-deterministic",
+      "file": "src/lib/rulesGen.ts",
+      "description": "Return incorrect but deterministic instructions",
+      "sourceChange": {
+        "search": "return sections.join(\"\\n\\n\");",
+        "replace": "return \"Wrong constant instructions\";"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ide-init-golden.test.ts"
+        ],
+        "testName": "generateRulesBlock\\ is\\ deterministic\\ with\\ empty\\ preferences$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 542,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init golden fixtures generateRulesBlock is deterministic with empty preferences",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 543,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init golden fixtures generateRulesBlock is deterministic with empty preferences",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '<!-- GNOSYS:START -->\\nWrong constant…' to be '<!-- GNOSYS:START -->\\n## Gnosys Memo…' // Object.is equality\n    at <repo>/src/test/ide-init-golden.test.ts:66:22\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 531,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init golden fixtures generateRulesBlock is deterministic with empty preferences",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/ide-init-golden.test.ts",
+          "name": "IDE init golden fixtures generateRulesBlock is deterministic with empty preferences"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-h2.json"
+    },
+    {
+      "id": "G1-rules-target",
+      "file": "src/lib/rulesGen.ts",
+      "description": "Write generated IDE rules to wrong target",
+      "sourceChange": {
+        "search": "const absPath = path.resolve(projectDir, relPath);",
+        "replace": "const absPath = path.resolve(projectDir, \"wrong-rules.md\");"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ide-init-golden.test.ts"
+        ],
+        "testName": "rules block matches golden"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 530,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init golden fixtures claude rules block matches golden (CLAUDE.md)",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init golden fixtures cursor rules block matches golden (.cursor/rules/gnosys.mdc)",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init golden fixtures codex rules block matches golden (.codex/gnosys.md)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 551,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init golden fixtures claude rules block matches golden (CLAUDE.md)",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ Array(1) ] to deeply equal [ Array(1) ]\n    at <repo>/src/test/ide-init-golden.test.ts:53:58\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init golden fixtures cursor rules block matches golden (.cursor/rules/gnosys.mdc)",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ Array(1) ] to deeply equal [ Array(1) ]\n    at <repo>/src/test/ide-init-golden.test.ts:53:58\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init golden fixtures codex rules block matches golden (.codex/gnosys.md)",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ Array(1) ] to deeply equal [ Array(1) ]\n    at <repo>/src/test/ide-init-golden.test.ts:53:58\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 540,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init golden fixtures claude rules block matches golden (CLAUDE.md)",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init golden fixtures cursor rules block matches golden (.cursor/rules/gnosys.mdc)",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ide-init-golden.test.ts",
+            "name": "IDE init golden fixtures codex rules block matches golden (.codex/gnosys.md)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/ide-init-golden.test.ts",
+          "name": "IDE init golden fixtures claude rules block matches golden (CLAUDE.md)"
+        },
+        {
+          "file": "src/test/ide-init-golden.test.ts",
+          "name": "IDE init golden fixtures cursor rules block matches golden (.cursor/rules/gnosys.mdc)"
+        },
+        {
+          "file": "src/test/ide-init-golden.test.ts",
+          "name": "IDE init golden fixtures codex rules block matches golden (.codex/gnosys.md)"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-h2.json"
+    },
+    {
+      "id": "G1-config-template",
+      "file": "src/lib/config.ts",
+      "description": "Return empty template",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 388,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v600-no-anthropic-default.test.ts",
+            "name": "v6.0.0 — no implicit anthropic default (deci-049) generateConfigTemplate() output contains no defaultProvider",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 390,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v600-no-anthropic-default.test.ts",
+            "name": "v6.0.0 — no implicit anthropic default (deci-049) generateConfigTemplate() output contains no defaultProvider",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected {} to match object { llm: { ollama: { …(2) } }, …(3) }\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/v600-no-anthropic-default.test.ts:54:34\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 399,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v600-no-anthropic-default.test.ts",
+            "name": "v6.0.0 — no implicit anthropic default (deci-049) generateConfigTemplate() output contains no defaultProvider",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/v600-no-anthropic-default.test.ts",
+          "name": "v6.0.0 — no implicit anthropic default (deci-049) generateConfigTemplate() output contains no defaultProvider"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-b.json"
+    }
+  ]
+}

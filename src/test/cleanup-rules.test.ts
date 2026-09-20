@@ -10,7 +10,7 @@ import os from "os";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { removeRulesBlock, removeRulesFromProject } from "../lib/rulesGen.js";
-import { readCliSource } from "./_helpers.js"; // v6.2.1 cli split
+import { spawnSync } from "node:child_process";
 
 const START = "<!-- GNOSYS:START -->";
 const END = "<!-- GNOSYS:END -->";
@@ -63,11 +63,17 @@ describe("removeRulesFromProject", () => {
 });
 
 describe("gnosys cleanup --rules wiring", () => {
-  const cli = readCliSource(); // v6.2.1 cli split: read src/cli.ts + src/cli/*.ts
-
   it("exposes --rules on the cleanup command and routes to removeRulesFromProject", () => {
-    expect(cli).toContain('.option(\n    "--rules [dir]"');
-    expect(cli).toContain('await import("./lib/rulesGen.js")');
-    expect(cli).toContain("removeRulesFromProject(dir)");
+    const project = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-cleanup-cli-"));
+    try {
+      const file = path.join(project, "CLAUDE.md");
+      fs.writeFileSync(file, `# User notes\n\n${START}\ngenerated\n${END}\n`);
+      const result = spawnSync(process.execPath, [path.resolve("dist/cli.js"), "cleanup", "--rules"], {
+        cwd: project, env: { ...process.env, GNOSYS_HOME: path.join(project, "home") }, encoding: "utf8",
+      });
+      expect(result.status).toBe(0);
+      expect(result.stdout).toBe("Removed GNOSYS block: CLAUDE.md\n");
+      expect(fs.readFileSync(file, "utf8").trim()).toBe("# User notes");
+    } finally { fs.rmSync(project, { recursive: true, force: true }); }
   });
 });

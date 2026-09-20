@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import {
-  MASTER_UNREACHABLE_MESSAGE,
   formatMemoriesWaitingToSync,
   formatFailedToSyncCount,
   formatOfflinePushStarting,
@@ -12,11 +11,7 @@ function strip(s: string): string {
 }
 
 describe("v13 sync status messages", () => {
-  it("uses design-doc master unreachable wording", () => {
-    expect(MASTER_UNREACHABLE_MESSAGE).toBe(
-      "Master unreachable; existing memories are unavailable until reconnect.",
-    );
-  });
+
 
   it("formats waiting and failed counts", () => {
     expect(formatMemoriesWaitingToSync(0)).toBe("0 memories waiting to sync");
@@ -37,7 +32,7 @@ describe("v13 sync status messages", () => {
       failedToSync: 0,
       pendingOfflineAdds: 2,
     }).map(strip);
-    expect(lines.join("\n")).toContain(MASTER_UNREACHABLE_MESSAGE);
+    expect(lines.join("\n")).toContain("Master unreachable; existing memories are unavailable until reconnect.");
     expect(lines.join("\n")).toContain("2 new memories queued locally");
   });
 

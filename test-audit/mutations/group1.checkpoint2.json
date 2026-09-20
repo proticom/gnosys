@@ -1,0 +1,525 @@
+[
+  {
+    "id": "G1-web-vector-association",
+    "file": "src/lib/webVectors.ts",
+    "search": "vectors[doc.id] = quantizeVector(embeddings[i], scale);",
+    "replace": "vectors[doc.id] = quantizeVector(embeddings[docs.length - 1 - i], scale);",
+    "tests": [
+      "src/test/webVectors.test.ts"
+    ],
+    "testName": "posts\\ OpenAI\\ embedding\\ batches\\ with\\ configured\\ headers\\ and\\ maps\\ vectors\\ by\\ document\\ id$",
+    "description": "Reverse document-to-embedding association"
+  },
+  {
+    "id": "G1-web-vector-int8",
+    "file": "src/lib/webVectors.ts",
+    "search": "return vec.map((value) => clampInt8(Math.round(value / scale)));",
+    "replace": "return vec;",
+    "tests": [
+      "src/test/webVectors.test.ts"
+    ],
+    "testName": "round\\-trips\\ vectors\\ while\\ preserving\\ cosine\\ ranking\\ order\\ for\\ fixed\\ fixtures$",
+    "description": "Return unquantized floats"
+  },
+  {
+    "id": "G1-audit-idempotent-write",
+    "file": "src/lib/remote.ts",
+    "search": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+    "replace": "",
+    "tests": [
+      "src/test/remote-audit-sync.test.ts"
+    ],
+    "testName": "does\\ not\\ double\\-push\\ entries\\ already\\ on\\ the\\ remote$",
+    "description": "Report audit push counts while dropping actual audit records"
+  },
+  {
+    "id": "G1-audit-convergence",
+    "file": "src/lib/remote.ts",
+    "search": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+    "replace": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: \"wrong-id\",\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+    "tests": [
+      "src/test/remote-audit-sync.test.ts"
+    ],
+    "testName": "first\\ push\\ sends\\ ALL\\ local\\ entries\\ regardless\\ of\\ remote\\ contents\\ \\(full\\ convergence\\)$",
+    "description": "Lose audit memory IDs while retaining push count"
+  },
+  {
+    "id": "G1-audit-merge",
+    "file": "src/lib/remote.ts",
+    "search": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+    "replace": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: \"wrong-operation\",\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+    "tests": [
+      "src/test/remote-audit-sync.test.ts"
+    ],
+    "testName": "full\\ sync\\ \\(push\\ \\+\\ pull\\)\\ merges\\ audit\\ entries\\ from\\ both\\ sides$",
+    "description": "Lose remote audit operation while retaining row count"
+  },
+  {
+    "id": "G1-dream-rerun",
+    "file": "src/lib/dream.ts",
+    "search": "const decayResult = this.decaySweep();",
+    "replace": "const decayResult = {count:0,memoryIds:[]};",
+    "tests": [
+      "src/test/dream-resume.test.ts"
+    ],
+    "testName": "re\\-run\\ after\\ a\\ completed\\ cycle\\ picks\\ up\\ cleanly\\ \\(no\\ corruption\\ or\\ dupes\\)$",
+    "description": "Skip all confidence decay on completed cycles"
+  },
+  {
+    "id": "G1-full-tool-names",
+    "file": "src/index.ts",
+    "search": "  \"gnosys_import\",",
+    "replace": "  \"gnosys_import_wrong\",",
+    "tests": [
+      "src/test/mcp-toolset-budget.test.ts"
+    ],
+    "testName": "full\\ tier\\ registers\\ everything,\\ ≤\\ 60\\ tools$",
+    "description": "Rename a full-tier tool while retaining full tool count"
+  },
+  {
+    "id": "G1-ide-args-gemini",
+    "file": "src/lib/ideMcpInstall.ts",
+    "search": "return { command: resolveGnosysMcpCommand(), args: [] };",
+    "replace": "return { command: resolveGnosysMcpCommand(), args: [\"wrong-flag\"] };",
+    "tests": [
+      "src/test/ide-init-golden.test.ts"
+    ],
+    "testName": "gemini\\-cli\\ setupIDE\\ writes\\ mcpServers\\.gnosys\\ under\\ isolated\\ HOME$",
+    "description": "Inject invalid MCP executable arguments"
+  },
+  {
+    "id": "G1-ide-args-antigravity",
+    "file": "src/lib/ideMcpInstall.ts",
+    "search": "return { command: resolveGnosysMcpCommand(), args: [] };",
+    "replace": "return { command: resolveGnosysMcpCommand(), args: [\"wrong-flag\"] };",
+    "tests": [
+      "src/test/ide-init-golden.test.ts"
+    ],
+    "testName": "antigravity\\ setupIDE\\ writes\\ mcpServers\\.gnosys\\ under\\ isolated\\ HOME$",
+    "description": "Inject invalid MCP executable arguments"
+  },
+  {
+    "id": "G1-rules-deterministic",
+    "file": "src/lib/rulesGen.ts",
+    "search": "return sections.join(\"\\n\\n\");",
+    "replace": "return \"Wrong constant instructions\";",
+    "tests": [
+      "src/test/ide-init-golden.test.ts"
+    ],
+    "testName": "generateRulesBlock\\ is\\ deterministic\\ with\\ empty\\ preferences$",
+    "description": "Return incorrect but deterministic instructions"
+  },
+  {
+    "id": "G1-discover-scopes",
+    "file": "src/lib/federated.ts",
+    "search": "return buildFederatedResults(db, rawResults, (r) => r.relevance, opts, false);",
+    "replace": "return buildFederatedResults(db, rawResults, (r) => r.relevance, opts, false).map(r=>({...r,scope:\"global\" as const}));",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "federatedDiscover\\ returns\\ results\\ with\\ scope\\ info$",
+    "description": "Mislabel every discovered memory scope"
+  },
+  {
+    "id": "G1-cli-list",
+    "file": "src/lib/listCommand.ts",
+    "search": "count: memories.length,",
+    "replace": "count: 999,",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ list\\ \\-\\-json\\ produces\\ valid\\ JSON$",
+    "description": "Report wrong list count",
+    "build": true
+  },
+  {
+    "id": "G1-cli-search",
+    "file": "src/lib/searchCommand.ts",
+    "search": "const results = searchWithOverlay(resolved, query, parseInt(opts.limit, 10));",
+    "replace": "const results = searchWithOverlay(resolved, query, 0);",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ search\\ \\-\\-json\\ produces\\ valid\\ JSON\\ with\\ results\\ array$",
+    "description": "Return no matching search records",
+    "build": true
+  },
+  {
+    "id": "G1-cli-stats",
+    "file": "src/lib/statsCommand.ts",
+    "search": "{ totalCount: 0 }",
+    "replace": "{ totalCount: 999 }",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ stats\\ \\-\\-json\\ produces\\ valid\\ JSON$",
+    "description": "Report incorrect empty memory count",
+    "build": true
+  },
+  {
+    "id": "G1-cli-dashboard",
+    "file": "src/lib/dashboard.ts",
+    "search": "return JSON.stringify(data, null, 2);",
+    "replace": "return JSON.stringify({}, null, 2);",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ status\\ \\-\\-system\\ \\-\\-json\\ produces\\ valid\\ JSON$",
+    "description": "Replace system dashboard with empty object",
+    "build": true
+  },
+  {
+    "id": "G1-cli-tags",
+    "file": "src/lib/tagsCommand.ts",
+    "search": "console.log(`\\n${category}:`);",
+    "replace": "console.log(\"\"); void category;",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ tags\\ lists\\ the\\ tag\\ registry\\ without\\ error$",
+    "description": "Omit category headings",
+    "build": true
+  },
+  {
+    "id": "G1-cli-lens",
+    "file": "src/lib/lensCommand.ts",
+    "search": "console.log(\"No memories match the lens filter.\");",
+    "replace": "console.log(\"\");",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ lens\\ runs\\ without\\ error$",
+    "description": "Suppress empty lens result",
+    "build": true
+  },
+  {
+    "id": "G1-config-template",
+    "file": "src/lib/config.ts",
+    "search": "export function generateConfigTemplate(): string {",
+    "replace": "export function generateConfigTemplate(): string {\n  return \"{}\";",
+    "tests": [
+      "src/test/v600-no-anthropic-default.test.ts"
+    ],
+    "testName": "generateConfigTemplate\\(\\)\\ output\\ contains\\ no\\ defaultProvider$",
+    "description": "Return empty template"
+  },
+  {
+    "id": "G1-tags-persist",
+    "file": "src/lib/tagsAddCommand.ts",
+    "search": "const added = await tagRegistry.addTag(opts.category, opts.tag);",
+    "replace": "const added = true;",
+    "tests": [
+      "src/test/tags-invoke.test.ts"
+    ],
+    "testName": "adds a new tag to a category$",
+    "description": "Skip persisted tag addition"
+  },
+  {
+    "id": "G1-recall-empty",
+    "file": "src/lib/recall.ts",
+    "search": "const top = db.getTopActiveMemories(fetchLimit);",
+    "replace": "const top = db.getTopActiveMemories(0);",
+    "tests": [
+      "src/test/recall-wildcard.test.ts"
+    ],
+    "testName": "archived and superseded memories are excluded from wildcard recall$",
+    "description": "Return no active memories"
+  },
+  {
+    "id": "G1-cli-version-success",
+    "file": "src/cli.ts",
+    "search": "rewriteLegacyExport();\n",
+    "replace": "rewriteLegacyExport();\nif(process.argv.includes(\"--version\")) process.exit(1);\n",
+    "tests": [
+      "src/test/v593-no-central-db-pollution.test.ts"
+    ],
+    "testName": "running gnosys --version with empty HOME does NOT create gnosys.db$",
+    "description": "Fail version invocation before producing a version",
+    "build": true
+  },
+  {
+    "id": "G1-cli-help-success",
+    "file": "src/cli.ts",
+    "search": "rewriteLegacyExport();\n",
+    "replace": "rewriteLegacyExport();\nif(process.argv.includes(\"--help\")) process.exit(1);\n",
+    "tests": [
+      "src/test/v593-no-central-db-pollution.test.ts"
+    ],
+    "testName": "VITEST=true short-circuits maybePrintUpgradeNudge",
+    "description": "Fail help invocation before producing help",
+    "build": true
+  },
+  {
+    "id": "G1-tags-idempotent",
+    "file": "src/lib/tags.ts",
+    "search": "if (this.registry[category].includes(tag)) return false;",
+    "replace": "if (false) return false;",
+    "tests": [
+      "src/test/tags-invoke.test.ts"
+    ],
+    "testName": "reports a duplicate tag without re-adding it$",
+    "description": "Duplicate persisted tag on second addition"
+  },
+  {
+    "id": "G1-tags-sort",
+    "file": "src/lib/tagsCommand.ts",
+    "search": "${tags.sort().join(\", \")}",
+    "replace": "${tags.join(\", \")}",
+    "tests": [
+      "src/test/tags-invoke.test.ts"
+    ],
+    "testName": "lists the registry including the added tag$",
+    "description": "Print unsorted category tags"
+  },
+  {
+    "id": "G1-recall-confidence",
+    "file": "src/lib/db.ts",
+    "search": "ORDER BY reinforcement_count DESC, confidence DESC, modified DESC LIMIT ?",
+    "replace": "ORDER BY reinforcement_count DESC, confidence ASC, modified DESC LIMIT ?",
+    "tests": [
+      "src/test/recall-wildcard.test.ts"
+    ],
+    "testName": "wildcard ordering prefers reinforcement, then confidence, then recency$",
+    "description": "Reverse confidence tie break"
+  },
+  {
+    "id": "G1-recall-recency",
+    "file": "src/lib/db.ts",
+    "search": "ORDER BY reinforcement_count DESC, confidence DESC, modified DESC LIMIT ?",
+    "replace": "ORDER BY reinforcement_count DESC, confidence DESC, modified ASC LIMIT ?",
+    "tests": [
+      "src/test/recall-wildcard.test.ts"
+    ],
+    "testName": "wildcard ordering prefers reinforcement, then confidence, then recency$",
+    "description": "Reverse recency tie break"
+  },
+  {
+    "id": "G1-sync-warning",
+    "file": "src/lib/setup/remoteRender.ts",
+    "search": "\"Master unreachable; existing memories are unavailable until reconnect.\"",
+    "replace": "\"Everything is online.\"",
+    "tests": [
+      "src/test/syncStatusMessages.test.ts"
+    ],
+    "testName": "renderClientSyncStatusLines shows unreachable \\+ offline overlay$",
+    "description": "Render misleading master connectivity message"
+  },
+  {
+    "id": "G1-no-provider-load",
+    "file": "src/lib/config.ts",
+    "search": "if (raw === null) {\n      return DEFAULT_CONFIG;",
+    "replace": "if (raw === null) {\n      return GnosysConfigSchema.parse({llm:{defaultProvider:\"anthropic\"}});",
+    "tests": [
+      "src/test/v600-no-anthropic-default.test.ts"
+    ],
+    "testName": "loading an unconfigured store requires explicit provider setup$",
+    "description": "Load implicit provider despite absent configuration",
+    "beforeIds": [
+      "src/test/v600-no-anthropic-default.test.ts:28"
+    ]
+  },
+  {
+    "id": "G1-local-vector-path",
+    "file": "src/lib/embeddings.ts",
+    "search": "results.push(new Float32Array(vec));",
+    "replace": "results.push(new Float32Array(vec.map(() => 0)));",
+    "tests": [
+      "src/test/webVectors.test.ts"
+    ],
+    "testName": "reuses GnosysEmbeddings.embedBatch and quantizes local vectors$",
+    "description": "Zero actual local embedding vectors"
+  },
+  {
+    "id": "G1-cli-audit",
+    "file": "src/lib/auditCommand.ts",
+    "search": "console.log(JSON.stringify(entries, null, 2));",
+    "replace": "console.log(JSON.stringify([], null, 2));",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ audit\\ \\-\\-json\\ outputs\\ valid\\ JSON$",
+    "description": "Discard actual audit entries",
+    "build": true
+  },
+  {
+    "id": "G1-cli-help-public",
+    "file": "src/cli/sandbox.ts",
+    "search": ".command(\"sandbox\")",
+    "replace": ".command(\"sandbox-missing\")",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ \\-\\-help\\ lists\\ public\\ top\\-level\\ commands$",
+    "description": "Remove advertised sandbox command",
+    "build": true,
+    "beforeIds": [
+      "src/test/phase9c.cli-federated.test.ts:382"
+    ]
+  },
+  {
+    "id": "G1-cleanup-rules-cli",
+    "file": "src/cli/maintenance.ts",
+    "search": "const cleaned = await removeRulesFromProject(dir);",
+    "replace": "const cleaned: string[] = []; void removeRulesFromProject;",
+    "tests": [
+      "src/test/cleanup-rules.test.ts"
+    ],
+    "testName": "exposes\\ \\-\\-rules\\ on\\ the\\ cleanup\\ command\\ and\\ routes\\ to\\ removeRulesFromProject$",
+    "description": "Skip CLI rules removal",
+    "build": true
+  },
+  {
+    "id": "G1-dream-scheduled-cli",
+    "file": "src/cli/dream.ts",
+    "search": "const merged = { ...(this.parent?.opts() ?? {}), ...opts } as DreamRunOpts;",
+    "replace": "const merged = { ...opts } as DreamRunOpts;",
+    "tests": [
+      "src/test/dream-run-scheduled-flag.test.ts"
+    ],
+    "testName": "run\\ action\\ merges\\ parent\\ opts\\ before\\ calling\\ runDreamCommand$",
+    "description": "Lose scheduled parent option",
+    "build": true
+  },
+  {
+    "id": "G1-shell-literal-copy",
+    "file": "src/lib/projectIdentity.ts",
+    "search": "execFileSync(\"cp\", [\"-a\", sourceStore, targetStore], { stdio: \"pipe\" });",
+    "replace": "execFileSync(\"cp\", [\"-a\", sourceStore.replace(/\\$\\([^)]*\\)/g, \"\"), targetStore], { stdio: \"pipe\" });",
+    "tests": [
+      "src/test/shell-injection-argv.test.ts"
+    ],
+    "testName": "copies\\ literal\\ shell\\ syntax\\ without\\ executing\\ it$",
+    "description": "Interpret dollar substitution syntax instead of treating it as literal path",
+    "beforeIds": [
+      "src/test/shell-injection-argv.test.ts:53"
+    ]
+  },
+  {
+    "id": "G1-read-overlay-cli",
+    "file": "src/lib/readCommand.ts",
+    "search": "memory: dbMem",
+    "replace": "memory: { ...dbMem, content: \"wrong body\" }",
+    "tests": [
+      "src/test/read-command-overlay.test.ts"
+    ],
+    "testName": "routes\\ read\\-by\\-id\\ through\\ the\\ client\\ read\\ overlay\\ like\\ its\\ siblings$",
+    "description": "Lose pending offline content in public read response"
+  },
+  {
+    "id": "G1-read-legacy",
+    "file": "src/lib/readCommand.ts",
+    "search": "{ path: memoryPath, source: memory.sourceLabel, content: raw }",
+    "replace": "{ path: memoryPath, source: memory.sourceLabel, content: \"wrong markdown\" }",
+    "tests": [
+      "src/test/read-command-overlay.test.ts"
+    ],
+    "testName": "keeps\\ the\\ legacy\\ resolver\\ fallback\\ for\\ markdown\\ stores$",
+    "description": "Lose fallback markdown content"
+  },
+  {
+    "id": "G1-overlay-content",
+    "file": "src/lib/clientReadResolve.ts",
+    "search": "return pending ? pendingAddToDbMemory(pending) : null;",
+    "replace": "return pending ? {...pendingAddToDbMemory(pending),content:\"wrong overlay body\"} : null;",
+    "tests": [
+      "src/test/read-command-overlay.test.ts"
+    ],
+    "testName": "falls\\ back\\ to\\ the\\ pending\\ overlay\\ when\\ the\\ DB\\ misses$",
+    "description": "Lose pending memory body"
+  },
+  {
+    "id": "G1-overlay-id",
+    "file": "src/lib/clientReadResolve.ts",
+    "search": "resolved.pendingOverlay.find((p) => p.id === id)",
+    "replace": "resolved.pendingOverlay.find(() => true)",
+    "tests": [
+      "src/test/read-command-overlay.test.ts"
+    ],
+    "testName": "returns\\ null\\ when\\ neither\\ DB\\ nor\\ overlay\\ has\\ the\\ id$",
+    "description": "Return unrelated pending memory for missing ID"
+  },
+  {
+    "id": "G1-rules-target",
+    "file": "src/lib/rulesGen.ts",
+    "search": "const absPath = path.resolve(projectDir, relPath);",
+    "replace": "const absPath = path.resolve(projectDir, \"wrong-rules.md\");",
+    "tests": [
+      "src/test/ide-init-golden.test.ts"
+    ],
+    "testName": "rules block matches golden",
+    "description": "Write generated IDE rules to wrong target",
+    "beforeIds": [
+      "src/test/ide-init-golden.test.ts:46"
+    ]
+  },
+  {
+    "id": "G1-summary-real-remote",
+    "file": "src/lib/setup/summary.ts",
+    "search": "return remotePath ?? \"NA (single-machine only)\";",
+    "replace": "return \"Wrong remote status\"; void remotePath;",
+    "tests": [
+      "src/test/setup-ui-summary.test.ts"
+    ],
+    "testName": "describeMultiMachineSyncPanel\\ shows\\ NA\\ with\\ no\\ remote\\ meta\\ or\\ machine\\ config$",
+    "description": "Misrender actual persisted remote configuration"
+  },
+  {
+    "id": "G1-summary-na-row",
+    "file": "src/lib/setup/summary.ts",
+    "search": "label: \"multi-machine sync\",",
+    "replace": "label: \"wrong sync label\",",
+    "tests": [
+      "src/test/setup-ui-summary.test.ts"
+    ],
+    "testName": "renders\\ panel\\ row\\ 4\\ with\\ NA\\ when\\ multi\\-machine\\ sync\\ is\\ not\\ configured$",
+    "description": "Mislabel sync panel row"
+  },
+  {
+    "id": "G1-summary-fresh",
+    "file": "src/lib/setup/summary.ts",
+    "search": "return \"not set — configure providers first\";",
+    "replace": "return \"all anthropic\";",
+    "tests": [
+      "src/test/setup-ui-summary.test.ts"
+    ],
+    "testName": "renders\\ panel\\ rows\\ for\\ a\\ fresh\\ config\\ \\(no\\ default\\ provider\\)$",
+    "description": "Misrepresent unconfigured task routing"
+  },
+  {
+    "id": "G1-summary-xai",
+    "file": "src/lib/setup/summary.ts",
+    "search": "return provs.size === 1 ? `all ${[...provs][0]}` : `mixed (${[...provs].join(\", \")})`;",
+    "replace": "return \"all anthropic\"; void provs;",
+    "tests": [
+      "src/test/setup-ui-summary.test.ts"
+    ],
+    "testName": "renders\\ panel\\ rows\\ after\\ a\\ switch\\ to\\ xai$",
+    "description": "Ignore provider loaded from actual config"
+  },
+  {
+    "id": "G1-summary-edited",
+    "file": "src/lib/setup/summary.ts",
+    "search": "updated.add(section.key);",
+    "replace": "void section.key;",
+    "tests": [
+      "src/test/setup-ui-summary.test.ts"
+    ],
+    "testName": "marks\\ an\\ edited\\ routing\\ section\\ after\\ saving\\ and\\ reloading\\ its\\ config$",
+    "description": "Omit edited-section marker",
+    "beforeIds": [
+      "src/test/setup-ui-summary.test.ts:153"
+    ]
+  },
+  {
+    "id": "G1-routing-reset-defect",
+    "file": "src/lib/config.ts",
+    "search": "const merged = deepMergeConfig(rawExisting, updates);",
+    "replace": "const merged = deepMergeConfig(rawExisting, updates);\n  if (updates.taskModels && Object.keys(updates.taskModels as object).length === 0) merged.taskModels = {};",
+    "tests": [
+      "src/test/setup-ui-summary.test.ts"
+    ],
+    "testName": "DEF\\-G1\\-001\\ reset\\ routing\\ clears\\ persisted\\ task\\ overrides$",
+    "description": "Correct empty task routing reset temporarily; expected-failure must become unexpected success",
+    "kind": "defect-repair-probe"
+  }
+]

@@ -26,7 +26,7 @@ describe("Phase F — central DB pollution regression", () => {
       // Run the CLI with HOME pointing at a fresh tmp dir. Use both HOME
       // and GNOSYS_HOME so the resolver definitely targets tmp, not the
       // real user home.
-      const result = spawnSync("node", [CLI, "--version"], {
+      const result = spawnSync(process.execPath, [CLI, "--version"], {
         env: {
           ...process.env,
           HOME: tmpHome,
@@ -41,6 +41,9 @@ describe("Phase F — central DB pollution regression", () => {
         timeout: 10_000,
       });
 
+      expect(result.status).toBe(0);
+      expect(result.stdout).toBe(`${JSON.parse(fs.readFileSync(new URL("../../package.json", import.meta.url), "utf8")).version}\n`);
+      expect(result.stderr).toBe("");
       const dbPath = path.join(tmpHome, "gnosys.db");
       expect(fs.existsSync(dbPath), `central DB was created at ${dbPath}; stdout=${result.stdout?.slice(0, 200)}`).toBe(false);
     } finally {
@@ -51,7 +54,7 @@ describe("Phase F — central DB pollution regression", () => {
   it("VITEST=true short-circuits maybePrintUpgradeNudge — no DB file at all", () => {
     const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-pollution-"));
     try {
-      spawnSync("node", [CLI, "--help"], {
+      const result = spawnSync(process.execPath, [CLI, "--help"], {
         env: {
           ...process.env,
           HOME: tmpHome,
@@ -63,6 +66,10 @@ describe("Phase F — central DB pollution regression", () => {
       });
       // After --help, the tmp HOME should still be empty (no .gnosys/,
       // no gnosys.db, no projects.json).
+      expect(result.status).toBe(0);
+      expect(result.stdout).toContain("Usage: gnosys [options] [command]");
+      expect(result.stdout).toContain("Commands by group");
+      expect(result.stderr).toBe("");
       const before = fs.readdirSync(tmpHome);
       expect(before, `expected empty HOME after --help; got [${before.join(", ")}]`).toEqual([]);
     } finally {

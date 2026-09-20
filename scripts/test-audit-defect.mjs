@@ -5,13 +5,13 @@ const id = process.argv[2];
 const defect = JSON.parse(fs.readFileSync("test-audit/defects.json", "utf8")).find((entry) => entry.id === id);
 if (!defect) throw new Error("Provide a defect ID from test-audit/defects.json");
 const original = fs.readFileSync(defect.test, "utf8");
-const search = `it.fails("${id}:`;
+const search = `it.fails("${id}`;
 if (original.split(search).length !== 2) throw new Error(`Expected one regression for ${id}`);
 const lock = "test-audit/.mutation-lock";
 fs.mkdirSync(lock);
 const reportPath = `test-audit/evidence/${id}.reproduced.json`;
 try {
-  fs.writeFileSync(defect.test, original.replace(search, `it("${id}:`));
+  fs.writeFileSync(defect.test, original.replace(search, `it("${id}`));
   const run = spawnSync(process.execPath, ["node_modules/vitest/vitest.mjs", "run", defect.test, "-t", id, "--reporter=json", `--outputFile=${reportPath}`], {
     encoding: "utf8", timeout: 60_000,
   });

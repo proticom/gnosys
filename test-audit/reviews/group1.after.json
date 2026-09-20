@@ -289,11 +289,11 @@
     },
     {
       "beforeId": "src/test/setup-ui-atoms.test.ts:125",
-      "beforeName": "tokens \u2014 color() wraps text with reset",
+      "beforeName": "tokens — color() wraps text with reset",
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "setup/ui atoms \u2014 Phase A tokens \u2014 color() wraps text with reset"
+        "setup/ui atoms — Phase A tokens — color() wraps text with reset"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects omit requested opening color.",
@@ -307,7 +307,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "Screen 10 \u2014 sync-projects render renders the failed section when there are failures"
+        "Screen 10 — sync-projects render renders the failed section when there are failures"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects drop failed project detail while keeping line count.",
@@ -321,7 +321,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "Screen 10 \u2014 sync-projects render renders dashboard summary with collapsed paths"
+        "Screen 10 — sync-projects render renders dashboard summary with collapsed paths"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects render wrong dashboard html output path.",
@@ -331,11 +331,11 @@
     },
     {
       "beforeId": "src/test/setup-ui-screen7.test.ts:88",
-      "beforeName": "renders sub-tasks with \u25cb when disabled",
+      "beforeName": "renders sub-tasks with ○ when disabled",
       "beforeClassification": "HOLLOW",
       "action": "rewritten",
       "afterNames": [
-        "Screen 7 \u2014 dream render renders sub-tasks with \u25cb when disabled"
+        "Screen 7 — dream render renders sub-tasks with ○ when disabled"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects omit disabled task rows entirely.",
@@ -461,7 +461,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens \u2014 single filters filters by status"
+        "applyLens — single filters filters by status"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -475,7 +475,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens \u2014 single filters filters by multiple statuses"
+        "applyLens — single filters filters by multiple statuses"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -489,7 +489,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens \u2014 single filters filters by confidence range"
+        "applyLens — single filters filters by confidence range"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -503,7 +503,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens \u2014 single filters filters by created date range"
+        "applyLens — single filters filters by created date range"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -517,7 +517,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens \u2014 single filters filters by modified date range"
+        "applyLens — single filters filters by modified date range"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -531,7 +531,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens \u2014 single filters combines multiple criteria in one filter"
+        "applyLens — single filters combines multiple criteria in one filter"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects ignore confidence condition in compound filter.",
@@ -681,11 +681,11 @@
     },
     {
       "beforeId": "src/test/embed-db.test.ts:89",
-      "beforeName": "missing mode is incremental \u2014 already-embedded rows are untouched",
+      "beforeName": "missing mode is incremental — already-embedded rows are untouched",
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "backfillCentralDbEmbeddings missing mode is incremental \u2014 already-embedded rows are untouched"
+        "backfillCentralDbEmbeddings missing mode is incremental — already-embedded rows are untouched"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects overwrite preexisting vectors while correctly counting only missing rows.",
@@ -727,7 +727,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens \u2014 single filters filters by author"
+        "applyLens — single filters filters by author"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -741,7 +741,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens \u2014 single filters filters by authority"
+        "applyLens — single filters filters by authority"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -1023,8 +1023,8 @@
       "action": "rewritten",
       "afterNames": [
         "ingestion of special-character paths ingests \"has spaces.txt\"",
-        "ingestion of special-character paths ingests \"unicod\u00e9-caf\u00e9.txt\"",
-        "ingestion of special-character paths ingests \"emoji-\ud83c\udf89-file.txt\"",
+        "ingestion of special-character paths ingests \"unicodé-café.txt\"",
+        "ingestion of special-character paths ingests \"emoji-🎉-file.txt\"",
         "ingestion of special-character paths ingests \"trailing space .txt\""
       ],
       "afterClassification": "STRONG",
@@ -1034,8 +1034,8 @@
       ],
       "beforeNames": [
         "ingestion of special-character paths ingests \"has spaces.txt\"",
-        "ingestion of special-character paths ingests \"unicod\u00e9-caf\u00e9.txt\"",
-        "ingestion of special-character paths ingests \"emoji-\ud83c\udf89-file.txt\"",
+        "ingestion of special-character paths ingests \"unicodé-café.txt\"",
+        "ingestion of special-character paths ingests \"emoji-🎉-file.txt\"",
         "ingestion of special-character paths ingests \"trailing space .txt\""
       ]
     },
@@ -1234,6 +1234,658 @@
       "mutationIds": [
         "G1-recovery-error"
       ]
+    },
+    {
+      "beforeId": "src/test/setup-ui-summary.test.ts:164",
+      "beforeName": "resolveActiveStorePath prefers .gnosys/ when present",
+      "beforeClassification": "COUPLED",
+      "action": "deleted",
+      "afterNames": [],
+      "afterClassification": null,
+      "evidence": "Private path resolver duplicates setup-storepath.test.ts public resolveActiveStorePath project-config selection cases.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/syncStatusMessages.test.ts:15",
+      "beforeName": "uses design-doc master unreachable wording",
+      "beforeClassification": "COUPLED",
+      "action": "deleted",
+      "afterNames": [],
+      "afterClassification": null,
+      "evidence": "Imported constant pin duplicates the public renderClientSyncStatusLines shows unreachable + offline overlay case.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/dream-run-scheduled-flag.test.ts:28",
+      "beforeName": "commander repro: parent-declared flags land on the parent, merge recovers them",
+      "beforeClassification": "HOLLOW",
+      "action": "deleted",
+      "afterNames": [],
+      "afterClassification": null,
+      "evidence": "Commander-only local reproduction exercises no app; replaced by public CLI run action merges parent opts before calling runDreamCommand, verified G1-dream-scheduled-cli.",
+      "mutationIds": [
+        "G1-dream-scheduled-cli"
+      ],
+      "structuralReason": "Constructs a fresh Commander program entirely in the test and asserts library option behavior; never invokes the Gnosys command registration or handler."
+    },
+    {
+      "beforeId": "src/test/v600-no-anthropic-default.test.ts:51",
+      "beforeName": "generateConfigTemplate() output contains no defaultProvider",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "v6.0.0 — no implicit anthropic default (deci-049) generateConfigTemplate() output contains no defaultProvider"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return empty template.",
+      "mutationIds": [
+        "G1-config-template"
+      ]
+    },
+    {
+      "beforeId": "src/test/webVectors.test.ts:95",
+      "beforeName": "posts OpenAI embedding batches with configured headers and maps vectors by document id",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "buildVectors API providers posts OpenAI embedding batches with configured headers and maps vectors by document id"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects reverse document-to-embedding association.",
+      "mutationIds": [
+        "G1-web-vector-association"
+      ]
+    },
+    {
+      "beforeId": "src/test/webVectors.test.ts:204",
+      "beforeName": "round-trips vectors while preserving cosine ranking order for fixed fixtures",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "int8 quantization round-trips vectors while preserving cosine ranking order for fixed fixtures"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return unquantized floats.",
+      "mutationIds": [
+        "G1-web-vector-int8"
+      ]
+    },
+    {
+      "beforeId": "src/test/tags-invoke.test.ts:49",
+      "beforeName": "adds a new tag to a category",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "runTagsCommand / runTagsAddCommand (in-process invoke) adds a new tag to a category"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects skip persisted tag addition.",
+      "mutationIds": [
+        "G1-tags-persist"
+      ]
+    },
+    {
+      "beforeId": "src/test/recall-wildcard.test.ts:77",
+      "beforeName": "archived and superseded memories are excluded from wildcard recall",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "wildcard recall (gnosys://recall resource path) archived and superseded memories are excluded from wildcard recall"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return no active memories.",
+      "mutationIds": [
+        "G1-recall-empty"
+      ]
+    },
+    {
+      "beforeId": "src/test/v593-no-central-db-pollution.test.ts:23",
+      "beforeName": "running gnosys --version with empty HOME does NOT create gnosys.db",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase F — central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects fail version invocation before producing a version.",
+      "mutationIds": [
+        "G1-cli-version-success"
+      ]
+    },
+    {
+      "beforeId": "src/test/v593-no-central-db-pollution.test.ts:51",
+      "beforeName": "VITEST=true short-circuits maybePrintUpgradeNudge — no DB file at all",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase F — central DB pollution regression VITEST=true short-circuits maybePrintUpgradeNudge — no DB file at all"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects fail help invocation before producing help.",
+      "mutationIds": [
+        "G1-cli-help-success"
+      ]
+    },
+    {
+      "beforeId": "src/test/tags-invoke.test.ts:55",
+      "beforeName": "reports a duplicate tag without re-adding it",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "runTagsCommand / runTagsAddCommand (in-process invoke) reports a duplicate tag without re-adding it"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects duplicate persisted tag on second addition.",
+      "mutationIds": [
+        "G1-tags-idempotent"
+      ]
+    },
+    {
+      "beforeId": "src/test/tags-invoke.test.ts:60",
+      "beforeName": "lists the registry including the added tag",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "runTagsCommand / runTagsAddCommand (in-process invoke) lists the registry including the added tag"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects print unsorted category tags.",
+      "mutationIds": [
+        "G1-tags-sort"
+      ]
+    },
+    {
+      "beforeId": "src/test/recall-wildcard.test.ts:71",
+      "beforeName": "wildcard ordering prefers reinforcement, then confidence, then recency",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "wildcard recall (gnosys://recall resource path) wildcard ordering prefers reinforcement, then confidence, then recency"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects reverse confidence tie break.",
+      "mutationIds": [
+        "G1-recall-confidence",
+        "G1-recall-recency"
+      ]
+    },
+    {
+      "beforeId": "src/test/syncStatusMessages.test.ts:33",
+      "beforeName": "renderClientSyncStatusLines shows unreachable + offline overlay",
+      "beforeClassification": "STRONG",
+      "action": "rewritten",
+      "afterNames": [
+        "v13 sync status messages renderClientSyncStatusLines shows unreachable + offline overlay"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects render misleading master connectivity message.",
+      "mutationIds": [
+        "G1-sync-warning"
+      ]
+    },
+    {
+      "beforeId": "src/test/v600-no-anthropic-default.test.ts:28",
+      "beforeName": "DEFAULT_CONFIG has no defaultProvider",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "v6.0.0 — no implicit anthropic default (deci-049) loading an unconfigured store requires explicit provider setup"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects load implicit provider despite absent configuration.",
+      "mutationIds": [
+        "G1-no-provider-load"
+      ]
+    },
+    {
+      "beforeId": "src/test/webVectors.test.ts:183",
+      "beforeName": "reuses GnosysEmbeddings.embedBatch and quantizes local vectors",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "buildVectors local provider reuses GnosysEmbeddings.embedBatch and quantizes local vectors"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects zero actual local embedding vectors.",
+      "mutationIds": [
+        "G1-local-vector-path"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-audit-sync.test.ts:91",
+      "beforeName": "does not double-push entries already on the remote",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "audit_log sync does not double-push entries already on the remote"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects report audit push counts while dropping actual audit records.",
+      "mutationIds": [
+        "G1-audit-idempotent-write"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-audit-sync.test.ts:109",
+      "beforeName": "first push sends ALL local entries regardless of remote contents (full convergence)",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "audit_log sync first push sends ALL local entries regardless of remote contents (full convergence)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose audit memory ids while retaining push count.",
+      "mutationIds": [
+        "G1-audit-convergence"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-audit-sync.test.ts:153",
+      "beforeName": "full sync (push + pull) merges audit entries from both sides",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "audit_log sync full sync (push + pull) merges audit entries from both sides"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose remote audit operation while retaining row count.",
+      "mutationIds": [
+        "G1-audit-merge"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-resume.test.ts:96",
+      "beforeName": "re-run after a completed cycle picks up cleanly (no corruption or dupes)",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Dream abort and resume re-run after a completed cycle picks up cleanly (no corruption or dupes)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects skip all confidence decay on completed cycles.",
+      "mutationIds": [
+        "G1-dream-rerun"
+      ]
+    },
+    {
+      "beforeId": "src/test/mcp-toolset-budget.test.ts:57",
+      "beforeName": "full tier registers everything, ≤ 60 tools",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "MCP toolset budgets full tier registers everything, ≤ 60 tools"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects rename a full-tier tool while retaining full tool count.",
+      "mutationIds": [
+        "G1-full-tool-names"
+      ]
+    },
+    {
+      "beforeId": "src/test/ide-init-golden.test.ts:97",
+      "beforeName": "gemini-cli setupIDE writes mcpServers.gnosys under isolated HOME",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "IDE init MCP config structure gemini-cli setupIDE writes mcpServers.gnosys under isolated HOME"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects inject invalid mcp executable arguments.",
+      "mutationIds": [
+        "G1-ide-args-gemini"
+      ]
+    },
+    {
+      "beforeId": "src/test/ide-init-golden.test.ts:113",
+      "beforeName": "antigravity setupIDE writes mcpServers.gnosys under isolated HOME",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "IDE init MCP config structure antigravity setupIDE writes mcpServers.gnosys under isolated HOME"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects inject invalid mcp executable arguments.",
+      "mutationIds": [
+        "G1-ide-args-antigravity"
+      ]
+    },
+    {
+      "beforeId": "src/test/ide-init-golden.test.ts:59",
+      "beforeName": "generateRulesBlock is deterministic with empty preferences",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "IDE init golden fixtures generateRulesBlock is deterministic with empty preferences"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return incorrect but deterministic instructions.",
+      "mutationIds": [
+        "G1-rules-deterministic"
+      ]
+    },
+    {
+      "beforeId": "src/test/ide-init-golden.test.ts:46",
+      "beforeName": "`${ide} rules block matches golden (${TARGET_PATHS[ide]})`",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "IDE init golden fixtures claude rules block matches golden (CLAUDE.md)",
+        "IDE init golden fixtures cursor rules block matches golden (.cursor/rules/gnosys.mdc)",
+        "IDE init golden fixtures codex rules block matches golden (.codex/gnosys.md)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects write generated ide rules to wrong target.",
+      "mutationIds": [
+        "G1-rules-target"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9c.cli-federated.test.ts:242",
+      "beforeName": "federatedDiscover returns results with scope info",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9c.3: Federated discover with scope filter federatedDiscover returns results with scope info"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects mislabel every discovered memory scope.",
+      "mutationIds": [
+        "G1-discover-scopes"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9c.cli-federated.test.ts:328",
+      "beforeName": "gnosys list --json produces valid JSON",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9c.5: CLI --json output includes scope info gnosys list --json produces valid JSON"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects report wrong list count.",
+      "mutationIds": [
+        "G1-cli-list"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9c.cli-federated.test.ts:335",
+      "beforeName": "gnosys search --json produces valid JSON with results array",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9c.5: CLI --json output includes scope info gnosys search --json produces valid JSON with results array"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return no matching search records.",
+      "mutationIds": [
+        "G1-cli-search"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9c.cli-federated.test.ts:354",
+      "beforeName": "gnosys stats --json produces valid JSON",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9c.5: CLI --json output includes scope info gnosys stats --json produces valid JSON"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects report incorrect empty memory count.",
+      "mutationIds": [
+        "G1-cli-stats"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9c.cli-federated.test.ts:360",
+      "beforeName": "gnosys status --system --json produces valid JSON",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9c.5: CLI --json output includes scope info gnosys status --system --json produces valid JSON"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace system dashboard with empty object.",
+      "mutationIds": [
+        "G1-cli-dashboard"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9c.cli-federated.test.ts:449",
+      "beforeName": "gnosys tags lists the tag registry without error",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9c.6: CLI parity — all major commands functional gnosys tags lists the tag registry without error"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects omit category headings.",
+      "mutationIds": [
+        "G1-cli-tags"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9c.cli-federated.test.ts:459",
+      "beforeName": "gnosys lens runs without error",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9c.6: CLI parity — all major commands functional gnosys lens runs without error"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects suppress empty lens result.",
+      "mutationIds": [
+        "G1-cli-lens"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9c.cli-federated.test.ts:443",
+      "beforeName": "gnosys audit --json outputs valid JSON",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9c.6: CLI parity — all major commands functional gnosys audit --json outputs valid JSON"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects discard actual audit entries.",
+      "mutationIds": [
+        "G1-cli-audit"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9c.cli-federated.test.ts:382",
+      "beforeName": "gnosys --help lists all commands",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9c.6: CLI parity — all major commands functional gnosys --help lists public top-level commands"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects remove advertised sandbox command.",
+      "mutationIds": [
+        "G1-cli-help-public"
+      ]
+    },
+    {
+      "beforeId": "src/test/cleanup-rules.test.ts:68",
+      "beforeName": "exposes --rules on the cleanup command and routes to removeRulesFromProject",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "gnosys cleanup --rules wiring exposes --rules on the cleanup command and routes to removeRulesFromProject"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects skip cli rules removal.",
+      "mutationIds": [
+        "G1-cleanup-rules-cli"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-run-scheduled-flag.test.ts:21",
+      "beforeName": "run action merges parent opts before calling runDreamCommand",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "dream run --scheduled flag handling (v5.13.1) scheduled run records designation-gate skip"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose scheduled parent option.",
+      "mutationIds": [
+        "G1-dream-scheduled-cli"
+      ]
+    },
+    {
+      "beforeId": "src/test/shell-injection-argv.test.ts:53",
+      "beforeName": "does not use shell-string cp/open patterns in source",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "shell injection argv form copies literal shell syntax without executing it"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects interpret dollar substitution syntax instead of treating it as literal path.",
+      "mutationIds": [
+        "G1-shell-literal-copy"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-ui-summary.test.ts:82",
+      "beforeName": "describeMultiMachineSyncPanel shows NA with no remote meta or machine config",
+      "beforeClassification": "STRONG",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase C — settings panel (summary) describeMultiMachineSyncPanel shows NA with no remote meta or machine config"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects misrender actual persisted remote configuration.",
+      "mutationIds": [
+        "G1-summary-real-remote"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-ui-summary.test.ts:104",
+      "beforeName": "renders panel row 4 with NA when multi-machine sync is not configured",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase C — settings panel (summary) renders panel row 4 with NA when multi-machine sync is not configured"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects mislabel sync panel row.",
+      "mutationIds": [
+        "G1-summary-na-row"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-ui-summary.test.ts:130",
+      "beforeName": "renders panel rows for a fresh config (no default provider)",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase C — settings panel (summary) renders panel rows for a fresh config (no default provider)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects misrepresent unconfigured task routing.",
+      "mutationIds": [
+        "G1-summary-fresh"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-ui-summary.test.ts:137",
+      "beforeName": "renders panel rows after a switch to xai",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase C — settings panel (summary) renders panel rows after a switch to xai"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects ignore provider loaded from actual config.",
+      "mutationIds": [
+        "G1-summary-xai"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-ui-summary.test.ts:153",
+      "beforeName": "buildTrailingMap marks edited sections with ✓",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects omit edited-section marker.",
+      "mutationIds": [
+        "G1-summary-edited"
+      ]
+    },
+    {
+      "beforeId": "src/test/read-command-overlay.test.ts:20",
+      "beforeName": "routes read-by-id through the client read overlay like its siblings",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "gnosys read command overlay wiring routes read-by-id through the client read overlay like its siblings"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose pending offline content in public read response.",
+      "mutationIds": [
+        "G1-read-overlay-cli"
+      ]
+    },
+    {
+      "beforeId": "src/test/read-command-overlay.test.ts:28",
+      "beforeName": "keeps the legacy resolver fallback for markdown stores",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "gnosys read command overlay wiring keeps the legacy resolver fallback for markdown stores"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose fallback markdown content.",
+      "mutationIds": [
+        "G1-read-legacy"
+      ]
+    },
+    {
+      "beforeId": "src/test/read-command-overlay.test.ts:58",
+      "beforeName": "falls back to the pending overlay when the DB misses",
+      "beforeClassification": "STRONG",
+      "action": "rewritten",
+      "afterNames": [
+        "getMemoryWithOverlay falls back to the pending overlay when the DB misses"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose pending memory body.",
+      "mutationIds": [
+        "G1-overlay-content"
+      ]
+    },
+    {
+      "beforeId": "src/test/read-command-overlay.test.ts:70",
+      "beforeName": "returns null when neither DB nor overlay has the id",
+      "beforeClassification": "STRONG",
+      "action": "rewritten",
+      "afterNames": [
+        "getMemoryWithOverlay returns null when neither DB nor overlay has the id"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return unrelated pending memory for missing id.",
+      "mutationIds": [
+        "G1-overlay-id"
+      ]
+    }
+  ],
+  "additionalTests": [
+    {
+      "afterNames": [
+        "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides"
+      ],
+      "afterClassification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "DEF-G1-001",
+      "mutationIds": [
+        "G1-routing-reset-defect"
+      ],
+      "proof": "Baseline expected failure; temporary corrective source change makes assertion pass and Vitest fail as an unexpected success; restored expected failure passes."
     }
   ]
 }

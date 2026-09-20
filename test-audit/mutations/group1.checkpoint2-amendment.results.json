@@ -1,0 +1,324 @@
+{
+  "results": [
+    {
+      "id": "G1-dream-rerun",
+      "file": "src/lib/dream.ts",
+      "description": "Skip all confidence decay on completed cycles",
+      "sourceChange": {
+        "search": "const decayResult = this.decaySweep();",
+        "replace": "const decayResult = {count:0,memoryIds:[]};"
+      },
+      "selection": {
+        "tests": [
+          "src/test/dream-resume.test.ts"
+        ],
+        "testName": "re\\-run\\ after\\ a\\ completed\\ cycle\\ picks\\ up\\ cleanly\\ \\(no\\ corruption\\ or\\ dupes\\)$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 572,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-resume.test.ts",
+            "name": "Dream abort and resume re-run after a completed cycle picks up cleanly (no corruption or dupes)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 524,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-resume.test.ts",
+            "name": "Dream abort and resume re-run after a completed cycle picks up cleanly (no corruption or dupes)",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected +0 to be 5 // Object.is equality\n    at <repo>/src/test/dream-resume.test.ts:97:32\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 583,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-resume.test.ts",
+            "name": "Dream abort and resume re-run after a completed cycle picks up cleanly (no corruption or dupes)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-resume.test.ts",
+          "name": "Dream abort and resume re-run after a completed cycle picks up cleanly (no corruption or dupes)"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "G1-cli-version-success",
+      "file": "src/cli.ts",
+      "description": "Fail version invocation before producing a version",
+      "sourceChange": {
+        "search": "rewriteLegacyExport();\n",
+        "replace": "rewriteLegacyExport();\nif(process.argv.includes(\"--version\")) process.exit(1);\n"
+      },
+      "selection": {
+        "tests": [
+          "src/test/v593-no-central-db-pollution.test.ts"
+        ],
+        "testName": "running gnosys --version with empty HOME does NOT create gnosys.db$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 486,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-no-central-db-pollution.test.ts",
+            "name": "Phase F — central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 429,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-no-central-db-pollution.test.ts",
+            "name": "Phase F — central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 1 to be +0 // Object.is equality\n    at <repo>/src/test/v593-no-central-db-pollution.test.ts:44:29\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 438,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v593-no-central-db-pollution.test.ts",
+            "name": "Phase F — central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/v593-no-central-db-pollution.test.ts",
+          "name": "Phase F — central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "G1-dream-scheduled-cli",
+      "file": "src/cli/dream.ts",
+      "description": "Lose scheduled parent option",
+      "sourceChange": {
+        "search": "const merged = { ...(this.parent?.opts() ?? {}), ...opts } as DreamRunOpts;",
+        "replace": "const merged = { ...opts } as DreamRunOpts;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/dream-run-scheduled-flag.test.ts"
+        ],
+        "testName": "scheduled run records designation-gate skip$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 837,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-run-scheduled-flag.test.ts",
+            "name": "dream run --scheduled flag handling (v5.13.1) scheduled run records designation-gate skip",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 719,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-run-scheduled-flag.test.ts",
+            "name": "dream run --scheduled flag handling (v5.13.1) scheduled run records designation-gate skip",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Gnosys Dream Report\\n================…' to be '' // Object.is equality\n    at <repo>/src/test/dream-run-scheduled-flag.test.ts:17:22\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 674,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-run-scheduled-flag.test.ts",
+            "name": "dream run --scheduled flag handling (v5.13.1) scheduled run records designation-gate skip",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-run-scheduled-flag.test.ts",
+          "name": "dream run --scheduled flag handling (v5.13.1) scheduled run records designation-gate skip"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "G1-dream-abort-boundary",
+      "file": "src/lib/dream.ts",
+      "description": "Ignore public abort request at phase boundary",
+      "sourceChange": {
+        "search": "if (this.abortRequested) return { stop: true, reason: \"abort requested\" };",
+        "replace": "if (false) return { stop: true, reason: \"abort requested\" };"
+      },
+      "selection": {
+        "tests": [
+          "src/test/dream-resume.test.ts"
+        ],
+        "testName": "aborts cleanly at a phase boundary with a consistent DB$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 529,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-resume.test.ts",
+            "name": "Dream abort and resume aborts cleanly at a phase boundary with a consistent DB",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 517,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-resume.test.ts",
+            "name": "Dream abort and resume aborts cleanly at a phase boundary with a consistent DB",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected false to be true // Object.is equality\n    at <repo>/src/test/dream-resume.test.ts:85:28\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 490,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-resume.test.ts",
+            "name": "Dream abort and resume aborts cleanly at a phase boundary with a consistent DB",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-resume.test.ts",
+          "name": "Dream abort and resume aborts cleanly at a phase boundary with a consistent DB"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "G1-shell-command-injection",
+      "file": "src/lib/projectIdentity.ts",
+      "description": "Execute hostile path through shell and create temp marker",
+      "sourceChange": {
+        "search": "execFileSync(\"cp\", [\"-a\", sourceStore, targetStore], { stdio: \"pipe\" });",
+        "replace": "execFileSync(\"sh\", [\"-c\", `cp -a \"${sourceStore}\" \"${targetStore}\"`], { stdio: \"pipe\" });"
+      },
+      "selection": {
+        "tests": [
+          "src/test/shell-injection-argv.test.ts"
+        ],
+        "testName": "copies literal shell syntax without executing it$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 399,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/shell-injection-argv.test.ts",
+            "name": "shell injection argv form copies literal shell syntax without executing it",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 370,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/shell-injection-argv.test.ts",
+            "name": "shell injection argv form copies literal shell syntax without executing it",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected true to be false // Object.is equality\n    at <repo>/src/test/shell-injection-argv.test.ts:69:32\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 395,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/shell-injection-argv.test.ts",
+            "name": "shell injection argv form copies literal shell syntax without executing it",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/shell-injection-argv.test.ts",
+          "name": "shell injection argv form copies literal shell syntax without executing it"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}
