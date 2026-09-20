@@ -1,0 +1,391 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "context-wrong-provenance",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Assign imported rather than observed provenance to swept memories.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1100,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts MCP saves both novel memories with observed provenance in the requested project",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1071,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts MCP saves both novel memories with observed provenance in the requested project",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ …(2) ] to deeply equal [ …(2) ]\n    at <repo>/src/test/commit-context.test.ts:94:24\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1066,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts MCP saves both novel memories with observed provenance in the requested project",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts MCP saves both novel memories with observed provenance in the requested project"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "context-ignore-dry-run",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Write extracted candidates despite dry-run selection.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1009,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts MCP dry run describes candidates without structuring or writing memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1050,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts MCP dry run describes candidates without structuring or writing memories",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'DRY RUN — 2 candidates extracted, 2 w…' to be 'DRY RUN — 2 candidates extracted, 2 w…' // Object.is equality\n    at <repo>/src/test/commit-context.test.ts:102:36\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 989,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts MCP dry run describes candidates without structuring or writing memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts MCP dry run describes candidates without structuring or writing memories"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "context-wrong-extraction-error",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Return a misleading success message for malformed extraction output.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1044,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts MCP rejects malformed extraction output without writing memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1000,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts MCP rejects malformed extraction output without writing memories",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { Object (isError, content) } to deeply equal { Object (isError, content) }\n    at <repo>/src/test/commit-context.test.ts:109:28\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1036,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts MCP rejects malformed extraction output without writing memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts MCP rejects malformed extraction output without writing memories"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "context-ignore-overlap",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Ignore known candidates and create duplicate swept memories.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1023,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts MCP skips repeated context in its startup project",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1059,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts MCP skips repeated context in its startup project",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Context committed — 2 candidates extr…' to contain 'Context committed — 2 candidates extr…'\n    at <repo>/src/test/commit-context.test.ts:123:36\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1008,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts MCP skips repeated context in its startup project",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts MCP skips repeated context in its startup project"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "context-hide-write-error",
+      "file": "src/index.ts",
+      "kind": "fault-injection",
+      "description": "Suppress the actual storage failure from the context sweep report.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1037,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts MCP reports an individual storage failure and retains the successful candidate",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1067,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts MCP reports an individual storage failure and retains the successful candidate",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Context committed — 2 candidates extr…' to contain 'FAILED: \"Retain cobalt receipts\": fix…'\n    at <repo>/src/test/commit-context.test.ts:132:36\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1089,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts MCP reports an individual storage failure and retains the successful candidate",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts MCP reports an individual storage failure and retains the successful candidate"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "context-cli-config-repair",
+      "file": "src/lib/commitContextCommand.ts",
+      "kind": "defect-repair-probe",
+      "description": "Temporarily pass the loaded store config to CLI ingestion; expected-failure regression must unexpectedly pass.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1120,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1152,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
+            "status": "failed",
+            "failures": [
+              "Error: Expect test to fail\n    at runTest (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3041:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1035,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "context-scoped-dedup-repair",
+      "file": "src/index.ts",
+      "kind": "defect-repair-probe",
+      "description": "Temporarily check persisted scoped memories for overlap; the duplicate regression must unexpectedly pass.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1056,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 1024,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
+            "status": "failed",
+            "failures": [
+              "Error: Expect test to fail\n    at runTest (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3041:31)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3159:10\n    at callAroundHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2663:3)\n    at callAroundAllHooks (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2791:2)\n    at runSuite (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:3130:4)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1060,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/commit-context.test.ts",
+            "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

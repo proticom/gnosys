@@ -125,5 +125,35 @@
       "test-audit/mutations/group2.checkpoint2.results.json",
       "test-audit/evidence/G2-D002.reproduced.json"
     ]
+  },
+  {
+    "id": "D-CTX-001",
+    "title": "CLI context commit ignores the configured local provider",
+    "module": "src/lib/commitContextCommand.ts:34",
+    "test": "src/test/commit-context.test.ts",
+    "expected": "Configured Ollama provider extracts and saves two memories, matching the MCP path.",
+    "actual": "CLI exits 1 with an LLM unavailable error before making any provider request.",
+    "evidence": "The command constructs GnosysIngestion without the loaded config. A temporary constructor-config repair makes the expected-failure regression unexpectedly pass.",
+    "reproduction": "node scripts/test-audit-defect.mjs D-CTX-001",
+    "status": "Confirmed. Retained as it.fails. Application code unchanged.",
+    "evidenceFiles": [
+      "test-audit/evidence/D-CTX-001.reproduced.json",
+      "test-audit/mutations/context.after.results.json"
+    ]
+  },
+  {
+    "id": "D-CTX-002",
+    "title": "MCP context deduplication fails for an explicitly selected project",
+    "module": "src/index.ts:1707",
+    "test": "src/test/commit-context.test.ts",
+    "expected": "Repeating the same context in the requested project skips both candidates and retains two memories.",
+    "actual": "The second call adds both memories again, leaving four records. Repeating in the startup project correctly skips both.",
+    "evidence": "The scoped search reads the Markdown store while writes persist in the central database. A temporary project-filtered central FTS lookup makes the expected-failure regression unexpectedly pass.",
+    "reproduction": "node scripts/test-audit-defect.mjs D-CTX-002",
+    "status": "Confirmed. Retained as it.fails. Application code unchanged.",
+    "evidenceFiles": [
+      "test-audit/evidence/D-CTX-002.reproduced.json",
+      "test-audit/mutations/context.after.results.json"
+    ]
   }
 ]

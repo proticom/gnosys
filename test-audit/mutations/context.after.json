@@ -1,0 +1,88 @@
+[
+  {
+    "id": "context-wrong-provenance",
+    "file": "src/index.ts",
+    "search": "              authority: \"observed\" as const,\n              confidence: result.confidence,",
+    "replace": "              authority: \"imported\" as const,\n              confidence: result.confidence,",
+    "description": "Assign imported rather than observed provenance to swept memories.",
+    "testName": "MCP saves both",
+    "tests": [
+      "src/test/commit-context.test.ts"
+    ],
+    "build": true
+  },
+  {
+    "id": "context-ignore-dry-run",
+    "file": "src/index.ts",
+    "search": "        if (dry_run) {\n          results.push(`➕ WOULD ADD:",
+    "replace": "        if (dry_run && false) {\n          results.push(`➕ WOULD ADD:",
+    "description": "Write extracted candidates despite dry-run selection.",
+    "testName": "MCP dry run",
+    "tests": [
+      "src/test/commit-context.test.ts"
+    ],
+    "build": true
+  },
+  {
+    "id": "context-wrong-extraction-error",
+    "file": "src/index.ts",
+    "search": "Failed to extract candidates from context. LLM output was not valid JSON.",
+    "replace": "Extraction succeeded.",
+    "description": "Return a misleading success message for malformed extraction output.",
+    "testName": "MCP rejects malformed",
+    "tests": [
+      "src/test/commit-context.test.ts"
+    ],
+    "build": true
+  },
+  {
+    "id": "context-ignore-overlap",
+    "file": "src/index.ts",
+    "search": "      const hasOverlap = existing.length > 0;",
+    "replace": "      const hasOverlap = existing.length > 999;",
+    "description": "Ignore known candidates and create duplicate swept memories.",
+    "testName": "MCP skips repeated",
+    "tests": [
+      "src/test/commit-context.test.ts"
+    ],
+    "build": true
+  },
+  {
+    "id": "context-hide-write-error",
+    "file": "src/index.ts",
+    "search": "`❌ FAILED: \"${candidate.summary}\": ${err instanceof Error ? err.message : String(err)}`",
+    "replace": "`Skipped candidate: \"${candidate.summary}\"`",
+    "description": "Suppress the actual storage failure from the context sweep report.",
+    "testName": "MCP reports an individual",
+    "tests": [
+      "src/test/commit-context.test.ts"
+    ],
+    "build": true
+  },
+  {
+    "id": "context-cli-config-repair",
+    "file": "src/lib/commitContextCommand.ts",
+    "search": "const ingestion = new GnosysIngestion(writeTarget.store, tagRegistry);",
+    "replace": "const ingestion = new GnosysIngestion(writeTarget.store, tagRegistry, await loadConfig(writeTarget.store.getStorePath()));",
+    "description": "Temporarily pass the loaded store config to CLI ingestion; expected-failure regression must unexpectedly pass.",
+    "testName": "D-CTX-001",
+    "kind": "defect-repair-probe",
+    "tests": [
+      "src/test/commit-context.test.ts"
+    ],
+    "build": true
+  },
+  {
+    "id": "context-scoped-dedup-repair",
+    "file": "src/index.ts",
+    "kind": "defect-repair-probe",
+    "search": "      const existing = ctx.search\n        ? ctx.search.discover(searchTerms, 3)\n        : [];",
+    "replace": "      const existing = ctx.centralDb?.isAvailable()\n        ? ctx.centralDb.discoverFts(searchTerms, 3).filter(memory => memory.project_id === ctx.projectId).map(memory => ({ title: memory.title, relative_path: memory.id }))\n        : ctx.search?.discover(searchTerms, 3) || [];",
+    "description": "Temporarily check persisted scoped memories for overlap; the duplicate regression must unexpectedly pass.",
+    "tests": [
+      "src/test/commit-context.test.ts"
+    ],
+    "testName": "D-CTX-002",
+    "build": true
+  }
+]

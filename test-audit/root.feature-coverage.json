@@ -329,6 +329,98 @@
         }
       ],
       "limitations": "Expected-failure regressions expose substring directory acceptance and shell evaluation of filenames. Both inverse repair probes unexpectedly pass, confirming each failure is specific."
+    },
+    {
+      "featureId": "F18",
+      "obligationKind": "success",
+      "obligation": "Sweep extracts atomic novel memories and augments changed knowledge",
+      "status": "KNOWN_DEFECT",
+      "tests": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts MCP saves both novel memories with observed provenance in the requested project",
+          "mutationIds": [
+            "context-wrong-provenance"
+          ]
+        },
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
+          "mutationIds": [
+            "context-cli-config-repair"
+          ]
+        }
+      ],
+      "limitations": "MCP creates literal atomic memories with observed AI provenance. CLI configured-provider support fails as D-CTX-001. Augmentation of changed knowledge is not independently verified."
+    },
+    {
+      "featureId": "F18",
+      "obligationKind": "failure",
+      "obligation": "Malformed LLM structured output and write failure report partial/error state",
+      "status": "PROTECTED",
+      "tests": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts MCP rejects malformed extraction output without writing memories",
+          "mutationIds": [
+            "context-wrong-extraction-error"
+          ]
+        },
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts MCP reports an individual storage failure and retains the successful candidate",
+          "mutationIds": [
+            "context-hide-write-error"
+          ]
+        }
+      ],
+      "limitations": "Malformed provider JSON returns a literal MCP error. A native SQLite trigger rejects one candidate while the other is persisted and the partial failure is reported."
+    },
+    {
+      "featureId": "F18",
+      "obligationKind": "boundary",
+      "obligation": "Dry-run has no writes; repeated identical context creates no duplicate",
+      "status": "KNOWN_DEFECT",
+      "tests": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts MCP dry run describes candidates without structuring or writing memories",
+          "mutationIds": [
+            "context-ignore-dry-run"
+          ]
+        },
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts MCP skips repeated context in its startup project",
+          "mutationIds": [
+            "context-ignore-overlap"
+          ]
+        },
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
+          "mutationIds": [
+            "context-scoped-dedup-repair"
+          ]
+        }
+      ],
+      "limitations": "Dry-run makes no writes and performs extraction only. Startup-project deduplication works. Explicit-project repetition duplicates memories, retained as D-CTX-002."
+    },
+    {
+      "featureId": "F18",
+      "obligationKind": "permissions",
+      "obligation": "Target store and declared/imported provenance preserved",
+      "status": "PARTIAL",
+      "tests": [
+        {
+          "file": "src/test/commit-context.test.ts",
+          "name": "context sweep public contracts MCP saves both novel memories with observed provenance in the requested project",
+          "mutationIds": [
+            "context-wrong-provenance"
+          ]
+        }
+      ],
+      "limitations": "The requested project differs from the MCP startup project and receives both records. The tool creates observed AI memories; preserving preexisting declared/imported provenance during augmentation is not independently verified."
     }
   ]
 }

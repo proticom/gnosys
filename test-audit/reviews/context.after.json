@@ -1,0 +1,82 @@
+{
+  "tests": [],
+  "additionalTests": [
+    {
+      "file": "src/test/commit-context.test.ts",
+      "name": "context sweep public contracts MCP saves both novel memories with observed provenance in the requested project",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "context-wrong-provenance"
+      ],
+      "evidence": "Real CLI or MCP stdio calls use an isolated local HTTP provider and persisted SQLite outcomes. Recorded fault fails this exact case and restored application passes."
+    },
+    {
+      "file": "src/test/commit-context.test.ts",
+      "name": "context sweep public contracts MCP dry run describes candidates without structuring or writing memories",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "context-ignore-dry-run"
+      ],
+      "evidence": "Real CLI or MCP stdio calls use an isolated local HTTP provider and persisted SQLite outcomes. Recorded fault fails this exact case and restored application passes."
+    },
+    {
+      "file": "src/test/commit-context.test.ts",
+      "name": "context sweep public contracts MCP rejects malformed extraction output without writing memories",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "context-wrong-extraction-error"
+      ],
+      "evidence": "Real CLI or MCP stdio calls use an isolated local HTTP provider and persisted SQLite outcomes. Recorded fault fails this exact case and restored application passes."
+    },
+    {
+      "file": "src/test/commit-context.test.ts",
+      "name": "context sweep public contracts MCP skips repeated context in its startup project",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "context-ignore-overlap"
+      ],
+      "evidence": "Real CLI or MCP stdio calls use an isolated local HTTP provider and persisted SQLite outcomes. Recorded fault fails this exact case and restored application passes."
+    },
+    {
+      "file": "src/test/commit-context.test.ts",
+      "name": "context sweep public contracts MCP reports an individual storage failure and retains the successful candidate",
+      "classification": "STRONG",
+      "action": "added",
+      "defectId": null,
+      "mutationIds": [
+        "context-hide-write-error"
+      ],
+      "evidence": "Real CLI or MCP stdio calls use an isolated local HTTP provider and persisted SQLite outcomes. Recorded fault fails this exact case and restored application passes."
+    },
+    {
+      "file": "src/test/commit-context.test.ts",
+      "name": "context sweep public contracts D-CTX-001: CLI honors the configured local provider and saves extracted context",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-CTX-001",
+      "mutationIds": [
+        "context-cli-config-repair"
+      ],
+      "evidence": "Ordinary regression fails on the real CLI/MCP path; inverse repair makes the expected-failure case unexpectedly pass. Application restored."
+    },
+    {
+      "file": "src/test/commit-context.test.ts",
+      "name": "context sweep public contracts D-CTX-002: MCP repeats scoped context without adding duplicate memories",
+      "classification": "STRONG",
+      "action": "expected_failure",
+      "defectId": "D-CTX-002",
+      "mutationIds": [
+        "context-scoped-dedup-repair"
+      ],
+      "evidence": "Ordinary regression fails on the real CLI/MCP path; inverse repair makes the expected-failure case unexpectedly pass. Application restored."
+    }
+  ]
+}
