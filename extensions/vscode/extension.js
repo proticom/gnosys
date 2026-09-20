@@ -11,7 +11,7 @@
  */
 
 const vscode = require("vscode");
-const { execSync } = require("child_process");
+const { execFileSync } = require("child_process");
 const path = require("path");
 
 function activate(context) {
@@ -41,7 +41,7 @@ function activate(context) {
       const relativePath = path.relative(storePath, filePath);
 
       try {
-        execSync(`npx gnosys reinforce "${relativePath}"`, {
+        execFileSync("npx", ["gnosys", "reinforce", relativePath], {
           cwd: path.dirname(storePath),
           timeout: 10000,
         });
