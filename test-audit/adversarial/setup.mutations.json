@@ -1,0 +1,14 @@
+[
+  {
+    "id": "setup-completion-exit-status",
+    "file": "src/lib/setup.ts",
+    "description": "Return a failing process status after successful interactive setup completion.",
+    "search": "    setupCompleted = true;\n    rl.close();",
+    "replace": "    setupCompleted = true;\n    process.exitCode = 9;\n    rl.close();",
+    "tests": [
+      "src/test/setup-adversarial.test.ts"
+    ],
+    "testName": "completes the interactive",
+    "build": true
+  }
+]
