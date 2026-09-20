@@ -97,6 +97,7 @@ export class GnosysSearch {
     if (!this.db) return 0;
     const memories = await store.getAllMemories();
 
+    const deletePath = this.db.prepare("DELETE FROM memories_fts WHERE relative_path = ?");
     const insert = this.db.prepare(
       "INSERT INTO memories_fts (relative_path, title, category, tags, relevance, content) VALUES (?, ?, ?, ?, ?, ?)"
     );
@@ -113,6 +114,7 @@ export class GnosysSearch {
           ? `${storeLabel}:${m.relativePath}`
           : m.relativePath;
 
+        deletePath.run(indexPath);
         insert.run(
           indexPath,
           m.frontmatter.title,
@@ -135,6 +137,7 @@ export class GnosysSearch {
   addDbMemories(memories: Array<{ id: string; title: string; category: string; tags: string; relevance: string | null; content: string }>, storeLabel?: string): number {
     if (!this.db) return 0;
 
+    const deletePath = this.db.prepare("DELETE FROM memories_fts WHERE relative_path = ?");
     const insert = this.db.prepare(
       "INSERT INTO memories_fts (relative_path, title, category, tags, relevance, content) VALUES (?, ?, ?, ?, ?, ?)"
     );
@@ -158,6 +161,7 @@ export class GnosysSearch {
           ? `${storeLabel}:${m.category}/${m.id}.md`
           : `${m.category}/${m.id}.md`;
 
+        deletePath.run(indexPath);
         insert.run(
           indexPath,
           m.title,
