@@ -1,0 +1,17 @@
+{
+  "baseCommit": "203c4e7e488cea66bfd9a3ad687d9d1dda309d16",
+  "command": [
+    "git",
+    "diff",
+    "--name-only",
+    "203c4e7e488cea66bfd9a3ad687d9d1dda309d16",
+    "--",
+    "src",
+    ":!src/test",
+    "prompts",
+    "extensions"
+  ],
+  "exitCode": 0,
+  "changedApplicationPaths": [],
+  "untrackedApplicationPaths": []
+}

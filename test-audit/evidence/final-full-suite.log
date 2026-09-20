@@ -1,0 +1,64 @@
+
+> gnosys@6.2.1 pretest
+> npm run build
+
+
+> gnosys@6.2.1 prebuild
+> node -e "require('fs').rmSync('dist',{recursive:true,force:true})"
+
+
+> gnosys@6.2.1 build
+> tsc -p tsconfig.build.json
+
+
+> gnosys@6.2.1 postbuild
+> node -e "const fs=require('fs');for (const f of ['dist/cli.js','dist/index.js']) { try { fs.chmodSync(f,0o755); } catch {} }"
+
+
+> gnosys@6.2.1 test
+> vitest run --reporter=json --outputFile=test-audit/evidence/final-full-suite.json
+
+lsof: WARNING: can't stat() smbfs file system /Volumes/.timemachine/ProticomNAS._smb._tcp.local./F4C8FDE5-56AE-4196-AB5C-4AA1ECEAED18/TimeMachine
+      Output information may be incomplete.
+      assuming "dev=36000642" from mount table
+lsof: WARNING: can't stat() smbfs file system /Volumes/.timemachine/ProticomNAS._smb._tcp.local./F4C8FDE5-56AE-4196-AB5C-4AA1ECEAED18/TimeMachine
+      Output information may be incomplete.
+      assuming "dev=36000642" from mount table
+lsof: WARNING: can't stat() smbfs file system /Volumes/.timemachine/ProticomNAS._smb._tcp.local./F4C8FDE5-56AE-4196-AB5C-4AA1ECEAED18/TimeMachine
+      Output information may be incomplete.
+      assuming "dev=36000642" from mount table
+lsof: WARNING: can't stat() smbfs file system /Volumes/.timemachine/ProticomNAS._smb._tcp.local./F4C8FDE5-56AE-4196-AB5C-4AA1ECEAED18/TimeMachine
+      Output information may be incomplete.
+      assuming "dev=36000642" from mount table
+lsof: WARNING: can't stat() smbfs file system /Volumes/.timemachine/ProticomNAS._smb._tcp.local./F4C8FDE5-56AE-4196-AB5C-4AA1ECEAED18/TimeMachine
+      Output information may be incomplete.
+      assuming "dev=36000642" from mount table
+gnosys: audit native read failed
+Error: audit native read failed
+    at Database.<anonymous> (/Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit/src/test/dream-coverage.test.ts:630:82)
+    at Database.prepare (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/spy/dist/index.js:332:34)
+    at GnosysDB.isMigrated (/Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit/src/lib/db.ts:1988:28)
+    at GnosysDreamEngine.dream (/Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit/src/lib/dream.ts:432:44)
+    at DreamScheduler.checkIdle (/Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit/src/lib/dream.ts:1334:41)
+    at /Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit/src/lib/dream.ts:1260:49
+    at callTimer (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/vitest/dist/chunks/test.DNmyFkvJ.js:1773:25)
+    at doTickInner (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/vitest/dist/chunks/test.DNmyFkvJ.js:2444:30)
+    at doTick (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/vitest/dist/chunks/test.DNmyFkvJ.js:2525:21)
+    at Immediate.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/vitest/dist/chunks/test.DNmyFkvJ.js:2546:34)
+gnosys: remote unreachable (/var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-read-overlay-WSZmGv/offline-master), using local cache
+Error: remote unreachable (/var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-read-overlay-WSZmGv/offline-master), using local cache
+    at Function.openCentral (/Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit/src/lib/db.ts:487:16)
+    at resolveClientRead (/Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit/src/lib/clientReadResolve.ts:32:28)
+    at runReadCommand (/Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit/src/lib/readCommand.ts:26:20)
+    at read (/Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit/src/test/read-command-overlay.test.ts:41:3)
+    at /Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit/src/test/read-command-overlay.test.ts:51:31
+    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
+ [38;5;167m◌[0m [38;5;252mvalidating openrouter / nemotron…[0m
+ [38;5;167m✗[0m [38;5;252mmodel test failed[0m                                     [38;5;242mHTTP 401: unauthorized[0m
+ [38;5;167m◌[0m [38;5;252mvalidating openrouter / nemotron…[0m
+ [38;5;108m✓[0m [38;5;252mmodel validated[0m                                 [38;5;242m0 ms · openrouter / nemotron[0m
+
+ [38;5;252mdead[0m      [38;5;242m(1) — no .gnosys/ directory[0m
+   [38;5;167m✗[0m  [38;5;242m~/no-gnosys-2[0m
+
+JSON report written to /Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit/test-audit/evidence/final-full-suite.json

@@ -1,0 +1,35 @@
+[
+  {
+    "name": "typecheck",
+    "command": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 3.58,
+    "evidence": "test-audit/evidence/final-typecheck.log"
+  },
+  {
+    "name": "lint",
+    "command": [
+      "npm",
+      "run",
+      "lint"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.36,
+    "evidence": "test-audit/evidence/final-lint.log"
+  },
+  {
+    "name": "knip",
+    "command": [
+      "npm",
+      "run",
+      "knip"
+    ],
+    "exitCode": 1,
+    "durationSeconds": 0.82,
+    "evidence": "test-audit/evidence/final-knip.log"
+  }
+]

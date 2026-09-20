@@ -1,0 +1,757 @@
+{
+  "schemaVersion": 1,
+  "changes": [
+    {
+      "featureId": "F06",
+      "obligationKind": "boundary",
+      "before": {
+        "featureId": "F06",
+        "obligationKind": "boundary",
+        "obligation": "Default maxTokens 4096, generation 60s and probes 10s; streamed partial failures do not silently succeed",
+        "status": "NO_STRONG_COVERAGE",
+        "tests": [],
+        "limitations": "No Strong behavior case is mapped to this exact obligation after merging all final delivered maps. This is an acceptance-evidence gap; the feature may have strong coverage for its other obligations."
+      },
+      "after": {
+        "featureId": "F06",
+        "obligationKind": "boundary",
+        "obligation": "Default maxTokens 4096, generation 60s and probes 10s; streamed partial failures do not silently succeed",
+        "status": "PARTIAL",
+        "tests": [
+          {
+            "file": "src/test/llm-providers.test.ts",
+            "name": "LLM Provider System createProvider creates xAI provider with correct baseUrl",
+            "mutationIds": [
+              "g2-xai-url"
+            ]
+          },
+          {
+            "file": "src/test/llm-providers.test.ts",
+            "name": "LLM Provider System createProvider creates Mistral provider with correct baseUrl",
+            "mutationIds": [
+              "g2-mistral-url"
+            ]
+          },
+          {
+            "file": "src/test/llm-providers.test.ts",
+            "name": "LLM Provider System createProvider creates custom provider with user-provided baseUrl",
+            "mutationIds": [
+              "g2-custom-url"
+            ]
+          }
+        ],
+        "limitations": "Public providers send literal max_tokens=4096 in actual fetch request bodies and return the boundary response. Generation/probe deadlines and partial streaming failure are not tested by these cases; no live provider is contacted."
+      },
+      "reason": "Existing Strong behavior evidence was omitted from the delivered feature maps. Exact current runtime names and Strong ledger classifications verified; source assertions reviewed."
+    },
+    {
+      "featureId": "F07",
+      "obligationKind": "permissions",
+      "before": {
+        "featureId": "F07",
+        "obligationKind": "permissions",
+        "obligation": "Optional stores reject writes; global requires explicit target; MCP freeform add is rejected unless GNOSYS_ALLOW_FREEFORM_ADD=1",
+        "status": "NO_STRONG_COVERAGE",
+        "tests": [],
+        "limitations": "No Strong behavior case is mapped to this exact obligation after merging all final delivered maps. This is an acceptance-evidence gap; the feature may have strong coverage for its other obligations."
+      },
+      "after": {
+        "featureId": "F07",
+        "obligationKind": "permissions",
+        "obligation": "Optional stores reject writes; global requires explicit target; MCP freeform add is rejected unless GNOSYS_ALLOW_FREEFORM_ADD=1",
+        "status": "PARTIAL",
+        "tests": [
+          {
+            "file": "src/test/freeform-add-gate.test.ts",
+            "name": "gnosys_add freeform gate rejects freeform MCP writes by default",
+            "mutationIds": [
+              "g2-freeform-gate"
+            ]
+          },
+          {
+            "file": "src/test/freeform-add-gate.test.ts",
+            "name": "gnosys_add freeform gate redirect message lists the structured fields agents must supply",
+            "mutationIds": [
+              "g2-freeform-guidance"
+            ]
+          },
+          {
+            "file": "src/test/resolver-tiers.test.ts",
+            "name": "resolveForProject cross-project tiers still defaults writes to project (global is never auto-selected)",
+            "mutationIds": []
+          }
+        ],
+        "limitations": "Real MCP calls refuse freeform writes without the opt-in and return structured retry guidance. Public resolver chooses project rather than global for an implicit target. Optional-store write rejection and successful freeform opt-in are not demonstrated."
+      },
+      "reason": "Existing Strong behavior evidence was omitted from the delivered feature maps. Exact current runtime names and Strong ledger classifications verified; source assertions reviewed."
+    },
+    {
+      "featureId": "F09",
+      "obligationKind": "failure",
+      "before": {
+        "featureId": "F09",
+        "obligationKind": "failure",
+        "obligation": "Malformed FTS input remains safe and gives defined output",
+        "status": "NO_STRONG_COVERAGE",
+        "tests": [],
+        "limitations": "No Strong behavior case is mapped to this exact obligation after merging all final delivered maps. This is an acceptance-evidence gap; the feature may have strong coverage for its other obligations."
+      },
+      "after": {
+        "featureId": "F09",
+        "obligationKind": "failure",
+        "obligation": "Malformed FTS input remains safe and gives defined output",
+        "status": "PARTIAL",
+        "tests": [
+          {
+            "file": "src/test/ftsQuery.test.ts",
+            "name": "ftsTerms strips quote characters",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/ftsQuery.test.ts",
+            "name": "ftsTerms drops tokens with no letters or digits",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/ftsQuery.test.ts",
+            "name": "ftsAndQuery quotes terms containing FTS5-hostile characters",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/fts-or-fallback.test.ts",
+            "name": "GnosysDB FTS OR fallback (central DB) discoverFts punctuation-only and empty queries return empty, not throw",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/fts-or-fallback.test.ts",
+            "name": "GnosysDB FTS OR fallback (central DB) discoverFts FTS5-hostile characters no longer cause syntax errors",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/fts-or-fallback.test.ts",
+            "name": "GnosysDB FTS OR fallback (central DB) searchFts punctuation-only queries return empty",
+            "mutationIds": []
+          }
+        ],
+        "limitations": "Literal sanitizer outputs cover quotes, punctuation, hyphens, colon and NOT. Real central DB discovery/search return empty for punctuation-only queries, and a hostile hyphenated query retains the exact matching ID. Arbitrary malformed FTS grammar and all transport surfaces are not established."
+      },
+      "reason": "Existing Strong behavior evidence was omitted from the delivered feature maps. Exact current runtime names and Strong ledger classifications verified; source assertions reviewed."
+    },
+    {
+      "featureId": "F14",
+      "obligationKind": "failure",
+      "before": {
+        "featureId": "F14",
+        "obligationKind": "failure",
+        "obligation": "Invalid filter/date/number/category receives defined error",
+        "status": "NO_STRONG_COVERAGE",
+        "tests": [],
+        "limitations": "No Strong behavior case is mapped to this exact obligation after merging all final delivered maps. This is an acceptance-evidence gap; the feature may have strong coverage for its other obligations."
+      },
+      "after": {
+        "featureId": "F14",
+        "obligationKind": "failure",
+        "obligation": "Invalid filter/date/number/category receives defined error",
+        "status": "PARTIAL",
+        "tests": [
+          {
+            "file": "src/test/mcp-fuzz.test.ts",
+            "name": "MCP tool input fuzzing rejects malformed input at the declared required-field validation boundary",
+            "mutationIds": [
+              "mcp-structured-content-optional"
+            ]
+          }
+        ],
+        "limitations": "The required-field census explicitly includes gnosys_tags_add category and tag; wrong-type/missing values return an MCP input-validation error naming the field. Optional lens filters, dates, numeric ranges and invalid-but-string category values remain untested."
+      },
+      "reason": "Existing Strong behavior evidence was omitted from the delivered feature maps. Exact current runtime names and Strong ledger classifications verified; source assertions reviewed."
+    },
+    {
+      "featureId": "F16",
+      "obligationKind": "failure",
+      "before": {
+        "featureId": "F16",
+        "obligationKind": "failure",
+        "obligation": "Unknown root and broken wikilinks produce defined results",
+        "status": "NO_STRONG_COVERAGE",
+        "tests": [],
+        "limitations": "No Strong behavior case is mapped to this exact obligation after merging all final delivered maps. This is an acceptance-evidence gap; the feature may have strong coverage for its other obligations."
+      },
+      "after": {
+        "featureId": "F16",
+        "obligationKind": "failure",
+        "obligation": "Unknown root and broken wikilinks produce defined results",
+        "status": "PARTIAL",
+        "tests": [
+          {
+            "file": "src/test/mcp-trace-tools.test.ts",
+            "name": "gnosys_traverse errors on an unknown memory id",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/wikilinks.test.ts",
+            "name": "resolveLink returns null for non-existent target",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/wikilinks.test.ts",
+            "name": "buildLinkGraph identifies orphaned links",
+            "mutationIds": []
+          }
+        ],
+        "limitations": "Real MCP traversal returns Memory not found for a missing root. Public wikilink resolution returns null for a missing target and graph construction identifies the literal orphan target/source. Other malformed-link syntax is outside these cases."
+      },
+      "reason": "Existing Strong behavior evidence was omitted from the delivered feature maps. Exact current runtime names and Strong ledger classifications verified; source assertions reviewed."
+    },
+    {
+      "featureId": "F24",
+      "obligationKind": "failure",
+      "before": {
+        "featureId": "F24",
+        "obligationKind": "failure",
+        "obligation": "Unknown preference deletion and absent rules target report clear status",
+        "status": "NO_STRONG_COVERAGE",
+        "tests": [],
+        "limitations": "No Strong behavior case is mapped to this exact obligation after merging all final delivered maps. This is an acceptance-evidence gap; the feature may have strong coverage for its other obligations."
+      },
+      "after": {
+        "featureId": "F24",
+        "obligationKind": "failure",
+        "obligation": "Unknown preference deletion and absent rules target report clear status",
+        "status": "PARTIAL",
+        "tests": [
+          {
+            "file": "src/test/preferences.test.ts",
+            "name": "preferences returns false when deleting nonexistent preference",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/preferences.test.ts",
+            "name": "syncRules (end-to-end) returns null when no agent rules target",
+            "mutationIds": []
+          }
+        ],
+        "limitations": "Public preference deletion returns literal false for an unknown key, and syncRules returns null when no rules target is supplied. CLI/MCP rendering of those outcomes is not asserted."
+      },
+      "reason": "Existing Strong behavior evidence was omitted from the delivered feature maps. Exact current runtime names and Strong ledger classifications verified; source assertions reviewed."
+    },
+    {
+      "featureId": "F24",
+      "obligationKind": "permissions",
+      "before": {
+        "featureId": "F24",
+        "obligationKind": "permissions",
+        "obligation": "MCP sync is read-only unless commit_to_disk=true; user preferences apply across projects",
+        "status": "NO_STRONG_COVERAGE",
+        "tests": [],
+        "limitations": "No Strong behavior case is mapped to this exact obligation after merging all final delivered maps. This is an acceptance-evidence gap; the feature may have strong coverage for its other obligations."
+      },
+      "after": {
+        "featureId": "F24",
+        "obligationKind": "permissions",
+        "obligation": "MCP sync is read-only unless commit_to_disk=true; user preferences apply across projects",
+        "status": "PARTIAL",
+        "tests": [
+          {
+            "file": "src/test/preferences.test.ts",
+            "name": "preferences stores as user-scoped memory",
+            "mutationIds": []
+          }
+        ],
+        "limitations": "Preference creation persists scope=user and project_id=null, protecting the shared storage scope. This case does not execute a second project context or MCP sync with commit_to_disk=false/true."
+      },
+      "reason": "Existing Strong behavior evidence was omitted from the delivered feature maps. Exact current runtime names and Strong ledger classifications verified; source assertions reviewed."
+    },
+    {
+      "featureId": "F25",
+      "obligationKind": "permissions",
+      "before": {
+        "featureId": "F25",
+        "obligationKind": "permissions",
+        "obligation": "Audit does not expose secrets and respects requested filters",
+        "status": "NO_STRONG_COVERAGE",
+        "tests": [],
+        "limitations": "No Strong behavior case is mapped to this exact obligation after merging all final delivered maps. This is an acceptance-evidence gap; the feature may have strong coverage for its other obligations."
+      },
+      "after": {
+        "featureId": "F25",
+        "obligationKind": "permissions",
+        "obligation": "Audit does not expose secrets and respects requested filters",
+        "status": "PARTIAL",
+        "tests": [
+          {
+            "file": "src/test/phase9d.coverage-overhaul.test.ts",
+            "name": "TC-9d.3: Audit \u2014 init, log, read, filter, format readAuditLog filters by operation",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/phase9d.coverage-overhaul.test.ts",
+            "name": "TC-9d.3: Audit \u2014 init, log, read, filter, format readAuditLog filters by limit (most recent)",
+            "mutationIds": []
+          }
+        ],
+        "limitations": "Public audit reads exclude a competing operation and return the literal newest query endpoints for a limit of three. Secret redaction and project/other filters are not covered."
+      },
+      "reason": "Existing Strong behavior evidence was omitted from the delivered feature maps. Exact current runtime names and Strong ledger classifications verified; source assertions reviewed."
+    },
+    {
+      "featureId": "F28",
+      "obligationKind": "failure",
+      "before": {
+        "featureId": "F28",
+        "obligationKind": "failure",
+        "obligation": "Bad gzip/JSON/format/version and invalid strategy fail without destructive partial import",
+        "status": "NO_STRONG_COVERAGE",
+        "tests": [],
+        "limitations": "No Strong behavior case is mapped to this exact obligation after merging all final delivered maps. This is an acceptance-evidence gap; the feature may have strong coverage for its other obligations."
+      },
+      "after": {
+        "featureId": "F28",
+        "obligationKind": "failure",
+        "obligation": "Bad gzip/JSON/format/version and invalid strategy fail without destructive partial import",
+        "status": "PARTIAL",
+        "tests": [
+          {
+            "file": "src/test/export-import-project.test.ts",
+            "name": "project bundle round-trip readBundle rejects malformed bundles",
+            "mutationIds": []
+          }
+        ],
+        "limitations": "Public readBundle rejects valid gzip/JSON with an invalid bundle shape using the Not a Gnosys project bundle diagnostic. Bad compression/JSON/version, invalid import strategy and atomicity after a partial import remain untested."
+      },
+      "reason": "Existing Strong behavior evidence was omitted from the delivered feature maps. Exact current runtime names and Strong ledger classifications verified; source assertions reviewed."
+    },
+    {
+      "featureId": "F30",
+      "obligationKind": "failure",
+      "before": {
+        "featureId": "F30",
+        "obligationKind": "failure",
+        "obligation": "Unknown root, missing moved project and conflicting target report failure",
+        "status": "NO_STRONG_COVERAGE",
+        "tests": [],
+        "limitations": "No Strong behavior case is mapped to this exact obligation after merging all final delivered maps. This is an acceptance-evidence gap; the feature may have strong coverage for its other obligations."
+      },
+      "after": {
+        "featureId": "F30",
+        "obligationKind": "failure",
+        "obligation": "Unknown root, missing moved project and conflicting target report failure",
+        "status": "PARTIAL",
+        "tests": [
+          {
+            "file": "src/test/v511-projectPaths.test.ts",
+            "name": "v5.11 resolveProjectPath returns null when the project's root isn't configured on this machine",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/v511-projectPaths.test.ts",
+            "name": "v5.11 resolveProjectPath returns null for an unknown project",
+            "mutationIds": []
+          }
+        ],
+        "limitations": "Public project-path resolution returns literal null for an unconfigured root and an unknown project ID. Missing moved directories and conflicting migration targets are not covered."
+      },
+      "reason": "Existing Strong behavior evidence was omitted from the delivered feature maps. Exact current runtime names and Strong ledger classifications verified; source assertions reviewed."
+    },
+    {
+      "featureId": "F30",
+      "obligationKind": "permissions",
+      "before": {
+        "featureId": "F30",
+        "obligationKind": "permissions",
+        "obligation": "Machine-local settings are not synced; paths resolve under selected root",
+        "status": "NO_STRONG_COVERAGE",
+        "tests": [],
+        "limitations": "No Strong behavior case is mapped to this exact obligation after merging all final delivered maps. This is an acceptance-evidence gap; the feature may have strong coverage for its other obligations."
+      },
+      "after": {
+        "featureId": "F30",
+        "obligationKind": "permissions",
+        "obligation": "Machine-local settings are not synced; paths resolve under selected root",
+        "status": "PARTIAL",
+        "tests": [
+          {
+            "file": "src/test/v511-projectPaths.test.ts",
+            "name": "v5.11 resolveProjectPath resolves via root_id + rel_path against this machine's root",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/v511-projectPaths.test.ts",
+            "name": "v5.11 resolveProjectPath prefers a per-machine override over the root resolution",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/v511-machineConfig.test.ts",
+            "name": "v5.11 machineConfig: root <-> relative path helpers relPathUnderRoot picks the deepest matching root",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/v511-machineConfig.test.ts",
+            "name": "v5.11 machineConfig: root <-> relative path helpers relPathUnderRoot returns null for a path outside every root",
+            "mutationIds": []
+          }
+        ],
+        "limitations": "Public path resolution returns the exact machine root or explicit machine override, chooses the deepest matching root, and returns null outside configured roots. Exclusion of machine settings from synchronization is not tested."
+      },
+      "reason": "Existing Strong behavior evidence was omitted from the delivered feature maps. Exact current runtime names and Strong ledger classifications verified; source assertions reviewed."
+    },
+    {
+      "featureId": "F31",
+      "obligationKind": "permissions",
+      "before": {
+        "featureId": "F31",
+        "obligationKind": "permissions",
+        "obligation": "Conflict choice follows explicit caller choice; local/remote paths are distinct",
+        "status": "NO_STRONG_COVERAGE",
+        "tests": [],
+        "limitations": "No Strong behavior case is mapped to this exact obligation after merging all final delivered maps. This is an acceptance-evidence gap; the feature may have strong coverage for its other obligations."
+      },
+      "after": {
+        "featureId": "F31",
+        "obligationKind": "permissions",
+        "obligation": "Conflict choice follows explicit caller choice; local/remote paths are distinct",
+        "status": "PARTIAL",
+        "tests": [
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.resolve keeps local version on resolve(local)",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/remote.test.ts",
+            "name": "RemoteSync.resolve keeps remote version on resolve(remote)",
+            "mutationIds": []
+          }
+        ],
+        "limitations": "Explicit local/remote choices persist the corresponding literal title into both separate SQLite stores; local choice also clears the conflict. Physical network mounts and canonical-path alias protection are not demonstrated."
+      },
+      "reason": "Existing Strong behavior evidence was omitted from the delivered feature maps. Exact current runtime names and Strong ledger classifications verified; source assertions reviewed."
+    },
+    {
+      "featureId": "F32",
+      "obligationKind": "failure",
+      "before": {
+        "featureId": "F32",
+        "obligationKind": "failure",
+        "obligation": "Bad checksum/copy failure keeps prior accepted snapshot; unreachable master preserves visible pending adds",
+        "status": "NO_STRONG_COVERAGE",
+        "tests": [],
+        "limitations": "No Strong behavior case is mapped to this exact obligation after merging all final delivered maps. This is an acceptance-evidence gap; the feature may have strong coverage for its other obligations."
+      },
+      "after": {
+        "featureId": "F32",
+        "obligationKind": "failure",
+        "obligation": "Bad checksum/copy failure keeps prior accepted snapshot; unreachable master preserves visible pending adds",
+        "status": "PARTIAL",
+        "tests": [
+          {
+            "file": "src/test/syncClientRead.test.ts",
+            "name": "syncClientRead v13 openClientReadContext returns pending-only when offline without snapshot",
+            "mutationIds": [
+              "g2-pending-content"
+            ]
+          }
+        ],
+        "limitations": "With the master directory removed, the public read context retains the exact pending ID, title and body. Checksum/copy failure preserving an earlier accepted snapshot is not covered."
+      },
+      "reason": "Existing Strong behavior evidence was omitted from the delivered feature maps. Exact current runtime names and Strong ledger classifications verified; source assertions reviewed."
+    },
+    {
+      "featureId": "F38",
+      "obligationKind": "failure",
+      "before": {
+        "featureId": "F38",
+        "obligationKind": "failure",
+        "obligation": "Bad URL/sitemap/source, provider failure and unsupported source give useful errors",
+        "status": "NO_STRONG_COVERAGE",
+        "tests": [],
+        "limitations": "No Strong behavior case is mapped to this exact obligation after merging all final delivered maps. This is an acceptance-evidence gap; the feature may have strong coverage for its other obligations."
+      },
+      "after": {
+        "featureId": "F38",
+        "obligationKind": "failure",
+        "obligation": "Bad URL/sitemap/source, provider failure and unsupported source give useful errors",
+        "status": "PARTIAL",
+        "tests": [
+          {
+            "file": "src/test/webIngest.test.ts",
+            "name": "ingestSite with sitemap handles fetch errors gracefully",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/webExpansions.test.ts",
+            "name": "generateExpansions returns an empty map instead of throwing on malformed provider output",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "mutationIds": [
+              "web-index-validation"
+            ]
+          }
+        ],
+        "limitations": "Real sitemap ingestion records the literal failed URL after a boundary HTTP404 while retaining a successful page. Malformed expansion-provider JSON yields an empty map plus diagnostic; invalid vector-provider config produces an error without index/vector artifacts. Other malformed sitemap/source types remain untested."
+      },
+      "reason": "Existing Strong behavior evidence was omitted from the delivered feature maps. Exact current runtime names and Strong ledger classifications verified; source assertions reviewed."
+    },
+    {
+      "featureId": "F40",
+      "obligationKind": "permissions",
+      "before": {
+        "featureId": "F40",
+        "obligationKind": "permissions",
+        "obligation": "Cleanup/prune confirmation honored; upgrade uses argv-safe package manager invocation; unrelated files preserved",
+        "status": "NO_STRONG_COVERAGE",
+        "tests": [],
+        "limitations": "No Strong behavior case is mapped to this exact obligation after merging all final delivered maps. This is an acceptance-evidence gap; the feature may have strong coverage for its other obligations."
+      },
+      "after": {
+        "featureId": "F40",
+        "obligationKind": "permissions",
+        "obligation": "Cleanup/prune confirmation honored; upgrade uses argv-safe package manager invocation; unrelated files preserved",
+        "status": "PARTIAL",
+        "tests": [
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H \u2014 gnosys cleanup non-interactive write with yes=true removes dead+temp and keeps alive",
+            "mutationIds": [
+              "g2-cleanup-classification"
+            ]
+          },
+          {
+            "file": "src/test/v593-cleanup.test.ts",
+            "name": "Phase H \u2014 gnosys cleanup non-interactive write dry-run (interactive=false, yes=false) does NOT write",
+            "mutationIds": [
+              "g2-cleanup-classification"
+            ]
+          },
+          {
+            "file": "src/test/cleanup-rules.test.ts",
+            "name": "removeRulesFromProject strips the GNOSYS block from every known target and keeps user content",
+            "mutationIds": []
+          },
+          {
+            "file": "src/test/cleanup-rules.test.ts",
+            "name": "gnosys cleanup --rules wiring exposes --rules on the cleanup command and routes to removeRulesFromProject",
+            "mutationIds": [
+              "G1-cleanup-rules-cli"
+            ]
+          }
+        ],
+        "limitations": "Public cleanup preserves registry bytes without yes=true, removes only dead/temp entries when confirmed, and preserves literal user content during rule removal including the real CLI path. Interactive confirmation and argv-safe upgrade package-manager execution are not demonstrated."
+      },
+      "reason": "Existing Strong behavior evidence was omitted from the delivered feature maps. Exact current runtime names and Strong ledger classifications verified; source assertions reviewed."
+    },
+    {
+      "featureId": "F22",
+      "obligationKind": "success",
+      "before": {
+        "featureId": "F22",
+        "obligationKind": "success",
+        "obligation": "Duplicate detection, decay and consolidation act on eligible memories; dearchive restores searchable memory",
+        "status": "NO_STRONG_COVERAGE",
+        "tests": [],
+        "limitations": "No Strong test for this obligation was identified in the reviewed current ledger or candidate source checks. Adjacent feature success/schema/helper cases are not evidence for this path."
+      },
+      "after": {
+        "featureId": "F22",
+        "obligationKind": "success",
+        "obligation": "Duplicate detection, decay and consolidation act on eligible memories; dearchive restores searchable memory",
+        "status": "PARTIAL",
+        "tests": [
+          {
+            "file": "src/test/maintenance-audit.test.ts",
+            "name": "maintenance public success paths auto-apply persists stale confidence decay and leaves a freshly reinforced memory unchanged",
+            "mutationIds": [
+              "maintenance-decay-keeps-original"
+            ]
+          },
+          {
+            "file": "src/test/maintenance-audit.test.ts",
+            "name": "maintenance public success paths dearchive restores exact content to active database search and removes the archived copy",
+            "mutationIds": [
+              "maintenance-dearchive-drops-content"
+            ]
+          }
+        ],
+        "limitations": "Proves persistent decay for one eligible old memory with a freshly reinforced control, and archive-to-central-DB restoration with body-only FTS search and archive cleanup. Does not prove duplicate detection, LLM consolidation, CLI/MCP command behavior, restoration over an existing central row, dry-run, repeated maintenance, project isolation, or other threshold boundaries."
+      },
+      "reason": "Final new maintenance success cases pass and each kills its application fault after integration."
+    }
+  ],
+  "inventoryCorrection": {
+    "featureId": "F37",
+    "obligationKind": "success",
+    "priorText": "Start/status/stop operate real background process; generated helper calls add/recall/read/update successfully through socket",
+    "newText": "Start/status/stop operate real background process; generated helper calls add/recall/reinforce/list/stats/reflect/traverse successfully through socket",
+    "reason": "Initial inventory overstatement. Documentation promises add/recall; the public helper actually exports add, recall, reinforce, list, stats, reflect and traverse. No documentation/source promise for a generated helper read/update API was found. Socket server operations were incorrectly conflated with generated helper exports.",
+    "sources": [
+      "docs/commands/helper.md:31",
+      "docs/commands/helper-generate.md:33",
+      "src/cli/sandbox.ts:13",
+      "src/cli/sandbox.ts:50",
+      "src/sandbox/helper-template.ts:133",
+      "src/sandbox/helper-template.ts:151",
+      "src/sandbox/helper-template.ts:172",
+      "src/sandbox/helper-template.ts:186",
+      "src/sandbox/helper-template.ts:205",
+      "src/sandbox/helper-template.ts:219",
+      "src/sandbox/helper-template.ts:244"
+    ],
+    "basis": "README/docs and public source only; test outcomes did not determine the correction.",
+    "originalSnapshot": "test-audit/features.original.json"
+  },
+  "remainingGaps": [
+    {
+      "featureId": "F01",
+      "obligationKind": "permissions",
+      "obligation": "Postinstall and errors do not disclose keys",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F02",
+      "obligationKind": "failure",
+      "obligation": "Missing/unwritable project directory reports failure",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F03",
+      "obligationKind": "permissions",
+      "obligation": "Secrets are not printed by config display",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F08",
+      "obligationKind": "permissions",
+      "obligation": "No cross-project write caused by cwd fallback when project is supplied",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F10",
+      "obligationKind": "permissions",
+      "obligation": "Embedding generation uses configured provider and redacts credentials",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F11",
+      "obligationKind": "failure",
+      "obligation": "Unknown project and invalid scope are handled explicitly",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F12",
+      "obligationKind": "failure",
+      "obligation": "Unavailable store/provider does not corrupt hook protocol or hang host",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F12",
+      "obligationKind": "permissions",
+      "obligation": "Recall respects project scope; hook stdout contains only intended protocol payload",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F13",
+      "obligationKind": "failure",
+      "obligation": "No memories, provider failure and missing embedding fallback report useful outcomes",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F13",
+      "obligationKind": "boundary",
+      "obligation": "Retrieval limit; duplicate citations; long memory context",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F13",
+      "obligationKind": "permissions",
+      "obligation": "Stored instructions are treated as data and credentials are excluded from prompts",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F14",
+      "obligationKind": "permissions",
+      "obligation": "Read-only layer remains readable but tag/write operations target writable registry",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F15",
+      "obligationKind": "permissions",
+      "obligation": "Client add-only restrictions block unsupported update/reinforce operations",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F16",
+      "obligationKind": "permissions",
+      "obligation": "Graph/traverse results obey intended project scope",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F17",
+      "obligationKind": "failure",
+      "obligation": "Missing/unreadable directory and parse failure report bounded errors",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F21",
+      "obligationKind": "permissions",
+      "obligation": "Output path handling and file-read scope remain deliberate",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F22",
+      "obligationKind": "success",
+      "obligation": "Duplicate detection, decay and consolidation act on eligible memories; dearchive restores searchable memory",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F22",
+      "obligationKind": "boundary",
+      "obligation": "Dry-run changes nothing; threshold/time boundaries; repeated maintenance; archived/superseded exclusions",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F22",
+      "obligationKind": "permissions",
+      "obligation": "Automatic versus explicit application respects caller option; unrelated projects remain unchanged",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F26",
+      "obligationKind": "failure",
+      "obligation": "Unreachable provider/missing status memory does not invent success",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F26",
+      "obligationKind": "permissions",
+      "obligation": "Rendered HTML escapes stored content; project selection controls report scope",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F27",
+      "obligationKind": "failure",
+      "obligation": "Invalid output path/write failure reports error without corrupt partial output",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F28",
+      "obligationKind": "permissions",
+      "obligation": "Import cannot overwrite unrelated project memory IDs through collision",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F32",
+      "obligationKind": "permissions",
+      "obligation": "Connected clients stage adds and reject unsupported mutations; do not mutate published snapshots",
+      "status": "NO_STRONG_COVERAGE"
+    },
+    {
+      "featureId": "F40",
+      "obligationKind": "failure",
+      "obligation": "Package manager/network failure and unavailable paths fail visibly",
+      "status": "NO_STRONG_COVERAGE"
+    }
+  ]
+}

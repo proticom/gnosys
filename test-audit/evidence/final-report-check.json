@@ -1,0 +1,15 @@
+{
+  "reportRegenerationIdempotent": true,
+  "reportLinks": 81,
+  "missingLinks": [],
+  "status": "complete",
+  "sourceDeclarationsBefore": 1748,
+  "sourceDeclarationsAfter": 1532,
+  "runtimeCases": 1693,
+  "featureObligations": 164,
+  "knownDefects": 11,
+  "expectedFailureCases": 12,
+  "applicationCodeChanged": false,
+  "logNormalization": "Trailing whitespace removed from final logs; all non-whitespace output preserved.",
+  "weakOrHollowProofsIndependentlyJoined": 343
+}

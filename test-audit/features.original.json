@@ -1082,20 +1082,11 @@
         "src/cli/sandbox.ts:13",
         "src/cli/sandbox.ts:50",
         "src/sandbox/server.ts:126",
-        "src/sandbox/server.ts:663",
-        "docs/commands/helper.md:31",
-        "docs/commands/helper-generate.md:33",
-        "src/sandbox/helper-template.ts:133",
-        "src/sandbox/helper-template.ts:151",
-        "src/sandbox/helper-template.ts:172",
-        "src/sandbox/helper-template.ts:186",
-        "src/sandbox/helper-template.ts:205",
-        "src/sandbox/helper-template.ts:219",
-        "src/sandbox/helper-template.ts:244"
+        "src/sandbox/server.ts:663"
       ],
       "obligations": {
         "success": [
-          "Start/status/stop operate real background process; generated helper calls add/recall/reinforce/list/stats/reflect/traverse successfully through socket"
+          "Start/status/stop operate real background process; generated helper calls add/recall/read/update successfully through socket"
         ],
         "failure": [
           "Malformed request, unknown method, unavailable DB/socket and stale PID fail clearly"

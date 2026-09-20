@@ -1,0 +1,392 @@
+
+> gnosys@6.2.1 lint
+> biome check src/
+
+src/cli/agent.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! All these imports are only used as types.
+
+    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
+    4 │  */
+  > 5 │ import { Command } from "commander";
+      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    6 │ import { loadConfig } from "../lib/config.js";
+    7 │ import { getResolver, pkg } from "./_shared.js";
+
+  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.
+
+  i Safe fix: Use import type.
+
+    5 │ import·type·{·Command·}·from·"commander";
+      │        +++++
+
+src/cli/browse.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! All these imports are only used as types.
+
+    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
+    4 │  */
+  > 5 │ import { Command } from "commander";
+      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    6 │ import { getResolver } from "./_shared.js";
+    7 │
+
+  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.
+
+  i Safe fix: Use import type.
+
+    5 │ import·type·{·Command·}·from·"commander";
+      │        +++++
+
+src/cli/core.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! All these imports are only used as types.
+
+    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
+    4 │  */
+  > 5 │ import { Command } from "commander";
+      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    6 │ import { getResolver, resolveProjectId } from "./_shared.js";
+    7 │
+
+  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.
+
+  i Safe fix: Use import type.
+
+    5 │ import·type·{·Command·}·from·"commander";
+      │        +++++
+
+src/cli/data.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! All these imports are only used as types.
+
+    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
+    4 │  */
+  > 5 │ import { Command } from "commander";
+      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    6 │ import { getResolver } from "./_shared.js";
+    7 │
+
+  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.
+
+  i Safe fix: Use import type.
+
+    5 │ import·type·{·Command·}·from·"commander";
+      │        +++++
+
+src/cli/dream.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! All these imports are only used as types.
+
+    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
+    4 │  */
+  > 5 │ import { Command } from "commander";
+      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    6 │
+    7 │ export function registerDream(program: Command): void {
+
+  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.
+
+  i Safe fix: Use import type.
+
+    5 │ import·type·{·Command·}·from·"commander";
+      │        +++++
+
+src/cli/exportCmds.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! All these imports are only used as types.
+
+    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
+    4 │  */
+  > 5 │ import { Command } from "commander";
+      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    6 │
+    7 │ export function registerExport(program: Command): void {
+
+  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.
+
+  i Safe fix: Use import type.
+
+    5 │ import·type·{·Command·}·from·"commander";
+      │        +++++
+
+src/cli/maintenance.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! All these imports are only used as types.
+
+    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
+    4 │  */
+  > 5 │ import { Command } from "commander";
+      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    6 │ import path from "path";
+    7 │ import { getResolver, pkg } from "./_shared.js";
+
+  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.
+
+  i Safe fix: Use import type.
+
+    5 │ import·type·{·Command·}·from·"commander";
+      │        +++++
+
+src/cli/memory.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! All these imports are only used as types.
+
+    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
+    4 │  */
+  > 5 │ import { Command } from "commander";
+      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    6 │ import { getResolver, resolveProjectId } from "./_shared.js";
+    7 │
+
+  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.
+
+  i Safe fix: Use import type.
+
+    5 │ import·type·{·Command·}·from·"commander";
+      │        +++++
+
+src/cli/project.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! All these imports are only used as types.
+
+    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
+    4 │  */
+  > 5 │ import { Command } from "commander";
+      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    6 │ import path from "path";
+    7 │ import fs from "fs/promises";
+
+  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.
+
+  i Safe fix: Use import type.
+
+    5 │ import·type·{·Command·}·from·"commander";
+      │        +++++
+
+src/cli/remote.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! All these imports are only used as types.
+
+    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
+    4 │  */
+  > 5 │ import { Command } from "commander";
+      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    6 │ import { GnosysDB } from "../lib/db.js";
+    7 │ import { outputResult } from "./_shared.js";
+
+  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.
+
+  i Safe fix: Use import type.
+
+    5 │ import·type·{·Command·}·from·"commander";
+      │        +++++
+
+src/cli/runtime.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! All these imports are only used as types.
+
+    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
+    4 │  */
+  > 5 │ import { Command } from "commander";
+      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    6 │ import { loadConfig } from "../lib/config.js";
+    7 │ import { getResolver } from "./_shared.js";
+
+  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.
+
+  i Safe fix: Use import type.
+
+    5 │ import·type·{·Command·}·from·"commander";
+      │        +++++
+
+src/cli/sandbox.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! All these imports are only used as types.
+
+    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
+    4 │  */
+  > 5 │ import { Command } from "commander";
+      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    6 │
+    7 │ export function registerSandbox(program: Command): void {
+
+  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.
+
+  i Safe fix: Use import type.
+
+    5 │ import·type·{·Command·}·from·"commander";
+      │        +++++
+
+src/cli/setup.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! All these imports are only used as types.
+
+    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
+    4 │  */
+  > 5 │ import { Command } from "commander";
+      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    6 │ import path from "path";
+    7 │ import os from "os";
+
+  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.
+
+  i Safe fix: Use import type.
+
+    5 │ import·type·{·Command·}·from·"commander";
+      │        +++++
+
+src/cli/trace.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! All these imports are only used as types.
+
+    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
+    4 │  */
+  > 5 │ import { Command } from "commander";
+      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    6 │
+    7 │ export function registerTrace(program: Command): void {
+
+  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.
+
+  i Safe fix: Use import type.
+
+    5 │ import·type·{·Command·}·from·"commander";
+      │        +++++
+
+src/cli/web.ts:5:8 lint/style/useImportType  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! All these imports are only used as types.
+
+    3 │  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
+    4 │  */
+  > 5 │ import { Command } from "commander";
+      │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    6 │ import path from "path";
+    7 │ import { getResolver } from "./_shared.js";
+
+  i Importing the types with import type ensures that they are removed by the compilers and avoids loading unnecessary modules.
+
+  i Safe fix: Use import type.
+
+    5 │ import·type·{·Command·}·from·"commander";
+      │        +++++
+
+src/lib/federated.ts:121:9 lint/complexity/useOptionalChain  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Change to an optional chain.
+
+    119 │     const r = rawResults[i];
+    120 │     const mem = db.getMemory(r.id);
+  > 121 │     if (!mem || mem.status !== "active") continue;
+        │         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    122 │
+    123 │     const scope = (mem.scope || "project") as MemoryScope;
+
+  i Unsafe fix: Change to an optional chain.
+
+    119 119 │       const r = rawResults[i];
+    120 120 │       const mem = db.getMemory(r.id);
+    121     │ - ····if·(!mem·||·mem.status·!==·"active")·continue;
+        121 │ + ····if·(mem?.status·!==·"active")·continue;
+    122 122 │
+    123 123 │       const scope = (mem.scope || "project") as MemoryScope;
+
+
+src/lib/preferences.ts:123:7 lint/complexity/useOptionalChain  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Change to an optional chain.
+
+    121 │   const id = `pref-${key}`;
+    122 │   const mem = db.getMemory(id);
+  > 123 │   if (!mem || mem.category !== "preferences") return null;
+        │       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    124 │   return memoryToPreference(mem);
+    125 │ }
+
+  i Unsafe fix: Change to an optional chain.
+
+    121 121 │     const id = `pref-${key}`;
+    122 122 │     const mem = db.getMemory(id);
+    123     │ - ··if·(!mem·||·mem.category·!==·"preferences")·return·null;
+        123 │ + ··if·(mem?.category·!==·"preferences")·return·null;
+    124 124 │     return memoryToPreference(mem);
+    125 125 │   }
+
+
+src/lib/preferences.ts:143:7 lint/complexity/useOptionalChain  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Change to an optional chain.
+
+    141 │   const id = `pref-${key}`;
+    142 │   const mem = db.getMemory(id);
+  > 143 │   if (!mem || mem.category !== "preferences") return false;
+        │       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    144 │   db.deleteMemory(id);
+    145 │   return true;
+
+  i Unsafe fix: Change to an optional chain.
+
+    141 141 │     const id = `pref-${key}`;
+    142 142 │     const mem = db.getMemory(id);
+    143     │ - ··if·(!mem·||·mem.category·!==·"preferences")·return·false;
+        143 │ + ··if·(mem?.category·!==·"preferences")·return·false;
+    144 144 │     db.deleteMemory(id);
+    145 145 │     return true;
+
+
+src/lib/setupSyncProjectsCommand.ts:60:3 lint/style/useConst  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! This let declares a variable that is only assigned once.
+
+    58 │   // capture project titles so the Screen 10 row labels can use the
+    59 │   // human-readable name where available.
+  > 60 │   let dbProjects: string[] = [];
+       │   ^^^
+    61 │   const titleByDir = new Map<string, string>();
+    62 │   try {
+
+  i 'dbProjects' is never reassigned.
+
+    58 │   // capture project titles so the Screen 10 row labels can use the
+    59 │   // human-readable name where available.
+  > 60 │   let dbProjects: string[] = [];
+       │       ^^^^^^^^^^
+    61 │   const titleByDir = new Map<string, string>();
+    62 │   try {
+
+  i Safe fix: Use const instead.
+
+     58  58 │     // capture project titles so the Screen 10 row labels can use the
+     59  59 │     // human-readable name where available.
+     60     │ - ··let·dbProjects:·string[]·=·[];
+         60 │ + ··const·dbProjects:·string[]·=·[];
+     61  61 │     const titleByDir = new Map<string, string>();
+     62  62 │     try {
+
+
+src/postinstall.ts:71:13 lint/complexity/useOptionalChain  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ! Change to an optional chain.
+
+    69 │         rl.close();
+    70 │
+  > 71 │         if (!answer || answer.trim().toLowerCase() !== "n") {
+       │             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    72 │           out();
+    73 │           execSync("gnosys upgrade", { stdio: "inherit" });
+
+  i Unsafe fix: Change to an optional chain.
+
+     69  69 │           rl.close();
+     70  70 │
+     71     │ - ········if·(!answer·||·answer.trim().toLowerCase()·!==·"n")·{
+         71 │ + ········if·(answer?.trim().toLowerCase()·!==·"n")·{
+     72  72 │             out();
+     73  73 │             execSync("gnosys upgrade", { stdio: "inherit" });
+
+
+The number of diagnostics exceeds the limit allowed. Use --max-diagnostics to increase it.
+Diagnostics not shown: 3.
+Checked 451 files in 145ms. No fixes applied.
+Found 23 warnings.

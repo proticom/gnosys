@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "corrections": [
+    {
+      "featureId": "F37",
+      "obligationKind": "success",
+      "priorText": "Start/status/stop operate real background process; generated helper calls add/recall/read/update successfully through socket",
+      "newText": "Start/status/stop operate real background process; generated helper calls add/recall/reinforce/list/stats/reflect/traverse successfully through socket",
+      "reason": "Initial inventory overstatement. Documentation promises add/recall; the public helper actually exports add, recall, reinforce, list, stats, reflect and traverse. No documentation/source promise for a generated helper read/update API was found. Socket server operations were incorrectly conflated with generated helper exports.",
+      "sources": [
+        "docs/commands/helper.md:31",
+        "docs/commands/helper-generate.md:33",
+        "src/cli/sandbox.ts:13",
+        "src/cli/sandbox.ts:50",
+        "src/sandbox/helper-template.ts:133",
+        "src/sandbox/helper-template.ts:151",
+        "src/sandbox/helper-template.ts:172",
+        "src/sandbox/helper-template.ts:186",
+        "src/sandbox/helper-template.ts:205",
+        "src/sandbox/helper-template.ts:219",
+        "src/sandbox/helper-template.ts:244"
+      ],
+      "basis": "README/docs and public source only; test outcomes did not determine the correction.",
+      "originalSnapshot": "test-audit/features.original.json"
+    }
+  ]
+}

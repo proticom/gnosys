@@ -1,0 +1,3 @@
+
+> gnosys@6.2.1 typecheck
+> tsc --noEmit

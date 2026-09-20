@@ -1,0 +1,106 @@
+{
+  "complete": true,
+  "checks": [
+    "Full suite: 1,693 passed, zero failed or skipped, including 12 documented expected-failure cases; 95.72 seconds. Evidence: [final-full-suite.json](test-audit/evidence/final-full-suite.json).",
+    "Coverage run: 1,693 passed with the configured thresholds satisfied. Statements 69.83%, branches 59.9%, functions 77.82%, lines 71.75%. These numbers describe instrumented code only. Evidence: [coverage summary](test-audit/evidence/final-coverage-summary.json) and [run log](test-audit/evidence/final-coverage.log).",
+    "Docker setup: all six cases passed in 23.912 seconds. The two real CLI CI scenarios passed in 1.775 and 0.612 seconds. Evidence: [Docker](test-audit/evidence/final-docker-setup.json), [multi-project](test-audit/evidence/final-ci-multi-project.json), [local storage](test-audit/evidence/final-ci-local-storage.json).",
+    "Typecheck passed. Lint passed with 23 warnings. Knip failed on three unused application exports, listed below. Evidence: [static checks](test-audit/evidence/final-static-checks.json), [lint output](test-audit/evidence/final-lint.log), [Knip output](test-audit/evidence/final-knip.log).",
+    "The newly-added-file coverage check passed against the pinned baseline because the audit adds no application modules.",
+    "All 1,748 original declarations, 1,532 current declarations and 1,693 runtime cases reconcile with zero action, classification, source-body, or mutation-proof gaps. Every original WEAK/HOLLOW rating has a surviving fault or explicit structural reason. Evidence: [ledger](test-audit/ledger.json) and [source/runtime reconciliation](test-audit/reconciliation.json).",
+    "All 11 defects were reproduced with ordinary failing tests; all 12 expected-failure cases are linked to those defects. Each inverse repair probe makes its expected-failure case report an unexpected pass.",
+    "Application source, prompts and extension code match the baseline, with no untracked application files. Evidence: [source integrity](test-audit/evidence/final-source-integrity.json).",
+    "The rerunnable AST reconciliation checker passed 10 controlled scenarios. The report generator also rejected stale runtime evidence before writing output. Evidence: [reconciliation self-check](test-audit/evidence/reconcile-selfcheck.json), [stale-report check](test-audit/evidence/report-stale-runtime-rejected.json).",
+    "Behavior-over-implementation removed the CLI source-concatenation helper and source-marker assertions. Build-the-lever produced the inventory, mutation, reconciliation and report scripts used for the final checks."
+  ],
+  "blockers": [
+    {
+      "kind": "ci_failure_preserved_by_scope",
+      "description": "Knip exits 1 for src/lib/remoteWizard.ts:661 (__test), src/lib/setup/summary.ts:370 (__test), and src/lib/setupKeys.ts:716 (setupKeysTestHooks). Their test consumers were removed. Deleting these now-unused exports would change application code, which this audit forbids. The CI dead-code job therefore remains failing; no ignore was added to hide it."
+    },
+    {
+      "kind": "platform_and_service_limits",
+      "description": "Live provider services and credentials, native keychain/scheduler integration, a running VS Code extension host, and physical network-share behavior were not exercised. Tests use local HTTP, external-boundary doubles, subprocesses and temporary local storage. The feature matrix names these limits."
+    },
+    {
+      "kind": "ci_matrix_not_executed",
+      "description": "Verification ran on local macOS with Node 22.17.1 and in the setup Docker image. Other configured Linux/macOS Node 20/22/24 matrix combinations and remote GitHub Actions were not run; no push or PR was authorized."
+    },
+    {
+      "kind": "existing_coverage_gate_limit",
+      "description": "The pre-existing new-file coverage script exits successfully when its base ref cannot be resolved and omits files absent from its coverage summary. The explicit pinned-base check passed here, but this does not establish coverage for excluded modules. See COLL-03 and coverage_scope in test-audit/collection.json."
+    }
+  ],
+  "verification": [
+    {
+      "name": "full_suite",
+      "passed": 1693,
+      "failed": 0,
+      "skipped": 0,
+      "expectedFailureCases": 12,
+      "evidence": "test-audit/evidence/final-full-suite.json"
+    },
+    {
+      "name": "coverage",
+      "exitCode": 0,
+      "percentages": {
+        "lines": 71.75,
+        "statements": 69.83,
+        "functions": 77.82,
+        "branches": 59.9,
+        "branchesTrue": 100
+      },
+      "evidence": "test-audit/evidence/final-coverage-suite.json"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 3.58,
+      "evidence": "test-audit/evidence/final-typecheck.log"
+    },
+    {
+      "name": "lint",
+      "command": [
+        "npm",
+        "run",
+        "lint"
+      ],
+      "exitCode": 0,
+      "durationSeconds": 0.36,
+      "evidence": "test-audit/evidence/final-lint.log"
+    },
+    {
+      "name": "knip",
+      "command": [
+        "npm",
+        "run",
+        "knip"
+      ],
+      "exitCode": 1,
+      "durationSeconds": 0.82,
+      "evidence": "test-audit/evidence/final-knip.log"
+    },
+    {
+      "name": "e2e:setup",
+      "exitCode": 0,
+      "passed": 6,
+      "evidence": "test-audit/evidence/final-docker-setup.json"
+    },
+    {
+      "name": "ci:multi-project",
+      "exitCode": 0,
+      "passed": 1,
+      "evidence": "test-audit/evidence/final-ci-multi-project.json"
+    },
+    {
+      "name": "ci:network-share",
+      "exitCode": 0,
+      "passed": 1,
+      "evidence": "test-audit/evidence/final-ci-local-storage.json"
+    }
+  ]
+}

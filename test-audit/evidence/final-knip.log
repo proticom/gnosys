@@ -1,0 +1,8 @@
+
+> gnosys@6.2.1 knip
+> knip
+
+Unused exports (3)
+__test              src/lib/remoteWizard.ts:661:14
+__test              src/lib/setup/summary.ts:370:14
+setupKeysTestHooks  src/lib/setupKeys.ts:716:14
