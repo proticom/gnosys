@@ -52,7 +52,7 @@ import { buildLinkGraph, getBacklinks, getOutgoingLinks, formatGraphSummary } fr
 import { loadConfig, type GnosysConfig, DEFAULT_CONFIG } from "./lib/config.js";
 import { getLLMProvider, type LLMProvider } from "./lib/llm.js";
 import { recall, formatRecall, } from "./lib/recall.js";
-import { initAudit, readAuditLog, formatAuditTimeline } from "./lib/audit.js";
+import { initAudit, readAuditLog, readAuditFromDb, formatAuditTimeline } from "./lib/audit.js";
 import { logError } from "./lib/log.js";
 import { GnosysDB } from "./lib/db.js";
 import { syncMemoryToDb, syncUpdateToDb, syncDearchiveToDb, syncReinforcementToDb, auditToDb } from "./lib/dbWrite.js";
@@ -3048,11 +3048,14 @@ regTool(
       };
     }
 
-    const entries = readAuditLog(storePath, {
+    const options = {
       days: days || 7,
       operation: operation as any,
       limit: limit || 100,
-    });
+    };
+    const entries = ctx.centralDb?.isAvailable()
+      ? readAuditFromDb(ctx.centralDb, options)
+      : readAuditLog(storePath, options);
 
     return {
       content: [{ type: "text" as const, text: formatAuditTimeline(entries) }],
