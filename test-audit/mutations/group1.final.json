@@ -1,0 +1,3306 @@
+[
+  {
+    "id": "G1-timeline-day",
+    "file": "src/lib/timeline.ts",
+    "search": "return dateStr; // Already YYYY-MM-DD",
+    "replace": "return `${dateStr}-wrong`; // Already YYYY-MM-DD",
+    "tests": [
+      "src/test/timeline.test.ts"
+    ],
+    "testName": "groups\\ by\\ day$",
+    "description": "Wrong calendar-day labels preserve bucket count",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-timeline-week",
+    "file": "src/lib/timeline.ts",
+    "search": "const weekNum = getISOWeek(d);",
+    "replace": "const weekNum = getISOWeek(d) + 1;",
+    "tests": [
+      "src/test/timeline.test.ts"
+    ],
+    "testName": "groups\\ by\\ week$",
+    "description": "Shift every week number by one",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-timeline-sort",
+    "file": "src/lib/timeline.ts",
+    "search": "return entries.sort((a, b) => a.period.localeCompare(b.period));",
+    "replace": "return [];",
+    "tests": [
+      "src/test/timeline.test.ts"
+    ],
+    "testName": "returns\\ entries\\ sorted\\ chronologically$",
+    "description": "Drop all timeline entries",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-timeline-modified",
+    "file": "src/lib/timeline.ts",
+    "search": "modified: modifiedMap.get(key) || 0,",
+    "replace": "modified: created?.count || 0,",
+    "tests": [
+      "src/test/timeline.test.ts"
+    ],
+    "testName": "tracks\\ modified\\ separately\\ from\\ created$",
+    "description": "Use creation count as modification count",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-id-projectless",
+    "file": "src/lib/idFormat.ts",
+    "search": "if (!projectName) return renderedId;",
+    "replace": "if (!projectName) return \"\u2026\";",
+    "tests": [
+      "src/test/v580-helpers.test.ts"
+    ],
+    "testName": "short\\ mode\\ without\\ project\\ name\\ still\\ truncates$",
+    "description": "Discard projectless display identifier",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-id-default",
+    "file": "src/lib/idFormat.ts",
+    "search": "if (format === \"raw\") return id;",
+    "replace": "if (arguments.length < 3) return \"\u2026\";\n  if (format === \"raw\") return id;",
+    "tests": [
+      "src/test/v580-helpers.test.ts"
+    ],
+    "testName": "defaults\\ to\\ short\\ when\\ no\\ format\\ is\\ passed$",
+    "description": "Discard default-format display identifier",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-id-nontty",
+    "file": "src/lib/idFormat.ts",
+    "search": "if (format === \"raw\") return id;",
+    "replace": "return \"wrong-label\";\n  if (format === \"raw\") return id;",
+    "tests": [
+      "src/test/v580-helpers.test.ts"
+    ],
+    "testName": "when\\ tty=false,\\ returns\\ the\\ same\\ string\\ as\\ formatMemoryId$",
+    "description": "Wrong formatter result is reused as expected value",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-id-tty",
+    "file": "src/lib/idFormat.ts",
+    "search": "return osc8Wrap(memoryUri(id), display);",
+    "replace": "return `${memoryUri(id)} ${display}`;",
+    "tests": [
+      "src/test/v580-helpers.test.ts"
+    ],
+    "testName": "when\\ tty=true,\\ wraps\\ the\\ display\\ text\\ in\\ OSC8\\ escapes\\ pointing\\ at\\ the\\ full\\ id$",
+    "description": "Remove terminal hyperlink escape framing",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-id-projectless-tty",
+    "file": "src/lib/idFormat.ts",
+    "search": "return osc8Wrap(memoryUri(id), display);",
+    "replace": "return !projectName ? memoryUri(id) : osc8Wrap(memoryUri(id), display);",
+    "tests": [
+      "src/test/v580-helpers.test.ts"
+    ],
+    "testName": "works\\ without\\ a\\ projectName\\ \\(global/personal\\ memories\\)$",
+    "description": "Return URI instead of projectless clickable label",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-progress-noop",
+    "file": "src/lib/progress.ts",
+    "search": "step: () => {},",
+    "replace": "step: () => { process.stderr.write(\"noise\"); },",
+    "tests": [
+      "src/test/progress.test.ts"
+    ],
+    "testName": "returns\\ a\\ no\\-op\\ progress\\ instance\\ when\\ verbose\\ is\\ false$",
+    "description": "Emit unwanted stderr in quiet mode",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-web-weight",
+    "file": "src/lib/webIndex.ts",
+    "search": "addTokens(cappedContent, 1);",
+    "replace": "void cappedContent;",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "weights\\ relevance\\ keywords\\ higher\\ than\\ content$",
+    "description": "Omit all content-body postings",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-web-stop",
+    "file": "src/lib/webIndex.ts",
+    "search": "sortedIndex[token] = invertedIndex[token];",
+    "replace": "sortedIndex[token] = token === \"quick\" ? [] : invertedIndex[token];",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "respects\\ stop\\-word\\ filtering$",
+    "description": "Keep quick token key but lose its postings",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-web-stop-disabled",
+    "file": "src/lib/webIndex.ts",
+    "search": "sortedIndex[token] = invertedIndex[token];",
+    "replace": "sortedIndex[token] = token === \"the\" ? [] : invertedIndex[token];",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "disables\\ stop\\-word\\ filtering\\ when\\ option\\ is\\ false$",
+    "description": "Keep stop-word key but lose its postings",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-web-archived",
+    "file": "src/lib/webIndex.ts",
+    "search": "return attachExpansions(index, options.expansions);",
+    "replace": "if (includeArchived && index.documents.length > 1) index.documents[1] = index.documents[0];\n  return attachExpansions(index, options.expansions);",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "includes\\ archived\\ documents\\ when\\ includeArchived\\ is\\ true$",
+    "description": "Duplicate active ID in place of archived document",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-web-hash",
+    "file": "src/lib/webIndex.ts",
+    "search": "const contentHash = createHash(\"sha256\").update(raw).digest(\"hex\");",
+    "replace": "const contentHash = \"0\".repeat(64);",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "computes\\ correct\\ content\\ hashes$",
+    "description": "Write constant-shaped content digest",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-web-determinism",
+    "file": "src/lib/webIndex.ts",
+    "search": "return attachExpansions(index, options.expansions);",
+    "replace": "return { version: 1, generated: new Date().toISOString(), documentCount: 0, documents: [], invertedIndex: {} };",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "produces\\ deterministic\\ output\\ for\\ same\\ input$",
+    "description": "Return consistently empty index for populated corpus",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-web-async",
+    "file": "src/lib/webIndex.ts",
+    "search": "return attachExpansions(index, options.expansions);",
+    "replace": "return { version: 1, generated: new Date().toISOString(), documentCount: 0, documents: [], invertedIndex: {} };",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "returns\\ same\\ result\\ as\\ sync\\ version$",
+    "description": "Return empty index through sync and async paths",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-web-write",
+    "file": "src/lib/webIndex.ts",
+    "search": "JSON.stringify(index, null, 2)",
+    "replace": "JSON.stringify({ ...index, documents: [], invertedIndex: {} }, null, 2)",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "creates\\ a\\ valid\\ JSON\\ file$",
+    "description": "Lose document/posting content during serialization",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-web-overwrite",
+    "file": "src/lib/webIndex.ts",
+    "search": "JSON.stringify(index, null, 2)",
+    "replace": "JSON.stringify({ version: 1 }, null, 2)",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "overwrites\\ existing\\ index\\ file$",
+    "description": "Replace old index with header-only document",
+    "artifact": "specs-a.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-color",
+    "file": "src/lib/setup/ui/tokens.ts",
+    "search": "return `${token}${text}${RESET}`;",
+    "replace": "return `${text}${RESET}`;",
+    "tests": [
+      "src/test/setup-ui-atoms.test.ts"
+    ],
+    "testName": "tokens\\ \u2014\\ color\\(\\)\\ wraps\\ text\\ with\\ reset$",
+    "description": "Omit requested opening color",
+    "artifact": "specs-b.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-failed-rows",
+    "file": "src/lib/setup/syncProjectsRender.ts",
+    "search": "lines.push(...renderProjectRows(\"fail\", rows));",
+    "replace": "lines.push(\"\");",
+    "tests": [
+      "src/test/setup-ui-screen10.test.ts"
+    ],
+    "testName": "renders\\ the\\ failed\\ section\\ when\\ there\\ are\\ failures$",
+    "description": "Drop failed project detail while keeping line count",
+    "artifact": "specs-b.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dashboard-paths",
+    "file": "src/lib/setup/syncProjectsRender.ts",
+    "search": "collapsePath(htmlPath)",
+    "replace": "\"/wrong/path\"",
+    "tests": [
+      "src/test/setup-ui-screen10.test.ts"
+    ],
+    "testName": "renders\\ dashboard\\ summary\\ with\\ collapsed\\ paths$",
+    "description": "Render wrong dashboard HTML output path",
+    "artifact": "specs-b.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-disabled",
+    "file": "src/lib/setup/dreamRender.ts",
+    "search": "    `     ${subs.selfCritique ? \"\u2713\" : \"\u25cb\"}  self-critique         review and re-rank existing memories`,\n    `     ${subs.generateSummaries ? \"\u2713\" : \"\u25cb\"}  generate summaries    produce a \"what changed today\" digest`,\n    `     ${subs.discoverRelationships ? \"\u2713\" : \"\u25cb\"}  discover relationships  link related memories explicitly`,",
+    "replace": "    ...(subs.selfCritique ? [`     \u2713  self-critique         review and re-rank existing memories`] : []),\n    `     ${subs.generateSummaries ? \"\u2713\" : \"\u25cb\"}  generate summaries    produce a \"what changed today\" digest`,\n    ...(subs.discoverRelationships ? [`     \u2713  discover relationships  link related memories explicitly`] : []),",
+    "tests": [
+      "src/test/setup-ui-screen7.test.ts"
+    ],
+    "testName": "renders\\ sub\\-tasks\\ with\\ \u25cb\\ when\\ disabled$",
+    "description": "Omit disabled task rows entirely",
+    "artifact": "specs-b.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-structured-fields",
+    "file": "src/lib/structuredIngest.ts",
+    "search": "    title,\n    category,",
+    "replace": "    title: \"\",\n    category: \"\",",
+    "tests": [
+      "src/test/structuredIngest.test.ts"
+    ],
+    "testName": "validates\\ against\\ expected\\ structure$",
+    "description": "Leave required keys with unusable empty values",
+    "artifact": "specs-b.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-tfidf-score",
+    "file": "src/lib/structuredIngest.ts",
+    "search": "score: parseFloat((tfScore * idf).toFixed(4))",
+    "replace": "score: 1",
+    "tests": [
+      "src/test/structuredIngest.test.ts"
+    ],
+    "testName": "returns\\ correct\\ term\\ scores\\ across\\ corpus$",
+    "description": "Flatten distinct TF-IDF scores to one",
+    "artifact": "specs-b.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-tfidf-frequency",
+    "file": "src/lib/structuredIngest.ts",
+    "search": "tf.set(token, (tf.get(token) || 0) + 1);",
+    "replace": "tf.set(token, 1);",
+    "tests": [
+      "src/test/structuredIngest.test.ts"
+    ],
+    "testName": "handles\\ single\\-document\\ corpus$",
+    "description": "Ignore repeated term frequencies",
+    "artifact": "specs-b.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-tfidf-topn",
+    "file": "src/lib/structuredIngest.ts",
+    "search": "result.set(doc.id, scores.slice(0, topN));",
+    "replace": "result.set(doc.id, []);",
+    "tests": [
+      "src/test/structuredIngest.test.ts"
+    ],
+    "testName": "selects\\ top\\ N\\ terms\\ per\\ document$",
+    "description": "Drop every selected top term",
+    "artifact": "specs-b.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-tag-category",
+    "file": "src/lib/tags.ts",
+    "search": "  async addTag(category: string, tag: string): Promise<boolean> {",
+    "replace": "  async addTag(category: string, tag: string): Promise<boolean> {\n    category = \"domain\";",
+    "tests": [
+      "src/test/tags.test.ts"
+    ],
+    "testName": "adds\\ a\\ tag\\ to\\ a\\ new\\ category$",
+    "description": "Store tag under wrong category",
+    "artifact": "specs-b.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-tag-default",
+    "file": "src/lib/tags.ts",
+    "search": "this.registry = { ...DEFAULT_REGISTRY };",
+    "replace": "this.registry = { ...DEFAULT_REGISTRY, domain: [\"wrong-default\"] };",
+    "tests": [
+      "src/test/tags.test.ts"
+    ],
+    "testName": "falls\\ back\\ to\\ DEFAULT_REGISTRY\\ when\\ tags\\.json\\ is\\ missing$",
+    "description": "Replace default domain vocabulary",
+    "artifact": "specs-b.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-local-ack",
+    "file": "src/lib/localDiskCheck.ts",
+    "search": "export const LOCAL_DISK_ACK_PHRASE = \"LOCAL DISK ONLY\";",
+    "replace": "export const LOCAL_DISK_ACK_PHRASE = \"WRONG PHRASE\";",
+    "tests": [
+      "src/test/localDiskCheck.test.ts"
+    ],
+    "testName": "matches\\ LOCAL\\ DISK\\ ONLY\\ phrase\\ exactly$",
+    "description": "Change accepted confirmation phrase and exported expected value together",
+    "artifact": "specs-b.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-config-template",
+    "file": "src/lib/config.ts",
+    "search": "export function generateConfigTemplate(): string {",
+    "replace": "export function generateConfigTemplate(): string {\n  return \"{}\";",
+    "tests": [
+      "src/test/v600-no-anthropic-default.test.ts"
+    ],
+    "testName": "generateConfigTemplate\\(\\)\\ output\\ contains\\ no\\ defaultProvider$",
+    "description": "Return empty template",
+    "artifact": "specs-b.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-web-vector-association",
+    "file": "src/lib/webVectors.ts",
+    "search": "vectors[doc.id] = quantizeVector(embeddings[i], scale);",
+    "replace": "vectors[doc.id] = quantizeVector(embeddings[docs.length - 1 - i], scale);",
+    "tests": [
+      "src/test/webVectors.test.ts"
+    ],
+    "testName": "posts\\ OpenAI\\ embedding\\ batches\\ with\\ configured\\ headers\\ and\\ maps\\ vectors\\ by\\ document\\ id$",
+    "description": "Reverse document-to-embedding association",
+    "artifact": "specs-b.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-web-vector-int8",
+    "file": "src/lib/webVectors.ts",
+    "search": "return vec.map((value) => clampInt8(Math.round(value / scale)));",
+    "replace": "return vec;",
+    "tests": [
+      "src/test/webVectors.test.ts"
+    ],
+    "testName": "round\\-trips\\ vectors\\ while\\ preserving\\ cosine\\ ranking\\ order\\ for\\ fixed\\ fixtures$",
+    "description": "Return unquantized floats",
+    "artifact": "specs-b.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-embedding-values",
+    "file": "src/lib/embeddings.ts",
+    "search": "return new Float32Array(nested[0]);",
+    "replace": "return new Float32Array(384);",
+    "tests": [
+      "src/test/embeddings-optional-dep.test.ts"
+    ],
+    "testName": "returns\\ a\\ 384\\-dim\\ vector\\ when\\ transformers\\ is\\ available$",
+    "description": "Replace actual embedding with all-zero vector",
+    "artifact": "specs-b.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-web-vector-association",
+    "file": "src/lib/webVectors.ts",
+    "search": "vectors[doc.id] = quantizeVector(embeddings[i], scale);",
+    "replace": "vectors[doc.id] = quantizeVector(embeddings[docs.length - 1 - i], scale);",
+    "tests": [
+      "src/test/webVectors.test.ts"
+    ],
+    "testName": "posts\\ OpenAI\\ embedding\\ batches\\ with\\ configured\\ headers\\ and\\ maps\\ vectors\\ by\\ document\\ id$",
+    "description": "Reverse document-to-embedding association",
+    "artifact": "specs-b2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-web-vector-int8",
+    "file": "src/lib/webVectors.ts",
+    "search": "return vec.map((value) => clampInt8(Math.round(value / scale)));",
+    "replace": "return vec;",
+    "tests": [
+      "src/test/webVectors.test.ts"
+    ],
+    "testName": "round\\-trips\\ vectors\\ while\\ preserving\\ cosine\\ ranking\\ order\\ for\\ fixed\\ fixtures$",
+    "description": "Return unquantized floats",
+    "artifact": "specs-b2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-embedding-values",
+    "file": "src/lib/embeddings.ts",
+    "search": "return new Float32Array(nested[0]);",
+    "replace": "return new Float32Array(384);",
+    "tests": [
+      "src/test/embeddings-optional-dep.test.ts"
+    ],
+    "testName": "returns\\ a\\ 384\\-dim\\ vector\\ when\\ transformers\\ is\\ available$",
+    "description": "Replace actual embedding with all-zero vector",
+    "artifact": "specs-b2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-lens-status",
+    "file": "src/lib/lensing.ts",
+    "search": "      : matchesLens(m, lens),\n  );",
+    "replace": "      : matchesLens(m, lens),\n  ).map((_, index) => memories[(index + 2) % memories.length]);",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "filters\\ by\\ status$",
+    "description": "Return unrelated input records with the same number of matches",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-lens-statuses",
+    "file": "src/lib/lensing.ts",
+    "search": "      : matchesLens(m, lens),\n  );",
+    "replace": "      : matchesLens(m, lens),\n  ).map((_, index) => memories[(index + 2) % memories.length]);",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "filters\\ by\\ multiple\\ statuses$",
+    "description": "Return unrelated input records with the same number of matches",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-lens-confidence",
+    "file": "src/lib/lensing.ts",
+    "search": "      : matchesLens(m, lens),\n  );",
+    "replace": "      : matchesLens(m, lens),\n  ).map((_, index) => memories[(index + 2) % memories.length]);",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "filters\\ by\\ confidence\\ range$",
+    "description": "Return unrelated input records with the same number of matches",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-lens-author",
+    "file": "src/lib/lensing.ts",
+    "search": "      : matchesLens(m, lens),\n  );",
+    "replace": "      : matchesLens(m, lens),\n  ).map((_, index) => memories[(index + 2) % memories.length]);",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "filters\\ by\\ author$",
+    "description": "Return unrelated input records with the same number of matches",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-lens-authority",
+    "file": "src/lib/lensing.ts",
+    "search": "      : matchesLens(m, lens),\n  );",
+    "replace": "      : matchesLens(m, lens),\n  ).map((_, index) => memories[(index + 2) % memories.length]);",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "filters\\ by\\ authority$",
+    "description": "Return unrelated input records with the same number of matches",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-lens-created",
+    "file": "src/lib/lensing.ts",
+    "search": "      : matchesLens(m, lens),\n  );",
+    "replace": "      : matchesLens(m, lens),\n  ).map((_, index) => memories[(index + 2) % memories.length]);",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "filters\\ by\\ created\\ date\\ range$",
+    "description": "Return unrelated input records with the same number of matches",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-lens-modified",
+    "file": "src/lib/lensing.ts",
+    "search": "      : matchesLens(m, lens),\n  );",
+    "replace": "      : matchesLens(m, lens),\n  ).map((_, index) => memories[(index + 2) % memories.length]);",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "filters\\ by\\ modified\\ date\\ range$",
+    "description": "Return unrelated input records with the same number of matches",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-lens-combined",
+    "file": "src/lib/lensing.ts",
+    "search": "if (lens.minConfidence !== undefined && fm.confidence < lens.minConfidence) return false;",
+    "replace": "if (false) return false;",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "combines\\ multiple\\ criteria\\ in\\ one\\ filter$",
+    "description": "Ignore confidence condition in compound filter",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-chunk-paragraph",
+    "file": "src/lib/chunkSplitter.ts",
+    "search": "  return merged.map((text, index) => ({\n    text,\n    index,\n  }));",
+    "replace": "  return merged.map((text, index) => ({\n    text: text.slice(1),\n    index,\n  }));",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "splits\\ text\\ at\\ paragraph\\ boundaries$",
+    "description": "Drop first character of each produced text chunk",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-chunk-sentence",
+    "file": "src/lib/chunkSplitter.ts",
+    "search": "  return merged.map((text, index) => ({\n    text,\n    index,\n  }));",
+    "replace": "  return merged.map((text, index) => ({\n    text: text.slice(1),\n    index,\n  }));",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "splits\\ oversized\\ paragraphs\\ at\\ sentence\\ boundaries$",
+    "description": "Drop first character of each produced text chunk",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-chunk-target",
+    "file": "src/lib/chunkSplitter.ts",
+    "search": "  return merged.map((text, index) => ({\n    text,\n    index,\n  }));",
+    "replace": "  return merged.map((text, index) => ({\n    text: text.slice(1),\n    index,\n  }));",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "respects\\ targetSize\\ option$",
+    "description": "Drop first character of each produced text chunk",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-chunk-index",
+    "file": "src/lib/chunkSplitter.ts",
+    "search": "  return merged.map((text, index) => ({\n    text,\n    index,\n  }));",
+    "replace": "return [];",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "assigns\\ sequential\\ index\\ values$",
+    "description": "Drop every chunk before index assertions",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-chunk-page",
+    "file": "src/lib/chunkSplitter.ts",
+    "search": "  return allChunks;",
+    "replace": "  return [];",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "preserves\\ page\\ metadata$",
+    "description": "Drop every metadata-bearing chunk",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-chunk-timerange",
+    "file": "src/lib/chunkSplitter.ts",
+    "search": "  return allChunks;",
+    "replace": "  return [];",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "preserves\\ timerange\\ metadata$",
+    "description": "Drop every metadata-bearing chunk",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-chunk-merge",
+    "file": "src/lib/chunkSplitter.ts",
+    "search": "  return allChunks;",
+    "replace": "  return allChunks.map((chunk) => ({ ...chunk, text: \"wrong content\" }));",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "merges\\ undersized\\ segments\\ with\\ same\\ page$",
+    "description": "Lose segment text while preserving chunk shape",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-chunk-empty",
+    "file": "src/lib/chunkSplitter.ts",
+    "search": "  return allChunks;",
+    "replace": "  return allChunks.map((chunk) => ({ ...chunk, text: \"wrong content\" }));",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "handles\\ segments\\ with\\ empty\\ text$",
+    "description": "Lose segment text while preserving chunk shape",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-attachment-bytes",
+    "file": "src/lib/attachments.ts",
+    "search": "await fs.copyFile(filePath, destPath);",
+    "replace": "await fs.writeFile(destPath, \"corrupt\");",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "storeAttachment\\ copies\\ file\\ and\\ generates\\ UUID$",
+    "description": "Write wrong attachment bytes while preserving metadata",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-multimodal-defaults",
+    "file": "src/lib/config.ts",
+    "search": "    chunkSize: 1500,\n    maxFileSizeMb: 100,",
+    "replace": "    chunkSize: 2500,\n    maxFileSizeMb: 100,",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "GnosysConfigSchema\\ includes\\ multimodal\\ defaults$",
+    "description": "Change default chunk size while retaining schema fields",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-embedding-incremental",
+    "file": "src/lib/embedDb.ts",
+    "search": "  return { embedded, total };",
+    "replace": "  const oldRows = db.getMemoriesForEmbedding(\"all\");\n  for (const row of oldRows) if (!rows.some((pending) => pending.id === row.id)) db.updateEmbedding(row.id, Buffer.alloc(16));\n  return { embedded, total };",
+    "tests": [
+      "src/test/embed-db.test.ts"
+    ],
+    "testName": "missing\\ mode\\ is\\ incremental\\ \u2014\\ already\\-embedded\\ rows\\ are\\ untouched$",
+    "description": "Overwrite preexisting vectors while correctly counting only missing rows",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-embedding-reindex",
+    "file": "src/lib/embedDb.ts",
+    "search": "db.updateEmbedding(batch[j].id, float32ToBuffer(vectors[j]));",
+    "replace": "if (opts.mode !== \"all\") db.updateEmbedding(batch[j].id, float32ToBuffer(vectors[j]));",
+    "tests": [
+      "src/test/embed-db.test.ts"
+    ],
+    "testName": "all\\ mode\\ regenerates\\ every\\ row\\ \\(reindex\\ semantics\\)$",
+    "description": "Skip writes during all-mode reindex but keep success counters",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-embedding-single",
+    "file": "src/lib/embedDb.ts",
+    "search": "db.updateEmbedding(id, float32ToBuffer(vec));",
+    "replace": "db.updateEmbedding(id, Buffer.alloc(vec.byteLength));",
+    "tests": [
+      "src/test/embed-db.test.ts"
+    ],
+    "testName": "embeds\\ a\\ single\\ memory$",
+    "description": "Store zero bytes in place of the generated vector",
+    "artifact": "specs-c.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-lens-author-corrected",
+    "file": "src/lib/lensing.ts",
+    "search": "      : matchesLens(m, lens),\n  );",
+    "replace": "      : matchesLens(m, lens),\n  ).map((_, index) => memories[(index + 1) % memories.length]);",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "filters\\ by\\ author$",
+    "description": "Return unrelated input records with the same number of matches",
+    "artifact": "specs-c2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-lens-authority-corrected",
+    "file": "src/lib/lensing.ts",
+    "search": "      : matchesLens(m, lens),\n  );",
+    "replace": "      : matchesLens(m, lens),\n  ).map((_, index) => memories[(index + 1) % memories.length]);",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "filters\\ by\\ authority$",
+    "description": "Return unrelated input records with the same number of matches",
+    "artifact": "specs-c2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-key-list",
+    "file": "src/lib/setupKeys.ts",
+    "search": "return PROVIDERS.map((provider) => ({",
+    "replace": "return PROVIDERS.slice(0, 0).map((provider) => ({",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "lists\\ all\\ known\\ providers\\ with\\ env,\\ keychain,\\ dotenv,\\ missing,\\ and\\ local\\ statuses$",
+    "description": "Drop provider inventory",
+    "artifact": "specs-d.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-key-locations",
+    "file": "src/lib/setupKeys.ts",
+    "search": "return locations;",
+    "replace": "return locations.slice(0, 1);",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "detects\\ every\\ configured\\ storage\\ location\\ for\\ a\\ provider\\ independently$",
+    "description": "Hide secondary configured key locations",
+    "artifact": "specs-d.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-key-local",
+    "file": "src/lib/setupKeys.ts",
+    "search": "\"  Status:    N/A (local provider)\"",
+    "replace": "\"  Status:    Missing\"",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "does\\ not\\ list\\ key\\ locations\\ for\\ local\\ providers$",
+    "description": "Display missing API-key warning for local provider",
+    "artifact": "specs-d.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-key-custom",
+    "file": "src/lib/setupKeys.ts",
+    "search": "return PROVIDERS.map((provider) => ({",
+    "replace": "return PROVIDERS.filter((provider) => provider !== \"custom\").map((provider) => ({",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "supports\\ the\\ custom\\ provider\\ slot$",
+    "description": "Drop supported custom-provider entry",
+    "artifact": "specs-d.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-key-remove-selected",
+    "file": "src/lib/setupKeys.ts",
+    "search": "await fs.writeFile(envPath, lines.join(\"\\n\").replace(/\\n*$/, \"\\n\"), \"utf-8\");",
+    "replace": "void lines;",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "removes\\ only\\ the\\ requested\\ provider\\ keys\\ from\\ the\\ gnosys\\ dotenv\\ file$",
+    "description": "Skip selected credential deletion write",
+    "artifact": "specs-d.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-key-save-dotenv",
+    "file": "src/lib/setupKeys.ts",
+    "search": "await writeApiKey(provider, key, { scope: \"global\" });",
+    "replace": "void key;",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "validates\\ an\\ updated\\ key\\ before\\ writing\\ it\\ to\\ dotenv$",
+    "description": "Skip validated credential persistence",
+    "artifact": "specs-d.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-key-reject-update",
+    "file": "src/lib/setupKeys.ts",
+    "search": "if (!(await validateProviderKey(provider, key))) {",
+    "replace": "if ((await validateProviderKey(provider, key), false)) {",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "rejects\\ an\\ invalid\\ key\\ before\\ choosing\\ a\\ storage\\ destination$",
+    "description": "Offer storage after failed credential validation",
+    "artifact": "specs-d.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-key-destinations",
+    "file": "src/lib/setupKeys.ts",
+    "search": "if (storeApiKeySecret(service, key, provider)) {",
+    "replace": "if (true) {",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "routes\\ destination\\ choice\\ to\\ keychain,\\ dotenv,\\ or\\ manual\\ env\\ instructions$",
+    "description": "Report secure-store success without saving key",
+    "artifact": "specs-d.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-key-copy-cleanup",
+    "file": "src/lib/setupKeys.ts",
+    "search": "await fs.writeFile(envPath, lines.join(\"\\n\").replace(/\\n*$/, \"\\n\"), \"utf-8\");",
+    "replace": "void lines;",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "copies\\ a\\ dotenv\\-only\\ key\\ to\\ keychain\\ and\\ removes\\ the\\ dotenv\\ line$",
+    "description": "Leave plaintext source credential after secure copy",
+    "artifact": "specs-d.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-key-reject-copy",
+    "file": "src/lib/setupKeys.ts",
+    "search": "if (!(await validateProviderKey(provider, current.value))) {",
+    "replace": "if ((await validateProviderKey(provider, current.value), false)) {",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "does\\ not\\ copy\\ to\\ keychain\\ or\\ change\\ dotenv\\ when\\ validation\\ fails$",
+    "description": "Proceed to copy confirmation despite invalid key",
+    "artifact": "specs-d.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-key-copy-idempotent",
+    "file": "src/lib/setupKeys.ts",
+    "search": "if (current.location === \"keychain\") {",
+    "replace": "if (false) {",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "does\\ not\\ duplicate\\ a\\ key\\ that\\ is\\ already\\ in\\ keychain$",
+    "description": "Validate and offer copy for already-secure credential",
+    "artifact": "specs-d.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-key-delete-dotenv",
+    "file": "src/lib/setupKeys.ts",
+    "search": "await fs.writeFile(envPath, lines.join(\"\\n\").replace(/\\n*$/, \"\\n\"), \"utf-8\");",
+    "replace": "void lines;",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "deletes\\ a\\ dotenv\\-only\\ key\\ after\\ confirmation$",
+    "description": "Keep plaintext key after user confirms deletion",
+    "artifact": "specs-d.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-key-delete-keychain",
+    "file": "src/lib/setupKeys.ts",
+    "search": "deleteStoredSecret(target.serviceName)",
+    "replace": "true",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "deletes\\ a\\ keychain\\-only\\ key\\ after\\ confirmation$",
+    "description": "Claim removal without deleting secure-store secret",
+    "artifact": "specs-d.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-key-delete-both",
+    "file": "src/lib/setupKeys.ts",
+    "search": "await fs.writeFile(envPath, lines.join(\"\\n\").replace(/\\n*$/, \"\\n\"), \"utf-8\");",
+    "replace": "void lines;",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "deletes\\ all\\ removable\\ keychain\\ and\\ dotenv\\ copies\\ when\\ requested$",
+    "description": "Remove secure-store key but leave plaintext duplicate",
+    "artifact": "specs-d.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-pdf-normal",
+    "file": "src/lib/multimodalIngest.ts",
+    "search": "export async function ingestFile(options: MultimodalIngestOptions): Promise<MultimodalIngestResult> {",
+    "replace": "export async function ingestFile(options: MultimodalIngestOptions): Promise<MultimodalIngestResult> {\n  throw new Error(\"Unexpected ingestion regression\");",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "normal\\ PDF\\ ingests\\ without\\ crashing$",
+    "description": "Reject every file before parsing or returning the required outcome",
+    "artifact": "specs-e.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-text-empty",
+    "file": "src/lib/multimodalIngest.ts",
+    "search": "export async function ingestFile(options: MultimodalIngestOptions): Promise<MultimodalIngestResult> {",
+    "replace": "export async function ingestFile(options: MultimodalIngestOptions): Promise<MultimodalIngestResult> {\n  throw new Error(\"Unexpected ingestion regression\");",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "0\\-byte\\ text\\ file\\ is\\ handled\\ gracefully$",
+    "description": "Reject every file before parsing or returning the required outcome",
+    "artifact": "specs-e.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-docx-error",
+    "file": "src/lib/multimodalIngest.ts",
+    "search": "export async function ingestFile(options: MultimodalIngestOptions): Promise<MultimodalIngestResult> {",
+    "replace": "export async function ingestFile(options: MultimodalIngestOptions): Promise<MultimodalIngestResult> {\n  throw new Error(\"Unexpected ingestion regression\");",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "corrupt\\ DOCX\\ returns\\ a\\ clear\\ error$",
+    "description": "Reject every file before parsing or returning the required outcome",
+    "artifact": "specs-e.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-pdf-js",
+    "file": "src/lib/multimodalIngest.ts",
+    "search": "export async function ingestFile(options: MultimodalIngestOptions): Promise<MultimodalIngestResult> {",
+    "replace": "export async function ingestFile(options: MultimodalIngestOptions): Promise<MultimodalIngestResult> {\n  throw new Error(\"Unexpected ingestion regression\");",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "PDF\\ with\\ embedded\\ JS\\ is\\ handled\\ without\\ executing\\ JS$",
+    "description": "Reject every file before parsing or returning the required outcome",
+    "artifact": "specs-e.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-text-bom",
+    "file": "src/lib/multimodalIngest.ts",
+    "search": "const rawText = await fs.readFile(filePath, \"utf-8\");",
+    "replace": "const rawText = \"Wrong text\";",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "UTF\\-8\\ BOM\\ text\\ file\\ is\\ handled\\ gracefully$",
+    "description": "Replace decoded BOM text with unrelated content",
+    "artifact": "specs-e.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-special-paths",
+    "file": "src/lib/multimodalIngest.ts",
+    "search": "title = generateTitle(chunk.text, i, sourceFileName, chunk.sourcePage);",
+    "replace": "title = \"Wrong title\";",
+    "tests": [
+      "src/test/ingest-special-paths.test.ts"
+    ],
+    "testName": "ingests",
+    "description": "Lose extracted text title for special-character file paths",
+    "beforeIds": [
+      "src/test/ingest-special-paths.test.ts:35"
+    ],
+    "artifact": "specs-e.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-pdf-password",
+    "file": "src/lib/pdfExtract.ts",
+    "search": "textResult = await parser.getText();",
+    "replace": "textResult = await parser.getText().catch(() => ({ total: 0, pages: [], text: \"\" }));",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "encrypted\\ PDF\\ returns\\ a\\ clear\\ password\\ error$",
+    "description": "Swallow password rejection and report empty PDF success",
+    "beforeIds": [
+      "src/test/ingest-fixtures.test.ts:110"
+    ],
+    "artifact": "specs-e2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-pdf-js-execution",
+    "file": "src/lib/pdfExtract.ts",
+    "search": "const buffer = await fs.readFile(filePath);",
+    "replace": "const buffer = await fs.readFile(filePath);\n  const script = buffer.toString(\"utf8\").match(/\\/JS\\((.*)\\)>>/);\n  if (script) new Function(script[1])();",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "PDF\\ with\\ embedded\\ JS\\ is\\ handled\\ without\\ executing\\ JS$",
+    "description": "Execute the embedded PDF OpenAction JavaScript",
+    "artifact": "specs-e2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-file-size-error",
+    "file": "src/lib/multimodalIngest.ts",
+    "search": "`File is ${fileSizeMb.toFixed(1)}MB, which exceeds the ${maxSizeMb}MB limit. `",
+    "replace": "`Unexpected validation error. `",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "oversized\\ text\\ file\\ hits\\ size\\ cap\\ \\(no\\ OOM\\)$",
+    "description": "Replace actionable size-limit error with unrelated error",
+    "artifact": "specs-e2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-missing-file-error",
+    "file": "src/lib/multimodalIngest.ts",
+    "search": "const stat = await fs.stat(filePath);",
+    "replace": "const stat = await fs.stat(filePath).catch(() => { throw new Error(\"Could not inspect file\"); });",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "non\\-existent\\ path\\ throws\\ a\\ clear\\ error$",
+    "description": "Replace missing-file error with unrelated failure",
+    "artifact": "specs-e2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-import-jsonl",
+    "file": "src/lib/import.ts",
+    "search": "title = mapped.title;",
+    "replace": "title = \"Wrong title\";",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "imports\\ JSONL\\ \\(one\\ JSON\\ object\\ per\\ line\\)$",
+    "description": "Lose JSONL record titles while keeping record count",
+    "artifact": "specs-f.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-import-extra",
+    "file": "src/lib/import.ts",
+    "search": "content = mapped.content || mapped.extraContext || title;",
+    "replace": "content = mapped.content || title;",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "includes\\ unmapped\\ fields\\ as\\ extra\\ context$",
+    "description": "Drop unmapped fields from stored import content",
+    "artifact": "specs-f.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-import-dryrun",
+    "file": "src/lib/import.ts",
+    "search": "if (options.dryRun) {",
+    "replace": "if (false) {",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "reports\\ what\\ would\\ be\\ imported\\ without\\ writing$",
+    "description": "Write records despite dry-run request",
+    "artifact": "specs-f.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-import-batch",
+    "file": "src/lib/import.ts",
+    "search": "syncMemoryToDb(db, frontmatter, fullContent, relativePath, projectId, scope);",
+    "replace": "void db;",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "writes\\ multiple\\ records\\ without\\ per\\-record\\ commits\\ when\\ batching$",
+    "description": "Report imported batch without any memory writes",
+    "artifact": "specs-f.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-import-failure",
+    "file": "src/lib/import.ts",
+    "search": "      try {\n        let title: string;",
+    "replace": "      try {\n        throw new Error(\"write unavailable\");\n        let title: string;",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "continues\\ processing\\ when\\ individual\\ records\\ fail$",
+    "description": "Fail every record while preserving total processed count",
+    "artifact": "specs-f.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-duration-structured",
+    "file": "src/lib/import.ts",
+    "search": "const seconds = Math.ceil((recordCount * 50) / 1000);",
+    "replace": "const seconds = 1;",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "estimates\\ structured\\ mode\\ as\\ fast$",
+    "description": "Ignore structured record count",
+    "artifact": "specs-f.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-duration-llm",
+    "file": "src/lib/import.ts",
+    "search": "return `~${Math.ceil(seconds / 60)}m`;",
+    "replace": "return \"~99m\";",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "estimates\\ LLM\\ mode\\ as\\ slower$",
+    "description": "Return wrong LLM duration in valid minute-shaped format",
+    "artifact": "specs-f.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-audit-empty",
+    "file": "src/lib/auditCommand.ts",
+    "search": "console.log(formatAuditTimeline(entries));",
+    "replace": "console.log(\"wrong output\");",
+    "tests": [
+      "src/test/audit-invoke.test.ts"
+    ],
+    "testName": "renders\\ a\\ human\\-readable\\ timeline\\ for\\ the\\ empty\\ case\\ without\\ erroring$",
+    "description": "Replace human-readable empty audit timeline",
+    "artifact": "specs-f.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-recovery-insert",
+    "file": "src/lib/db.ts",
+    "search": "mem.id, mem.title, mem.category, mem.content, mem.summary || null,",
+    "replace": "mem.id, \"\", mem.category, \"\", mem.summary || null,",
+    "tests": [
+      "src/test/db-recovery.test.ts"
+    ],
+    "testName": "insertMemory\\(\\)\\ retries\\ successfully\\ after\\ a\\ corrupt\\-handle\\ error$",
+    "description": "Lose title and content on recovered insert",
+    "artifact": "specs-f.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-recovery-audit",
+    "file": "src/lib/db.ts",
+    "search": "logAudit(entry: Omit<DbAuditEntry, \"id\">): void {",
+    "replace": "logAudit(entry: Omit<DbAuditEntry, \"id\">): void {\n    return;",
+    "tests": [
+      "src/test/db-recovery.test.ts"
+    ],
+    "testName": "logAudit\\(\\)\\ retries\\ successfully\\ after\\ a\\ corrupt\\-handle\\ error$",
+    "description": "Skip recovered audit write entirely",
+    "artifact": "specs-f.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-recovery-error",
+    "file": "src/lib/db.ts",
+    "search": "\"Gnosys DB unrecoverable after reopen. The underlying file may be corrupted. \" +",
+    "replace": "\"Unrelated error. \" +",
+    "tests": [
+      "src/test/db-recovery.test.ts"
+    ],
+    "testName": "throws\\ a\\ clear\\ message\\ if\\ reopen\\ also\\ fails$",
+    "description": "Lose actionable reopen-failure diagnosis",
+    "artifact": "specs-f.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-import-jsonl",
+    "file": "src/lib/import.ts",
+    "search": "title = mapped.title;",
+    "replace": "title = \"Wrong title\";",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "imports\\ JSONL\\ \\(one\\ JSON\\ object\\ per\\ line\\)$",
+    "description": "Lose JSONL record titles while keeping record count",
+    "artifact": "specs-f2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-import-extra",
+    "file": "src/lib/import.ts",
+    "search": "content = mapped.content || mapped.extraContext || title;",
+    "replace": "content = mapped.content || title;",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "includes\\ unmapped\\ fields\\ as\\ extra\\ context$",
+    "description": "Drop unmapped fields from stored import content",
+    "artifact": "specs-f2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-import-dryrun",
+    "file": "src/lib/import.ts",
+    "search": "if (options.dryRun) {",
+    "replace": "if (false) {",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "reports\\ what\\ would\\ be\\ imported\\ without\\ writing$",
+    "description": "Write records despite dry-run request",
+    "artifact": "specs-f2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-import-batch",
+    "file": "src/lib/import.ts",
+    "search": "syncMemoryToDb(db, frontmatter, fullContent, relativePath, projectId, scope);",
+    "replace": "void db;",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "persists\\ every\\ record\\ of\\ a\\ batch\\ in\\ the\\ central\\ database$",
+    "description": "Report imported batch without any memory writes",
+    "beforeIds": [
+      "src/test/import.test.ts:320"
+    ],
+    "artifact": "specs-f2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-import-failure",
+    "file": "src/lib/import.ts",
+    "search": "      try {\n        let title: string;",
+    "replace": "      try {\n        throw new Error(\"write unavailable\");\n        let title: string;",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "continues\\ processing\\ when\\ individual\\ records\\ fail$",
+    "description": "Fail every record while preserving total processed count",
+    "artifact": "specs-f2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-duration-structured",
+    "file": "src/lib/import.ts",
+    "search": "const seconds = Math.ceil((recordCount * 50) / 1000);",
+    "replace": "const seconds = 1;",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "estimates\\ structured\\ mode\\ as\\ fast$",
+    "description": "Ignore structured record count",
+    "artifact": "specs-f2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-duration-llm",
+    "file": "src/lib/import.ts",
+    "search": "return `~${Math.ceil(seconds / 60)}m`;",
+    "replace": "return \"~99m\";",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "estimates\\ LLM\\ mode\\ as\\ slower$",
+    "description": "Return wrong LLM duration in valid minute-shaped format",
+    "artifact": "specs-f2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-audit-empty",
+    "file": "src/lib/auditCommand.ts",
+    "search": "console.log(formatAuditTimeline(entries));",
+    "replace": "console.log(\"wrong output\");",
+    "tests": [
+      "src/test/audit-invoke.test.ts"
+    ],
+    "testName": "renders\\ a\\ human\\-readable\\ timeline\\ for\\ the\\ empty\\ case\\ without\\ erroring$",
+    "description": "Replace human-readable empty audit timeline",
+    "artifact": "specs-f2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-recovery-insert",
+    "file": "src/lib/db.ts",
+    "search": "mem.id, mem.title, mem.category, mem.content, mem.summary || null,",
+    "replace": "mem.id, \"\", mem.category, \"\", mem.summary || null,",
+    "tests": [
+      "src/test/db-recovery.test.ts"
+    ],
+    "testName": "insertMemory\\(\\)\\ retries\\ successfully\\ after\\ a\\ corrupt\\-handle\\ error$",
+    "description": "Lose title and content on recovered insert",
+    "artifact": "specs-f2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-recovery-audit",
+    "file": "src/lib/db.ts",
+    "search": "logAudit(entry: Omit<DbAuditEntry, \"id\">): void {",
+    "replace": "logAudit(entry: Omit<DbAuditEntry, \"id\">): void {\n    return;",
+    "tests": [
+      "src/test/db-recovery.test.ts"
+    ],
+    "testName": "logAudit\\(\\)\\ retries\\ successfully\\ after\\ a\\ corrupt\\-handle\\ error$",
+    "description": "Skip recovered audit write entirely",
+    "artifact": "specs-f2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-recovery-error",
+    "file": "src/lib/db.ts",
+    "search": "\"Gnosys DB unrecoverable after reopen. The underlying file may be corrupted. \" +",
+    "replace": "\"Unrelated error. \" +",
+    "tests": [
+      "src/test/db-recovery.test.ts"
+    ],
+    "testName": "throws\\ a\\ clear\\ message\\ if\\ reopen\\ also\\ fails$",
+    "description": "Lose actionable reopen-failure diagnosis",
+    "artifact": "specs-f2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-tags-persist",
+    "file": "src/lib/tagsAddCommand.ts",
+    "search": "const added = await tagRegistry.addTag(opts.category, opts.tag);",
+    "replace": "const added = true;",
+    "tests": [
+      "src/test/tags-invoke.test.ts"
+    ],
+    "testName": "adds a new tag to a category$",
+    "description": "Skip persisted tag addition",
+    "artifact": "specs-g.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-recall-empty",
+    "file": "src/lib/recall.ts",
+    "search": "const top = db.getTopActiveMemories(fetchLimit);",
+    "replace": "const top = db.getTopActiveMemories(0);",
+    "tests": [
+      "src/test/recall-wildcard.test.ts"
+    ],
+    "testName": "archived and superseded memories are excluded from wildcard recall$",
+    "description": "Return no active memories",
+    "artifact": "specs-g.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-version-success",
+    "file": "src/cli.ts",
+    "search": "rewriteLegacyExport();\n",
+    "replace": "rewriteLegacyExport();\nif(process.argv.includes(\"--version\")) process.exit(1);\n",
+    "tests": [
+      "src/test/v593-no-central-db-pollution.test.ts"
+    ],
+    "testName": "running gnosys --version with empty HOME does NOT create gnosys.db$",
+    "description": "Fail version invocation before producing a version",
+    "build": true,
+    "artifact": "specs-g.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-help-success",
+    "file": "src/cli.ts",
+    "search": "rewriteLegacyExport();\n",
+    "replace": "rewriteLegacyExport();\nif(process.argv.includes(\"--help\")) process.exit(1);\n",
+    "tests": [
+      "src/test/v593-no-central-db-pollution.test.ts"
+    ],
+    "testName": "VITEST=true short-circuits maybePrintUpgradeNudge",
+    "description": "Fail help invocation before producing help",
+    "build": true,
+    "artifact": "specs-g.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-tags-persist",
+    "file": "src/lib/tagsAddCommand.ts",
+    "search": "const added = await tagRegistry.addTag(opts.category, opts.tag);",
+    "replace": "const added = true;",
+    "tests": [
+      "src/test/tags-invoke.test.ts"
+    ],
+    "testName": "adds a new tag to a category$",
+    "description": "Skip persisted tag addition",
+    "artifact": "specs-g2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-recall-empty",
+    "file": "src/lib/recall.ts",
+    "search": "const top = db.getTopActiveMemories(fetchLimit);",
+    "replace": "const top = db.getTopActiveMemories(0);",
+    "tests": [
+      "src/test/recall-wildcard.test.ts"
+    ],
+    "testName": "archived and superseded memories are excluded from wildcard recall$",
+    "description": "Return no active memories",
+    "artifact": "specs-g2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-version-success",
+    "file": "src/cli.ts",
+    "search": "rewriteLegacyExport();\n",
+    "replace": "rewriteLegacyExport();\nif(process.argv.includes(\"--version\")) process.exit(1);\n",
+    "tests": [
+      "src/test/v593-no-central-db-pollution.test.ts"
+    ],
+    "testName": "running gnosys --version with empty HOME does NOT create gnosys.db$",
+    "description": "Fail version invocation before producing a version",
+    "build": true,
+    "artifact": "specs-g2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-help-success",
+    "file": "src/cli.ts",
+    "search": "rewriteLegacyExport();\n",
+    "replace": "rewriteLegacyExport();\nif(process.argv.includes(\"--help\")) process.exit(1);\n",
+    "tests": [
+      "src/test/v593-no-central-db-pollution.test.ts"
+    ],
+    "testName": "VITEST=true short-circuits maybePrintUpgradeNudge",
+    "description": "Fail help invocation before producing help",
+    "build": true,
+    "artifact": "specs-g2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-tags-idempotent",
+    "file": "src/lib/tags.ts",
+    "search": "if (this.registry[category].includes(tag)) return false;",
+    "replace": "if (false) return false;",
+    "tests": [
+      "src/test/tags-invoke.test.ts"
+    ],
+    "testName": "reports a duplicate tag without re-adding it$",
+    "description": "Duplicate persisted tag on second addition",
+    "artifact": "specs-g2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-tags-sort",
+    "file": "src/lib/tagsCommand.ts",
+    "search": "${tags.sort().join(\", \")}",
+    "replace": "${tags.join(\", \")}",
+    "tests": [
+      "src/test/tags-invoke.test.ts"
+    ],
+    "testName": "lists the registry including the added tag$",
+    "description": "Print unsorted category tags",
+    "artifact": "specs-g2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-recall-confidence",
+    "file": "src/lib/db.ts",
+    "search": "ORDER BY reinforcement_count DESC, confidence DESC, modified DESC LIMIT ?",
+    "replace": "ORDER BY reinforcement_count DESC, confidence ASC, modified DESC LIMIT ?",
+    "tests": [
+      "src/test/recall-wildcard.test.ts"
+    ],
+    "testName": "wildcard ordering prefers reinforcement, then confidence, then recency$",
+    "description": "Reverse confidence tie break",
+    "artifact": "specs-g2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-recall-recency",
+    "file": "src/lib/db.ts",
+    "search": "ORDER BY reinforcement_count DESC, confidence DESC, modified DESC LIMIT ?",
+    "replace": "ORDER BY reinforcement_count DESC, confidence DESC, modified ASC LIMIT ?",
+    "tests": [
+      "src/test/recall-wildcard.test.ts"
+    ],
+    "testName": "wildcard ordering prefers reinforcement, then confidence, then recency$",
+    "description": "Reverse recency tie break",
+    "artifact": "specs-g2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-sync-warning",
+    "file": "src/lib/setup/remoteRender.ts",
+    "search": "\"Master unreachable; existing memories are unavailable until reconnect.\"",
+    "replace": "\"Everything is online.\"",
+    "tests": [
+      "src/test/syncStatusMessages.test.ts"
+    ],
+    "testName": "renderClientSyncStatusLines shows unreachable \\+ offline overlay$",
+    "description": "Render misleading master connectivity message",
+    "artifact": "specs-g2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-no-provider-load",
+    "file": "src/lib/config.ts",
+    "search": "if (raw === null) {\n      return DEFAULT_CONFIG;",
+    "replace": "if (raw === null) {\n      return GnosysConfigSchema.parse({llm:{defaultProvider:\"anthropic\"}});",
+    "tests": [
+      "src/test/v600-no-anthropic-default.test.ts"
+    ],
+    "testName": "loading an unconfigured store requires explicit provider setup$",
+    "description": "Load implicit provider despite absent configuration",
+    "beforeIds": [
+      "src/test/v600-no-anthropic-default.test.ts:28"
+    ],
+    "artifact": "specs-g2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-local-vector-path",
+    "file": "src/lib/embeddings.ts",
+    "search": "results.push(new Float32Array(vec));",
+    "replace": "results.push(new Float32Array(vec.map(() => 0)));",
+    "tests": [
+      "src/test/webVectors.test.ts"
+    ],
+    "testName": "reuses GnosysEmbeddings.embedBatch and quantizes local vectors$",
+    "description": "Zero actual local embedding vectors",
+    "artifact": "specs-g2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-audit-idempotent-write",
+    "file": "src/lib/remote.ts",
+    "search": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+    "replace": "",
+    "tests": [
+      "src/test/remote-audit-sync.test.ts"
+    ],
+    "testName": "does\\ not\\ double\\-push\\ entries\\ already\\ on\\ the\\ remote$",
+    "description": "Report audit push counts while dropping actual audit records",
+    "artifact": "specs-h.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-audit-convergence",
+    "file": "src/lib/remote.ts",
+    "search": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+    "replace": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: \"wrong-id\",\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+    "tests": [
+      "src/test/remote-audit-sync.test.ts"
+    ],
+    "testName": "first\\ push\\ sends\\ ALL\\ local\\ entries\\ regardless\\ of\\ remote\\ contents\\ \\(full\\ convergence\\)$",
+    "description": "Lose audit memory IDs while retaining push count",
+    "artifact": "specs-h.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-audit-merge",
+    "file": "src/lib/remote.ts",
+    "search": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+    "replace": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: \"wrong-operation\",\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+    "tests": [
+      "src/test/remote-audit-sync.test.ts"
+    ],
+    "testName": "full\\ sync\\ \\(push\\ \\+\\ pull\\)\\ merges\\ audit\\ entries\\ from\\ both\\ sides$",
+    "description": "Lose remote audit operation while retaining row count",
+    "artifact": "specs-h.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-rerun",
+    "file": "src/lib/dream.ts",
+    "search": "const decayResult = this.decaySweep();",
+    "replace": "const decayResult = {count:0,memoryIds:[]};",
+    "tests": [
+      "src/test/dream-resume.test.ts"
+    ],
+    "testName": "re\\-run\\ after\\ a\\ completed\\ cycle\\ picks\\ up\\ cleanly\\ \\(no\\ corruption\\ or\\ dupes\\)$",
+    "description": "Skip all confidence decay on completed cycles",
+    "artifact": "specs-h.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-full-tool-names",
+    "file": "src/index.ts",
+    "search": "  \"gnosys_import\",",
+    "replace": "  \"gnosys_import_wrong\",",
+    "tests": [
+      "src/test/mcp-toolset-budget.test.ts"
+    ],
+    "testName": "full\\ tier\\ registers\\ everything,\\ \u2264\\ 60\\ tools$",
+    "description": "Rename a full-tier tool while retaining full tool count",
+    "artifact": "specs-h.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ide-args-gemini",
+    "file": "src/lib/ideMcpInstall.ts",
+    "search": "return { command: resolveGnosysMcpCommand(), args: [] };",
+    "replace": "return { command: resolveGnosysMcpCommand(), args: [\"wrong-flag\"] };",
+    "tests": [
+      "src/test/ide-init-golden.test.ts"
+    ],
+    "testName": "gemini\\-cli\\ setupIDE\\ writes\\ mcpServers\\.gnosys\\ under\\ isolated\\ HOME$",
+    "description": "Inject invalid MCP executable arguments",
+    "artifact": "specs-h.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ide-args-antigravity",
+    "file": "src/lib/ideMcpInstall.ts",
+    "search": "return { command: resolveGnosysMcpCommand(), args: [] };",
+    "replace": "return { command: resolveGnosysMcpCommand(), args: [\"wrong-flag\"] };",
+    "tests": [
+      "src/test/ide-init-golden.test.ts"
+    ],
+    "testName": "antigravity\\ setupIDE\\ writes\\ mcpServers\\.gnosys\\ under\\ isolated\\ HOME$",
+    "description": "Inject invalid MCP executable arguments",
+    "artifact": "specs-h.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-rules-deterministic",
+    "file": "src/lib/rulesGen.ts",
+    "search": "return sections.join(\"\\n\\n\");",
+    "replace": "return \"Wrong constant instructions\";",
+    "tests": [
+      "src/test/ide-init-golden.test.ts"
+    ],
+    "testName": "generateRulesBlock\\ is\\ deterministic\\ with\\ empty\\ preferences$",
+    "description": "Return incorrect but deterministic instructions",
+    "artifact": "specs-h.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-audit-idempotent-write",
+    "file": "src/lib/remote.ts",
+    "search": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+    "replace": "",
+    "tests": [
+      "src/test/remote-audit-sync.test.ts"
+    ],
+    "testName": "does\\ not\\ double\\-push\\ entries\\ already\\ on\\ the\\ remote$",
+    "description": "Report audit push counts while dropping actual audit records",
+    "artifact": "specs-h2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-audit-convergence",
+    "file": "src/lib/remote.ts",
+    "search": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+    "replace": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: \"wrong-id\",\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+    "tests": [
+      "src/test/remote-audit-sync.test.ts"
+    ],
+    "testName": "first\\ push\\ sends\\ ALL\\ local\\ entries\\ regardless\\ of\\ remote\\ contents\\ \\(full\\ convergence\\)$",
+    "description": "Lose audit memory IDs while retaining push count",
+    "artifact": "specs-h2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-audit-merge",
+    "file": "src/lib/remote.ts",
+    "search": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: entry.operation,\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+    "replace": "        remoteDb.logAudit({\n          timestamp: entry.timestamp,\n          operation: \"wrong-operation\",\n          memory_id: entry.memory_id,\n          details: entry.details,\n          duration_ms: entry.duration_ms,\n          trace_id: entry.trace_id,\n        });\n",
+    "tests": [
+      "src/test/remote-audit-sync.test.ts"
+    ],
+    "testName": "full\\ sync\\ \\(push\\ \\+\\ pull\\)\\ merges\\ audit\\ entries\\ from\\ both\\ sides$",
+    "description": "Lose remote audit operation while retaining row count",
+    "artifact": "specs-h2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-rerun",
+    "file": "src/lib/dream.ts",
+    "search": "const decayResult = this.decaySweep();",
+    "replace": "const decayResult = {count:0,memoryIds:[]};",
+    "tests": [
+      "src/test/dream-resume.test.ts"
+    ],
+    "testName": "re\\-run\\ after\\ a\\ completed\\ cycle\\ picks\\ up\\ cleanly\\ \\(no\\ corruption\\ or\\ dupes\\)$",
+    "description": "Skip all confidence decay on completed cycles",
+    "artifact": "specs-h2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-full-tool-names",
+    "file": "src/index.ts",
+    "search": "  \"gnosys_import\",",
+    "replace": "  \"gnosys_import_wrong\",",
+    "tests": [
+      "src/test/mcp-toolset-budget.test.ts"
+    ],
+    "testName": "full\\ tier\\ registers\\ everything,\\ \u2264\\ 60\\ tools$",
+    "description": "Rename a full-tier tool while retaining full tool count",
+    "artifact": "specs-h2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ide-args-gemini",
+    "file": "src/lib/ideMcpInstall.ts",
+    "search": "return { command: resolveGnosysMcpCommand(), args: [] };",
+    "replace": "return { command: resolveGnosysMcpCommand(), args: [\"wrong-flag\"] };",
+    "tests": [
+      "src/test/ide-init-golden.test.ts"
+    ],
+    "testName": "gemini\\-cli\\ setupIDE\\ writes\\ mcpServers\\.gnosys\\ under\\ isolated\\ HOME$",
+    "description": "Inject invalid MCP executable arguments",
+    "artifact": "specs-h2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ide-args-antigravity",
+    "file": "src/lib/ideMcpInstall.ts",
+    "search": "return { command: resolveGnosysMcpCommand(), args: [] };",
+    "replace": "return { command: resolveGnosysMcpCommand(), args: [\"wrong-flag\"] };",
+    "tests": [
+      "src/test/ide-init-golden.test.ts"
+    ],
+    "testName": "antigravity\\ setupIDE\\ writes\\ mcpServers\\.gnosys\\ under\\ isolated\\ HOME$",
+    "description": "Inject invalid MCP executable arguments",
+    "artifact": "specs-h2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-rules-deterministic",
+    "file": "src/lib/rulesGen.ts",
+    "search": "return sections.join(\"\\n\\n\");",
+    "replace": "return \"Wrong constant instructions\";",
+    "tests": [
+      "src/test/ide-init-golden.test.ts"
+    ],
+    "testName": "generateRulesBlock\\ is\\ deterministic\\ with\\ empty\\ preferences$",
+    "description": "Return incorrect but deterministic instructions",
+    "artifact": "specs-h2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-rules-target",
+    "file": "src/lib/rulesGen.ts",
+    "search": "const absPath = path.resolve(projectDir, relPath);",
+    "replace": "const absPath = path.resolve(projectDir, \"wrong-rules.md\");",
+    "tests": [
+      "src/test/ide-init-golden.test.ts"
+    ],
+    "testName": "rules block matches golden",
+    "description": "Write generated IDE rules to wrong target",
+    "beforeIds": [
+      "src/test/ide-init-golden.test.ts:46"
+    ],
+    "artifact": "specs-h2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-discover-scopes",
+    "file": "src/lib/federated.ts",
+    "search": "return buildFederatedResults(db, rawResults, (r) => r.relevance, opts, false);",
+    "replace": "return buildFederatedResults(db, rawResults, (r) => r.relevance, opts, false).map(r=>({...r,scope:\"global\" as const}));",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "federatedDiscover\\ returns\\ results\\ with\\ scope\\ info$",
+    "description": "Mislabel every discovered memory scope",
+    "artifact": "specs-i.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-list",
+    "file": "src/lib/listCommand.ts",
+    "search": "count: memories.length,",
+    "replace": "count: 999,",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ list\\ \\-\\-json\\ produces\\ valid\\ JSON$",
+    "description": "Report wrong list count",
+    "build": true,
+    "artifact": "specs-i.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-search",
+    "file": "src/lib/searchCommand.ts",
+    "search": "const results = searchWithOverlay(resolved, query, parseInt(opts.limit, 10));",
+    "replace": "const results = searchWithOverlay(resolved, query, 0);",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ search\\ \\-\\-json\\ produces\\ valid\\ JSON\\ with\\ results\\ array$",
+    "description": "Return no matching search records",
+    "build": true,
+    "artifact": "specs-i.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-stats",
+    "file": "src/lib/statsCommand.ts",
+    "search": "{ totalCount: 0 }",
+    "replace": "{ totalCount: 999 }",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ stats\\ \\-\\-json\\ produces\\ valid\\ JSON$",
+    "description": "Report incorrect empty memory count",
+    "build": true,
+    "artifact": "specs-i.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-dashboard",
+    "file": "src/lib/dashboard.ts",
+    "search": "return JSON.stringify(data, null, 2);",
+    "replace": "return JSON.stringify({}, null, 2);",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ status\\ \\-\\-system\\ \\-\\-json\\ produces\\ valid\\ JSON$",
+    "description": "Replace system dashboard with empty object",
+    "build": true,
+    "artifact": "specs-i.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-tags",
+    "file": "src/lib/tagsCommand.ts",
+    "search": "console.log(`\\n${category}:`);",
+    "replace": "console.log(\"\");",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ tags\\ lists\\ the\\ tag\\ registry\\ without\\ error$",
+    "description": "Omit category headings",
+    "build": true,
+    "artifact": "specs-i.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-lens",
+    "file": "src/lib/lensCommand.ts",
+    "search": "console.log(\"No memories match the lens filter.\");",
+    "replace": "console.log(\"\");",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ lens\\ runs\\ without\\ error$",
+    "description": "Suppress empty lens result",
+    "build": true,
+    "artifact": "specs-i.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-tags",
+    "file": "src/lib/tagsCommand.ts",
+    "search": "console.log(`\\n${category}:`);",
+    "replace": "console.log(\"\"); void category;",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ tags\\ lists\\ the\\ tag\\ registry\\ without\\ error$",
+    "description": "Omit category headings",
+    "build": true,
+    "artifact": "specs-i2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-lens",
+    "file": "src/lib/lensCommand.ts",
+    "search": "console.log(\"No memories match the lens filter.\");",
+    "replace": "console.log(\"\");",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ lens\\ runs\\ without\\ error$",
+    "description": "Suppress empty lens result",
+    "build": true,
+    "artifact": "specs-i2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-audit",
+    "file": "src/lib/auditCommand.ts",
+    "search": "console.log(JSON.stringify(entries, null, 2));",
+    "replace": "console.log(JSON.stringify([], null, 2));",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ audit\\ \\-\\-json\\ outputs\\ valid\\ JSON$",
+    "description": "Discard actual audit entries",
+    "build": true,
+    "artifact": "specs-i2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-discover-scopes",
+    "file": "src/lib/federated.ts",
+    "search": "return buildFederatedResults(db, rawResults, (r) => r.relevance, opts, false);",
+    "replace": "return buildFederatedResults(db, rawResults, (r) => r.relevance, opts, false).map(r=>({...r,scope:\"global\" as const}));",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "federatedDiscover\\ returns\\ results\\ with\\ scope\\ info$",
+    "description": "Mislabel every discovered memory scope",
+    "artifact": "specs-ij.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-list",
+    "file": "src/lib/listCommand.ts",
+    "search": "count: memories.length,",
+    "replace": "count: 999,",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ list\\ \\-\\-json\\ produces\\ valid\\ JSON$",
+    "description": "Report wrong list count",
+    "build": true,
+    "artifact": "specs-ij.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-search",
+    "file": "src/lib/searchCommand.ts",
+    "search": "const results = searchWithOverlay(resolved, query, parseInt(opts.limit, 10));",
+    "replace": "const results = searchWithOverlay(resolved, query, 0);",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ search\\ \\-\\-json\\ produces\\ valid\\ JSON\\ with\\ results\\ array$",
+    "description": "Return no matching search records",
+    "build": true,
+    "artifact": "specs-ij.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-stats",
+    "file": "src/lib/statsCommand.ts",
+    "search": "{ totalCount: 0 }",
+    "replace": "{ totalCount: 999 }",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ stats\\ \\-\\-json\\ produces\\ valid\\ JSON$",
+    "description": "Report incorrect empty memory count",
+    "build": true,
+    "artifact": "specs-ij.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-dashboard",
+    "file": "src/lib/dashboard.ts",
+    "search": "return JSON.stringify(data, null, 2);",
+    "replace": "return JSON.stringify({}, null, 2);",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ status\\ \\-\\-system\\ \\-\\-json\\ produces\\ valid\\ JSON$",
+    "description": "Replace system dashboard with empty object",
+    "build": true,
+    "artifact": "specs-ij.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-tags",
+    "file": "src/lib/tagsCommand.ts",
+    "search": "console.log(`\\n${category}:`);",
+    "replace": "console.log(\"\"); void category;",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ tags\\ lists\\ the\\ tag\\ registry\\ without\\ error$",
+    "description": "Omit category headings",
+    "build": true,
+    "artifact": "specs-ij.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-lens",
+    "file": "src/lib/lensCommand.ts",
+    "search": "console.log(\"No memories match the lens filter.\");",
+    "replace": "console.log(\"\");",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ lens\\ runs\\ without\\ error$",
+    "description": "Suppress empty lens result",
+    "build": true,
+    "artifact": "specs-ij.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-audit",
+    "file": "src/lib/auditCommand.ts",
+    "search": "console.log(JSON.stringify(entries, null, 2));",
+    "replace": "console.log(JSON.stringify([], null, 2));",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ audit\\ \\-\\-json\\ outputs\\ valid\\ JSON$",
+    "description": "Discard actual audit entries",
+    "build": true,
+    "artifact": "specs-ij.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-help-public",
+    "file": "src/cli/sandbox.ts",
+    "search": ".command(\"sandbox\")",
+    "replace": ".command(\"sandbox-missing\")",
+    "tests": [
+      "src/test/phase9c.cli-federated.test.ts"
+    ],
+    "testName": "gnosys\\ \\-\\-help\\ lists\\ public\\ top\\-level\\ commands$",
+    "description": "Remove advertised sandbox command",
+    "build": true,
+    "beforeIds": [
+      "src/test/phase9c.cli-federated.test.ts:382"
+    ],
+    "artifact": "specs-ij.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cleanup-rules-cli",
+    "file": "src/cli/maintenance.ts",
+    "search": "const cleaned = await removeRulesFromProject(dir);",
+    "replace": "const cleaned: string[] = []; void removeRulesFromProject;",
+    "tests": [
+      "src/test/cleanup-rules.test.ts"
+    ],
+    "testName": "exposes\\ \\-\\-rules\\ on\\ the\\ cleanup\\ command\\ and\\ routes\\ to\\ removeRulesFromProject$",
+    "description": "Skip CLI rules removal",
+    "build": true,
+    "artifact": "specs-ij.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-scheduled-cli",
+    "file": "src/cli/dream.ts",
+    "search": "const merged = { ...(this.parent?.opts() ?? {}), ...opts } as DreamRunOpts;",
+    "replace": "const merged = { ...opts } as DreamRunOpts;",
+    "tests": [
+      "src/test/dream-run-scheduled-flag.test.ts"
+    ],
+    "testName": "run\\ action\\ merges\\ parent\\ opts\\ before\\ calling\\ runDreamCommand$",
+    "description": "Lose scheduled parent option",
+    "build": true,
+    "artifact": "specs-ij.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-shell-literal-copy",
+    "file": "src/lib/projectIdentity.ts",
+    "search": "execFileSync(\"cp\", [\"-a\", sourceStore, targetStore], { stdio: \"pipe\" });",
+    "replace": "execFileSync(\"cp\", [\"-a\", sourceStore.replace(/\\$\\([^)]*\\)/g, \"\"), targetStore], { stdio: \"pipe\" });",
+    "tests": [
+      "src/test/shell-injection-argv.test.ts"
+    ],
+    "testName": "copies\\ literal\\ shell\\ syntax\\ without\\ executing\\ it$",
+    "description": "Interpret dollar substitution syntax instead of treating it as literal path",
+    "beforeIds": [
+      "src/test/shell-injection-argv.test.ts:53"
+    ],
+    "artifact": "specs-ij.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-summary-real-remote",
+    "file": "src/lib/setup/summary.ts",
+    "search": "return remotePath ?? \"NA (single-machine only)\";",
+    "replace": "return \"Wrong remote status\"; void remotePath;",
+    "tests": [
+      "src/test/setup-ui-summary.test.ts"
+    ],
+    "testName": "describeMultiMachineSyncPanel\\ shows\\ NA\\ with\\ no\\ remote\\ meta\\ or\\ machine\\ config$",
+    "description": "Misrender actual persisted remote configuration",
+    "artifact": "specs-k.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-summary-na-row",
+    "file": "src/lib/setup/summary.ts",
+    "search": "label: \"multi-machine sync\",",
+    "replace": "label: \"wrong sync label\",",
+    "tests": [
+      "src/test/setup-ui-summary.test.ts"
+    ],
+    "testName": "renders\\ panel\\ row\\ 4\\ with\\ NA\\ when\\ multi\\-machine\\ sync\\ is\\ not\\ configured$",
+    "description": "Mislabel sync panel row",
+    "artifact": "specs-k.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-summary-fresh",
+    "file": "src/lib/setup/summary.ts",
+    "search": "return \"not set \u2014 configure providers first\";",
+    "replace": "return \"all anthropic\";",
+    "tests": [
+      "src/test/setup-ui-summary.test.ts"
+    ],
+    "testName": "renders\\ panel\\ rows\\ for\\ a\\ fresh\\ config\\ \\(no\\ default\\ provider\\)$",
+    "description": "Misrepresent unconfigured task routing",
+    "artifact": "specs-k.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-summary-xai",
+    "file": "src/lib/setup/summary.ts",
+    "search": "return provs.size === 1 ? `all ${[...provs][0]}` : `mixed (${[...provs].join(\", \")})`;",
+    "replace": "return \"all anthropic\"; void provs;",
+    "tests": [
+      "src/test/setup-ui-summary.test.ts"
+    ],
+    "testName": "renders\\ panel\\ rows\\ after\\ a\\ switch\\ to\\ xai$",
+    "description": "Ignore provider loaded from actual config",
+    "artifact": "specs-k.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-summary-edited",
+    "file": "src/lib/setup/summary.ts",
+    "search": "updated.add(section.key);",
+    "replace": "void section.key;",
+    "tests": [
+      "src/test/setup-ui-summary.test.ts"
+    ],
+    "testName": "marks\\ an\\ edited\\ routing\\ section\\ after\\ saving\\ and\\ reloading\\ its\\ config$",
+    "description": "Omit edited-section marker",
+    "beforeIds": [
+      "src/test/setup-ui-summary.test.ts:153"
+    ],
+    "artifact": "specs-k.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-routing-reset-defect",
+    "file": "src/lib/config.ts",
+    "search": "const merged = deepMergeConfig(rawExisting, updates);",
+    "replace": "const merged = deepMergeConfig(rawExisting, updates);\n  if (updates.taskModels && Object.keys(updates.taskModels as object).length === 0) merged.taskModels = {};",
+    "tests": [
+      "src/test/setup-ui-summary.test.ts"
+    ],
+    "testName": "DEF\\-G1\\-001\\ reset\\ routing\\ clears\\ persisted\\ task\\ overrides$",
+    "description": "Correct empty task routing reset temporarily; expected-failure must become unexpected success",
+    "artifact": "specs-k.json",
+    "countsTowardMutationScore": false
+  },
+  {
+    "id": "G1-read-overlay-cli",
+    "file": "src/lib/readCommand.ts",
+    "search": "memory: dbMem",
+    "replace": "memory: { ...dbMem, content: \"wrong body\" }",
+    "tests": [
+      "src/test/read-command-overlay.test.ts"
+    ],
+    "testName": "routes\\ read\\-by\\-id\\ through\\ the\\ client\\ read\\ overlay\\ like\\ its\\ siblings$",
+    "description": "Lose pending offline content in public read response",
+    "artifact": "specs-l.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-read-legacy",
+    "file": "src/lib/readCommand.ts",
+    "search": "{ path: memoryPath, source: memory.sourceLabel, content: raw }",
+    "replace": "{ path: memoryPath, source: memory.sourceLabel, content: \"wrong markdown\" }",
+    "tests": [
+      "src/test/read-command-overlay.test.ts"
+    ],
+    "testName": "keeps\\ the\\ legacy\\ resolver\\ fallback\\ for\\ markdown\\ stores$",
+    "description": "Lose fallback markdown content",
+    "artifact": "specs-l.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-overlay-content",
+    "file": "src/lib/clientReadResolve.ts",
+    "search": "return pending ? pendingAddToDbMemory(pending) : null;",
+    "replace": "return pending ? {...pendingAddToDbMemory(pending),content:\"wrong overlay body\"} : null;",
+    "tests": [
+      "src/test/read-command-overlay.test.ts"
+    ],
+    "testName": "falls\\ back\\ to\\ the\\ pending\\ overlay\\ when\\ the\\ DB\\ misses$",
+    "description": "Lose pending memory body",
+    "artifact": "specs-l.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-overlay-id",
+    "file": "src/lib/clientReadResolve.ts",
+    "search": "resolved.pendingOverlay.find((p) => p.id === id)",
+    "replace": "resolved.pendingOverlay.find(() => true)",
+    "tests": [
+      "src/test/read-command-overlay.test.ts"
+    ],
+    "testName": "returns\\ null\\ when\\ neither\\ DB\\ nor\\ overlay\\ has\\ the\\ id$",
+    "description": "Return unrelated pending memory for missing ID",
+    "artifact": "specs-l.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-hybrid-mcp-warning",
+    "file": "src/index.ts",
+    "search": "requestedMode !== \"keyword\" && !hybridSearch.canRunSemantic()",
+    "replace": "requestedMode === \"keyword\" && !hybridSearch.canRunSemantic()",
+    "tests": [
+      "src/test/hybrid-degrade-warning.test.ts"
+    ],
+    "testName": "gnosys_hybrid_search\\ warns\\ when\\ the\\ semantic\\ leg\\ can't\\ run$",
+    "description": "Suppress MCP degraded-search warning",
+    "build": true,
+    "artifact": "specs-l.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-semantic-mcp-warning",
+    "file": "src/index.ts",
+    "search": "if (!hybridSearch.canRunSemantic()) {",
+    "replace": "if (false) {",
+    "tests": [
+      "src/test/hybrid-degrade-warning.test.ts"
+    ],
+    "testName": "gnosys_semantic_search\\ refuses\\ loudly\\ instead\\ of\\ returning\\ generic\\ empty$",
+    "description": "Run unavailable semantic search without actionable failure",
+    "build": true,
+    "artifact": "specs-l.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-hybrid-cli-warning",
+    "file": "src/lib/hybridSearchCommand.ts",
+    "search": "if (mode !== \"keyword\" && !hybridSearch.canRunSemantic()) {",
+    "replace": "if (false) {",
+    "tests": [
+      "src/test/hybrid-degrade-warning.test.ts"
+    ],
+    "testName": "CLI\\ hybrid\\-search\\ warns\\ on\\ stderr\\ \\(stdout\\ stays\\ clean\\ for\\ \\-\\-json\\)$",
+    "description": "Suppress CLI degraded-search warning",
+    "build": true,
+    "artifact": "specs-l.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-central-semantic-gate",
+    "file": "src/lib/hybridSearch.ts",
+    "search": "canRunSemantic(): boolean {\n    if (this.dbSearch) {\n      return this.dbSearch.hasEmbeddings();",
+    "replace": "canRunSemantic(): boolean {\n    if (this.dbSearch) {\n      return this.embeddings.hasEmbeddings();",
+    "tests": [
+      "src/test/hybrid-degrade-warning.test.ts"
+    ],
+    "testName": "canRunSemantic\\ mirrors\\ the\\ DB\\-mode\\ embedQuery\\ gate\\ \\(central\\-DB\\ vectors\\)$",
+    "description": "Ignore central vectors in semantic availability gate",
+    "artifact": "specs-l.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-hybrid-mcp-warning",
+    "file": "src/index.ts",
+    "search": "requestedMode !== \"keyword\" && !hybridSearch.canRunSemantic()",
+    "replace": "requestedMode === \"keyword\" && !hybridSearch.canRunSemantic()",
+    "tests": [
+      "src/test/hybrid-degrade-warning.test.ts"
+    ],
+    "testName": "gnosys_hybrid_search\\ warns\\ when\\ the\\ semantic\\ leg\\ can't\\ run$",
+    "description": "Suppress MCP degraded-search warning",
+    "build": true,
+    "artifact": "specs-l2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-semantic-mcp-warning",
+    "file": "src/index.ts",
+    "search": "if (!hybridSearch.canRunSemantic()) {",
+    "replace": "if (false) {",
+    "tests": [
+      "src/test/hybrid-degrade-warning.test.ts"
+    ],
+    "testName": "gnosys_semantic_search\\ refuses\\ loudly\\ instead\\ of\\ returning\\ generic\\ empty$",
+    "description": "Run unavailable semantic search without actionable failure",
+    "build": true,
+    "artifact": "specs-l2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-hybrid-cli-warning",
+    "file": "src/lib/hybridSearchCommand.ts",
+    "search": "if (mode !== \"keyword\" && !hybridSearch.canRunSemantic()) {",
+    "replace": "if (false) {",
+    "tests": [
+      "src/test/hybrid-degrade-warning.test.ts"
+    ],
+    "testName": "CLI\\ hybrid\\-search\\ warns\\ on\\ stderr\\ \\(stdout\\ stays\\ clean\\ for\\ \\-\\-json\\)$",
+    "description": "Suppress CLI degraded-search warning",
+    "build": true,
+    "artifact": "specs-l2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-central-semantic-gate",
+    "file": "src/lib/hybridSearch.ts",
+    "search": "canRunSemantic(): boolean {\n    if (this.dbSearch) {\n      return this.dbSearch.hasEmbeddings();",
+    "replace": "canRunSemantic(): boolean {\n    if (this.dbSearch) {\n      return this.embeddings.hasEmbeddings();",
+    "tests": [
+      "src/test/hybrid-degrade-warning.test.ts"
+    ],
+    "testName": "canRunSemantic\\ mirrors\\ the\\ DB\\-mode\\ embedQuery\\ gate\\ \\(central\\-DB\\ vectors\\)$",
+    "description": "Ignore central vectors in semantic availability gate",
+    "artifact": "specs-l2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-sandbox-recall-content",
+    "file": "src/sandbox/server.ts",
+    "search": "content: mem?.content || r.snippet,",
+    "replace": "content: \"wrong recall body\",",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "handleRequest\\ add\\+recall\\ round\\-trip\\ on\\ standard\\ path$",
+    "description": "Corrupt recalled memory content while reporting ok",
+    "artifact": "specs-m.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-backup-data-default",
+    "file": "src/lib/db.ts",
+    "search": "await this.db.backup(backupPath);",
+    "replace": "fs.writeFileSync(backupPath, \"invalid backup\");",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "db\\.backup\\ creates\\ a\\ backup\\ file$",
+    "description": "Write invalid bytes at successful backup path",
+    "artifact": "specs-m.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-backup-data-custom",
+    "file": "src/lib/db.ts",
+    "search": "await this.db.backup(backupPath);",
+    "replace": "fs.writeFileSync(backupPath, \"invalid backup\");",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "backup\\ supports\\ custom\\ destination\\ directory$",
+    "description": "Write invalid bytes at successful backup path",
+    "artifact": "specs-m.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-busy-timeout-guard",
+    "file": "src/lib/db.ts",
+    "search": "if (!Database) return;\n\n    const maxRetries",
+    "replace": "return;\n\n    const maxRetries",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "new\\ GnosysDB\\ sets\\ busy_timeout\\ to\\ 10000$",
+    "description": "Leave database unavailable so conditional assertions never run",
+    "artifact": "specs-m.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-backup-cli-error",
+    "file": "src/lib/backupCommand.ts",
+    "search": "const backupPath = await centralDb.backup(outputDir);",
+    "replace": "const backupPath = await centralDb.backup(outputDir + \"/missing/invalid\").then(() => { throw new Error(\"Backup unavailable\"); });",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "backup\\ \\-\\-json\\ outputs\\ valid\\ JSON$",
+    "description": "Fail backup command while old test catches every error",
+    "build": true,
+    "artifact": "specs-m.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-export",
+    "file": "src/lib/dream.ts",
+    "search": "report.errors.push(\"gnosys.db not available or not migrated\");",
+    "replace": "report.errors.push(\"Wrong diagnosis\");",
+    "tests": [
+      "src/test/phase7d.dream.test.ts"
+    ],
+    "testName": "GnosysDreamEngine\\ class\\ is\\ importable$",
+    "description": "Misdiagnose unavailable Dream store while export exists",
+    "artifact": "specs-m.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-idle-default",
+    "file": "src/lib/dream.ts",
+    "search": "  idleMinutes: 10,",
+    "replace": "  idleMinutes: 1,",
+    "tests": [
+      "src/test/phase7d.dream.test.ts"
+    ],
+    "testName": "DEFAULT_DREAM_CONFIG\\ has\\ sensible\\ idle\\ threshold$",
+    "description": "Change idle threshold while retaining positive value",
+    "artifact": "specs-m.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-phase-default",
+    "file": "src/lib/dream.ts",
+    "search": "  selfCritique: true,\n  generateSummaries: true,\n  discoverRelationships: true,",
+    "replace": "  selfCritique: false,\n  generateSummaries: false,\n  discoverRelationships: false,",
+    "tests": [
+      "src/test/phase7d.dream.test.ts"
+    ],
+    "testName": "dream\\ config\\ supports\\ self\\-critique\\ and\\ summary\\ generation\\ flags$",
+    "description": "Disable optional phases while retaining boolean types",
+    "artifact": "specs-m.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-backup-cli-error",
+    "file": "src/lib/backupCommand.ts",
+    "search": "const backupPath = await centralDb.backup(outputDir);",
+    "replace": "const backupPath = await centralDb.backup(outputDir + \"/missing/invalid\").then(() => { throw new Error(\"Backup unavailable\"); });",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "backup\\ \\-\\-json\\ outputs\\ valid\\ JSON$",
+    "description": "Fail backup command while old test catches every error",
+    "build": true,
+    "artifact": "specs-m2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-export",
+    "file": "src/lib/dream.ts",
+    "search": "report.errors.push(\"gnosys.db not available or not migrated\");",
+    "replace": "report.errors.push(\"Wrong diagnosis\");",
+    "tests": [
+      "src/test/phase7d.dream.test.ts"
+    ],
+    "testName": "GnosysDreamEngine\\ class\\ is\\ importable$",
+    "description": "Misdiagnose unavailable Dream store while export exists",
+    "artifact": "specs-m2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-idle-default",
+    "file": "src/lib/dream.ts",
+    "search": "  idleMinutes: 10,",
+    "replace": "  idleMinutes: 1,",
+    "tests": [
+      "src/test/phase7d.dream.test.ts"
+    ],
+    "testName": "DEFAULT_DREAM_CONFIG\\ has\\ sensible\\ idle\\ threshold$",
+    "description": "Change idle threshold while retaining positive value",
+    "artifact": "specs-m2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-phase-default",
+    "file": "src/lib/dream.ts",
+    "search": "  selfCritique: true,\n  generateSummaries: true,\n  discoverRelationships: true,",
+    "replace": "  selfCritique: false,\n  generateSummaries: false,\n  discoverRelationships: false,",
+    "tests": [
+      "src/test/phase7d.dream.test.ts"
+    ],
+    "testName": "dream\\ config\\ supports\\ self\\-critique\\ and\\ summary\\ generation\\ flags$",
+    "description": "Disable optional phases while retaining boolean types",
+    "artifact": "specs-m2.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ingest-unavailable",
+    "file": "src/lib/ingest.ts",
+    "search": "return this.provider !== null;",
+    "replace": "return true;",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "reports unavailable when getLLMProvider throws at construction$",
+    "description": "Misreport absent provider as available",
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ingest-provider-name",
+    "file": "src/lib/ingest.ts",
+    "search": "return this.provider?.name || \"none\";",
+    "replace": "return \"wrong-provider\";",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "reports available when a provider is resolved$",
+    "description": "Misreport resolved provider name",
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ingest-cloud-errors",
+    "file": "src/lib/ingest.ts",
+    "search": "const envVar = envVarMap[providerName];",
+    "replace": "const envVar = undefined; void envVarMap;",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "(anthropic|openai|groq|xai|mistral|custom) \u2014 mentions",
+    "description": "Omit cloud provider key recovery instructions",
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ingest-local-ollama",
+    "file": "src/lib/llm.ts",
+    "search": "`Ollama request failed (${response.status}): ${errorText}`",
+    "replace": "`Wrong local diagnosis`",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "ollama reports a failed local endpoint$",
+    "description": "Lose Ollama failed HTTP status",
+    "beforeIds": [
+      "src/test/ingest-structured.test.ts:132"
+    ],
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ingest-local-lmstudio",
+    "file": "src/lib/llm.ts",
+    "search": "`${this.name} request failed (${response.status}): ${safeText}`",
+    "replace": "`Wrong local diagnosis`",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "lmstudio reports a failed local endpoint$",
+    "description": "Lose LM Studio failed HTTP status",
+    "beforeIds": [
+      "src/test/ingest-structured.test.ts:136"
+    ],
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ingest-config-validation",
+    "file": "src/lib/config.ts",
+    "search": "defaultProvider: LLMProviderEnum.optional(),",
+    "replace": "defaultProvider: LLMProviderEnum.or(z.string()).optional(),",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "rejects unknown providers at the config boundary$",
+    "description": "Accept arbitrary configured provider values",
+    "beforeIds": [
+      "src/test/ingest-structured.test.ts:140"
+    ],
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ingest-json-title",
+    "file": "src/lib/ingest.ts",
+    "search": "title: parsed.title || \"Untitled Memory\",",
+    "replace": "title: \"Wrong title\",",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "parses (bare JSON|markdown-fenced JSON|plain-fenced JSON|JSON embedded)",
+    "description": "Lose model structured title across all response encodings",
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ingest-proto",
+    "file": "src/lib/ingest.ts",
+    "search": "if (key === \"__proto__\" || key === \"constructor\" || key === \"prototype\") continue;",
+    "replace": "if (false) continue;",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "strips __proto__, constructor, and prototype keys from LLM JSON$",
+    "description": "Trust inherited title/content from own __proto__ JSON key",
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ingest-registry-tags",
+    "file": "src/lib/ingest.ts",
+    "search": "validTags.push(tag);",
+    "replace": "validTags.push(\"wrong tag\");",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "keeps registry tags and proposes unknown tags$",
+    "description": "Corrupt accepted registry tag values",
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ingest-explicit-tags",
+    "file": "src/lib/ingest.ts",
+    "search": "proposedNewTags.push(item);",
+    "replace": "void item;",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "includes explicit proposed_new_tags from the LLM response$",
+    "description": "Drop explicitly proposed tag values",
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ingest-default-fields",
+    "file": "src/lib/ingest.ts",
+    "search": "category: parsed.category || \"uncategorized\",",
+    "replace": "category: parsed.category || \"wrong category\",",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "applies defaults when the LLM returns minimal JSON$",
+    "description": "Misclassify minimal structured input",
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ingest-override",
+    "file": "src/lib/ingest.ts",
+    "search": "activeProvider = getLLMProvider(configOverride, \"structuring\");",
+    "replace": "activeProvider = this.provider;",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "(resolves a fresh provider from configOverride|throws provider-missing when configOverride has no available provider)$",
+    "description": "Ignore per-call configured provider and model",
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-rerun",
+    "file": "src/lib/dream.ts",
+    "search": "const decayResult = this.decaySweep();",
+    "replace": "const decayResult = {count:0,memoryIds:[]};",
+    "tests": [
+      "src/test/dream-resume.test.ts"
+    ],
+    "testName": "re\\-run\\ after\\ a\\ completed\\ cycle\\ picks\\ up\\ cleanly\\ \\(no\\ corruption\\ or\\ dupes\\)$",
+    "description": "Skip all confidence decay on completed cycles",
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-cli-version-success",
+    "file": "src/cli.ts",
+    "search": "rewriteLegacyExport();\n",
+    "replace": "rewriteLegacyExport();\nif(process.argv.includes(\"--version\")) process.exit(1);\n",
+    "tests": [
+      "src/test/v593-no-central-db-pollution.test.ts"
+    ],
+    "testName": "running gnosys --version with empty HOME does NOT create gnosys.db$",
+    "description": "Fail version invocation before producing a version",
+    "build": true,
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-scheduled-cli",
+    "file": "src/cli/dream.ts",
+    "search": "const merged = { ...(this.parent?.opts() ?? {}), ...opts } as DreamRunOpts;",
+    "replace": "const merged = { ...opts } as DreamRunOpts;",
+    "tests": [
+      "src/test/dream-run-scheduled-flag.test.ts"
+    ],
+    "testName": "scheduled run records designation-gate skip$",
+    "description": "Lose scheduled parent option",
+    "build": true,
+    "beforeIds": [
+      "src/test/dream-run-scheduled-flag.test.ts:21"
+    ],
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-abort-boundary",
+    "file": "src/lib/dream.ts",
+    "search": "if (this.abortRequested) return { stop: true, reason: \"abort requested\" };",
+    "replace": "if (false) return { stop: true, reason: \"abort requested\" };",
+    "tests": [
+      "src/test/dream-resume.test.ts"
+    ],
+    "testName": "aborts cleanly at a phase boundary with a consistent DB$",
+    "description": "Ignore public abort request at phase boundary",
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-shell-command-injection",
+    "file": "src/lib/projectIdentity.ts",
+    "search": "execFileSync(\"cp\", [\"-a\", sourceStore, targetStore], { stdio: \"pipe\" });",
+    "replace": "execFileSync(\"sh\", [\"-c\", `cp -a \"${sourceStore}\" \"${targetStore}\"`], { stdio: \"pipe\" });",
+    "tests": [
+      "src/test/shell-injection-argv.test.ts"
+    ],
+    "testName": "copies literal shell syntax without executing it$",
+    "description": "Execute hostile path through shell and create temp marker",
+    "beforeIds": [
+      "src/test/shell-injection-argv.test.ts:53"
+    ],
+    "artifact": "specs-n.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-sandbox-recall-content",
+    "file": "src/sandbox/server.ts",
+    "search": "content: mem?.content || r.snippet,",
+    "replace": "content: \"wrong recall body\",",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "handleRequest\\ add\\+recall\\ round\\-trip\\ on\\ standard\\ path$",
+    "description": "Corrupt recalled memory content while reporting ok",
+    "artifact": "specs-o.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-backup-data-default",
+    "file": "src/lib/db.ts",
+    "search": "await this.db.backup(backupPath);",
+    "replace": "fs.writeFileSync(backupPath, \"invalid backup\");",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "db\\.backup\\ creates\\ a\\ backup\\ file$",
+    "description": "Write invalid bytes at successful backup path",
+    "artifact": "specs-o.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-backup-data-custom",
+    "file": "src/lib/db.ts",
+    "search": "await this.db.backup(backupPath);",
+    "replace": "fs.writeFileSync(backupPath, \"invalid backup\");",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "backup\\ supports\\ custom\\ destination\\ directory$",
+    "description": "Write invalid bytes at successful backup path",
+    "artifact": "specs-o.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-busy-timeout-guard",
+    "file": "src/lib/db.ts",
+    "search": "if (!Database) return;\n\n    const maxRetries",
+    "replace": "return;\n\n    const maxRetries",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "new\\ GnosysDB\\ sets\\ busy_timeout\\ to\\ 10000$",
+    "description": "Leave database unavailable so conditional assertions never run",
+    "artifact": "specs-o.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-backup-cli-error",
+    "file": "src/lib/backupCommand.ts",
+    "search": "const backupPath = await centralDb.backup(outputDir);",
+    "replace": "const backupPath = await centralDb.backup(outputDir + \"/missing/invalid\").then(() => { throw new Error(\"Backup unavailable\"); });",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "backup\\ \\-\\-json\\ outputs\\ valid\\ JSON$",
+    "description": "Fail backup command while old test catches every error",
+    "build": true,
+    "artifact": "specs-o.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-native-retries",
+    "file": "src/lib/db.ts",
+    "search": "const maxRetries = opts?.retries ?? 3;",
+    "replace": "const maxRetries = 0;",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "retries\\ transient\\ native\\ open\\ failures\\ before\\ persisting\\ data$",
+    "description": "Skip configured transient native-open retries",
+    "beforeIds": [
+      "src/test/phase9e.network-share-polish.test.ts:66"
+    ],
+    "artifact": "specs-o.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-native-absent",
+    "file": "src/lib/db.ts",
+    "search": "if (!Database) return;\n\n    const maxRetries",
+    "replace": "if (!Database) {this.available = true; return;}\n\n    const maxRetries",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "returns\\ unavailable\\ when\\ Database\\ module\\ is\\ absent\\ \\(constructor\\ guard\\)$",
+    "description": "Claim database is available despite missing native library",
+    "artifact": "specs-o.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-native-default-retries",
+    "file": "src/lib/db.ts",
+    "search": "const maxRetries = opts?.retries ?? 3;",
+    "replace": "const maxRetries = opts?.retries ?? 1;",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "default\\ retry\\ count\\ is\\ 3\\ \\(no\\ opts\\)$",
+    "description": "Reduce default native-open retry allowance",
+    "artifact": "specs-o.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-native-timeout",
+    "file": "src/lib/db.ts",
+    "search": "// Longer busy timeout for network shares (10s)\n        enableWAL(this.db, 10000);",
+    "replace": "// Longer busy timeout for network shares (10s)\n        enableWAL(this.db, 0);",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "new\\ GnosysDB\\ sets\\ busy_timeout\\ to\\ 10000$",
+    "description": "Remove configured SQLite busy wait",
+    "artifact": "specs-o.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-export",
+    "file": "src/lib/dream.ts",
+    "search": "report.errors.push(\"gnosys.db not available or not migrated\");",
+    "replace": "report.errors.push(\"Wrong diagnosis\");",
+    "tests": [
+      "src/test/phase7d.dream.test.ts"
+    ],
+    "testName": "Dream\\ diagnoses\\ an\\ empty\\ unmigrated\\ store$",
+    "description": "Misdiagnose unavailable Dream store",
+    "beforeIds": [
+      "src/test/phase7d.dream.test.ts:31"
+    ],
+    "artifact": "specs-o.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-runtime-boundary",
+    "file": "src/lib/dream.ts",
+    "search": "if (this.isOvertime()) return { stop: true, reason: `max runtime exceeded (${this.dreamConfig.maxRuntimeMinutes}min)` };",
+    "replace": "if (false) return { stop: true, reason: `max runtime exceeded (${this.dreamConfig.maxRuntimeMinutes}min)` };",
+    "tests": [
+      "src/test/phase7d.dream.test.ts"
+    ],
+    "testName": "Dream\\ aborts\\ at\\ a\\ phase\\ boundary\\ after\\ its\\ default\\ runtime\\ limit$",
+    "description": "Ignore elapsed runtime at public Dream phase boundary",
+    "beforeIds": [
+      "src/test/phase7d.dream.test.ts:59"
+    ],
+    "artifact": "specs-o.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-audit-complete",
+    "file": "src/lib/dream.ts",
+    "search": "auditToDb(this.db, \"dream_complete\", undefined, {",
+    "replace": "auditToDb(this.db, \"dream_start\", undefined, {",
+    "tests": [
+      "src/test/phase7d.dream.test.ts"
+    ],
+    "testName": "Dream\\ writes\\ completion\\ audit\\ details\\ for\\ its\\ persisted\\ decay$",
+    "description": "Omit actual Dream completion audit event",
+    "beforeIds": [
+      "src/test/phase7d.dream.test.ts:71"
+    ],
+    "artifact": "specs-o.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-audit-start",
+    "file": "src/lib/dream.ts",
+    "search": "memoryCount: counts.active,",
+    "replace": "memoryCount: 999,",
+    "tests": [
+      "src/test/phase7d.dream.test.ts"
+    ],
+    "testName": "Dream\\ start\\ audit\\ records\\ the\\ actual\\ run\\ configuration\\ and\\ memory\\ count$",
+    "description": "Record wrong memory count in Dream start audit",
+    "beforeIds": [
+      "src/test/phase7d.dream.test.ts:111"
+    ],
+    "artifact": "specs-o.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-migrate-content",
+    "file": "src/lib/remote.ts",
+    "search": "remoteDb.insertMemory(mem);",
+    "replace": "remoteDb.insertMemory({...mem,title:\"Wrong copied title\",content:\"Wrong copied content\"});",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "copies projects and memories and sets last sync on success$",
+    "description": "Lose migrated memory content while preserving row count",
+    "artifact": "specs-p.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-http-auth-success",
+    "file": "src/lib/mcpHttp.ts",
+    "search": "const sessionId = req.headers[\"mcp-session-id\"] as string | undefined;",
+    "replace": "if (req.headers[\"authorization\"]) { jsonRpcError(res, 500, -32000, \"Unexpected authenticated failure\"); return; }\n    const sessionId = req.headers[\"mcp-session-id\"] as string | undefined;",
+    "tests": [
+      "src/test/v512-http-bearer.test.ts"
+    ],
+    "testName": "correct token \u2192 passes the auth gate \\(not 401\\)$",
+    "description": "Fail authenticated MCP initialize after successful token check",
+    "artifact": "specs-p.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-migrate-content",
+    "file": "src/lib/remote.ts",
+    "search": "remoteDb.insertMemory(mem);",
+    "replace": "remoteDb.insertMemory({...mem,title:\"Wrong copied title\",content:\"Wrong copied content\"});",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "copies projects and memories and sets last sync on success$",
+    "description": "Lose migrated memory content while preserving row count",
+    "artifact": "specs-q.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-http-auth-success",
+    "file": "src/lib/mcpHttp.ts",
+    "search": "const sessionId = req.headers[\"mcp-session-id\"] as string | undefined;",
+    "replace": "if (req.headers[\"authorization\"]) { jsonRpcError(res, 500, -32000, \"Unexpected authenticated failure\"); return; }\n    const sessionId = req.headers[\"mcp-session-id\"] as string | undefined;",
+    "tests": [
+      "src/test/v512-http-bearer.test.ts"
+    ],
+    "testName": "correct token initializes an authenticated MCP session$",
+    "description": "Fail authenticated MCP initialize after successful token check",
+    "beforeIds": [
+      "src/test/v512-http-bearer.test.ts:47"
+    ],
+    "artifact": "specs-q.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-remote-resolve-error",
+    "file": "src/lib/remote.ts",
+    "search": "return { ok: false, error: (err as Error).message };",
+    "replace": "return { ok: false, error: \"Wrong resolve failure\" };",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "returns\\ insert\\ error\\ when\\ localDb\\.insertMemory\\ throws$",
+    "description": "Lose actual SQLite constraint diagnosis from conflict resolution",
+    "artifact": "specs-q.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-remote-project-partial",
+    "file": "src/lib/remote.ts",
+    "search": "errors.push(`Failed to copy project ${proj.id}: ${(err as Error).message}`);",
+    "replace": "errors.push(\"Wrong failed project\");",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "continues\\ when\\ one\\ project\\ insert\\ fails$",
+    "description": "Lose failed project identity while continuing real migration",
+    "artifact": "specs-q.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-remote-memory-partial",
+    "file": "src/lib/remote.ts",
+    "search": "errors.push(`Failed to copy ${mem.id}: ${(err as Error).message}`);",
+    "replace": "errors.push(\"Wrong failed memory\");",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "continues\\ when\\ one\\ memory\\ insert\\ fails$",
+    "description": "Lose failed memory identity while continuing real migration",
+    "artifact": "specs-q.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-remote-busy",
+    "file": "src/lib/remote.ts",
+    "search": "message = \"Remote DB busy \u2014 another sync is probably running on another machine. Try again in a moment.\";",
+    "replace": "message = \"Ready\";",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "returns\\ friendly\\ message\\ on\\ SQLITE_BUSY$",
+    "description": "Misreport native SQLite busy state as ready",
+    "artifact": "specs-q.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-remote-ioerror",
+    "file": "src/lib/remote.ts",
+    "search": "if (errAny?.code === \"SQLITE_BUSY\") {\n          remoteBusy = true;\n        } else {\n          throw err;\n        }",
+    "replace": "if (errAny?.code === \"SQLITE_BUSY\") {\n          remoteBusy = true;\n        } else {\n          remoteBusy = true;\n        }",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "rethrows\\ non\\-busy\\ sqlite\\ errors$",
+    "description": "Swallow a non-busy native SQLite read failure",
+    "artifact": "specs-q.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-remote-write-probe",
+    "file": "src/lib/remote.ts",
+    "search": "result.errors.push(\"SQLite read/write probe failed \u2014 locking may be unreliable on this filesystem\");",
+    "replace": "result.errors.push(\"Wrong write diagnosis\");",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "reports\\ an\\ unsuccessful\\ SQLite\\ write\\ probe$",
+    "description": "Lose failed real SQLite write-probe diagnosis",
+    "beforeIds": [
+      "src/test/remote-coverage.test.ts:413"
+    ],
+    "artifact": "specs-q.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-remote-close",
+    "file": "src/lib/remote.ts",
+    "search": "this.remoteDb?.close();",
+    "replace": "void this.remoteDb;",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "closes\\ the\\ native\\ connection\\ and\\ can\\ reconnect$",
+    "description": "Leak native remote connection on public close",
+    "beforeIds": [
+      "src/test/remote-coverage.test.ts:425"
+    ],
+    "artifact": "specs-q.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-state-home",
+    "file": "src/lib/dreamRunLog.ts",
+    "search": "return path.join(baseDir || getGnosysHome(), \"dream-state.json\");",
+    "replace": "return path.join(baseDir || getGnosysHome(), \"wrong-state.json\");",
+    "tests": [
+      "src/test/dream-state-isolation.test.ts"
+    ],
+    "testName": "engine\\.dream\\(\\)\\ writes\\ dream\\-state\\.json\\ under\\ GNOSYS_HOME,\\ not\\ the\\ real\\ home$",
+    "description": "Write Dream state to wrong filename",
+    "artifact": "specs-r.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-state-override",
+    "file": "src/lib/dreamRunLog.ts",
+    "search": "return path.join(baseDir || getGnosysHome(), \"dream-state.json\");",
+    "replace": "return path.join(baseDir || getGnosysHome(), \"wrong-state.json\");",
+    "tests": [
+      "src/test/dream-state-isolation.test.ts"
+    ],
+    "testName": "an\\ explicit\\ stateDir\\ overrides\\ GNOSYS_HOME\\ \\(defense\\ in\\ depth\\)$",
+    "description": "Write Dream state to wrong filename",
+    "artifact": "specs-r.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-state-path",
+    "file": "src/lib/dreamRunLog.ts",
+    "search": "return path.join(baseDir || getGnosysHome(), \"dream-state.json\");",
+    "replace": "return path.join(baseDir || getGnosysHome(), \"wrong-state.json\");",
+    "tests": [
+      "src/test/dream-state-isolation.test.ts"
+    ],
+    "testName": "getDreamStatePath\\ accepts\\ a\\ baseDir\\ override$",
+    "description": "Write Dream state to wrong filename",
+    "artifact": "specs-r.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-state-missing-embeddings",
+    "file": "src/lib/dream.ts",
+    "search": "report.embeddingHealth = { total, missingBefore, embedded: 0 };",
+    "replace": "report.embeddingHealth = { total, missingBefore: 0, embedded: 0 };",
+    "tests": [
+      "src/test/dream-state-isolation.test.ts"
+    ],
+    "testName": "reports\\ the\\ coverage\\ gap\\ but\\ never\\ auto\\-downloads\\ the\\ model\\ when\\ embeddings\\ were\\ never\\ initialized$",
+    "description": "Hide actual missing-vector coverage count",
+    "artifact": "specs-r.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-state-complete-embeddings",
+    "file": "src/lib/dream.ts",
+    "search": "report.embeddingHealth = { total, missingBefore: 0, embedded: 0 };",
+    "replace": "report.embeddingHealth = { total, missingBefore: total, embedded: 0 };",
+    "tests": [
+      "src/test/dream-state-isolation.test.ts"
+    ],
+    "testName": "skips\\ cleanly\\ when\\ every\\ memory\\ is\\ already\\ embedded$",
+    "description": "Report all vectors missing when every real DB memory is embedded",
+    "artifact": "specs-r.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-dream-phase-default",
+    "file": "src/lib/dream.ts",
+    "search": "  selfCritique: true,\n  generateSummaries: true,\n  discoverRelationships: true,",
+    "replace": "  selfCritique: false,\n  generateSummaries: false,\n  discoverRelationships: false,",
+    "tests": [
+      "src/test/phase7d.dream.test.ts"
+    ],
+    "testName": "Dream runs all optional phases by default$",
+    "description": "Disable optional phases while retaining boolean types",
+    "beforeIds": [
+      "src/test/phase7d.dream.test.ts:48"
+    ],
+    "artifact": "specs-r.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-machine-heal",
+    "file": "src/lib/remote.ts",
+    "search": "localDb.setMeta(META_MACHINE_ID, fresh);",
+    "replace": "localDb.setMeta(META_MACHINE_ID, \"wrong-machine\");",
+    "tests": [
+      "src/test/v595-self-healing-machine-id.test.ts"
+    ],
+    "testName": "heals\\ a\\ stale\\ `unknown\\-<rand>`\\ cache\\ when\\ a\\ real\\ hostname\\ is\\ available$",
+    "description": "Persist wrong healed legacy machine ID",
+    "artifact": "specs-s.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-machine-dream-heal",
+    "file": "src/lib/remote.ts",
+    "search": "localDb.setDreamMachineId(fresh);",
+    "replace": "localDb.setDreamMachineId(\"wrong-machine\");",
+    "tests": [
+      "src/test/v595-self-healing-machine-id.test.ts"
+    ],
+    "testName": "heals\\ a\\ stale\\ `dream_machine_id`\\ pointing\\ at\\ the\\ same\\ broken\\ cached\\ id$",
+    "description": "Persist wrong healed Dream designation",
+    "artifact": "specs-s.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-machine-stable",
+    "file": "src/lib/remote.ts",
+    "search": "if (cached && !isStaleUnknownId(cached)) return cached;",
+    "replace": "if (cached && !isStaleUnknownId(cached)) return \"wrong-machine\";",
+    "tests": [
+      "src/test/v595-self-healing-machine-id.test.ts"
+    ],
+    "testName": "leaves\\ a\\ real\\ cached\\ id\\ untouched\\ \\(no\\ churn\\)$",
+    "description": "Replace valid stable legacy machine identity",
+    "artifact": "specs-s.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-machine-unrelated",
+    "file": "src/lib/remote.ts",
+    "search": "if (cached && localDb.getDreamMachineId() === cached) {",
+    "replace": "if (cached) {",
+    "tests": [
+      "src/test/v595-self-healing-machine-id.test.ts"
+    ],
+    "testName": "leaves\\ an\\ unrelated\\ `dream_machine_id`\\ alone\\ when\\ machine_id\\ heals$",
+    "description": "Overwrite designation of unrelated Dream machine during legacy healing",
+    "artifact": "specs-s.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-central-semantic-gate",
+    "file": "src/lib/hybridSearch.ts",
+    "search": "canRunSemantic(): boolean {\n    if (this.dbSearch) {\n      return this.dbSearch.hasEmbeddings();",
+    "replace": "canRunSemantic(): boolean {\n    if (this.dbSearch) {\n      return this.embeddings.hasEmbeddings();",
+    "tests": [
+      "src/test/hybrid-degrade-warning.test.ts"
+    ],
+    "testName": "semantic search reads central database vectors$",
+    "description": "Ignore central vectors in semantic availability gate",
+    "beforeIds": [
+      "src/test/hybrid-degrade-warning.test.ts:57"
+    ],
+    "artifact": "specs-t.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-remote-resolve-error",
+    "file": "src/lib/remote.ts",
+    "search": "return { ok: false, error: (err as Error).message };",
+    "replace": "return { ok: false, error: \"Wrong resolve failure\" };",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "reports native SQLite rejection during conflict resolution$",
+    "description": "Lose actual SQLite constraint diagnosis from conflict resolution",
+    "beforeIds": [
+      "src/test/remote-coverage.test.ts:139"
+    ],
+    "artifact": "specs-t.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-legacy-machine-real-config",
+    "file": "src/lib/remote.ts",
+    "search": "const mc = readMachineConfig();\n  if (mc?.machineId) return mc.machineId;",
+    "replace": "const mc = { machineId: \"wrong-machine\" };\n  if (mc?.machineId) return mc.machineId;",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "getMachineId and resolveHostname",
+    "description": "Replace legacy hostname and cached identity resolution with unrelated configured ID",
+    "artifact": "specs-u.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-ide-args-cursor",
+    "file": "src/lib/ideMcpInstall.ts",
+    "search": "return { command: resolveGnosysMcpCommand(), args: [] };",
+    "replace": "return { command: resolveGnosysMcpCommand(), args: [\"wrong-flag\"] };",
+    "tests": [
+      "src/test/ide-init-golden.test.ts"
+    ],
+    "testName": "cursor\\ setupIDE\\ writes\\ mcpServers\\.gnosys\\ with\\ command\\ and\\ args$",
+    "description": "Inject invalid MCP executable arguments",
+    "artifact": "specs-v.json",
+    "countsTowardMutationScore": true
+  },
+  {
+    "id": "G1-summary-formatter",
+    "file": "src/lib/setup/summary.ts",
+    "search": "return remotePath ?? \"NA (single-machine only)\";",
+    "replace": "return \"Wrong remote status\"; void remotePath;",
+    "tests": [
+      "src/test/setup-ui-summary.test.ts"
+    ],
+    "testName": "formatMultiMachineSyncSummary\\ shows\\ NA\\ when\\ remote\\ is\\ not\\ configured$",
+    "description": "Misrender actual persisted remote configuration",
+    "artifact": "specs-v.json",
+    "countsTowardMutationScore": true
+  }
+]

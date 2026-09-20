@@ -1,0 +1,24 @@
+[
+  {
+    "id": "G1-ide-args-cursor",
+    "file": "src/lib/ideMcpInstall.ts",
+    "search": "return { command: resolveGnosysMcpCommand(), args: [] };",
+    "replace": "return { command: resolveGnosysMcpCommand(), args: [\"wrong-flag\"] };",
+    "tests": [
+      "src/test/ide-init-golden.test.ts"
+    ],
+    "testName": "cursor\\ setupIDE\\ writes\\ mcpServers\\.gnosys\\ with\\ command\\ and\\ args$",
+    "description": "Inject invalid MCP executable arguments"
+  },
+  {
+    "id": "G1-summary-formatter",
+    "file": "src/lib/setup/summary.ts",
+    "search": "return remotePath ?? \"NA (single-machine only)\";",
+    "replace": "return \"Wrong remote status\"; void remotePath;",
+    "tests": [
+      "src/test/setup-ui-summary.test.ts"
+    ],
+    "testName": "formatMultiMachineSyncSummary\\ shows\\ NA\\ when\\ remote\\ is\\ not\\ configured$",
+    "description": "Misrender actual persisted remote configuration"
+  }
+]

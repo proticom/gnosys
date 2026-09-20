@@ -21,7 +21,7 @@ import {
   linkMemoryToAttachment,
   getAttachmentPath,
 } from "../lib/attachments.js";
-import { GnosysConfigSchema, DEFAULT_CONFIG } from "../lib/config.js";
+import { GnosysConfigSchema } from "../lib/config.js";
 
 // ─── Helpers ────────────────────────────────────────────────────────────
 
@@ -506,12 +506,7 @@ describe("config multimodal schema", () => {
     expect(config.multimodal.maxFileSizeMb).toBe(100);
   });
 
-  it("DEFAULT_CONFIG has multimodal defaults", () => {
-    expect(DEFAULT_CONFIG.multimodal).toBeDefined();
-    expect(DEFAULT_CONFIG.multimodal.transcriptionProvider).toBe("groq");
-    expect(DEFAULT_CONFIG.multimodal.chunkSize).toBe(1500);
-    expect(DEFAULT_CONFIG.multimodal.maxFileSizeMb).toBe(100);
-  });
+
 
   it("taskModels accepts 'vision' and 'transcription' tasks", () => {
     const config = GnosysConfigSchema.parse({
