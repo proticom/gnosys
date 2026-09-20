@@ -106,18 +106,6 @@ export function extractJson(output: string): string {
 }
 
 /**
- * Run a gnosys CLI command and parse JSON output.
- */
-export function cliJson<T = unknown>(
-  command: string,
-  projectDir: string,
-  opts: { centralDir?: string } = {}
-): T {
-  const output = cli(command, projectDir, { json: true, centralDir: opts.centralDir });
-  return JSON.parse(extractJson(output)) as T;
-}
-
-/**
  * Initialize a gnosys project in a directory via CLI.
  *
  * Sets GNOSYS_HOME to an isolated tmpdir-based central DB so the test
