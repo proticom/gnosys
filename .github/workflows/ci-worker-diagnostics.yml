@@ -1,0 +1,54 @@
+name: Diagnose Vitest worker exits
+
+on:
+  push:
+    branches: [qa/ci-worker-diagnostics]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24.20.0
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Diagnose targeted files, then full suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p diagnostic-results
+          node --version | tee diagnostic-results/runtime.log
+          uname -a | tee -a diagnostic-results/runtime.log
+          export NODE_OPTIONS="--require=$GITHUB_WORKSPACE/scripts/ci-worker-diagnostics/exits.cjs"
+          run_tests() {
+            local label="$1"
+            shift
+            node node_modules/vitest/vitest.mjs run "$@" \
+              --reporter=verbose \
+              --reporter=./scripts/ci-worker-diagnostics/reporter.mjs \
+              --reporter=json \
+              --outputFile.json="diagnostic-results/$label.json" \
+              2>&1 | tee "diagnostic-results/$label.log"
+          }
+          for attempt in 1 2 3; do
+            run_tests "targeted-$attempt" \
+              src/test/phase0-6.regression.test.ts \
+              src/test/routing-reset-adversarial.test.ts
+          done
+          run_tests full-suite
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-worker-diagnostics
+          path: diagnostic-results/
+          if-no-files-found: warn
