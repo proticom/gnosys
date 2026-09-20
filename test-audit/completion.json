@@ -9,16 +9,12 @@
     "Every previously KNOWN_DEFECT feature row was restated against ordinary results and fault evidence. The inventory remains 41 groups and 164 obligations. Evidence: test-audit/final-repairs/feature-restatus.json.",
     "Typecheck, lint and Knip exit 0; lint retains 23 warnings. Evidence: test-audit/final-repairs/static-checks.json.",
     "The four remaining expected failures reproduce as ordinary failures. Repaired cases receive credit only for ordinary passes and direct fault kills. Evidence: test-audit/final-repairs/open-ordinary.json.",
-    "CI pins Node24.18.1 after a captured native Node24.20/24.21 cleanup abort. Parsed workflow validation preserved all four coverage conditions and Node20/22 jobs. Final Linux full-suite and coverage verification remains a release prerequisite."
+    "Linux/Node24.18.1 full-suite and coverage each pass all 1,746 cases. Coverage is 71.69% statements, 61.39% branches, 81.03% functions and 73.66% lines; unchanged thresholds pass. Application/test/config bytes match release 6.2.3. Evidence: test-audit/final-repairs/linux-verification.json and https://github.com/proticom/gnosys/actions/runs/35506107541."
   ],
   "blockers": [
     {
       "kind": "known_application_defects",
       "description": "ADV-CTX-001 JSON key disclosure, D-DASH-001 stored project-name handler injection and ADV-FTS-001 lost-index recovery remain OPEN. D-G3-001 remains DEFERRED."
-    },
-    {
-      "kind": "linux_coverage_pending",
-      "description": "Final Linux/Node24.18.1 full-suite and coverage must pass before release. Diagnostic preload is omitted from these runs because it changes subprocess stderr. Historical coverage does not validate the final application delta."
     },
     {
       "kind": "hosted_runner_flake_risks",
@@ -37,6 +33,24 @@
       "failed": 0,
       "expectedFailures": 4,
       "evidence": "test-audit/final-repairs/full-suite.json"
+    },
+    {
+      "name": "linux-full-suite",
+      "exitCode": 0,
+      "passed": 1746,
+      "failed": 0,
+      "expectedFailures": 4,
+      "evidence": "test-audit/final-repairs/linux-verification.json",
+      "runUrl": "https://github.com/proticom/gnosys/actions/runs/35506107541"
+    },
+    {
+      "name": "linux-coverage-suite",
+      "exitCode": 0,
+      "passed": 1746,
+      "failed": 0,
+      "expectedFailures": 4,
+      "evidence": "test-audit/final-repairs/linux-verification.json",
+      "runUrl": "https://github.com/proticom/gnosys/actions/runs/35506107541"
     },
     {
       "name": "typecheck",

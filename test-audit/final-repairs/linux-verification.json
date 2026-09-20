@@ -1,0 +1,86 @@
+{
+  "runUrl": "https://github.com/proticom/gnosys/actions/runs/35506107541",
+  "diagnosticCommit": "e88629cff863a548867256cbd65128b8dc88b324",
+  "releaseCommit": "1fcc4f305a7a07531e3a8fac35a31a0eeb791ae4",
+  "runtime": "v24.18.1\nLinux runnervmlun5p 6.17.0-1022-azure #22-Ubuntu SMP Mon Jul 27 17:24:03 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux",
+  "reports": {
+    "targeted-1": {
+      "sha256": "b33519c366708531e7a2f0c98d2ca1f97dab24b4d4b6bfeb7f1c92dfa28b5d4f",
+      "total": 24,
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0
+    },
+    "targeted-2": {
+      "sha256": "676d8d6dab15bbac5152d57c81c6bed59bfb71d957ced08958da19e8cea83f5d",
+      "total": 24,
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0
+    },
+    "targeted-3": {
+      "sha256": "2cce2bfc8465b03a230446b2b7e3f9e7f0cbf3d80c97ed8970f969075f384558",
+      "total": 24,
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0
+    },
+    "full-suite": {
+      "sha256": "0f9e172cd55267834a32dbbf9e8dfe43647b6b4b14e9138c5e1ae2969a186f43",
+      "total": 1746,
+      "passed": 1746,
+      "failed": 0,
+      "skipped": 0
+    },
+    "coverage-suite": {
+      "sha256": "e4398529c067b81e6d567b19892a684cf97db9229f85c068aff328eaeb8d7ca6",
+      "total": 1746,
+      "passed": 1746,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "coverage": {
+    "lines": {
+      "total": 8362,
+      "covered": 6160,
+      "skipped": 0,
+      "pct": 73.66
+    },
+    "statements": {
+      "total": 9196,
+      "covered": 6593,
+      "skipped": 0,
+      "pct": 71.69
+    },
+    "functions": {
+      "total": 1392,
+      "covered": 1128,
+      "skipped": 0,
+      "pct": 81.03
+    },
+    "branches": {
+      "total": 5689,
+      "covered": 3493,
+      "skipped": 0,
+      "pct": 61.39
+    },
+    "branchesTrue": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": 100
+    }
+  },
+  "thresholds": {
+    "statements": 50,
+    "branches": 40,
+    "functions": 55,
+    "lines": 50
+  },
+  "coverageSummarySha256": "7e7ae446bb3563cc20bd836d4fe11f6b3af1873028f7f007a871b73228f9a1a2",
+  "fullAndCoverageCaseIdentitiesMatchLocal": true,
+  "fullAndCoverageExitPreloadAbsent": true,
+  "applicationTestsAndVitestConfigMatchRelease": true,
+  "limitation": "The diagnostic package version was 6.2.2; release metadata is 6.2.3. Application, test and Vitest configuration bytes match. Raw reports remain downloadable from the linked run; their hashes are recorded here. No broader Node-version or platform validation is inferred."
+}

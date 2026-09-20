@@ -7734,6 +7734,24 @@
       "evidence": "test-audit/final-repairs/full-suite.json"
     },
     {
+      "name": "linux-full-suite",
+      "exitCode": 0,
+      "passed": 1746,
+      "failed": 0,
+      "expectedFailures": 4,
+      "evidence": "test-audit/final-repairs/linux-verification.json",
+      "runUrl": "https://github.com/proticom/gnosys/actions/runs/35506107541"
+    },
+    {
+      "name": "linux-coverage-suite",
+      "exitCode": 0,
+      "passed": 1746,
+      "failed": 0,
+      "expectedFailures": 4,
+      "evidence": "test-audit/final-repairs/linux-verification.json",
+      "runUrl": "https://github.com/proticom/gnosys/actions/runs/35506107541"
+    },
+    {
       "name": "typecheck",
       "command": [
         "npm",
@@ -7771,10 +7789,6 @@
     {
       "kind": "known_application_defects",
       "description": "ADV-CTX-001 JSON key disclosure, D-DASH-001 stored project-name handler injection and ADV-FTS-001 lost-index recovery remain OPEN. D-G3-001 remains DEFERRED."
-    },
-    {
-      "kind": "linux_coverage_pending",
-      "description": "Final Linux/Node24.18.1 full-suite and coverage must pass before release. Diagnostic preload is omitted from these runs because it changes subprocess stderr. Historical coverage does not validate the final application delta."
     },
     {
       "kind": "hosted_runner_flake_risks",
