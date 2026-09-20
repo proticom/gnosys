@@ -1,0 +1,57 @@
+[
+  {
+    "id": "G1-state-home",
+    "file": "src/lib/dreamRunLog.ts",
+    "search": "return path.join(baseDir || getGnosysHome(), \"dream-state.json\");",
+    "replace": "return path.join(baseDir || getGnosysHome(), \"wrong-state.json\");",
+    "tests": [
+      "src/test/dream-state-isolation.test.ts"
+    ],
+    "testName": "engine\\.dream\\(\\)\\ writes\\ dream\\-state\\.json\\ under\\ GNOSYS_HOME,\\ not\\ the\\ real\\ home$",
+    "description": "Write Dream state to wrong filename"
+  },
+  {
+    "id": "G1-state-override",
+    "file": "src/lib/dreamRunLog.ts",
+    "search": "return path.join(baseDir || getGnosysHome(), \"dream-state.json\");",
+    "replace": "return path.join(baseDir || getGnosysHome(), \"wrong-state.json\");",
+    "tests": [
+      "src/test/dream-state-isolation.test.ts"
+    ],
+    "testName": "an\\ explicit\\ stateDir\\ overrides\\ GNOSYS_HOME\\ \\(defense\\ in\\ depth\\)$",
+    "description": "Write Dream state to wrong filename"
+  },
+  {
+    "id": "G1-state-path",
+    "file": "src/lib/dreamRunLog.ts",
+    "search": "return path.join(baseDir || getGnosysHome(), \"dream-state.json\");",
+    "replace": "return path.join(baseDir || getGnosysHome(), \"wrong-state.json\");",
+    "tests": [
+      "src/test/dream-state-isolation.test.ts"
+    ],
+    "testName": "getDreamStatePath\\ accepts\\ a\\ baseDir\\ override$",
+    "description": "Write Dream state to wrong filename"
+  },
+  {
+    "id": "G1-state-missing-embeddings",
+    "file": "src/lib/dream.ts",
+    "search": "report.embeddingHealth = { total, missingBefore, embedded: 0 };",
+    "replace": "report.embeddingHealth = { total, missingBefore: 0, embedded: 0 };",
+    "tests": [
+      "src/test/dream-state-isolation.test.ts"
+    ],
+    "testName": "reports\\ the\\ coverage\\ gap\\ but\\ never\\ auto\\-downloads\\ the\\ model\\ when\\ embeddings\\ were\\ never\\ initialized$",
+    "description": "Hide actual missing-vector coverage count"
+  },
+  {
+    "id": "G1-state-complete-embeddings",
+    "file": "src/lib/dream.ts",
+    "search": "report.embeddingHealth = { total, missingBefore: 0, embedded: 0 };",
+    "replace": "report.embeddingHealth = { total, missingBefore: total, embedded: 0 };",
+    "tests": [
+      "src/test/dream-state-isolation.test.ts"
+    ],
+    "testName": "skips\\ cleanly\\ when\\ every\\ memory\\ is\\ already\\ embedded$",
+    "description": "Report all vectors missing when every real DB memory is embedded"
+  }
+]

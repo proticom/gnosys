@@ -9,25 +9,19 @@ import os from "os";
 import { GnosysStore } from "../lib/store.js";
 import { GnosysTagRegistry } from "../lib/tags.js";
 import { GnosysIngestion } from "../lib/ingest.js";
-import { DEFAULT_CONFIG, type GnosysConfig } from "../lib/config.js";
-import { getLLMProvider } from "../lib/llm.js";
+import { DEFAULT_CONFIG, GnosysConfigSchema, type GnosysConfig } from "../lib/config.js";
+vi.mock("child_process", async (original) => ({
+  ...await original<typeof import("child_process")>(),
+  execSync: vi.fn(() => { throw new Error("No external keychain entries"); }),
+}));
 
-const mockGenerate = vi.fn();
-
-const fakeProvider = {
-  name: "anthropic" as const,
-  model: "stub-model",
-  generate: mockGenerate,
-  testConnection: async () => true,
-};
-
-vi.mock("../lib/llm.js", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("../lib/llm.js")>();
-  return {
-    ...actual,
-    getLLMProvider: vi.fn(() => fakeProvider),
-  };
-});
+function reply(text: string): void {
+  vi.mocked(fetch).mockResolvedValueOnce(new Response(JSON.stringify({ choices: [{ message: { content: text } }] }), { status: 200 }));
+}
+let originalEnv: NodeJS.ProcessEnv;
+function availableConfig(): GnosysConfig {
+  return GnosysConfigSchema.parse({ llm: { defaultProvider: "openai", openai: { apiKey: "fixture-openai-key", model: "fixture-model" } }, llmRetryAttempts: 1 });
+}
 
 let tmpDir: string;
 let store: GnosysStore;
@@ -54,9 +48,13 @@ async function seedTags(dir: string) {
 }
 
 beforeEach(async () => {
-  mockGenerate.mockReset();
-  vi.mocked(getLLMProvider).mockImplementation(() => fakeProvider);
+  originalEnv = { ...process.env };
+  for (const key of Object.keys(process.env)) if (/(API_KEY|_KEY)$/.test(key)) delete process.env[key];
+  vi.stubGlobal("fetch", vi.fn(async () => { throw new Error("Unexpected provider request"); }));
   tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "gnosys-cc1-"));
+  process.env.GNOSYS_HOME = tmpDir;
+  process.env.GNOSYS_CONFIG_DIR = path.join(tmpDir, "config");
+  vi.spyOn(os, "homedir").mockReturnValue(tmpDir);
   store = new GnosysStore(tmpDir);
   await store.init();
   await seedTags(tmpDir);
@@ -65,42 +63,36 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+  process.env = originalEnv;
   await fs.rm(tmpDir, { recursive: true, force: true });
 });
 
 describe("GnosysIngestion.ingest (LLM path)", () => {
   describe("provider availability getters", () => {
     it("reports unavailable when getLLMProvider throws at construction", () => {
-      vi.mocked(getLLMProvider).mockImplementation(() => {
-        throw new Error("no key");
-      });
-      const ingestion = new GnosysIngestion(store, tagRegistry);
+      const ingestion = new GnosysIngestion(store, tagRegistry, configWithProvider("anthropic"));
       expect(ingestion.isLLMAvailable).toBe(false);
       expect(ingestion.providerName).toBe("none");
     });
 
     it("reports available when a provider is resolved", () => {
-      const ingestion = new GnosysIngestion(store, tagRegistry);
+      const ingestion = new GnosysIngestion(store, tagRegistry, availableConfig());
       expect(ingestion.isLLMAvailable).toBe(true);
-      expect(ingestion.providerName).toBe("anthropic");
+      expect(ingestion.providerName).toBe("openai");
     });
   });
 
   describe("provider-missing error paths", () => {
-    beforeEach(() => {
-      vi.mocked(getLLMProvider).mockImplementation(() => {
-        throw new Error("no key");
-      });
-    });
 
     async function expectMissingProvider(
       // v6.0.0 anthropic default removed — defaultProvider is now optional in
       // the schema, so the union would include undefined; tests pass names.
-      providerName: string,
+      providerName: GnosysConfig["llm"]["defaultProvider"],
       snippet: string,
     ) {
-      const cfg = configWithProvider("anthropic");
-      (cfg.llm as { defaultProvider: string }).defaultProvider = providerName;
+      const cfg = configWithProvider(providerName);
       const ingestion = new GnosysIngestion(store, tagRegistry, cfg);
       await expect(ingestion.ingest("raw input")).rejects.toThrow(snippet);
     }
@@ -129,22 +121,30 @@ describe("GnosysIngestion.ingest (LLM path)", () => {
       await expectMissingProvider("custom", "GNOSYS_CUSTOM_KEY");
     });
 
-    it("ollama — mentions running locally", async () => {
-      await expectMissingProvider("ollama", "running locally");
+    it("ollama reports a failed local endpoint", async () => {
+      vi.mocked(fetch).mockResolvedValueOnce(new Response("local server unavailable", { status: 503 }));
+      const cfg = configWithProvider("ollama");
+      cfg.llmRetryAttempts = 1;
+      const ingestion = new GnosysIngestion(store, tagRegistry, cfg);
+      await expect(ingestion.ingest("raw")).rejects.toThrow("503");
     });
 
-    it("lmstudio — mentions running locally", async () => {
-      await expectMissingProvider("lmstudio", "running locally");
+    it("lmstudio reports a failed local endpoint", async () => {
+      vi.mocked(fetch).mockResolvedValueOnce(new Response("local server unavailable", { status: 503 }));
+      const cfg = configWithProvider("lmstudio");
+      cfg.llmRetryAttempts = 1;
+      const ingestion = new GnosysIngestion(store, tagRegistry, cfg);
+      await expect(ingestion.ingest("raw")).rejects.toThrow("503");
     });
 
-    it("unknown provider — suggests switching default provider", async () => {
-      await expectMissingProvider("not-a-real-provider", "Switch to a different default provider");
+    it("rejects unknown providers at the config boundary", () => {
+      expect(() => GnosysConfigSchema.parse({ llm: { defaultProvider: "not-a-real-provider" } })).toThrow("Invalid option");
     });
   });
 
   describe("JSON parsing variants", () => {
     it("parses bare JSON from the LLM response", async () => {
-      mockGenerate.mockResolvedValueOnce(
+      reply(
         JSON.stringify({
           title: "Bare JSON",
           category: "decisions",
@@ -155,14 +155,14 @@ describe("GnosysIngestion.ingest (LLM path)", () => {
           filename: "bare-json",
         }),
       );
-      const ingestion = new GnosysIngestion(store, tagRegistry);
+      const ingestion = new GnosysIngestion(store, tagRegistry, availableConfig());
       const result = await ingestion.ingest("some raw note");
       expect(result.title).toBe("Bare JSON");
       expect(result.tags.domain).toEqual(["auth"]);
     });
 
     it("parses markdown-fenced JSON", async () => {
-      mockGenerate.mockResolvedValueOnce(
+      reply(
         "```json\n" +
           JSON.stringify({
             title: "Fenced JSON",
@@ -172,13 +172,13 @@ describe("GnosysIngestion.ingest (LLM path)", () => {
           }) +
           "\n```",
       );
-      const ingestion = new GnosysIngestion(store, tagRegistry);
+      const ingestion = new GnosysIngestion(store, tagRegistry, availableConfig());
       const result = await ingestion.ingest("raw");
       expect(result.title).toBe("Fenced JSON");
     });
 
     it("parses plain-fenced JSON without json language tag", async () => {
-      mockGenerate.mockResolvedValueOnce(
+      reply(
         "```\n" +
           JSON.stringify({
             title: "Plain Fence",
@@ -188,13 +188,13 @@ describe("GnosysIngestion.ingest (LLM path)", () => {
           }) +
           "\n```",
       );
-      const ingestion = new GnosysIngestion(store, tagRegistry);
+      const ingestion = new GnosysIngestion(store, tagRegistry, availableConfig());
       const result = await ingestion.ingest("raw");
       expect(result.title).toBe("Plain Fence");
     });
 
     it("parses JSON embedded in prose", async () => {
-      mockGenerate.mockResolvedValueOnce(
+      reply(
         "Here is the structured memory:\n```json\n" +
           JSON.stringify({
             title: "Mixed Prose",
@@ -204,7 +204,7 @@ describe("GnosysIngestion.ingest (LLM path)", () => {
           }) +
           "\n```\nDone.",
       );
-      const ingestion = new GnosysIngestion(store, tagRegistry);
+      const ingestion = new GnosysIngestion(store, tagRegistry, availableConfig());
       const result = await ingestion.ingest("raw");
       expect(result.title).toBe("Mixed Prose");
     });
@@ -212,20 +212,10 @@ describe("GnosysIngestion.ingest (LLM path)", () => {
 
   describe("prototype-pollution sanitization", () => {
     it("strips __proto__, constructor, and prototype keys from LLM JSON", async () => {
-      mockGenerate.mockResolvedValueOnce(
-        JSON.stringify({
-          title: "Safe Title",
-          category: "concepts",
-          tags: {},
-          content: "Safe content",
-          __proto__: { polluted: true },
-          constructor: { evil: true },
-          prototype: { bad: true },
-        }),
-      );
-      const ingestion = new GnosysIngestion(store, tagRegistry);
+      reply('{"__proto__":{"title":"Polluted title","content":"Polluted content"},"constructor":{"evil":true},"prototype":{"bad":true}}');
+      const ingestion = new GnosysIngestion(store, tagRegistry, availableConfig());
       const result = await ingestion.ingest("raw");
-      expect(result.title).toBe("Safe Title");
+      expect(result).toMatchObject({ title: "Untitled Memory", content: "raw", category: "uncategorized", tags: {}, confidence: 0.7 });
       expect(Object.hasOwn(result as object, "__proto__")).toBe(false);
       expect(Object.hasOwn(result as object, "constructor")).toBe(false);
       expect(Object.hasOwn(result as object, "prototype")).toBe(false);
@@ -234,7 +224,7 @@ describe("GnosysIngestion.ingest (LLM path)", () => {
 
   describe("tag validation and proposed new tags", () => {
     it("keeps registry tags and proposes unknown tags", async () => {
-      mockGenerate.mockResolvedValueOnce(
+      reply(
         JSON.stringify({
           title: "Tag Mix",
           category: "decisions",
@@ -245,7 +235,7 @@ describe("GnosysIngestion.ingest (LLM path)", () => {
           content: "Tag body",
         }),
       );
-      const ingestion = new GnosysIngestion(store, tagRegistry);
+      const ingestion = new GnosysIngestion(store, tagRegistry, availableConfig());
       const result = await ingestion.ingest("raw");
       expect(result.tags.domain).toEqual(["auth"]);
       expect(result.tags.type).toEqual(["decision"]);
@@ -258,7 +248,7 @@ describe("GnosysIngestion.ingest (LLM path)", () => {
     });
 
     it("includes explicit proposed_new_tags from the LLM response", async () => {
-      mockGenerate.mockResolvedValueOnce(
+      reply(
         JSON.stringify({
           title: "Explicit Proposals",
           category: "concepts",
@@ -267,7 +257,7 @@ describe("GnosysIngestion.ingest (LLM path)", () => {
           proposed_new_tags: [{ category: "concern", tag: "latency" }],
         }),
       );
-      const ingestion = new GnosysIngestion(store, tagRegistry);
+      const ingestion = new GnosysIngestion(store, tagRegistry, availableConfig());
       const result = await ingestion.ingest("raw");
       expect(result.proposedNewTags).toEqual([{ category: "concern", tag: "latency" }]);
     });
@@ -275,8 +265,8 @@ describe("GnosysIngestion.ingest (LLM path)", () => {
 
   describe("field defaults", () => {
     it("applies defaults when the LLM returns minimal JSON", async () => {
-      mockGenerate.mockResolvedValueOnce(JSON.stringify({ title: "Minimal Title" }));
-      const ingestion = new GnosysIngestion(store, tagRegistry);
+      reply(JSON.stringify({ title: "Minimal Title" }));
+      const ingestion = new GnosysIngestion(store, tagRegistry, availableConfig());
       const result = await ingestion.ingest("fallback raw content");
       expect(result.category).toBe("uncategorized");
       expect(result.tags).toEqual({});
@@ -289,19 +279,7 @@ describe("GnosysIngestion.ingest (LLM path)", () => {
 
   describe("configOverride", () => {
     it("resolves a fresh provider from configOverride", async () => {
-      const overrideProvider = {
-        name: "openai" as const,
-        model: "override-model",
-        generate: mockGenerate,
-        testConnection: async () => true,
-      };
-      vi.mocked(getLLMProvider).mockImplementation((_cfg, _task) => {
-        if (_cfg !== DEFAULT_CONFIG && _cfg.llm.defaultProvider === "openai") {
-          return overrideProvider;
-        }
-        return fakeProvider;
-      });
-      mockGenerate.mockResolvedValueOnce(
+      reply(
         JSON.stringify({
           title: "Override Path",
           category: "concepts",
@@ -309,21 +287,16 @@ describe("GnosysIngestion.ingest (LLM path)", () => {
           content: "Override body",
         }),
       );
-      const ingestion = new GnosysIngestion(store, tagRegistry);
-      const override = configWithProvider("openai");
+      const ingestion = new GnosysIngestion(store, tagRegistry, availableConfig());
+      const override = availableConfig();
+      override.taskModels = { structuring: { provider: "openai", model: "override-model" } };
       const result = await ingestion.ingest("raw", override);
       expect(result.title).toBe("Override Path");
-      expect(getLLMProvider).toHaveBeenCalledWith(override, "structuring");
+      expect(fetch).toHaveBeenCalledWith("https://api.openai.com/v1/chat/completions", expect.objectContaining({ body: expect.stringContaining('"model":"override-model"') }));
     });
 
     it("throws provider-missing when configOverride has no available provider", async () => {
-      vi.mocked(getLLMProvider).mockImplementation((cfg) => {
-        if (cfg.llm.defaultProvider === "groq") {
-          throw new Error("no groq key");
-        }
-        return fakeProvider;
-      });
-      const ingestion = new GnosysIngestion(store, tagRegistry);
+      const ingestion = new GnosysIngestion(store, tagRegistry, availableConfig());
       const override = configWithProvider("groq");
       await expect(ingestion.ingest("raw", override)).rejects.toThrow("GROQ_API_KEY");
     });

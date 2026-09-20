@@ -8,7 +8,14 @@
       "afterNames": [],
       "afterClassification": null,
       "evidence": "Harness-environment assertion has no application call; engine.dream() writes dream-state.json under GNOSYS_HOME, not the real home tests actual isolation.",
-      "mutationIds": []
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/dream.ts",
+        "src/lib/dreamRunLog.ts"
+      ],
+      "featureIds": [
+        "F23"
+      ]
     },
     {
       "beforeId": "src/test/search-golden.test.ts:133",
@@ -289,11 +296,11 @@
     },
     {
       "beforeId": "src/test/setup-ui-atoms.test.ts:125",
-      "beforeName": "tokens — color() wraps text with reset",
+      "beforeName": "tokens \u2014 color() wraps text with reset",
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "setup/ui atoms — Phase A tokens — color() wraps text with reset"
+        "setup/ui atoms \u2014 Phase A tokens \u2014 color() wraps text with reset"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects omit requested opening color.",
@@ -307,7 +314,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "Screen 10 — sync-projects render renders the failed section when there are failures"
+        "Screen 10 \u2014 sync-projects render renders the failed section when there are failures"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects drop failed project detail while keeping line count.",
@@ -321,7 +328,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "Screen 10 — sync-projects render renders dashboard summary with collapsed paths"
+        "Screen 10 \u2014 sync-projects render renders dashboard summary with collapsed paths"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects render wrong dashboard html output path.",
@@ -331,11 +338,11 @@
     },
     {
       "beforeId": "src/test/setup-ui-screen7.test.ts:88",
-      "beforeName": "renders sub-tasks with ○ when disabled",
+      "beforeName": "renders sub-tasks with \u25cb when disabled",
       "beforeClassification": "HOLLOW",
       "action": "rewritten",
       "afterNames": [
-        "Screen 7 — dream render renders sub-tasks with ○ when disabled"
+        "Screen 7 \u2014 dream render renders sub-tasks with \u25cb when disabled"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects omit disabled task rows entirely.",
@@ -461,7 +468,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens — single filters filters by status"
+        "applyLens \u2014 single filters filters by status"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -475,7 +482,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens — single filters filters by multiple statuses"
+        "applyLens \u2014 single filters filters by multiple statuses"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -489,7 +496,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens — single filters filters by confidence range"
+        "applyLens \u2014 single filters filters by confidence range"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -503,7 +510,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens — single filters filters by created date range"
+        "applyLens \u2014 single filters filters by created date range"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -517,7 +524,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens — single filters filters by modified date range"
+        "applyLens \u2014 single filters filters by modified date range"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -531,7 +538,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens — single filters combines multiple criteria in one filter"
+        "applyLens \u2014 single filters combines multiple criteria in one filter"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects ignore confidence condition in compound filter.",
@@ -681,11 +688,11 @@
     },
     {
       "beforeId": "src/test/embed-db.test.ts:89",
-      "beforeName": "missing mode is incremental — already-embedded rows are untouched",
+      "beforeName": "missing mode is incremental \u2014 already-embedded rows are untouched",
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "backfillCentralDbEmbeddings missing mode is incremental — already-embedded rows are untouched"
+        "backfillCentralDbEmbeddings missing mode is incremental \u2014 already-embedded rows are untouched"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects overwrite preexisting vectors while correctly counting only missing rows.",
@@ -727,7 +734,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens — single filters filters by author"
+        "applyLens \u2014 single filters filters by author"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -741,7 +748,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "applyLens — single filters filters by authority"
+        "applyLens \u2014 single filters filters by authority"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
@@ -1023,8 +1030,8 @@
       "action": "rewritten",
       "afterNames": [
         "ingestion of special-character paths ingests \"has spaces.txt\"",
-        "ingestion of special-character paths ingests \"unicodé-café.txt\"",
-        "ingestion of special-character paths ingests \"emoji-🎉-file.txt\"",
+        "ingestion of special-character paths ingests \"unicod\u00e9-caf\u00e9.txt\"",
+        "ingestion of special-character paths ingests \"emoji-\ud83c\udf89-file.txt\"",
         "ingestion of special-character paths ingests \"trailing space .txt\""
       ],
       "afterClassification": "STRONG",
@@ -1034,8 +1041,8 @@
       ],
       "beforeNames": [
         "ingestion of special-character paths ingests \"has spaces.txt\"",
-        "ingestion of special-character paths ingests \"unicodé-café.txt\"",
-        "ingestion of special-character paths ingests \"emoji-🎉-file.txt\"",
+        "ingestion of special-character paths ingests \"unicod\u00e9-caf\u00e9.txt\"",
+        "ingestion of special-character paths ingests \"emoji-\ud83c\udf89-file.txt\"",
         "ingestion of special-character paths ingests \"trailing space .txt\""
       ]
     },
@@ -1274,7 +1281,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "v6.0.0 — no implicit anthropic default (deci-049) generateConfigTemplate() output contains no defaultProvider"
+        "v6.0.0 \u2014 no implicit anthropic default (deci-049) generateConfigTemplate() output contains no defaultProvider"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects return empty template.",
@@ -1344,7 +1351,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "Phase F — central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db"
+        "Phase F \u2014 central DB pollution regression running gnosys --version with empty HOME does NOT create gnosys.db"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects fail version invocation before producing a version.",
@@ -1354,11 +1361,11 @@
     },
     {
       "beforeId": "src/test/v593-no-central-db-pollution.test.ts:51",
-      "beforeName": "VITEST=true short-circuits maybePrintUpgradeNudge — no DB file at all",
+      "beforeName": "VITEST=true short-circuits maybePrintUpgradeNudge \u2014 no DB file at all",
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "Phase F — central DB pollution regression VITEST=true short-circuits maybePrintUpgradeNudge — no DB file at all"
+        "Phase F \u2014 central DB pollution regression VITEST=true short-circuits maybePrintUpgradeNudge \u2014 no DB file at all"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects fail help invocation before producing help.",
@@ -1429,7 +1436,7 @@
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "v6.0.0 — no implicit anthropic default (deci-049) loading an unconfigured store requires explicit provider setup"
+        "v6.0.0 \u2014 no implicit anthropic default (deci-049) loading an unconfigured store requires explicit provider setup"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects load implicit provider despite absent configuration.",
@@ -1509,11 +1516,11 @@
     },
     {
       "beforeId": "src/test/mcp-toolset-budget.test.ts:57",
-      "beforeName": "full tier registers everything, ≤ 60 tools",
+      "beforeName": "full tier registers everything, \u2264 60 tools",
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "MCP toolset budgets full tier registers everything, ≤ 60 tools"
+        "MCP toolset budgets full tier registers everything, \u2264 60 tools"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects rename a full-tier tool while retaining full tool count.",
@@ -1655,7 +1662,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "TC-9c.6: CLI parity — all major commands functional gnosys tags lists the tag registry without error"
+        "TC-9c.6: CLI parity \u2014 all major commands functional gnosys tags lists the tag registry without error"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects omit category headings.",
@@ -1669,7 +1676,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "TC-9c.6: CLI parity — all major commands functional gnosys lens runs without error"
+        "TC-9c.6: CLI parity \u2014 all major commands functional gnosys lens runs without error"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects suppress empty lens result.",
@@ -1683,7 +1690,7 @@
       "beforeClassification": "WEAK",
       "action": "rewritten",
       "afterNames": [
-        "TC-9c.6: CLI parity — all major commands functional gnosys audit --json outputs valid JSON"
+        "TC-9c.6: CLI parity \u2014 all major commands functional gnosys audit --json outputs valid JSON"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects discard actual audit entries.",
@@ -1697,7 +1704,7 @@
       "beforeClassification": "MISLABELED",
       "action": "rewritten",
       "afterNames": [
-        "TC-9c.6: CLI parity — all major commands functional gnosys --help lists public top-level commands"
+        "TC-9c.6: CLI parity \u2014 all major commands functional gnosys --help lists public top-level commands"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects remove advertised sandbox command.",
@@ -1753,7 +1760,7 @@
       "beforeClassification": "STRONG",
       "action": "rewritten",
       "afterNames": [
-        "Phase C — settings panel (summary) describeMultiMachineSyncPanel shows NA with no remote meta or machine config"
+        "Phase C \u2014 settings panel (summary) describeMultiMachineSyncPanel shows NA with no remote meta or machine config"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects misrender actual persisted remote configuration.",
@@ -1767,7 +1774,7 @@
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "Phase C — settings panel (summary) renders panel row 4 with NA when multi-machine sync is not configured"
+        "Phase C \u2014 settings panel (summary) renders panel row 4 with NA when multi-machine sync is not configured"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects mislabel sync panel row.",
@@ -1781,7 +1788,7 @@
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "Phase C — settings panel (summary) renders panel rows for a fresh config (no default provider)"
+        "Phase C \u2014 settings panel (summary) renders panel rows for a fresh config (no default provider)"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects misrepresent unconfigured task routing.",
@@ -1795,7 +1802,7 @@
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "Phase C — settings panel (summary) renders panel rows after a switch to xai"
+        "Phase C \u2014 settings panel (summary) renders panel rows after a switch to xai"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects ignore provider loaded from actual config.",
@@ -1805,11 +1812,11 @@
     },
     {
       "beforeId": "src/test/setup-ui-summary.test.ts:153",
-      "beforeName": "buildTrailingMap marks edited sections with ✓",
+      "beforeName": "buildTrailingMap marks edited sections with \u2713",
       "beforeClassification": "COUPLED",
       "action": "rewritten",
       "afterNames": [
-        "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config"
+        "Phase C \u2014 settings panel (summary) marks an edited routing section after saving and reloading its config"
       ],
       "afterClassification": "STRONG",
       "evidence": "Literal observable result now rejects omit edited-section marker.",
@@ -1872,12 +1879,1928 @@
       "mutationIds": [
         "G1-overlay-id"
       ]
+    },
+    {
+      "beforeId": "src/test/hybrid-degrade-warning.test.ts:24",
+      "beforeName": "gnosys_hybrid_search warns when the semantic leg can't run",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "hybrid search degrade warnings (v5.12.3) gnosys_hybrid_search warns when the semantic leg can't run"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects suppress mcp degraded-search warning.",
+      "mutationIds": [
+        "G1-hybrid-mcp-warning"
+      ],
+      "productionModules": [
+        "src/index.ts",
+        "src/lib/hybridSearchCommand.ts",
+        "src/lib/hybridSearch.ts"
+      ],
+      "featureIds": [
+        "F10",
+        "F34"
+      ]
+    },
+    {
+      "beforeId": "src/test/hybrid-degrade-warning.test.ts:38",
+      "beforeName": "gnosys_semantic_search refuses loudly instead of returning generic empty",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "hybrid search degrade warnings (v5.12.3) gnosys_semantic_search refuses loudly instead of returning generic empty"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects run unavailable semantic search without actionable failure.",
+      "mutationIds": [
+        "G1-semantic-mcp-warning"
+      ],
+      "productionModules": [
+        "src/index.ts",
+        "src/lib/hybridSearchCommand.ts",
+        "src/lib/hybridSearch.ts"
+      ],
+      "featureIds": [
+        "F10",
+        "F34"
+      ]
+    },
+    {
+      "beforeId": "src/test/hybrid-degrade-warning.test.ts:44",
+      "beforeName": "CLI hybrid-search warns on stderr (stdout stays clean for --json)",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "hybrid search degrade warnings (v5.12.3) CLI hybrid-search warns on stderr (stdout stays clean for --json)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects suppress cli degraded-search warning.",
+      "mutationIds": [
+        "G1-hybrid-cli-warning"
+      ],
+      "productionModules": [
+        "src/index.ts",
+        "src/lib/hybridSearchCommand.ts",
+        "src/lib/hybridSearch.ts"
+      ],
+      "featureIds": [
+        "F10",
+        "F34"
+      ]
+    },
+    {
+      "beforeId": "src/test/hybrid-degrade-warning.test.ts:57",
+      "beforeName": "canRunSemantic mirrors the DB-mode embedQuery gate (central-DB vectors)",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "hybrid search degrade warnings (v5.12.3) semantic search reads central database vectors"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects ignore central vectors in semantic availability gate.",
+      "mutationIds": [
+        "G1-central-semantic-gate"
+      ],
+      "productionModules": [
+        "src/index.ts",
+        "src/lib/hybridSearchCommand.ts",
+        "src/lib/hybridSearch.ts"
+      ],
+      "featureIds": [
+        "F10",
+        "F34"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:73",
+      "beforeName": "reports unavailable when getLLMProvider throws at construction",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) provider availability getters reports unavailable when getLLMProvider throws at construction"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects misreport absent provider as available.",
+      "mutationIds": [
+        "G1-ingest-unavailable"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:82",
+      "beforeName": "reports available when a provider is resolved",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) provider availability getters reports available when a provider is resolved"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects misreport resolved provider name.",
+      "mutationIds": [
+        "G1-ingest-provider-name"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:108",
+      "beforeName": "anthropic \u2014 mentions ANTHROPIC_API_KEY",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) provider-missing error paths anthropic \u2014 mentions ANTHROPIC_API_KEY"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects omit cloud provider key recovery instructions.",
+      "mutationIds": [
+        "G1-ingest-cloud-errors"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:112",
+      "beforeName": "openai \u2014 mentions OPENAI_API_KEY",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) provider-missing error paths openai \u2014 mentions OPENAI_API_KEY"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects omit cloud provider key recovery instructions.",
+      "mutationIds": [
+        "G1-ingest-cloud-errors"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:116",
+      "beforeName": "groq \u2014 mentions GROQ_API_KEY",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) provider-missing error paths groq \u2014 mentions GROQ_API_KEY"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects omit cloud provider key recovery instructions.",
+      "mutationIds": [
+        "G1-ingest-cloud-errors"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:120",
+      "beforeName": "xai \u2014 mentions XAI_API_KEY",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) provider-missing error paths xai \u2014 mentions XAI_API_KEY"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects omit cloud provider key recovery instructions.",
+      "mutationIds": [
+        "G1-ingest-cloud-errors"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:124",
+      "beforeName": "mistral \u2014 mentions MISTRAL_API_KEY",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) provider-missing error paths mistral \u2014 mentions MISTRAL_API_KEY"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects omit cloud provider key recovery instructions.",
+      "mutationIds": [
+        "G1-ingest-cloud-errors"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:128",
+      "beforeName": "custom \u2014 mentions GNOSYS_CUSTOM_KEY",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) provider-missing error paths custom \u2014 mentions GNOSYS_CUSTOM_KEY"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects omit cloud provider key recovery instructions.",
+      "mutationIds": [
+        "G1-ingest-cloud-errors"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:132",
+      "beforeName": "ollama \u2014 mentions running locally",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) provider-missing error paths ollama reports a failed local endpoint"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose ollama failed http status.",
+      "mutationIds": [
+        "G1-ingest-local-ollama"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:136",
+      "beforeName": "lmstudio \u2014 mentions running locally",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) provider-missing error paths lmstudio reports a failed local endpoint"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose lm studio failed http status.",
+      "mutationIds": [
+        "G1-ingest-local-lmstudio"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:140",
+      "beforeName": "unknown provider \u2014 suggests switching default provider",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) provider-missing error paths rejects unknown providers at the config boundary"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects accept arbitrary configured provider values.",
+      "mutationIds": [
+        "G1-ingest-config-validation"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:146",
+      "beforeName": "parses bare JSON from the LLM response",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) JSON parsing variants parses bare JSON from the LLM response"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose model structured title across all response encodings.",
+      "mutationIds": [
+        "G1-ingest-json-title"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:164",
+      "beforeName": "parses markdown-fenced JSON",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) JSON parsing variants parses markdown-fenced JSON"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose model structured title across all response encodings.",
+      "mutationIds": [
+        "G1-ingest-json-title"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:180",
+      "beforeName": "parses plain-fenced JSON without json language tag",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) JSON parsing variants parses plain-fenced JSON without json language tag"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose model structured title across all response encodings.",
+      "mutationIds": [
+        "G1-ingest-json-title"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:196",
+      "beforeName": "parses JSON embedded in prose",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) JSON parsing variants parses JSON embedded in prose"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose model structured title across all response encodings.",
+      "mutationIds": [
+        "G1-ingest-json-title"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:214",
+      "beforeName": "strips __proto__, constructor, and prototype keys from LLM JSON",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) prototype-pollution sanitization strips __proto__, constructor, and prototype keys from LLM JSON"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects trust inherited title/content from own __proto__ json key.",
+      "mutationIds": [
+        "G1-ingest-proto"
+      ],
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:236",
+      "beforeName": "keeps registry tags and proposes unknown tags",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) tag validation and proposed new tags keeps registry tags and proposes unknown tags"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects corrupt accepted registry tag values.",
+      "mutationIds": [
+        "G1-ingest-registry-tags"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:260",
+      "beforeName": "includes explicit proposed_new_tags from the LLM response",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) tag validation and proposed new tags includes explicit proposed_new_tags from the LLM response"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects drop explicitly proposed tag values.",
+      "mutationIds": [
+        "G1-ingest-explicit-tags"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:277",
+      "beforeName": "applies defaults when the LLM returns minimal JSON",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) field defaults applies defaults when the LLM returns minimal JSON"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects misclassify minimal structured input.",
+      "mutationIds": [
+        "G1-ingest-default-fields"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:291",
+      "beforeName": "resolves a fresh provider from configOverride",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) configOverride resolves a fresh provider from configOverride"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects ignore per-call configured provider and model.",
+      "mutationIds": [
+        "G1-ingest-override"
+      ],
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-structured.test.ts:319",
+      "beforeName": "throws provider-missing when configOverride has no available provider",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysIngestion.ingest (LLM path) configOverride throws provider-missing when configOverride has no available provider"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects ignore per-call configured provider and model.",
+      "mutationIds": [
+        "G1-ingest-override"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/ingest.ts"
+      ],
+      "featureIds": [
+        "F07",
+        "F06"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:44",
+      "beforeName": "opens a DB successfully on a valid path (no retries needed)",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "TC-9e.1: GnosysDB constructor retry logic opens a DB successfully on a valid path (no retries needed)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Actual SQLite constructor reports available on valid path. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:55",
+      "beforeName": "opens a DB with explicit retry options (retries: 0)",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "TC-9e.1: GnosysDB constructor retry logic opens a DB with explicit retry options (retries: 0)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Constructor with retries zero reports actual available DB. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:66",
+      "beforeName": "opens a DB with network-like retry options (5 retries, 100ms delay)",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9e.1: GnosysDB constructor retry logic retries transient native open failures before persisting data"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects skip configured transient native-open retries.",
+      "mutationIds": [
+        "G1-native-retries"
+      ],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:77",
+      "beforeName": "returns unavailable when Database module is absent (constructor guard)",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9e.1: GnosysDB constructor retry logic returns unavailable when Database module is absent (constructor guard)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects claim database is available despite missing native library.",
+      "mutationIds": [
+        "G1-native-absent"
+      ],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:96",
+      "beforeName": "default retry count is 3 (no opts)",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9e.2: GnosysDB constructor with retry options default retry count is 3 (no opts)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects reduce default native-open retry allowance.",
+      "mutationIds": [
+        "G1-native-default-retries"
+      ],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:108",
+      "beforeName": "creates directory recursively if needed",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "TC-9e.2: GnosysDB constructor with retry options creates directory recursively if needed"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Constructor creates nested directory and actual gnosys.db with available=true. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:125",
+      "beforeName": "handleRequest ping works with normal DB",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "TC-9e.3: Network path detection in sandbox handleRequest handleRequest ping works with normal DB"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Sandbox ping returns literal ok status through actual handler. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:131",
+      "beforeName": "handleRequest add+recall round-trip on standard path",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9e.3: Network path detection in sandbox handleRequest handleRequest add+recall round-trip on standard path"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects corrupt recalled memory content while reporting ok.",
+      "mutationIds": [
+        "G1-sandbox-recall-content"
+      ],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:151",
+      "beforeName": "db.backup creates a backup file",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9e.4: Backup/restore round-trip db.backup creates a backup file"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects write invalid bytes at successful backup path.",
+      "mutationIds": [
+        "G1-backup-data-default"
+      ],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:164",
+      "beforeName": "backup + restore round-trip preserves data",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "TC-9e.4: Backup/restore round-trip backup + restore round-trip preserves data"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "After original DB deletion, restored backup returns original count and literal Round Trip Memory title. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:198",
+      "beforeName": "backup supports custom destination directory",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9e.5: Backup with custom --to path backup supports custom destination directory"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects write invalid bytes at successful backup path.",
+      "mutationIds": [
+        "G1-backup-data-custom"
+      ],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:219",
+      "beforeName": "SandboxStatus type has all expected fields",
+      "beforeClassification": "HOLLOW",
+      "action": "deleted",
+      "afterNames": [],
+      "afterClassification": null,
+      "evidence": "Erased interface annotation and locally authored object literal exercise no production code.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:235",
+      "beforeName": "SandboxStatus dbPath is optional",
+      "beforeClassification": "HOLLOW",
+      "action": "deleted",
+      "afterNames": [],
+      "afterClassification": null,
+      "evidence": "Locally authored object absence assertion exercises no production code.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:245",
+      "beforeName": "new GnosysDB sets busy_timeout to 10000",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9e.7: busy_timeout pragma is set new GnosysDB sets busy_timeout to 10000"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects leave database unavailable so conditional assertions never run.",
+      "mutationIds": [
+        "G1-busy-timeout-guard",
+        "G1-native-timeout"
+      ],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:267",
+      "beforeName": "has required running field",
+      "beforeClassification": "HOLLOW",
+      "action": "deleted",
+      "afterNames": [],
+      "afterClassification": null,
+      "evidence": "Locally authored running-field assertion exercises no production code.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:272",
+      "beforeName": "supports all optional fields",
+      "beforeClassification": "HOLLOW",
+      "action": "deleted",
+      "afterNames": [],
+      "afterClassification": null,
+      "evidence": "Locally authored optional-fields assertion exercises no production code.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:289",
+      "beforeName": "backup --json outputs valid JSON",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "TC-9e.9: CLI backup/restore --json output backup --json outputs valid JSON"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects fail backup command while old test catches every error.",
+      "mutationIds": [
+        "G1-backup-cli-error"
+      ],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:316",
+      "beforeName": "README.md exists and contains key content",
+      "beforeClassification": "HOLLOW",
+      "originalReviewClassification": "STRONG",
+      "action": "deleted",
+      "afterNames": [],
+      "afterClassification": null,
+      "evidence": "Document content/existence pin invokes no application behavior; structural fixture-only exemption.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:327",
+      "beforeName": "CONTRIBUTING.md exists",
+      "beforeClassification": "HOLLOW",
+      "originalReviewClassification": "WEAK",
+      "action": "deleted",
+      "afterNames": [],
+      "afterClassification": null,
+      "evidence": "Document content/existence pin invokes no application behavior; structural fixture-only exemption.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/phase9e.network-share-polish.test.ts:331",
+      "beforeName": "package.json version starts with 4.",
+      "beforeClassification": "MISLABELED",
+      "originalReviewClassification": "MISLABELED",
+      "action": "deleted",
+      "afterNames": [],
+      "afterClassification": null,
+      "evidence": "Documentation/manifest fixture pin invokes no application behavior. Real CLI version execution remains in v593-no-central-db-pollution.test.ts > --version does not create ~/.gnosys/gnosys.db.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/db.ts",
+        "src/sandbox/server.ts",
+        "src/sandbox/manager.ts",
+        "src/lib/backupCommand.ts"
+      ],
+      "featureIds": [
+        "F29",
+        "F37",
+        "F01"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:94",
+      "beforeName": "applies merged content to both sides",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "RemoteSync.resolve edge cases applies merged content to both sides"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Merge resolution persists literal Merged title in both DBs and clears conflict. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:107",
+      "beforeName": "rejects merged without mergedMemory payload",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "RemoteSync.resolve edge cases rejects merged without mergedMemory payload"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Missing merge payload yields ok=false and exact Invalid choice: merged. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:116",
+      "beforeName": "rejects invalid choice strings",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "RemoteSync.resolve edge cases rejects invalid choice strings"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Invalid choice yields ok=false and exact sideways error. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:125",
+      "beforeName": "returns error when remote is not reachable",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "RemoteSync.resolve edge cases returns error when remote is not reachable",
+        "RemoteSync.migrate partial failures returns error when remote is not reachable"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Unreachable remote resolution yields literal Remote not reachable. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:133",
+      "beforeName": "returns error when memory exists on neither side",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "RemoteSync.resolve edge cases returns error when memory exists on neither side"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Missing memory on both sides yields ok=false and memory-not-found diagnostic. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:139",
+      "beforeName": "returns insert error when localDb.insertMemory throws",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "RemoteSync.resolve edge cases reports native SQLite rejection during conflict resolution"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose actual sqlite constraint diagnosis from conflict resolution.",
+      "mutationIds": [
+        "G1-remote-resolve-error"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:157",
+      "beforeName": "copies projects and memories and sets last sync on success",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "RemoteSync.migrate partial failures copies projects and memories and sets last sync on success"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose migrated memory content while preserving row count.",
+      "mutationIds": [
+        "G1-migrate-content"
+      ],
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:171",
+      "beforeName": "returns error when remote is not reachable",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "RemoteSync.resolve edge cases returns error when remote is not reachable",
+        "RemoteSync.migrate partial failures returns error when remote is not reachable"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Unreachable migration yields ok=false, copied zero and exact reachability error. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:180",
+      "beforeName": "continues when one project insert fails",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "RemoteSync.migrate partial failures continues when one project insert fails"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose failed project identity while continuing real migration.",
+      "mutationIds": [
+        "G1-remote-project-partial"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:195",
+      "beforeName": "continues when one memory insert fails",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "RemoteSync.migrate partial failures continues when one memory insert fails"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose failed memory identity while continuing real migration.",
+      "mutationIds": [
+        "G1-remote-memory-partial"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:211",
+      "beforeName": "uses HOSTNAME env var for new ids",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "getMachineId and resolveHostname uses HOSTNAME env var for new ids"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace legacy hostname and cached identity resolution with unrelated configured id.",
+      "mutationIds": [
+        "G1-legacy-machine-real-config"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:221",
+      "beforeName": "falls back to COMPUTERNAME when HOSTNAME is unset",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "getMachineId and resolveHostname falls back to COMPUTERNAME when HOSTNAME is unset"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace legacy hostname and cached identity resolution with unrelated configured id.",
+      "mutationIds": [
+        "G1-legacy-machine-real-config"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:232",
+      "beforeName": "falls back to os.hostname when env vars are unset",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "getMachineId and resolveHostname falls back to os.hostname when env vars are unset"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace legacy hostname and cached identity resolution with unrelated configured id.",
+      "mutationIds": [
+        "G1-legacy-machine-real-config"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:244",
+      "beforeName": "returns unknown- prefix when os.hostname throws",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "getMachineId and resolveHostname returns unknown- prefix when os.hostname throws"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace legacy hostname and cached identity resolution with unrelated configured id.",
+      "mutationIds": [
+        "G1-legacy-machine-real-config"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:258",
+      "beforeName": "self-heals stale unknown- id and dream_machine_id",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "getMachineId and resolveHostname self-heals stale unknown- id and dream_machine_id"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace legacy hostname and cached identity resolution with unrelated configured id.",
+      "mutationIds": [
+        "G1-legacy-machine-real-config"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:272",
+      "beforeName": "keeps stale unknown- id when hostname still cannot resolve",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "getMachineId and resolveHostname keeps stale unknown- id when hostname still cannot resolve"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace legacy hostname and cached identity resolution with unrelated configured id.",
+      "mutationIds": [
+        "G1-legacy-machine-real-config"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:287",
+      "beforeName": "returns stable cached non-stale id unchanged",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "getMachineId and resolveHostname returns stable cached non-stale id unchanged"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace legacy hostname and cached identity resolution with unrelated configured id.",
+      "mutationIds": [
+        "G1-legacy-machine-real-config"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:297",
+      "beforeName": "does not treat host-abc123 as stale unknown id",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "getMachineId and resolveHostname does not treat host-abc123 as stale unknown id"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace legacy hostname and cached identity resolution with unrelated configured id.",
+      "mutationIds": [
+        "G1-legacy-machine-real-config"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:309",
+      "beforeName": "returns friendly message on SQLITE_BUSY",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "RemoteSync.getStatus SQLITE_BUSY returns friendly message on SQLITE_BUSY"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects misreport native sqlite busy state as ready.",
+      "mutationIds": [
+        "G1-remote-busy"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:320",
+      "beforeName": "rethrows non-busy sqlite errors",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "RemoteSync.getStatus SQLITE_BUSY rethrows non-busy sqlite errors"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects swallow a non-busy native sqlite read failure.",
+      "mutationIds": [
+        "G1-remote-ioerror"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:332",
+      "beforeName": "formats not configured",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "formatStatus branches formats not configured"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Unconfigured status renders explicit not-configured text. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:345",
+      "beforeName": "formats unreachable path",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "formatStatus branches formats unreachable path"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Unreachable status renders exact /x path. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:359",
+      "beforeName": "includes conflict count",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "formatStatus branches includes conflict count"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Two conflicts render literal Conflicts: 2. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:376",
+      "beforeName": "includes custom message line",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "formatStatus branches includes custom message line"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Custom status field renders literal Status: custom. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:393",
+      "beforeName": "warns when directory is created",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "validateLocation extras warns when directory is created"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Validating absent destination returns created-directory warning after filesystem creation. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:401",
+      "beforeName": "warns on high sqlite probe latency",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "validateLocation extras warns on high sqlite probe latency"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Clock-controlled slow SQLite probe emits High latency warning. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:413",
+      "beforeName": "reports sqlite test failure when setMeta throws",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "validateLocation extras reports an unsuccessful SQLite write probe"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose failed real sqlite write-probe diagnosis.",
+      "mutationIds": [
+        "G1-remote-write-probe"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/remote-coverage.test.ts:425",
+      "beforeName": "clears cached remoteDb handle",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "RemoteSync.closeRemote closes the native connection and can reconnect"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects leak native remote connection on public close.",
+      "mutationIds": [
+        "G1-remote-close"
+      ],
+      "productionModules": [
+        "src/lib/remote.ts",
+        "src/lib/db.ts"
+      ],
+      "featureIds": [
+        "F31",
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/v512-http-bearer.test.ts:33",
+      "beforeName": "missing token \u2192 401",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "v5.12 bearer token (missing / wrong / correct) missing token \u2192 401"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real HTTP server rejects absent bearer header with literal status 401. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/mcpHttp.ts"
+      ],
+      "featureIds": [
+        "F35"
+      ]
+    },
+    {
+      "beforeId": "src/test/v512-http-bearer.test.ts:38",
+      "beforeName": "wrong token \u2192 401",
+      "beforeClassification": "STRONG",
+      "action": "kept",
+      "afterNames": [
+        "v5.12 bearer token (missing / wrong / correct) wrong token \u2192 401"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Real HTTP server rejects incorrect bearer token with literal status 401. Verified in full-suite.json.",
+      "mutationIds": [],
+      "productionModules": [
+        "src/lib/mcpHttp.ts"
+      ],
+      "featureIds": [
+        "F35"
+      ]
+    },
+    {
+      "beforeId": "src/test/v512-http-bearer.test.ts:47",
+      "beforeName": "correct token \u2192 passes the auth gate (not 401)",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "v5.12 bearer token (missing / wrong / correct) correct token initializes an authenticated MCP session"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects fail authenticated mcp initialize after successful token check.",
+      "mutationIds": [
+        "G1-http-auth-success"
+      ],
+      "productionModules": [
+        "src/lib/mcpHttp.ts"
+      ],
+      "featureIds": [
+        "F35"
+      ]
+    },
+    {
+      "beforeId": "src/test/v595-self-healing-machine-id.test.ts:57",
+      "beforeName": "heals a stale `unknown-<rand>` cache when a real hostname is available",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "v5.9.5 \u2014 self-healing machine_id heals a stale `unknown-<rand>` cache when a real hostname is available"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects persist wrong healed legacy machine id.",
+      "mutationIds": [
+        "G1-machine-heal"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts"
+      ],
+      "featureIds": [
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/v595-self-healing-machine-id.test.ts:72",
+      "beforeName": "heals a stale `dream_machine_id` pointing at the same broken cached id",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "v5.9.5 \u2014 self-healing machine_id heals a stale `dream_machine_id` pointing at the same broken cached id"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects persist wrong healed dream designation.",
+      "mutationIds": [
+        "G1-machine-dream-heal"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts"
+      ],
+      "featureIds": [
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/v595-self-healing-machine-id.test.ts:87",
+      "beforeName": "leaves a real cached id untouched (no churn)",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "v5.9.5 \u2014 self-healing machine_id leaves a real cached id untouched (no churn)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace valid stable legacy machine identity.",
+      "mutationIds": [
+        "G1-machine-stable"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts"
+      ],
+      "featureIds": [
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/v595-self-healing-machine-id.test.ts:104",
+      "beforeName": "leaves an unrelated `dream_machine_id` alone when machine_id heals",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "v5.9.5 \u2014 self-healing machine_id leaves an unrelated `dream_machine_id` alone when machine_id heals"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects overwrite designation of unrelated dream machine during legacy healing.",
+      "mutationIds": [
+        "G1-machine-unrelated"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/remote.ts"
+      ],
+      "featureIds": [
+        "F30"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-state-isolation.test.ts:90",
+      "beforeName": "engine.dream() writes dream-state.json under GNOSYS_HOME, not the real home",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "dream-state isolation (v5.13.0) engine.dream() writes dream-state.json under GNOSYS_HOME, not the real home"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects write dream state to wrong filename.",
+      "mutationIds": [
+        "G1-state-home"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/dream.ts",
+        "src/lib/dreamRunLog.ts"
+      ],
+      "featureIds": [
+        "F23"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-state-isolation.test.ts:100",
+      "beforeName": "an explicit stateDir overrides GNOSYS_HOME (defense in depth)",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "dream-state isolation (v5.13.0) an explicit stateDir overrides GNOSYS_HOME (defense in depth)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects write dream state to wrong filename.",
+      "mutationIds": [
+        "G1-state-override"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/dream.ts",
+        "src/lib/dreamRunLog.ts"
+      ],
+      "featureIds": [
+        "F23"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-state-isolation.test.ts:115",
+      "beforeName": "getDreamStatePath accepts a baseDir override",
+      "beforeClassification": "STRONG",
+      "action": "rewritten",
+      "afterNames": [
+        "dream-state isolation (v5.13.0) getDreamStatePath accepts a baseDir override"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects write dream state to wrong filename.",
+      "mutationIds": [
+        "G1-state-path"
+      ],
+      "productionModules": [
+        "src/lib/dream.ts",
+        "src/lib/dreamRunLog.ts"
+      ],
+      "featureIds": [
+        "F23"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-state-isolation.test.ts:122",
+      "beforeName": "reports the coverage gap but never auto-downloads the model when embeddings were never initialized",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "embedding-health phase (v5.13.0) reports the coverage gap but never auto-downloads the model when embeddings were never initialized"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects hide actual missing-vector coverage count.",
+      "mutationIds": [
+        "G1-state-missing-embeddings"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/dream.ts",
+        "src/lib/dreamRunLog.ts"
+      ],
+      "featureIds": [
+        "F23"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-state-isolation.test.ts:134",
+      "beforeName": "skips cleanly when every memory is already embedded",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "embedding-health phase (v5.13.0) skips cleanly when every memory is already embedded"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects report all vectors missing when every real db memory is embedded.",
+      "mutationIds": [
+        "G1-state-complete-embeddings"
+      ],
+      "originalReviewClassification": "STRONG",
+      "classificationRevision": "Final mock census found application-owned provider/config/DB behavior replaced by test double; rewritten path uses real application code and mocks only external boundaries.",
+      "productionModules": [
+        "src/lib/dream.ts",
+        "src/lib/dreamRunLog.ts"
+      ],
+      "featureIds": [
+        "F23"
+      ]
     }
   ],
   "additionalTests": [
     {
       "afterNames": [
-        "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides"
+        "Phase C \u2014 settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides"
       ],
       "afterClassification": "STRONG",
       "action": "expected_failure",

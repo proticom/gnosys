@@ -1,0 +1,3459 @@
+{
+  "results": [
+    {
+      "id": "G1-migrate-content",
+      "file": "src/lib/remote.ts",
+      "description": "Lose migrated memory content while preserving row count",
+      "sourceChange": {
+        "search": "remoteDb.insertMemory(mem);",
+        "replace": "remoteDb.insertMemory({...mem,title:\"Wrong copied title\",content:\"Wrong copied content\"});"
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-coverage.test.ts"
+        ],
+        "testName": "copies projects and memories and sets last sync on success$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 490,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.migrate partial failures copies projects and memories and sets last sync on success",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 411,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.migrate partial failures copies projects and memories and sets last sync on success",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 417,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.migrate partial failures copies projects and memories and sets last sync on success",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-p.json"
+    },
+    {
+      "id": "G1-http-auth-success",
+      "file": "src/lib/mcpHttp.ts",
+      "description": "Fail authenticated MCP initialize after successful token check",
+      "sourceChange": {
+        "search": "const sessionId = req.headers[\"mcp-session-id\"] as string | undefined;",
+        "replace": "if (req.headers[\"authorization\"]) { jsonRpcError(res, 500, -32000, \"Unexpected authenticated failure\"); return; }\n    const sessionId = req.headers[\"mcp-session-id\"] as string | undefined;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/v512-http-bearer.test.ts"
+        ],
+        "testName": "correct token \u2192 passes the auth gate \\(not 401\\)$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 434,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v512-http-bearer.test.ts",
+            "name": "v5.12 bearer token (missing / wrong / correct) correct token \u2192 passes the auth gate (not 401)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 422,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v512-http-bearer.test.ts",
+            "name": "v5.12 bearer token (missing / wrong / correct) correct token \u2192 passes the auth gate (not 401)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 425,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v512-http-bearer.test.ts",
+            "name": "v5.12 bearer token (missing / wrong / correct) correct token \u2192 passes the auth gate (not 401)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-p.json"
+    },
+    {
+      "id": "G1-backup-cli-error",
+      "file": "src/lib/backupCommand.ts",
+      "description": "Fail backup command while old test catches every error",
+      "sourceChange": {
+        "search": "const backupPath = await centralDb.backup(outputDir);",
+        "replace": "const backupPath = await centralDb.backup(outputDir + \"/missing/invalid\").then(() => { throw new Error(\"Backup unavailable\"); });"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9e.network-share-polish.test.ts"
+        ],
+        "testName": "backup\\ \\-\\-json\\ outputs\\ valid\\ JSON$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 662,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.9: CLI backup/restore --json output backup --json outputs valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 621,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.9: CLI backup/restore --json output backup --json outputs valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 622,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.9: CLI backup/restore --json output backup --json outputs valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-m2.json"
+    },
+    {
+      "id": "G1-sandbox-recall-content",
+      "file": "src/sandbox/server.ts",
+      "description": "Corrupt recalled memory content while reporting ok",
+      "sourceChange": {
+        "search": "content: mem?.content || r.snippet,",
+        "replace": "content: \"wrong recall body\","
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9e.network-share-polish.test.ts"
+        ],
+        "testName": "handleRequest\\ add\\+recall\\ round\\-trip\\ on\\ standard\\ path$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 663,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.3: Network path detection in sandbox handleRequest handleRequest add+recall round-trip on standard path",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 631,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.3: Network path detection in sandbox handleRequest handleRequest add+recall round-trip on standard path",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 615,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.3: Network path detection in sandbox handleRequest handleRequest add+recall round-trip on standard path",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-m.json"
+    },
+    {
+      "id": "G1-backup-data-default",
+      "file": "src/lib/db.ts",
+      "description": "Write invalid bytes at successful backup path",
+      "sourceChange": {
+        "search": "await this.db.backup(backupPath);",
+        "replace": "fs.writeFileSync(backupPath, \"invalid backup\");"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9e.network-share-polish.test.ts"
+        ],
+        "testName": "db\\.backup\\ creates\\ a\\ backup\\ file$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 634,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.4: Backup/restore round-trip db.backup creates a backup file",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 604,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.4: Backup/restore round-trip db.backup creates a backup file",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 615,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.4: Backup/restore round-trip db.backup creates a backup file",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-m.json"
+    },
+    {
+      "id": "G1-backup-data-custom",
+      "file": "src/lib/db.ts",
+      "description": "Write invalid bytes at successful backup path",
+      "sourceChange": {
+        "search": "await this.db.backup(backupPath);",
+        "replace": "fs.writeFileSync(backupPath, \"invalid backup\");"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9e.network-share-polish.test.ts"
+        ],
+        "testName": "backup\\ supports\\ custom\\ destination\\ directory$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 593,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.5: Backup with custom --to path backup supports custom destination directory",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 593,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.5: Backup with custom --to path backup supports custom destination directory",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 644,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.5: Backup with custom --to path backup supports custom destination directory",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-m.json"
+    },
+    {
+      "id": "G1-busy-timeout-guard",
+      "file": "src/lib/db.ts",
+      "description": "Leave database unavailable so conditional assertions never run",
+      "sourceChange": {
+        "search": "if (!Database) return;\n\n    const maxRetries",
+        "replace": "return;\n\n    const maxRetries"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9e.network-share-polish.test.ts"
+        ],
+        "testName": "new\\ GnosysDB\\ sets\\ busy_timeout\\ to\\ 10000$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 625,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.7: busy_timeout pragma is set new GnosysDB sets busy_timeout to 10000",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 666,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.7: busy_timeout pragma is set new GnosysDB sets busy_timeout to 10000",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 641,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.7: busy_timeout pragma is set new GnosysDB sets busy_timeout to 10000",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true,
+      "artifact": "survival-m.json"
+    },
+    {
+      "id": "G1-central-semantic-gate",
+      "file": "src/lib/hybridSearch.ts",
+      "description": "Ignore central vectors in semantic availability gate",
+      "sourceChange": {
+        "search": "canRunSemantic(): boolean {\n    if (this.dbSearch) {\n      return this.dbSearch.hasEmbeddings();",
+        "replace": "canRunSemantic(): boolean {\n    if (this.dbSearch) {\n      return this.embeddings.hasEmbeddings();"
+      },
+      "selection": {
+        "tests": [
+          "src/test/hybrid-degrade-warning.test.ts"
+        ],
+        "testName": "semantic search reads central database vectors$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 861,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/hybrid-degrade-warning.test.ts",
+            "name": "hybrid search degrade warnings (v5.12.3) semantic search reads central database vectors",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 693,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/hybrid-degrade-warning.test.ts",
+            "name": "hybrid search degrade warnings (v5.12.3) semantic search reads central database vectors",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected false to be true // Object.is equality\n    at <repo>/src/test/hybrid-degrade-warning.test.ts:78:39\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 703,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/hybrid-degrade-warning.test.ts",
+            "name": "hybrid search degrade warnings (v5.12.3) semantic search reads central database vectors",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/hybrid-degrade-warning.test.ts",
+          "name": "hybrid search degrade warnings (v5.12.3) semantic search reads central database vectors"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-t.json"
+    },
+    {
+      "id": "G1-remote-resolve-error",
+      "file": "src/lib/remote.ts",
+      "description": "Lose actual SQLite constraint diagnosis from conflict resolution",
+      "sourceChange": {
+        "search": "return { ok: false, error: (err as Error).message };",
+        "replace": "return { ok: false, error: \"Wrong resolve failure\" };"
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-coverage.test.ts"
+        ],
+        "testName": "reports native SQLite rejection during conflict resolution$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 453,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.resolve edge cases reports native SQLite rejection during conflict resolution",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 445,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.resolve edge cases reports native SQLite rejection during conflict resolution",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Wrong resolve failure' to be 'insert fail' // Object.is equality\n    at <repo>/src/test/remote-coverage.test.ts:162:26\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 447,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.resolve edge cases reports native SQLite rejection during conflict resolution",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "RemoteSync.resolve edge cases reports native SQLite rejection during conflict resolution"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-t.json"
+    },
+    {
+      "id": "G1-legacy-machine-real-config",
+      "file": "src/lib/remote.ts",
+      "description": "Replace legacy hostname and cached identity resolution with unrelated configured ID",
+      "sourceChange": {
+        "search": "const mc = readMachineConfig();\n  if (mc?.machineId) return mc.machineId;",
+        "replace": "const mc = { machineId: \"wrong-machine\" };\n  if (mc?.machineId) return mc.machineId;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-coverage.test.ts"
+        ],
+        "testName": "getMachineId and resolveHostname"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 517,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname uses HOSTNAME env var for new ids",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname falls back to COMPUTERNAME when HOSTNAME is unset",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname falls back to os.hostname when env vars are unset",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname returns unknown- prefix when os.hostname throws",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname self-heals stale unknown- id and dream_machine_id",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname keeps stale unknown- id when hostname still cannot resolve",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname returns stable cached non-stale id unchanged",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname does not treat host-abc123 as stale unknown id",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 516,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname uses HOSTNAME env var for new ids",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'wrong-machine' to match /^myhost-/\n    at <repo>/src/test/remote-coverage.test.ts:224:16\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname falls back to COMPUTERNAME when HOSTNAME is unset",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'wrong-machine' to match /^winbox-/\n    at <repo>/src/test/remote-coverage.test.ts:235:16\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname falls back to os.hostname when env vars are unset",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'wrong-machine' to match /^os-host-/\n    at <repo>/src/test/remote-coverage.test.ts:247:16\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname returns unknown- prefix when os.hostname throws",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'wrong-machine' to match /^unknown-/\n    at <repo>/src/test/remote-coverage.test.ts:261:16\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname self-heals stale unknown- id and dream_machine_id",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'wrong-machine' to match /^real-host-/\n    at <repo>/src/test/remote-coverage.test.ts:273:16\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname keeps stale unknown- id when hostname still cannot resolve",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'wrong-machine' to be 'unknown-abc123' // Object.is equality\n    at <repo>/src/test/remote-coverage.test.ts:290:16\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname returns stable cached non-stale id unchanged",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'wrong-machine' to be 'good-host-abc123' // Object.is equality\n    at <repo>/src/test/remote-coverage.test.ts:300:16\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname does not treat host-abc123 as stale unknown id",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'wrong-machine' to be 'host-abc123' // Object.is equality\n    at <repo>/src/test/remote-coverage.test.ts:310:16\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 501,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname uses HOSTNAME env var for new ids",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname falls back to COMPUTERNAME when HOSTNAME is unset",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname falls back to os.hostname when env vars are unset",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname returns unknown- prefix when os.hostname throws",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname self-heals stale unknown- id and dream_machine_id",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname keeps stale unknown- id when hostname still cannot resolve",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname returns stable cached non-stale id unchanged",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "getMachineId and resolveHostname does not treat host-abc123 as stale unknown id",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "getMachineId and resolveHostname uses HOSTNAME env var for new ids"
+        },
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "getMachineId and resolveHostname falls back to COMPUTERNAME when HOSTNAME is unset"
+        },
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "getMachineId and resolveHostname falls back to os.hostname when env vars are unset"
+        },
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "getMachineId and resolveHostname returns unknown- prefix when os.hostname throws"
+        },
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "getMachineId and resolveHostname self-heals stale unknown- id and dream_machine_id"
+        },
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "getMachineId and resolveHostname keeps stale unknown- id when hostname still cannot resolve"
+        },
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "getMachineId and resolveHostname returns stable cached non-stale id unchanged"
+        },
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "getMachineId and resolveHostname does not treat host-abc123 as stale unknown id"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-u.json"
+    },
+    {
+      "id": "G1-machine-heal",
+      "file": "src/lib/remote.ts",
+      "description": "Persist wrong healed legacy machine ID",
+      "sourceChange": {
+        "search": "localDb.setMeta(META_MACHINE_ID, fresh);",
+        "replace": "localDb.setMeta(META_MACHINE_ID, \"wrong-machine\");"
+      },
+      "selection": {
+        "tests": [
+          "src/test/v595-self-healing-machine-id.test.ts"
+        ],
+        "testName": "heals\\ a\\ stale\\ `unknown\\-<rand>`\\ cache\\ when\\ a\\ real\\ hostname\\ is\\ available$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 588,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v595-self-healing-machine-id.test.ts",
+            "name": "v5.9.5 \u2014 self-healing machine_id heals a stale `unknown-<rand>` cache when a real hostname is available",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 451,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v595-self-healing-machine-id.test.ts",
+            "name": "v5.9.5 \u2014 self-healing machine_id heals a stale `unknown-<rand>` cache when a real hostname is available",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'wrong-machine' to be 'EdsMacStudio-mjuohs00' // Object.is equality\n    at <repo>/src/test/v595-self-healing-machine-id.test.ts:71:44\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 457,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v595-self-healing-machine-id.test.ts",
+            "name": "v5.9.5 \u2014 self-healing machine_id heals a stale `unknown-<rand>` cache when a real hostname is available",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/v595-self-healing-machine-id.test.ts",
+          "name": "v5.9.5 \u2014 self-healing machine_id heals a stale `unknown-<rand>` cache when a real hostname is available"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-s.json"
+    },
+    {
+      "id": "G1-machine-dream-heal",
+      "file": "src/lib/remote.ts",
+      "description": "Persist wrong healed Dream designation",
+      "sourceChange": {
+        "search": "localDb.setDreamMachineId(fresh);",
+        "replace": "localDb.setDreamMachineId(\"wrong-machine\");"
+      },
+      "selection": {
+        "tests": [
+          "src/test/v595-self-healing-machine-id.test.ts"
+        ],
+        "testName": "heals\\ a\\ stale\\ `dream_machine_id`\\ pointing\\ at\\ the\\ same\\ broken\\ cached\\ id$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 441,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v595-self-healing-machine-id.test.ts",
+            "name": "v5.9.5 \u2014 self-healing machine_id heals a stale `dream_machine_id` pointing at the same broken cached id",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 432,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v595-self-healing-machine-id.test.ts",
+            "name": "v5.9.5 \u2014 self-healing machine_id heals a stale `dream_machine_id` pointing at the same broken cached id",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'wrong-machine' to be 'EdsMacStudio-mjuohs00' // Object.is equality\n    at <repo>/src/test/v595-self-healing-machine-id.test.ts:84:42\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 425,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v595-self-healing-machine-id.test.ts",
+            "name": "v5.9.5 \u2014 self-healing machine_id heals a stale `dream_machine_id` pointing at the same broken cached id",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/v595-self-healing-machine-id.test.ts",
+          "name": "v5.9.5 \u2014 self-healing machine_id heals a stale `dream_machine_id` pointing at the same broken cached id"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-s.json"
+    },
+    {
+      "id": "G1-machine-stable",
+      "file": "src/lib/remote.ts",
+      "description": "Replace valid stable legacy machine identity",
+      "sourceChange": {
+        "search": "if (cached && !isStaleUnknownId(cached)) return cached;",
+        "replace": "if (cached && !isStaleUnknownId(cached)) return \"wrong-machine\";"
+      },
+      "selection": {
+        "tests": [
+          "src/test/v595-self-healing-machine-id.test.ts"
+        ],
+        "testName": "leaves\\ a\\ real\\ cached\\ id\\ untouched\\ \\(no\\ churn\\)$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 423,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v595-self-healing-machine-id.test.ts",
+            "name": "v5.9.5 \u2014 self-healing machine_id leaves a real cached id untouched (no churn)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 416,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v595-self-healing-machine-id.test.ts",
+            "name": "v5.9.5 \u2014 self-healing machine_id leaves a real cached id untouched (no churn)",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'wrong-machine' to be 'EdsMacStudio-abc123' // Object.is equality\n    at <repo>/src/test/v595-self-healing-machine-id.test.ts:96:18\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 422,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v595-self-healing-machine-id.test.ts",
+            "name": "v5.9.5 \u2014 self-healing machine_id leaves a real cached id untouched (no churn)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/v595-self-healing-machine-id.test.ts",
+          "name": "v5.9.5 \u2014 self-healing machine_id leaves a real cached id untouched (no churn)"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-s.json"
+    },
+    {
+      "id": "G1-machine-unrelated",
+      "file": "src/lib/remote.ts",
+      "description": "Overwrite designation of unrelated Dream machine during legacy healing",
+      "sourceChange": {
+        "search": "if (cached && localDb.getDreamMachineId() === cached) {",
+        "replace": "if (cached) {"
+      },
+      "selection": {
+        "tests": [
+          "src/test/v595-self-healing-machine-id.test.ts"
+        ],
+        "testName": "leaves\\ an\\ unrelated\\ `dream_machine_id`\\ alone\\ when\\ machine_id\\ heals$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 416,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v595-self-healing-machine-id.test.ts",
+            "name": "v5.9.5 \u2014 self-healing machine_id leaves an unrelated `dream_machine_id` alone when machine_id heals",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 417,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v595-self-healing-machine-id.test.ts",
+            "name": "v5.9.5 \u2014 self-healing machine_id leaves an unrelated `dream_machine_id` alone when machine_id heals",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'EdsMacStudio-mjuohs00' to be 'OtherMachine-xyz789' // Object.is equality\n    at <repo>/src/test/v595-self-healing-machine-id.test.ts:111:42\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 436,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v595-self-healing-machine-id.test.ts",
+            "name": "v5.9.5 \u2014 self-healing machine_id leaves an unrelated `dream_machine_id` alone when machine_id heals",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/v595-self-healing-machine-id.test.ts",
+          "name": "v5.9.5 \u2014 self-healing machine_id leaves an unrelated `dream_machine_id` alone when machine_id heals"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-s.json"
+    },
+    {
+      "id": "G1-hybrid-mcp-warning",
+      "file": "src/index.ts",
+      "description": "Suppress MCP degraded-search warning",
+      "sourceChange": {
+        "search": "requestedMode !== \"keyword\" && !hybridSearch.canRunSemantic()",
+        "replace": "requestedMode === \"keyword\" && !hybridSearch.canRunSemantic()"
+      },
+      "selection": {
+        "tests": [
+          "src/test/hybrid-degrade-warning.test.ts"
+        ],
+        "testName": "gnosys_hybrid_search\\ warns\\ when\\ the\\ semantic\\ leg\\ can't\\ run$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 1216,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/hybrid-degrade-warning.test.ts",
+            "name": "hybrid search degrade warnings (v5.12.3) gnosys_hybrid_search warns when the semantic leg can't run",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 868,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/hybrid-degrade-warning.test.ts",
+            "name": "hybrid search degrade warnings (v5.12.3) gnosys_hybrid_search warns when the semantic leg can't run",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '[{\"type\":\"text\",\"text\":\"Found 1 resul\u2026' to contain 'hybrid search ran keyword-only. Run g\u2026'\n    at <repo>/src/test/hybrid-degrade-warning.test.ts:50:44\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1074,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/hybrid-degrade-warning.test.ts",
+            "name": "hybrid search degrade warnings (v5.12.3) gnosys_hybrid_search warns when the semantic leg can't run",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/hybrid-degrade-warning.test.ts",
+          "name": "hybrid search degrade warnings (v5.12.3) gnosys_hybrid_search warns when the semantic leg can't run"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-l2.json"
+    },
+    {
+      "id": "G1-semantic-mcp-warning",
+      "file": "src/index.ts",
+      "description": "Run unavailable semantic search without actionable failure",
+      "sourceChange": {
+        "search": "if (!hybridSearch.canRunSemantic()) {",
+        "replace": "if (false) {"
+      },
+      "selection": {
+        "tests": [
+          "src/test/hybrid-degrade-warning.test.ts"
+        ],
+        "testName": "gnosys_semantic_search\\ refuses\\ loudly\\ instead\\ of\\ returning\\ generic\\ empty$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 912,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/hybrid-degrade-warning.test.ts",
+            "name": "hybrid search degrade warnings (v5.12.3) gnosys_semantic_search refuses loudly instead of returning generic empty",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 895,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/hybrid-degrade-warning.test.ts",
+            "name": "hybrid search degrade warnings (v5.12.3) gnosys_semantic_search refuses loudly instead of returning generic empty",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { content: [ { type: 'text', \u2026(1) } ] } to match object { Object (isError, content) }\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/hybrid-degrade-warning.test.ts:59:20\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 1025,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/hybrid-degrade-warning.test.ts",
+            "name": "hybrid search degrade warnings (v5.12.3) gnosys_semantic_search refuses loudly instead of returning generic empty",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/hybrid-degrade-warning.test.ts",
+          "name": "hybrid search degrade warnings (v5.12.3) gnosys_semantic_search refuses loudly instead of returning generic empty"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-l2.json"
+    },
+    {
+      "id": "G1-hybrid-cli-warning",
+      "file": "src/lib/hybridSearchCommand.ts",
+      "description": "Suppress CLI degraded-search warning",
+      "sourceChange": {
+        "search": "if (mode !== \"keyword\" && !hybridSearch.canRunSemantic()) {",
+        "replace": "if (false) {"
+      },
+      "selection": {
+        "tests": [
+          "src/test/hybrid-degrade-warning.test.ts"
+        ],
+        "testName": "CLI\\ hybrid\\-search\\ warns\\ on\\ stderr\\ \\(stdout\\ stays\\ clean\\ for\\ \\-\\-json\\)$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 929,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/hybrid-degrade-warning.test.ts",
+            "name": "hybrid search degrade warnings (v5.12.3) CLI hybrid-search warns on stderr (stdout stays clean for --json)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 869,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/hybrid-degrade-warning.test.ts",
+            "name": "hybrid search degrade warnings (v5.12.3) CLI hybrid-search warns on stderr (stdout stays clean for --json)",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '' to contain 'Semantic embeddings unavailable \u2014 hyb\u2026'\n    at <repo>/src/test/hybrid-degrade-warning.test.ts:66:27\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 853,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/hybrid-degrade-warning.test.ts",
+            "name": "hybrid search degrade warnings (v5.12.3) CLI hybrid-search warns on stderr (stdout stays clean for --json)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/hybrid-degrade-warning.test.ts",
+          "name": "hybrid search degrade warnings (v5.12.3) CLI hybrid-search warns on stderr (stdout stays clean for --json)"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-l2.json"
+    },
+    {
+      "id": "G1-central-semantic-gate",
+      "file": "src/lib/hybridSearch.ts",
+      "description": "Ignore central vectors in semantic availability gate",
+      "sourceChange": {
+        "search": "canRunSemantic(): boolean {\n    if (this.dbSearch) {\n      return this.dbSearch.hasEmbeddings();",
+        "replace": "canRunSemantic(): boolean {\n    if (this.dbSearch) {\n      return this.embeddings.hasEmbeddings();"
+      },
+      "selection": {
+        "tests": [
+          "src/test/hybrid-degrade-warning.test.ts"
+        ],
+        "testName": "canRunSemantic\\ mirrors\\ the\\ DB\\-mode\\ embedQuery\\ gate\\ \\(central\\-DB\\ vectors\\)$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 718,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/hybrid-degrade-warning.test.ts",
+            "name": "hybrid search degrade warnings (v5.12.3) canRunSemantic mirrors the DB-mode embedQuery gate (central-DB vectors)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 684,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/hybrid-degrade-warning.test.ts",
+            "name": "hybrid search degrade warnings (v5.12.3) canRunSemantic mirrors the DB-mode embedQuery gate (central-DB vectors)",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected false to be true // Object.is equality\n    at <repo>/src/test/hybrid-degrade-warning.test.ts:78:39\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 676,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/hybrid-degrade-warning.test.ts",
+            "name": "hybrid search degrade warnings (v5.12.3) canRunSemantic mirrors the DB-mode embedQuery gate (central-DB vectors)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/hybrid-degrade-warning.test.ts",
+          "name": "hybrid search degrade warnings (v5.12.3) canRunSemantic mirrors the DB-mode embedQuery gate (central-DB vectors)"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-l2.json"
+    },
+    {
+      "id": "G1-migrate-content",
+      "file": "src/lib/remote.ts",
+      "description": "Lose migrated memory content while preserving row count",
+      "sourceChange": {
+        "search": "remoteDb.insertMemory(mem);",
+        "replace": "remoteDb.insertMemory({...mem,title:\"Wrong copied title\",content:\"Wrong copied content\"});"
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-coverage.test.ts"
+        ],
+        "testName": "copies projects and memories and sets last sync on success$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 745,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.migrate partial failures copies projects and memories and sets last sync on success",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 426,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.migrate partial failures copies projects and memories and sets last sync on success",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ { id: 'm-001', \u2026(2) }, \u2026(2) ] to deeply equal [ { id: 'm-001', \u2026(2) }, \u2026(2) ]\n    at <repo>/src/test/remote-coverage.test.ts:176:135\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 445,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.migrate partial failures copies projects and memories and sets last sync on success",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "RemoteSync.migrate partial failures copies projects and memories and sets last sync on success"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-q.json"
+    },
+    {
+      "id": "G1-http-auth-success",
+      "file": "src/lib/mcpHttp.ts",
+      "description": "Fail authenticated MCP initialize after successful token check",
+      "sourceChange": {
+        "search": "const sessionId = req.headers[\"mcp-session-id\"] as string | undefined;",
+        "replace": "if (req.headers[\"authorization\"]) { jsonRpcError(res, 500, -32000, \"Unexpected authenticated failure\"); return; }\n    const sessionId = req.headers[\"mcp-session-id\"] as string | undefined;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/v512-http-bearer.test.ts"
+        ],
+        "testName": "correct token initializes an authenticated MCP session$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 514,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v512-http-bearer.test.ts",
+            "name": "v5.12 bearer token (missing / wrong / correct) correct token initializes an authenticated MCP session",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 443,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v512-http-bearer.test.ts",
+            "name": "v5.12 bearer token (missing / wrong / correct) correct token initializes an authenticated MCP session",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 500 to be 200 // Object.is equality\n    at <repo>/src/test/v512-http-bearer.test.ts:57:22\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 414,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/v512-http-bearer.test.ts",
+            "name": "v5.12 bearer token (missing / wrong / correct) correct token initializes an authenticated MCP session",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/v512-http-bearer.test.ts",
+          "name": "v5.12 bearer token (missing / wrong / correct) correct token initializes an authenticated MCP session"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-q.json"
+    },
+    {
+      "id": "G1-remote-resolve-error",
+      "file": "src/lib/remote.ts",
+      "description": "Lose actual SQLite constraint diagnosis from conflict resolution",
+      "sourceChange": {
+        "search": "return { ok: false, error: (err as Error).message };",
+        "replace": "return { ok: false, error: \"Wrong resolve failure\" };"
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-coverage.test.ts"
+        ],
+        "testName": "returns\\ insert\\ error\\ when\\ localDb\\.insertMemory\\ throws$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 452,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.resolve edge cases returns insert error when localDb.insertMemory throws",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 441,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.resolve edge cases returns insert error when localDb.insertMemory throws",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Wrong resolve failure' to be 'insert fail' // Object.is equality\n    at <repo>/src/test/remote-coverage.test.ts:162:26\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 432,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.resolve edge cases returns insert error when localDb.insertMemory throws",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "RemoteSync.resolve edge cases returns insert error when localDb.insertMemory throws"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-q.json"
+    },
+    {
+      "id": "G1-remote-project-partial",
+      "file": "src/lib/remote.ts",
+      "description": "Lose failed project identity while continuing real migration",
+      "sourceChange": {
+        "search": "errors.push(`Failed to copy project ${proj.id}: ${(err as Error).message}`);",
+        "replace": "errors.push(\"Wrong failed project\");"
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-coverage.test.ts"
+        ],
+        "testName": "continues\\ when\\ one\\ project\\ insert\\ fails$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 408,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.migrate partial failures continues when one project insert fails",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 396,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.migrate partial failures continues when one project insert fails",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected false to be true // Object.is equality\n    at <repo>/src/test/remote-coverage.test.ts:200:86\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 451,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.migrate partial failures continues when one project insert fails",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "RemoteSync.migrate partial failures continues when one project insert fails"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-q.json"
+    },
+    {
+      "id": "G1-remote-memory-partial",
+      "file": "src/lib/remote.ts",
+      "description": "Lose failed memory identity while continuing real migration",
+      "sourceChange": {
+        "search": "errors.push(`Failed to copy ${mem.id}: ${(err as Error).message}`);",
+        "replace": "errors.push(\"Wrong failed memory\");"
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-coverage.test.ts"
+        ],
+        "testName": "continues\\ when\\ one\\ memory\\ insert\\ fails$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 396,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.migrate partial failures continues when one memory insert fails",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 421,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.migrate partial failures continues when one memory insert fails",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected false to be true // Object.is equality\n    at <repo>/src/test/remote-coverage.test.ts:212:75\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 425,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.migrate partial failures continues when one memory insert fails",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "RemoteSync.migrate partial failures continues when one memory insert fails"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-q.json"
+    },
+    {
+      "id": "G1-remote-busy",
+      "file": "src/lib/remote.ts",
+      "description": "Misreport native SQLite busy state as ready",
+      "sourceChange": {
+        "search": "message = \"Remote DB busy \u2014 another sync is probably running on another machine. Try again in a moment.\";",
+        "replace": "message = \"Ready\";"
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-coverage.test.ts"
+        ],
+        "testName": "returns\\ friendly\\ message\\ on\\ SQLITE_BUSY$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 399,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.getStatus SQLITE_BUSY returns friendly message on SQLITE_BUSY",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 407,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.getStatus SQLITE_BUSY returns friendly message on SQLITE_BUSY",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Ready' to match /Remote DB busy/\n    at <repo>/src/test/remote-coverage.test.ts:320:28\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 399,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.getStatus SQLITE_BUSY returns friendly message on SQLITE_BUSY",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "RemoteSync.getStatus SQLITE_BUSY returns friendly message on SQLITE_BUSY"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-q.json"
+    },
+    {
+      "id": "G1-remote-ioerror",
+      "file": "src/lib/remote.ts",
+      "description": "Swallow a non-busy native SQLite read failure",
+      "sourceChange": {
+        "search": "if (errAny?.code === \"SQLITE_BUSY\") {\n          remoteBusy = true;\n        } else {\n          throw err;\n        }",
+        "replace": "if (errAny?.code === \"SQLITE_BUSY\") {\n          remoteBusy = true;\n        } else {\n          remoteBusy = true;\n        }"
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-coverage.test.ts"
+        ],
+        "testName": "rethrows\\ non\\-busy\\ sqlite\\ errors$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 743,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.getStatus SQLITE_BUSY rethrows non-busy sqlite errors",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 397,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.getStatus SQLITE_BUSY rethrows non-busy sqlite errors",
+            "status": "failed",
+            "failures": [
+              "Error: promise resolved \"{ configured: true, \u2026(8) }\" instead of rejecting\n    at _Assertion.__VITEST_REJECTS__ (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1747:17)\n    at _Assertion.propertyGetter (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1570:27)\n    at Reflect.get (<anonymous>)\n    at Object.proxyGetter [as get] (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1659:22)\n    at <repo>/src/test/remote-coverage.test.ts:325:34\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 402,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.getStatus SQLITE_BUSY rethrows non-busy sqlite errors",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "RemoteSync.getStatus SQLITE_BUSY rethrows non-busy sqlite errors"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-q.json"
+    },
+    {
+      "id": "G1-remote-write-probe",
+      "file": "src/lib/remote.ts",
+      "description": "Lose failed real SQLite write-probe diagnosis",
+      "sourceChange": {
+        "search": "result.errors.push(\"SQLite read/write probe failed \u2014 locking may be unreliable on this filesystem\");",
+        "replace": "result.errors.push(\"Wrong write diagnosis\");"
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-coverage.test.ts"
+        ],
+        "testName": "reports\\ an\\ unsuccessful\\ SQLite\\ write\\ probe$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 453,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "validateLocation extras reports an unsuccessful SQLite write probe",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 392,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "validateLocation extras reports an unsuccessful SQLite write probe",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'Wrong write diagnosis' ] to deeply equal [ Array(1) ]\n    at <repo>/src/test/remote-coverage.test.ts:417:27\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 416,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "validateLocation extras reports an unsuccessful SQLite write probe",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "validateLocation extras reports an unsuccessful SQLite write probe"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-q.json"
+    },
+    {
+      "id": "G1-remote-close",
+      "file": "src/lib/remote.ts",
+      "description": "Leak native remote connection on public close",
+      "sourceChange": {
+        "search": "this.remoteDb?.close();",
+        "replace": "void this.remoteDb;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/remote-coverage.test.ts"
+        ],
+        "testName": "closes\\ the\\ native\\ connection\\ and\\ can\\ reconnect$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 405,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.closeRemote closes the native connection and can reconnect",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 392,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.closeRemote closes the native connection and can reconnect",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected \"close\" to be called 1 times, but got 0 times\n    at <repo>/src/test/remote-coverage.test.ts:428:19\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 402,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/remote-coverage.test.ts",
+            "name": "RemoteSync.closeRemote closes the native connection and can reconnect",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/remote-coverage.test.ts",
+          "name": "RemoteSync.closeRemote closes the native connection and can reconnect"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-q.json"
+    },
+    {
+      "id": "G1-sandbox-recall-content",
+      "file": "src/sandbox/server.ts",
+      "description": "Corrupt recalled memory content while reporting ok",
+      "sourceChange": {
+        "search": "content: mem?.content || r.snippet,",
+        "replace": "content: \"wrong recall body\","
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9e.network-share-polish.test.ts"
+        ],
+        "testName": "handleRequest\\ add\\+recall\\ round\\-trip\\ on\\ standard\\ path$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 533,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.3: Network path detection in sandbox handleRequest handleRequest add+recall round-trip on standard path",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 532,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.3: Network path detection in sandbox handleRequest handleRequest add+recall round-trip on standard path",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ { \u2026(6) } ] to deeply equal [ ObjectContaining{\u2026} ]\n    at <repo>/src/test/phase9e.network-share-polish.test.ts:149:30\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 535,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.3: Network path detection in sandbox handleRequest handleRequest add+recall round-trip on standard path",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9e.network-share-polish.test.ts",
+          "name": "TC-9e.3: Network path detection in sandbox handleRequest handleRequest add+recall round-trip on standard path"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-o.json"
+    },
+    {
+      "id": "G1-backup-data-default",
+      "file": "src/lib/db.ts",
+      "description": "Write invalid bytes at successful backup path",
+      "sourceChange": {
+        "search": "await this.db.backup(backupPath);",
+        "replace": "fs.writeFileSync(backupPath, \"invalid backup\");"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9e.network-share-polish.test.ts"
+        ],
+        "testName": "db\\.backup\\ creates\\ a\\ backup\\ file$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 528,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.4: Backup/restore round-trip db.backup creates a backup file",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 2016,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.4: Backup/restore round-trip db.backup creates a backup file",
+            "status": "failed",
+            "failures": [
+              "TypeError: Cannot read properties of null (reading 'prepare')\n    at GnosysDB.prep (<repo>/src/lib/db.ts:676:22)\n    at <repo>/src/lib/db.ts:983:13\n    at GnosysDB.withRecovery (<repo>/src/lib/db.ts:684:14)\n    at GnosysDB.getMemory (<repo>/src/lib/db.ts:982:17)\n    at <repo>/src/test/phase9e.network-share-polish.test.ts:169:27\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 524,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.4: Backup/restore round-trip db.backup creates a backup file",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9e.network-share-polish.test.ts",
+          "name": "TC-9e.4: Backup/restore round-trip db.backup creates a backup file"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-o.json"
+    },
+    {
+      "id": "G1-backup-data-custom",
+      "file": "src/lib/db.ts",
+      "description": "Write invalid bytes at successful backup path",
+      "sourceChange": {
+        "search": "await this.db.backup(backupPath);",
+        "replace": "fs.writeFileSync(backupPath, \"invalid backup\");"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9e.network-share-polish.test.ts"
+        ],
+        "testName": "backup\\ supports\\ custom\\ destination\\ directory$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 676,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.5: Backup with custom --to path backup supports custom destination directory",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 2045,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.5: Backup with custom --to path backup supports custom destination directory",
+            "status": "failed",
+            "failures": [
+              "TypeError: Cannot read properties of null (reading 'prepare')\n    at GnosysDB.prep (<repo>/src/lib/db.ts:676:22)\n    at <repo>/src/lib/db.ts:983:13\n    at GnosysDB.withRecovery (<repo>/src/lib/db.ts:684:14)\n    at GnosysDB.getMemory (<repo>/src/lib/db.ts:982:17)\n    at <repo>/src/test/phase9e.network-share-polish.test.ts:220:29\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 544,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.5: Backup with custom --to path backup supports custom destination directory",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9e.network-share-polish.test.ts",
+          "name": "TC-9e.5: Backup with custom --to path backup supports custom destination directory"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-o.json"
+    },
+    {
+      "id": "G1-busy-timeout-guard",
+      "file": "src/lib/db.ts",
+      "description": "Leave database unavailable so conditional assertions never run",
+      "sourceChange": {
+        "search": "if (!Database) return;\n\n    const maxRetries",
+        "replace": "return;\n\n    const maxRetries"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9e.network-share-polish.test.ts"
+        ],
+        "testName": "new\\ GnosysDB\\ sets\\ busy_timeout\\ to\\ 10000$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 518,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.7: busy_timeout pragma is set new GnosysDB sets busy_timeout to 10000",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 530,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.7: busy_timeout pragma is set new GnosysDB sets busy_timeout to 10000",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected false to be true // Object.is equality\n    at <repo>/src/test/phase9e.network-share-polish.test.ts:238:32\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 568,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.7: busy_timeout pragma is set new GnosysDB sets busy_timeout to 10000",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9e.network-share-polish.test.ts",
+          "name": "TC-9e.7: busy_timeout pragma is set new GnosysDB sets busy_timeout to 10000"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-o.json"
+    },
+    {
+      "id": "G1-backup-cli-error",
+      "file": "src/lib/backupCommand.ts",
+      "description": "Fail backup command while old test catches every error",
+      "sourceChange": {
+        "search": "const backupPath = await centralDb.backup(outputDir);",
+        "replace": "const backupPath = await centralDb.backup(outputDir + \"/missing/invalid\").then(() => { throw new Error(\"Backup unavailable\"); });"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9e.network-share-polish.test.ts"
+        ],
+        "testName": "backup\\ \\-\\-json\\ outputs\\ valid\\ JSON$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 653,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.9: CLI backup/restore --json output backup --json outputs valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 621,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.9: CLI backup/restore --json output backup --json outputs valid JSON",
+            "status": "failed",
+            "failures": [
+              "Error: Command failed: node \"<repo>/dist/cli.js\" backup --json\n    at genericNodeError (node:internal/errors:983:15)\n    at wrappedFn (node:internal/errors:537:14)\n    at checkExecSyncError (node:child_process:883:11)\n    at execSync (node:child_process:955:15)\n    at Module.cli (<repo>/src/test/_helpers.ts:85:10)\n    at <repo>/src/test/phase9e.network-share-polish.test.ts:255:20\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 620,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.9: CLI backup/restore --json output backup --json outputs valid JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9e.network-share-polish.test.ts",
+          "name": "TC-9e.9: CLI backup/restore --json output backup --json outputs valid JSON"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-o.json"
+    },
+    {
+      "id": "G1-native-retries",
+      "file": "src/lib/db.ts",
+      "description": "Skip configured transient native-open retries",
+      "sourceChange": {
+        "search": "const maxRetries = opts?.retries ?? 3;",
+        "replace": "const maxRetries = 0;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9e.network-share-polish.test.ts"
+        ],
+        "testName": "retries\\ transient\\ native\\ open\\ failures\\ before\\ persisting\\ data$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 517,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.1: GnosysDB constructor retry logic retries transient native open failures before persisting data",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 539,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.1: GnosysDB constructor retry logic retries transient native open failures before persisting data",
+            "status": "failed",
+            "failures": [
+              "TypeError: Cannot read properties of null (reading 'prepare')\n    at GnosysDB.prep (<repo>/src/lib/db.ts:676:22)\n    at <repo>/src/lib/db.ts:956:25\n    at GnosysDB.withRecovery (<repo>/src/lib/db.ts:684:14)\n    at GnosysDB.insertMemory (<repo>/src/lib/db.ts:955:17)\n    at <repo>/src/test/phase9e.network-share-polish.test.ts:78:10\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 497,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.1: GnosysDB constructor retry logic retries transient native open failures before persisting data",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9e.network-share-polish.test.ts",
+          "name": "TC-9e.1: GnosysDB constructor retry logic retries transient native open failures before persisting data"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-o.json"
+    },
+    {
+      "id": "G1-native-absent",
+      "file": "src/lib/db.ts",
+      "description": "Claim database is available despite missing native library",
+      "sourceChange": {
+        "search": "if (!Database) return;\n\n    const maxRetries",
+        "replace": "if (!Database) {this.available = true; return;}\n\n    const maxRetries"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9e.network-share-polish.test.ts"
+        ],
+        "testName": "returns\\ unavailable\\ when\\ Database\\ module\\ is\\ absent\\ \\(constructor\\ guard\\)$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 503,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.1: GnosysDB constructor retry logic returns unavailable when Database module is absent (constructor guard)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 508,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.1: GnosysDB constructor retry logic returns unavailable when Database module is absent (constructor guard)",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected true to be false // Object.is equality\n    at <repo>/src/test/phase9e.network-share-polish.test.ts:89:30\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 524,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.1: GnosysDB constructor retry logic returns unavailable when Database module is absent (constructor guard)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9e.network-share-polish.test.ts",
+          "name": "TC-9e.1: GnosysDB constructor retry logic returns unavailable when Database module is absent (constructor guard)"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-o.json"
+    },
+    {
+      "id": "G1-native-default-retries",
+      "file": "src/lib/db.ts",
+      "description": "Reduce default native-open retry allowance",
+      "sourceChange": {
+        "search": "const maxRetries = opts?.retries ?? 3;",
+        "replace": "const maxRetries = opts?.retries ?? 1;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9e.network-share-polish.test.ts"
+        ],
+        "testName": "default\\ retry\\ count\\ is\\ 3\\ \\(no\\ opts\\)$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 508,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.2: GnosysDB constructor with retry options default retry count is 3 (no opts)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 502,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.2: GnosysDB constructor with retry options default retry count is 3 (no opts)",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 2 to be 4 // Object.is equality\n    at <repo>/src/test/phase9e.network-share-polish.test.ts:108:22\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 499,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.2: GnosysDB constructor with retry options default retry count is 3 (no opts)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9e.network-share-polish.test.ts",
+          "name": "TC-9e.2: GnosysDB constructor with retry options default retry count is 3 (no opts)"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-o.json"
+    },
+    {
+      "id": "G1-native-timeout",
+      "file": "src/lib/db.ts",
+      "description": "Remove configured SQLite busy wait",
+      "sourceChange": {
+        "search": "// Longer busy timeout for network shares (10s)\n        enableWAL(this.db, 10000);",
+        "replace": "// Longer busy timeout for network shares (10s)\n        enableWAL(this.db, 0);"
+      },
+      "selection": {
+        "tests": [
+          "src/test/phase9e.network-share-polish.test.ts"
+        ],
+        "testName": "new\\ GnosysDB\\ sets\\ busy_timeout\\ to\\ 10000$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 500,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.7: busy_timeout pragma is set new GnosysDB sets busy_timeout to 10000",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 514,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.7: busy_timeout pragma is set new GnosysDB sets busy_timeout to 10000",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected \"pragma\" to be called with arguments: [ 'busy_timeout = 10000' ]\n\nReceived:\n\n  1st pragma call:\n\n  [\n-   \"busy_timeout = 10000\",\n+   \"journal_mode = WAL\",\n  ]\n\n  2nd pragma call:\n\n  [\n-   \"busy_timeout = 10000\",\n+   \"busy_timeout = 0\",\n  ]\n\n  3rd pragma call:\n\n  [\n-   \"busy_timeout = 10000\",\n+   \"wal_autocheckpoint = 1000\",\n  ]\n\n  4th pragma call:\n\n  [\n-   \"busy_timeout = 10000\",\n+   \"foreign_keys = ON\",\n  ]\n\n  5th pragma call:\n\n  [\n-   \"busy_timeout = 10000\",\n+   \"user_version\",\n+   {\n+     \"simple\": true,\n+   },\n  ]\n\n  6th pragma call:\n\n  [\n-   \"busy_timeout = 10000\",\n+   \"user_version\",\n+   {\n+     \"simple\": true,\n+   },\n  ]\n\n  7th pragma call:\n\n  [\n-   \"busy_timeout = 10000\",\n+   \"table_info(projects)\",\n  ]\n\n  8th pragma call:\n\n  [\n-   \"busy_timeout = 10000\",\n+   \"user_version = 5\",\n  ]\n\n\nNumber of calls: 8\n\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1487:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/phase9e.network-share-polish.test.ts:239:22\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 503,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase9e.network-share-polish.test.ts",
+            "name": "TC-9e.7: busy_timeout pragma is set new GnosysDB sets busy_timeout to 10000",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase9e.network-share-polish.test.ts",
+          "name": "TC-9e.7: busy_timeout pragma is set new GnosysDB sets busy_timeout to 10000"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-o.json"
+    },
+    {
+      "id": "G1-ingest-unavailable",
+      "file": "src/lib/ingest.ts",
+      "description": "Misreport absent provider as available",
+      "sourceChange": {
+        "search": "return this.provider !== null;",
+        "replace": "return true;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ingest-structured.test.ts"
+        ],
+        "testName": "reports unavailable when getLLMProvider throws at construction$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 631,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider availability getters reports unavailable when getLLMProvider throws at construction",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 540,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider availability getters reports unavailable when getLLMProvider throws at construction",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected true to be false // Object.is equality\n    at <repo>/src/test/ingest-structured.test.ts:76:40\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 479,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider availability getters reports unavailable when getLLMProvider throws at construction",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) provider availability getters reports unavailable when getLLMProvider throws at construction"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-n.json"
+    },
+    {
+      "id": "G1-ingest-provider-name",
+      "file": "src/lib/ingest.ts",
+      "description": "Misreport resolved provider name",
+      "sourceChange": {
+        "search": "return this.provider?.name || \"none\";",
+        "replace": "return \"wrong-provider\";"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ingest-structured.test.ts"
+        ],
+        "testName": "reports available when a provider is resolved$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 490,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider availability getters reports available when a provider is resolved",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 499,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider availability getters reports available when a provider is resolved",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'wrong-provider' to be 'openai' // Object.is equality\n    at <repo>/src/test/ingest-structured.test.ts:83:38\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 533,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider availability getters reports available when a provider is resolved",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) provider availability getters reports available when a provider is resolved"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-n.json"
+    },
+    {
+      "id": "G1-ingest-cloud-errors",
+      "file": "src/lib/ingest.ts",
+      "description": "Omit cloud provider key recovery instructions",
+      "sourceChange": {
+        "search": "const envVar = envVarMap[providerName];",
+        "replace": "const envVar = undefined; void envVarMap;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ingest-structured.test.ts"
+        ],
+        "testName": "(anthropic|openai|groq|xai|mistral|custom) \u2014 mentions"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 644,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths anthropic \u2014 mentions ANTHROPIC_API_KEY",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths openai \u2014 mentions OPENAI_API_KEY",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths groq \u2014 mentions GROQ_API_KEY",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths xai \u2014 mentions XAI_API_KEY",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths mistral \u2014 mentions MISTRAL_API_KEY",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths custom \u2014 mentions GNOSYS_CUSTOM_KEY",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 660,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths anthropic \u2014 mentions ANTHROPIC_API_KEY",
+            "status": "failed",
+            "failures": [
+              "Error: expected [Function] to throw error including 'ANTHROPIC_API_KEY' but got 'Smart ingestion requires an LLM, but \u2026'\n    at _Assertion.__VITEST_REJECTS__ (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1747:17)\n    at _Assertion.propertyGetter (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1570:27)\n    at Reflect.get (<anonymous>)\n    at Object.proxyGetter [as get] (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1659:22)\n    at expectMissingProvider (<repo>/src/test/ingest-structured.test.ts:97:49)\n    at <repo>/src/test/ingest-structured.test.ts:101:13\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)"
+            ]
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths openai \u2014 mentions OPENAI_API_KEY",
+            "status": "failed",
+            "failures": [
+              "Error: expected [Function] to throw error including 'OPENAI_API_KEY' but got 'Smart ingestion requires an LLM, but \u2026'\n    at _Assertion.__VITEST_REJECTS__ (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1747:17)\n    at _Assertion.propertyGetter (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1570:27)\n    at Reflect.get (<anonymous>)\n    at Object.proxyGetter [as get] (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1659:22)\n    at expectMissingProvider (<repo>/src/test/ingest-structured.test.ts:97:49)\n    at <repo>/src/test/ingest-structured.test.ts:105:13\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)"
+            ]
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths groq \u2014 mentions GROQ_API_KEY",
+            "status": "failed",
+            "failures": [
+              "Error: expected [Function] to throw error including 'GROQ_API_KEY' but got 'Smart ingestion requires an LLM, but \u2026'\n    at _Assertion.__VITEST_REJECTS__ (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1747:17)\n    at _Assertion.propertyGetter (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1570:27)\n    at Reflect.get (<anonymous>)\n    at Object.proxyGetter [as get] (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1659:22)\n    at expectMissingProvider (<repo>/src/test/ingest-structured.test.ts:97:49)\n    at <repo>/src/test/ingest-structured.test.ts:109:13\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)"
+            ]
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths xai \u2014 mentions XAI_API_KEY",
+            "status": "failed",
+            "failures": [
+              "Error: expected [Function] to throw error including 'XAI_API_KEY' but got 'Smart ingestion requires an LLM, but \u2026'\n    at _Assertion.__VITEST_REJECTS__ (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1747:17)\n    at _Assertion.propertyGetter (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1570:27)\n    at Reflect.get (<anonymous>)\n    at Object.proxyGetter [as get] (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1659:22)\n    at expectMissingProvider (<repo>/src/test/ingest-structured.test.ts:97:49)\n    at <repo>/src/test/ingest-structured.test.ts:113:13\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)"
+            ]
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths mistral \u2014 mentions MISTRAL_API_KEY",
+            "status": "failed",
+            "failures": [
+              "Error: expected [Function] to throw error including 'MISTRAL_API_KEY' but got 'Smart ingestion requires an LLM, but \u2026'\n    at _Assertion.__VITEST_REJECTS__ (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1747:17)\n    at _Assertion.propertyGetter (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1570:27)\n    at Reflect.get (<anonymous>)\n    at Object.proxyGetter [as get] (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1659:22)\n    at expectMissingProvider (<repo>/src/test/ingest-structured.test.ts:97:49)\n    at <repo>/src/test/ingest-structured.test.ts:117:13\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)"
+            ]
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths custom \u2014 mentions GNOSYS_CUSTOM_KEY",
+            "status": "failed",
+            "failures": [
+              "Error: expected [Function] to throw error including 'GNOSYS_CUSTOM_KEY' but got 'Smart ingestion requires an LLM, but \u2026'\n    at _Assertion.__VITEST_REJECTS__ (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1747:17)\n    at _Assertion.propertyGetter (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1570:27)\n    at Reflect.get (<anonymous>)\n    at Object.proxyGetter [as get] (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1659:22)\n    at expectMissingProvider (<repo>/src/test/ingest-structured.test.ts:97:49)\n    at <repo>/src/test/ingest-structured.test.ts:121:13\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 687,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths anthropic \u2014 mentions ANTHROPIC_API_KEY",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths openai \u2014 mentions OPENAI_API_KEY",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths groq \u2014 mentions GROQ_API_KEY",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths xai \u2014 mentions XAI_API_KEY",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths mistral \u2014 mentions MISTRAL_API_KEY",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths custom \u2014 mentions GNOSYS_CUSTOM_KEY",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths anthropic \u2014 mentions ANTHROPIC_API_KEY"
+        },
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths openai \u2014 mentions OPENAI_API_KEY"
+        },
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths groq \u2014 mentions GROQ_API_KEY"
+        },
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths xai \u2014 mentions XAI_API_KEY"
+        },
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths mistral \u2014 mentions MISTRAL_API_KEY"
+        },
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths custom \u2014 mentions GNOSYS_CUSTOM_KEY"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-n.json"
+    },
+    {
+      "id": "G1-ingest-local-ollama",
+      "file": "src/lib/llm.ts",
+      "description": "Lose Ollama failed HTTP status",
+      "sourceChange": {
+        "search": "`Ollama request failed (${response.status}): ${errorText}`",
+        "replace": "`Wrong local diagnosis`"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ingest-structured.test.ts"
+        ],
+        "testName": "ollama reports a failed local endpoint$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 488,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths ollama reports a failed local endpoint",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 529,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths ollama reports a failed local endpoint",
+            "status": "failed",
+            "failures": [
+              "Error: expected [Function] to throw error including '503' but got 'Wrong local diagnosis'\n    at _Assertion.__VITEST_REJECTS__ (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1747:17)\n    at _Assertion.propertyGetter (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1570:27)\n    at Reflect.get (<anonymous>)\n    at Object.proxyGetter [as get] (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1659:22)\n    at <repo>/src/test/ingest-structured.test.ts:129:43\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 527,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths ollama reports a failed local endpoint",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths ollama reports a failed local endpoint"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-n.json"
+    },
+    {
+      "id": "G1-ingest-local-lmstudio",
+      "file": "src/lib/llm.ts",
+      "description": "Lose LM Studio failed HTTP status",
+      "sourceChange": {
+        "search": "`${this.name} request failed (${response.status}): ${safeText}`",
+        "replace": "`Wrong local diagnosis`"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ingest-structured.test.ts"
+        ],
+        "testName": "lmstudio reports a failed local endpoint$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 513,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths lmstudio reports a failed local endpoint",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 530,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths lmstudio reports a failed local endpoint",
+            "status": "failed",
+            "failures": [
+              "Error: expected [Function] to throw error including '503' but got 'Wrong local diagnosis'\n    at _Assertion.__VITEST_REJECTS__ (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1747:17)\n    at _Assertion.propertyGetter (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1570:27)\n    at Reflect.get (<anonymous>)\n    at Object.proxyGetter [as get] (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1659:22)\n    at <repo>/src/test/ingest-structured.test.ts:137:43\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 495,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths lmstudio reports a failed local endpoint",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths lmstudio reports a failed local endpoint"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-n.json"
+    },
+    {
+      "id": "G1-ingest-config-validation",
+      "file": "src/lib/config.ts",
+      "description": "Accept arbitrary configured provider values",
+      "sourceChange": {
+        "search": "defaultProvider: LLMProviderEnum.optional(),",
+        "replace": "defaultProvider: LLMProviderEnum.or(z.string()).optional(),"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ingest-structured.test.ts"
+        ],
+        "testName": "rejects unknown providers at the config boundary$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 488,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths rejects unknown providers at the config boundary",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 498,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths rejects unknown providers at the config boundary",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [Function] to throw an error\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1552:16)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/ingest-structured.test.ts:141:99\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 510,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths rejects unknown providers at the config boundary",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) provider-missing error paths rejects unknown providers at the config boundary"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-n.json"
+    },
+    {
+      "id": "G1-ingest-json-title",
+      "file": "src/lib/ingest.ts",
+      "description": "Lose model structured title across all response encodings",
+      "sourceChange": {
+        "search": "title: parsed.title || \"Untitled Memory\",",
+        "replace": "title: \"Wrong title\","
+      },
+      "selection": {
+        "tests": [
+          "src/test/ingest-structured.test.ts"
+        ],
+        "testName": "parses (bare JSON|markdown-fenced JSON|plain-fenced JSON|JSON embedded)"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 639,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) JSON parsing variants parses bare JSON from the LLM response",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) JSON parsing variants parses markdown-fenced JSON",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) JSON parsing variants parses plain-fenced JSON without json language tag",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) JSON parsing variants parses JSON embedded in prose",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 830,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) JSON parsing variants parses bare JSON from the LLM response",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Wrong title' to be 'Bare JSON' // Object.is equality\n    at <repo>/src/test/ingest-structured.test.ts:160:28\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) JSON parsing variants parses markdown-fenced JSON",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Wrong title' to be 'Fenced JSON' // Object.is equality\n    at <repo>/src/test/ingest-structured.test.ts:177:28\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) JSON parsing variants parses plain-fenced JSON without json language tag",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Wrong title' to be 'Plain Fence' // Object.is equality\n    at <repo>/src/test/ingest-structured.test.ts:193:28\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) JSON parsing variants parses JSON embedded in prose",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Wrong title' to be 'Mixed Prose' // Object.is equality\n    at <repo>/src/test/ingest-structured.test.ts:209:28\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 765,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) JSON parsing variants parses bare JSON from the LLM response",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) JSON parsing variants parses markdown-fenced JSON",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) JSON parsing variants parses plain-fenced JSON without json language tag",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) JSON parsing variants parses JSON embedded in prose",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) JSON parsing variants parses bare JSON from the LLM response"
+        },
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) JSON parsing variants parses markdown-fenced JSON"
+        },
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) JSON parsing variants parses plain-fenced JSON without json language tag"
+        },
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) JSON parsing variants parses JSON embedded in prose"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-n.json"
+    },
+    {
+      "id": "G1-ingest-proto",
+      "file": "src/lib/ingest.ts",
+      "description": "Trust inherited title/content from own __proto__ JSON key",
+      "sourceChange": {
+        "search": "if (key === \"__proto__\" || key === \"constructor\" || key === \"prototype\") continue;",
+        "replace": "if (false) continue;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ingest-structured.test.ts"
+        ],
+        "testName": "strips __proto__, constructor, and prototype keys from LLM JSON$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 539,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) prototype-pollution sanitization strips __proto__, constructor, and prototype keys from LLM JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 604,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) prototype-pollution sanitization strips __proto__, constructor, and prototype keys from LLM JSON",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { title: 'Polluted title', \u2026(7) } to match object { title: 'Untitled Memory', \u2026(4) }\n(3 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/ingest-structured.test.ts:218:22\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 572,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) prototype-pollution sanitization strips __proto__, constructor, and prototype keys from LLM JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) prototype-pollution sanitization strips __proto__, constructor, and prototype keys from LLM JSON"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-n.json"
+    },
+    {
+      "id": "G1-ingest-registry-tags",
+      "file": "src/lib/ingest.ts",
+      "description": "Corrupt accepted registry tag values",
+      "sourceChange": {
+        "search": "validTags.push(tag);",
+        "replace": "validTags.push(\"wrong tag\");"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ingest-structured.test.ts"
+        ],
+        "testName": "keeps registry tags and proposes unknown tags$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 573,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) tag validation and proposed new tags keeps registry tags and proposes unknown tags",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 762,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) tag validation and proposed new tags keeps registry tags and proposes unknown tags",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'wrong tag' ] to deeply equal [ 'auth' ]\n    at <repo>/src/test/ingest-structured.test.ts:240:34\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 554,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) tag validation and proposed new tags keeps registry tags and proposes unknown tags",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) tag validation and proposed new tags keeps registry tags and proposes unknown tags"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-n.json"
+    },
+    {
+      "id": "G1-ingest-explicit-tags",
+      "file": "src/lib/ingest.ts",
+      "description": "Drop explicitly proposed tag values",
+      "sourceChange": {
+        "search": "proposedNewTags.push(item);",
+        "replace": "void item;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ingest-structured.test.ts"
+        ],
+        "testName": "includes explicit proposed_new_tags from the LLM response$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 650,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) tag validation and proposed new tags includes explicit proposed_new_tags from the LLM response",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 714,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) tag validation and proposed new tags includes explicit proposed_new_tags from the LLM response",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected undefined to deeply equal [ { category: 'concern', \u2026(1) } ]\n    at <repo>/src/test/ingest-structured.test.ts:262:38\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 554,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) tag validation and proposed new tags includes explicit proposed_new_tags from the LLM response",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) tag validation and proposed new tags includes explicit proposed_new_tags from the LLM response"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-n.json"
+    },
+    {
+      "id": "G1-ingest-default-fields",
+      "file": "src/lib/ingest.ts",
+      "description": "Misclassify minimal structured input",
+      "sourceChange": {
+        "search": "category: parsed.category || \"uncategorized\",",
+        "replace": "category: parsed.category || \"wrong category\","
+      },
+      "selection": {
+        "tests": [
+          "src/test/ingest-structured.test.ts"
+        ],
+        "testName": "applies defaults when the LLM returns minimal JSON$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 564,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) field defaults applies defaults when the LLM returns minimal JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 645,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) field defaults applies defaults when the LLM returns minimal JSON",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'wrong category' to be 'uncategorized' // Object.is equality\n    at <repo>/src/test/ingest-structured.test.ts:271:31\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 558,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) field defaults applies defaults when the LLM returns minimal JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) field defaults applies defaults when the LLM returns minimal JSON"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-n.json"
+    },
+    {
+      "id": "G1-ingest-override",
+      "file": "src/lib/ingest.ts",
+      "description": "Ignore per-call configured provider and model",
+      "sourceChange": {
+        "search": "activeProvider = getLLMProvider(configOverride, \"structuring\");",
+        "replace": "activeProvider = this.provider;"
+      },
+      "selection": {
+        "tests": [
+          "src/test/ingest-structured.test.ts"
+        ],
+        "testName": "(resolves a fresh provider from configOverride|throws provider-missing when configOverride has no available provider)$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 589,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) configOverride resolves a fresh provider from configOverride",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) configOverride throws provider-missing when configOverride has no available provider",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 588,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) configOverride resolves a fresh provider from configOverride",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected \"vi.fn()\" to be called with arguments: [ \u2026(2) ]\n\nReceived:\n\n  1st vi.fn() call:\n\n  [\n    \"https://api.openai.com/v1/chat/completions\",\n-   ObjectContaining {\n-     \"body\": StringContaining \"\\\"model\\\":\\\"override-model\\\"\",\n+   {\n+     \"body\": \"{\\\"model\\\":\\\"gpt-5.4-nano\\\",\\\"messages\\\":[{\\\"role\\\":\\\"system\\\",\\\"content\\\":\\\"You are Gnosys, a knowledge management system. Your job is to take raw, unstructured input and produce a structured atomic memory.\\\\n\\\\nAn atomic memory is ONE concept, decision, or piece of knowledge per file. If the input contains multiple concepts, focus on the primary one.\\\\n\\\\nYou must output valid JSON with these fields:\\\\n- title: A clear, concise title for this memory\\\\n- category: One of the existing categories or suggest a new one. Existing: \\\\n- tags: An object with tag categories as keys and arrays of tags as values. Use ONLY tags from the registry below. If no existing tag fits, include a \\\\\\\"proposed_new_tags\\\\\\\" array.\\\\n- relevance: A keyword cloud (space-separated words, NOT sentences) describing every context where this memory would be useful. Include synonyms, related terms, abbreviations, and domain variations. Example: \\\\\\\"auth authentication OAuth JWT login session tokens SSO identity credentials access-control permissions RBAC\\\\\\\". Be generous \u2014 15-30 keywords. This field powers discovery search.\\\\n- content: The memory content as clean markdown prose (NOT including the title as an H1 \u2014 that's added automatically)\\\\n- confidence: 0.0 to 1.0 \u2014 how confident you are this is a well-formed atomic memory\\\\n- filename: A kebab-case filename (without .md extension)\\\\n\\\\nTAG REGISTRY:\\\\ndomain: architecture, auth, testing\\\\ntype: decision, concept\\\\nconcern: dx, scalability\\\\n\\\\nRules:\\\\n1. One concept per memory. If the input is about multiple things, pick the most important one.\\\\n2. Use existing tags from the registry. Only propose new tags if nothing fits.\\\\n3. The content should be self-contained \u2014 someone re"
+            ]
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) configOverride throws provider-missing when configOverride has no available provider",
+            "status": "failed",
+            "failures": [
+              "Error: expected [Function] to throw error including 'GROQ_API_KEY' but got 'Unexpected provider request'\n    at _Assertion.__VITEST_REJECTS__ (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1747:17)\n    at _Assertion.propertyGetter (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1570:27)\n    at Reflect.get (<anonymous>)\n    at Object.proxyGetter [as get] (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1659:22)\n    at <repo>/src/test/ingest-structured.test.ts:301:53\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 631,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) configOverride resolves a fresh provider from configOverride",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/ingest-structured.test.ts",
+            "name": "GnosysIngestion.ingest (LLM path) configOverride throws provider-missing when configOverride has no available provider",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) configOverride resolves a fresh provider from configOverride"
+        },
+        {
+          "file": "src/test/ingest-structured.test.ts",
+          "name": "GnosysIngestion.ingest (LLM path) configOverride throws provider-missing when configOverride has no available provider"
+        }
+      ],
+      "applicationRestored": true,
+      "artifact": "killed-n.json"
+    }
+  ]
+}

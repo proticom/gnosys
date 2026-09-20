@@ -1,0 +1,456 @@
+[
+  {
+    "id": "G1-migrate-content",
+    "file": "src/lib/remote.ts",
+    "search": "remoteDb.insertMemory(mem);",
+    "replace": "remoteDb.insertMemory({...mem,title:\"Wrong copied title\",content:\"Wrong copied content\"});",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "copies projects and memories and sets last sync on success$",
+    "description": "Lose migrated memory content while preserving row count"
+  },
+  {
+    "id": "G1-http-auth-success",
+    "file": "src/lib/mcpHttp.ts",
+    "search": "const sessionId = req.headers[\"mcp-session-id\"] as string | undefined;",
+    "replace": "if (req.headers[\"authorization\"]) { jsonRpcError(res, 500, -32000, \"Unexpected authenticated failure\"); return; }\n    const sessionId = req.headers[\"mcp-session-id\"] as string | undefined;",
+    "tests": [
+      "src/test/v512-http-bearer.test.ts"
+    ],
+    "testName": "correct token \u2192 passes the auth gate \\(not 401\\)$",
+    "description": "Fail authenticated MCP initialize after successful token check"
+  },
+  {
+    "id": "G1-remote-resolve-error",
+    "file": "src/lib/remote.ts",
+    "search": "return { ok: false, error: (err as Error).message };",
+    "replace": "return { ok: false, error: \"Wrong resolve failure\" };",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "reports native SQLite rejection during conflict resolution$",
+    "description": "Lose actual SQLite constraint diagnosis from conflict resolution",
+    "beforeIds": [
+      "src/test/remote-coverage.test.ts:139"
+    ]
+  },
+  {
+    "id": "G1-remote-project-partial",
+    "file": "src/lib/remote.ts",
+    "search": "errors.push(`Failed to copy project ${proj.id}: ${(err as Error).message}`);",
+    "replace": "errors.push(\"Wrong failed project\");",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "continues\\ when\\ one\\ project\\ insert\\ fails$",
+    "description": "Lose failed project identity while continuing real migration"
+  },
+  {
+    "id": "G1-remote-memory-partial",
+    "file": "src/lib/remote.ts",
+    "search": "errors.push(`Failed to copy ${mem.id}: ${(err as Error).message}`);",
+    "replace": "errors.push(\"Wrong failed memory\");",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "continues\\ when\\ one\\ memory\\ insert\\ fails$",
+    "description": "Lose failed memory identity while continuing real migration"
+  },
+  {
+    "id": "G1-remote-busy",
+    "file": "src/lib/remote.ts",
+    "search": "message = \"Remote DB busy \u2014 another sync is probably running on another machine. Try again in a moment.\";",
+    "replace": "message = \"Ready\";",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "returns\\ friendly\\ message\\ on\\ SQLITE_BUSY$",
+    "description": "Misreport native SQLite busy state as ready"
+  },
+  {
+    "id": "G1-remote-ioerror",
+    "file": "src/lib/remote.ts",
+    "search": "if (errAny?.code === \"SQLITE_BUSY\") {\n          remoteBusy = true;\n        } else {\n          throw err;\n        }",
+    "replace": "if (errAny?.code === \"SQLITE_BUSY\") {\n          remoteBusy = true;\n        } else {\n          remoteBusy = true;\n        }",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "rethrows\\ non\\-busy\\ sqlite\\ errors$",
+    "description": "Swallow a non-busy native SQLite read failure"
+  },
+  {
+    "id": "G1-remote-write-probe",
+    "file": "src/lib/remote.ts",
+    "search": "result.errors.push(\"SQLite read/write probe failed \u2014 locking may be unreliable on this filesystem\");",
+    "replace": "result.errors.push(\"Wrong write diagnosis\");",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "reports\\ an\\ unsuccessful\\ SQLite\\ write\\ probe$",
+    "description": "Lose failed real SQLite write-probe diagnosis",
+    "beforeIds": [
+      "src/test/remote-coverage.test.ts:413"
+    ]
+  },
+  {
+    "id": "G1-remote-close",
+    "file": "src/lib/remote.ts",
+    "search": "this.remoteDb?.close();",
+    "replace": "void this.remoteDb;",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "closes\\ the\\ native\\ connection\\ and\\ can\\ reconnect$",
+    "description": "Leak native remote connection on public close",
+    "beforeIds": [
+      "src/test/remote-coverage.test.ts:425"
+    ]
+  },
+  {
+    "id": "G1-ingest-unavailable",
+    "file": "src/lib/ingest.ts",
+    "search": "return this.provider !== null;",
+    "replace": "return true;",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "reports unavailable when getLLMProvider throws at construction$",
+    "description": "Misreport absent provider as available"
+  },
+  {
+    "id": "G1-ingest-provider-name",
+    "file": "src/lib/ingest.ts",
+    "search": "return this.provider?.name || \"none\";",
+    "replace": "return \"wrong-provider\";",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "reports available when a provider is resolved$",
+    "description": "Misreport resolved provider name"
+  },
+  {
+    "id": "G1-ingest-cloud-errors",
+    "file": "src/lib/ingest.ts",
+    "search": "const envVar = envVarMap[providerName];",
+    "replace": "const envVar = undefined; void envVarMap;",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "(anthropic|openai|groq|xai|mistral|custom) \u2014 mentions",
+    "description": "Omit cloud provider key recovery instructions"
+  },
+  {
+    "id": "G1-ingest-local-ollama",
+    "file": "src/lib/llm.ts",
+    "search": "`Ollama request failed (${response.status}): ${errorText}`",
+    "replace": "`Wrong local diagnosis`",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "ollama reports a failed local endpoint$",
+    "description": "Lose Ollama failed HTTP status",
+    "beforeIds": [
+      "src/test/ingest-structured.test.ts:132"
+    ]
+  },
+  {
+    "id": "G1-ingest-local-lmstudio",
+    "file": "src/lib/llm.ts",
+    "search": "`${this.name} request failed (${response.status}): ${safeText}`",
+    "replace": "`Wrong local diagnosis`",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "lmstudio reports a failed local endpoint$",
+    "description": "Lose LM Studio failed HTTP status",
+    "beforeIds": [
+      "src/test/ingest-structured.test.ts:136"
+    ]
+  },
+  {
+    "id": "G1-ingest-config-validation",
+    "file": "src/lib/config.ts",
+    "search": "defaultProvider: LLMProviderEnum.optional(),",
+    "replace": "defaultProvider: LLMProviderEnum.or(z.string()).optional(),",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "rejects unknown providers at the config boundary$",
+    "description": "Accept arbitrary configured provider values",
+    "beforeIds": [
+      "src/test/ingest-structured.test.ts:140"
+    ]
+  },
+  {
+    "id": "G1-ingest-json-title",
+    "file": "src/lib/ingest.ts",
+    "search": "title: parsed.title || \"Untitled Memory\",",
+    "replace": "title: \"Wrong title\",",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "parses (bare JSON|markdown-fenced JSON|plain-fenced JSON|JSON embedded)",
+    "description": "Lose model structured title across all response encodings"
+  },
+  {
+    "id": "G1-ingest-proto",
+    "file": "src/lib/ingest.ts",
+    "search": "if (key === \"__proto__\" || key === \"constructor\" || key === \"prototype\") continue;",
+    "replace": "if (false) continue;",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "strips __proto__, constructor, and prototype keys from LLM JSON$",
+    "description": "Trust inherited title/content from own __proto__ JSON key"
+  },
+  {
+    "id": "G1-ingest-registry-tags",
+    "file": "src/lib/ingest.ts",
+    "search": "validTags.push(tag);",
+    "replace": "validTags.push(\"wrong tag\");",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "keeps registry tags and proposes unknown tags$",
+    "description": "Corrupt accepted registry tag values"
+  },
+  {
+    "id": "G1-ingest-explicit-tags",
+    "file": "src/lib/ingest.ts",
+    "search": "proposedNewTags.push(item);",
+    "replace": "void item;",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "includes explicit proposed_new_tags from the LLM response$",
+    "description": "Drop explicitly proposed tag values"
+  },
+  {
+    "id": "G1-ingest-default-fields",
+    "file": "src/lib/ingest.ts",
+    "search": "category: parsed.category || \"uncategorized\",",
+    "replace": "category: parsed.category || \"wrong category\",",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "applies defaults when the LLM returns minimal JSON$",
+    "description": "Misclassify minimal structured input"
+  },
+  {
+    "id": "G1-ingest-override",
+    "file": "src/lib/ingest.ts",
+    "search": "activeProvider = getLLMProvider(configOverride, \"structuring\");",
+    "replace": "activeProvider = this.provider;",
+    "tests": [
+      "src/test/ingest-structured.test.ts"
+    ],
+    "testName": "(resolves a fresh provider from configOverride|throws provider-missing when configOverride has no available provider)$",
+    "description": "Ignore per-call configured provider and model"
+  },
+  {
+    "id": "G1-sandbox-recall-content",
+    "file": "src/sandbox/server.ts",
+    "search": "content: mem?.content || r.snippet,",
+    "replace": "content: \"wrong recall body\",",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "handleRequest\\ add\\+recall\\ round\\-trip\\ on\\ standard\\ path$",
+    "description": "Corrupt recalled memory content while reporting ok"
+  },
+  {
+    "id": "G1-backup-data-default",
+    "file": "src/lib/db.ts",
+    "search": "await this.db.backup(backupPath);",
+    "replace": "fs.writeFileSync(backupPath, \"invalid backup\");",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "db\\.backup\\ creates\\ a\\ backup\\ file$",
+    "description": "Write invalid bytes at successful backup path"
+  },
+  {
+    "id": "G1-backup-data-custom",
+    "file": "src/lib/db.ts",
+    "search": "await this.db.backup(backupPath);",
+    "replace": "fs.writeFileSync(backupPath, \"invalid backup\");",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "backup\\ supports\\ custom\\ destination\\ directory$",
+    "description": "Write invalid bytes at successful backup path"
+  },
+  {
+    "id": "G1-busy-timeout-guard",
+    "file": "src/lib/db.ts",
+    "search": "if (!Database) return;\n\n    const maxRetries",
+    "replace": "return;\n\n    const maxRetries",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "new\\ GnosysDB\\ sets\\ busy_timeout\\ to\\ 10000$",
+    "description": "Leave database unavailable so conditional assertions never run"
+  },
+  {
+    "id": "G1-backup-cli-error",
+    "file": "src/lib/backupCommand.ts",
+    "search": "const backupPath = await centralDb.backup(outputDir);",
+    "replace": "const backupPath = await centralDb.backup(outputDir + \"/missing/invalid\").then(() => { throw new Error(\"Backup unavailable\"); });",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "backup\\ \\-\\-json\\ outputs\\ valid\\ JSON$",
+    "description": "Fail backup command while old test catches every error",
+    "build": true
+  },
+  {
+    "id": "G1-native-retries",
+    "file": "src/lib/db.ts",
+    "search": "const maxRetries = opts?.retries ?? 3;",
+    "replace": "const maxRetries = 0;",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "retries\\ transient\\ native\\ open\\ failures\\ before\\ persisting\\ data$",
+    "description": "Skip configured transient native-open retries",
+    "beforeIds": [
+      "src/test/phase9e.network-share-polish.test.ts:66"
+    ]
+  },
+  {
+    "id": "G1-native-absent",
+    "file": "src/lib/db.ts",
+    "search": "if (!Database) return;\n\n    const maxRetries",
+    "replace": "if (!Database) {this.available = true; return;}\n\n    const maxRetries",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "returns\\ unavailable\\ when\\ Database\\ module\\ is\\ absent\\ \\(constructor\\ guard\\)$",
+    "description": "Claim database is available despite missing native library"
+  },
+  {
+    "id": "G1-native-default-retries",
+    "file": "src/lib/db.ts",
+    "search": "const maxRetries = opts?.retries ?? 3;",
+    "replace": "const maxRetries = opts?.retries ?? 1;",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "default\\ retry\\ count\\ is\\ 3\\ \\(no\\ opts\\)$",
+    "description": "Reduce default native-open retry allowance"
+  },
+  {
+    "id": "G1-native-timeout",
+    "file": "src/lib/db.ts",
+    "search": "// Longer busy timeout for network shares (10s)\n        enableWAL(this.db, 10000);",
+    "replace": "// Longer busy timeout for network shares (10s)\n        enableWAL(this.db, 0);",
+    "tests": [
+      "src/test/phase9e.network-share-polish.test.ts"
+    ],
+    "testName": "new\\ GnosysDB\\ sets\\ busy_timeout\\ to\\ 10000$",
+    "description": "Remove configured SQLite busy wait"
+  },
+  {
+    "id": "G1-legacy-machine-real-config",
+    "file": "src/lib/remote.ts",
+    "search": "const mc = readMachineConfig();\n  if (mc?.machineId) return mc.machineId;",
+    "replace": "const mc = { machineId: \"wrong-machine\" };\n  if (mc?.machineId) return mc.machineId;",
+    "tests": [
+      "src/test/remote-coverage.test.ts"
+    ],
+    "testName": "getMachineId and resolveHostname",
+    "description": "Replace legacy hostname and cached identity resolution with unrelated configured ID"
+  },
+  {
+    "id": "G1-hybrid-mcp-warning",
+    "file": "src/index.ts",
+    "search": "requestedMode !== \"keyword\" && !hybridSearch.canRunSemantic()",
+    "replace": "requestedMode === \"keyword\" && !hybridSearch.canRunSemantic()",
+    "tests": [
+      "src/test/hybrid-degrade-warning.test.ts"
+    ],
+    "testName": "gnosys_hybrid_search\\ warns\\ when\\ the\\ semantic\\ leg\\ can't\\ run$",
+    "description": "Suppress MCP degraded-search warning",
+    "build": true
+  },
+  {
+    "id": "G1-semantic-mcp-warning",
+    "file": "src/index.ts",
+    "search": "if (!hybridSearch.canRunSemantic()) {",
+    "replace": "if (false) {",
+    "tests": [
+      "src/test/hybrid-degrade-warning.test.ts"
+    ],
+    "testName": "gnosys_semantic_search\\ refuses\\ loudly\\ instead\\ of\\ returning\\ generic\\ empty$",
+    "description": "Run unavailable semantic search without actionable failure",
+    "build": true
+  },
+  {
+    "id": "G1-hybrid-cli-warning",
+    "file": "src/lib/hybridSearchCommand.ts",
+    "search": "if (mode !== \"keyword\" && !hybridSearch.canRunSemantic()) {",
+    "replace": "if (false) {",
+    "tests": [
+      "src/test/hybrid-degrade-warning.test.ts"
+    ],
+    "testName": "CLI\\ hybrid\\-search\\ warns\\ on\\ stderr\\ \\(stdout\\ stays\\ clean\\ for\\ \\-\\-json\\)$",
+    "description": "Suppress CLI degraded-search warning",
+    "build": true
+  },
+  {
+    "id": "G1-central-semantic-gate",
+    "file": "src/lib/hybridSearch.ts",
+    "search": "canRunSemantic(): boolean {\n    if (this.dbSearch) {\n      return this.dbSearch.hasEmbeddings();",
+    "replace": "canRunSemantic(): boolean {\n    if (this.dbSearch) {\n      return this.embeddings.hasEmbeddings();",
+    "tests": [
+      "src/test/hybrid-degrade-warning.test.ts"
+    ],
+    "testName": "canRunSemantic\\ mirrors\\ the\\ DB\\-mode\\ embedQuery\\ gate\\ \\(central\\-DB\\ vectors\\)$",
+    "description": "Ignore central vectors in semantic availability gate"
+  },
+  {
+    "id": "G1-machine-heal",
+    "file": "src/lib/remote.ts",
+    "search": "localDb.setMeta(META_MACHINE_ID, fresh);",
+    "replace": "localDb.setMeta(META_MACHINE_ID, \"wrong-machine\");",
+    "tests": [
+      "src/test/v595-self-healing-machine-id.test.ts"
+    ],
+    "testName": "heals\\ a\\ stale\\ `unknown\\-<rand>`\\ cache\\ when\\ a\\ real\\ hostname\\ is\\ available$",
+    "description": "Persist wrong healed legacy machine ID"
+  },
+  {
+    "id": "G1-machine-dream-heal",
+    "file": "src/lib/remote.ts",
+    "search": "localDb.setDreamMachineId(fresh);",
+    "replace": "localDb.setDreamMachineId(\"wrong-machine\");",
+    "tests": [
+      "src/test/v595-self-healing-machine-id.test.ts"
+    ],
+    "testName": "heals\\ a\\ stale\\ `dream_machine_id`\\ pointing\\ at\\ the\\ same\\ broken\\ cached\\ id$",
+    "description": "Persist wrong healed Dream designation"
+  },
+  {
+    "id": "G1-machine-stable",
+    "file": "src/lib/remote.ts",
+    "search": "if (cached && !isStaleUnknownId(cached)) return cached;",
+    "replace": "if (cached && !isStaleUnknownId(cached)) return \"wrong-machine\";",
+    "tests": [
+      "src/test/v595-self-healing-machine-id.test.ts"
+    ],
+    "testName": "leaves\\ a\\ real\\ cached\\ id\\ untouched\\ \\(no\\ churn\\)$",
+    "description": "Replace valid stable legacy machine identity"
+  },
+  {
+    "id": "G1-machine-unrelated",
+    "file": "src/lib/remote.ts",
+    "search": "if (cached && localDb.getDreamMachineId() === cached) {",
+    "replace": "if (cached) {",
+    "tests": [
+      "src/test/v595-self-healing-machine-id.test.ts"
+    ],
+    "testName": "leaves\\ an\\ unrelated\\ `dream_machine_id`\\ alone\\ when\\ machine_id\\ heals$",
+    "description": "Overwrite designation of unrelated Dream machine during legacy healing"
+  }
+]

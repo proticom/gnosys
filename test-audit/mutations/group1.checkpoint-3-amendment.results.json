@@ -1,0 +1,326 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "G1-state-home",
+      "file": "src/lib/dreamRunLog.ts",
+      "description": "Write Dream state to wrong filename",
+      "sourceChange": {
+        "search": "return path.join(baseDir || getGnosysHome(), \"dream-state.json\");",
+        "replace": "return path.join(baseDir || getGnosysHome(), \"wrong-state.json\");"
+      },
+      "selection": {
+        "tests": [
+          "src/test/dream-state-isolation.test.ts"
+        ],
+        "testName": "engine\\.dream\\(\\)\\ writes\\ dream\\-state\\.json\\ under\\ GNOSYS_HOME,\\ not\\ the\\ real\\ home$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 491,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-state-isolation.test.ts",
+            "name": "dream-state isolation (v5.13.0) engine.dream() writes dream-state.json under GNOSYS_HOME, not the real home",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 504,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-state-isolation.test.ts",
+            "name": "dream-state isolation (v5.13.0) engine.dream() writes dream-state.json under GNOSYS_HOME, not the real home",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected false to be true // Object.is equality\n    at <repo>/src/test/dream-state-isolation.test.ts:73:38\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 516,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-state-isolation.test.ts",
+            "name": "dream-state isolation (v5.13.0) engine.dream() writes dream-state.json under GNOSYS_HOME, not the real home",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-state-isolation.test.ts",
+          "name": "dream-state isolation (v5.13.0) engine.dream() writes dream-state.json under GNOSYS_HOME, not the real home"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "G1-state-override",
+      "file": "src/lib/dreamRunLog.ts",
+      "description": "Write Dream state to wrong filename",
+      "sourceChange": {
+        "search": "return path.join(baseDir || getGnosysHome(), \"dream-state.json\");",
+        "replace": "return path.join(baseDir || getGnosysHome(), \"wrong-state.json\");"
+      },
+      "selection": {
+        "tests": [
+          "src/test/dream-state-isolation.test.ts"
+        ],
+        "testName": "an\\ explicit\\ stateDir\\ overrides\\ GNOSYS_HOME\\ \\(defense\\ in\\ depth\\)$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 512,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-state-isolation.test.ts",
+            "name": "dream-state isolation (v5.13.0) an explicit stateDir overrides GNOSYS_HOME (defense in depth)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 477,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-state-isolation.test.ts",
+            "name": "dream-state isolation (v5.13.0) an explicit stateDir overrides GNOSYS_HOME (defense in depth)",
+            "status": "failed",
+            "failures": [
+              "Error: ENOENT: no such file or directory, open '/var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-dream-statedir-6MD0yZ/dream-state.json'\n    at Object.readFileSync (node:fs:441:20)\n    at <repo>/src/test/dream-state-isolation.test.ts:86:28\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 478,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-state-isolation.test.ts",
+            "name": "dream-state isolation (v5.13.0) an explicit stateDir overrides GNOSYS_HOME (defense in depth)",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-state-isolation.test.ts",
+          "name": "dream-state isolation (v5.13.0) an explicit stateDir overrides GNOSYS_HOME (defense in depth)"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "G1-state-path",
+      "file": "src/lib/dreamRunLog.ts",
+      "description": "Write Dream state to wrong filename",
+      "sourceChange": {
+        "search": "return path.join(baseDir || getGnosysHome(), \"dream-state.json\");",
+        "replace": "return path.join(baseDir || getGnosysHome(), \"wrong-state.json\");"
+      },
+      "selection": {
+        "tests": [
+          "src/test/dream-state-isolation.test.ts"
+        ],
+        "testName": "getDreamStatePath\\ accepts\\ a\\ baseDir\\ override$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 480,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-state-isolation.test.ts",
+            "name": "dream-state isolation (v5.13.0) getDreamStatePath accepts a baseDir override",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 490,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-state-isolation.test.ts",
+            "name": "dream-state isolation (v5.13.0) getDreamStatePath accepts a baseDir override",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '/explicit/dir/wrong-state.json' to be '/explicit/dir/dream-state.json' // Object.is equality\n    at <repo>/src/test/dream-state-isolation.test.ts:94:48\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 492,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-state-isolation.test.ts",
+            "name": "dream-state isolation (v5.13.0) getDreamStatePath accepts a baseDir override",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-state-isolation.test.ts",
+          "name": "dream-state isolation (v5.13.0) getDreamStatePath accepts a baseDir override"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "G1-state-missing-embeddings",
+      "file": "src/lib/dream.ts",
+      "description": "Hide actual missing-vector coverage count",
+      "sourceChange": {
+        "search": "report.embeddingHealth = { total, missingBefore, embedded: 0 };",
+        "replace": "report.embeddingHealth = { total, missingBefore: 0, embedded: 0 };"
+      },
+      "selection": {
+        "tests": [
+          "src/test/dream-state-isolation.test.ts"
+        ],
+        "testName": "reports\\ the\\ coverage\\ gap\\ but\\ never\\ auto\\-downloads\\ the\\ model\\ when\\ embeddings\\ were\\ never\\ initialized$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 487,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-state-isolation.test.ts",
+            "name": "embedding-health phase (v5.13.0) reports the coverage gap but never auto-downloads the model when embeddings were never initialized",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 503,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-state-isolation.test.ts",
+            "name": "embedding-health phase (v5.13.0) reports the coverage gap but never auto-downloads the model when embeddings were never initialized",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { total: 3, missingBefore: +0, \u2026(1) } to deeply equal { total: 3, missingBefore: 3, \u2026(1) }\n    at <repo>/src/test/dream-state-isolation.test.ts:104:36\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 499,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-state-isolation.test.ts",
+            "name": "embedding-health phase (v5.13.0) reports the coverage gap but never auto-downloads the model when embeddings were never initialized",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-state-isolation.test.ts",
+          "name": "embedding-health phase (v5.13.0) reports the coverage gap but never auto-downloads the model when embeddings were never initialized"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "G1-state-complete-embeddings",
+      "file": "src/lib/dream.ts",
+      "description": "Report all vectors missing when every real DB memory is embedded",
+      "sourceChange": {
+        "search": "report.embeddingHealth = { total, missingBefore: 0, embedded: 0 };",
+        "replace": "report.embeddingHealth = { total, missingBefore: total, embedded: 0 };"
+      },
+      "selection": {
+        "tests": [
+          "src/test/dream-state-isolation.test.ts"
+        ],
+        "testName": "skips\\ cleanly\\ when\\ every\\ memory\\ is\\ already\\ embedded$"
+      },
+      "before": {
+        "exitCode": 0,
+        "durationMs": 485,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-state-isolation.test.ts",
+            "name": "embedding-health phase (v5.13.0) skips cleanly when every memory is already embedded",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 484,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-state-isolation.test.ts",
+            "name": "embedding-health phase (v5.13.0) skips cleanly when every memory is already embedded",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { total: 3, missingBefore: 3, \u2026(1) } to deeply equal { total: 3, missingBefore: +0, \u2026(1) }\n    at <repo>/src/test/dream-state-isolation.test.ts:121:36\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 488,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-state-isolation.test.ts",
+            "name": "embedding-health phase (v5.13.0) skips cleanly when every memory is already embedded",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-state-isolation.test.ts",
+          "name": "embedding-health phase (v5.13.0) skips cleanly when every memory is already embedded"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

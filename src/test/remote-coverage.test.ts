@@ -14,9 +14,23 @@ import {
   formatStatus,
 } from "../lib/remote.js";
 
-vi.mock("../lib/machineConfig.js", () => ({
-  readMachineConfig: () => null,
-}));
+import Database from "better-sqlite3";
+
+function rejectInsert(dir: string, table: string, condition: string, message: string): void {
+  const connection = new Database(path.join(dir, "gnosys.db"));
+  try { connection.exec(`CREATE TRIGGER reject_test_insert BEFORE INSERT ON ${table} WHEN ${condition} BEGIN SELECT RAISE(ABORT, '${message}'); END`); }
+  finally { connection.close(); }
+}
+
+function failRemoteQuery(code: string, message: string): void {
+  const prepare = Database.prototype.prepare;
+  vi.spyOn(Database.prototype, "prepare").mockImplementation(function(this: Database.Database, sql: string) {
+    if (this.name === path.join(remotePath, "gnosys.db") && sql.startsWith("SELECT id, modified FROM memories")) {
+      throw Object.assign(new Error(message), { code });
+    }
+    return prepare.call(this, sql);
+  });
+}
 
 function makeMemory(id: string, overrides: Partial<DbMemory> = {}): DbMemory {
   const now = new Date().toISOString();
@@ -65,6 +79,7 @@ function makeProject(id: string): DbProject {
   };
 }
 
+let previousEnv: NodeJS.ProcessEnv;
 let localPath: string;
 let remotePath: string;
 let localDb: GnosysDB;
@@ -72,8 +87,10 @@ let remoteDb: GnosysDB;
 let sync: RemoteSync;
 
 beforeEach(() => {
+  previousEnv = { ...process.env };
   localPath = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-cc3-loc-"));
   remotePath = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-cc3-rem-"));
+  process.env.GNOSYS_CONFIG_DIR = path.join(localPath, "config");
   localDb = new GnosysDB(localPath);
   remoteDb = new GnosysDB(remotePath);
   sync = new RemoteSync(localDb, remotePath);
@@ -86,8 +103,7 @@ afterEach(() => {
   fs.rmSync(localPath, { recursive: true, force: true });
   fs.rmSync(remotePath, { recursive: true, force: true });
   vi.restoreAllMocks();
-  delete process.env.HOSTNAME;
-  delete process.env.COMPUTERNAME;
+  process.env = previousEnv;
 });
 
 describe("RemoteSync.resolve edge cases", () => {
@@ -136,13 +152,11 @@ describe("RemoteSync.resolve edge cases", () => {
     expect(result.error).toMatch(/Memory not found/);
   });
 
-  it("returns insert error when localDb.insertMemory throws", async () => {
+  it("reports native SQLite rejection during conflict resolution", async () => {
     const initial = makeMemory("mem-fail");
     localDb.insertMemory({ ...initial, title: "Local" });
     remoteDb.insertMemory({ ...initial, title: "Remote" });
-    vi.spyOn(localDb, "insertMemory").mockImplementation(() => {
-      throw new Error("insert fail");
-    });
+    rejectInsert(localPath, "memories", "NEW.id = 'mem-fail'", "insert fail");
     const result = await sync.resolve("mem-fail", "local");
     expect(result.ok).toBe(false);
     expect(result.error).toBe("insert fail");
@@ -150,21 +164,20 @@ describe("RemoteSync.resolve edge cases", () => {
 });
 
 describe("RemoteSync.migrate partial failures", () => {
-  function stubRemoteDb(instance: RemoteSync): void {
-    vi.spyOn(instance as unknown as { getRemoteDb: () => GnosysDB }, "getRemoteDb").mockReturnValue(remoteDb);
-  }
-
   it("copies projects and memories and sets last sync on success", async () => {
     localDb.insertProject(makeProject("proj-a"));
     localDb.insertMemory(makeMemory("m-001"));
     localDb.insertMemory(makeMemory("m-002"));
     localDb.insertMemory(makeMemory("m-003"));
-    stubRemoteDb(sync);
     const result = await sync.migrate();
     expect(result.ok).toBe(true);
     expect(result.copied).toBe(4);
-    expect(remoteDb.getProject("proj-a")).not.toBeNull();
-    expect(remoteDb.getMemory("m-003")).not.toBeNull();
+    expect(remoteDb.getProject("proj-a")).toMatchObject({ id: "proj-a", name: "proj-a", working_directory: "/tmp/proj-a" });
+    expect(remoteDb.getAllMemories().map(({ id, title, content }) => ({ id, title, content })).sort((a,b)=>a.id.localeCompare(b.id))).toEqual([
+      { id: "m-001", title: "Memory m-001", content: "Content of m-001" },
+      { id: "m-002", title: "Memory m-002", content: "Content of m-002" },
+      { id: "m-003", title: "Memory m-003", content: "Content of m-003" },
+    ]);
     expect(localDb.getMeta("remote_last_synced_at")).not.toBeNull();
   });
 
@@ -181,29 +194,24 @@ describe("RemoteSync.migrate partial failures", () => {
     localDb.insertProject(makeProject("proj-ok"));
     localDb.insertProject(makeProject("proj-bad"));
     localDb.insertMemory(makeMemory("m-010"));
-    stubRemoteDb(sync);
-    vi.spyOn(remoteDb, "insertProject").mockImplementation((proj) => {
-      if (proj.id === "proj-bad") throw new Error("project fail");
-      return GnosysDB.prototype.insertProject.call(remoteDb, proj);
-    });
+    rejectInsert(remotePath, "projects", "NEW.id = 'proj-bad'", "project fail");
     const result = await sync.migrate();
     expect(result.ok).toBe(false);
     expect(result.errors.some((e) => e.includes("Failed to copy project proj-bad"))).toBe(true);
-    expect(remoteDb.getMemory("m-010")).not.toBeNull();
+    expect(remoteDb.getProject("proj-ok")?.name).toBe("proj-ok");
+    expect(remoteDb.getProject("proj-bad")).toBeNull();
+    expect(remoteDb.getMemory("m-010")?.content).toBe("Content of m-010");
   });
 
   it("continues when one memory insert fails", async () => {
     localDb.insertMemory(makeMemory("m-ok"));
     localDb.insertMemory(makeMemory("m-bad"));
-    stubRemoteDb(sync);
-    vi.spyOn(remoteDb, "insertMemory").mockImplementation((mem) => {
-      if (mem.id === "m-bad") throw new Error("mem fail");
-      return GnosysDB.prototype.insertMemory.call(remoteDb, mem);
-    });
+    rejectInsert(remotePath, "memories", "NEW.id = 'm-bad'", "mem fail");
     const result = await sync.migrate();
     expect(result.ok).toBe(false);
     expect(result.errors.some((e) => e.includes("Failed to copy m-bad"))).toBe(true);
-    expect(remoteDb.getMemory("m-ok")).not.toBeNull();
+    expect(remoteDb.getMemory("m-ok")?.content).toBe("Content of m-ok");
+    expect(remoteDb.getMemory("m-bad")).toBeNull();
   });
 });
 
@@ -307,24 +315,14 @@ describe("getMachineId and resolveHostname", () => {
 
 describe("RemoteSync.getStatus SQLITE_BUSY", () => {
   it("returns friendly message on SQLITE_BUSY", async () => {
-    vi.spyOn(sync as unknown as { getRemoteDb: () => GnosysDB }, "getRemoteDb").mockReturnValue(remoteDb);
-    vi.spyOn(remoteDb, "getIdsModifiedSince").mockImplementation(() => {
-      const err = new Error("busy") as Error & { code?: string };
-      err.code = "SQLITE_BUSY";
-      throw err;
-    });
+    failRemoteQuery("SQLITE_BUSY", "busy");
     const status = await sync.getStatus();
     expect(status.message).toMatch(/Remote DB busy/);
   });
 
   it("rethrows non-busy sqlite errors", async () => {
-    vi.spyOn(sync as unknown as { getRemoteDb: () => GnosysDB }, "getRemoteDb").mockReturnValue(remoteDb);
-    vi.spyOn(remoteDb, "getIdsModifiedSince").mockImplementation(() => {
-      const err = new Error("corrupt") as Error & { code?: string };
-      err.code = "SQLITE_CORRUPT";
-      throw err;
-    });
-    await expect(sync.getStatus()).rejects.toThrow("corrupt");
+    failRemoteQuery("SQLITE_IOERR", "disk read failed");
+    await expect(sync.getStatus()).rejects.toThrow("disk read failed");
   });
 });
 
@@ -410,23 +408,25 @@ describe("validateLocation extras", () => {
     fs.rmSync(tmp, { recursive: true, force: true });
   });
 
-  it("reports sqlite test failure when setMeta throws", async () => {
+  it("reports an unsuccessful SQLite write probe", async () => {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-cc3-val-"));
-    vi.spyOn(GnosysDB.prototype, "setMeta").mockImplementationOnce(() => {
-      throw new Error("sqlite-fail");
-    });
+    new GnosysDB(tmp).close();
+    rejectInsert(tmp, "gnosys_meta", "NEW.key = '__sqlite_test__'", "sqlite-fail");
     const result = await validateLocation(tmp);
-    expect(result.errors.some((e) => e.includes("SQLite test failed"))).toBe(true);
+    expect(result.ok).toBe(false);
+    expect(result.errors).toEqual(["SQLite read/write probe failed — locking may be unreliable on this filesystem"]);
     fs.rmSync(tmp, { recursive: true, force: true });
   });
 });
 
 describe("RemoteSync.closeRemote", () => {
-  it("clears cached remoteDb handle", () => {
-    const internal = sync as unknown as { getRemoteDb: () => GnosysDB; remoteDb: GnosysDB | null };
-    internal.getRemoteDb();
-    expect(internal.remoteDb).not.toBeNull();
+  it("closes the native connection and can reconnect", async () => {
+    remoteDb.insertMemory(makeMemory("remote-first"));
+    expect((await sync.getStatus()).pendingPull).toBe(1);
+    const close = vi.spyOn(Database.prototype, "close");
     sync.closeRemote();
-    expect(internal.remoteDb).toBeNull();
+    expect(close).toHaveBeenCalledTimes(1);
+    remoteDb.insertMemory(makeMemory("remote-second"));
+    expect((await sync.getStatus()).pendingPull).toBe(2);
   });
 });
