@@ -70,7 +70,7 @@ describe("VS Code extension public commands", () => {
     expect(result.errors).toEqual(["Reinforce failed: spawnSync npx ENOENT"]);
   });
 
-  it.fails("D-VSC-001: reinforcing an open memory resets its persisted decay date", () => {
+  it("D-VSC-001: reinforcing an open memory resets its persisted decay date", () => {
     const result = run("gnosys.reinforceMemory", memoryFile);
     const db = new GnosysDB(path.join(directory, "central"));
     try { expect(db.getMemory("vscode-memory")?.modified).toBe(new Date().toISOString().slice(0, 10)); }
@@ -84,7 +84,7 @@ describe("VS Code extension public commands", () => {
     });
   });
 
-  it.fails("D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename", () => {
+  it("D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename", () => {
     const selected = path.join(directory, ".gnosys/decisions/$(touch audit-injected).md");
     fs.copyFileSync(memoryFile, selected);
     run("gnosys.reinforceMemory", selected);

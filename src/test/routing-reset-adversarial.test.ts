@@ -82,7 +82,7 @@ function persisted(): { routing: unknown; unrelatedBytes: Buffer } {
 }
 
 describe("routing reset attacks", () => {
-  it.fails("DEF-G1-001: reset clears several overrides and preserves every unrelated config value", async () => {
+  it("DEF-G1-001: reset clears several overrides and preserves every unrelated config value", async () => {
     const before = persisted().unrelatedBytes;
     expect(await routing(["4", "y"])).toBe(true);
     const after = persisted();
@@ -90,7 +90,7 @@ describe("routing reset attacks", () => {
     expect(after.routing, JSON.stringify(after.routing)).toEqual({});
   });
 
-  it.fails("DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config", async () => {
+  it("DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config", async () => {
     const before = persisted().unrelatedBytes;
     expect(await routing(["4", "y"])).toBe(true);
     expect(await routing(["3", "1", "3", "new-structuring", "y"])).toBe(true);

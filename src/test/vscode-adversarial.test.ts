@@ -146,7 +146,7 @@ function expectSelectedMemoryReinforced(result: z.infer<typeof resultSchema>) {
 
 
 describe("VS Code adversarial public commands", () => {
-  it.fails("D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant", () => {
+  it("D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant", () => {
     const file = writeMemory(".gnosys/decisions/unrelated-filename.md");
     expectSelectedMemoryReinforced(run("gnosys.reinforceMemory", file));
   });
@@ -156,7 +156,7 @@ describe("VS Code adversarial public commands", () => {
     ["empty ID", "---\nid: \ntitle: Missing identity\n---\nNo readable ID."],
     ["body-only ID", "An ordinary document.\nid: vscode-memory\n"],
   ]) {
-    it.fails(`D-VSC-001: ${label} warns without launching a subprocess`, () => {
+    it(`D-VSC-001: ${label} warns without launching a subprocess`, () => {
       const file = writeMemory(".gnosys/decisions/unrelated-filename.md", content);
       const result = run("gnosys.reinforceMemory", file);
       expect(result.launches).toEqual([]);
@@ -180,7 +180,7 @@ describe("VS Code adversarial public commands", () => {
         expect(result.errors).toEqual([]);
       });
     }
-    it.fails(`D-VSC-002: accepts deeply nested exact .gnosys with ${separator === "/" ? "POSIX" : "Windows"} separators`, () => {
+    it(`D-VSC-002: accepts deeply nested exact .gnosys with ${separator === "/" ? "POSIX" : "Windows"} separators`, () => {
       const physical = writeMemory("nested/parent/project/.gnosys/decisions/deep/unrelated-filename.md");
       const selected = separator === "/" ? physical : physical.replaceAll("/", "\\");
       expectSelectedMemoryReinforced(run("gnosys.reinforceMemory", selected, physical));
@@ -198,7 +198,7 @@ describe("VS Code adversarial public commands", () => {
     ["newline", '"\ntouch audit-newline\n#.md', "audit-newline"],
   ];
   for (const [label, filename, marker] of hostileFilenames) {
-    it.fails(`D-VSC-003: ${label} in the selected path cannot execute shell text or change the selected ID`, () => {
+    it(`D-VSC-003: ${label} in the selected path cannot execute shell text or change the selected ID`, () => {
       const file = writeMemory(`.gnosys/decisions/${filename}`);
       const result = run("gnosys.reinforceMemory", file);
       expect(fs.existsSync(path.join(directory, marker))).toBe(false);
