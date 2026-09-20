@@ -1,0 +1,46 @@
+[
+  {
+    "id": "g2-dream-summary-body",
+    "file": "src/lib/dream.ts",
+    "search": "            content: summary,",
+    "replace": "            content: \"Summary omitted\",",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "runs all phases on happy path|generateSummaries creates",
+    "description": "Discard model summary content while retaining generated/updated counts."
+  },
+  {
+    "id": "g2-dream-decay-value",
+    "file": "src/lib/dream.ts",
+    "search": "      const rounded = Math.round(decayed * 100) / 100;",
+    "replace": "      const rounded = 0.5;",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "decaySweep updates",
+    "description": "Apply fixed confidence0.5 instead of elapsed-time decay."
+  },
+  {
+    "id": "g2-dream-critique-action",
+    "file": "src/lib/dream.ts",
+    "search": "        suggestedAction: parsed.action as ReviewSuggestion[\"suggestedAction\"],",
+    "replace": "        suggestedAction: \"review\",",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "llmCritique handles",
+    "description": "Flatten needs-update model action into review."
+  },
+  {
+    "id": "g2-dream-relationship-label",
+    "file": "src/lib/dream.ts",
+    "search": "            label: rel.label,",
+    "replace": "            label: \"unlabeled\",",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "discoverRelationships filters",
+    "description": "Discard relationship label while preserving edge counts."
+  }
+]

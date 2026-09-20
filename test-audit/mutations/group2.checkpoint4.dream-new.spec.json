@@ -1,0 +1,200 @@
+[
+  {
+    "id": "g2-dream-empty",
+    "file": "src/lib/dream.ts",
+    "search": "if (!this.db.isAvailable() || !this.db.isMigrated()) {",
+    "replace": "if (!this.db.isAvailable()) {",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "reports an empty database",
+    "description": "Skip empty/unmigrated database diagnosis."
+  },
+  {
+    "id": "g2-dream-min-count",
+    "file": "src/lib/dream.ts",
+    "search": "`Too few memories (${counts.active} < ${this.dreamConfig.minMemories})`",
+    "replace": "`Too few memories (0 < 0)`",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "exits early when too few memories",
+    "description": "Discard actual threshold and count from diagnostic."
+  },
+  {
+    "id": "g2-dream-provider-failure",
+    "file": "src/lib/dream.ts",
+    "search": "const failures = this.db.incrementDreamConsecutiveFailures();",
+    "replace": "const failures = this.db.getDreamConsecutiveFailures();",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "records provider-init error|fires desktop notification",
+    "description": "Stop persisting consecutive provider failures."
+  },
+  {
+    "id": "g2-dream-abort",
+    "file": "src/lib/dream.ts",
+    "search": "    this.abortRequested = true;",
+    "replace": "    this.abortRequested = false;",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "aborts at shouldStop|recordActivity aborts|stop clears interval",
+    "description": "Ignore an explicit abort request."
+  },
+  {
+    "id": "g2-dream-runtime",
+    "file": "src/lib/dream.ts",
+    "search": "    return elapsed > this.dreamConfig.maxRuntimeMinutes * 60 * 1000;",
+    "replace": "    return false;",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "aborts when max runtime",
+    "description": "Disable runtime termination."
+  },
+  {
+    "id": "g2-dream-success-reset",
+    "file": "src/lib/dream.ts",
+    "search": "      this.db.resetDreamConsecutiveFailures();",
+    "replace": "      void 0;",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "resets consecutive failures",
+    "description": "Keep old provider failure state after successful model work."
+  },
+  {
+    "id": "g2-dream-tag-review",
+    "file": "src/lib/dream.ts",
+    "search": "        issues.push(\"No tags \u2014 harder to discover\");",
+    "replace": "        void 0;",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "critiquMemory rule arms",
+    "description": "Ignore missing tags in quality review."
+  },
+  {
+    "id": "g2-dream-summary-error",
+    "file": "src/lib/dream.ts",
+    "search": "        fingerprintMemories(\"summary\", memories),\n      );\n    } catch {\n      return null;",
+    "replace": "        fingerprintMemories(\"summary\", memories),\n      );\n    } catch {\n      return \"Summary unavailable\";",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "summarizeCategory swallows",
+    "description": "Persist an error placeholder as a real summary."
+  },
+  {
+    "id": "g2-dream-malformed-relationship",
+    "file": "src/lib/dream.ts",
+    "search": "const jsonMatch = response.match(/\\[[\\s\\S]*\\]/);\n      if (!jsonMatch) return [];",
+    "replace": "const jsonMatch = response.match(/\\[[\\s\\S]*\\]/);\n      if (!jsonMatch) return [{ source_id: sources[0].id, target_id: sources[1].id, rel_type: \"references\", label: \"fallback\", confidence: 0.9 }];",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "findRelationships returns empty",
+    "description": "Create guessed relationships when model JSON is malformed."
+  },
+  {
+    "id": "g2-dream-explicit-idle",
+    "file": "src/lib/dream.ts",
+    "search": "if (key in config && config[key] !== undefined) {",
+    "replace": "if (key !== \"idleMinutes\" && key in config && config[key] !== undefined) {",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "ignores unknown options",
+    "description": "Drop the configured scheduler idle override."
+  },
+  {
+    "id": "g2-dream-disabled",
+    "file": "src/lib/dream.ts",
+    "search": "    if (!this.config.enabled) return;",
+    "replace": "    void 0;",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "start is no-op when disabled",
+    "description": "Run scheduling despite explicit disabled configuration."
+  },
+  {
+    "id": "g2-dream-designation",
+    "file": "src/lib/dream.ts",
+    "search": "      return designated === localId;",
+    "replace": "      return true;",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "start is no-op when machine",
+    "description": "Allow a non-designated machine to run Dream."
+  },
+  {
+    "id": "g2-dream-idle-default",
+    "file": "src/lib/dream.ts",
+    "search": "  idleMinutes: 10,",
+    "replace": "  idleMinutes: 9,",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "start arms interval",
+    "description": "Trigger Dream one minute before the documented default idle threshold."
+  },
+  {
+    "id": "g2-dream-default-enabled",
+    "file": "src/lib/dream.ts",
+    "search": "  enabled: false,",
+    "replace": "  enabled: true,",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "default scheduler remains disabled",
+    "description": "Enable Dream without explicit user opt-in."
+  },
+  {
+    "id": "g2-dream-closed-db",
+    "file": "src/lib/dream.ts",
+    "search": "      return designated === localId;\n    } catch {\n      return false;",
+    "replace": "      return designated === localId;\n    } catch (err) {\n      throw err;",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "does not schedule against a closed",
+    "description": "Propagate unavailable database errors when starting optional scheduling."
+  },
+  {
+    "id": "g2-dream-hostname",
+    "file": "src/lib/dream.ts",
+    "search": "try { hostname = os.hostname() || \"\"; } catch",
+    "replace": "try { hostname = \"\"; } catch",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "derives and persists",
+    "description": "Drop native hostname fallback from machine identity."
+  },
+  {
+    "id": "g2-dream-isrunning",
+    "file": "src/lib/dream.ts",
+    "search": "  isDreaming(): boolean {\n    return this.running;",
+    "replace": "  isDreaming(): boolean {\n    return false;",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "isDreaming reflects an actual",
+    "description": "Report idle while a real provider request is pending."
+  },
+  {
+    "id": "g2-dream-release-lock",
+    "file": "src/lib/dream.ts",
+    "search": "        lock.release();",
+    "replace": "        void 0;",
+    "tests": [
+      "src/test/dream-coverage.test.ts"
+    ],
+    "testName": "releases the lock after",
+    "description": "Leak scheduler lock after a native read error."
+  }
+]

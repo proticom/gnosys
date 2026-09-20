@@ -7,41 +7,26 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 import { GnosysDB, type DbMemory } from "../lib/db.js";
-import type { GnosysConfig } from "../lib/config.js";
+import { DEFAULT_CONFIG, type GnosysConfig } from "../lib/config.js";
+import { execFile } from "child_process";
+import { z } from "zod";
 import {
   GnosysDreamEngine,
   DreamScheduler,
-  DEFAULT_DREAM_CONFIG,
   formatDreamReport,
   type DreamReport,
 } from "../lib/dream.js";
-import { createProvider, getLLMProvider } from "../lib/llm.js";
-import { notifyDesktop } from "../lib/desktopNotify.js";
 import { makeMemory } from "./_helpers.js";
 
-const mockGenerate = vi.fn();
-const fakeProvider = {
-  name: "ollama" as const,
-  model: "stub",
-  generate: mockGenerate,
-  testConnection: async () => true,
-};
-
-vi.mock("../lib/llm.js", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("../lib/llm.js")>();
-  return {
-    ...actual,
-    getLLMProvider: vi.fn(() => fakeProvider),
-    createProvider: vi.fn(() => fakeProvider),
-  };
-});
-
-vi.mock("../lib/desktopNotify.js", () => ({
-  notifyDesktop: vi.fn().mockResolvedValue(undefined),
+const providerResponse = vi.fn<(prompt: string) => Promise<string>>();
+vi.mock("child_process", async (original) => ({
+  ...await original<typeof import("child_process")>(),
+  execSync: vi.fn(() => { throw new Error("test keychain is empty"); }),
+  execFile: vi.fn((_file, _args, _options, callback) => { callback(null); }),
 }));
 
 function baseConfig(): GnosysConfig {
-  return { llm: { defaultProvider: "anthropic" }, dream: { enabled: true } } as unknown as GnosysConfig;
+  return { ...DEFAULT_CONFIG, llmRetryAttempts: 1, llm: { ...DEFAULT_CONFIG.llm, ollama: { model: "audit-model", baseUrl: "http://model.invalid" } } };
 }
 
 const decayOnlyDream = {
@@ -72,14 +57,19 @@ let db: GnosysDB;
 let prevGnosysHome: string | undefined;
 
 beforeEach(() => {
-  vi.mocked(getLLMProvider).mockImplementation(() => fakeProvider);
-  vi.mocked(createProvider).mockImplementation(() => fakeProvider);
-  mockGenerate.mockReset();
-  vi.mocked(notifyDesktop).mockClear();
+  providerResponse.mockReset().mockResolvedValue('{"action":"ok"}');
+  vi.mocked(execFile).mockClear();
+  vi.stubGlobal("fetch", async (_url: unknown, init?: RequestInit) => {
+    const request = z.object({ model: z.string(), messages: z.array(z.object({ role: z.string(), content: z.string() })) }).parse(JSON.parse(String(init?.body)));
+    return Response.json({ message: { content: await providerResponse(request.messages.at(-1)?.content || "") } });
+  });
   tmp = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-dream-cov-"));
   // Isolate dream-runs.jsonl / dream-state.json from the real ~/.gnosys.
   prevGnosysHome = process.env.GNOSYS_HOME;
   process.env.GNOSYS_HOME = tmp;
+  vi.stubEnv("HOME", tmp);
+  vi.stubEnv("GNOSYS_CONFIG_DIR", path.join(tmp, "config"));
+  for (const name of ["GNOSYS_GLOBAL_ANTHROPIC_KEY", "GNOSYS_ANTHROPIC_KEY", "ANTHROPIC_API_KEY", "GNOSYS_LLM_API_KEY"]) vi.stubEnv(name, "");
   db = new GnosysDB(tmp);
 });
 
@@ -92,11 +82,13 @@ afterEach(() => {
   }
   fs.rmSync(tmp, { recursive: true, force: true });
   vi.useRealTimers();
+  vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
+  vi.restoreAllMocks();
 });
 
 describe("GnosysDreamEngine.dream() orchestrator", () => {
-  it("exits early when DB is unavailable", async () => {
-    vi.spyOn(db, "isAvailable").mockReturnValue(false);
+  it("reports an empty database before beginning Dream", async () => {
     const engine = new GnosysDreamEngine(db, baseConfig(), decayOnlyDream);
     const report = await engine.dream();
     expect(report.errors).toContain("gnosys.db not available or not migrated");
@@ -108,15 +100,12 @@ describe("GnosysDreamEngine.dream() orchestrator", () => {
     insertMemory(db);
     const engine = new GnosysDreamEngine(db, baseConfig(), { ...decayOnlyDream, minMemories: 10 });
     const report = await engine.dream();
-    expect(report.errors[0]).toMatch(/Too few memories/);
+    expect(report.errors).toEqual(["Too few memories (2 < 10)"]);
   });
 
   it("records provider-init error and increments consecutive failures", async () => {
-    vi.mocked(createProvider).mockImplementationOnce(() => {
-      throw new Error("no key");
-    });
     for (let i = 0; i < 5; i++) insertMemory(db, { id: `prov-${i}` });
-    const engine = new GnosysDreamEngine(db, baseConfig(), decayOnlyDream);
+    const engine = new GnosysDreamEngine(db, baseConfig(), { ...decayOnlyDream, provider: "anthropic" });
     const report = await engine.dream();
     expect(report.errors.some((e) => e.includes("Provider unavailable"))).toBe(true);
     const audit = db.queryAuditLog({ operation: "dream_provider_unreachable", limit: 1 });
@@ -127,17 +116,17 @@ describe("GnosysDreamEngine.dream() orchestrator", () => {
 
   it("fires desktop notification at consecutive failure threshold", async () => {
     db.setMeta("dream_consecutive_failures", "2");
-    vi.mocked(createProvider).mockImplementationOnce(() => {
-      throw new Error("no key");
-    });
     for (let i = 0; i < 5; i++) insertMemory(db, { id: `notify-${i}` });
-    const engine = new GnosysDreamEngine(db, baseConfig(), decayOnlyDream);
+    const engine = new GnosysDreamEngine(db, baseConfig(), { ...decayOnlyDream, provider: "anthropic" });
     await engine.dream();
-    expect(notifyDesktop).toHaveBeenCalledTimes(1);
-    expect(vi.mocked(notifyDesktop).mock.calls[0][0]).toMatch(/failed 3 times/);
+    expect(db.getDreamConsecutiveFailures()).toBe(3);
+    expect(execFile).toHaveBeenCalledTimes(1);
+    const message = "Dream provider has failed 3 times in a row. Run 'gnosys setup dream' to reconfigure.";
+    if (process.platform === "darwin") expect(vi.mocked(execFile).mock.calls[0]?.slice(0, 3)).toEqual(["osascript", ["-e", `display notification "${message}" with title "Gnosys Dream" subtitle "anthropic/default" sound name "Submarine"`], { timeout: 3000 }]);
+    else expect(vi.mocked(execFile).mock.calls[0]?.slice(0, 3)).toEqual(["notify-send", ["Gnosys Dream", message], { timeout: 3000 }]);
   });
 
-  it("runs all phases on happy path with stubbed LLM", async () => {
+  it("runs all enabled phases through the configured provider", async () => {
     for (let i = 0; i < 6; i++) {
       insertMemory(db, {
         id: `happy-a-${i}`,
@@ -156,7 +145,7 @@ describe("GnosysDreamEngine.dream() orchestrator", () => {
         relevance: "dream test",
       });
     }
-    mockGenerate.mockImplementation(async (prompt: string) => {
+    providerResponse.mockImplementation(async (prompt: string) => {
       if (prompt.includes("relationship")) {
         return JSON.stringify([
           { source_id: "happy-a-0", target_id: "happy-a-1", rel_type: "references", label: "link", confidence: 0.9 },
@@ -174,7 +163,10 @@ describe("GnosysDreamEngine.dream() orchestrator", () => {
       discoverRelationships: true,
     });
     const report = await engine.dream();
-    expect(report.summariesGenerated).toBeGreaterThanOrEqual(1);
+    expect(report.phases?.map(phase => phase.name)).toEqual(["decay", "embedding-health", "critique", "summaries", "relationships"]);
+    expect(report.summariesGenerated).toBe(2);
+    expect(db.getSummary("category", "decisions")?.content).toBe("# Category summary\nKey themes and patterns.");
+    expect(db.getRelationshipsFrom("happy-a-0")).toMatchObject([{ target_id: "happy-a-1", rel_type: "references", label: "link", confidence: 0.9 }]);
     expect(report.errors.filter((e) => !e.includes("Provider unavailable"))).toEqual([]);
   });
 
@@ -199,7 +191,7 @@ describe("GnosysDreamEngine.dream() orchestrator", () => {
         confidence: 0.45,
       });
     }
-    mockGenerate.mockResolvedValue('{"action":"review","reason":"check"}');
+    providerResponse.mockResolvedValue('{"action":"review","reason":"check"}');
     let currentTime = 1_000_000;
     vi.spyOn(Date, "now").mockImplementation(() => currentTime);
     const engine = new GnosysDreamEngine(db, baseConfig(), {
@@ -224,7 +216,7 @@ describe("GnosysDreamEngine.dream() orchestrator", () => {
     for (let i = 0; i < 4; i++) {
       insertMemory(db, { id: `reset-b-${i}`, category: "concepts", content: "Enough content for summary generation in dream coverage test." });
     }
-    mockGenerate.mockResolvedValue("# Summary\nCategory overview.");
+    providerResponse.mockResolvedValue("# Summary\nCategory overview.");
     const engine = new GnosysDreamEngine(db, baseConfig(), {
       minMemories: 3,
       selfCritique: false,
@@ -259,7 +251,8 @@ describe("GnosysDreamEngine phase implementations", () => {
     insertMemory(db, { id: "decay-extra", last_reinforced: daysAgoIso(5), confidence: 0.9 });
     const engine = new GnosysDreamEngine(db, baseConfig(), decayOnlyDream);
     const report = await engine.dream();
-    expect(report.decayUpdated).toBeGreaterThanOrEqual(2);
+    expect(report.decayUpdated).toBe(3);
+    expect(["decay-today", "decay-5d", "decay-200d", "decay-extra"].map(id => db.getMemory(id)?.confidence)).toEqual([0.9, 0.88, 0.33, 0.88]);
   });
 
   it("critiquMemory rule arms produce review suggestions", async () => {
@@ -282,9 +275,6 @@ describe("GnosysDreamEngine phase implementations", () => {
       db.insertMemory(mem);
     }
     insertMemory(db, { id: "crit-badtags", tags: "not-json", content: "Memory with invalid tags format and enough content.", confidence: 0.5 });
-    vi.mocked(getLLMProvider).mockImplementationOnce(() => {
-      throw new Error("no key");
-    });
     const engine = new GnosysDreamEngine(db, baseConfig(), {
       ...decayOnlyDream,
       selfCritique: true,
@@ -312,7 +302,7 @@ describe("GnosysDreamEngine phase implementations", () => {
     insertMemory(db, { id: "borderline-2", confidence: 0.45, content: "Second borderline memory for LLM critique coverage.", tags: '["test"]', relevance: "x" });
     insertMemory(db, { id: "borderline-3", confidence: 0.45, content: "Third borderline memory for LLM critique coverage.", tags: '["test"]', relevance: "x" });
     insertMemory(db, { id: "borderline-4", confidence: 0.45, content: "Fourth borderline memory for LLM critique coverage.", tags: '["test"]', relevance: "x" });
-    mockGenerate
+    providerResponse
       .mockResolvedValueOnce('{"action":"ok"}')
       .mockResolvedValueOnce('{"action":"review","reason":"needs eyes"}')
       .mockResolvedValueOnce('{"action":"needs-update","reason":"stale info"}')
@@ -323,7 +313,10 @@ describe("GnosysDreamEngine phase implementations", () => {
     });
     const report = await engine.dream();
     const llmReasons = report.reviewSuggestions.filter((s) => s.reason.includes("needs eyes") || s.reason.includes("stale info"));
-    expect(llmReasons.length).toBeGreaterThanOrEqual(2);
+    expect(llmReasons.map(item => ({ id: item.memoryId, reason: item.reason, action: item.suggestedAction }))).toEqual([
+      { id: "borderline-2", reason: "needs eyes", action: "review" },
+      { id: "borderline-3", reason: "stale info", action: "needs-update" },
+    ]);
   });
 
   it("generateSummaries creates, skips unchanged, and updates summaries", async () => {
@@ -333,7 +326,7 @@ describe("GnosysDreamEngine phase implementations", () => {
     for (let i = 0; i < 3; i++) {
       insertMemory(db, { id: `sum-b-${i}`, category: "concepts", content: "Concept memory content for summary generation testing in dream." });
     }
-    mockGenerate.mockResolvedValue("# Category X\nSummary text.");
+    providerResponse.mockResolvedValue("# Category X\nSummary text.");
     const cfg = {
       minMemories: 3,
       selfCritique: false,
@@ -343,6 +336,8 @@ describe("GnosysDreamEngine phase implementations", () => {
     const engine1 = new GnosysDreamEngine(db, baseConfig(), cfg);
     const first = await engine1.dream();
     expect(first.summariesGenerated).toBe(2);
+    expect(db.getSummary("category", "decisions")?.content).toBe("# Category X\nSummary text.");
+    expect(db.getSummary("category", "concepts")?.content).toBe("# Category X\nSummary text.");
 
     const engine2 = new GnosysDreamEngine(db, baseConfig(), cfg);
     const second = await engine2.dream();
@@ -350,10 +345,12 @@ describe("GnosysDreamEngine phase implementations", () => {
     expect(second.summariesUpdated).toBe(0);
 
     insertMemory(db, { id: "sum-a-new", category: "decisions", content: "New decision memory to trigger summary update path." });
-    mockGenerate.mockResolvedValue("# Updated\nNew summary.");
+    providerResponse.mockResolvedValue("# Updated\nNew summary.");
     const engine3 = new GnosysDreamEngine(db, baseConfig(), cfg);
     const third = await engine3.dream();
     expect(third.summariesUpdated).toBe(1);
+    expect(db.getSummary("category", "decisions")?.content).toBe("# Updated\nNew summary.");
+    expect(db.getSummary("category", "concepts")?.content).toBe("# Category X\nSummary text.");
   });
 
   it("summarizeCategory swallows provider errors without crashing", async () => {
@@ -363,7 +360,7 @@ describe("GnosysDreamEngine phase implementations", () => {
     for (let i = 0; i < 3; i++) {
       insertMemory(db, { id: `fail-sum-b-${i}`, category: "concepts", content: "Memory for summarize failure path in dream coverage test." });
     }
-    mockGenerate.mockRejectedValue(new Error("fail"));
+    providerResponse.mockRejectedValue(new Error("fail"));
     const engine = new GnosysDreamEngine(db, baseConfig(), {
       minMemories: 3,
       selfCritique: false,
@@ -380,7 +377,7 @@ describe("GnosysDreamEngine phase implementations", () => {
     for (let i = 0; i < 6; i++) {
       insertMemory(db, { id: `rel-m${i}`, content: `Relationship memory ${i} with enough content for discovery.` });
     }
-    mockGenerate.mockResolvedValueOnce(
+    providerResponse.mockResolvedValueOnce(
       JSON.stringify([
         { source_id: "rel-m0", target_id: "rel-m1", rel_type: "references", label: "valid", confidence: 0.9 },
         { source_id: "rel-m0", target_id: "rel-m0", rel_type: "references", label: "self", confidence: 0.9 },
@@ -395,9 +392,9 @@ describe("GnosysDreamEngine phase implementations", () => {
     });
     const report = await engine.dream();
     expect(report.relationshipsDiscovered).toBe(1);
-    expect(db.getRelationshipsFrom("rel-m0").length).toBe(1);
+    expect(db.getRelationshipsFrom("rel-m0")).toMatchObject([{ target_id: "rel-m1", rel_type: "references", label: "valid", confidence: 0.9 }]);
 
-    mockGenerate.mockResolvedValueOnce(
+    providerResponse.mockResolvedValueOnce(
       JSON.stringify([
         { source_id: "rel-m0", target_id: "rel-m1", rel_type: "references", label: "dup", confidence: 0.9 },
       ]),
@@ -416,7 +413,7 @@ describe("GnosysDreamEngine phase implementations", () => {
     for (let i = 0; i < 4; i++) {
       insertMemory(db, { id: `mal-rel-${i}`, content: "Memory for malformed relationship JSON test in dream coverage." });
     }
-    mockGenerate.mockResolvedValueOnce("not json at all");
+    providerResponse.mockResolvedValueOnce("not json at all");
     const engine = new GnosysDreamEngine(db, baseConfig(), {
       minMemories: 3,
       selfCritique: false,
@@ -500,148 +497,155 @@ describe("formatDreamReport", () => {
   });
 });
 
+
 describe("DreamScheduler", () => {
-  function makeEngine(): GnosysDreamEngine {
-    for (let i = 0; i < 5; i++) insertMemory(db, { id: `sched-${i}` });
-    return new GnosysDreamEngine(db, baseConfig(), decayOnlyDream);
+  const schedulers: DreamScheduler[] = [];
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-01-11T12:00:00.000Z"));
+    db.setMeta("machine_id", "audit-machine");
+    db.setDreamMachineId("audit-machine");
+    for (let index = 0; index < 5; index++) insertMemory(db, { id: `scheduled-${index}`, confidence: 0.9, last_reinforced: "2026-01-01T12:00:00.000Z", category: "decisions" });
+  });
+  afterEach(() => {
+    for (const scheduler of schedulers) scheduler.stop();
+    schedulers.length = 0;
+  });
+  function makeScheduler(config?: ConstructorParameters<typeof DreamScheduler>[1], summaries = false): DreamScheduler {
+    const engine = new GnosysDreamEngine(db, baseConfig(), { ...decayOnlyDream, generateSummaries: summaries });
+    const scheduler = new DreamScheduler(engine, config);
+    schedulers.push(scheduler);
+    return scheduler;
+  }
+  function completed(): Array<{ aborted: boolean }> {
+    return db.queryAuditLog({ operation: "dream_complete", limit: 20 }).map(row => z.object({ aborted: z.boolean() }).parse(JSON.parse(row.details || "{}")));
+  }
+  async function runningDream(): Promise<{ scheduler: DreamScheduler; finish: () => void }> {
+    let finish = () => {};
+    const response = new Promise<string>(resolve => { finish = () => resolve("# Scheduled summary\nVerified output."); });
+    providerResponse.mockReturnValue(response);
+    const scheduler = makeScheduler({ enabled: true, idleMinutes: 1 }, true);
+    scheduler.start();
+    await vi.advanceTimersByTimeAsync(60_000);
+    return { scheduler, finish };
   }
 
-  it("constructor ignores prototype pollution keys", () => {
-    const engine = makeEngine();
-    const polluted = { ...DEFAULT_DREAM_CONFIG, ["__proto__" as string]: { polluted: true } };
-    const scheduler = new DreamScheduler(engine, polluted as Partial<typeof DEFAULT_DREAM_CONFIG>);
-    expect((scheduler as unknown as { config: { polluted?: unknown } }).config.polluted).toBeUndefined();
-    expect(({} as { polluted?: unknown }).polluted).toBeUndefined();
+  it("ignores unknown options while honoring the configured idle threshold", async () => {
+    const scheduler = makeScheduler({ enabled: true, idleMinutes: 2, ...JSON.parse('{"polluted":true}') });
+    scheduler.start();
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(db.getMemory("scheduled-0")?.confidence).toBe(0.9);
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(db.getMemory("scheduled-0")?.confidence).toBe(0.86);
+    expect(completed()).toEqual([{ aborted: false }]);
   });
 
-  it("start is no-op when disabled", () => {
-    const engine = makeEngine();
-    const scheduler = new DreamScheduler(engine, { enabled: false });
+  it("start is no-op when disabled", async () => {
+    const scheduler = makeScheduler({ enabled: false, idleMinutes: 1 });
     scheduler.start();
-    expect((scheduler as unknown as { checkInterval: unknown }).checkInterval).toBeNull();
+    await vi.advanceTimersByTimeAsync(120_000);
+    expect(db.getMemory("scheduled-0")?.confidence).toBe(0.9);
+    expect(completed()).toEqual([]);
+    const enabled = makeScheduler({ enabled: true, idleMinutes: 1 });
+    enabled.start();
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(db.getMemory("scheduled-0")?.confidence).toBe(0.86);
   });
 
-  it("start is no-op when machine is not designated", () => {
-    const engine = makeEngine();
-    const scheduler = new DreamScheduler(engine, { enabled: true });
+  it("start is no-op when machine is not designated", async () => {
+    db.setDreamMachineId("another-machine");
+    const scheduler = makeScheduler({ enabled: true, idleMinutes: 1 });
     scheduler.start();
-    expect((scheduler as unknown as { checkInterval: unknown }).checkInterval).toBeNull();
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(db.getMemory("scheduled-0")?.confidence).toBe(0.9);
+    db.setDreamMachineId("audit-machine");
+    scheduler.start();
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(db.getMemory("scheduled-0")?.confidence).toBe(0.86);
   });
 
   it("start arms interval and triggers dream when designated and idle", async () => {
-    vi.useFakeTimers();
-    const engine = makeEngine();
-    const localId = "test-m1";
-    db.setMeta("machine_id", localId);
-    db.setDreamMachineId(localId);
-    const fakeReport: DreamReport = {
-      startedAt: new Date().toISOString(),
-      finishedAt: new Date().toISOString(),
-      durationMs: 1,
-      decayUpdated: 0,
-      summariesGenerated: 0,
-      summariesUpdated: 0,
-      reviewSuggestions: [],
-      relationshipsDiscovered: 0,
-      duplicatesFound: 0,
-      errors: [],
-      aborted: false,
-    };
-    const dreamSpy = vi.spyOn(engine, "dream").mockResolvedValue(fakeReport);
-    const scheduler = new DreamScheduler(engine, { enabled: true, idleMinutes: 0.001 });
-    (scheduler as unknown as { lastActivity: number }).lastActivity = Date.now() - 120;
+    const scheduler = makeScheduler({ enabled: true });
     scheduler.start();
-    expect((scheduler as unknown as { checkInterval: unknown }).checkInterval).not.toBeNull();
-    await vi.advanceTimersByTimeAsync(61_000);
-    await Promise.resolve();
-    await Promise.resolve();
-    expect(dreamSpy).toHaveBeenCalled();
-    scheduler.stop();
+    await vi.advanceTimersByTimeAsync(9 * 60_000);
+    expect(db.getMemory("scheduled-0")?.confidence).toBe(0.9);
+    expect(completed()).toEqual([]);
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(db.getMemory("scheduled-0")?.confidence).toBe(0.86);
+    expect(completed()).toEqual([{ aborted: false }]);
   });
 
-  it("recordActivity aborts running engine", () => {
-    const engine = makeEngine();
-    const abortSpy = vi.spyOn(engine, "abort");
-    const scheduler = new DreamScheduler(engine, DEFAULT_DREAM_CONFIG);
-    (scheduler as unknown as { running: boolean }).running = true;
-    const before = (scheduler as unknown as { lastActivity: number }).lastActivity;
-    scheduler.recordActivity();
-    expect(abortSpy).toHaveBeenCalled();
-    expect((scheduler as unknown as { lastActivity: number }).lastActivity).toBeGreaterThanOrEqual(before);
-  });
-
-  it("stop clears interval and aborts running engine", () => {
-    vi.useFakeTimers();
-    const engine = makeEngine();
-    const localId = "stop-m1";
-    db.setMeta("machine_id", localId);
-    db.setDreamMachineId(localId);
-    const abortSpy = vi.spyOn(engine, "abort");
-    const scheduler = new DreamScheduler(engine, { enabled: true, idleMinutes: 10 });
-    scheduler.start();
-    (scheduler as unknown as { running: boolean }).running = true;
-    scheduler.stop();
-    expect((scheduler as unknown as { checkInterval: unknown }).checkInterval).toBeNull();
-    expect(abortSpy).toHaveBeenCalled();
-  });
-
-  it("isDesignatedMachine returns false when getDb throws", () => {
-    const engine = makeEngine();
-    vi.spyOn(engine, "getDb").mockImplementation(() => {
-      throw new Error("db fail");
-    });
-    const scheduler = new DreamScheduler(engine, DEFAULT_DREAM_CONFIG);
-    expect((scheduler as unknown as { isDesignatedMachine: () => boolean }).isDesignatedMachine()).toBe(false);
-  });
-
-  it("getLocalMachineId uses hostname fallback and caches meta", () => {
-    const engine = makeEngine();
-    const scheduler = new DreamScheduler(engine, DEFAULT_DREAM_CONFIG);
-    db.deleteMeta("machine_id");
-    const savedHost = process.env.HOSTNAME;
-    const savedComp = process.env.COMPUTERNAME;
-    delete process.env.HOSTNAME;
-    delete process.env.COMPUTERNAME;
-    const id1 = (scheduler as unknown as { getLocalMachineId: (d: GnosysDB) => string }).getLocalMachineId(db);
-    const id2 = (scheduler as unknown as { getLocalMachineId: (d: GnosysDB) => string }).getLocalMachineId(db);
-    if (savedHost !== undefined) process.env.HOSTNAME = savedHost;
-    if (savedComp !== undefined) process.env.COMPUTERNAME = savedComp;
-    expect(typeof id1).toBe("string");
-    expect(id1.length).toBeGreaterThan(0);
-    expect(id2).toBe(id1);
-    expect(db.getMeta("machine_id")).toBe(id1);
-  });
-
-  it("isDreaming reflects running state", () => {
-    const engine = makeEngine();
-    const scheduler = new DreamScheduler(engine, DEFAULT_DREAM_CONFIG);
-    expect(scheduler.isDreaming()).toBe(false);
-    (scheduler as unknown as { running: boolean }).running = true;
+  it("recordActivity aborts running engine", async () => {
+    const { scheduler, finish } = await runningDream();
     expect(scheduler.isDreaming()).toBe(true);
+    scheduler.recordActivity();
+    finish();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(completed()).toEqual([{ aborted: true }]);
+    expect(scheduler.isDreaming()).toBe(false);
   });
 
-  it("checkIdle swallows engine rejection and resets running", async () => {
-    vi.useFakeTimers();
-    const engine = makeEngine();
-    const localId = "err-m1";
-    db.setMeta("machine_id", localId);
-    db.setDreamMachineId(localId);
-    vi.spyOn(engine, "dream").mockRejectedValue(new Error("dream-failure"));
-    const scheduler = new DreamScheduler(engine, { enabled: true, idleMinutes: 0.001 });
-    (scheduler as unknown as { lastActivity: number }).lastActivity = Date.now() - 120;
-    scheduler.start();
-    await vi.advanceTimersByTimeAsync(61_000);
-    await Promise.resolve();
-    await Promise.resolve();
-    expect((scheduler as unknown as { running: boolean }).running).toBe(false);
+  it("stop clears interval and aborts running engine", async () => {
+    const { scheduler, finish } = await runningDream();
     scheduler.stop();
+    finish();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(completed()).toEqual([{ aborted: true }]);
+    await vi.advanceTimersByTimeAsync(120_000);
+    expect(completed()).toEqual([{ aborted: true }]);
   });
-});
 
-describe("DEFAULT_DREAM_CONFIG", () => {
-  it("has expected defaults", () => {
-    expect(DEFAULT_DREAM_CONFIG.enabled).toBe(false);
-    expect(DEFAULT_DREAM_CONFIG.minMemories).toBe(10);
-    expect(DEFAULT_DREAM_CONFIG.selfCritique).toBe(true);
+  it("derives and persists the hostname identity before checking designation", async () => {
+    db.deleteMeta("machine_id");
+    vi.stubEnv("HOSTNAME", "");
+    vi.stubEnv("COMPUTERNAME", "");
+    vi.spyOn(os, "hostname").mockReturnValue("audit-host");
+    vi.setSystemTime(36);
+    const scheduler = makeScheduler({ enabled: true, idleMinutes: 1 });
+    scheduler.start();
+    expect(db.getMeta("machine_id")).toBe("audit-host-10");
+    db.setDreamMachineId("audit-host-10");
+    vi.setSystemTime(new Date("2026-01-11T12:00:00.000Z"));
+    scheduler.start();
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(db.getMeta("machine_id")).toBe("audit-host-10");
+    expect(db.getMemory("scheduled-0")?.confidence).toBe(0.86);
+  });
+
+  it("isDreaming reflects an actual pending provider call and completion", async () => {
+    const { scheduler, finish } = await runningDream();
+    expect(scheduler.isDreaming()).toBe(true);
+    expect(completed()).toEqual([]);
+    finish();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(scheduler.isDreaming()).toBe(false);
+    expect(completed()).toEqual([{ aborted: false }]);
+    expect(db.getSummary("category", "decisions")?.content).toBe("# Scheduled summary\nVerified output.");
+  });
+
+  it("releases the lock after a native read failure and runs the next idle cycle", async () => {
+    const scheduler = makeScheduler({ enabled: true, idleMinutes: 1 });
+    scheduler.start();
+    const Database = (await import("better-sqlite3")).default;
+    vi.spyOn(Database.prototype, "prepare").mockImplementationOnce(() => { throw new Error("audit native read failed"); });
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(scheduler.isDreaming()).toBe(false);
+    expect(fs.existsSync(path.join(tmp, "dream.lock"))).toBe(false);
+    expect(completed()).toEqual([]);
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(db.getMemory("scheduled-0")?.confidence).toBe(0.86);
+    expect(completed()).toEqual([{ aborted: false }]);
+  });
+
+  it("default scheduler remains disabled until explicitly enabled", async () => {
+    const scheduler = makeScheduler();
+    scheduler.start();
+    await vi.advanceTimersByTimeAsync(11 * 60_000);
+    expect(db.getMemory("scheduled-0")?.confidence).toBe(0.9);
+    expect(completed()).toEqual([]);
+    const enabled = makeScheduler({ enabled: true });
+    enabled.start();
+    await vi.advanceTimersByTimeAsync(10 * 60_000);
+    expect(db.getMemory("scheduled-0")?.confidence).toBe(0.86);
   });
 });

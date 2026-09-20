@@ -1,0 +1,24 @@
+[
+  {
+    "file": "src/lib/dream.ts",
+    "tests": [
+      "src/test/phase3-hardening-pins.test.ts"
+    ],
+    "id": "g2-dream-phase-checkpoint",
+    "search": "    this.checkpointFingerprints();",
+    "replace": "    void 0;",
+    "testName": "checkpoints completed phase",
+    "description": "Delay fingerprint persistence until finalization, losing completed phase progress on interruption."
+  },
+  {
+    "file": "src/lib/dream.ts",
+    "tests": [
+      "src/test/phase3-hardening-pins.test.ts"
+    ],
+    "id": "g2-dream-lock-owner",
+    "search": "      if (!lock.acquired) {",
+    "replace": "      if (!lock.acquired && false) {",
+    "testName": "scheduler waits for another process",
+    "description": "Run scheduler writes even when another process owns the Dream lock."
+  }
+]

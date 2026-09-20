@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "g2-dream-phase-checkpoint",
+      "file": "src/lib/dream.ts",
+      "description": "Delay fingerprint persistence until finalization, losing completed phase progress on interruption.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 490,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "Dream crash recovery through persisted state checkpoints completed phase fingerprints before an interrupted run can finalize",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 507,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "Dream crash recovery through persisted state checkpoints completed phase fingerprints before an interrupted run can finalize",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ { kind: 'critique', …(1) } ]\n    at <repo>/src/test/phase3-hardening-pins.test.ts:40:126\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 509,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "Dream crash recovery through persisted state checkpoints completed phase fingerprints before an interrupted run can finalize",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase3-hardening-pins.test.ts",
+          "name": "Dream crash recovery through persisted state checkpoints completed phase fingerprints before an interrupted run can finalize"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-lock-owner",
+      "file": "src/lib/dream.ts",
+      "description": "Run scheduler writes even when another process owns the Dream lock.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 521,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "Dream crash recovery through persisted state scheduler waits for another process to release the Dream lock before writing",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 530,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "Dream crash recovery through persisted state scheduler waits for another process to release the Dream lock before writing",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 0.86 to be 0.9 // Object.is equality\n    at <repo>/src/test/phase3-hardening-pins.test.ts:65:56\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 528,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "Dream crash recovery through persisted state scheduler waits for another process to release the Dream lock before writing",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase3-hardening-pins.test.ts",
+          "name": "Dream crash recovery through persisted state scheduler waits for another process to release the Dream lock before writing"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

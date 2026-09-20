@@ -1,0 +1,1043 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "g2-dream-empty",
+      "file": "src/lib/dream.ts",
+      "description": "Skip empty/unmigrated database diagnosis.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 539,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator reports an empty database before beginning Dream",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 564,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator reports an empty database before beginning Dream",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'Too few memories (0 < 3)' ] to include 'gnosys.db not available or not migrat…'\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1319:15)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/dream-coverage.test.ts:94:27\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 526,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator reports an empty database before beginning Dream",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "GnosysDreamEngine.dream() orchestrator reports an empty database before beginning Dream"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-min-count",
+      "file": "src/lib/dream.ts",
+      "description": "Discard actual threshold and count from diagnostic.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 518,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator exits early when too few memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 527,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator exits early when too few memories",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ 'Too few memories (0 < 0)' ] to deeply equal [ 'Too few memories (2 < 10)' ]\n    at <repo>/src/test/dream-coverage.test.ts:103:27\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 551,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator exits early when too few memories",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "GnosysDreamEngine.dream() orchestrator exits early when too few memories"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-provider-failure",
+      "file": "src/lib/dream.ts",
+      "description": "Stop persisting consecutive provider failures.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 556,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator records provider-init error and increments consecutive failures",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator fires desktop notification at consecutive failure threshold",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 555,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator records provider-init error and increments consecutive failures",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected +0 to be 1 // Object.is equality\n    at <repo>/src/test/dream-coverage.test.ts:114:46\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          },
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator fires desktop notification at consecutive failure threshold",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 2 to be 3 // Object.is equality\n    at <repo>/src/test/dream-coverage.test.ts:122:46\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 544,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator records provider-init error and increments consecutive failures",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator fires desktop notification at consecutive failure threshold",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "GnosysDreamEngine.dream() orchestrator records provider-init error and increments consecutive failures"
+        },
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "GnosysDreamEngine.dream() orchestrator fires desktop notification at consecutive failure threshold"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-abort",
+      "file": "src/lib/dream.ts",
+      "description": "Ignore an explicit abort request.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 555,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator aborts at shouldStop checkpoint when abort requested",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler recordActivity aborts running engine",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler stop clears interval and aborts running engine",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 635,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator aborts at shouldStop checkpoint when abort requested",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected false to be true // Object.is equality\n    at <repo>/src/test/dream-coverage.test.ts:179:28\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)"
+            ]
+          },
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler recordActivity aborts running engine",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ { aborted: false } ] to deeply equal [ { aborted: true } ]\n    at <repo>/src/test/dream-coverage.test.ts:584:25\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler stop clears interval and aborts running engine",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [ { aborted: false } ] to deeply equal [ { aborted: true } ]\n    at <repo>/src/test/dream-coverage.test.ts:593:25\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 643,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator aborts at shouldStop checkpoint when abort requested",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler recordActivity aborts running engine",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler stop clears interval and aborts running engine",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "GnosysDreamEngine.dream() orchestrator aborts at shouldStop checkpoint when abort requested"
+        },
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "DreamScheduler recordActivity aborts running engine"
+        },
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "DreamScheduler stop clears interval and aborts running engine"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-runtime",
+      "file": "src/lib/dream.ts",
+      "description": "Disable runtime termination.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 605,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator aborts when max runtime exceeded",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 569,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator aborts when max runtime exceeded",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected false to be true // Object.is equality\n    at <repo>/src/test/dream-coverage.test.ts:207:28\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 524,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator aborts when max runtime exceeded",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "GnosysDreamEngine.dream() orchestrator aborts when max runtime exceeded"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-success-reset",
+      "file": "src/lib/dream.ts",
+      "description": "Keep old provider failure state after successful model work.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 531,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator resets consecutive failures when LLM work succeeded",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 547,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator resets consecutive failures when LLM work succeeded",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected '5' to be '0' // Object.is equality\n    at <repo>/src/test/dream-coverage.test.ts:228:54\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 530,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator resets consecutive failures when LLM work succeeded",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "GnosysDreamEngine.dream() orchestrator resets consecutive failures when LLM work succeeded"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-tag-review",
+      "file": "src/lib/dream.ts",
+      "description": "Ignore missing tags in quality review.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 545,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations critiquMemory rule arms produce review suggestions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 537,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations critiquMemory rule arms produce review suggestions",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Very low confidence (0.20) Never rein…' to match /No tags/\n    at <repo>/src/test/dream-coverage.test.ts:287:21\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 533,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations critiquMemory rule arms produce review suggestions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "GnosysDreamEngine phase implementations critiquMemory rule arms produce review suggestions"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-summary-error",
+      "file": "src/lib/dream.ts",
+      "description": "Persist an error placeholder as a real summary.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 525,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations summarizeCategory swallows provider errors without crashing",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 529,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations summarizeCategory swallows provider errors without crashing",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 2 to be +0 // Object.is equality\n    at <repo>/src/test/dream-coverage.test.ts:371:39\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 557,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations summarizeCategory swallows provider errors without crashing",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "GnosysDreamEngine phase implementations summarizeCategory swallows provider errors without crashing"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-malformed-relationship",
+      "file": "src/lib/dream.ts",
+      "description": "Create guessed relationships when model JSON is malformed.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 559,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations findRelationships returns empty array on malformed JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 575,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations findRelationships returns empty array on malformed JSON",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 1 to be +0 // Object.is equality\n    at <repo>/src/test/dream-coverage.test.ts:424:44\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 562,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations findRelationships returns empty array on malformed JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "GnosysDreamEngine phase implementations findRelationships returns empty array on malformed JSON"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-explicit-idle",
+      "file": "src/lib/dream.ts",
+      "description": "Drop the configured scheduler idle override.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 557,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler ignores unknown options while honoring the configured idle threshold",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 563,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler ignores unknown options while honoring the configured idle threshold",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 0.9 to be 0.86 // Object.is equality\n    at <repo>/src/test/dream-coverage.test.ts:539:53\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 550,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler ignores unknown options while honoring the configured idle threshold",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "DreamScheduler ignores unknown options while honoring the configured idle threshold"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-disabled",
+      "file": "src/lib/dream.ts",
+      "description": "Run scheduling despite explicit disabled configuration.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 603,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler start is no-op when disabled",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 635,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler start is no-op when disabled",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 0.82 to be 0.9 // Object.is equality\n    at <repo>/src/test/dream-coverage.test.ts:547:53\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 608,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler start is no-op when disabled",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "DreamScheduler start is no-op when disabled"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-designation",
+      "file": "src/lib/dream.ts",
+      "description": "Allow a non-designated machine to run Dream.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 586,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler start is no-op when machine is not designated",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 538,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler start is no-op when machine is not designated",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 0.86 to be 0.9 // Object.is equality\n    at <repo>/src/test/dream-coverage.test.ts:560:53\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 533,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler start is no-op when machine is not designated",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "DreamScheduler start is no-op when machine is not designated"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-idle-default",
+      "file": "src/lib/dream.ts",
+      "description": "Trigger Dream one minute before the documented default idle threshold.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 535,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler start arms interval and triggers dream when designated and idle",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 573,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler start arms interval and triggers dream when designated and idle",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 0.86 to be 0.9 // Object.is equality\n    at <repo>/src/test/dream-coverage.test.ts:571:53\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 534,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler start arms interval and triggers dream when designated and idle",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "DreamScheduler start arms interval and triggers dream when designated and idle"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-default-enabled",
+      "file": "src/lib/dream.ts",
+      "description": "Enable Dream without explicit user opt-in.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 535,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler default scheduler remains disabled until explicitly enabled",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 530,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler default scheduler remains disabled until explicitly enabled",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 0.86 to be 0.9 // Object.is equality\n    at <repo>/src/test/dream-coverage.test.ts:656:53\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 545,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler default scheduler remains disabled until explicitly enabled",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "DreamScheduler default scheduler remains disabled until explicitly enabled"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-closed-db",
+      "file": "src/lib/dream.ts",
+      "description": "Propagate unavailable database errors when starting optional scheduling.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 553,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler does not schedule against a closed database and starts after reopening",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 568,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler does not schedule against a closed database and starts after reopening",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 557,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler does not schedule against a closed database and starts after reopening",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-hostname",
+      "file": "src/lib/dream.ts",
+      "description": "Drop native hostname fallback from machine identity.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 544,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler derives and persists the hostname identity before checking designation",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 534,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler derives and persists the hostname identity before checking designation",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'unknown-10' to be 'audit-host-10' // Object.is equality\n    at <repo>/src/test/dream-coverage.test.ts:618:38\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 546,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler derives and persists the hostname identity before checking designation",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "DreamScheduler derives and persists the hostname identity before checking designation"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-isrunning",
+      "file": "src/lib/dream.ts",
+      "description": "Report idle while a real provider request is pending.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 584,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler isDreaming reflects an actual pending provider call and completion",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 569,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler isDreaming reflects an actual pending provider call and completion",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected false to be true // Object.is equality\n    at <repo>/src/test/dream-coverage.test.ts:629:36\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 554,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler isDreaming reflects an actual pending provider call and completion",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "DreamScheduler isDreaming reflects an actual pending provider call and completion"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-release-lock",
+      "file": "src/lib/dream.ts",
+      "description": "Leak scheduler lock after a native read error.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 536,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler releases the lock after a native read failure and runs the next idle cycle",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 540,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler releases the lock after a native read failure and runs the next idle cycle",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected true to be false // Object.is equality\n    at <repo>/src/test/dream-coverage.test.ts:645:57\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 587,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "DreamScheduler releases the lock after a native read failure and runs the next idle cycle",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/dream-coverage.test.ts",
+          "name": "DreamScheduler releases the lock after a native read failure and runs the next idle cycle"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

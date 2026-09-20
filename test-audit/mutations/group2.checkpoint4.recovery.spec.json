@@ -1,0 +1,46 @@
+[
+  {
+    "id": "g2-notadb-recovery",
+    "file": "src/lib/db.ts",
+    "search": "      if (!GnosysDB.isCorruptionError(err)) throw err;",
+    "replace": "      if ((err instanceof Error && err.message === \"file is not a database\") || !GnosysDB.isCorruptionError(err)) throw err;",
+    "tests": [
+      "src/test/phase3-hardening-pins.test.ts"
+    ],
+    "testName": "retries a native SQLITE_NOTADB",
+    "description": "Stop recovering a native SQLITE_NOTADB read."
+  },
+  {
+    "id": "g2-reopen-cache",
+    "file": "src/lib/db.ts",
+    "search": "  reopen(): void {\n    this.stmtCache.clear();",
+    "replace": "  reopen(): void {",
+    "tests": [
+      "src/test/phase3-hardening-pins.test.ts"
+    ],
+    "testName": "reopens cached reads and restores FTS",
+    "description": "Retain prepared statements from the closed connection on reopen."
+  },
+  {
+    "id": "g2-reopen-triggers",
+    "file": "src/lib/db.ts",
+    "search": "      try {\n        this.db.exec(FTS_TRIGGERS_SQL);",
+    "replace": "      try {\n        this.db.exec(\"SELECT 1\");",
+    "tests": [
+      "src/test/phase3-hardening-pins.test.ts"
+    ],
+    "testName": "reopens cached reads and restores FTS",
+    "description": "Do not repair missing FTS triggers when reopening."
+  },
+  {
+    "id": "g2-close-handle",
+    "file": "src/lib/db.ts",
+    "search": "  close(): void {\n    this.stmtCache.clear();\n    this.db?.close();",
+    "replace": "  close(): void {\n    this.stmtCache.clear();",
+    "tests": [
+      "src/test/phase3-hardening-pins.test.ts"
+    ],
+    "testName": "closes the native handle and reopens for fresh reads",
+    "description": "Leave the native SQLite connection open on close."
+  }
+]

@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "g2-dream-summary-body",
+      "file": "src/lib/dream.ts",
+      "description": "Discard model summary content while retaining generated/updated counts.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 598,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator runs all phases on happy path with stubbed LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations generateSummaries creates, skips unchanged, and updates summaries",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 526,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator runs all phases on happy path with stubbed LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations generateSummaries creates, skips unchanged, and updates summaries",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 544,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine.dream() orchestrator runs all phases on happy path with stubbed LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations generateSummaries creates, skips unchanged, and updates summaries",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-decay-value",
+      "file": "src/lib/dream.ts",
+      "description": "Apply fixed confidence0.5 instead of elapsed-time decay.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 535,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations decaySweep updates stale memories and skips recent ones",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 653,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations decaySweep updates stale memories and skips recent ones",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 577,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations decaySweep updates stale memories and skips recent ones",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-critique-action",
+      "file": "src/lib/dream.ts",
+      "description": "Flatten needs-update model action into review.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 577,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations llmCritique handles ok, review, needs-update, and malformed JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 607,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations llmCritique handles ok, review, needs-update, and malformed JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 561,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations llmCritique handles ok, review, needs-update, and malformed JSON",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-dream-relationship-label",
+      "file": "src/lib/dream.ts",
+      "description": "Discard relationship label while preserving edge counts.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 560,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations discoverRelationships filters self-ref, low confidence, and deduplicates",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 697,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations discoverRelationships filters self-ref, low confidence, and deduplicates",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 582,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/dream-coverage.test.ts",
+            "name": "GnosysDreamEngine phase implementations discoverRelationships filters self-ref, low confidence, and deduplicates",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    }
+  ]
+}

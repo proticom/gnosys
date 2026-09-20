@@ -3671,6 +3671,515 @@
       ],
       "action": "rewritten",
       "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:98",
+      "beforeName": "GnosysDreamEngine.dream() orchestrator exits early when DB is unavailable",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "GnosysDreamEngine.dream() orchestrator reports an empty database before beginning Dream"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-empty",
+      "mutationIds": [
+        "g2-dream-empty"
+      ],
+      "provisionalBeforeClassification": "STRONG",
+      "classificationRevisionReason": "Global mocks replaced application provider factories (and some cases replaced DB or notification methods); audit now requires only external boundaries.",
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:106",
+      "beforeName": "GnosysDreamEngine.dream() orchestrator exits early when too few memories",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "GnosysDreamEngine.dream() orchestrator exits early when too few memories"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-min-count",
+      "mutationIds": [
+        "g2-dream-min-count"
+      ],
+      "provisionalBeforeClassification": "STRONG",
+      "classificationRevisionReason": "Global mocks replaced application provider factories (and some cases replaced DB or notification methods); audit now requires only external boundaries.",
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:114",
+      "beforeName": "GnosysDreamEngine.dream() orchestrator records provider-init error and increments consecutive failures",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "GnosysDreamEngine.dream() orchestrator records provider-init error and increments consecutive failures"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-provider-failure",
+      "mutationIds": [
+        "g2-dream-provider-failure"
+      ],
+      "provisionalBeforeClassification": "STRONG",
+      "classificationRevisionReason": "Global mocks replaced application provider factories (and some cases replaced DB or notification methods); audit now requires only external boundaries.",
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:128",
+      "beforeName": "GnosysDreamEngine.dream() orchestrator fires desktop notification at consecutive failure threshold",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "GnosysDreamEngine.dream() orchestrator fires desktop notification at consecutive failure threshold"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-provider-failure",
+      "mutationIds": [
+        "g2-dream-provider-failure"
+      ],
+      "provisionalBeforeClassification": "STRONG",
+      "classificationRevisionReason": "Global mocks replaced application provider factories (and some cases replaced DB or notification methods); audit now requires only external boundaries.",
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:140",
+      "beforeName": "GnosysDreamEngine.dream() orchestrator runs all phases on happy path with stubbed LLM",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "GnosysDreamEngine.dream() orchestrator runs all enabled phases through the configured provider"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-summary-body",
+      "mutationIds": [
+        "g2-dream-summary-body"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:181",
+      "beforeName": "GnosysDreamEngine.dream() orchestrator aborts at shouldStop checkpoint when abort requested",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "GnosysDreamEngine.dream() orchestrator aborts at shouldStop checkpoint when abort requested"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-abort",
+      "mutationIds": [
+        "g2-dream-abort"
+      ],
+      "provisionalBeforeClassification": "STRONG",
+      "classificationRevisionReason": "Global mocks replaced application provider factories (and some cases replaced DB or notification methods); audit now requires only external boundaries.",
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:191",
+      "beforeName": "GnosysDreamEngine.dream() orchestrator aborts when max runtime exceeded",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "GnosysDreamEngine.dream() orchestrator aborts when max runtime exceeded"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-runtime",
+      "mutationIds": [
+        "g2-dream-runtime"
+      ],
+      "provisionalBeforeClassification": "STRONG",
+      "classificationRevisionReason": "Global mocks replaced application provider factories (and some cases replaced DB or notification methods); audit now requires only external boundaries.",
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:219",
+      "beforeName": "GnosysDreamEngine.dream() orchestrator resets consecutive failures when LLM work succeeded",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "GnosysDreamEngine.dream() orchestrator resets consecutive failures when LLM work succeeded"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-success-reset",
+      "mutationIds": [
+        "g2-dream-success-reset"
+      ],
+      "provisionalBeforeClassification": "STRONG",
+      "classificationRevisionReason": "Global mocks replaced application provider factories (and some cases replaced DB or notification methods); audit now requires only external boundaries.",
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:241",
+      "beforeName": "GnosysDreamEngine phase implementations decaySweep updates stale memories and skips recent ones",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "GnosysDreamEngine phase implementations decaySweep updates stale memories and skips recent ones"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-decay-value",
+      "mutationIds": [
+        "g2-dream-decay-value"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:265",
+      "beforeName": "GnosysDreamEngine phase implementations critiquMemory rule arms produce review suggestions",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "GnosysDreamEngine phase implementations critiquMemory rule arms produce review suggestions"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-tag-review",
+      "mutationIds": [
+        "g2-dream-tag-review"
+      ],
+      "provisionalBeforeClassification": "STRONG",
+      "classificationRevisionReason": "Global mocks replaced application provider factories (and some cases replaced DB or notification methods); audit now requires only external boundaries.",
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:304",
+      "beforeName": "GnosysDreamEngine phase implementations llmCritique handles ok, review, needs-update, and malformed JSON",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "GnosysDreamEngine phase implementations llmCritique handles ok, review, needs-update, and malformed JSON"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-critique-action",
+      "mutationIds": [
+        "g2-dream-critique-action"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:329",
+      "beforeName": "GnosysDreamEngine phase implementations generateSummaries creates, skips unchanged, and updates summaries",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "GnosysDreamEngine phase implementations generateSummaries creates, skips unchanged, and updates summaries"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-summary-body",
+      "mutationIds": [
+        "g2-dream-summary-body"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:359",
+      "beforeName": "GnosysDreamEngine phase implementations summarizeCategory swallows provider errors without crashing",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "GnosysDreamEngine phase implementations summarizeCategory swallows provider errors without crashing"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-summary-error",
+      "mutationIds": [
+        "g2-dream-summary-error"
+      ],
+      "provisionalBeforeClassification": "STRONG",
+      "classificationRevisionReason": "Global mocks replaced application provider factories (and some cases replaced DB or notification methods); audit now requires only external boundaries.",
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:379",
+      "beforeName": "GnosysDreamEngine phase implementations discoverRelationships filters self-ref, low confidence, and deduplicates",
+      "beforeClassification": "WEAK",
+      "afterNames": [
+        "GnosysDreamEngine phase implementations discoverRelationships filters self-ref, low confidence, and deduplicates"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-relationship-label",
+      "mutationIds": [
+        "g2-dream-relationship-label"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:415",
+      "beforeName": "GnosysDreamEngine phase implementations findRelationships returns empty array on malformed JSON",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "GnosysDreamEngine phase implementations findRelationships returns empty array on malformed JSON"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-malformed-relationship",
+      "mutationIds": [
+        "g2-dream-malformed-relationship"
+      ],
+      "provisionalBeforeClassification": "STRONG",
+      "classificationRevisionReason": "Global mocks replaced application provider factories (and some cases replaced DB or notification methods); audit now requires only external boundaries.",
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:432",
+      "beforeName": "formatDreamReport formats happy path with suggestions and errors",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "formatDreamReport formats happy path with suggestions and errors"
+      ],
+      "evidence": "Report formatting contains literal decay count three, review count/action and error e1.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:463",
+      "beforeName": "formatDreamReport formats aborted report",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "formatDreamReport formats aborted report"
+      ],
+      "evidence": "Aborted report renders literal Aborted: halt.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:482",
+      "beforeName": "formatDreamReport formats empty report without suggestion or error headers",
+      "beforeClassification": "STRONG",
+      "afterNames": [
+        "formatDreamReport formats empty report without suggestion or error headers"
+      ],
+      "evidence": "Empty report renders duration while omitting suggestion/error section headers.",
+      "mutationIds": [],
+      "action": "kept",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:509",
+      "beforeName": "DreamScheduler constructor ignores prototype pollution keys",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "DreamScheduler ignores unknown options while honoring the configured idle threshold"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-explicit-idle",
+      "mutationIds": [
+        "g2-dream-explicit-idle"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:517",
+      "beforeName": "DreamScheduler start is no-op when disabled",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "DreamScheduler start is no-op when disabled"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-disabled",
+      "mutationIds": [
+        "g2-dream-disabled"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:524",
+      "beforeName": "DreamScheduler start is no-op when machine is not designated",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "DreamScheduler start is no-op when machine is not designated"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-designation",
+      "mutationIds": [
+        "g2-dream-designation"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:531",
+      "beforeName": "DreamScheduler start arms interval and triggers dream when designated and idle",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "DreamScheduler start arms interval and triggers dream when designated and idle"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-idle-default",
+      "mutationIds": [
+        "g2-dream-idle-default"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:562",
+      "beforeName": "DreamScheduler recordActivity aborts running engine",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "DreamScheduler recordActivity aborts running engine"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-abort",
+      "mutationIds": [
+        "g2-dream-abort"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:573",
+      "beforeName": "DreamScheduler stop clears interval and aborts running engine",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "DreamScheduler stop clears interval and aborts running engine"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-abort",
+      "mutationIds": [
+        "g2-dream-abort"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:588",
+      "beforeName": "DreamScheduler isDesignatedMachine returns false when getDb throws",
+      "beforeClassification": "COUPLED",
+      "afterNames": [],
+      "evidence": "Duplicate private-getDb throw injection removed. Real getDb only returns its field and cannot throw; designation rejection is covered by DreamScheduler start is no-op when machine is not designated (g2-dream-designation), and close/reopen is covered by SQLite recovery through public reads and search closes the native handle and reopens for fresh reads (g2-close-handle).",
+      "mutationIds": [
+        "g2-dream-designation",
+        "g2-close-handle"
+      ],
+      "action": "deleted",
+      "afterClassification": null,
+      "replacementNames": [
+        "DreamScheduler start is no-op when machine is not designated",
+        "SQLite recovery through public reads and search closes the native handle and reopens for fresh reads"
+      ]
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:597",
+      "beforeName": "DreamScheduler getLocalMachineId uses hostname fallback and caches meta",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "DreamScheduler derives and persists the hostname identity before checking designation"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-hostname",
+      "mutationIds": [
+        "g2-dream-hostname"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:615",
+      "beforeName": "DreamScheduler isDreaming reflects running state",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "DreamScheduler isDreaming reflects an actual pending provider call and completion"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-isrunning",
+      "mutationIds": [
+        "g2-dream-isrunning"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:623",
+      "beforeName": "DreamScheduler checkIdle swallows engine rejection and resets running",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "DreamScheduler releases the lock after a native read failure and runs the next idle cycle"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-release-lock",
+      "mutationIds": [
+        "g2-dream-release-lock"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/dream-coverage.test.ts:642",
+      "beforeName": "DEFAULT_DREAM_CONFIG has expected defaults",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "DreamScheduler default scheduler remains disabled until explicitly enabled"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-default-enabled",
+      "mutationIds": [
+        "g2-dream-default-enabled"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase3-hardening-pins.test.ts:21",
+      "beforeName": "dream crash-safety pins checkpoints fingerprints at every phase boundary",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "Dream crash recovery through persisted state checkpoints completed phase fingerprints before an interrupted run can finalize"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-phase-checkpoint",
+      "mutationIds": [
+        "g2-dream-phase-checkpoint"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase3-hardening-pins.test.ts:30",
+      "beforeName": "dream crash-safety pins scheduler acquires the cross-process dream lock before dreaming",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "Dream crash recovery through persisted state scheduler waits for another process to release the Dream lock before writing"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-dream-lock-owner",
+      "mutationIds": [
+        "g2-dream-lock-owner"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase3-hardening-pins.test.ts:39",
+      "beforeName": "sqlite recovery pins withRecovery uses the shared corruption detector (incl. SQLITE_NOTADB)",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "SQLite recovery through public reads and search retries a native SQLITE_NOTADB read and returns persisted content"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-notadb-recovery",
+      "mutationIds": [
+        "g2-notadb-recovery"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase3-hardening-pins.test.ts:43",
+      "beforeName": "sqlite recovery pins reopen() heals FTS triggers and invalidates the statement cache",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "SQLite recovery through public reads and search reopens cached reads and restores FTS insert, update and delete behavior"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-reopen-cache, g2-reopen-triggers",
+      "mutationIds": [
+        "g2-reopen-cache",
+        "g2-reopen-triggers"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase3-hardening-pins.test.ts:49",
+      "beforeName": "sqlite recovery pins close() invalidates the statement cache",
+      "beforeClassification": "COUPLED",
+      "afterNames": [
+        "SQLite recovery through public reads and search closes the native handle and reopens for fresh reads"
+      ],
+      "evidence": "Now asserts observable output; relevant production mutations were killed and restored runs passed: g2-close-handle",
+      "mutationIds": [
+        "g2-close-handle"
+      ],
+      "action": "rewritten",
+      "afterClassification": "STRONG"
+    },
+    {
+      "beforeId": "src/test/phase3-hardening-pins.test.ts:57",
+      "beforeName": "scoped search release pin projectRoot-scoped contexts own and release their GnosysSearch handle",
+      "beforeClassification": "COUPLED",
+      "afterNames": [],
+      "evidence": "Duplicate source pin removed. MCP central ToolContext release closes scoped database resources after an early missing-memory return inspects actual owned DB descriptors and kills g2-mcp-release-finally.",
+      "mutationIds": [
+        "g2-mcp-release-finally"
+      ],
+      "action": "deleted",
+      "afterClassification": null,
+      "replacementNames": [
+        "MCP central ToolContext release closes scoped database resources after an early missing-memory return"
+      ]
     }
   ],
   "additionalTests": [

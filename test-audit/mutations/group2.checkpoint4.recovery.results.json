@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "g2-notadb-recovery",
+      "file": "src/lib/db.ts",
+      "description": "Stop recovering a native SQLITE_NOTADB read.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 419,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "SQLite recovery through public reads and search retries a native SQLITE_NOTADB read and returns persisted content",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 408,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "SQLite recovery through public reads and search retries a native SQLITE_NOTADB read and returns persisted content",
+            "status": "failed",
+            "failures": [
+              "Error: file is not a database\n    at Database.<anonymous> (<repo>/src/test/phase3-hardening-pins.test.ts:56:27)\n    at Database.prepare (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/spy/dist/index.js:332:34)\n    at GnosysDB.prep (<repo>/src/lib/db.ts:676:22)\n    at <repo>/src/lib/db.ts:983:13\n    at GnosysDB.withRecovery (<repo>/src/lib/db.ts:684:14)\n    at GnosysDB.getMemory (<repo>/src/lib/db.ts:982:17)\n    at <repo>/src/test/phase3-hardening-pins.test.ts:58:15\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 407,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "SQLite recovery through public reads and search retries a native SQLITE_NOTADB read and returns persisted content",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase3-hardening-pins.test.ts",
+          "name": "SQLite recovery through public reads and search retries a native SQLITE_NOTADB read and returns persisted content"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-reopen-cache",
+      "file": "src/lib/db.ts",
+      "description": "Retain prepared statements from the closed connection on reopen.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 403,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "SQLite recovery through public reads and search reopens cached reads and restores FTS insert, update and delete behavior",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 396,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "SQLite recovery through public reads and search reopens cached reads and restores FTS insert, update and delete behavior",
+            "status": "failed",
+            "failures": [
+              "TypeError: The database connection is not open\n    at <repo>/src/lib/db.ts:982:57\n    at GnosysDB.withRecovery (<repo>/src/lib/db.ts:683:14)\n    at GnosysDB.getMemory (<repo>/src/lib/db.ts:981:17)\n    at <repo>/src/test/phase3-hardening-pins.test.ts:69:15\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 408,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "SQLite recovery through public reads and search reopens cached reads and restores FTS insert, update and delete behavior",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase3-hardening-pins.test.ts",
+          "name": "SQLite recovery through public reads and search reopens cached reads and restores FTS insert, update and delete behavior"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-reopen-triggers",
+      "file": "src/lib/db.ts",
+      "description": "Do not repair missing FTS triggers when reopening.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 395,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "SQLite recovery through public reads and search reopens cached reads and restores FTS insert, update and delete behavior",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 402,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "SQLite recovery through public reads and search reopens cached reads and restores FTS insert, update and delete behavior",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [] to deeply equal [ 'recovery-002' ]\n    at <repo>/src/test/phase3-hardening-pins.test.ts:74:67\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 400,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "SQLite recovery through public reads and search reopens cached reads and restores FTS insert, update and delete behavior",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase3-hardening-pins.test.ts",
+          "name": "SQLite recovery through public reads and search reopens cached reads and restores FTS insert, update and delete behavior"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "g2-close-handle",
+      "file": "src/lib/db.ts",
+      "description": "Leave the native SQLite connection open on close.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 399,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "SQLite recovery through public reads and search closes the native handle and reopens for fresh reads",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 406,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "SQLite recovery through public reads and search closes the native handle and reopens for fresh reads",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected [Function] to throw an error\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1552:16)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/phase3-hardening-pins.test.ts:84:48\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 417,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/phase3-hardening-pins.test.ts",
+            "name": "SQLite recovery through public reads and search closes the native handle and reopens for fresh reads",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/phase3-hardening-pins.test.ts",
+          "name": "SQLite recovery through public reads and search closes the native handle and reopens for fresh reads"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}
