@@ -48,7 +48,7 @@ describe("runAuditCommand (in-process invoke)", () => {
 
   it("renders a human-readable timeline for the empty case without erroring", async () => {
     await runAuditCommand({ days: "7" });
-    expect(logSpy).toHaveBeenCalled();
+    expect(logged()).toBe("No audit entries found for the specified period.");
     expect(errSpy).not.toHaveBeenCalled();
     expect(process.exitCode).toBeUndefined();
   });

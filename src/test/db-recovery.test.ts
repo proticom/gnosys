@@ -115,7 +115,9 @@ describe("DB recovery from SQLITE_CORRUPT", () => {
       }),
     ).not.toThrow();
 
-    expect(workspace.db.getMemory("recover-001")).not.toBeNull();
+    expect(workspace.db.getMemory("recover-001")).toMatchObject({
+      id: "recover-001", title: "Recover", content: "body", author: "ai", authority: "imported", scope: "user",
+    });
   });
 
   it("logAudit() retries successfully after a corrupt-handle error", () => {
@@ -131,6 +133,9 @@ describe("DB recovery from SQLITE_CORRUPT", () => {
         trace_id: null,
       }),
     ).not.toThrow();
+    expect(workspace.db.getAuditLog("audit-target")).toEqual([
+      expect.objectContaining({ operation: "write", memory_id: "audit-target", details: null, duration_ms: null, trace_id: null }),
+    ]);
   });
 
   it("getAllProjects() retries successfully after a corrupt-handle error", () => {
@@ -177,6 +182,6 @@ describe("DB recovery from SQLITE_CORRUPT", () => {
     // Easiest: nuke the DB file before invocation.
     rmSync(workspace.tmp, { recursive: true, force: true });
 
-    expect(() => workspace.db.getMemory("anything")).toThrow();
+    expect(() => workspace.db.getMemory("anything")).toThrow("Gnosys DB unrecoverable after reopen. The underlying file may be corrupted. Run 'gnosys doctor' for diagnostics; restore from a backup if needed.");
   });
 });

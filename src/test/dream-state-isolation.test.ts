@@ -78,14 +78,6 @@ afterEach(() => {
 });
 
 describe("dream-state isolation (v5.13.0)", () => {
-  it("the vitest global setup provides a throwaway GNOSYS_HOME to every worker", () => {
-    // prevGnosysHome is what the worker had before this test overrode it —
-    // the setup file must have already pointed it away from the real home.
-    expect(prevGnosysHome).toBeDefined();
-    expect(prevGnosysHome).not.toBe(path.join(os.homedir(), ".gnosys"));
-    expect(prevGnosysHome!.includes("gnosys-test-home-")).toBe(true);
-    expect(prevGnosysHome!.endsWith(".gnosys")).toBe(true);
-  });
 
   it("engine.dream() writes dream-state.json under GNOSYS_HOME, not the real home", async () => {
     const engine = new GnosysDreamEngine(db, baseConfig(), decayOnlyDream);

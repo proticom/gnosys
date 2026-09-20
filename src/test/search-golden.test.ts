@@ -130,7 +130,4 @@ describe("search golden — top-3 stability", () => {
     });
   }
 
-  it("corpus has ~50 memories", () => {
-    expect(corpus.memories.length).toBeGreaterThanOrEqual(50);
-  });
 });

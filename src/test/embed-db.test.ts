@@ -94,12 +94,17 @@ describe("backfillCentralDbEmbeddings", () => {
 
     expect(result).toEqual({ embedded: 1, total: 1 });
     expect(env.db.getEmbeddingCount()).toBe(6);
+    expect(env.db.getEmbedding("emb-1")).toEqual(Buffer.from(new Float32Array([36, 1, 0, 0]).buffer));
+    expect(env.db.getEmbedding("emb-new")).toEqual(Buffer.from(new Float32Array([38, 1, 0, 0]).buffer));
   });
 
   it("all mode regenerates every row (reindex semantics)", async () => {
     await backfillCentralDbEmbeddings(env.db, fakeEmbedder, { mode: "missing" });
+    for (let i = 1; i <= 5; i++) env.db.updateEmbedding(`emb-${i}`, Buffer.from(new Float32Array([99, 99, 99, 99]).buffer));
     const result = await backfillCentralDbEmbeddings(env.db, fakeEmbedder, { mode: "all" });
     expect(result).toEqual({ embedded: 5, total: 5 });
+    expect(env.db.getAllEmbeddings().map(({ embedding }) => Array.from(new Float32Array(embedding.buffer, embedding.byteOffset, 4))))
+      .toEqual([[36, 1, 0, 0], [36, 1, 0, 0], [36, 1, 0, 0], [36, 1, 0, 0], [36, 1, 0, 0]]);
   });
 
   it("respects the limit option and reports progress", async () => {
@@ -138,7 +143,7 @@ describe("embedMemoryIntoDb", () => {
     env.db.insertMemory(makeMemory({ id: "single-1", title: "Solo", content: "Solo content" }));
     const ok = await embedMemoryIntoDb(env.db, fakeEmbedder, "single-1");
     expect(ok).toBe(true);
-    expect(env.db.getEmbedding("single-1")).not.toBeNull();
+    expect(env.db.getEmbedding("single-1")).toEqual(Buffer.from(new Float32Array([35, 1, 0, 0]).buffer));
   });
 
   it("returns false for a missing memory id", async () => {

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "G1-pdf-password",
+    "file": "src/lib/pdfExtract.ts",
+    "search": "textResult = await parser.getText();",
+    "replace": "textResult = await parser.getText().catch(() => ({ total: 0, pages: [], text: \"\" }));",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "encrypted\\ PDF\\ returns\\ a\\ clear\\ password\\ error$",
+    "description": "Swallow password rejection and report empty PDF success",
+    "beforeIds": [
+      "src/test/ingest-fixtures.test.ts:110"
+    ]
+  }
+]

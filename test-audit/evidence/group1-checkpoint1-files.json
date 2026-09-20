@@ -1,0 +1,90 @@
+[
+  {
+    "path": "src/test/audit-invoke.test.ts",
+    "sha256": "014edf78d375453b8372241758964bb10db5304785e60238db797e83071e6fa4"
+  },
+  {
+    "path": "src/test/db-recovery.test.ts",
+    "sha256": "de1c12ff50935be8b6fdb0cd60c2bf9834795c80d34a95d003cf81895d8f5e0b"
+  },
+  {
+    "path": "src/test/dream-state-isolation.test.ts",
+    "sha256": "96b471263deeb670d9bc7199f95c11774d3da0f3ac775a8ad59182693d1e7204"
+  },
+  {
+    "path": "src/test/embed-db.test.ts",
+    "sha256": "541389947fe2336f1bed0061456c63c10e6115469f9dfb877f0e0f57552e033c"
+  },
+  {
+    "path": "src/test/embeddings-optional-dep.test.ts",
+    "sha256": "18d34c8392bc2ccaeb5c58f7fb1f5395caf422f1034dc9ef57a12bb838945314"
+  },
+  {
+    "path": "src/test/import.test.ts",
+    "sha256": "f1cfaa29862ded78514e4ce38b0341a167126ca1dad6b599a9608d14bbe9ad41"
+  },
+  {
+    "path": "src/test/ingest-fixtures.test.ts",
+    "sha256": "1d85f3118d204e8a97a4dcde89822791ccb095dad1993790bb9b4d60b1de5341"
+  },
+  {
+    "path": "src/test/ingest-special-paths.test.ts",
+    "sha256": "a94a5ba347d673dfbac431a507237fb72f6262cc51d9ab2c5f7ebe953c8a0f75"
+  },
+  {
+    "path": "src/test/lensing.test.ts",
+    "sha256": "6260f48a192bfab97f2f4b49dcc6e7bf73bfd209eb246beb60e3ae79cc117be9"
+  },
+  {
+    "path": "src/test/localDiskCheck.test.ts",
+    "sha256": "d04f7d4aed56e6ea7d26e4b238fe176f358c736c630ccc2332c82669be71be2f"
+  },
+  {
+    "path": "src/test/multimodal.test.ts",
+    "sha256": "4e9e5bc9c52fdd07306b382d1a76756da33ef110b635c716f698a25be6c3bde2"
+  },
+  {
+    "path": "src/test/progress.test.ts",
+    "sha256": "b17d92c1f02536e54eb4ed74262dc414f80ccafdb0f7e3f4d76565654cf99a4a"
+  },
+  {
+    "path": "src/test/search-golden.test.ts",
+    "sha256": "efb9b417c5136396d86d784cd8fffe8caf005627fe2fa8176eeef86fa0671a89"
+  },
+  {
+    "path": "src/test/setup-ui-atoms.test.ts",
+    "sha256": "0ca43280b8187e245234317fb6873062386a03769e1c034652ba8827c7722da5"
+  },
+  {
+    "path": "src/test/setup-ui-screen10.test.ts",
+    "sha256": "e5d40df1480454b19d8d48d623748d737ec4b67ab408543060495e800fdcaa51"
+  },
+  {
+    "path": "src/test/setup-ui-screen7.test.ts",
+    "sha256": "62c6cb15105d7e202a2cfdf10106dbc9c4d0275409ac9cd2a47072f9706925ff"
+  },
+  {
+    "path": "src/test/setupKeys.test.ts",
+    "sha256": "60be1bec9cca6421c81f9f35bfb286cf6fa16eb27e5e21c7742c63833332f943"
+  },
+  {
+    "path": "src/test/structuredIngest.test.ts",
+    "sha256": "3f823c24023113705992223792349754b57e23ef56a840ca91c13414f0b229c5"
+  },
+  {
+    "path": "src/test/tags.test.ts",
+    "sha256": "a5831d347595d94108bf8c22cf9f0a08dc823c1572504923c352431b54cadd6f"
+  },
+  {
+    "path": "src/test/timeline.test.ts",
+    "sha256": "cfa446a78a9473643e46d9977da2f26c542b3c4b6b4479d791d0d0141e63cecd"
+  },
+  {
+    "path": "src/test/v580-helpers.test.ts",
+    "sha256": "ef29ed7be5a249cef004b0a24c8b4407518e9eb1015f8fe66cb34edc247499c8"
+  },
+  {
+    "path": "src/test/webIndex.test.ts",
+    "sha256": "a283092a149e1163d421c441c770379fe4c26fbe6fb7bd55a3ee6d6bfb68c539"
+  }
+]

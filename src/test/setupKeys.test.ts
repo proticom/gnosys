@@ -1,537 +1,219 @@
 import { execSync } from "child_process";
-import fsSync from "fs";
+import fs from "fs";
 import os from "os";
 import path from "path";
+import { createInterface } from "readline/promises";
+import { PassThrough } from "stream";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { validateModel } from "../lib/modelValidation.js";
-import { askInput, askPassword, askYesNo, writeApiKey } from "../lib/setup.js";
-import {
-  listProviders,
-  renderProviderTable,
-  setupKeysTestHooks,
-} from "../lib/setupKeys.js";
+import { listProviders, renderProviderTable, runKeysSetup } from "../lib/setupKeys.js";
 
-vi.mock("child_process", () => ({
+vi.mock("child_process", async (importOriginal) => ({
+  ...await importOriginal<typeof import("child_process")>(),
   execSync: vi.fn(),
 }));
 
-vi.mock("../lib/modelValidation.js", () => ({
-  validateModel: vi.fn(),
-}));
-
-vi.mock("../lib/setup.js", () => ({
-  askInput: vi.fn(),
-  askPassword: vi.fn(),
-  askYesNo: vi.fn(),
-  printInfo: vi.fn(),
-  printStatus: vi.fn(),
-  writeApiKey: vi.fn(),
-}));
-
 describe("setup keys", () => {
-  const envBackup = { ...process.env };
+  const originalEnv = { ...process.env };
   const originalPlatform = process.platform;
-  const mockedExecSync = vi.mocked(execSync);
-  const mockedAskInput = vi.mocked(askInput);
-  const mockedAskPassword = vi.mocked(askPassword);
-  const mockedAskYesNo = vi.mocked(askYesNo);
-  const mockedValidateModel = vi.mocked(validateModel);
-  const mockedWriteApiKey = vi.mocked(writeApiKey);
-  let tempHome: string | undefined;
-  let logSpy: ReturnType<typeof vi.spyOn>;
+  let home: string;
+  let envPath: string;
+  let keychain: Record<string, string>;
+  let writes: string[];
+  let log: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
-    process.env = { ...envBackup };
-    clearProviderEnv();
-    mockedExecSync.mockReset();
-    mockedAskInput.mockReset();
-    mockedAskPassword.mockReset();
-    mockedAskYesNo.mockReset();
-    mockedValidateModel.mockReset();
-    mockedWriteApiKey.mockReset();
-    logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    process.env = { ...originalEnv };
+    for (const name of Object.keys(process.env)) {
+      if (/^(GNOSYS_.*KEY|[A-Z]+_API_KEY|VOYAGE_API_KEY)$/.test(name)) delete process.env[name];
+    }
+    delete process.env.VITEST;
+    home = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-key-workflow-"));
+    process.env.HOME = home;
+    vi.spyOn(os, "homedir").mockReturnValue(home);
+    writes = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => { writes.push(String(chunk)); return true; });
+    envPath = path.join(home, ".config", "gnosys", ".env");
+    fs.mkdirSync(path.dirname(envPath), { recursive: true });
+    fs.writeFileSync(envPath, "");
+    keychain = {};
+    Object.defineProperty(process, "platform", { value: "darwin" });
+    vi.mocked(execSync).mockImplementation((command) => {
+      const text = String(command);
+      const service = text.match(/-s "([^"]+)"/)?.[1];
+      if (!service) throw new Error("Unexpected OS command");
+      if (text.includes("add-generic-password")) {
+        keychain[service] = text.match(/-w "([^"]+)"/)?.[1] ?? "";
+        return "";
+      }
+      if (text.includes("delete-generic-password")) {
+        if (!(service in keychain)) throw new Error("Key not found");
+        delete keychain[service];
+        return "";
+      }
+      if (!(service in keychain)) throw new Error("Key not found");
+      return `${keychain[service]}\n`;
+    });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("{}", { status: 200 })));
+    log = vi.spyOn(console, "log").mockImplementation(() => {});
   });
 
   afterEach(() => {
-    logSpy.mockRestore();
-    process.env = { ...envBackup };
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+    process.env = { ...originalEnv };
     Object.defineProperty(process, "platform", { value: originalPlatform });
-    mockedExecSync.mockReset();
-    if (tempHome) {
-      fsSync.rmSync(tempHome, { recursive: true, force: true });
-      tempHome = undefined;
-    }
+    fs.rmSync(home, { recursive: true, force: true });
   });
 
-  function clearProviderEnv(): void {
-    for (const key of [
-      "GNOSYS_GLOBAL_ANTHROPIC_KEY",
-      "GNOSYS_ANTHROPIC_KEY",
-      "ANTHROPIC_API_KEY",
-      "GNOSYS_GLOBAL_OPENROUTER_KEY",
-      "GNOSYS_OPENROUTER_KEY",
-      "OPENROUTER_API_KEY",
-      "GNOSYS_GLOBAL_OPENAI_KEY",
-      "GNOSYS_OPENAI_KEY",
-      "OPENAI_API_KEY",
-      "GNOSYS_GLOBAL_XAI_KEY",
-      "GNOSYS_XAI_KEY",
-      "XAI_API_KEY",
-      "GNOSYS_GLOBAL_GOOGLE_KEY",
-      "GNOSYS_GOOGLE_KEY",
-      "GOOGLE_API_KEY",
-      "GNOSYS_GLOBAL_COHERE_KEY",
-      "GNOSYS_COHERE_KEY",
-      "COHERE_API_KEY",
-      "GNOSYS_GLOBAL_MISTRAL_KEY",
-      "GNOSYS_MISTRAL_KEY",
-      "MISTRAL_API_KEY",
-      "GNOSYS_GLOBAL_GROQ_KEY",
-      "GNOSYS_GROQ_KEY",
-      "GROQ_API_KEY",
-      "GNOSYS_GLOBAL_CUSTOM_KEY",
-      "GNOSYS_CUSTOM_KEY",
-      "CUSTOM_API_KEY",
-      "GNOSYS_LLM_API_KEY",
-    ]) {
-      delete process.env[key];
-    }
-  }
+  const output = () => log.mock.calls.map((args: unknown[]) => args.join(" ")).join("\n") + writes.join("");
+  const writeKeys = (text: string) => fs.writeFileSync(envPath, text);
+  const readKeys = () => fs.readFileSync(envPath, "utf8");
 
-  function writeGnosysDotenv(content: string): string {
-    tempHome = fsSync.mkdtempSync(path.join(os.tmpdir(), "gnosys-setup-keys-"));
-    process.env.HOME = tempHome;
-    const configDir = path.join(tempHome, ".config", "gnosys");
-    fsSync.mkdirSync(configDir, { recursive: true });
-    const envPath = path.join(configDir, ".env");
-    fsSync.writeFileSync(envPath, content, "utf-8");
-    return envPath;
-  }
-
-  function enableMockKeychain(values: Record<string, string> = {}): void {
-    Object.defineProperty(process, "platform", { value: "darwin" });
-    delete process.env.VITEST;
-    mockedExecSync.mockImplementation((command) => {
-      const commandText = String(command);
-      if (commandText.includes("add-generic-password")) {
-        return "";
-      }
-      if (commandText.includes("delete-generic-password")) {
-        return "";
-      }
-      const serviceName = Object.keys(values).find((service) =>
-        commandText.includes(`-s "${service}"`),
-      );
-      if (serviceName) {
-        return `${values[serviceName]}\n`;
-      }
-      throw new Error("missing keychain item");
+  async function runWizard(answers: string[]): Promise<string> {
+    const pending = [...answers];
+    const input = new PassThrough();
+    const sink = new PassThrough();
+    const rl = createInterface({ input, output: sink, terminal: false });
+    vi.spyOn(rl, "question").mockImplementation(async () => {
+      const next = pending.shift();
+      if (next === undefined) throw new Error("Wizard requested unexpected input");
+      return next;
     });
-  }
-
-  function keychainCommands(): string[] {
-    return mockedExecSync.mock.calls.map(([command]) => String(command));
+    try {
+      await runKeysSetup({ rl });
+      expect(pending).toEqual([]);
+      return output();
+    } finally {
+      rl.close();
+      input.destroy();
+      sink.destroy();
+    }
   }
 
   it("lists all known providers with env, keychain, dotenv, missing, and local statuses", async () => {
     process.env.GNOSYS_GLOBAL_ANTHROPIC_KEY = "anthropic-env-1111";
-    writeGnosysDotenv("GNOSYS_GLOBAL_OPENAI_KEY=openai-dotenv-2222\n");
-    enableMockKeychain({
-      GNOSYS_GLOBAL_OPENROUTER_KEY: "openrouter-keychain-3333",
-    });
-
+    writeKeys("GNOSYS_GLOBAL_OPENAI_KEY=openai-dotenv-2222\n");
+    keychain.GNOSYS_GLOBAL_OPENROUTER_KEY = "openrouter-keychain-3333";
     const providers = await listProviders();
-    const table = renderProviderTable(providers);
-
-    expect(providers.map((provider) => provider.provider)).toEqual([
-      "anthropic",
-      "openrouter",
-      "openai",
-      "xai",
-      "google",
-      "cohere",
-      "mistral",
-      "groq",
-      "ollama",
-      "lmstudio",
-      "custom",
+    expect(providers.map(({ provider }) => provider)).toEqual([
+      "anthropic", "openrouter", "openai", "xai", "google", "cohere", "mistral", "groq", "ollama", "lmstudio", "custom",
     ]);
-    expect(providers).toHaveLength(11);
-    expect(providers.find((provider) => provider.provider === "anthropic")).toMatchObject({
-      found: true,
-      location: "env",
-      envVarName: "GNOSYS_GLOBAL_ANTHROPIC_KEY",
-    });
-    expect(providers.find((provider) => provider.provider === "openrouter")).toMatchObject({
-      found: true,
-      location: "keychain",
-      serviceName: "GNOSYS_GLOBAL_OPENROUTER_KEY",
-    });
-    expect(providers.find((provider) => provider.provider === "openai")).toMatchObject({
-      found: true,
-      location: "dotenv",
-      envVarName: "GNOSYS_GLOBAL_OPENAI_KEY",
-    });
-    expect(providers.find((provider) => provider.provider === "xai")).toMatchObject({
-      found: false,
-      location: "none",
-    });
-    expect(providers.find((provider) => provider.provider === "ollama")).toMatchObject({
-      found: false,
-      location: "none",
-    });
-    expect(providers.find((provider) => provider.provider === "lmstudio")).toMatchObject({
-      found: false,
-      location: "none",
-    });
-    expect(table).toContain("ollama");
-    expect(table).toContain("lmstudio");
-    expect(table).toContain("N/A (local)");
+    expect(providers.slice(0, 4)).toMatchObject([
+      { provider: "anthropic", found: true, location: "env", envVarName: "GNOSYS_GLOBAL_ANTHROPIC_KEY" },
+      { provider: "openrouter", found: true, location: "keychain", serviceName: "GNOSYS_GLOBAL_OPENROUTER_KEY" },
+      { provider: "openai", found: true, location: "dotenv", envVarName: "GNOSYS_GLOBAL_OPENAI_KEY" },
+      { provider: "xai", found: false, location: "none" },
+    ]);
+    expect(renderProviderTable(providers)).toContain("N/A (local)");
   });
 
-  it("detects every configured storage location for a provider independently", () => {
+  it("detects every configured storage location for a provider independently", async () => {
     process.env.GNOSYS_GLOBAL_OPENROUTER_KEY = "global-env-1111";
     process.env.GNOSYS_OPENROUTER_KEY = "provider-env-2222";
     process.env.OPENROUTER_API_KEY = "legacy-env-3333";
     process.env.GNOSYS_LLM_API_KEY = "generic-env-4444";
-    writeGnosysDotenv([
-      "GNOSYS_GLOBAL_OPENROUTER_KEY=global-dotenv-5555",
-      "GNOSYS_OPENROUTER_KEY=provider-dotenv-6666",
-      "OPENROUTER_API_KEY=legacy-dotenv-7777",
-      "GNOSYS_LLM_API_KEY=generic-dotenv-8888",
-      "",
-    ].join("\n"));
-    enableMockKeychain({
-      GNOSYS_GLOBAL_OPENROUTER_KEY: "global-keychain-9999",
-      GNOSYS_OPENROUTER_KEY: "provider-keychain-0000",
-    });
-
-    const locations = setupKeysTestHooks.listKeyLocations("openrouter");
-
-    expect(locations.map((location) => ({
-      location: location.location,
-      envVarName: location.envVarName,
-      serviceName: location.serviceName,
-      value: location.value,
-    }))).toEqual([
-      {
-        location: "env",
-        envVarName: "GNOSYS_GLOBAL_OPENROUTER_KEY",
-        serviceName: undefined,
-        value: "global-env-1111",
-      },
-      {
-        location: "keychain",
-        envVarName: undefined,
-        serviceName: "GNOSYS_GLOBAL_OPENROUTER_KEY",
-        value: "global-keychain-9999",
-      },
-      {
-        location: "dotenv",
-        envVarName: "GNOSYS_GLOBAL_OPENROUTER_KEY",
-        serviceName: undefined,
-        value: "global-dotenv-5555",
-      },
-      {
-        location: "env",
-        envVarName: "GNOSYS_OPENROUTER_KEY",
-        serviceName: undefined,
-        value: "provider-env-2222",
-      },
-      {
-        location: "keychain",
-        envVarName: undefined,
-        serviceName: "GNOSYS_OPENROUTER_KEY",
-        value: "provider-keychain-0000",
-      },
-      {
-        location: "dotenv",
-        envVarName: "GNOSYS_OPENROUTER_KEY",
-        serviceName: undefined,
-        value: "provider-dotenv-6666",
-      },
-      {
-        location: "env",
-        envVarName: "OPENROUTER_API_KEY",
-        serviceName: undefined,
-        value: "legacy-env-3333",
-      },
-      {
-        location: "dotenv",
-        envVarName: "OPENROUTER_API_KEY",
-        serviceName: undefined,
-        value: "legacy-dotenv-7777",
-      },
-      {
-        location: "env",
-        envVarName: "GNOSYS_LLM_API_KEY",
-        serviceName: undefined,
-        value: "generic-env-4444",
-      },
-      {
-        location: "dotenv",
-        envVarName: "GNOSYS_LLM_API_KEY",
-        serviceName: undefined,
-        value: "generic-dotenv-8888",
-      },
-    ]);
+    writeKeys("GNOSYS_GLOBAL_OPENROUTER_KEY=global-dotenv-5555\nGNOSYS_OPENROUTER_KEY=provider-dotenv-6666\nOPENROUTER_API_KEY=legacy-dotenv-7777\nGNOSYS_LLM_API_KEY=generic-dotenv-8888\n");
+    keychain = { GNOSYS_GLOBAL_OPENROUTER_KEY: "global-keychain-9999", GNOSYS_OPENROUTER_KEY: "provider-keychain-0000" };
+    const rendered = await runWizard(["2", "b", "q"]);
+    expect(rendered).toContain("Stored in: Env Var (GNOSYS_GLOBAL_OPENROUTER_KEY)");
+    for (const suffix of ["1111", "2222", "3333", "4444", "5555", "6666", "7777", "8888", "9999", "0000"]) {
+      expect(rendered).toContain(suffix);
+    }
+    expect(rendered).toContain("Also found:");
+    expect(rendered).not.toContain("global-env-1111");
   });
 
-  it("does not list key locations for local providers", () => {
+  it("does not list key locations for local providers", async () => {
     process.env.GNOSYS_GLOBAL_OLLAMA_KEY = "should-not-matter";
-
-    expect(setupKeysTestHooks.listKeyLocations("ollama")).toEqual([]);
-    expect(setupKeysTestHooks.listKeyLocations("lmstudio")).toEqual([]);
+    const rendered = await runWizard(["9", "b", "10", "b", "q"]);
+    expect(rendered.match(/Status: {4}N\/A \(local provider\)/g)).toHaveLength(2);
+    expect(rendered).not.toContain("should-not-matter");
+    expect(rendered).toContain("[t]  Test local provider");
   });
 
   it("supports the custom provider slot", async () => {
     process.env.GNOSYS_GLOBAL_CUSTOM_KEY = "custom-env-1234";
-
-    const providers = await listProviders();
-
-    expect(providers.find((provider) => provider.provider === "custom")).toMatchObject({
-      found: true,
-      location: "env",
-      envVarName: "GNOSYS_GLOBAL_CUSTOM_KEY",
+    expect((await listProviders()).find(({ provider }) => provider === "custom")).toMatchObject({
+      found: true, location: "env", envVarName: "GNOSYS_GLOBAL_CUSTOM_KEY", lastFour: "••••1234",
     });
-    expect(setupKeysTestHooks.listKeyLocations("custom")).toEqual([
-      expect.objectContaining({
-        location: "env",
-        envVarName: "GNOSYS_GLOBAL_CUSTOM_KEY",
-        value: "custom-env-1234",
-      }),
-    ]);
   });
 
   it("removes only the requested provider keys from the gnosys dotenv file", async () => {
-    const envPath = writeGnosysDotenv([
-      "# keep this comment",
-      "GNOSYS_GLOBAL_OPENROUTER_KEY=delete-global",
-      "GNOSYS_OPENROUTER_KEY=delete-provider",
-      "GNOSYS_GLOBAL_OPENAI_KEY=keep-openai",
-      "  OPENROUTER_API_KEY = delete-legacy",
-      "GNOSYS_LLM_API_KEY=keep-generic",
-      "",
-    ].join("\n"));
-
-    const removed = await setupKeysTestHooks.removeDotenvKeys([
-      "GNOSYS_GLOBAL_OPENROUTER_KEY",
-      "GNOSYS_OPENROUTER_KEY",
-      "OPENROUTER_API_KEY",
-    ]);
-
-    expect(removed).toBe(3);
-    expect(fsSync.readFileSync(envPath, "utf-8")).toBe([
-      "# keep this comment",
-      "GNOSYS_GLOBAL_OPENAI_KEY=keep-openai",
-      "GNOSYS_LLM_API_KEY=keep-generic",
-      "",
-    ].join("\n"));
+    writeKeys("# keep this comment\nGNOSYS_GLOBAL_OPENROUTER_KEY=delete-global\nGNOSYS_OPENROUTER_KEY=keep-alias\nGNOSYS_GLOBAL_OPENAI_KEY=keep-openai\n");
+    await runWizard(["2", "d", "y", "n", "q"]);
+    expect(readKeys()).toBe("# keep this comment\nGNOSYS_OPENROUTER_KEY=keep-alias\nGNOSYS_GLOBAL_OPENAI_KEY=keep-openai\n");
   });
 
   it("validates an updated key before writing it to dotenv", async () => {
-    mockedAskPassword.mockResolvedValue("valid-openrouter-key");
-    mockedValidateModel.mockResolvedValue({ ok: true });
-    mockedAskInput.mockResolvedValue("2");
-
-    await setupKeysTestHooks.updateKey({} as never, "openrouter");
-
-    expect(mockedValidateModel).toHaveBeenCalledWith(
-      "openrouter",
-      "nvidia/nemotron-3-super-120b-a12b:free",
-      "valid-openrouter-key",
-    );
-    expect(mockedWriteApiKey).toHaveBeenCalledWith(
-      "openrouter",
-      "valid-openrouter-key",
-      { scope: "global" },
-    );
+    const rendered = await runWizard(["2", "u", "valid-openrouter-key", "2", "b", "q"]);
+    expect(readKeys()).toBe("GNOSYS_GLOBAL_OPENROUTER_KEY=valid-openrouter-key\n");
+    expect(rendered).toContain("✓ Key is valid");
+    expect(vi.mocked(fetch).mock.calls[0]?.[1]?.headers).toMatchObject({ Authorization: "Bearer valid-openrouter-key" });
   });
 
   it("rejects an invalid key before choosing a storage destination", async () => {
-    mockedAskPassword.mockResolvedValue("invalid-openrouter-key");
-    mockedValidateModel.mockResolvedValue({ ok: false, error: "HTTP 401: Invalid API key" });
-
-    await setupKeysTestHooks.updateKey({} as never, "openrouter");
-
-    expect(mockedValidateModel).toHaveBeenCalledOnce();
-    expect(mockedAskInput).not.toHaveBeenCalled();
-    expect(mockedWriteApiKey).not.toHaveBeenCalled();
-    expect(mockedExecSync).not.toHaveBeenCalled();
+    writeKeys("GNOSYS_GLOBAL_OPENAI_KEY=keep-openai\n");
+    vi.mocked(fetch).mockResolvedValue(new Response('{"error":{"message":"bad key"}}', { status: 401 }));
+    const rendered = await runWizard(["2", "u", "bad-key", "b", "q"]);
+    expect(readKeys()).toBe("GNOSYS_GLOBAL_OPENAI_KEY=keep-openai\n");
+    expect(keychain).toEqual({});
+    expect(rendered).toContain("401 Unauthorized - bad key");
+    expect(rendered).toContain("key not stored because validation failed");
   });
 
   it("routes destination choice to keychain, dotenv, or manual env instructions", async () => {
-    enableMockKeychain();
-    mockedAskInput.mockResolvedValueOnce("1");
-    await setupKeysTestHooks.chooseKeyDestination(
-      {} as never,
-      "anthropic",
-      "anthropic-keychain-key",
-    );
-    expect(mockedExecSync).toHaveBeenCalledWith(
-      expect.stringContaining("security add-generic-password"),
-      expect.objectContaining({ stdio: "pipe" }),
-    );
-    expect(mockedExecSync).toHaveBeenCalledWith(
-      expect.stringContaining('GNOSYS_GLOBAL_ANTHROPIC_KEY'),
-      expect.objectContaining({ stdio: "pipe" }),
-    );
-
-    mockedAskInput.mockResolvedValueOnce("2");
-    await setupKeysTestHooks.chooseKeyDestination(
-      {} as never,
-      "anthropic",
-      "anthropic-dotenv-key",
-    );
-    expect(mockedWriteApiKey).toHaveBeenCalledWith(
-      "anthropic",
-      "anthropic-dotenv-key",
-      { scope: "global" },
-    );
-
-    mockedAskInput.mockResolvedValueOnce("3");
-    await setupKeysTestHooks.chooseKeyDestination(
-      {} as never,
-      "anthropic",
-      "anthropic-manual-key",
-    );
-    expect(mockedWriteApiKey).toHaveBeenCalledTimes(1);
-    expect(mockedExecSync).toHaveBeenCalledTimes(1);
+    await runWizard(["2", "u", "keychain-key", "1", "b", "q"]);
+    await runWizard(["2", "u", "dotenv-key", "2", "b", "q"]);
+    const rendered = await runWizard(["2", "u", "manual-key", "3", "b", "q"]);
+    expect(keychain).toEqual({ GNOSYS_GLOBAL_OPENROUTER_KEY: "keychain-key" });
+    expect(readKeys()).toBe("GNOSYS_GLOBAL_OPENROUTER_KEY=dotenv-key\n");
+    expect(rendered).toContain("No key was stored by Gnosys.");
   });
 
   it("copies a dotenv-only key to keychain and removes the dotenv line", async () => {
-    const envPath = writeGnosysDotenv([
-      "GNOSYS_GLOBAL_OPENROUTER_KEY=dotenv-openrouter-key",
-      "GNOSYS_GLOBAL_OPENAI_KEY=keep-openai",
-      "",
-    ].join("\n"));
-    mockedValidateModel.mockResolvedValue({ ok: true });
-    mockedAskYesNo.mockResolvedValue(true);
-    enableMockKeychain();
-
-    await setupKeysTestHooks.copyToKeychain({} as never, "openrouter");
-
-    expect(mockedValidateModel).toHaveBeenCalledWith(
-      "openrouter",
-      "nvidia/nemotron-3-super-120b-a12b:free",
-      "dotenv-openrouter-key",
-    );
-    expect(keychainCommands()).toEqual(
-      expect.arrayContaining([
-        expect.stringContaining("security add-generic-password"),
-        expect.stringContaining('GNOSYS_GLOBAL_OPENROUTER_KEY'),
-        expect.stringContaining('dotenv-openrouter-key'),
-      ]),
-    );
-    expect(fsSync.readFileSync(envPath, "utf-8")).toBe([
-      "GNOSYS_GLOBAL_OPENAI_KEY=keep-openai",
-      "",
-    ].join("\n"));
+    writeKeys("GNOSYS_GLOBAL_OPENROUTER_KEY=copy-this-key\nGNOSYS_GLOBAL_OPENAI_KEY=keep-openai\n");
+    await runWizard(["2", "c", "y", "b", "q"]);
+    expect(keychain).toEqual({ GNOSYS_GLOBAL_OPENROUTER_KEY: "copy-this-key" });
+    expect(readKeys()).toBe("GNOSYS_GLOBAL_OPENAI_KEY=keep-openai\n");
   });
 
   it("does not copy to keychain or change dotenv when validation fails", async () => {
-    const envPath = writeGnosysDotenv([
-      "GNOSYS_GLOBAL_OPENROUTER_KEY=bad-dotenv-key",
-      "GNOSYS_GLOBAL_OPENAI_KEY=keep-openai",
-      "",
-    ].join("\n"));
-    mockedValidateModel.mockResolvedValue({ ok: false, error: "HTTP 401: Invalid API key" });
-    mockedAskYesNo.mockResolvedValue(true);
-
-    await setupKeysTestHooks.copyToKeychain({} as never, "openrouter");
-
-    expect(mockedValidateModel).toHaveBeenCalledOnce();
-    expect(mockedAskYesNo).not.toHaveBeenCalled();
-    expect(keychainCommands()).not.toEqual(
-      expect.arrayContaining([expect.stringContaining("security add-generic-password")]),
-    );
-    expect(fsSync.readFileSync(envPath, "utf-8")).toBe([
-      "GNOSYS_GLOBAL_OPENROUTER_KEY=bad-dotenv-key",
-      "GNOSYS_GLOBAL_OPENAI_KEY=keep-openai",
-      "",
-    ].join("\n"));
+    writeKeys("GNOSYS_GLOBAL_OPENROUTER_KEY=invalid-key\n");
+    vi.mocked(fetch).mockResolvedValue(new Response("bad key", { status: 401 }));
+    const rendered = await runWizard(["2", "c", "b", "q"]);
+    expect(keychain).toEqual({});
+    expect(readKeys()).toBe("GNOSYS_GLOBAL_OPENROUTER_KEY=invalid-key\n");
+    expect(rendered).toContain("copy cancelled because validation failed");
   });
 
   it("does not duplicate a key that is already in keychain", async () => {
-    enableMockKeychain({
-      GNOSYS_GLOBAL_OPENROUTER_KEY: "already-keychain-key",
-    });
-    mockedValidateModel.mockResolvedValue({ ok: true });
-    mockedAskYesNo.mockResolvedValue(true);
-
-    await setupKeysTestHooks.copyToKeychain({} as never, "openrouter");
-
-    expect(mockedValidateModel).not.toHaveBeenCalled();
-    expect(mockedAskYesNo).not.toHaveBeenCalled();
-    expect(keychainCommands()).not.toEqual(
-      expect.arrayContaining([expect.stringContaining("security add-generic-password")]),
-    );
+    keychain.GNOSYS_GLOBAL_OPENROUTER_KEY = "already-secure";
+    const rendered = await runWizard(["2", "c", "b", "q"]);
+    expect(keychain).toEqual({ GNOSYS_GLOBAL_OPENROUTER_KEY: "already-secure" });
+    expect(rendered).toContain("key is already in Keychain");
+    expect(fetch).not.toHaveBeenCalled();
   });
 
   it("deletes a dotenv-only key after confirmation", async () => {
-    const envPath = writeGnosysDotenv([
-      "GNOSYS_GLOBAL_OPENROUTER_KEY=delete-dotenv-key",
-      "GNOSYS_GLOBAL_OPENAI_KEY=keep-openai",
-      "",
-    ].join("\n"));
-    mockedAskYesNo.mockResolvedValue(true);
-
-    const result = await setupKeysTestHooks.deleteKey({} as never, "openrouter");
-
-    expect(result).toBe("list");
-    expect(mockedAskYesNo).toHaveBeenCalledWith({} as never, "Delete?", false);
-    expect(fsSync.readFileSync(envPath, "utf-8")).toBe([
-      "GNOSYS_GLOBAL_OPENAI_KEY=keep-openai",
-      "",
-    ].join("\n"));
+    writeKeys("GNOSYS_GLOBAL_OPENROUTER_KEY=delete-me\nGNOSYS_GLOBAL_OPENAI_KEY=keep-openai\n");
+    await runWizard(["2", "d", "y", "q"]);
+    expect(readKeys()).toBe("GNOSYS_GLOBAL_OPENAI_KEY=keep-openai\n");
+    expect(output()).toContain("deleted 1 stored key");
   });
 
   it("deletes a keychain-only key after confirmation", async () => {
-    enableMockKeychain({
-      GNOSYS_GLOBAL_OPENROUTER_KEY: "delete-keychain-key",
-    });
-    mockedAskYesNo.mockResolvedValue(true);
-
-    const result = await setupKeysTestHooks.deleteKey({} as never, "openrouter");
-
-    expect(result).toBe("list");
-    expect(keychainCommands()).toEqual(
-      expect.arrayContaining([
-        expect.stringContaining("security delete-generic-password"),
-        expect.stringContaining('GNOSYS_GLOBAL_OPENROUTER_KEY'),
-      ]),
-    );
+    keychain.GNOSYS_GLOBAL_OPENROUTER_KEY = "delete-me";
+    await runWizard(["2", "d", "y", "q"]);
+    expect(keychain).toEqual({});
+    expect(output()).toContain("deleted 1 stored key");
   });
 
   it("deletes all removable keychain and dotenv copies when requested", async () => {
-    const envPath = writeGnosysDotenv([
-      "GNOSYS_GLOBAL_OPENROUTER_KEY=delete-dotenv-copy",
-      "GNOSYS_GLOBAL_OPENAI_KEY=keep-openai",
-      "",
-    ].join("\n"));
-    enableMockKeychain({
-      GNOSYS_GLOBAL_OPENROUTER_KEY: "delete-keychain-copy",
-    });
-    mockedAskYesNo.mockResolvedValueOnce(true).mockResolvedValueOnce(true);
-
-    const result = await setupKeysTestHooks.deleteKey({} as never, "openrouter");
-
-    expect(result).toBe("list");
-    expect(mockedAskYesNo).toHaveBeenCalledWith({} as never, "Delete?", false);
-    expect(mockedAskYesNo).toHaveBeenCalledWith(
-      {} as never,
-      "Delete all stored copies that Gnosys can remove?",
-      false,
-    );
-    expect(keychainCommands()).toEqual(
-      expect.arrayContaining([
-        expect.stringContaining("security delete-generic-password"),
-        expect.stringContaining('GNOSYS_GLOBAL_OPENROUTER_KEY'),
-      ]),
-    );
-    expect(fsSync.readFileSync(envPath, "utf-8")).toBe([
-      "GNOSYS_GLOBAL_OPENAI_KEY=keep-openai",
-      "",
-    ].join("\n"));
+    keychain.GNOSYS_GLOBAL_OPENROUTER_KEY = "delete-keychain";
+    writeKeys("GNOSYS_GLOBAL_OPENROUTER_KEY=delete-dotenv\nGNOSYS_GLOBAL_OPENAI_KEY=keep-openai\n");
+    await runWizard(["2", "d", "y", "y", "q"]);
+    expect(keychain).toEqual({});
+    expect(readKeys()).toBe("GNOSYS_GLOBAL_OPENAI_KEY=keep-openai\n");
+    expect(output()).toContain("deleted 2 stored keys");
   });
 });

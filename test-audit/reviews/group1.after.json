@@ -1,0 +1,1239 @@
+{
+  "tests": [
+    {
+      "beforeId": "src/test/dream-state-isolation.test.ts:81",
+      "beforeName": "the vitest global setup provides a throwaway GNOSYS_HOME to every worker",
+      "beforeClassification": "COUPLED",
+      "action": "deleted",
+      "afterNames": [],
+      "afterClassification": null,
+      "evidence": "Harness-environment assertion has no application call; engine.dream() writes dream-state.json under GNOSYS_HOME, not the real home tests actual isolation.",
+      "mutationIds": []
+    },
+    {
+      "beforeId": "src/test/search-golden.test.ts:133",
+      "beforeName": "corpus has ~50 memories",
+      "beforeClassification": "HOLLOW",
+      "action": "deleted",
+      "afterNames": [],
+      "afterClassification": null,
+      "evidence": "Static corpus-size fixture check has no application call; actual search golden top-three cases exercise this same corpus.",
+      "mutationIds": [],
+      "structuralReason": "Only asserts the static corpus fixture contains at least 50 memories; no application code is invoked."
+    },
+    {
+      "beforeId": "src/test/timeline.test.ts:59",
+      "beforeName": "groups by day",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "groupByPeriod groups by day"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects wrong calendar-day labels preserve bucket count.",
+      "mutationIds": [
+        "G1-timeline-day"
+      ]
+    },
+    {
+      "beforeId": "src/test/timeline.test.ts:65",
+      "beforeName": "groups by week",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "groupByPeriod groups by week"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects shift every week number by one.",
+      "mutationIds": [
+        "G1-timeline-week"
+      ]
+    },
+    {
+      "beforeId": "src/test/timeline.test.ts:75",
+      "beforeName": "returns entries sorted chronologically",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "groupByPeriod returns entries sorted chronologically"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects drop all timeline entries.",
+      "mutationIds": [
+        "G1-timeline-sort"
+      ]
+    },
+    {
+      "beforeId": "src/test/timeline.test.ts:82",
+      "beforeName": "tracks modified separately from created",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "groupByPeriod tracks modified separately from created"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects use creation count as modification count.",
+      "mutationIds": [
+        "G1-timeline-modified"
+      ]
+    },
+    {
+      "beforeId": "src/test/v580-helpers.test.ts:79",
+      "beforeName": "short mode without project name still truncates",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "idFormat formatMemoryId short mode without project name still truncates"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects discard projectless display identifier.",
+      "mutationIds": [
+        "G1-id-projectless"
+      ]
+    },
+    {
+      "beforeId": "src/test/v580-helpers.test.ts:85",
+      "beforeName": "defaults to short when no format is passed",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "idFormat formatMemoryId defaults to short when no format is passed"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects discard default-format display identifier.",
+      "mutationIds": [
+        "G1-id-default"
+      ]
+    },
+    {
+      "beforeId": "src/test/v580-helpers.test.ts:115",
+      "beforeName": "when tty=false, returns the same string as formatMemoryId",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "idFormat formatMemoryIdHyperlink when tty=false, returns the same string as formatMemoryId"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects wrong formatter result is reused as expected value.",
+      "mutationIds": [
+        "G1-id-nontty"
+      ]
+    },
+    {
+      "beforeId": "src/test/v580-helpers.test.ts:121",
+      "beforeName": "when tty=true, wraps the display text in OSC8 escapes pointing at the full id",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "idFormat formatMemoryIdHyperlink when tty=true, wraps the display text in OSC8 escapes pointing at the full id"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects remove terminal hyperlink escape framing.",
+      "mutationIds": [
+        "G1-id-tty"
+      ]
+    },
+    {
+      "beforeId": "src/test/v580-helpers.test.ts:130",
+      "beforeName": "works without a projectName (global/personal memories)",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "idFormat formatMemoryIdHyperlink works without a projectName (global/personal memories)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return uri instead of projectless clickable label.",
+      "mutationIds": [
+        "G1-id-projectless-tty"
+      ]
+    },
+    {
+      "beforeId": "src/test/progress.test.ts:9",
+      "beforeName": "returns a no-op progress instance when verbose is false",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "createProgress returns a no-op progress instance when verbose is false"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects emit unwanted stderr in quiet mode.",
+      "mutationIds": [
+        "G1-progress-noop"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIndex.test.ts:100",
+      "beforeName": "weights relevance keywords higher than content",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "buildIndex weights relevance keywords higher than content"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects omit all content-body postings.",
+      "mutationIds": [
+        "G1-web-weight"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIndex.test.ts:123",
+      "beforeName": "respects stop-word filtering",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "buildIndex respects stop-word filtering"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects keep quick token key but lose its postings.",
+      "mutationIds": [
+        "G1-web-stop"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIndex.test.ts:138",
+      "beforeName": "disables stop-word filtering when option is false",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "buildIndex disables stop-word filtering when option is false"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects keep stop-word key but lose its postings.",
+      "mutationIds": [
+        "G1-web-stop-disabled"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIndex.test.ts:161",
+      "beforeName": "includes archived documents when includeArchived is true",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "buildIndex includes archived documents when includeArchived is true"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects duplicate active id in place of archived document.",
+      "mutationIds": [
+        "G1-web-archived"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIndex.test.ts:169",
+      "beforeName": "computes correct content hashes",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "buildIndex computes correct content hashes"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects write constant-shaped content digest.",
+      "mutationIds": [
+        "G1-web-hash"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIndex.test.ts:206",
+      "beforeName": "produces deterministic output for same input",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "buildIndex produces deterministic output for same input"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return consistently empty index for populated corpus.",
+      "mutationIds": [
+        "G1-web-determinism"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIndex.test.ts:249",
+      "beforeName": "returns same result as sync version",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "buildIndex (async) returns same result as sync version"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return empty index through sync and async paths.",
+      "mutationIds": [
+        "G1-web-async"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIndex.test.ts:261",
+      "beforeName": "creates a valid JSON file",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "writeIndex creates a valid JSON file"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose document/posting content during serialization.",
+      "mutationIds": [
+        "G1-web-write"
+      ]
+    },
+    {
+      "beforeId": "src/test/webIndex.test.ts:275",
+      "beforeName": "overwrites existing index file",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "writeIndex overwrites existing index file"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace old index with header-only document.",
+      "mutationIds": [
+        "G1-web-overwrite"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-ui-atoms.test.ts:125",
+      "beforeName": "tokens \u2014 color() wraps text with reset",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "setup/ui atoms \u2014 Phase A tokens \u2014 color() wraps text with reset"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects omit requested opening color.",
+      "mutationIds": [
+        "G1-color"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-ui-screen10.test.ts:90",
+      "beforeName": "renders the failed section when there are failures",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Screen 10 \u2014 sync-projects render renders the failed section when there are failures"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects drop failed project detail while keeping line count.",
+      "mutationIds": [
+        "G1-failed-rows"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-ui-screen10.test.ts:129",
+      "beforeName": "renders dashboard summary with collapsed paths",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "Screen 10 \u2014 sync-projects render renders dashboard summary with collapsed paths"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects render wrong dashboard html output path.",
+      "mutationIds": [
+        "G1-dashboard-paths"
+      ]
+    },
+    {
+      "beforeId": "src/test/setup-ui-screen7.test.ts:88",
+      "beforeName": "renders sub-tasks with \u25cb when disabled",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "Screen 7 \u2014 dream render renders sub-tasks with \u25cb when disabled"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects omit disabled task rows entirely.",
+      "mutationIds": [
+        "G1-dream-disabled"
+      ]
+    },
+    {
+      "beforeId": "src/test/structuredIngest.test.ts:142",
+      "beforeName": "validates against expected structure",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "extractStructuredFrontmatter validates against expected structure"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects leave required keys with unusable empty values.",
+      "mutationIds": [
+        "G1-structured-fields"
+      ]
+    },
+    {
+      "beforeId": "src/test/structuredIngest.test.ts:166",
+      "beforeName": "returns correct term scores across corpus",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "computeTfIdf returns correct term scores across corpus"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects flatten distinct tf-idf scores to one.",
+      "mutationIds": [
+        "G1-tfidf-score"
+      ]
+    },
+    {
+      "beforeId": "src/test/structuredIngest.test.ts:183",
+      "beforeName": "handles single-document corpus",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "computeTfIdf handles single-document corpus"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects ignore repeated term frequencies.",
+      "mutationIds": [
+        "G1-tfidf-frequency"
+      ]
+    },
+    {
+      "beforeId": "src/test/structuredIngest.test.ts:212",
+      "beforeName": "selects top N terms per document",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "computeTfIdf selects top N terms per document"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects drop every selected top term.",
+      "mutationIds": [
+        "G1-tfidf-topn"
+      ]
+    },
+    {
+      "beforeId": "src/test/tags.test.ts:75",
+      "beforeName": "adds a tag to a new category",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysTagRegistry addTag adds a tag to a new category"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects store tag under wrong category.",
+      "mutationIds": [
+        "G1-tag-category"
+      ]
+    },
+    {
+      "beforeId": "src/test/tags.test.ts:88",
+      "beforeName": "falls back to DEFAULT_REGISTRY when tags.json is missing",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "GnosysTagRegistry edge cases falls back to DEFAULT_REGISTRY when tags.json is missing"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace default domain vocabulary.",
+      "mutationIds": [
+        "G1-tag-default"
+      ]
+    },
+    {
+      "beforeId": "src/test/localDiskCheck.test.ts:5",
+      "beforeName": "matches LOCAL DISK ONLY phrase exactly",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "localDiskCheck matches LOCAL DISK ONLY phrase exactly"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects change accepted confirmation phrase and exported expected value together.",
+      "mutationIds": [
+        "G1-local-ack"
+      ]
+    },
+    {
+      "beforeId": "src/test/embeddings-optional-dep.test.ts:33",
+      "beforeName": "returns a 384-dim vector when transformers is available",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "embeddings optional dep (@huggingface/transformers) returns a 384-dim vector when transformers is available"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace actual embedding with all-zero vector.",
+      "mutationIds": [
+        "G1-embedding-values"
+      ]
+    },
+    {
+      "beforeId": "src/test/lensing.test.ts:45",
+      "beforeName": "filters by status",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "applyLens \u2014 single filters filters by status"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
+      "mutationIds": [
+        "G1-lens-status"
+      ]
+    },
+    {
+      "beforeId": "src/test/lensing.test.ts:50",
+      "beforeName": "filters by multiple statuses",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "applyLens \u2014 single filters filters by multiple statuses"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
+      "mutationIds": [
+        "G1-lens-statuses"
+      ]
+    },
+    {
+      "beforeId": "src/test/lensing.test.ts:67",
+      "beforeName": "filters by confidence range",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "applyLens \u2014 single filters filters by confidence range"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
+      "mutationIds": [
+        "G1-lens-confidence"
+      ]
+    },
+    {
+      "beforeId": "src/test/lensing.test.ts:82",
+      "beforeName": "filters by created date range",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "applyLens \u2014 single filters filters by created date range"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
+      "mutationIds": [
+        "G1-lens-created"
+      ]
+    },
+    {
+      "beforeId": "src/test/lensing.test.ts:87",
+      "beforeName": "filters by modified date range",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "applyLens \u2014 single filters filters by modified date range"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
+      "mutationIds": [
+        "G1-lens-modified"
+      ]
+    },
+    {
+      "beforeId": "src/test/lensing.test.ts:97",
+      "beforeName": "combines multiple criteria in one filter",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "applyLens \u2014 single filters combines multiple criteria in one filter"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects ignore confidence condition in compound filter.",
+      "mutationIds": [
+        "G1-lens-combined"
+      ]
+    },
+    {
+      "beforeId": "src/test/multimodal.test.ts:202",
+      "beforeName": "splits text at paragraph boundaries",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "chunkSplitter splitIntoChunks splits text at paragraph boundaries"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects drop first character of each produced text chunk.",
+      "mutationIds": [
+        "G1-chunk-paragraph"
+      ]
+    },
+    {
+      "beforeId": "src/test/multimodal.test.ts:223",
+      "beforeName": "splits oversized paragraphs at sentence boundaries",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "chunkSplitter splitIntoChunks splits oversized paragraphs at sentence boundaries"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects drop first character of each produced text chunk.",
+      "mutationIds": [
+        "G1-chunk-sentence"
+      ]
+    },
+    {
+      "beforeId": "src/test/multimodal.test.ts:243",
+      "beforeName": "respects targetSize option",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "chunkSplitter splitIntoChunks respects targetSize option"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects drop first character of each produced text chunk.",
+      "mutationIds": [
+        "G1-chunk-target"
+      ]
+    },
+    {
+      "beforeId": "src/test/multimodal.test.ts:274",
+      "beforeName": "assigns sequential index values",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "chunkSplitter splitIntoChunks assigns sequential index values"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects drop every chunk before index assertions.",
+      "mutationIds": [
+        "G1-chunk-index"
+      ]
+    },
+    {
+      "beforeId": "src/test/multimodal.test.ts:287",
+      "beforeName": "preserves page metadata",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "chunkSplitter splitSegments preserves page metadata"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects drop every metadata-bearing chunk.",
+      "mutationIds": [
+        "G1-chunk-page"
+      ]
+    },
+    {
+      "beforeId": "src/test/multimodal.test.ts:302",
+      "beforeName": "preserves timerange metadata",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "chunkSplitter splitSegments preserves timerange metadata"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects drop every metadata-bearing chunk.",
+      "mutationIds": [
+        "G1-chunk-timerange"
+      ]
+    },
+    {
+      "beforeId": "src/test/multimodal.test.ts:315",
+      "beforeName": "merges undersized segments with same page",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "chunkSplitter splitSegments merges undersized segments with same page"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose segment text while preserving chunk shape.",
+      "mutationIds": [
+        "G1-chunk-merge"
+      ]
+    },
+    {
+      "beforeId": "src/test/multimodal.test.ts:333",
+      "beforeName": "handles segments with empty text",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "chunkSplitter splitSegments handles segments with empty text"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose segment text while preserving chunk shape.",
+      "mutationIds": [
+        "G1-chunk-empty"
+      ]
+    },
+    {
+      "beforeId": "src/test/multimodal.test.ts:385",
+      "beforeName": "storeAttachment copies file and generates UUID",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "attachments storeAttachment copies file and generates UUID"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects write wrong attachment bytes while preserving metadata.",
+      "mutationIds": [
+        "G1-attachment-bytes"
+      ]
+    },
+    {
+      "beforeId": "src/test/multimodal.test.ts:488",
+      "beforeName": "GnosysConfigSchema includes multimodal defaults",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "config multimodal schema GnosysConfigSchema includes multimodal defaults"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects change default chunk size while retaining schema fields.",
+      "mutationIds": [
+        "G1-multimodal-defaults"
+      ]
+    },
+    {
+      "beforeId": "src/test/embed-db.test.ts:89",
+      "beforeName": "missing mode is incremental \u2014 already-embedded rows are untouched",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "backfillCentralDbEmbeddings missing mode is incremental \u2014 already-embedded rows are untouched"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects overwrite preexisting vectors while correctly counting only missing rows.",
+      "mutationIds": [
+        "G1-embedding-incremental"
+      ]
+    },
+    {
+      "beforeId": "src/test/embed-db.test.ts:99",
+      "beforeName": "all mode regenerates every row (reindex semantics)",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "backfillCentralDbEmbeddings all mode regenerates every row (reindex semantics)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects skip writes during all-mode reindex but keep success counters.",
+      "mutationIds": [
+        "G1-embedding-reindex"
+      ]
+    },
+    {
+      "beforeId": "src/test/embed-db.test.ts:137",
+      "beforeName": "embeds a single memory",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "embedMemoryIntoDb embeds a single memory"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects store zero bytes in place of the generated vector.",
+      "mutationIds": [
+        "G1-embedding-single"
+      ]
+    },
+    {
+      "beforeId": "src/test/lensing.test.ts:72",
+      "beforeName": "filters by author",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "applyLens \u2014 single filters filters by author"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
+      "mutationIds": [
+        "G1-lens-author-corrected"
+      ]
+    },
+    {
+      "beforeId": "src/test/lensing.test.ts:77",
+      "beforeName": "filters by authority",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "applyLens \u2014 single filters filters by authority"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return unrelated input records with the same number of matches.",
+      "mutationIds": [
+        "G1-lens-authority-corrected"
+      ]
+    },
+    {
+      "beforeId": "src/test/setupKeys.test.ts:136",
+      "beforeName": "lists all known providers with env, keychain, dotenv, missing, and local statuses",
+      "beforeClassification": "STRONG",
+      "action": "rewritten",
+      "afterNames": [
+        "setup keys lists all known providers with env, keychain, dotenv, missing, and local statuses"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects drop provider inventory.",
+      "mutationIds": [
+        "G1-key-list"
+      ]
+    },
+    {
+      "beforeId": "src/test/setupKeys.test.ts:192",
+      "beforeName": "detects every configured storage location for a provider independently",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "setup keys detects every configured storage location for a provider independently"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects hide secondary configured key locations.",
+      "mutationIds": [
+        "G1-key-locations"
+      ]
+    },
+    {
+      "beforeId": "src/test/setupKeys.test.ts:280",
+      "beforeName": "does not list key locations for local providers",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "setup keys does not list key locations for local providers"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects display missing api-key warning for local provider.",
+      "mutationIds": [
+        "G1-key-local"
+      ]
+    },
+    {
+      "beforeId": "src/test/setupKeys.test.ts:287",
+      "beforeName": "supports the custom provider slot",
+      "beforeClassification": "STRONG",
+      "action": "rewritten",
+      "afterNames": [
+        "setup keys supports the custom provider slot"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects drop supported custom-provider entry.",
+      "mutationIds": [
+        "G1-key-custom"
+      ]
+    },
+    {
+      "beforeId": "src/test/setupKeys.test.ts:306",
+      "beforeName": "removes only the requested provider keys from the gnosys dotenv file",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "setup keys removes only the requested provider keys from the gnosys dotenv file"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects skip selected credential deletion write.",
+      "mutationIds": [
+        "G1-key-remove-selected"
+      ]
+    },
+    {
+      "beforeId": "src/test/setupKeys.test.ts:332",
+      "beforeName": "validates an updated key before writing it to dotenv",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "setup keys validates an updated key before writing it to dotenv"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects skip validated credential persistence.",
+      "mutationIds": [
+        "G1-key-save-dotenv"
+      ]
+    },
+    {
+      "beforeId": "src/test/setupKeys.test.ts:351",
+      "beforeName": "rejects an invalid key before choosing a storage destination",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "setup keys rejects an invalid key before choosing a storage destination"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects offer storage after failed credential validation.",
+      "mutationIds": [
+        "G1-key-reject-update"
+      ]
+    },
+    {
+      "beforeId": "src/test/setupKeys.test.ts:363",
+      "beforeName": "routes destination choice to keychain, dotenv, or manual env instructions",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "setup keys routes destination choice to keychain, dotenv, or manual env instructions"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects report secure-store success without saving key.",
+      "mutationIds": [
+        "G1-key-destinations"
+      ]
+    },
+    {
+      "beforeId": "src/test/setupKeys.test.ts:402",
+      "beforeName": "copies a dotenv-only key to keychain and removes the dotenv line",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "setup keys copies a dotenv-only key to keychain and removes the dotenv line"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects leave plaintext source credential after secure copy.",
+      "mutationIds": [
+        "G1-key-copy-cleanup"
+      ]
+    },
+    {
+      "beforeId": "src/test/setupKeys.test.ts:432",
+      "beforeName": "does not copy to keychain or change dotenv when validation fails",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "setup keys does not copy to keychain or change dotenv when validation fails"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects proceed to copy confirmation despite invalid key.",
+      "mutationIds": [
+        "G1-key-reject-copy"
+      ]
+    },
+    {
+      "beforeId": "src/test/setupKeys.test.ts:455",
+      "beforeName": "does not duplicate a key that is already in keychain",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "setup keys does not duplicate a key that is already in keychain"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects validate and offer copy for already-secure credential.",
+      "mutationIds": [
+        "G1-key-copy-idempotent"
+      ]
+    },
+    {
+      "beforeId": "src/test/setupKeys.test.ts:471",
+      "beforeName": "deletes a dotenv-only key after confirmation",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "setup keys deletes a dotenv-only key after confirmation"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects keep plaintext key after user confirms deletion.",
+      "mutationIds": [
+        "G1-key-delete-dotenv"
+      ]
+    },
+    {
+      "beforeId": "src/test/setupKeys.test.ts:489",
+      "beforeName": "deletes a keychain-only key after confirmation",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "setup keys deletes a keychain-only key after confirmation"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects claim removal without deleting secure-store secret.",
+      "mutationIds": [
+        "G1-key-delete-keychain"
+      ]
+    },
+    {
+      "beforeId": "src/test/setupKeys.test.ts:506",
+      "beforeName": "deletes all removable keychain and dotenv copies when requested",
+      "beforeClassification": "COUPLED",
+      "action": "rewritten",
+      "afterNames": [
+        "setup keys deletes all removable keychain and dotenv copies when requested"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects remove secure-store key but leave plaintext duplicate.",
+      "mutationIds": [
+        "G1-key-delete-both"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-fixtures.test.ts:46",
+      "beforeName": "normal PDF ingests without crashing",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "ingest adversarial fixtures normal PDF ingests without crashing"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects reject every file before parsing or returning the required outcome.",
+      "mutationIds": [
+        "G1-pdf-normal"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-fixtures.test.ts:54",
+      "beforeName": "0-byte text file is handled gracefully",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "ingest adversarial fixtures 0-byte text file is handled gracefully"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects reject every file before parsing or returning the required outcome.",
+      "mutationIds": [
+        "G1-text-empty"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-fixtures.test.ts:88",
+      "beforeName": "corrupt DOCX returns a clear error",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "ingest adversarial fixtures corrupt DOCX returns a clear error"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects reject every file before parsing or returning the required outcome.",
+      "mutationIds": [
+        "G1-docx-error"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-fixtures.test.ts:104",
+      "beforeName": "PDF with embedded JS is handled without executing JS",
+      "beforeClassification": "HOLLOW",
+      "action": "rewritten",
+      "afterNames": [
+        "ingest adversarial fixtures PDF with embedded JS is handled without executing JS"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects reject every file before parsing or returning the required outcome.",
+      "mutationIds": [
+        "G1-pdf-js",
+        "G1-pdf-js-execution"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-fixtures.test.ts:64",
+      "beforeName": "UTF-8 BOM text file is handled gracefully",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "ingest adversarial fixtures UTF-8 BOM text file is handled gracefully"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace decoded bom text with unrelated content.",
+      "mutationIds": [
+        "G1-text-bom"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-special-paths.test.ts:35",
+      "beforeName": "`ingests ${JSON.stringify(name)}`",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "ingestion of special-character paths ingests \"has spaces.txt\"",
+        "ingestion of special-character paths ingests \"unicod\u00e9-caf\u00e9.txt\"",
+        "ingestion of special-character paths ingests \"emoji-\ud83c\udf89-file.txt\"",
+        "ingestion of special-character paths ingests \"trailing space .txt\""
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose extracted text title for special-character file paths.",
+      "mutationIds": [
+        "G1-special-paths"
+      ],
+      "beforeNames": [
+        "ingestion of special-character paths ingests \"has spaces.txt\"",
+        "ingestion of special-character paths ingests \"unicod\u00e9-caf\u00e9.txt\"",
+        "ingestion of special-character paths ingests \"emoji-\ud83c\udf89-file.txt\"",
+        "ingestion of special-character paths ingests \"trailing space .txt\""
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-fixtures.test.ts:110",
+      "beforeName": "encrypted PDF returns a clear error (TODO: add minimal encrypted sample)",
+      "beforeClassification": "DEAD",
+      "action": "rewritten",
+      "afterNames": [
+        "ingest adversarial fixtures encrypted PDF returns a clear password error"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects swallow password rejection and report empty pdf success.",
+      "mutationIds": [
+        "G1-pdf-password"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-fixtures.test.ts:74",
+      "beforeName": "oversized text file hits size cap (no OOM)",
+      "beforeClassification": "STRONG",
+      "action": "rewritten",
+      "afterNames": [
+        "ingest adversarial fixtures oversized text file hits size cap (no OOM)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace actionable size-limit error with unrelated error.",
+      "mutationIds": [
+        "G1-file-size-error"
+      ]
+    },
+    {
+      "beforeId": "src/test/ingest-fixtures.test.ts:98",
+      "beforeName": "non-existent path throws a clear error",
+      "beforeClassification": "STRONG",
+      "action": "rewritten",
+      "afterNames": [
+        "ingest adversarial fixtures non-existent path throws a clear error"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace missing-file error with unrelated failure.",
+      "mutationIds": [
+        "G1-missing-file-error"
+      ]
+    },
+    {
+      "beforeId": "src/test/import.test.ts:129",
+      "beforeName": "imports JSONL (one JSON object per line)",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "JSONL import imports JSONL (one JSON object per line)"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose jsonl record titles while keeping record count.",
+      "mutationIds": [
+        "G1-import-jsonl"
+      ]
+    },
+    {
+      "beforeId": "src/test/import.test.ts:166",
+      "beforeName": "includes unmapped fields as extra context",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "field mapping includes unmapped fields as extra context"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects drop unmapped fields from stored import content.",
+      "mutationIds": [
+        "G1-import-extra"
+      ]
+    },
+    {
+      "beforeId": "src/test/import.test.ts:293",
+      "beforeName": "reports what would be imported without writing",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "dry run reports what would be imported without writing"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects write records despite dry-run request.",
+      "mutationIds": [
+        "G1-import-dryrun"
+      ]
+    },
+    {
+      "beforeId": "src/test/import.test.ts:320",
+      "beforeName": "writes multiple records without per-record commits when batching",
+      "beforeClassification": "MISLABELED",
+      "action": "rewritten",
+      "afterNames": [
+        "batch commit persists every record of a batch in the central database"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects report imported batch without any memory writes.",
+      "mutationIds": [
+        "G1-import-batch"
+      ]
+    },
+    {
+      "beforeId": "src/test/import.test.ts:347",
+      "beforeName": "continues processing when individual records fail",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "error handling continues processing when individual records fail"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects fail every record while preserving total processed count.",
+      "mutationIds": [
+        "G1-import-failure"
+      ]
+    },
+    {
+      "beforeId": "src/test/import.test.ts:393",
+      "beforeName": "estimates structured mode as fast",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "estimateDuration estimates structured mode as fast"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects ignore structured record count.",
+      "mutationIds": [
+        "G1-duration-structured"
+      ]
+    },
+    {
+      "beforeId": "src/test/import.test.ts:397",
+      "beforeName": "estimates LLM mode as slower",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "estimateDuration estimates LLM mode as slower"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects return wrong llm duration in valid minute-shaped format.",
+      "mutationIds": [
+        "G1-duration-llm"
+      ]
+    },
+    {
+      "beforeId": "src/test/audit-invoke.test.ts:49",
+      "beforeName": "renders a human-readable timeline for the empty case without erroring",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "runAuditCommand (in-process invoke) renders a human-readable timeline for the empty case without erroring"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects replace human-readable empty audit timeline.",
+      "mutationIds": [
+        "G1-audit-empty"
+      ]
+    },
+    {
+      "beforeId": "src/test/db-recovery.test.ts:84",
+      "beforeName": "insertMemory() retries successfully after a corrupt-handle error",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "DB recovery from SQLITE_CORRUPT insertMemory() retries successfully after a corrupt-handle error"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose title and content on recovered insert.",
+      "mutationIds": [
+        "G1-recovery-insert"
+      ]
+    },
+    {
+      "beforeId": "src/test/db-recovery.test.ts:121",
+      "beforeName": "logAudit() retries successfully after a corrupt-handle error",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "DB recovery from SQLITE_CORRUPT logAudit() retries successfully after a corrupt-handle error"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects skip recovered audit write entirely.",
+      "mutationIds": [
+        "G1-recovery-audit"
+      ]
+    },
+    {
+      "beforeId": "src/test/db-recovery.test.ts:167",
+      "beforeName": "throws a clear message if reopen also fails",
+      "beforeClassification": "WEAK",
+      "action": "rewritten",
+      "afterNames": [
+        "DB recovery from SQLITE_CORRUPT throws a clear message if reopen also fails"
+      ],
+      "afterClassification": "STRONG",
+      "evidence": "Literal observable result now rejects lose actionable reopen-failure diagnosis.",
+      "mutationIds": [
+        "G1-recovery-error"
+      ]
+    }
+  ]
+}

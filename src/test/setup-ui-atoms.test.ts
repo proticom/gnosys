@@ -123,9 +123,7 @@ describe("setup/ui atoms — Phase A", () => {
   });
 
   it("tokens — color() wraps text with reset", async () => {
-    const { color, c } = await load();
-    const out = color(c.accent, "x");
-    expect(out.endsWith("\x1b[0m")).toBe(true);
-    expect(out.includes("x")).toBe(true);
+    const { color } = await load();
+    expect(color("\x1b[38;5;167m", "x")).toBe("\x1b[38;5;167mx\x1b[0m");
   });
 });

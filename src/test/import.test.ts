@@ -10,15 +10,19 @@ import { performImport, formatImportSummary, estimateDuration } from "../lib/imp
 import { GnosysStore } from "../lib/store.js";
 import { GnosysTagRegistry } from "../lib/tags.js";
 import { GnosysIngestion } from "../lib/ingest.js";
+import { GnosysDB } from "../lib/db.js";
+import Database from "better-sqlite3";
 
 let tmpDir: string;
 let store: GnosysStore;
 let tagRegistry: GnosysTagRegistry;
 let ingestion: GnosysIngestion;
 let dataDir: string;
+let db: GnosysDB;
 
 beforeEach(async () => {
   tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "gnosys-import-test-"));
+  db = new GnosysDB(path.join(tmpDir, "central"));
   store = new GnosysStore(tmpDir);
   await store.init();
   tagRegistry = new GnosysTagRegistry(tmpDir);
@@ -29,6 +33,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
+  db.close();
   await fs.rm(tmpDir, { recursive: true, force: true });
 });
 
@@ -139,9 +144,14 @@ describe("JSONL import", () => {
       data: filePath,
       mapping: { name: "title", group: "category" },
       mode: "structured",
-    });
+    }, db);
 
-    expect(result.imported).toHaveLength(2);
+    expect(result.imported).toEqual([
+      { title: "Spinach", category: "vegetables", path: "vegetables/spinach.md" },
+      { title: "Rice", category: "grains", path: "grains/rice.md" },
+    ]);
+    expect(db.getAllMemories().map(({ title, category }) => ({ title, category })).sort((a, b) => a.title.localeCompare(b.title)))
+      .toEqual([{ title: "Rice", category: "grains" }, { title: "Spinach", category: "vegetables" }]);
   });
 });
 
@@ -175,12 +185,13 @@ describe("field mapping", () => {
       data: filePath,
       mapping: { name: "title", group: "category" },
       mode: "structured",
-    });
+    }, db);
 
     expect(result.imported).toHaveLength(1);
     // In DB-only mode, verify the import result contains the expected data
     expect(result.imported[0].title).toBe("Chicken");
     expect(result.imported[0].category).toBe("poultry");
+    expect(db.getAllMemories().map(({ content }) => content)).toEqual(["# Chicken\n\nprotein: 31g\niron: 0.9mg"]);
   });
 
   it("slugifies category names", async () => {
@@ -304,20 +315,22 @@ describe("dry run", () => {
       mapping: { name: "title", group: "category" },
       mode: "structured",
       dryRun: true,
-    });
+    }, db);
 
     expect(result.imported).toHaveLength(2);
 
-    // Verify nothing was actually written
-    const memories = await store.getAllMemories();
-    expect(memories).toHaveLength(0);
+    expect(result.imported).toEqual([
+      { title: "Apple", category: "fruits", path: "fruits/apple.md" },
+      { title: "Carrot", category: "vegetables", path: "vegetables/carrot.md" },
+    ]);
+    expect(db.getAllMemories()).toEqual([]);
   });
 });
 
 // ─── Batch Commit ────────────────────────────────────────────────────────
 
 describe("batch commit", () => {
-  it("writes multiple records without per-record commits when batching", async () => {
+  it("persists every record of a batch in the central database", async () => {
     const data = Array.from({ length: 5 }, (_, i) => ({
       name: `Food ${i}`,
       group: "test",
@@ -331,13 +344,10 @@ describe("batch commit", () => {
       mapping: { name: "title", group: "category" },
       mode: "structured",
       batchCommit: true,
-    });
+    }, db);
 
     expect(result.imported).toHaveLength(5);
-    // In DB-only mode, store.getAllMemories() won't find .md files.
-    // Verify via the import result instead.
-    const titles = result.imported.map((r) => r.title).sort();
-    expect(titles).toHaveLength(5);
+    expect(db.getAllMemories().map(({ title }) => title).sort()).toEqual(["Food 0", "Food 1", "Food 2", "Food 3", "Food 4"]);
   });
 });
 
@@ -351,6 +361,9 @@ describe("error handling", () => {
       { name: "", group: "" }, // This should still process (as "Untitled")
       { name: "Carrot", group: "Vegetables" },
     ];
+    const database = new Database(db.getDbPath());
+    database.exec("CREATE TRIGGER reject_untitled BEFORE INSERT ON memories WHEN NEW.title = 'Untitled' BEGIN SELECT RAISE(ABORT, 'invalid title'); END;");
+    database.close();
     const filePath = path.join(dataDir, "mixed.json");
     await fs.writeFile(filePath, JSON.stringify(data));
 
@@ -359,10 +372,12 @@ describe("error handling", () => {
       data: filePath,
       mapping: { name: "title", group: "category" },
       mode: "structured",
-    });
+    }, db);
 
-    // All should process (empty name becomes "Untitled")
-    expect(result.imported.length + result.failed.length + result.skipped.length).toBe(3);
+    expect(result.imported.map(({ title }) => title).sort()).toEqual(["Apple", "Carrot"]);
+    expect(result.failed).toEqual([{ record: "Untitled", error: "invalid title" }]);
+    expect(result.skipped).toEqual([]);
+    expect(db.getAllMemories().map(({ title }) => title).sort()).toEqual(["Apple", "Carrot"]);
   });
 });
 
@@ -391,11 +406,11 @@ describe("formatImportSummary", () => {
 
 describe("estimateDuration", () => {
   it("estimates structured mode as fast", () => {
-    expect(estimateDuration(100, "structured")).toMatch(/~\d+s/);
+    expect(estimateDuration(100, "structured")).toBe("~5s");
   });
 
   it("estimates LLM mode as slower", () => {
     const est = estimateDuration(365, "llm", 5);
-    expect(est).toMatch(/~\d+m/);
+    expect(est).toBe("~2m");
   });
 });

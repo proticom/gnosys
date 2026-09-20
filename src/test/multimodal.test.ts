@@ -202,12 +202,10 @@ describe("chunkSplitter", () => {
     it("splits text at paragraph boundaries", () => {
       const text = "Paragraph one about cats.\n\nParagraph two about dogs.\n\nParagraph three about birds.";
       const chunks = splitIntoChunks(text, { targetSize: 60, minSize: 10 });
-      // Each paragraph is ~25 chars, target is 60, so two paragraphs per chunk
-      expect(chunks.length).toBeGreaterThanOrEqual(1);
-      // Verify no chunk contains broken mid-paragraph text
-      for (const chunk of chunks) {
-        expect(chunk.text.length).toBeGreaterThan(0);
-      }
+      expect(chunks).toEqual([
+        { text: "Paragraph one about cats.\n\nParagraph two about dogs.", index: 0 },
+        { text: "Paragraph three about birds.", index: 1 },
+      ]);
     });
 
     it("merges small paragraphs into a single chunk", () => {
@@ -233,6 +231,8 @@ describe("chunkSplitter", () => {
       });
 
       expect(chunks.length).toBeGreaterThan(1);
+      expect(chunks.map((chunk) => chunk.text).join(" ")).toBe(longSentences);
+      expect(chunks.every((chunk) => chunk.text.endsWith("paragraph."))).toBe(true);
       // No chunk should greatly exceed maxSize (sentences may push slightly over)
       for (const chunk of chunks) {
         // Allow some overflow for sentence boundaries
@@ -249,8 +249,9 @@ describe("chunkSplitter", () => {
       const smallChunks = splitIntoChunks(paragraphs, { targetSize: 200, minSize: 50 });
       const largeChunks = splitIntoChunks(paragraphs, { targetSize: 2000, minSize: 50 });
 
-      // Smaller target should produce more chunks
-      expect(smallChunks.length).toBeGreaterThan(largeChunks.length);
+      expect([smallChunks.length, largeChunks.length]).toEqual([10, 1]);
+      expect(smallChunks.map((chunk) => chunk.text).join("\n\n")).toBe(paragraphs);
+      expect(largeChunks.map((chunk) => chunk.text).join("\n\n")).toBe(paragraphs);
     });
 
     it("handles single paragraph text", () => {
@@ -277,9 +278,8 @@ describe("chunkSplitter", () => {
       ).join("\n\n");
 
       const chunks = splitIntoChunks(text, { targetSize: 100, minSize: 10 });
-      for (let i = 0; i < chunks.length; i++) {
-        expect(chunks[i].index).toBe(i);
-      }
+      expect(chunks.map((chunk) => chunk.index)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      expect(chunks.map((chunk) => chunk.text).join("\n\n")).toBe(text);
     });
   });
 
@@ -292,11 +292,11 @@ describe("chunkSplitter", () => {
       ];
 
       const chunks = splitSegments(segments, { targetSize: 1500, minSize: 50 });
-      // Each chunk should have a sourcePage set
-      for (const chunk of chunks) {
-        expect(chunk.sourcePage).toBeDefined();
-        expect(["1", "2", "3"]).toContain(chunk.sourcePage);
-      }
+      expect(chunks.map(({ text, sourcePage }) => ({ text, sourcePage }))).toEqual([
+        { text: "Content from page one. It has enough text to stand alone as a chunk segment.", sourcePage: "1" },
+        { text: "Content from page two. It also has enough text to stand alone as a chunk segment.", sourcePage: "2" },
+        { text: "Content from page three. More text here to ensure it meets the minimum size.", sourcePage: "3" },
+      ]);
     });
 
     it("preserves timerange metadata", () => {
@@ -306,10 +306,10 @@ describe("chunkSplitter", () => {
       ];
 
       const chunks = splitSegments(segments, { targetSize: 1500, minSize: 50 });
-      for (const chunk of chunks) {
-        expect(chunk.sourceTimerange).toBeDefined();
-        expect(chunk.sourceTimerange).toMatch(/^\d{2}:\d{2}:\d{2}-\d{2}:\d{2}:\d{2}$/);
-      }
+      expect(chunks.map(({ text, sourceTimerange }) => ({ text, sourceTimerange }))).toEqual([
+        { text: "Speaker discusses the introduction to the topic with many details and examples.", sourceTimerange: "00:00:00-00:02:00" },
+        { text: "The main argument is presented here with supporting evidence and data points.", sourceTimerange: "00:02:00-00:04:00" },
+      ]);
     });
 
     it("merges undersized segments with same page", () => {
@@ -320,9 +320,10 @@ describe("chunkSplitter", () => {
       ];
 
       const chunks = splitSegments(segments, { targetSize: 1500, minSize: 50 });
-      // The two tiny segments from page 1 should be merged since they're under minSize together
-      // Page 2 content should be separate
-      expect(chunks.length).toBeGreaterThanOrEqual(1);
+      expect(chunks.map(({ text, sourcePage }) => ({ text, sourcePage }))).toEqual([
+        { text: "Tiny.\n\nAlso tiny.", sourcePage: "1" },
+        { text: "This is a longer segment from page two that has enough content to stand on its own easily.", sourcePage: "2" },
+      ]);
     });
 
     it("handles empty segments array", () => {
@@ -338,11 +339,9 @@ describe("chunkSplitter", () => {
       ];
 
       const chunks = splitSegments(segments, { targetSize: 1500, minSize: 50 });
-      // Empty segments should be skipped
-      expect(chunks.length).toBeGreaterThanOrEqual(1);
-      for (const chunk of chunks) {
-        expect(chunk.text.trim().length).toBeGreaterThan(0);
-      }
+      expect(chunks.map(({ text, sourcePage, index }) => ({ text, sourcePage, index }))).toEqual([
+        { text: "Actual content from page three that is long enough to pass the minimum size threshold.", sourcePage: "3", index: 0 },
+      ]);
     });
   });
 });
@@ -402,7 +401,7 @@ describe("attachments", () => {
 
     // Verify the file was copied
     const copiedPath = path.join(storePath, "attachments", `${record.uuid}.txt`);
-    expect(fs.existsSync(copiedPath)).toBe(true);
+    expect(fs.readFileSync(copiedPath, "utf-8")).toBe("Hello, this is a test document.");
 
     // Verify the manifest was updated
     const manifest = JSON.parse(
@@ -487,10 +486,9 @@ describe("attachments", () => {
 describe("config multimodal schema", () => {
   it("GnosysConfigSchema includes multimodal defaults", () => {
     const config = GnosysConfigSchema.parse({});
-    expect(config.multimodal).toBeDefined();
-    expect(config.multimodal).toHaveProperty("transcriptionProvider");
-    expect(config.multimodal).toHaveProperty("chunkSize");
-    expect(config.multimodal).toHaveProperty("maxFileSizeMb");
+    expect(config.multimodal).toEqual({
+      transcriptionProvider: "groq", whisperModel: "Xenova/whisper-small", chunkSize: 1500, maxFileSizeMb: 100,
+    });
   });
 
   it("multimodal.transcriptionProvider defaults to 'groq'", () => {

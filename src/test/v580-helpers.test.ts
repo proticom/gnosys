@@ -78,13 +78,12 @@ describe("idFormat", () => {
 
     it("short mode without project name still truncates", () => {
       const out = formatMemoryId(id, null, "short");
-      expect(out).not.toContain("·");
-      expect(out).toContain("…");
+      expect(out).toBe("deci-01HXXJK2…");
     });
 
     it("defaults to short when no format is passed", () => {
       const out = formatMemoryId(id, "gnosys-ai");
-      expect(out).toContain("…");
+      expect(out).toBe("gnosys-ai · deci-01HXXJK2…");
     });
 
     it("handles short ids that don't need truncation gracefully", () => {
@@ -113,25 +112,18 @@ describe("idFormat", () => {
     const id = "deci-01HXXJK2ABCDEFGHIJK";
 
     it("when tty=false, returns the same string as formatMemoryId", () => {
-      const plain = formatMemoryId(id, "gnosys-ai", "long");
       const linked = formatMemoryIdHyperlink(id, "gnosys-ai", "long", { tty: false });
-      expect(linked).toBe(plain);
+      expect(linked).toBe("gnosys-ai · deci-01HXXJK2ABCDEFGHIJK");
     });
 
     it("when tty=true, wraps the display text in OSC8 escapes pointing at the full id", () => {
       const linked = formatMemoryIdHyperlink(id, "gnosys-ai", "short", { tty: true });
-      // The URI segment should always carry the FULL id, regardless of display format.
-      expect(linked).toContain(`gnosys://memory/${encodeURIComponent(id)}`);
-      // The visible text should still be the short-form display.
-      expect(linked).toContain("…");
-      expect(linked).toContain("gnosys-ai · ");
+      expect(linked).toBe("\x1b]8;;gnosys://memory/deci-01HXXJK2ABCDEFGHIJK\x1b\\gnosys-ai · deci-01HXXJK2…\x1b]8;;\x1b\\");
     });
 
     it("works without a projectName (global/personal memories)", () => {
       const linked = formatMemoryIdHyperlink(id, null, "long", { tty: true });
-      expect(linked).toContain(`gnosys://memory/${encodeURIComponent(id)}`);
-      expect(linked).toContain(id);
-      expect(linked).not.toContain("·");
+      expect(linked).toBe("\x1b]8;;gnosys://memory/deci-01HXXJK2ABCDEFGHIJK\x1b\\deci-01HXXJK2ABCDEFGHIJK\x1b]8;;\x1b\\");
     });
   });
 

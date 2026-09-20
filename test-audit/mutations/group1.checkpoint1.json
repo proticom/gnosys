@@ -1,0 +1,962 @@
+[
+  {
+    "id": "G1-embedding-values",
+    "file": "src/lib/embeddings.ts",
+    "search": "return new Float32Array(nested[0]);",
+    "replace": "return new Float32Array(384);",
+    "tests": [
+      "src/test/embeddings-optional-dep.test.ts"
+    ],
+    "testName": "returns\\ a\\ 384\\-dim\\ vector\\ when\\ transformers\\ is\\ available$",
+    "description": "Replace actual embedding with all-zero vector"
+  },
+  {
+    "id": "G1-key-list",
+    "file": "src/lib/setupKeys.ts",
+    "search": "return PROVIDERS.map((provider) => ({",
+    "replace": "return PROVIDERS.slice(0, 0).map((provider) => ({",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "lists\\ all\\ known\\ providers\\ with\\ env,\\ keychain,\\ dotenv,\\ missing,\\ and\\ local\\ statuses$",
+    "description": "Drop provider inventory"
+  },
+  {
+    "id": "G1-key-locations",
+    "file": "src/lib/setupKeys.ts",
+    "search": "return locations;",
+    "replace": "return locations.slice(0, 1);",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "detects\\ every\\ configured\\ storage\\ location\\ for\\ a\\ provider\\ independently$",
+    "description": "Hide secondary configured key locations"
+  },
+  {
+    "id": "G1-key-local",
+    "file": "src/lib/setupKeys.ts",
+    "search": "\"  Status:    N/A (local provider)\"",
+    "replace": "\"  Status:    Missing\"",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "does\\ not\\ list\\ key\\ locations\\ for\\ local\\ providers$",
+    "description": "Display missing API-key warning for local provider"
+  },
+  {
+    "id": "G1-key-custom",
+    "file": "src/lib/setupKeys.ts",
+    "search": "return PROVIDERS.map((provider) => ({",
+    "replace": "return PROVIDERS.filter((provider) => provider !== \"custom\").map((provider) => ({",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "supports\\ the\\ custom\\ provider\\ slot$",
+    "description": "Drop supported custom-provider entry"
+  },
+  {
+    "id": "G1-key-remove-selected",
+    "file": "src/lib/setupKeys.ts",
+    "search": "await fs.writeFile(envPath, lines.join(\"\\n\").replace(/\\n*$/, \"\\n\"), \"utf-8\");",
+    "replace": "void lines;",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "removes\\ only\\ the\\ requested\\ provider\\ keys\\ from\\ the\\ gnosys\\ dotenv\\ file$",
+    "description": "Skip selected credential deletion write"
+  },
+  {
+    "id": "G1-key-save-dotenv",
+    "file": "src/lib/setupKeys.ts",
+    "search": "await writeApiKey(provider, key, { scope: \"global\" });",
+    "replace": "void key;",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "validates\\ an\\ updated\\ key\\ before\\ writing\\ it\\ to\\ dotenv$",
+    "description": "Skip validated credential persistence"
+  },
+  {
+    "id": "G1-key-reject-update",
+    "file": "src/lib/setupKeys.ts",
+    "search": "if (!(await validateProviderKey(provider, key))) {",
+    "replace": "if ((await validateProviderKey(provider, key), false)) {",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "rejects\\ an\\ invalid\\ key\\ before\\ choosing\\ a\\ storage\\ destination$",
+    "description": "Offer storage after failed credential validation"
+  },
+  {
+    "id": "G1-key-destinations",
+    "file": "src/lib/setupKeys.ts",
+    "search": "if (storeApiKeySecret(service, key, provider)) {",
+    "replace": "if (true) {",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "routes\\ destination\\ choice\\ to\\ keychain,\\ dotenv,\\ or\\ manual\\ env\\ instructions$",
+    "description": "Report secure-store success without saving key"
+  },
+  {
+    "id": "G1-key-copy-cleanup",
+    "file": "src/lib/setupKeys.ts",
+    "search": "await fs.writeFile(envPath, lines.join(\"\\n\").replace(/\\n*$/, \"\\n\"), \"utf-8\");",
+    "replace": "void lines;",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "copies\\ a\\ dotenv\\-only\\ key\\ to\\ keychain\\ and\\ removes\\ the\\ dotenv\\ line$",
+    "description": "Leave plaintext source credential after secure copy"
+  },
+  {
+    "id": "G1-key-reject-copy",
+    "file": "src/lib/setupKeys.ts",
+    "search": "if (!(await validateProviderKey(provider, current.value))) {",
+    "replace": "if ((await validateProviderKey(provider, current.value), false)) {",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "does\\ not\\ copy\\ to\\ keychain\\ or\\ change\\ dotenv\\ when\\ validation\\ fails$",
+    "description": "Proceed to copy confirmation despite invalid key"
+  },
+  {
+    "id": "G1-key-copy-idempotent",
+    "file": "src/lib/setupKeys.ts",
+    "search": "if (current.location === \"keychain\") {",
+    "replace": "if (false) {",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "does\\ not\\ duplicate\\ a\\ key\\ that\\ is\\ already\\ in\\ keychain$",
+    "description": "Validate and offer copy for already-secure credential"
+  },
+  {
+    "id": "G1-key-delete-dotenv",
+    "file": "src/lib/setupKeys.ts",
+    "search": "await fs.writeFile(envPath, lines.join(\"\\n\").replace(/\\n*$/, \"\\n\"), \"utf-8\");",
+    "replace": "void lines;",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "deletes\\ a\\ dotenv\\-only\\ key\\ after\\ confirmation$",
+    "description": "Keep plaintext key after user confirms deletion"
+  },
+  {
+    "id": "G1-key-delete-keychain",
+    "file": "src/lib/setupKeys.ts",
+    "search": "deleteStoredSecret(target.serviceName)",
+    "replace": "true",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "deletes\\ a\\ keychain\\-only\\ key\\ after\\ confirmation$",
+    "description": "Claim removal without deleting secure-store secret"
+  },
+  {
+    "id": "G1-key-delete-both",
+    "file": "src/lib/setupKeys.ts",
+    "search": "await fs.writeFile(envPath, lines.join(\"\\n\").replace(/\\n*$/, \"\\n\"), \"utf-8\");",
+    "replace": "void lines;",
+    "tests": [
+      "src/test/setupKeys.test.ts"
+    ],
+    "testName": "deletes\\ all\\ removable\\ keychain\\ and\\ dotenv\\ copies\\ when\\ requested$",
+    "description": "Remove secure-store key but leave plaintext duplicate"
+  },
+  {
+    "id": "G1-pdf-normal",
+    "file": "src/lib/multimodalIngest.ts",
+    "search": "export async function ingestFile(options: MultimodalIngestOptions): Promise<MultimodalIngestResult> {",
+    "replace": "export async function ingestFile(options: MultimodalIngestOptions): Promise<MultimodalIngestResult> {\n  throw new Error(\"Unexpected ingestion regression\");",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "normal\\ PDF\\ ingests\\ without\\ crashing$",
+    "description": "Reject every file before parsing or returning the required outcome"
+  },
+  {
+    "id": "G1-text-empty",
+    "file": "src/lib/multimodalIngest.ts",
+    "search": "export async function ingestFile(options: MultimodalIngestOptions): Promise<MultimodalIngestResult> {",
+    "replace": "export async function ingestFile(options: MultimodalIngestOptions): Promise<MultimodalIngestResult> {\n  throw new Error(\"Unexpected ingestion regression\");",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "0\\-byte\\ text\\ file\\ is\\ handled\\ gracefully$",
+    "description": "Reject every file before parsing or returning the required outcome"
+  },
+  {
+    "id": "G1-docx-error",
+    "file": "src/lib/multimodalIngest.ts",
+    "search": "export async function ingestFile(options: MultimodalIngestOptions): Promise<MultimodalIngestResult> {",
+    "replace": "export async function ingestFile(options: MultimodalIngestOptions): Promise<MultimodalIngestResult> {\n  throw new Error(\"Unexpected ingestion regression\");",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "corrupt\\ DOCX\\ returns\\ a\\ clear\\ error$",
+    "description": "Reject every file before parsing or returning the required outcome"
+  },
+  {
+    "id": "G1-pdf-js",
+    "file": "src/lib/multimodalIngest.ts",
+    "search": "export async function ingestFile(options: MultimodalIngestOptions): Promise<MultimodalIngestResult> {",
+    "replace": "export async function ingestFile(options: MultimodalIngestOptions): Promise<MultimodalIngestResult> {\n  throw new Error(\"Unexpected ingestion regression\");",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "PDF\\ with\\ embedded\\ JS\\ is\\ handled\\ without\\ executing\\ JS$",
+    "description": "Reject every file before parsing or returning the required outcome"
+  },
+  {
+    "id": "G1-text-bom",
+    "file": "src/lib/multimodalIngest.ts",
+    "search": "const rawText = await fs.readFile(filePath, \"utf-8\");",
+    "replace": "const rawText = \"Wrong text\";",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "UTF\\-8\\ BOM\\ text\\ file\\ is\\ handled\\ gracefully$",
+    "description": "Replace decoded BOM text with unrelated content"
+  },
+  {
+    "id": "G1-special-paths",
+    "file": "src/lib/multimodalIngest.ts",
+    "search": "title = generateTitle(chunk.text, i, sourceFileName, chunk.sourcePage);",
+    "replace": "title = \"Wrong title\";",
+    "tests": [
+      "src/test/ingest-special-paths.test.ts"
+    ],
+    "testName": "ingests",
+    "description": "Lose extracted text title for special-character file paths"
+  },
+  {
+    "id": "G1-import-jsonl",
+    "file": "src/lib/import.ts",
+    "search": "title = mapped.title;",
+    "replace": "title = \"Wrong title\";",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "imports\\ JSONL\\ \\(one\\ JSON\\ object\\ per\\ line\\)$",
+    "description": "Lose JSONL record titles while keeping record count"
+  },
+  {
+    "id": "G1-import-extra",
+    "file": "src/lib/import.ts",
+    "search": "content = mapped.content || mapped.extraContext || title;",
+    "replace": "content = mapped.content || title;",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "includes\\ unmapped\\ fields\\ as\\ extra\\ context$",
+    "description": "Drop unmapped fields from stored import content"
+  },
+  {
+    "id": "G1-import-dryrun",
+    "file": "src/lib/import.ts",
+    "search": "if (options.dryRun) {",
+    "replace": "if (false) {",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "reports\\ what\\ would\\ be\\ imported\\ without\\ writing$",
+    "description": "Write records despite dry-run request"
+  },
+  {
+    "id": "G1-import-batch",
+    "file": "src/lib/import.ts",
+    "search": "syncMemoryToDb(db, frontmatter, fullContent, relativePath, projectId, scope);",
+    "replace": "void db;",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "writes\\ multiple\\ records\\ without\\ per\\-record\\ commits\\ when\\ batching$",
+    "description": "Report imported batch without any memory writes"
+  },
+  {
+    "id": "G1-import-failure",
+    "file": "src/lib/import.ts",
+    "search": "      try {\n        let title: string;",
+    "replace": "      try {\n        throw new Error(\"write unavailable\");\n        let title: string;",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "continues\\ processing\\ when\\ individual\\ records\\ fail$",
+    "description": "Fail every record while preserving total processed count"
+  },
+  {
+    "id": "G1-duration-structured",
+    "file": "src/lib/import.ts",
+    "search": "const seconds = Math.ceil((recordCount * 50) / 1000);",
+    "replace": "const seconds = 1;",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "estimates\\ structured\\ mode\\ as\\ fast$",
+    "description": "Ignore structured record count"
+  },
+  {
+    "id": "G1-duration-llm",
+    "file": "src/lib/import.ts",
+    "search": "return `~${Math.ceil(seconds / 60)}m`;",
+    "replace": "return \"~99m\";",
+    "tests": [
+      "src/test/import.test.ts"
+    ],
+    "testName": "estimates\\ LLM\\ mode\\ as\\ slower$",
+    "description": "Return wrong LLM duration in valid minute-shaped format"
+  },
+  {
+    "id": "G1-audit-empty",
+    "file": "src/lib/auditCommand.ts",
+    "search": "console.log(formatAuditTimeline(entries));",
+    "replace": "console.log(\"wrong output\");",
+    "tests": [
+      "src/test/audit-invoke.test.ts"
+    ],
+    "testName": "renders\\ a\\ human\\-readable\\ timeline\\ for\\ the\\ empty\\ case\\ without\\ erroring$",
+    "description": "Replace human-readable empty audit timeline"
+  },
+  {
+    "id": "G1-recovery-insert",
+    "file": "src/lib/db.ts",
+    "search": "mem.id, mem.title, mem.category, mem.content, mem.summary || null,",
+    "replace": "mem.id, \"\", mem.category, \"\", mem.summary || null,",
+    "tests": [
+      "src/test/db-recovery.test.ts"
+    ],
+    "testName": "insertMemory\\(\\)\\ retries\\ successfully\\ after\\ a\\ corrupt\\-handle\\ error$",
+    "description": "Lose title and content on recovered insert"
+  },
+  {
+    "id": "G1-recovery-audit",
+    "file": "src/lib/db.ts",
+    "search": "logAudit(entry: Omit<DbAuditEntry, \"id\">): void {",
+    "replace": "logAudit(entry: Omit<DbAuditEntry, \"id\">): void {\n    return;",
+    "tests": [
+      "src/test/db-recovery.test.ts"
+    ],
+    "testName": "logAudit\\(\\)\\ retries\\ successfully\\ after\\ a\\ corrupt\\-handle\\ error$",
+    "description": "Skip recovered audit write entirely"
+  },
+  {
+    "id": "G1-recovery-error",
+    "file": "src/lib/db.ts",
+    "search": "\"Gnosys DB unrecoverable after reopen. The underlying file may be corrupted. \" +",
+    "replace": "\"Unrelated error. \" +",
+    "tests": [
+      "src/test/db-recovery.test.ts"
+    ],
+    "testName": "throws\\ a\\ clear\\ message\\ if\\ reopen\\ also\\ fails$",
+    "description": "Lose actionable reopen-failure diagnosis"
+  },
+  {
+    "id": "G1-color",
+    "file": "src/lib/setup/ui/tokens.ts",
+    "search": "return `${token}${text}${RESET}`;",
+    "replace": "return `${text}${RESET}`;",
+    "tests": [
+      "src/test/setup-ui-atoms.test.ts"
+    ],
+    "testName": "tokens\\ \u2014\\ color\\(\\)\\ wraps\\ text\\ with\\ reset$",
+    "description": "Omit requested opening color"
+  },
+  {
+    "id": "G1-failed-rows",
+    "file": "src/lib/setup/syncProjectsRender.ts",
+    "search": "lines.push(...renderProjectRows(\"fail\", rows));",
+    "replace": "lines.push(\"\");",
+    "tests": [
+      "src/test/setup-ui-screen10.test.ts"
+    ],
+    "testName": "renders\\ the\\ failed\\ section\\ when\\ there\\ are\\ failures$",
+    "description": "Drop failed project detail while keeping line count"
+  },
+  {
+    "id": "G1-dashboard-paths",
+    "file": "src/lib/setup/syncProjectsRender.ts",
+    "search": "collapsePath(htmlPath)",
+    "replace": "\"/wrong/path\"",
+    "tests": [
+      "src/test/setup-ui-screen10.test.ts"
+    ],
+    "testName": "renders\\ dashboard\\ summary\\ with\\ collapsed\\ paths$",
+    "description": "Render wrong dashboard HTML output path"
+  },
+  {
+    "id": "G1-dream-disabled",
+    "file": "src/lib/setup/dreamRender.ts",
+    "search": "    `     ${subs.selfCritique ? \"\u2713\" : \"\u25cb\"}  self-critique         review and re-rank existing memories`,\n    `     ${subs.generateSummaries ? \"\u2713\" : \"\u25cb\"}  generate summaries    produce a \"what changed today\" digest`,\n    `     ${subs.discoverRelationships ? \"\u2713\" : \"\u25cb\"}  discover relationships  link related memories explicitly`,",
+    "replace": "    ...(subs.selfCritique ? [`     \u2713  self-critique         review and re-rank existing memories`] : []),\n    `     ${subs.generateSummaries ? \"\u2713\" : \"\u25cb\"}  generate summaries    produce a \"what changed today\" digest`,\n    ...(subs.discoverRelationships ? [`     \u2713  discover relationships  link related memories explicitly`] : []),",
+    "tests": [
+      "src/test/setup-ui-screen7.test.ts"
+    ],
+    "testName": "renders\\ sub\\-tasks\\ with\\ \u25cb\\ when\\ disabled$",
+    "description": "Omit disabled task rows entirely"
+  },
+  {
+    "id": "G1-structured-fields",
+    "file": "src/lib/structuredIngest.ts",
+    "search": "    title,\n    category,",
+    "replace": "    title: \"\",\n    category: \"\",",
+    "tests": [
+      "src/test/structuredIngest.test.ts"
+    ],
+    "testName": "validates\\ against\\ expected\\ structure$",
+    "description": "Leave required keys with unusable empty values"
+  },
+  {
+    "id": "G1-tfidf-score",
+    "file": "src/lib/structuredIngest.ts",
+    "search": "score: parseFloat((tfScore * idf).toFixed(4))",
+    "replace": "score: 1",
+    "tests": [
+      "src/test/structuredIngest.test.ts"
+    ],
+    "testName": "returns\\ correct\\ term\\ scores\\ across\\ corpus$",
+    "description": "Flatten distinct TF-IDF scores to one"
+  },
+  {
+    "id": "G1-tfidf-frequency",
+    "file": "src/lib/structuredIngest.ts",
+    "search": "tf.set(token, (tf.get(token) || 0) + 1);",
+    "replace": "tf.set(token, 1);",
+    "tests": [
+      "src/test/structuredIngest.test.ts"
+    ],
+    "testName": "handles\\ single\\-document\\ corpus$",
+    "description": "Ignore repeated term frequencies"
+  },
+  {
+    "id": "G1-tfidf-topn",
+    "file": "src/lib/structuredIngest.ts",
+    "search": "result.set(doc.id, scores.slice(0, topN));",
+    "replace": "result.set(doc.id, []);",
+    "tests": [
+      "src/test/structuredIngest.test.ts"
+    ],
+    "testName": "selects\\ top\\ N\\ terms\\ per\\ document$",
+    "description": "Drop every selected top term"
+  },
+  {
+    "id": "G1-tag-category",
+    "file": "src/lib/tags.ts",
+    "search": "  async addTag(category: string, tag: string): Promise<boolean> {",
+    "replace": "  async addTag(category: string, tag: string): Promise<boolean> {\n    category = \"domain\";",
+    "tests": [
+      "src/test/tags.test.ts"
+    ],
+    "testName": "adds\\ a\\ tag\\ to\\ a\\ new\\ category$",
+    "description": "Store tag under wrong category"
+  },
+  {
+    "id": "G1-tag-default",
+    "file": "src/lib/tags.ts",
+    "search": "this.registry = { ...DEFAULT_REGISTRY };",
+    "replace": "this.registry = { ...DEFAULT_REGISTRY, domain: [\"wrong-default\"] };",
+    "tests": [
+      "src/test/tags.test.ts"
+    ],
+    "testName": "falls\\ back\\ to\\ DEFAULT_REGISTRY\\ when\\ tags\\.json\\ is\\ missing$",
+    "description": "Replace default domain vocabulary"
+  },
+  {
+    "id": "G1-local-ack",
+    "file": "src/lib/localDiskCheck.ts",
+    "search": "export const LOCAL_DISK_ACK_PHRASE = \"LOCAL DISK ONLY\";",
+    "replace": "export const LOCAL_DISK_ACK_PHRASE = \"WRONG PHRASE\";",
+    "tests": [
+      "src/test/localDiskCheck.test.ts"
+    ],
+    "testName": "matches\\ LOCAL\\ DISK\\ ONLY\\ phrase\\ exactly$",
+    "description": "Change accepted confirmation phrase and exported expected value together"
+  },
+  {
+    "id": "G1-lens-author-corrected",
+    "file": "src/lib/lensing.ts",
+    "search": "      : matchesLens(m, lens),\n  );",
+    "replace": "      : matchesLens(m, lens),\n  ).map((_, index) => memories[(index + 1) % memories.length]);",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "filters\\ by\\ author$",
+    "description": "Return unrelated input records with the same number of matches"
+  },
+  {
+    "id": "G1-lens-authority-corrected",
+    "file": "src/lib/lensing.ts",
+    "search": "      : matchesLens(m, lens),\n  );",
+    "replace": "      : matchesLens(m, lens),\n  ).map((_, index) => memories[(index + 1) % memories.length]);",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "filters\\ by\\ authority$",
+    "description": "Return unrelated input records with the same number of matches"
+  },
+  {
+    "id": "G1-pdf-password",
+    "file": "src/lib/pdfExtract.ts",
+    "search": "textResult = await parser.getText();",
+    "replace": "textResult = await parser.getText().catch(() => ({ total: 0, pages: [], text: \"\" }));",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "encrypted\\ PDF\\ returns\\ a\\ clear\\ password\\ error$",
+    "description": "Swallow password rejection and report empty PDF success",
+    "beforeIds": [
+      "src/test/ingest-fixtures.test.ts:110"
+    ]
+  },
+  {
+    "id": "G1-pdf-js-execution",
+    "file": "src/lib/pdfExtract.ts",
+    "search": "const buffer = await fs.readFile(filePath);",
+    "replace": "const buffer = await fs.readFile(filePath);\n  const script = buffer.toString(\"utf8\").match(/\\/JS\\((.*)\\)>>/);\n  if (script) new Function(script[1])();",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "PDF\\ with\\ embedded\\ JS\\ is\\ handled\\ without\\ executing\\ JS$",
+    "description": "Execute the embedded PDF OpenAction JavaScript"
+  },
+  {
+    "id": "G1-file-size-error",
+    "file": "src/lib/multimodalIngest.ts",
+    "search": "`File is ${fileSizeMb.toFixed(1)}MB, which exceeds the ${maxSizeMb}MB limit. `",
+    "replace": "`Unexpected validation error. `",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "oversized\\ text\\ file\\ hits\\ size\\ cap\\ \\(no\\ OOM\\)$",
+    "description": "Replace actionable size-limit error with unrelated error"
+  },
+  {
+    "id": "G1-missing-file-error",
+    "file": "src/lib/multimodalIngest.ts",
+    "search": "const stat = await fs.stat(filePath);",
+    "replace": "const stat = await fs.stat(filePath).catch(() => { throw new Error(\"Could not inspect file\"); });",
+    "tests": [
+      "src/test/ingest-fixtures.test.ts"
+    ],
+    "testName": "non\\-existent\\ path\\ throws\\ a\\ clear\\ error$",
+    "description": "Replace missing-file error with unrelated failure"
+  },
+  {
+    "id": "G1-lens-status",
+    "file": "src/lib/lensing.ts",
+    "search": "      : matchesLens(m, lens),\n  );",
+    "replace": "      : matchesLens(m, lens),\n  ).map((_, index) => memories[(index + 2) % memories.length]);",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "filters\\ by\\ status$",
+    "description": "Return unrelated input records with the same number of matches"
+  },
+  {
+    "id": "G1-lens-statuses",
+    "file": "src/lib/lensing.ts",
+    "search": "      : matchesLens(m, lens),\n  );",
+    "replace": "      : matchesLens(m, lens),\n  ).map((_, index) => memories[(index + 2) % memories.length]);",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "filters\\ by\\ multiple\\ statuses$",
+    "description": "Return unrelated input records with the same number of matches"
+  },
+  {
+    "id": "G1-lens-confidence",
+    "file": "src/lib/lensing.ts",
+    "search": "      : matchesLens(m, lens),\n  );",
+    "replace": "      : matchesLens(m, lens),\n  ).map((_, index) => memories[(index + 2) % memories.length]);",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "filters\\ by\\ confidence\\ range$",
+    "description": "Return unrelated input records with the same number of matches"
+  },
+  {
+    "id": "G1-lens-created",
+    "file": "src/lib/lensing.ts",
+    "search": "      : matchesLens(m, lens),\n  );",
+    "replace": "      : matchesLens(m, lens),\n  ).map((_, index) => memories[(index + 2) % memories.length]);",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "filters\\ by\\ created\\ date\\ range$",
+    "description": "Return unrelated input records with the same number of matches"
+  },
+  {
+    "id": "G1-lens-modified",
+    "file": "src/lib/lensing.ts",
+    "search": "      : matchesLens(m, lens),\n  );",
+    "replace": "      : matchesLens(m, lens),\n  ).map((_, index) => memories[(index + 2) % memories.length]);",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "filters\\ by\\ modified\\ date\\ range$",
+    "description": "Return unrelated input records with the same number of matches"
+  },
+  {
+    "id": "G1-lens-combined",
+    "file": "src/lib/lensing.ts",
+    "search": "if (lens.minConfidence !== undefined && fm.confidence < lens.minConfidence) return false;",
+    "replace": "if (false) return false;",
+    "tests": [
+      "src/test/lensing.test.ts"
+    ],
+    "testName": "combines\\ multiple\\ criteria\\ in\\ one\\ filter$",
+    "description": "Ignore confidence condition in compound filter"
+  },
+  {
+    "id": "G1-chunk-paragraph",
+    "file": "src/lib/chunkSplitter.ts",
+    "search": "  return merged.map((text, index) => ({\n    text,\n    index,\n  }));",
+    "replace": "  return merged.map((text, index) => ({\n    text: text.slice(1),\n    index,\n  }));",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "splits\\ text\\ at\\ paragraph\\ boundaries$",
+    "description": "Drop first character of each produced text chunk"
+  },
+  {
+    "id": "G1-chunk-sentence",
+    "file": "src/lib/chunkSplitter.ts",
+    "search": "  return merged.map((text, index) => ({\n    text,\n    index,\n  }));",
+    "replace": "  return merged.map((text, index) => ({\n    text: text.slice(1),\n    index,\n  }));",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "splits\\ oversized\\ paragraphs\\ at\\ sentence\\ boundaries$",
+    "description": "Drop first character of each produced text chunk"
+  },
+  {
+    "id": "G1-chunk-target",
+    "file": "src/lib/chunkSplitter.ts",
+    "search": "  return merged.map((text, index) => ({\n    text,\n    index,\n  }));",
+    "replace": "  return merged.map((text, index) => ({\n    text: text.slice(1),\n    index,\n  }));",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "respects\\ targetSize\\ option$",
+    "description": "Drop first character of each produced text chunk"
+  },
+  {
+    "id": "G1-chunk-index",
+    "file": "src/lib/chunkSplitter.ts",
+    "search": "  return merged.map((text, index) => ({\n    text,\n    index,\n  }));",
+    "replace": "return [];",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "assigns\\ sequential\\ index\\ values$",
+    "description": "Drop every chunk before index assertions"
+  },
+  {
+    "id": "G1-chunk-page",
+    "file": "src/lib/chunkSplitter.ts",
+    "search": "  return allChunks;",
+    "replace": "  return [];",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "preserves\\ page\\ metadata$",
+    "description": "Drop every metadata-bearing chunk"
+  },
+  {
+    "id": "G1-chunk-timerange",
+    "file": "src/lib/chunkSplitter.ts",
+    "search": "  return allChunks;",
+    "replace": "  return [];",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "preserves\\ timerange\\ metadata$",
+    "description": "Drop every metadata-bearing chunk"
+  },
+  {
+    "id": "G1-chunk-merge",
+    "file": "src/lib/chunkSplitter.ts",
+    "search": "  return allChunks;",
+    "replace": "  return allChunks.map((chunk) => ({ ...chunk, text: \"wrong content\" }));",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "merges\\ undersized\\ segments\\ with\\ same\\ page$",
+    "description": "Lose segment text while preserving chunk shape"
+  },
+  {
+    "id": "G1-chunk-empty",
+    "file": "src/lib/chunkSplitter.ts",
+    "search": "  return allChunks;",
+    "replace": "  return allChunks.map((chunk) => ({ ...chunk, text: \"wrong content\" }));",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "handles\\ segments\\ with\\ empty\\ text$",
+    "description": "Lose segment text while preserving chunk shape"
+  },
+  {
+    "id": "G1-attachment-bytes",
+    "file": "src/lib/attachments.ts",
+    "search": "await fs.copyFile(filePath, destPath);",
+    "replace": "await fs.writeFile(destPath, \"corrupt\");",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "storeAttachment\\ copies\\ file\\ and\\ generates\\ UUID$",
+    "description": "Write wrong attachment bytes while preserving metadata"
+  },
+  {
+    "id": "G1-multimodal-defaults",
+    "file": "src/lib/config.ts",
+    "search": "    chunkSize: 1500,\n    maxFileSizeMb: 100,",
+    "replace": "    chunkSize: 2500,\n    maxFileSizeMb: 100,",
+    "tests": [
+      "src/test/multimodal.test.ts"
+    ],
+    "testName": "GnosysConfigSchema\\ includes\\ multimodal\\ defaults$",
+    "description": "Change default chunk size while retaining schema fields"
+  },
+  {
+    "id": "G1-embedding-incremental",
+    "file": "src/lib/embedDb.ts",
+    "search": "  return { embedded, total };",
+    "replace": "  const oldRows = db.getMemoriesForEmbedding(\"all\");\n  for (const row of oldRows) if (!rows.some((pending) => pending.id === row.id)) db.updateEmbedding(row.id, Buffer.alloc(16));\n  return { embedded, total };",
+    "tests": [
+      "src/test/embed-db.test.ts"
+    ],
+    "testName": "missing\\ mode\\ is\\ incremental\\ \u2014\\ already\\-embedded\\ rows\\ are\\ untouched$",
+    "description": "Overwrite preexisting vectors while correctly counting only missing rows"
+  },
+  {
+    "id": "G1-embedding-reindex",
+    "file": "src/lib/embedDb.ts",
+    "search": "db.updateEmbedding(batch[j].id, float32ToBuffer(vectors[j]));",
+    "replace": "if (opts.mode !== \"all\") db.updateEmbedding(batch[j].id, float32ToBuffer(vectors[j]));",
+    "tests": [
+      "src/test/embed-db.test.ts"
+    ],
+    "testName": "all\\ mode\\ regenerates\\ every\\ row\\ \\(reindex\\ semantics\\)$",
+    "description": "Skip writes during all-mode reindex but keep success counters"
+  },
+  {
+    "id": "G1-embedding-single",
+    "file": "src/lib/embedDb.ts",
+    "search": "db.updateEmbedding(id, float32ToBuffer(vec));",
+    "replace": "db.updateEmbedding(id, Buffer.alloc(vec.byteLength));",
+    "tests": [
+      "src/test/embed-db.test.ts"
+    ],
+    "testName": "embeds\\ a\\ single\\ memory$",
+    "description": "Store zero bytes in place of the generated vector"
+  },
+  {
+    "id": "G1-timeline-day",
+    "file": "src/lib/timeline.ts",
+    "search": "return dateStr; // Already YYYY-MM-DD",
+    "replace": "return `${dateStr}-wrong`; // Already YYYY-MM-DD",
+    "tests": [
+      "src/test/timeline.test.ts"
+    ],
+    "testName": "groups\\ by\\ day$",
+    "description": "Wrong calendar-day labels preserve bucket count"
+  },
+  {
+    "id": "G1-timeline-week",
+    "file": "src/lib/timeline.ts",
+    "search": "const weekNum = getISOWeek(d);",
+    "replace": "const weekNum = getISOWeek(d) + 1;",
+    "tests": [
+      "src/test/timeline.test.ts"
+    ],
+    "testName": "groups\\ by\\ week$",
+    "description": "Shift every week number by one"
+  },
+  {
+    "id": "G1-timeline-sort",
+    "file": "src/lib/timeline.ts",
+    "search": "return entries.sort((a, b) => a.period.localeCompare(b.period));",
+    "replace": "return [];",
+    "tests": [
+      "src/test/timeline.test.ts"
+    ],
+    "testName": "returns\\ entries\\ sorted\\ chronologically$",
+    "description": "Drop all timeline entries"
+  },
+  {
+    "id": "G1-timeline-modified",
+    "file": "src/lib/timeline.ts",
+    "search": "modified: modifiedMap.get(key) || 0,",
+    "replace": "modified: created?.count || 0,",
+    "tests": [
+      "src/test/timeline.test.ts"
+    ],
+    "testName": "tracks\\ modified\\ separately\\ from\\ created$",
+    "description": "Use creation count as modification count"
+  },
+  {
+    "id": "G1-id-projectless",
+    "file": "src/lib/idFormat.ts",
+    "search": "if (!projectName) return renderedId;",
+    "replace": "if (!projectName) return \"\u2026\";",
+    "tests": [
+      "src/test/v580-helpers.test.ts"
+    ],
+    "testName": "short\\ mode\\ without\\ project\\ name\\ still\\ truncates$",
+    "description": "Discard projectless display identifier"
+  },
+  {
+    "id": "G1-id-default",
+    "file": "src/lib/idFormat.ts",
+    "search": "if (format === \"raw\") return id;",
+    "replace": "if (arguments.length < 3) return \"\u2026\";\n  if (format === \"raw\") return id;",
+    "tests": [
+      "src/test/v580-helpers.test.ts"
+    ],
+    "testName": "defaults\\ to\\ short\\ when\\ no\\ format\\ is\\ passed$",
+    "description": "Discard default-format display identifier"
+  },
+  {
+    "id": "G1-id-nontty",
+    "file": "src/lib/idFormat.ts",
+    "search": "if (format === \"raw\") return id;",
+    "replace": "return \"wrong-label\";\n  if (format === \"raw\") return id;",
+    "tests": [
+      "src/test/v580-helpers.test.ts"
+    ],
+    "testName": "when\\ tty=false,\\ returns\\ the\\ same\\ string\\ as\\ formatMemoryId$",
+    "description": "Wrong formatter result is reused as expected value"
+  },
+  {
+    "id": "G1-id-tty",
+    "file": "src/lib/idFormat.ts",
+    "search": "return osc8Wrap(memoryUri(id), display);",
+    "replace": "return `${memoryUri(id)} ${display}`;",
+    "tests": [
+      "src/test/v580-helpers.test.ts"
+    ],
+    "testName": "when\\ tty=true,\\ wraps\\ the\\ display\\ text\\ in\\ OSC8\\ escapes\\ pointing\\ at\\ the\\ full\\ id$",
+    "description": "Remove terminal hyperlink escape framing"
+  },
+  {
+    "id": "G1-id-projectless-tty",
+    "file": "src/lib/idFormat.ts",
+    "search": "return osc8Wrap(memoryUri(id), display);",
+    "replace": "return !projectName ? memoryUri(id) : osc8Wrap(memoryUri(id), display);",
+    "tests": [
+      "src/test/v580-helpers.test.ts"
+    ],
+    "testName": "works\\ without\\ a\\ projectName\\ \\(global/personal\\ memories\\)$",
+    "description": "Return URI instead of projectless clickable label"
+  },
+  {
+    "id": "G1-progress-noop",
+    "file": "src/lib/progress.ts",
+    "search": "step: () => {},",
+    "replace": "step: () => { process.stderr.write(\"noise\"); },",
+    "tests": [
+      "src/test/progress.test.ts"
+    ],
+    "testName": "returns\\ a\\ no\\-op\\ progress\\ instance\\ when\\ verbose\\ is\\ false$",
+    "description": "Emit unwanted stderr in quiet mode"
+  },
+  {
+    "id": "G1-web-weight",
+    "file": "src/lib/webIndex.ts",
+    "search": "addTokens(cappedContent, 1);",
+    "replace": "void cappedContent;",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "weights\\ relevance\\ keywords\\ higher\\ than\\ content$",
+    "description": "Omit all content-body postings"
+  },
+  {
+    "id": "G1-web-stop",
+    "file": "src/lib/webIndex.ts",
+    "search": "sortedIndex[token] = invertedIndex[token];",
+    "replace": "sortedIndex[token] = token === \"quick\" ? [] : invertedIndex[token];",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "respects\\ stop\\-word\\ filtering$",
+    "description": "Keep quick token key but lose its postings"
+  },
+  {
+    "id": "G1-web-stop-disabled",
+    "file": "src/lib/webIndex.ts",
+    "search": "sortedIndex[token] = invertedIndex[token];",
+    "replace": "sortedIndex[token] = token === \"the\" ? [] : invertedIndex[token];",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "disables\\ stop\\-word\\ filtering\\ when\\ option\\ is\\ false$",
+    "description": "Keep stop-word key but lose its postings"
+  },
+  {
+    "id": "G1-web-archived",
+    "file": "src/lib/webIndex.ts",
+    "search": "return attachExpansions(index, options.expansions);",
+    "replace": "if (includeArchived && index.documents.length > 1) index.documents[1] = index.documents[0];\n  return attachExpansions(index, options.expansions);",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "includes\\ archived\\ documents\\ when\\ includeArchived\\ is\\ true$",
+    "description": "Duplicate active ID in place of archived document"
+  },
+  {
+    "id": "G1-web-hash",
+    "file": "src/lib/webIndex.ts",
+    "search": "const contentHash = createHash(\"sha256\").update(raw).digest(\"hex\");",
+    "replace": "const contentHash = \"0\".repeat(64);",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "computes\\ correct\\ content\\ hashes$",
+    "description": "Write constant-shaped content digest"
+  },
+  {
+    "id": "G1-web-determinism",
+    "file": "src/lib/webIndex.ts",
+    "search": "return attachExpansions(index, options.expansions);",
+    "replace": "return { version: 1, generated: new Date().toISOString(), documentCount: 0, documents: [], invertedIndex: {} };",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "produces\\ deterministic\\ output\\ for\\ same\\ input$",
+    "description": "Return consistently empty index for populated corpus"
+  },
+  {
+    "id": "G1-web-async",
+    "file": "src/lib/webIndex.ts",
+    "search": "return attachExpansions(index, options.expansions);",
+    "replace": "return { version: 1, generated: new Date().toISOString(), documentCount: 0, documents: [], invertedIndex: {} };",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "returns\\ same\\ result\\ as\\ sync\\ version$",
+    "description": "Return empty index through sync and async paths"
+  },
+  {
+    "id": "G1-web-write",
+    "file": "src/lib/webIndex.ts",
+    "search": "JSON.stringify(index, null, 2)",
+    "replace": "JSON.stringify({ ...index, documents: [], invertedIndex: {} }, null, 2)",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "creates\\ a\\ valid\\ JSON\\ file$",
+    "description": "Lose document/posting content during serialization"
+  },
+  {
+    "id": "G1-web-overwrite",
+    "file": "src/lib/webIndex.ts",
+    "search": "JSON.stringify(index, null, 2)",
+    "replace": "JSON.stringify({ version: 1 }, null, 2)",
+    "tests": [
+      "src/test/webIndex.test.ts"
+    ],
+    "testName": "overwrites\\ existing\\ index\\ file$",
+    "description": "Replace old index with header-only document"
+  }
+]
