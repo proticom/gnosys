@@ -81,6 +81,7 @@ export class GnosysArchive {
       this.available = true;
     } catch {
       // Archive not available — two-tier degrades gracefully
+      try { this.db?.close(); } catch { /* Archive remains unavailable. */ }
       this.db = null;
     }
   }
@@ -100,6 +101,11 @@ export class GnosysArchive {
         original_path TEXT NOT NULL
       );
 
+      CREATE TABLE IF NOT EXISTS archive_meta (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      );
+
       CREATE VIRTUAL TABLE IF NOT EXISTS archive_fts USING fts5(
         id,
         title,
@@ -108,6 +114,19 @@ export class GnosysArchive {
         tokenize='porter unicode61'
       );
     `);
+
+    const healed = this.db.prepare("SELECT 1 FROM archive_meta WHERE key = 'fts_consistency_v1'");
+    if (healed.get()) return;
+    const heal = this.db.transaction(() => {
+      if (healed.get()) return;
+      this.db.exec(`
+        DELETE FROM archive_fts;
+        INSERT INTO archive_fts (id, title, tags, content)
+          SELECT id, title, tags, content FROM archived_memories;
+        INSERT INTO archive_meta (key, value) VALUES ('fts_consistency_v1', '1');
+      `);
+    });
+    heal.immediate();
   }
 
   /**
@@ -175,8 +194,7 @@ export class GnosysArchive {
       VALUES (?, ?, ?, ?)
     `);
 
-    // Check if already in FTS (to avoid duplicates)
-    const existsFts = this.db.prepare("SELECT id FROM archive_fts WHERE id = ?").get(memory.frontmatter.id);
+    const deleteFts = this.db.prepare("DELETE FROM archive_fts WHERE id = ?");
 
     const tx = this.db.transaction(() => {
       insertMem.run(
@@ -192,14 +210,13 @@ export class GnosysArchive {
         memory.relativePath
       );
 
-      if (!existsFts) {
-        insertFts.run(
-          memory.frontmatter.id,
-          memory.frontmatter.title,
-          tags,
-          memory.content
-        );
-      }
+      deleteFts.run(memory.frontmatter.id);
+      insertFts.run(
+        memory.frontmatter.id,
+        memory.frontmatter.title,
+        tags,
+        memory.content
+      );
     });
 
     tx();
