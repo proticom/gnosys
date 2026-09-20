@@ -14,6 +14,7 @@ import type { HybridSearchResult } from "./searchTypes.js";
 import { type GnosysConfig, DEFAULT_CONFIG } from "./config.js";
 import { type LLMProvider, getLLMProvider } from "./llm.js";
 import { GnosysArchive } from "./archive.js";
+import { GnosysDB } from "./db.js";
 import { GnosysMaintenanceEngine } from "./maintenance.js";
 import type { GnosysResolver } from "./resolver.js";
 import { auditLog } from "./audit.js";
@@ -377,8 +378,14 @@ export class GnosysAsk {
         return [];
       }
 
-      const restored = await archive.dearchiveBatch(usedArchiveIds, writeTarget.store);
-      archive.close();
+      const centralDb = GnosysDB.openCentral();
+      let restored: string[];
+      try {
+        restored = await archive.dearchiveBatch(usedArchiveIds, writeTarget.store, centralDb);
+      } finally {
+        centralDb.close();
+        archive.close();
+      }
 
       // Reinforce the restored memories
       if (restored.length > 0) {

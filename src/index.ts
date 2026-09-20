@@ -55,7 +55,7 @@ import { recall, formatRecall, } from "./lib/recall.js";
 import { initAudit, readAuditLog, readAuditFromDb, formatAuditTimeline } from "./lib/audit.js";
 import { logError } from "./lib/log.js";
 import { GnosysDB } from "./lib/db.js";
-import { syncMemoryToDb, syncUpdateToDb, syncDearchiveToDb, syncReinforcementToDb, auditToDb } from "./lib/dbWrite.js";
+import { syncMemoryToDb, syncUpdateToDb, syncReinforcementToDb, auditToDb } from "./lib/dbWrite.js";
 import { createProjectIdentity, readProjectIdentity, } from "./lib/projectIdentity.js";
 import { setPreference, getPreference, getAllPreferences, deletePreference, KNOWN_PREFERENCE_KEYS, suggestPreferenceKey } from "./lib/preferences.js";
 import { syncRules, generateRulesBlock, } from "./lib/rulesGen.js";
@@ -2632,14 +2632,15 @@ regTool(
       }
 
       const ids = results.map((r) => r.id);
-      const restored = await archive.dearchiveBatch(ids, writeTarget.store);
-      archive.close();
+      let restored: string[];
+      try {
+        restored = await archive.dearchiveBatch(ids, writeTarget.store, ctx.centralDb);
+      } finally {
+        archive.close();
+      }
 
       // v2.0: Sync dearchive to gnosys.db
       if (ctx.centralDb?.isAvailable()) {
-        for (const memId of ids) {
-          syncDearchiveToDb(ctx.centralDb, memId);
-        }
         auditToDb(ctx.centralDb, "dearchive", undefined, { query, count: restored.length });
       }
 

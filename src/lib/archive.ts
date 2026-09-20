@@ -23,6 +23,7 @@ import fs from "fs/promises";
 import { statSync } from "fs";
 import type { GnosysStore, Memory, MemoryFrontmatter } from "./store.js";
 import type { GnosysDB } from "./db.js";
+import { readProjectIdentity } from "./projectIdentity.js";
 import { syncMemoryToDb, syncDearchiveToDb } from "./dbWrite.js";
 import type { GnosysConfig } from "./config.js";
 import { enableWAL } from "./lock.js";
@@ -232,6 +233,9 @@ export class GnosysArchive {
     ).get(memoryId) as ArchivedMemory | undefined;
 
     if (!row) return null;
+    if (!centralDb?.isAvailable()) {
+      throw new Error("Central DB not available. Archived memory was retained.");
+    }
 
     // Restore frontmatter from stored JSON
     let frontmatter: MemoryFrontmatter;
@@ -262,10 +266,17 @@ export class GnosysArchive {
     const filename = row.original_path.split("/").pop() || `${row.id}.md`;
     const relativePath = `${row.category}/${filename}`;
 
-    if (centralDb) {
-      syncMemoryToDb(centralDb, frontmatter, row.content, relativePath);
+    const identity = await readProjectIdentity(path.dirname(store.getStorePath()));
+    const projectId = typeof frontmatter.project_id === "string"
+      ? frontmatter.project_id : identity?.projectId ?? null;
+    const scope = frontmatter.scope === "user" || frontmatter.scope === "global"
+      ? frontmatter.scope : "project";
+    centralDb.transaction(() => {
+      if (!centralDb.getMemory(memoryId)) {
+        syncMemoryToDb(centralDb, frontmatter, row.content, relativePath, projectId, scope);
+      }
       syncDearchiveToDb(centralDb, memoryId);
-    }
+    });
 
     // Remove from archive.db
     const tx = this.db.transaction(() => {

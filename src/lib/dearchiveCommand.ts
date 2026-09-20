@@ -1,5 +1,6 @@
 import type { GnosysResolver } from "./resolver.js";
 import type { GnosysArchive } from "./archive.js";
+import { GnosysDB } from "./db.js";
 
 type GetResolver = () => Promise<GnosysResolver>;
 
@@ -13,6 +14,7 @@ export async function runDearchiveCommand(
   opts: DearchiveCommandOptions,
 ): Promise<void> {
   let archive: GnosysArchive | undefined;
+  let centralDb: GnosysDB | undefined;
 
   try {
     const { GnosysArchive } = await import("./archive.js");
@@ -50,7 +52,8 @@ export async function runDearchiveCommand(
     console.log("");
 
     const ids = results.map((r) => r.id);
-    const restored = await archive.dearchiveBatch(ids, writeTarget.store);
+    centralDb = GnosysDB.openCentral();
+    const restored = await archive.dearchiveBatch(ids, writeTarget.store, centralDb);
 
     console.log(`Dearchived ${restored.length} memories back to active:`);
     for (const rp of restored) {
@@ -58,5 +61,6 @@ export async function runDearchiveCommand(
     }
   } finally {
     archive?.close();
+    centralDb?.close();
   }
 }
