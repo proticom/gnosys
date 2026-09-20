@@ -45,17 +45,17 @@ import fs from "fs/promises";
 import type { MemoryFrontmatter } from "./lib/store.js";
 import { GnosysSearch } from "./lib/search.js";
 import { GnosysTagRegistry } from "./lib/tags.js";
-import { GnosysResolver } from "./lib/resolver.js";
+import { GnosysResolver, type LayeredMemory } from "./lib/resolver.js";
 import { applyLens, type LensFilter } from "./lib/lensing.js";
 import { groupByPeriod, computeStats, type TimePeriod } from "./lib/timeline.js";
 import { buildLinkGraph, getBacklinks, getOutgoingLinks, formatGraphSummary } from "./lib/wikilinks.js";
 import { loadConfig, type GnosysConfig, DEFAULT_CONFIG } from "./lib/config.js";
 import { getLLMProvider, type LLMProvider } from "./lib/llm.js";
 import { recall, formatRecall, } from "./lib/recall.js";
-import { initAudit, readAuditLog, formatAuditTimeline } from "./lib/audit.js";
+import { initAudit, readAuditLog, readAuditFromDb, formatAuditTimeline } from "./lib/audit.js";
 import { logError } from "./lib/log.js";
 import { GnosysDB } from "./lib/db.js";
-import { syncMemoryToDb, syncUpdateToDb, syncDearchiveToDb, syncReinforcementToDb, auditToDb } from "./lib/dbWrite.js";
+import { syncMemoryToDb, syncUpdateToDb, syncReinforcementToDb, auditToDb } from "./lib/dbWrite.js";
 import { createProjectIdentity, readProjectIdentity, } from "./lib/projectIdentity.js";
 import { setPreference, getPreference, getAllPreferences, deletePreference, KNOWN_PREFERENCE_KEYS, suggestPreferenceKey } from "./lib/preferences.js";
 import { syncRules, generateRulesBlock, } from "./lib/rulesGen.js";
@@ -322,6 +322,56 @@ interface ToolContext {
    *  must be closed on release. The default context shares the module-global
    *  search instance, which must NOT be closed. */
   ownsSearch?: boolean;
+}
+
+const storedMemoryMetadata = z.object({
+  author: z.enum(["human", "ai", "human+ai", "user"])
+    .transform((value) => value === "user" ? "human" : value),
+  authority: z.enum(["declared", "observed", "imported", "inferred", "user"])
+    .transform((value) => value === "user" ? "declared" : value),
+  status: z.enum(["active", "archived", "superseded"]),
+  scope: z.enum(["project", "user", "global"]),
+  tags: z.union([z.array(z.string()), z.record(z.string(), z.array(z.string()))]),
+});
+
+async function readContextMemories(ctx: ToolContext): Promise<LayeredMemory[]> {
+  if (!ctx.centralDb?.isAvailable()) return ctx.resolver.getAllMemories();
+
+  let memories = ctx.centralDb.getAllMemories();
+  if (ctx.clientRead?.pendingOverlay.length) {
+    memories = applyPendingOverlay(memories, ctx.clientRead.pendingOverlay, new Set()).memories;
+  }
+  return memories
+    .filter((memory) => memory.scope === "user" || memory.scope === "global" || memory.project_id === ctx.projectId)
+    .map((memory) => {
+      const metadata = storedMemoryMetadata.parse({ ...memory, tags: JSON.parse(memory.tags || "[]") });
+      const sourceLayer = metadata.scope === "user" ? "personal" : metadata.scope;
+      const relativePath = memory.source_path || `${memory.category}/${memory.id}.md`;
+      return {
+        frontmatter: {
+          id: memory.id,
+          title: memory.title,
+          category: memory.category,
+          tags: metadata.tags,
+          relevance: memory.relevance,
+          author: metadata.author,
+          authority: metadata.authority,
+          confidence: memory.confidence,
+          created: memory.created,
+          modified: memory.modified,
+          status: metadata.status,
+          supersedes: memory.supersedes,
+          superseded_by: memory.superseded_by,
+          reinforcement_count: memory.reinforcement_count,
+          last_reinforced: memory.last_reinforced,
+        },
+        content: memory.content,
+        filePath: "",
+        relativePath,
+        sourceLayer,
+        sourceLabel: sourceLayer,
+      };
+    });
 }
 
 function applyClientReadToCentralDb(localDb: GnosysDB | null): {
@@ -1192,23 +1242,20 @@ regTool(
       await fs.appendFile(logPath, entry + "\n", "utf-8");
     }
 
-    // If 'useful', find the memory across all stores and update if writable
     if (signal === "useful") {
-      const allMemories = await ctx.resolver.getAllMemories();
-      const memory = allMemories.find((m) => m.frontmatter.id === memory_id);
-      if (memory) {
-        const sourceStore = ctx.resolver
-          .getStores()
-          .find((s) => s.label === memory.sourceLabel);
-        if (sourceStore) {
-          const count = (memory.frontmatter.reinforcement_count || 0) + 1;
-
-          // Write reinforcement to DB only (SQLite is sole source of truth)
-          if (ctx.centralDb?.isAvailable()) {
-            syncReinforcementToDb(ctx.centralDb, memory_id, count);
-            auditToDb(ctx.centralDb, "reinforce", memory_id, { signal, context });
-          }
-        }
+      const db = ctx.centralDb;
+      if (!db?.isAvailable()) {
+        return { content: [{ type: "text", text: "Central DB not available. Memory was not reinforced." }], isError: true };
+      }
+      const reinforced = db.transaction(() => {
+        const memory = db.getMemory(memory_id);
+        if (!memory) return false;
+        syncReinforcementToDb(db, memory_id, memory.reinforcement_count + 1);
+        auditToDb(db, "reinforce", memory_id, { signal, context });
+        return true;
+      });
+      if (!reinforced) {
+        return { content: [{ type: "text", text: `Memory not found: ${memory_id}` }], isError: true };
       }
     }
 
@@ -1296,7 +1343,7 @@ regTool(
       tagRegistry = new GnosysTagRegistry(writeTarget.store.getStorePath());
       await tagRegistry.load();
       const { GnosysIngestion } = await import("./lib/ingest.js");
-      ingestion = new GnosysIngestion(writeTarget.store, tagRegistry);
+      ingestion = new GnosysIngestion(writeTarget.store, tagRegistry, await loadConfig(writeTarget.store.getStorePath()));
       await reindexAllStores();
     }
 
@@ -1402,7 +1449,7 @@ regTool(
         tagRegistry = new GnosysTagRegistry(writeTarget.store.getStorePath());
         await tagRegistry.load();
         const { GnosysIngestion } = await import("./lib/ingest.js");
-      ingestion = new GnosysIngestion(writeTarget.store, tagRegistry);
+      ingestion = new GnosysIngestion(writeTarget.store, tagRegistry, await loadConfig(writeTarget.store.getStorePath()));
         await reindexAllStores();
       }
 
@@ -1545,7 +1592,7 @@ regTool(
     cutoff.setDate(cutoff.getDate() - threshold);
     const cutoffStr = cutoff.toISOString().split("T")[0];
 
-    const allMemories = await ctx.resolver.getAllMemories();
+    const allMemories = await readContextMemories(ctx);
     const stale = allMemories
       .filter((m) => {
         const lastTouched = m.frontmatter.last_reviewed || m.frontmatter.modified;
@@ -1850,7 +1897,7 @@ regTool(
   async ({ category, tags, tagMatchMode, status, author, authority, minConfidence, maxConfidence, createdAfter, createdBefore, modifiedAfter, modifiedBefore, projectRoot }) => {
     try {
     const ctx = await resolveToolContext(projectRoot);
-    const allMemories = await ctx.resolver.getAllMemories();
+    const allMemories = await readContextMemories(ctx);
 
     const lens: LensFilter = {};
     if (category) lens.category = category;
@@ -1895,7 +1942,7 @@ regTool(
   async ({ period, projectRoot }) => {
     try {
     const ctx = await resolveToolContext(projectRoot);
-    const allMemories = await ctx.resolver.getAllMemories();
+    const allMemories = await readContextMemories(ctx);
     const entries = groupByPeriod(allMemories, (period as TimePeriod) || "month");
 
     if (entries.length === 0) {
@@ -1923,7 +1970,7 @@ regTool(
   async ({ projectRoot }) => {
     try {
     const ctx = await resolveToolContext(projectRoot);
-    const allMemories = await ctx.resolver.getAllMemories();
+    const allMemories = await readContextMemories(ctx);
     const stats = computeStats(allMemories);
 
     if (stats.totalCount === 0) {
@@ -2048,7 +2095,7 @@ regTool(
   async ({ projectRoot }) => {
     try {
     const ctx = await resolveToolContext(projectRoot);
-    const allMemories = await ctx.resolver.getAllMemories();
+    const allMemories = await readContextMemories(ctx);
 
     if (allMemories.length === 0) {
       return { content: [{ type: "text", text: "No memories found." }] };
@@ -2185,13 +2232,6 @@ regTool(
       };
     }
 
-    if (!ingestion) {
-      return {
-        content: [{ type: "text", text: "Ingestion module not initialized." }],
-        isError: true,
-      };
-    }
-
     const effectiveMode = (mode as "llm" | "structured") || "structured";
 
     try {
@@ -2199,7 +2239,16 @@ regTool(
       const { performImport, formatImportSummary } = await import(
         "./lib/import.js"
       );
-      const result = await performImport(writeTarget.store, ingestion, {
+      const { GnosysIngestion } = await import("./lib/ingest.js");
+      const importTags = new GnosysTagRegistry(writeTarget.store.getStorePath());
+      await importTags.load();
+      const importIngestion = new GnosysIngestion(writeTarget.store, importTags, ctx.config);
+      const writeScope = resolveWriteScope(ctx, targetStore);
+      if (!dryRun && !writeScope.ok) throw new Error(writeScope.error);
+      const importDb = ctx.centralDb?.isAvailable() ? ctx.centralDb : undefined;
+      if (!dryRun && !importDb) throw new Error("Central DB not available. No memories were imported.");
+      const scope = targetStore === "personal" ? "user" : targetStore ?? "project";
+      const result = await performImport(writeTarget.store, importIngestion, {
         format: format as "csv" | "json" | "jsonl",
         data,
         mapping: mapping as Record<string, string>,
@@ -2211,7 +2260,7 @@ regTool(
         // v5.15: explicit param wins; otherwise config importConcurrency.
         concurrency: concurrency ?? ctx.config?.importConcurrency,
         batchCommit: true,
-      });
+      }, importDb, writeScope.ok ? writeScope.projectId : ctx.projectId, scope);
 
       // Reindex after import
       if (!dryRun && result.imported.length > 0 && search) {
@@ -2219,8 +2268,8 @@ regTool(
       }
 
       // DB-only: audit the import (no local migrate — all writes go to central DB)
-      if (!dryRun && result.imported.length > 0 && gnosysDb?.isAvailable()) {
-        auditToDb(gnosysDb, "ingest", undefined, { format, count: result.imported.length, mode: effectiveMode });
+      if (!dryRun && result.imported.length > 0 && importDb) {
+        auditToDb(importDb, "ingest", undefined, { format, count: result.imported.length, mode: effectiveMode });
       }
 
       let response = formatImportSummary(result);
@@ -2295,16 +2344,19 @@ regTool(
         )
         .join("\n\n");
 
-      // Reinforce used memories (best-effort, non-blocking)
-      // Use default resolver here since hybridSearch operates across all stores
-      const writeTarget = resolver.getWriteTarget();
-      if (writeTarget) {
-        // v5.9.1 (#100): lazy-load the maintenance module here too.
-        const { GnosysMaintenanceEngine } = await import("./lib/maintenance.js");
-        GnosysMaintenanceEngine.reinforceBatch(
-          writeTarget.store,
-          results.map((r) => r.relativePath)
-        ).catch(() => {}); // Fire-and-forget
+      try {
+        const ctx = await resolveToolContext(projectRoot);
+        const writeTarget = ctx.resolver.getWriteTarget();
+        if (writeTarget) {
+          const { GnosysMaintenanceEngine } = await import("./lib/maintenance.js");
+          await GnosysMaintenanceEngine.reinforceBatch(
+            writeTarget.store,
+            results.map((r) => r.relativePath),
+            ctx.centralDb,
+          );
+        }
+      } catch {
+        // Reinforcement is best-effort.
       }
 
       const embCount = hybridSearch.embeddingCount();
@@ -2457,15 +2509,19 @@ regTool(
         mode: (mode as "keyword" | "semantic" | "hybrid") || "hybrid",
       });
 
-      // Reinforce used memories (best-effort, non-blocking)
-      const writeTarget = resolver.getWriteTarget();
-      if (writeTarget && result.sources.length > 0) {
-        // v5.9.1 (#100): lazy-load the maintenance module here too.
-        const { GnosysMaintenanceEngine } = await import("./lib/maintenance.js");
-        GnosysMaintenanceEngine.reinforceBatch(
-          writeTarget.store,
-          result.sources.map((s) => s.relativePath)
-        ).catch(() => {}); // Fire-and-forget
+      try {
+        const ctx = await resolveToolContext(projectRoot);
+        const writeTarget = ctx.resolver.getWriteTarget();
+        if (writeTarget && result.sources.length > 0) {
+          const { GnosysMaintenanceEngine } = await import("./lib/maintenance.js");
+          await GnosysMaintenanceEngine.reinforceBatch(
+            writeTarget.store,
+            result.sources.map((s) => s.relativePath),
+            ctx.centralDb,
+          );
+        }
+      } catch {
+        // Reinforcement is best-effort.
       }
 
       const sourcesText = result.sources.length > 0
@@ -2517,7 +2573,8 @@ regTool(
       const { GnosysMaintenanceEngine, formatMaintenanceReport } = await import(
         "./lib/maintenance.js"
       );
-      const engine = new GnosysMaintenanceEngine(ctx.resolver, ctx.config);
+      if (!ctx.centralDb?.isAvailable()) throw new Error("Central DB not available.");
+      const engine = new GnosysMaintenanceEngine(ctx.resolver, ctx.config, ctx.centralDb);
       const report = await engine.maintain({
         dryRun: dryRun ?? true,
         autoApply: autoApply ?? false,
@@ -2583,14 +2640,15 @@ regTool(
       }
 
       const ids = results.map((r) => r.id);
-      const restored = await archive.dearchiveBatch(ids, writeTarget.store);
-      archive.close();
+      let restored: string[];
+      try {
+        restored = await archive.dearchiveBatch(ids, writeTarget.store, ctx.centralDb);
+      } finally {
+        archive.close();
+      }
 
       // v2.0: Sync dearchive to gnosys.db
       if (ctx.centralDb?.isAvailable()) {
-        for (const memId of ids) {
-          syncDearchiveToDb(ctx.centralDb, memId);
-        }
         auditToDb(ctx.centralDb, "dearchive", undefined, { query, count: restored.length });
       }
 
@@ -2620,7 +2678,7 @@ regTool(
     const ctx = await resolveToolContext(projectRoot);
     try {
       const { reindexGraph, formatGraphStats } = await import("./lib/graph.js");
-      const stats = await reindexGraph(ctx.resolver);
+      const stats = await reindexGraph(ctx.resolver, undefined, await readContextMemories(ctx));
       return {
         content: [{ type: "text", text: formatGraphStats(stats) }],
       };
@@ -2999,11 +3057,14 @@ regTool(
       };
     }
 
-    const entries = readAuditLog(storePath, {
+    const options = {
       days: days || 7,
       operation: operation as any,
       limit: limit || 100,
-    });
+    };
+    const entries = ctx.centralDb?.isAvailable()
+      ? readAuditFromDb(ctx.centralDb, options)
+      : readAuditLog(storePath, options);
 
     return {
       content: [{ type: "text" as const, text: formatAuditTimeline(entries) }],

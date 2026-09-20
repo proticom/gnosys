@@ -1,6 +1,5 @@
 import type { GnosysResolver } from "./resolver.js";
 import { GnosysTagRegistry } from "./tags.js";
-import { GnosysSearch } from "./search.js";
 import { loadConfig } from "./config.js";
 import { getLLMProvider, type LLMProvider } from "./llm.js";
 import { GnosysDB } from "./db.js";
@@ -39,14 +38,6 @@ export async function runCommitContextCommand(
         process.exit(1);
       }
   
-      // Build search index
-      const stores = resolver.getStores();
-      const search = new GnosysSearch(stores[0].path);
-      search.clearIndex();
-      for (const s of stores) {
-        await search.addStoreMemories(s.store, s.label);
-      }
-  
       // Step 1: Extract candidates via LLM abstraction
       console.log("Extracting knowledge candidates from context...");
   
@@ -55,7 +46,6 @@ export async function runCommitContextCommand(
         extractProvider = getLLMProvider(ccConfig, "structuring");
       } catch (err) {
         console.error(`LLM not available: ${err instanceof Error ? err.message : String(err)}`);
-        search.close();
         process.exit(1);
       }
   
@@ -84,13 +74,11 @@ export async function runCommitContextCommand(
         candidates = JSON.parse(jsonMatch[1] || extractText);
       } catch {
         console.error("Failed to extract candidates — LLM output was not valid JSON.");
-        search.close();
         process.exit(1);
       }
   
       if (!Array.isArray(candidates) || candidates.length === 0) {
         console.log("No extractable knowledge found in the provided context.");
-        search.close();
         return;
       }
   
@@ -107,7 +95,7 @@ export async function runCommitContextCommand(
   
         for (const candidate of candidates) {
           const searchTerms = candidate.search_terms.join(" ");
-          const existing = search.discover(searchTerms, 3);
+          const existing = centralDb.discoverFts(searchTerms, 3, { projectId, scope: "project" });
   
           if (existing.length > 0) {
             console.log(`  ⏭ SKIP: "${candidate.summary}"`);
@@ -167,7 +155,6 @@ export async function runCommitContextCommand(
         centralDb?.close();
       }
   
-      search.close();
   
       const mode = opts.dryRun ? "DRY RUN" : "COMMITTED";
       console.log(`\n${mode}: ${candidates.length} candidates, ${added} ${opts.dryRun ? "would be added" : "added"}, ${skipped} duplicates skipped.`);

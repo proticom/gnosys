@@ -1,7 +1,7 @@
 import fs from "fs";
 import os from "os";
 import path from "path";
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 
 const LABEL = "com.gnosys.sync-ingest";
 
@@ -67,7 +67,7 @@ export function installSyncIngestLaunchAgent(intervalMinutes = 15): string | nul
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, buildSyncIngestLaunchAgentPlist(intervalMinutes), "utf8");
   try {
-    execSync(`launchctl load -w "${file}"`, { stdio: "ignore" });
+    execFileSync("launchctl", ["load", "-w", file], { stdio: "ignore" });
   } catch (err) {
     throw new Error(
       `Failed to load launch agent: ${err instanceof Error ? err.message : String(err)}`,
@@ -80,7 +80,7 @@ export function uninstallSyncIngestLaunchAgent(): string | null {
   if (process.platform !== "darwin") return null;
   const file = plistPath();
   try {
-    execSync(`launchctl unload "${file}"`, { stdio: "ignore" });
+    execFileSync("launchctl", ["unload", file], { stdio: "ignore" });
   } catch {
     // Already unloaded or missing.
   }

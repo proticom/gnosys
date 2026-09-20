@@ -516,6 +516,14 @@ export async function writeApiKey(
   await fs.chmod(envPath, 0o600);
 }
 
+function escapeShellDoubleQuoted(value: string): string {
+  return value.replace(/[\\"$`]/g, "\\$&");
+}
+
+function shellArgument(value: string): string {
+  return /^[A-Za-z0-9_./:-]+$/.test(value) ? value : `'${value.replace(/'/g, "'\\''")}'`;
+}
+
 /**
  * Write an API key to the macOS Keychain.
  * Uses the -U flag to update if the entry already exists.
@@ -526,7 +534,7 @@ function writeApiKeyToKeychain(envVar: string, key: string): boolean {
   try {
     // The -U flag updates if the password already exists
     execSync(
-      `security add-generic-password -a "$USER" -s "${envVar}" -w "${key.replace(/"/g, '\\"')}" -U`,
+      `security add-generic-password -a "$USER" -s "${escapeShellDoubleQuoted(envVar)}" -w "${escapeShellDoubleQuoted(key)}" -U`,
       { stdio: "pipe" }
     );
     return true;
@@ -546,7 +554,7 @@ function writeApiKeyToSecretTool(envVar: string, key: string, provider: string):
     execSync("which secret-tool", { stdio: "pipe" });
     // Write the key — printf avoids trailing newline issues
     execSync(
-      `printf "%s" "${key.replace(/"/g, '\\"')}" | secret-tool store --label="Gnosys ${provider}" service gnosys account ${envVar}`,
+      `printf "%s" "${escapeShellDoubleQuoted(key)}" | secret-tool store --label="Gnosys ${escapeShellDoubleQuoted(provider)}" service gnosys account ${shellArgument(envVar)}`,
       { stdio: "pipe", shell: "/bin/sh" }
     );
     return true;
@@ -672,7 +680,7 @@ function detectKeySource(envVarName: string, legacyEnvVar: string): string {
   if (process.platform === "darwin") {
     try {
       const result = execSync(
-        `security find-generic-password -a "$USER" -s "${envVarName}" -w`,
+        `security find-generic-password -a "$USER" -s "${escapeShellDoubleQuoted(envVarName)}" -w`,
         { stdio: "pipe", encoding: "utf-8" }
       ).trim();
       if (result) return "macOS Keychain";
@@ -1683,7 +1691,7 @@ export async function runSetup(opts: {
           // Pull key out of keychain so we can validate
           try {
             capturedApiKey = execSync(
-              `security find-generic-password -a "$USER" -s "${envVarName}" -w`,
+              `security find-generic-password -a "$USER" -s "${escapeShellDoubleQuoted(envVarName)}" -w`,
               { stdio: "pipe", encoding: "utf-8" }
             ).trim();
           } catch {

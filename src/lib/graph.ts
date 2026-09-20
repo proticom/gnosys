@@ -50,18 +50,19 @@ export interface GraphStats {
  */
 export async function reindexGraph(
   resolver: GnosysResolver,
-  onLog?: (message: string) => void
+  onLog?: (message: string) => void,
+  memories?: Memory[],
 ): Promise<GraphStats> {
   const stores = resolver.getStores();
   if (stores.length === 0) {
     throw new Error("No Gnosys stores found.");
   }
 
-  // Collect all memories across stores
-  const allMemories: Memory[] = [];
-  for (const s of stores) {
-    const memories = await s.store.getAllMemories();
-    allMemories.push(...memories);
+  const allMemories: Memory[] = memories ?? [];
+  if (!memories) {
+    for (const store of stores) {
+      allMemories.push(...await store.store.getAllMemories());
+    }
   }
 
   onLog?.(`Scanning ${allMemories.length} memories for [[wikilinks]]...`);

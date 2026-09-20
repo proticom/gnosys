@@ -65,11 +65,13 @@ export async function runAddCommand(
         );
         await tagRegistry.load();
         const { GnosysIngestion } = await import("./ingest.js");
-        const ingestion = new GnosysIngestion(writeTarget.store, tagRegistry);
+        const { loadConfig } = await import("./config.js");
+        const config = await loadConfig(writeTarget.store.getStorePath());
+        const ingestion = new GnosysIngestion(writeTarget.store, tagRegistry, config);
   
         if (!ingestion.isLLMAvailable) {
           console.error(
-            "Error: No LLM provider available. Add an API key to ~/.config/gnosys/.env or use a local model: gnosys config set provider ollama"
+            "Error: No LLM provider available. Run 'gnosys setup' to configure a provider and its credentials."
           );
           process.exit(1);
         }

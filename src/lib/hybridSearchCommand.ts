@@ -1,3 +1,4 @@
+import { GnosysDB } from "./db.js";
 import { GnosysSearch } from "./search.js";
 import type { GnosysResolver } from "./resolver.js";
 
@@ -112,14 +113,21 @@ export async function runHybridSearchCommand(
         // Reinforce used memories (best-effort)
         const writeTarget = resolver.getWriteTarget();
         if (writeTarget) {
-          const { GnosysMaintenanceEngine } = await import("./maintenance.js");
-          await GnosysMaintenanceEngine.reinforceBatch(
-            writeTarget.store,
-            results.map((r) => r.relativePath)
-          ).catch((err) => {
-            // Best-effort, but don't be fully silent (sprint 2026-07-02).
+          try {
+            const { GnosysMaintenanceEngine } = await import("./maintenance.js");
+            const centralDb = GnosysDB.openCentral();
+            try {
+              await GnosysMaintenanceEngine.reinforceBatch(
+                writeTarget.store,
+                results.map((r) => r.relativePath),
+                centralDb,
+              );
+            } finally {
+              centralDb.close();
+            }
+          } catch (err) {
             console.error(`gnosys: reinforcement skipped: ${err instanceof Error ? err.message : String(err)}`);
-          });
+          }
         }
       }
       search.close();
