@@ -1,0 +1,24 @@
+[
+  {
+    "featureId": "F22",
+    "obligationKind": "success",
+    "obligation": "Duplicate detection, decay and consolidation act on eligible memories; dearchive restores searchable memory",
+    "tests": [
+      {
+        "file": "src/test/maintenance-audit.test.ts",
+        "name": "maintenance public success paths auto-apply persists stale confidence decay and leaves a freshly reinforced memory unchanged",
+        "mutationIds": [
+          "maintenance-decay-keeps-original"
+        ]
+      },
+      {
+        "file": "src/test/maintenance-audit.test.ts",
+        "name": "maintenance public success paths dearchive restores exact content to active database search and removes the archived copy",
+        "mutationIds": [
+          "maintenance-dearchive-drops-content"
+        ]
+      }
+    ],
+    "limitations": "Proves persistent decay for one eligible old memory with a freshly reinforced control, and archive-to-central-DB restoration with body-only FTS search and archive cleanup. Does not prove duplicate detection, LLM consolidation, CLI/MCP command behavior, restoration over an existing central row, dry-run, repeated maintenance, project isolation, or other threshold boundaries."
+  }
+]

@@ -1,0 +1,47 @@
+{
+  "tests": [],
+  "additionalTests": [
+    {
+      "file": "src/test/maintenance-audit.test.ts",
+      "name": "maintenance public success paths auto-apply persists stale confidence decay and leaves a freshly reinforced memory unchanged",
+      "afterNames": [
+        "maintenance public success paths auto-apply persists stale confidence decay and leaves a freshly reinforced memory unchanged"
+      ],
+      "action": "added",
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Calling maintain({dryRun:false,autoApply:true}) with real resolver/store/DB reduces a 200-day active memory from 0.8 to 0.29 and leaves a newly reinforced peer at 0.8; report identifies exactly one stale memory.",
+      "productionModules": [
+        "src/lib/maintenance.ts",
+        "src/lib/dbWrite.ts"
+      ],
+      "featureIds": [
+        "F22"
+      ],
+      "mutationIds": [
+        "maintenance-decay-keeps-original"
+      ]
+    },
+    {
+      "file": "src/test/maintenance-audit.test.ts",
+      "name": "maintenance public success paths dearchive restores exact content to active database search and removes the archived copy",
+      "afterNames": [
+        "maintenance public success paths dearchive restores exact content to active database search and removes the archived copy"
+      ],
+      "action": "added",
+      "classification": "STRONG",
+      "afterClassification": "STRONG",
+      "evidence": "Calling public archive/dearchive with a real archive and central DB restores the literal body, provenance, active status and body-only FTS hit, then removes the archive row and archive search hit.",
+      "productionModules": [
+        "src/lib/archive.ts",
+        "src/lib/dbWrite.ts"
+      ],
+      "featureIds": [
+        "F22"
+      ],
+      "mutationIds": [
+        "maintenance-dearchive-drops-content"
+      ]
+    }
+  ]
+}

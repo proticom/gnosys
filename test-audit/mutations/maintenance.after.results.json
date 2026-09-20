@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "maintenance-decay-keeps-original",
+      "file": "src/lib/maintenance.ts",
+      "kind": "fault-injection",
+      "description": "Persist original confidence instead of computed decay while reporting one updated stale memory.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 505,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/maintenance-audit.test.ts",
+            "name": "maintenance public success paths auto-apply persists stale confidence decay and leaves a freshly reinforced memory unchanged",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 514,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/maintenance-audit.test.ts",
+            "name": "maintenance public success paths auto-apply persists stale confidence decay and leaves a freshly reinforced memory unchanged",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { id: 'aging-001', …(28) } to match object { confidence: 0.29, …(3) }\n(25 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/maintenance-audit.test.ts:73:39\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 505,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/maintenance-audit.test.ts",
+            "name": "maintenance public success paths auto-apply persists stale confidence decay and leaves a freshly reinforced memory unchanged",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/maintenance-audit.test.ts",
+          "name": "maintenance public success paths auto-apply persists stale confidence decay and leaves a freshly reinforced memory unchanged"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "maintenance-dearchive-drops-content",
+      "file": "src/lib/archive.ts",
+      "kind": "fault-injection",
+      "description": "Restore archived metadata but lose its body when inserting the active central memory.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 504,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/maintenance-audit.test.ts",
+            "name": "maintenance public success paths dearchive restores exact content to active database search and removes the archived copy",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 503,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/maintenance-audit.test.ts",
+            "name": "maintenance public success paths dearchive restores exact content to active database search and removes the archived copy",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { id: 'archive-001', …(28) } to match object { title: 'Quartz recovery', …(9) }\n(19 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/maintenance-audit.test.ts:98:43\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 494,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/maintenance-audit.test.ts",
+            "name": "maintenance public success paths dearchive restores exact content to active database search and removes the archived copy",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/maintenance-audit.test.ts",
+          "name": "maintenance public success paths dearchive restores exact content to active database search and removes the archived copy"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

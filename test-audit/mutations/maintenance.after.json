@@ -1,0 +1,26 @@
+[
+  {
+    "id": "maintenance-decay-keeps-original",
+    "file": "src/lib/maintenance.ts",
+    "description": "Persist original confidence instead of computed decay while reporting one updated stale memory.",
+    "search": "syncConfidenceToDb(this.db, stale.memory.frontmatter.id, roundedConfidence);",
+    "replace": "syncConfidenceToDb(this.db, stale.memory.frontmatter.id, stale.originalConfidence);",
+    "build": false,
+    "tests": [
+      "src/test/maintenance-audit.test.ts"
+    ],
+    "testName": "auto-apply persists"
+  },
+  {
+    "id": "maintenance-dearchive-drops-content",
+    "file": "src/lib/archive.ts",
+    "description": "Restore archived metadata but lose its body when inserting the active central memory.",
+    "search": "syncMemoryToDb(centralDb, frontmatter, row.content, relativePath);",
+    "replace": "syncMemoryToDb(centralDb, frontmatter, \"\", relativePath);",
+    "build": false,
+    "tests": [
+      "src/test/maintenance-audit.test.ts"
+    ],
+    "testName": "dearchive restores"
+  }
+]
