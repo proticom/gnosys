@@ -1,0 +1,2046 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "web-index-write",
+      "file": "src/lib/webBuildIndexCommand.ts",
+      "description": "Report successful index creation without writing the artifact.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 791,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 622,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "failed",
+            "failures": [
+              "Error: ENOENT: no such file or directory, open '/var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-web-command-audit-SOoTP4/knowledge/gnosys-index.json'\n    at readFileSync (node:fs:441:20)\n    at readJson (<repo>/src/test/webVectors-command-handler.test.ts:19:56)\n    at <repo>/src/test/webVectors-command-handler.test.ts:57:12\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "failed",
+            "failures": [
+              "Error: ENOENT: no such file or directory, open '/var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-web-command-audit-iSKcs8/knowledge/gnosys-index.json'\n    at readFileSync (node:fs:441:20)\n    at readJson (<repo>/src/test/webVectors-command-handler.test.ts:19:56)\n    at <repo>/src/test/webVectors-command-handler.test.ts:71:12\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "failed",
+            "failures": [
+              "Error: ENOENT: no such file or directory, open '/var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-web-command-audit-psDvgi/knowledge/gnosys-index.json'\n    at readFileSync (node:fs:441:20)\n    at readJson (<repo>/src/test/webVectors-command-handler.test.ts:19:56)\n    at <repo>/src/test/webVectors-command-handler.test.ts:80:12\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "failed",
+            "failures": [
+              "Error: ENOENT: no such file or directory, open '/var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-web-command-audit-AUBa6V/knowledge/gnosys-index.json'\n    at readFileSync (node:fs:441:20)\n    at readJson (<repo>/src/test/webVectors-command-handler.test.ts:19:56)\n    at <repo>/src/test/webVectors-command-handler.test.ts:86:12\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "failed",
+            "failures": [
+              "Error: ENOENT: no such file or directory, open '/var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-web-command-audit-UwoQ0x/knowledge/gnosys-index.json'\n    at readFileSync (node:fs:441:20)\n    at readJson (<repo>/src/test/webVectors-command-handler.test.ts:19:56)\n    at <repo>/src/test/webVectors-command-handler.test.ts:92:12\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 605,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location"
+        },
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build-index output writes a searchable index when embeddings are absent"
+        },
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build-index output persists concept expansions returned by the configured LLM"
+        },
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled"
+        },
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build-index output writes a version-one index when no LLM provider is configured"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "web-index-validation",
+      "file": "src/lib/webBuildIndexCommand.ts",
+      "description": "Allow an invalid embedding provider to bypass validation.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 605,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 612,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Build index failed: Cannot read prope…' to contain 'Invalid embeddings provider \"bad-prov…'\n    at <repo>/src/test/webVectors-command-handler.test.ts:65:23\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 614,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "web-build-write",
+      "file": "src/lib/webBuildCommand.ts",
+      "description": "Skip writing the full-build search index.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 628,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 653,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "failed",
+            "failures": [
+              "Error: ENOENT: no such file or directory, open '/var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-web-command-audit-6DT3hj/knowledge/gnosys-index.json'\n    at readFileSync (node:fs:441:20)\n    at readJson (<repo>/src/test/webVectors-command-handler.test.ts:19:56)\n    at <repo>/src/test/webVectors-command-handler.test.ts:100:12\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 599,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build ingests local content and writes both search and Voyage vector artifacts"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "web-dry-run",
+      "file": "src/lib/webBuildCommand.ts",
+      "description": "Write generated artifacts during a requested dry run.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 592,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 589,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "failed",
+            "failures": [
+              "Error: process.exit(1)\n    at process.<anonymous> (<repo>/src/test/webVectors-command-handler.test.ts:41:66)\n    at process.Mock (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/spy/dist/index.js:332:34)\n    at runWebBuildCommand (<repo>/src/lib/webBuildCommand.ts:119:13)\n    at <repo>/src/test/webVectors-command-handler.test.ts:110:5\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 591,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web build reports a dry run and preserves existing index and vector bytes"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "web-status-count",
+      "file": "src/lib/webStatusCommand.ts",
+      "description": "Report an incorrect vector document count.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 612,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 627,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Web Knowledge Base Status:\\n  Directo…' to contain 'Vectors: 1 docs, audit-vector (3d)'\n    at <repo>/src/test/webVectors-command-handler.test.ts:123:22\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 711,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web status reports vector metadata and exact byte size in text and JSON output"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "web-status-missing",
+      "file": "src/lib/webStatusCommand.ts",
+      "description": "Report nonexistent vector artifacts as present.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 575,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 589,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected 'Web Knowledge Base Status:\\n  Directo…' to contain 'Vectors: not built (run \\'gnosys web …'\n    at <repo>/src/test/webVectors-command-handler.test.ts:131:22\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 593,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web status reports a missing vectors file with a build hint"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "web-corrupt-size",
+      "file": "src/lib/webStatusCommand.ts",
+      "description": "Report an incorrect corrupt-vector byte size.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 574,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 625,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { ok: true, …(5) } to match object { ok: true, totalFiles: 1, …(1) }\n(5 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/webVectors-command-handler.test.ts:140:34\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 596,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "web-init-write",
+      "file": "src/lib/webInitCommand.ts",
+      "description": "Skip persisting the new web configuration.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 634,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 646,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected {} to match object { web: { source: 'directory', …(1) } }\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1283:10)\n    at Proxy.<anonymous> (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/chai/index.js:1700:25)\n    at <repo>/src/test/webVectors-command-handler.test.ts:150:51\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 596,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes an index and quantized vectors for the requested provider and reports their location",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output rejects an invalid embeddings provider without creating an index or vectors",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a searchable index when embeddings are absent",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output persists concept expansions returned by the configured LLM",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index without contacting the LLM when expansions are disabled",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build-index output writes a version-one index when no LLM provider is configured",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build ingests local content and writes both search and Voyage vector artifacts",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web build reports a dry run and preserves existing index and vector bytes",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports vector metadata and exact byte size in text and JSON output",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports a missing vectors file with a build hint",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "web status reports corrupt vector JSON with its exact byte size and no invented metadata",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "creates web configuration non-interactively and prints the semantic search instructions",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/webVectors-command-handler.test.ts",
+          "name": "creates web configuration non-interactively and prints the semantic search instructions"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

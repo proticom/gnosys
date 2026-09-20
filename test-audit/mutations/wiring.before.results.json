@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "8532ed95d9a0ac8f623bbdbd46850433c24859a0cab83444c25b6924c3f3580f",
+  "results": [
+    {
+      "id": "cli-parent-path",
+      "file": "src/cli/setup.ts",
+      "description": "Register remote setup under the root command instead of setup; leaf names still exist.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 21006,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "cli command wiring (runtime vs source) every .command() declared in source is registered at runtime",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 24724,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "cli command wiring (runtime vs source) every .command() declared in source is registered at runtime",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 21384,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/cli-command-wiring.test.ts",
+            "name": "cli command wiring (runtime vs source) every .command() declared in source is registered at runtime",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "web-index-skip-write",
+      "file": "src/lib/webBuildIndexCommand.ts",
+      "description": "Skip writing the search index unless embeddings were requested.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 395,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "runWebBuildIndexCommand semantic options does not build vectors when --embeddings is absent",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 417,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "runWebBuildIndexCommand semantic options does not build vectors when --embeddings is absent",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 426,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "runWebBuildIndexCommand semantic options does not build vectors when --embeddings is absent",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    },
+    {
+      "id": "web-corrupt-size",
+      "file": "src/lib/webStatusCommand.ts",
+      "description": "Report the wrong byte size for a corrupt vector file.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 412,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "runWebStatusCommand vector reporting reports corrupt vector JSON as present with size only",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 0,
+        "durationMs": 406,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "runWebStatusCommand vector reporting reports corrupt vector JSON as present with size only",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 402,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/webVectors-command-handler.test.ts",
+            "name": "runWebStatusCommand vector reporting reports corrupt vector JSON as present with size only",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "survived",
+      "killedBy": [],
+      "applicationRestored": true
+    }
+  ]
+}

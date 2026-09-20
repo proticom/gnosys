@@ -1,0 +1,1014 @@
+{
+  "schema_version": 1,
+  "audit_kind": "runner_collection_ci_static",
+  "repo_root": "/Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit",
+  "commit": "203c4e7e488cea66bfd9a3ad687d9d1dda309d16",
+  "execution": {
+    "test_suites_executed": false,
+    "application_code_modified": false,
+    "reason": "Parent requested read-only collection review; mutation confirmations remain assigned to parent."
+  },
+  "inventory": {
+    "tracked_test_files": 296,
+    "tracked_test_files_outside_src_test": [],
+    "test_paths": [
+      "src/test/acceptance-features.test.ts",
+      "src/test/acceptance.test.ts",
+      "src/test/add-command-handler.test.ts",
+      "src/test/add-structured-command-handler.test.ts",
+      "src/test/ambiguity-command-handler.test.ts",
+      "src/test/ambiguity-invoke.test.ts",
+      "src/test/apiKeyVault.test.ts",
+      "src/test/ask-command-handler.test.ts",
+      "src/test/atomic-config-write.test.ts",
+      "src/test/attachments-inline.test.ts",
+      "src/test/audit-command-handler.test.ts",
+      "src/test/audit-invoke.test.ts",
+      "src/test/backup-command-handler.test.ts",
+      "src/test/bootstrap-command-handler.test.ts",
+      "src/test/bootstrap.test.ts",
+      "src/test/briefing-command-handler.test.ts",
+      "src/test/briefing-invoke.test.ts",
+      "src/test/centralize-command-handler.test.ts",
+      "src/test/centralize-network.test.ts",
+      "src/test/check-command-handler.test.ts",
+      "src/test/chunk-splitter.test.ts",
+      "src/test/cleanup-rules.test.ts",
+      "src/test/cli-command-wiring.test.ts",
+      "src/test/cli-json.test.ts",
+      "src/test/commit-context-command-handler.test.ts",
+      "src/test/config-command-handler.test.ts",
+      "src/test/config-knob-removal.test.ts",
+      "src/test/connect-command-handler.test.ts",
+      "src/test/db-coverage.test.ts",
+      "src/test/db-recovery-extended.test.ts",
+      "src/test/db-recovery.test.ts",
+      "src/test/db-sync-v13.test.ts",
+      "src/test/dearchive-command-handler.test.ts",
+      "src/test/discover-command-handler.test.ts",
+      "src/test/docs-web-flags.test.ts",
+      "src/test/doctor-command-handler.test.ts",
+      "src/test/docx-bomb.test.ts",
+      "src/test/dream-coverage.test.ts",
+      "src/test/dream-launchctl.test.ts",
+      "src/test/dream-launchd-health.test.ts",
+      "src/test/dream-lock-recovery.test.ts",
+      "src/test/dream-log-command-handler.test.ts",
+      "src/test/dream-log-invoke.test.ts",
+      "src/test/dream-report-command-handler.test.ts",
+      "src/test/dream-resume.test.ts",
+      "src/test/dream-run-command-handler.test.ts",
+      "src/test/dream-run-log.test.ts",
+      "src/test/dream-run-scheduled-flag.test.ts",
+      "src/test/dream-state-isolation.test.ts",
+      "src/test/embed-db.test.ts",
+      "src/test/embed-queue.test.ts",
+      "src/test/embeddings-optional-dep.test.ts",
+      "src/test/export-archive-flag.test.ts",
+      "src/test/export-command-handler.test.ts",
+      "src/test/export-import-project.test.ts",
+      "src/test/export-path-traversal.test.ts",
+      "src/test/federated-client-read.test.ts",
+      "src/test/federated.test.ts",
+      "src/test/file-permissions.test.ts",
+      "src/test/freeform-add-gate.test.ts",
+      "src/test/fsearch-command-handler.test.ts",
+      "src/test/fsearch-invoke.test.ts",
+      "src/test/fts-or-fallback.test.ts",
+      "src/test/ftsQuery.test.ts",
+      "src/test/graph-command-handler.test.ts",
+      "src/test/graph-invoke.test.ts",
+      "src/test/heartbeat.test.ts",
+      "src/test/helper-command-handler.test.ts",
+      "src/test/helper-generate-command-handler.test.ts",
+      "src/test/history-audit-view.test.ts",
+      "src/test/history-command-handler.test.ts",
+      "src/test/history-invoke.test.ts",
+      "src/test/hybrid-degrade-warning.test.ts",
+      "src/test/hybrid-search-command-handler.test.ts",
+      "src/test/ide-init-golden.test.ts",
+      "src/test/ide-mcp-install.test.ts",
+      "src/test/import-command-handler.test.ts",
+      "src/test/import-concurrency-wiring.test.ts",
+      "src/test/import-project-command-handler.test.ts",
+      "src/test/import-url-ssrf.test.ts",
+      "src/test/import.test.ts",
+      "src/test/ingest-command-handler.test.ts",
+      "src/test/ingest-fixtures.test.ts",
+      "src/test/ingest-special-paths.test.ts",
+      "src/test/ingest-structured.test.ts",
+      "src/test/ingest.test.ts",
+      "src/test/init-command-handler.test.ts",
+      "src/test/init.test.ts",
+      "src/test/install-output.test.ts",
+      "src/test/interactive-guard.test.ts",
+      "src/test/lens-command-handler.test.ts",
+      "src/test/lensing.test.ts",
+      "src/test/lifecycle-e2e.test.ts",
+      "src/test/lifecycle-invariants.test.ts",
+      "src/test/links-command-handler.test.ts",
+      "src/test/links-invoke.test.ts",
+      "src/test/list-command-handler.test.ts",
+      "src/test/list-invoke.test.ts",
+      "src/test/llm-providers.test.ts",
+      "src/test/llm-redact.test.ts",
+      "src/test/localDiskCheck.test.ts",
+      "src/test/log.test.ts",
+      "src/test/machine-command-handler.test.ts",
+      "src/test/machine-id-stability.test.ts",
+      "src/test/machine-registry.test.ts",
+      "src/test/machine-show-command-handler.test.ts",
+      "src/test/maintain-command-handler.test.ts",
+      "src/test/masterLease.test.ts",
+      "src/test/mcp-context-release.test.ts",
+      "src/test/mcp-fuzz.test.ts",
+      "src/test/mcp-http-replay.test.ts",
+      "src/test/mcp-toolset-budget.test.ts",
+      "src/test/mcp-toolset-dynamic.test.ts",
+      "src/test/mcp-toolset-isolation.test.ts",
+      "src/test/mcp-trace-tools.test.ts",
+      "src/test/migrate-command-handler.test.ts",
+      "src/test/migrate-db-command-handler.test.ts",
+      "src/test/model-validation.test.ts",
+      "src/test/modelValidation.test.ts",
+      "src/test/multimodal.test.ts",
+      "src/test/openrouterTiers.test.ts",
+      "src/test/package-manager-detect.test.ts",
+      "src/test/phase0-6.regression.test.ts",
+      "src/test/phase10.reflect-trace-traverse.test.ts",
+      "src/test/phase3-hardening-pins.test.ts",
+      "src/test/phase7a.migration.test.ts",
+      "src/test/phase7b.read-paths.test.ts",
+      "src/test/phase7c.dual-write.test.ts",
+      "src/test/phase7d.dream.test.ts",
+      "src/test/phase7e.export.test.ts",
+      "src/test/phase8a.central-db.test.ts",
+      "src/test/phase8b.preferences.test.ts",
+      "src/test/phase8c.cli-parity.test.ts",
+      "src/test/phase8d.federated.test.ts",
+      "src/test/phase9a.sandbox.test.ts",
+      "src/test/phase9b.dream-prefs-sync.test.ts",
+      "src/test/phase9c.cli-federated.test.ts",
+      "src/test/phase9d.coverage-overhaul.test.ts",
+      "src/test/phase9e.network-share-polish.test.ts",
+      "src/test/pref-command-handler.test.ts",
+      "src/test/pref-invoke.test.ts",
+      "src/test/preference-key-validation.test.ts",
+      "src/test/preferences.test.ts",
+      "src/test/progress.test.ts",
+      "src/test/projects-command-handler.test.ts",
+      "src/test/provenance-trace.test.ts",
+      "src/test/read-command-handler.test.ts",
+      "src/test/read-command-overlay.test.ts",
+      "src/test/read-invoke.test.ts",
+      "src/test/recall-command-handler.test.ts",
+      "src/test/recall-hook.test.ts",
+      "src/test/recall-wildcard.test.ts",
+      "src/test/reflect-command-handler.test.ts",
+      "src/test/registry-temp-pollution.test.ts",
+      "src/test/reindex-command-handler.test.ts",
+      "src/test/reindex-graph-command-handler.test.ts",
+      "src/test/reindex-graph-invoke.test.ts",
+      "src/test/reinforce-command-handler.test.ts",
+      "src/test/remote-audit-sync.test.ts",
+      "src/test/remote-coverage.test.ts",
+      "src/test/remote-resume.test.ts",
+      "src/test/remote-two-machine.test.ts",
+      "src/test/remote.test.ts",
+      "src/test/remoteWizard.test.ts",
+      "src/test/resolver-routing.test.ts",
+      "src/test/resolver-tiers.test.ts",
+      "src/test/restore-command-handler.test.ts",
+      "src/test/retry.test.ts",
+      "src/test/sandbox-command-handler.test.ts",
+      "src/test/sandbox-start-command-handler.test.ts",
+      "src/test/sandbox-status-command-handler.test.ts",
+      "src/test/sandbox-status-invoke.test.ts",
+      "src/test/sandbox-stop-command-handler.test.ts",
+      "src/test/scan-command-handler.test.ts",
+      "src/test/search-command-handler.test.ts",
+      "src/test/search-golden.test.ts",
+      "src/test/search-invoke.test.ts",
+      "src/test/search.test.ts",
+      "src/test/semantic-search-command-handler.test.ts",
+      "src/test/setup-command-handler.test.ts",
+      "src/test/setup-ctrlc.test.ts",
+      "src/test/setup-dream-command-handler.test.ts",
+      "src/test/setup-ides-command-handler.test.ts",
+      "src/test/setup-keys-command-handler.test.ts",
+      "src/test/setup-models-command-handler.test.ts",
+      "src/test/setup-models-routing.test.ts",
+      "src/test/setup-preferences-command-handler.test.ts",
+      "src/test/setup-providers-command-handler.test.ts",
+      "src/test/setup-remote-command-handler.test.ts",
+      "src/test/setup-remote-doctor-command-handler.test.ts",
+      "src/test/setup-remote-pull-command-handler.test.ts",
+      "src/test/setup-remote-push-command-handler.test.ts",
+      "src/test/setup-remote-resolve-command-handler.test.ts",
+      "src/test/setup-remote-status-command-handler.test.ts",
+      "src/test/setup-remote-sync-command-handler.test.ts",
+      "src/test/setup-remote-timer-command-handler.test.ts",
+      "src/test/setup-routing-command-handler.test.ts",
+      "src/test/setup-storepath.test.ts",
+      "src/test/setup-sync-projects-command-handler.test.ts",
+      "src/test/setup-ui-atoms.test.ts",
+      "src/test/setup-ui-coldstart.test.ts",
+      "src/test/setup-ui-config-init.test.ts",
+      "src/test/setup-ui-screen1-substeps.test.ts",
+      "src/test/setup-ui-screen10.test.ts",
+      "src/test/setup-ui-screen13.test.ts",
+      "src/test/setup-ui-screen3.test.ts",
+      "src/test/setup-ui-screen4.test.ts",
+      "src/test/setup-ui-screen6.test.ts",
+      "src/test/setup-ui-screen7.test.ts",
+      "src/test/setup-ui-summary.test.ts",
+      "src/test/setup-ui-table.test.ts",
+      "src/test/setup.test.ts",
+      "src/test/setupKeys.test.ts",
+      "src/test/shell-injection-argv.test.ts",
+      "src/test/snapshot-publish-flow.test.ts",
+      "src/test/stale-command-handler.test.ts",
+      "src/test/stale-invoke.test.ts",
+      "src/test/staticSearch.test.ts",
+      "src/test/staticSearchSemantic.test.ts",
+      "src/test/stats-command-handler.test.ts",
+      "src/test/stats-invoke.test.ts",
+      "src/test/status-command-handler.test.ts",
+      "src/test/store.test.ts",
+      "src/test/stores-command-handler.test.ts",
+      "src/test/stores-invoke.test.ts",
+      "src/test/structuredIngest.test.ts",
+      "src/test/sync-command-handler.test.ts",
+      "src/test/syncClientRead.test.ts",
+      "src/test/syncIngest.test.ts",
+      "src/test/syncIngestAutomation.test.ts",
+      "src/test/syncStaging.test.ts",
+      "src/test/syncStatusMessages.test.ts",
+      "src/test/tags-add-command-handler.test.ts",
+      "src/test/tags-command-handler.test.ts",
+      "src/test/tags-invoke.test.ts",
+      "src/test/tags.test.ts",
+      "src/test/timeline-command-handler.test.ts",
+      "src/test/timeline-invoke.test.ts",
+      "src/test/timeline.test.ts",
+      "src/test/trace-command-handler.test.ts",
+      "src/test/traverse-command-handler.test.ts",
+      "src/test/update-command-handler.test.ts",
+      "src/test/update-status-command-handler.test.ts",
+      "src/test/upgrade-command-handler.test.ts",
+      "src/test/v511-consumers.test.ts",
+      "src/test/v511-db-schema.test.ts",
+      "src/test/v511-machineConfig.test.ts",
+      "src/test/v511-machineMigrate.test.ts",
+      "src/test/v511-projectPaths.test.ts",
+      "src/test/v511-projectScan.test.ts",
+      "src/test/v511-serve-handshake.test.ts",
+      "src/test/v512-centralize.test.ts",
+      "src/test/v512-http-auth-guard.test.ts",
+      "src/test/v512-http-bearer.test.ts",
+      "src/test/v512-http-body-limits.test.ts",
+      "src/test/v512-http-cors.test.ts",
+      "src/test/v512-http-session-isolation.test.ts",
+      "src/test/v512-http-session-reaper.test.ts",
+      "src/test/v512-mcpClientConfig.test.ts",
+      "src/test/v512-mcpHttp.test.ts",
+      "src/test/v512-sync-audit.test.ts",
+      "src/test/v580-helpers.test.ts",
+      "src/test/v584-updateConfig.test.ts",
+      "src/test/v592-identity-preserves-config.test.ts",
+      "src/test/v592-serve-stdout-clean.test.ts",
+      "src/test/v593-cleanup.test.ts",
+      "src/test/v593-no-central-db-pollution.test.ts",
+      "src/test/v593-upgrade-nag.test.ts",
+      "src/test/v594-dream-provider-inheritance.test.ts",
+      "src/test/v594-dream-state.test.ts",
+      "src/test/v594-grok-build-ide.test.ts",
+      "src/test/v594-panel-edges.test.ts",
+      "src/test/v595-self-healing-machine-id.test.ts",
+      "src/test/v5x-migration-matrix.test.ts",
+      "src/test/v600-chat-config-backcompat.test.ts",
+      "src/test/v600-no-anthropic-default.test.ts",
+      "src/test/web-add-command-handler.test.ts",
+      "src/test/web-build-command-handler.test.ts",
+      "src/test/web-build-index-command-handler.test.ts",
+      "src/test/web-command-handler.test.ts",
+      "src/test/web-ingest-command-handler.test.ts",
+      "src/test/web-init-command-handler.test.ts",
+      "src/test/web-remove-command-handler.test.ts",
+      "src/test/web-remove-invoke.test.ts",
+      "src/test/web-status-command-handler.test.ts",
+      "src/test/web-update-command-handler.test.ts",
+      "src/test/webExpansions.test.ts",
+      "src/test/webIndex.test.ts",
+      "src/test/webIngest.test.ts",
+      "src/test/webIntegration.test.ts",
+      "src/test/webVectors-command-handler.test.ts",
+      "src/test/webVectors.test.ts",
+      "src/test/webingest-ssrf.test.ts",
+      "src/test/wikilinks.test.ts",
+      "src/test/working-set-command-handler.test.ts",
+      "src/test/working-set-invoke.test.ts"
+    ],
+    "snapshots": [
+      "src/test/__snapshots__/setup-ui-atoms.test.ts.snap",
+      "src/test/__snapshots__/setup-ui-coldstart.test.ts.snap",
+      "src/test/__snapshots__/setup-ui-screen1-substeps.test.ts.snap",
+      "src/test/__snapshots__/setup-ui-screen10.test.ts.snap",
+      "src/test/__snapshots__/setup-ui-screen4.test.ts.snap",
+      "src/test/__snapshots__/setup-ui-screen6.test.ts.snap",
+      "src/test/__snapshots__/setup-ui-screen7.test.ts.snap",
+      "src/test/__snapshots__/setup-ui-summary.test.ts.snap",
+      "src/test/__snapshots__/setup-ui-table.test.ts.snap"
+    ],
+    "support_files": [
+      "src/test/_helpers.ts",
+      "src/test/_setupGnosysHome.ts"
+    ],
+    "external_test_cases": 8,
+    "frameworks": [
+      "Vitest 4.x with TypeScript",
+      "Bash shell checks",
+      "Expect PTY scripts",
+      "GitHub Actions inline shell scenarios"
+    ],
+    "other_packages": [
+      {
+        "path": "extensions/vscode/package.json",
+        "test_script": null,
+        "test_files": [],
+        "observation": "VS Code extension has no automated test surface or dedicated CI job."
+      }
+    ]
+  },
+  "collection": {
+    "include": [
+      "src/**/*.test.ts"
+    ],
+    "exclude": [
+      "dist/**",
+      "node_modules/**"
+    ],
+    "all_tracked_ts_test_files_match": true,
+    "no_focused_tests_found": true,
+    "no_commented_out_test_suite_found_in_runner_files": true,
+    "dead_tests": [
+      {
+        "path": "src/test/ingest-fixtures.test.ts",
+        "line": 110,
+        "name": "encrypted PDF returns a clear error (TODO: add minimal encrypted sample)",
+        "reason": "it.skip; encrypted.pdf fixture absent."
+      }
+    ],
+    "conditional_skips": [
+      {
+        "path": "src/test/file-permissions.test.ts",
+        "line": 15,
+        "condition": "process.platform === win32",
+        "test_count": 2,
+        "tests": [
+          "writeApiKey creates .env with mode 0600",
+          "GnosysDB creates gnosys.db with mode 0600 and store dir 0700"
+        ]
+      }
+    ],
+    "runner_options": {
+      "testTimeout": 60000,
+      "hookTimeout": 60000,
+      "fileParallelism": false,
+      "setupFiles": [
+        "src/test/_setupGnosysHome.ts"
+      ]
+    },
+    "outside_npm_test": [
+      "e2e-setup/tests/*.sh",
+      "e2e-setup/tests/*.exp",
+      ".github/workflows/ci.yml inline multi-project-test",
+      ".github/workflows/ci.yml inline network-share-simulation"
+    ],
+    "notes": [
+      "No tracked *.spec files or *.test files exist outside src/test. Inclusion deliberately covers only .test.ts, not .test.tsx/.spec.ts/.js future additions.",
+      "All existing extra shell/Expect surfaces are wired into CI independently of Vitest."
+    ]
+  },
+  "runnable_suites": [
+    {
+      "id": "vitest",
+      "commands": [
+        "npm ci",
+        "npm run build",
+        "npm test"
+      ],
+      "watch": "npm run test:watch",
+      "requires": [
+        "Node >=20.12.0",
+        "npm dependencies with loadable better-sqlite3 native addon",
+        "dist/cli.js built at same source revision",
+        "local subprocesses and loopback TCP/Unix sockets"
+      ],
+      "ci": {
+        "workflow": ".github/workflows/ci.yml",
+        "jobs": [
+          "build-and-test"
+        ],
+        "matrix": [
+          "ubuntu/node20",
+          "ubuntu/node22",
+          "ubuntu/node24",
+          "macos/node22",
+          "macos/node24"
+        ]
+      },
+      "notes": [
+        "npm test has no pretest build hook. Several integration tests call node dist/cli.js while pure tests import src; a stale build can mix revisions.",
+        "Coverage command reruns the full suite in Ubuntu Node24."
+      ]
+    },
+    {
+      "id": "coverage",
+      "commands": [
+        "npm run test:coverage"
+      ],
+      "requires": [
+        "Vitest/V8 coverage dependency",
+        "same runtime requirements as Vitest"
+      ],
+      "ci": ".github/workflows/ci.yml:47-49"
+    },
+    {
+      "id": "setup-ui",
+      "commands": [
+        "npm run test:e2e-setup"
+      ],
+      "expanded": [
+        "npm run build",
+        "npm pack --silent",
+        "docker build -q -t gnosys-e2e-setup e2e-setup/",
+        "docker run --rm --network=none gnosys-e2e-setup"
+      ],
+      "requires": [
+        "Docker daemon",
+        "image/build network for node:22-slim, apt and npm install",
+        "Expect installed inside image"
+      ],
+      "ci": ".github/workflows/ci.yml:240-254",
+      "notes": [
+        "Runtime container has no host mounts, runs tester user, and has no network. Image build does use network.",
+        "run.sh uses set -e; failure before explicit cleanup leaves e2e-setup/gnosys.tgz behind."
+      ]
+    },
+    {
+      "id": "ci-multi-project",
+      "command": "Run shell body of .github/workflows/ci.yml:133-190 with an isolated HOME",
+      "ci": ".github/workflows/ci.yml:117-190",
+      "requires": [
+        "Build output",
+        "loadable SQLite native addon",
+        "writable isolated HOME"
+      ]
+    },
+    {
+      "id": "ci-network-share",
+      "command": "Run shell body of .github/workflows/ci.yml:208-238 with an isolated HOME",
+      "ci": ".github/workflows/ci.yml:192-238",
+      "requires": [
+        "Build output",
+        "loadable SQLite native addon",
+        "writable isolated HOME"
+      ]
+    },
+    {
+      "id": "static-gates",
+      "commands": [
+        "npx tsc --noEmit",
+        "npm run lint",
+        "npm run knip"
+      ],
+      "ci": ".github/workflows/ci.yml:96-115",
+      "notes": [
+        "TypeScript includes src/test; build configs exclude src/test. These are static gates, not behavioral tests."
+      ]
+    },
+    {
+      "id": "new-file-coverage",
+      "commands": [
+        "COVERAGE_BASE_REF=origin/master node scripts/check-new-file-coverage.mjs"
+      ],
+      "requires": [
+        "coverage/coverage-summary.json",
+        "resolvable git base with merge-base"
+      ],
+      "ci": ".github/workflows/ci.yml:84-88",
+      "notes": [
+        "Git diff failure exits 0; missing summary is checked only when added lib/sandbox files exist; missing summary entry is assumed intentionally excluded."
+      ]
+    }
+  ],
+  "ci_other": {
+    "triggers": {
+      "ci": [
+        "push main/master",
+        "pull_request targeting main/master"
+      ],
+      "publish": [
+        "push v* tags"
+      ],
+      "lockfile_refresh": [
+        "weekly schedule",
+        "manual dispatch"
+      ]
+    },
+    "publish_commands": [
+      "npm ci",
+      "npm run build:publish",
+      "npm test",
+      "npm publish --access public"
+    ],
+    "publish_caveat": "Tag workflow gates only build and Vitest; no coverage/lint/typecheck/knip/Docker scenarios in that job. Audit does not run publish.",
+    "lockfile_commands": [
+      "npm update",
+      "npm audit --audit-level=moderate",
+      "npm run build and npm test only when lockfile changed"
+    ],
+    "omitted_matrix": [
+      "Windows",
+      "macOS Node20 (explicit stdout truncation rationale in workflow)"
+    ]
+  },
+  "coverage_scope": {
+    "source_ts_files": 232,
+    "include_candidates": 213,
+    "explicitly_excluded_source_files": 116,
+    "final_source_files": 97,
+    "all_source_files_omitted": 135,
+    "excluded_paths": [
+      "src/lib/addCommand.ts",
+      "src/lib/addStructuredCommand.ts",
+      "src/lib/ambiguityCommand.ts",
+      "src/lib/askCommand.ts",
+      "src/lib/attachCommand.ts",
+      "src/lib/auditCommand.ts",
+      "src/lib/backupCommand.ts",
+      "src/lib/bootstrapCommand.ts",
+      "src/lib/briefingCommand.ts",
+      "src/lib/centralizeCommand.ts",
+      "src/lib/checkCommand.ts",
+      "src/lib/commitContextCommand.ts",
+      "src/lib/configCommand.ts",
+      "src/lib/connectCommand.ts",
+      "src/lib/dearchiveCommand.ts",
+      "src/lib/discoverCommand.ts",
+      "src/lib/doctorCommand.ts",
+      "src/lib/dreamCommand.ts",
+      "src/lib/dreamLogCommand.ts",
+      "src/lib/exportCommand.ts",
+      "src/lib/fsearchCommand.ts",
+      "src/lib/graphCommand.ts",
+      "src/lib/helperGenerateCommand.ts",
+      "src/lib/historyCommand.ts",
+      "src/lib/hybridSearchCommand.ts",
+      "src/lib/importCommand.ts",
+      "src/lib/importProjectCommand.ts",
+      "src/lib/ingestCommand.ts",
+      "src/lib/lensCommand.ts",
+      "src/lib/linksCommand.ts",
+      "src/lib/listCommand.ts",
+      "src/lib/llm.ts",
+      "src/lib/maintainCommand.ts",
+      "src/lib/maintenance.ts",
+      "src/lib/migrateCommand.ts",
+      "src/lib/migrateDbCommand.ts",
+      "src/lib/multimodalIngest.ts",
+      "src/lib/pdfExtract.ts",
+      "src/lib/prefCommand.ts",
+      "src/lib/projectsCommand.ts",
+      "src/lib/readCommand.ts",
+      "src/lib/recall.ts",
+      "src/lib/recallCommand.ts",
+      "src/lib/recallHookCommand.ts",
+      "src/lib/reflectCommand.ts",
+      "src/lib/reindexCommand.ts",
+      "src/lib/reindexGraphCommand.ts",
+      "src/lib/reinforceCommand.ts",
+      "src/lib/restoreCommand.ts",
+      "src/lib/sandboxStartCommand.ts",
+      "src/lib/sandboxStatusCommand.ts",
+      "src/lib/sandboxStopCommand.ts",
+      "src/lib/searchCommand.ts",
+      "src/lib/semanticSearchCommand.ts",
+      "src/lib/setup.ts",
+      "src/lib/setup/coldStart.ts",
+      "src/lib/setup/configSetRender.ts",
+      "src/lib/setup/dreamRender.ts",
+      "src/lib/setup/dreamState.ts",
+      "src/lib/setup/modelsRender.ts",
+      "src/lib/setup/providerGlyphs.ts",
+      "src/lib/setup/remoteRender.ts",
+      "src/lib/setup/routingRender.ts",
+      "src/lib/setup/sections/ides.ts",
+      "src/lib/setup/sections/preferences.ts",
+      "src/lib/setup/sections/providers.ts",
+      "src/lib/setup/sections/routing.ts",
+      "src/lib/setup/sections/taskRoutingEditor.ts",
+      "src/lib/setup/storePath.ts",
+      "src/lib/setup/summary.ts",
+      "src/lib/setup/syncProjectsRender.ts",
+      "src/lib/setup/ui/diff.ts",
+      "src/lib/setup/ui/footer.ts",
+      "src/lib/setup/ui/header.ts",
+      "src/lib/setup/ui/index.ts",
+      "src/lib/setup/ui/menu.ts",
+      "src/lib/setup/ui/panel.ts",
+      "src/lib/setup/ui/prompt.ts",
+      "src/lib/setup/ui/safePrompt.ts",
+      "src/lib/setup/ui/spinner.ts",
+      "src/lib/setup/ui/status.ts",
+      "src/lib/setup/ui/table.ts",
+      "src/lib/setup/ui/title.ts",
+      "src/lib/setup/ui/tokens.ts",
+      "src/lib/setupRemoteCommand.ts",
+      "src/lib/setupRemotePullCommand.ts",
+      "src/lib/setupRemotePushCommand.ts",
+      "src/lib/setupRemoteResolveCommand.ts",
+      "src/lib/setupRemoteStatusCommand.ts",
+      "src/lib/setupRemoteSyncCommand.ts",
+      "src/lib/setupSyncProjectsCommand.ts",
+      "src/lib/staleCommand.ts",
+      "src/lib/statsCommand.ts",
+      "src/lib/statusCommand.ts",
+      "src/lib/storesCommand.ts",
+      "src/lib/syncCommand.ts",
+      "src/lib/syncDoctorCommand.ts",
+      "src/lib/syncIngestTimerCommand.ts",
+      "src/lib/tagsAddCommand.ts",
+      "src/lib/tagsCommand.ts",
+      "src/lib/timelineCommand.ts",
+      "src/lib/traceCommand.ts",
+      "src/lib/traverseCommand.ts",
+      "src/lib/updateCommand.ts",
+      "src/lib/updateStatusCommand.ts",
+      "src/lib/videoExtract.ts",
+      "src/lib/webAddCommand.ts",
+      "src/lib/webBuildCommand.ts",
+      "src/lib/webBuildIndexCommand.ts",
+      "src/lib/webIngestCommand.ts",
+      "src/lib/webInitCommand.ts",
+      "src/lib/webRemoveCommand.ts",
+      "src/lib/webStatusCommand.ts",
+      "src/lib/webUpdateCommand.ts",
+      "src/lib/workingSetCommand.ts",
+      "src/sandbox/manager.ts"
+    ],
+    "not_in_include": [
+      "src/cli.ts",
+      "src/cli/_shared.ts",
+      "src/cli/agent.ts",
+      "src/cli/browse.ts",
+      "src/cli/core.ts",
+      "src/cli/data.ts",
+      "src/cli/dream.ts",
+      "src/cli/exportCmds.ts",
+      "src/cli/maintenance.ts",
+      "src/cli/memory.ts",
+      "src/cli/project.ts",
+      "src/cli/remote.ts",
+      "src/cli/runtime.ts",
+      "src/cli/sandbox.ts",
+      "src/cli/setup.ts",
+      "src/cli/trace.ts",
+      "src/cli/web.ts",
+      "src/index.ts",
+      "src/postinstall.ts"
+    ],
+    "thresholds": {
+      "statements": 50,
+      "branches": 40,
+      "functions": 55,
+      "lines": 50
+    },
+    "evidence": {
+      "path": "vitest.config.ts",
+      "line": 18,
+      "end_line": 80,
+      "text": "    coverage: {\n      provider: \"v8\",\n      reporter: [\"text\", \"text-summary\", \"json-summary\", \"html\"],\n      reportsDirectory: \"coverage\",\n      include: [\"src/lib/**/*.ts\", \"src/sandbox/**/*.ts\"],\n      exclude: [\n        \"src/test/**\",\n        \"src/**/*.test.ts\",\n        \"dist/**\",\n        \"node_modules/**\",\n\n        // \u2500\u2500 Exclude modules that require external services / interactive I/O \u2500\u2500\n        // These can't be meaningfully unit tested \u2014 they call LLM APIs, spawn\n        // processes, require user input, or process binary media files.\n\n        // LLM provider calls (Anthropic, Ollama, Groq, OpenAI, LM Studio)\n        \"src/lib/llm.ts\",\n\n        // Interactive setup wizard (1700 lines of prompts + I/O)\n        \"src/lib/setup.ts\",\n\n        // v5.8.6: interactive section wizards under src/lib/setup/.\n        // Same justification as setup.ts \u2014 readline-driven I/O, hard to\n        // meaningfully unit-test, exercised via CLI integration tests.\n        \"src/lib/setup/**\",\n\n        // v5.13.0: thin CLI command wrappers extracted from cli.ts in the\n        // 5.11 command-coverage sprint. They are exercised via `node\n        // dist/cli.js` subprocess integration tests, which in-process V8\n        // coverage cannot see \u2014 same rationale as the cli.ts exclusion\n        // below. Moving ~3,600 statements from excluded cli.ts into\n        // included lib/ silently dropped global coverage 63% \u2192 46% and has\n        // failed the CI gate on every master push since 2026-05-30.\n        // Burn-down path: convert the string-assertion wiring tests into\n        // import-and-invoke unit tests, then remove this exclusion.\n        \"src/lib/*Command.ts\",\n\n        // Media processing (requires binary files, external tools like Tesseract)\n        \"src/lib/multimodalIngest.ts\",\n        \"src/lib/pdfExtract.ts\",\n        \"src/lib/videoExtract.ts\",\n\n        // Maintenance / recall (require LLM or long-running scheduler)\n        \"src/lib/maintenance.ts\",\n\n        // Recall context injection (depends on LLM for summarization)\n        \"src/lib/recall.ts\",\n\n        // Sandbox process management (spawns background processes)\n        \"src/sandbox/manager.ts\",\n        \"src/sandbox/index.ts\",\n\n        // Large entry points tested via CLI integration, not unit tests\n        \"src/cli.ts\",\n        \"src/cli/**\", // v6.2.1 cli split: registrations moved out of cli.ts, same rationale\n        \"src/index.ts\",\n      ],\n      thresholds: {\n        statements: 50,\n        branches: 40,\n        functions: 55,\n        lines: 50,\n      },"
+    },
+    "interpretation": "Coverage gate describes only 97 of 232 production TypeScript files, not whole-app feature protection. 79 Command.ts files and 29 setup descendants are excluded despite existing direct invocation tests in several areas."
+  },
+  "isolation": [
+    {
+      "risk": "Inherited GNOSYS_HOME bypasses global temporary isolation.",
+      "evidence": {
+        "path": "src/test/_setupGnosysHome.ts",
+        "line": 23,
+        "end_line": 31,
+        "text": "if (!process.env.GNOSYS_HOME) {\n  // The throwaway home ends in \".gnosys\" so path-shape assertions (e.g.\n  // \"sandbox dir lives under ~/.gnosys\") hold exactly as they would for a\n  // real home directory.\n  const base = fs.mkdtempSync(path.join(os.tmpdir(), \"gnosys-test-home-\"));\n  const home = path.join(base, \".gnosys\");\n  fs.mkdirSync(home, { recursive: true });\n  process.env.GNOSYS_HOME = home;\n}"
+      },
+      "mitigation": "Unset existing GNOSYS_HOME before Vitest or explicitly point it at a disposable test home."
+    },
+    {
+      "risk": "Inherited GNOSYS_CONFIG_DIR wins over GNOSYS_HOME and can write the real machine config/registry.",
+      "evidence": {
+        "path": "src/lib/paths.ts",
+        "line": 50,
+        "end_line": 60,
+        "text": "function getConfigDir(): string {\n  if (process.env.GNOSYS_CONFIG_DIR) return process.env.GNOSYS_CONFIG_DIR;\n  // GNOSYS_HOME redirects \"everything gnosys-owned\" (see header comment).\n  // Before this, tests that set GNOSYS_HOME still wrote the project\n  // registry into the user's REAL ~/.config/gnosys/projects.json \u2014 every\n  // test run leaked hundreds of /var/folders/... temp entries into it.\n  if (process.env.GNOSYS_HOME) {\n    return path.join(process.env.GNOSYS_HOME, \"config\");\n  }\n  const home = process.env.HOME || process.env.USERPROFILE || \"/tmp\";\n  return path.join(home, \".config\", \"gnosys\");"
+      },
+      "mitigation": "Unset inherited GNOSYS_CONFIG_DIR before test run. Use GNOSYS_HOME-managed test config unless individual test overrides."
+    },
+    {
+      "risk": "CLI subprocess helpers inherit parent env, including project/cache/provider overrides.",
+      "evidence": {
+        "path": "src/test/_helpers.ts",
+        "line": 87,
+        "end_line": 99,
+        "text": "    env: { ...process.env, GNOSYS_PROJECT: projectDir, GNOSYS_HOME: centralDir },\n    stdio: [\"pipe\", \"pipe\", \"pipe\"],\n  });\n}\n\n/**\n * Extract JSON from CLI output that may contain upgrade warnings or other\n * non-JSON text before the actual JSON payload.\n */\nexport function extractJson(output: string): string {\n  // Find the first { or [ which starts the JSON payload\n  const objStart = output.indexOf(\"{\");\n  const arrStart = output.indexOf(\"[\");"
+      },
+      "mitigation": "Use sanitized parent env and a disposable HOME; preserve PATH for toolchain. Do not export UPDATE_GOLDENS=1 during audit."
+    },
+    {
+      "risk": "Two inline CI scenario jobs default to real HOME database/config. Safe on disposable CI but not for direct local replay.",
+      "evidence": {
+        "path": ".github/workflows/ci.yml",
+        "line": 215,
+        "end_line": 221,
+        "text": "          # Initialize project on \"network share\"\n          node dist/cli.js init --directory \"$SHARE_DIR\"\n\n          # Verify initialization \u2014 DB-only architecture uses central ~/.gnosys/gnosys.db\n          test -d \"$SHARE_DIR/.gnosys\" || { echo \"FAIL: .gnosys dir not created\"; exit 1; }\n          test -f \"$SHARE_DIR/.gnosys/gnosys.json\" || { echo \"FAIL: gnosys.json not created\"; exit 1; }\n          test -f \"$HOME/.gnosys/gnosys.db\" || { echo \"FAIL: central gnosys.db not created\"; exit 1; }"
+      },
+      "mitigation": "Replay in isolated HOME and redirect config; do not reuse developer ~/.gnosys."
+    },
+    {
+      "risk": "dream-launchd-health intentionally inspects actual installed LaunchAgent state on macOS.",
+      "evidence": {
+        "path": "src/test/dream-launchd-health.test.ts",
+        "line": 70,
+        "end_line": 95,
+        "text": "describe(\"checkDreamLaunchAgent (platform / not-installed branches)\", () => {\n  it(\"returns a coherent all-false shape when unavailable or not installed\", () => {\n    const health = checkDreamLaunchAgent();\n    if (process.platform !== \"darwin\") {\n      expect(health).toEqual({\n        installed: false,\n        loaded: false,\n        nodeExists: false,\n        cliExists: false,\n        healthy: false,\n        problems: [\"launchd unavailable (not macOS)\"],\n        plistFile: null,\n      });\n    } else if (!health.installed) {\n      expect(health.healthy).toBe(false);\n      expect(health.problems).toContain(\"launchd agent not installed\");\n      expect(health.plistFile).toContain(\"com.gnosys.dream.plist\");\n    } else {\n      // Installed on this machine: healthy must equal the AND of its parts.\n      expect(health.healthy).toBe(\n        health.loaded && health.nodeExists && health.cliExists,\n      );\n      expect(health.plistFile).toContain(\"com.gnosys.dream.plist\");\n    }\n  });\n});"
+      },
+      "mitigation": "Read-only path, but outcome depends on host LaunchAgent. Disposable HOME makes branch deterministic."
+    },
+    {
+      "risk": "Golden update flag mutates committed fixture files.",
+      "evidence": {
+        "path": "src/test/ide-init-golden.test.ts",
+        "line": 48,
+        "end_line": 56,
+        "text": "      const fixturePath = join(FIXTURE_DIR, fixtureFile);\n\n      if (process.env.UPDATE_GOLDENS === \"1\") {\n        writeFileSync(fixturePath, got.trim() + \"\\n\", \"utf-8\");\n      }\n\n      const golden = readFileSync(fixturePath, \"utf-8\");\n      expect(got.trim()).toBe(golden.trim());\n    });"
+      },
+      "mitigation": "Ensure UPDATE_GOLDENS is unset."
+    },
+    {
+      "risk": "Setup global worker temp roots have no cleanup hook.",
+      "evidence": {
+        "path": "src/test/_setupGnosysHome.ts",
+        "line": 23,
+        "end_line": 31,
+        "text": "if (!process.env.GNOSYS_HOME) {\n  // The throwaway home ends in \".gnosys\" so path-shape assertions (e.g.\n  // \"sandbox dir lives under ~/.gnosys\") hold exactly as they would for a\n  // real home directory.\n  const base = fs.mkdtempSync(path.join(os.tmpdir(), \"gnosys-test-home-\"));\n  const home = path.join(base, \".gnosys\");\n  fs.mkdirSync(home, { recursive: true });\n  process.env.GNOSYS_HOME = home;\n}"
+      },
+      "mitigation": "Collect and remove only owned run temp roots after suite if desired."
+    }
+  ],
+  "external_requirements": {
+    "credentials": "No mandatory live API credential requirement is declared by test scripts. Most explicit network/provider tests mock fetch or provider boundary. This read-only runner audit did not prove all 296 test bodies are free of inherited-provider effects.",
+    "native_dependencies": [
+      "better-sqlite3 (optional package for app but required by database behavior tests)"
+    ],
+    "network_at_runtime": [
+      "loopback TCP listeners for v512-http-*.test.ts and mcp-http-replay.test.ts",
+      "Unix socket listeners for phase9a.sandbox.test.ts and phase9b.dream-prefs-sync.test.ts"
+    ],
+    "large_fixture": "ingest-fixtures.test.ts writes 100 MiB+1 temporary text file to test size cap.",
+    "docker": "docker CLI exists; daemon availability not tested by this subtask.",
+    "local_prerequisite_paths": {
+      "node": "/opt/homebrew/bin/node",
+      "npm": "/opt/homebrew/bin/npm",
+      "docker": "/usr/local/bin/docker",
+      "expect": "/usr/bin/expect",
+      "git": "/usr/bin/git"
+    }
+  },
+  "test_cases_outside_vitest": [
+    {
+      "id": "e2e:version",
+      "path": "e2e-setup/tests/version.sh",
+      "name": "cli-installs-and-reports-version",
+      "classification": "WEAK",
+      "status": "provisional_pending_mutation",
+      "behavior": "Installed packed CLI reports its package version.",
+      "evidence": {
+        "path": "e2e-setup/tests/version.sh",
+        "line": 4,
+        "end_line": 8,
+        "text": "v=$(gnosys --version 2>/dev/null)\necho \"gnosys --version \u2192 ${v}\"\n[ -n \"$v\" ] || exit 1\n# PACKED_VERSION is baked in by run.sh via --build-arg? Keep loose: semver shape.\necho \"$v\" | grep -Eq '^[0-9]+\\.[0-9]+\\.[0-9]+' || exit 1"
+      },
+      "reason": "Only a nonempty semver prefix is required; version does not have to equal the packed package version despite the file comment.",
+      "proposed_mutation": "Change CLI version output to 0.0.0 while keeping the package at 6.2.1; current checker should pass.",
+      "action": "Read-only audit. Compare with packed package.json version in a corrected test, then mutation-test."
+    },
+    {
+      "id": "e2e:init",
+      "path": "e2e-setup/tests/init.exp",
+      "name": "init-creates-isolated-store",
+      "classification": "WEAK",
+      "status": "provisional_pending_mutation",
+      "behavior": "CLI init creates identity/store and registers the project.",
+      "evidence": {
+        "path": "e2e-setup/tests/init.exp",
+        "line": 9,
+        "end_line": 30,
+        "text": "\nspawn gnosys init\nexpect {\n    -re {(ready|created|Identity|identity|registered)} {}\n    timeout { puts \"TIMEOUT waiting for init output\"; exit 1 }\n    eof {}\n}\n# Drain until exit.\nexpect eof\ncatch wait result\nset exitcode [lindex $result 3]\nif {$exitcode != 0} { puts \"init exited $exitcode\"; exit 1 }\n\n# Store must exist.\nif {![file isdirectory /home/tester/proj-init/.gnosys]} {\n    puts \".gnosys directory missing\"; exit 1\n}\nputs \"init OK: .gnosys created\"\nexit 0"
+      },
+      "reason": "An exit-zero init that creates only an empty .gnosys directory passes; identity contents and registry record are never checked.",
+      "proposed_mutation": "Skip project identity/registration writes but retain .gnosys creation.",
+      "action": "Read-only audit. Assert identity plus a CLI observable project registration, then mutation-test."
+    },
+    {
+      "id": "e2e:setup-first-screen",
+      "path": "e2e-setup/tests/setup-wizard.exp",
+      "name": "setup-wizard-first-screen",
+      "classification": "STRONG",
+      "status": "source_review_only",
+      "behavior": "Real terminal displays setup screen and Ctrl+C prints graceful cancellation.",
+      "evidence": {
+        "path": "e2e-setup/tests/setup-wizard.exp",
+        "line": 14,
+        "end_line": 45,
+        "text": "    -re {(?i)(provider|setup|step)} { set saw_screen 1 }\n    timeout { puts \"TIMEOUT waiting for wizard first screen\"; exit 1 }\n    eof { puts \"wizard exited before rendering a screen\"; exit 1 }\n}\nif {!$saw_screen} { puts \"no wizard screen detected\"; exit 1 }\n\n# Give the prompt a beat, then cancel.\nsleep 1\nsend \"\\x03\"\n\nset graceful 0\nexpect {\n    -re {cancelled .*no changes written} { set graceful 1 }\n    -re {(?i)(unhandled|traceback|at .*\\.js:[0-9]+)} {\n        puts \"stack trace on Ctrl+C\"; exit 1\n    }\n    timeout { puts \"TIMEOUT waiting for graceful cancel\"; exit 1 }\n    eof {}\n}\nexpect eof\nif {!$graceful} { puts \"no graceful cancel message\"; exit 1 }\nputs \"wizard renders and cancels gracefully\"\nexit 0"
+      },
+      "reason": "Expect drives a real PTY, requires a setup/provider/step prompt and exact cancellation-message shape, fails timeout or stack trace. The no-writes promise inside the message is not itself verified.",
+      "critical_mutation_to_run": "Remove graceful cancel message; Expect should fail.",
+      "action": "Keep narrow prompt/cancel protection; verify cancellation leaves persistent state unchanged if that guarantee is included."
+    },
+    {
+      "id": "e2e:setup-noninteractive",
+      "path": "e2e-setup/tests/setup-non-interactive.sh",
+      "name": "setup-non-interactive",
+      "classification": "WEAK",
+      "status": "provisional_pending_mutation",
+      "behavior": "Noninteractive setup completes successfully without terminal input.",
+      "evidence": {
+        "path": "e2e-setup/tests/setup-non-interactive.sh",
+        "line": 4,
+        "end_line": 13,
+        "text": "set -u\nmkdir -p /home/tester/proj-ni && cd /home/tester/proj-ni\nout=$(gnosys setup --non-interactive </dev/null 2>&1)\ncode=$?\necho \"$out\" | tail -5\nif [ $code -ne 0 ]; then echo \"exit $code\"; exit 1; fi\ncase \"$out\" in\n  *\"at \"*\".js:\"*) echo \"stack trace detected\"; exit 1 ;;\nesac\nexit 0"
+      },
+      "reason": "Only exit status and absence of a JS stack are checked. An empty successful no-op passes; no required config/state is checked.",
+      "proposed_mutation": "Return success before noninteractive setup state writes.",
+      "action": "Read-only audit. Define and assert persisted setup outcomes, then mutation-test."
+    },
+    {
+      "id": "e2e:web-init",
+      "path": "e2e-setup/tests/web-init.exp",
+      "name": "web-init-wizard",
+      "classification": "WEAK",
+      "status": "provisional_pending_mutation",
+      "behavior": "Web wizard records sitemap/enrichment choices and creates knowledge directory.",
+      "evidence": {
+        "path": "e2e-setup/tests/web-init.exp",
+        "line": 16,
+        "end_line": 53,
+        "text": "    -re {Sitemap URL:} {}\n    timeout { puts \"TIMEOUT waiting for web init wizard\"; exit 1 }\n    eof { puts \"web init exited before prompting\"; exit 1 }\n}\nsleep 1\nsend \"https://example.com/sitemap.xml\\r\"\nexpect {\n    -re {enrichment\\? \\[Y/n\\]} { sleep 1; send \"n\\r\" }\n    timeout { puts \"TIMEOUT waiting for LLM question\"; exit 1 }\n}\n# Remaining prompts vary by answers (output dir, postbuild hook, CI env).\n# Answer generically until the wizard finishes.\nfor {set i 0} {$i < 6} {incr i} {\n    expect {\n        -re {Output directory[^\\r\\n]*:} { sleep 1; send \"\\r\" }\n        -re {\\[Y/n\\]} { sleep 1; send \"n\\r\" }\n        -re {\\[y/N\\]} { sleep 1; send \"\\r\" }\n        eof { break }\n        timeout { puts \"TIMEOUT mid-wizard at prompt $i\"; exit 1 }\n    }\n}\ncatch wait result\nset exitcode [lindex $result 3]\nif {$exitcode != 0} { puts \"web init exited $exitcode\"; exit 1 }\n\nif {![file isdirectory /home/tester/proj-web/knowledge]} {\n    puts \"knowledge/ directory missing\"; exit 1\n}\nputs \"web init wizard OK\"\nexit 0"
+      },
+      "reason": "Real prompts and success are checked, but only knowledge directory existence is asserted; no web configuration or answers are checked.",
+      "proposed_mutation": "Skip saving web wizard answers while preserving prompts and mkdir.",
+      "action": "Read-only audit. Assert saved sitemap URL, enrichment=false and directory path, then mutation-test."
+    },
+    {
+      "id": "e2e:isolation",
+      "path": "e2e-setup/tests/isolation.sh",
+      "name": "isolation-no-stray-writes",
+      "classification": "MISLABELED",
+      "status": "structural_evidence",
+      "behavior": "Wizard writes stay inside approved locations and do not escape HOME.",
+      "evidence": {
+        "path": "e2e-setup/tests/isolation.sh",
+        "line": 7,
+        "end_line": 22,
+        "text": "  | grep -v -E '^/home/tester/(\\.gnosys|\\.config/gnosys|proj-[a-z]+|\\.npm|\\.cache|tests|gnosys-dashboard)' || true)\nif [ -n \"$leaks\" ]; then\n  echo \"unexpected writes:\"\n  echo \"$leaks\"\n  exit 1\nfi\n# And nothing outside $HOME that we can write to should have gnosys droppings.\nstray=$(find /tmp -maxdepth 2 -name \"*gnosys*\" 2>/dev/null | head -5 || true)\nif [ -n \"$stray\" ]; then\n  echo \"note: gnosys wrote to /tmp:\"; echo \"$stray\"\nfi\necho \"isolation OK (all writes confined to HOME)\"\nexit 0"
+      },
+      "reason": "Only /home/tester files newer than run-all.sh are rejected. /tmp gnosys paths only produce a note. No other writable directory outside HOME is checked, despite claiming all writes confined to HOME. Prefix allowlist also accepts sibling names such as .gnosys-unexpected.",
+      "proposed_mutation": "Make wizard write /tmp/gnosys-stray; current isolation checker explicitly exits zero.",
+      "action": "Replace with baseline filesystem diff over approved writable roots or narrow the claim."
+    },
+    {
+      "id": "ci:multi-project",
+      "path": ".github/workflows/ci.yml",
+      "name": "Multi-project scenario test",
+      "classification": "WEAK",
+      "status": "structural_evidence_for_search_assertion_gap",
+      "behavior": "Project data and keyword results remain isolated between projects.",
+      "evidence": {
+        "path": ".github/workflows/ci.yml",
+        "line": 162,
+        "end_line": 190,
+        "text": "          echo \"=== Verifying project isolation ===\"\n          A_COUNT=$(GNOSYS_PROJECT=\"$PROJ_A\" node dist/cli.js stats --json | node -e \"process.stdout.write(String(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).totalCount))\")\n          B_COUNT=$(GNOSYS_PROJECT=\"$PROJ_B\" node dist/cli.js stats --json | node -e \"process.stdout.write(String(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).totalCount))\")\n          C_COUNT=$(GNOSYS_PROJECT=\"$PROJ_C\" node dist/cli.js stats --json | node -e \"process.stdout.write(String(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).totalCount))\")\n\n          echo \"Project A: $A_COUNT memories\"\n          echo \"Project B: $B_COUNT memories\"\n          echo \"Project C: $C_COUNT memories\"\n\n          [ \"$A_COUNT\" -ge 1 ] || { echo \"FAIL: Project A has $A_COUNT memories\"; exit 1; }\n          [ \"$B_COUNT\" -ge 1 ] || { echo \"FAIL: Project B has $B_COUNT memories\"; exit 1; }\n          [ \"$C_COUNT\" -ge 1 ] || { echo \"FAIL: Project C has $C_COUNT memories\"; exit 1; }\n\n          echo \"=== Cross-project search isolation ===\"\n          A_SEARCH=$(GNOSYS_PROJECT=\"$PROJ_A\" node dist/cli.js search \"microservices\" --json | node -e \"process.stdout.write(String(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).results?.length ?? 0))\")\n          B_SEARCH=$(GNOSYS_PROJECT=\"$PROJ_B\" node dist/cli.js search \"microservices\" --json | node -e \"process.stdout.write(String(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).results?.length ?? 0))\")\n\n          echo \"Search 'microservices' in A: $A_SEARCH results\"\n          echo \"Search 'microservices' in B: $B_SEARCH results\"\n\n          echo \"=== CLI commands work across projects ===\"\n          GNOSYS_PROJECT=\"$PROJ_A\" node dist/cli.js list --json > /dev/null\n          # v5.7.1: `gnosys dashboard` was removed; use `gnosys status --system`.\n          GNOSYS_PROJECT=\"$PROJ_B\" node dist/cli.js status --system --json > /dev/null\n          GNOSYS_PROJECT=\"$PROJ_C\" node dist/cli.js audit --json > /dev/null\n\n          rm -rf \"$PROJ_A\" \"$PROJ_B\" \"$PROJ_C\"\n\n          echo \"Multi-project scenario passed\""
+      },
+      "reason": "Counts only require >=1 so returning every project is accepted; A_SEARCH and B_SEARCH are calculated and echoed, never asserted. Thus the named cross-project search isolation subcase has no assertion.",
+      "proposed_mutation": "Remove project filter in search or stats; search values never gate the workflow.",
+      "action": "Assert exact per-project memory IDs and zero Beta matches for Alpha terms. Isolate HOME for local replay."
+    },
+    {
+      "id": "ci:network-share",
+      "path": ".github/workflows/ci.yml",
+      "name": "Network share simulation (tmpfs)",
+      "classification": "MISLABELED",
+      "status": "structural_evidence",
+      "behavior": "Storage behaves correctly on a simulated network share.",
+      "evidence": {
+        "path": ".github/workflows/ci.yml",
+        "line": 211,
+        "end_line": 238,
+        "text": "          # Create tmpfs mount to simulate network share latency/behavior\n          SHARE_DIR=$(mktemp -d)\n          echo \"Using simulated share at $SHARE_DIR\"\n\n          # Initialize project on \"network share\"\n          node dist/cli.js init --directory \"$SHARE_DIR\"\n\n          # Verify initialization \u2014 DB-only architecture uses central ~/.gnosys/gnosys.db\n          test -d \"$SHARE_DIR/.gnosys\" || { echo \"FAIL: .gnosys dir not created\"; exit 1; }\n          test -f \"$SHARE_DIR/.gnosys/gnosys.json\" || { echo \"FAIL: gnosys.json not created\"; exit 1; }\n          test -f \"$HOME/.gnosys/gnosys.db\" || { echo \"FAIL: central gnosys.db not created\"; exit 1; }\n\n          # Add and search memories\n          GNOSYS_PROJECT=\"$SHARE_DIR\" node dist/cli.js add-structured \\\n            --title \"Shared Knowledge\" \\\n            --content \"This memory lives on a network share.\" \\\n            --category concepts\n\n          SEARCH_RESULT=$(GNOSYS_PROJECT=\"$SHARE_DIR\" node dist/cli.js search \"network share\" --json 2>/dev/null || echo '{\"results\":[]}')\n          echo \"Search result: $SEARCH_RESULT\"\n\n          # Verify stats\n          STATS=$(GNOSYS_PROJECT=\"$SHARE_DIR\" node dist/cli.js stats --json)\n          echo \"Stats: $STATS\"\n\n          rm -rf \"$SHARE_DIR\"\n\n          echo \"Network share simulation passed\""
+      },
+      "reason": "Only mktemp runs; no tmpfs/network mount or latency/failure simulation exists. DB is central HOME. Search failure is converted to empty results, and both search/stats outputs are merely printed.",
+      "proposed_mutation": "Break keyword search; search command failure is masked by the fallback JSON.",
+      "action": "Rename as local initialization smoke with literal data assertions or implement an actual mounted/faulted share case."
+    }
+  ],
+  "findings": [
+    {
+      "id": "COLL-01",
+      "priority": "P1",
+      "title": "Cross-project scenario does not assert isolation",
+      "evidence": {
+        "path": ".github/workflows/ci.yml",
+        "line": 171,
+        "end_line": 180,
+        "text": "          [ \"$A_COUNT\" -ge 1 ] || { echo \"FAIL: Project A has $A_COUNT memories\"; exit 1; }\n          [ \"$B_COUNT\" -ge 1 ] || { echo \"FAIL: Project B has $B_COUNT memories\"; exit 1; }\n          [ \"$C_COUNT\" -ge 1 ] || { echo \"FAIL: Project C has $C_COUNT memories\"; exit 1; }\n\n          echo \"=== Cross-project search isolation ===\"\n          A_SEARCH=$(GNOSYS_PROJECT=\"$PROJ_A\" node dist/cli.js search \"microservices\" --json | node -e \"process.stdout.write(String(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).results?.length ?? 0))\")\n          B_SEARCH=$(GNOSYS_PROJECT=\"$PROJ_B\" node dist/cli.js search \"microservices\" --json | node -e \"process.stdout.write(String(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).results?.length ?? 0))\")\n\n          echo \"Search 'microservices' in A: $A_SEARCH results\"\n          echo \"Search 'microservices' in B: $B_SEARCH results\""
+      }
+    },
+    {
+      "id": "COLL-02",
+      "priority": "P1",
+      "title": "Network-share job does not exercise a network share and accepts failed search",
+      "evidence": {
+        "path": ".github/workflows/ci.yml",
+        "line": 211,
+        "end_line": 234,
+        "text": "          # Create tmpfs mount to simulate network share latency/behavior\n          SHARE_DIR=$(mktemp -d)\n          echo \"Using simulated share at $SHARE_DIR\"\n\n          # Initialize project on \"network share\"\n          node dist/cli.js init --directory \"$SHARE_DIR\"\n\n          # Verify initialization \u2014 DB-only architecture uses central ~/.gnosys/gnosys.db\n          test -d \"$SHARE_DIR/.gnosys\" || { echo \"FAIL: .gnosys dir not created\"; exit 1; }\n          test -f \"$SHARE_DIR/.gnosys/gnosys.json\" || { echo \"FAIL: gnosys.json not created\"; exit 1; }\n          test -f \"$HOME/.gnosys/gnosys.db\" || { echo \"FAIL: central gnosys.db not created\"; exit 1; }\n\n          # Add and search memories\n          GNOSYS_PROJECT=\"$SHARE_DIR\" node dist/cli.js add-structured \\\n            --title \"Shared Knowledge\" \\\n            --content \"This memory lives on a network share.\" \\\n            --category concepts\n\n          SEARCH_RESULT=$(GNOSYS_PROJECT=\"$SHARE_DIR\" node dist/cli.js search \"network share\" --json 2>/dev/null || echo '{\"results\":[]}')\n          echo \"Search result: $SEARCH_RESULT\"\n\n          # Verify stats\n          STATS=$(GNOSYS_PROJECT=\"$SHARE_DIR\" node dist/cli.js stats --json)\n          echo \"Stats: $STATS\""
+      }
+    },
+    {
+      "id": "COLL-03",
+      "priority": "P2",
+      "title": "New-file coverage check silently passes unresolved base or excluded/missing file summary",
+      "evidence": {
+        "path": "scripts/check-new-file-coverage.mjs",
+        "line": 39,
+        "end_line": 63,
+        "text": "function diffAddedFiles() {\n  try {\n    // `--diff-filter=A` returns only ADDED paths.\n    const out = execSync(`git diff --name-only --diff-filter=A ${BASE_REF}...HEAD`, {\n      cwd: REPO_ROOT,\n      encoding: \"utf8\",\n    });\n    return out.split(\"\\n\").filter(Boolean);\n  } catch (err) {\n    console.error(`! could not run \\`git diff\\` against ${BASE_REF}.`);\n    console.error(`  ${err instanceof Error ? err.message : err}`);\n    console.error(`  Set COVERAGE_BASE_REF if the default isn't right.`);\n    // Don't fail the build for a diff failure \u2014 the global threshold\n    // already gates against catastrophic regressions; this script is an\n    // additional, targeted check that's worth skipping if env is wrong.\n    process.exit(0);\n  }\n}\n\nfunction isCovered(filePath, summary) {\n  // coverage-summary.json keys are absolute paths.\n  const absPath = path.resolve(REPO_ROOT, filePath);\n  const entry = summary[absPath];\n  if (!entry) return null; // not in the coverage include set\n  return entry.statements?.pct ?? 0;"
+      }
+    },
+    {
+      "id": "COLL-04",
+      "priority": "P2",
+      "title": "VS Code extension has no tests or runner",
+      "evidence": {
+        "path": "extensions/vscode/package.json",
+        "line": 1,
+        "text": "No scripts key or test files; only extension.js/package.json are tracked under extensions."
+      }
+    },
+    {
+      "id": "COLL-05",
+      "priority": "P2",
+      "title": "Encrypted PDF regression remains permanently skipped",
+      "evidence": {
+        "path": "src/test/ingest-fixtures.test.ts",
+        "line": 109,
+        "end_line": 114,
+        "text": "  // Minimal encrypted-PDF crafting is non-trivial; skip until a tiny committed sample exists.\n  it.skip(\"encrypted PDF returns a clear error (TODO: add minimal encrypted sample)\", async () => {\n    const outcome = await ingestGracefully(join(FIXTURES, \"encrypted.pdf\"));\n    expect(outcome.kind).toBe(\"error\");\n  });\n});"
+      }
+    },
+    {
+      "id": "COLL-06",
+      "priority": "P2",
+      "title": "Ordinary npm test can use stale compiled CLI",
+      "evidence": {
+        "path": "package.json",
+        "line": 30,
+        "text": "test runs vitest run without pretest build; src/test/_helpers.ts resolves dist/cli.js."
+      }
+    },
+    {
+      "id": "COLL-07",
+      "priority": "P2",
+      "title": "Claude Desktop test conditionally returns before checking written config",
+      "evidence": {
+        "path": "src/test/ide-mcp-install.test.ts",
+        "line": 102,
+        "end_line": 111,
+        "text": "  it(\"claude-desktop writes mcpServers.gnosys\", async () => {\n    const r = await setupIDE(\"claude-desktop\", projectDir);\n    expect(r.success).toBe(true);\n    const cfgPath = getClaudeDesktopConfigPath();\n    if (!existsSync(cfgPath)) return;\n    const cfg = JSON.parse(readFileSync(cfgPath, \"utf-8\")) as {\n      mcpServers?: Record<string, unknown>;\n    };\n    assertGnosysMcp(cfg.mcpServers?.gnosys);\n  });"
+      }
+    }
+  ],
+  "blockers": [
+    {
+      "kind": "not_executed_by_scope",
+      "description": "Baseline, Docker availability, mutations, and runtime pass/fail counts are owned by parent; no test suite was executed by this collection audit."
+    }
+  ],
+  "verification": [
+    "Read committed package/config/workflow/shell/Expect files at HEAD 203c4e7e488cea66bfd9a3ad687d9d1dda309d16.",
+    "Used git ls-files to census tracked tests/snapshots/support files and production source coverage inclusion.",
+    "Searched test modifiers; only one permanent skipped test and one Windows skip suite found.",
+    "Wrote and parsed this JSON successfully."
+  ]
+}

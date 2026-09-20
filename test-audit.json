@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "status": "in_progress",
+  "mode": "audit-and-fix",
+  "baseCommit": "203c4e7e488cea66bfd9a3ad687d9d1dda309d16",
+  "classificationUnit": "source_test_declarations",
+  "classificationCounts": {
+    "before": {
+      "STRONG": 1076,
+      "WEAK": 294,
+      "HOLLOW": 45,
+      "COUPLED": 285,
+      "DEAD": 1,
+      "MISLABELED": 47
+    },
+    "after": null
+  },
+  "mutationScore": null,
+  "baseline": {
+    "framework": "Vitest",
+    "version": "4.1.9",
+    "node": "22.17.1",
+    "files": 296,
+    "passed": 1801,
+    "failed": 0,
+    "skipped": 1,
+    "durationSeconds": 109.83,
+    "setup": {
+      "passed": 6,
+      "failed": 0,
+      "durationSeconds": 11.12
+    }
+  },
+  "inventory": {
+    "typescriptFiles": 296,
+    "testDeclarations": 1748,
+    "collectedCases": 1802,
+    "externalLogicalCases": 8
+  },
+  "progress": {
+    "reviewedFiles": 296,
+    "testDeclarationsReviewed": 1748,
+    "featureGroups": 41,
+    "weakRatingsProved": 3,
+    "rewrittenCasesProved": 12
+  },
+  "blocked": [],
+  "applicationCodeChanged": false,
+  "classificationEvidenceStatus": "WEAK and nonstructural HOLLOW ratings remain provisional until their mutation evidence is recorded."
+}

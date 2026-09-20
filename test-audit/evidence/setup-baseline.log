@@ -1,0 +1,123 @@
+
+> gnosys@6.2.1 test:e2e-setup
+> bash e2e-setup/run.sh
+
+[e2e-setup] packing CLI…
+[e2e-setup] building image…
+[e2e-setup] running isolated suite (no network)…
+── cli-installs-and-reports-version ──────────────────────────────────────
+gnosys --version → 6.2.1
+ok - cli-installs-and-reports-version
+
+── init-creates-isolated-store ──────────────────────────────────────
+spawn gnosys init
+Gnosys store initialized at /home/tester/proj-init/.gnosys
+
+Project Identity:
+  ID:        fab11d7c-11f3-47ee-96d4-446ee6642075
+  Name:      proj-init
+  Directory: /home/tester/proj-init
+  Agent:     none detected
+  Central DB: registered ✓
+
+Created:
+  gnosys.json   (project identity)
+  .config/      (internal config)
+  tags.json     (tag registry)
+
+IDE hooks: No supported IDE detected (.claude/, .cursor/, or .codex/ not found)
+
+Wire IDE MCP servers: gnosys setup ides
+Start adding memories with: gnosys add "your knowledge here"
+init OK: .gnosys created
+ok - init-creates-isolated-store
+
+── setup-wizard-first-screen ──────────────────────────────────────
+spawn gnosys setup --full
+
+ [38;5;167m⬢[0m [1mgnosys[0m [38;5;242m▸[0m [38;5;242msetup[0m                                                         [38;5;242mv6.2.1[0m
+ [38;5;238m───────────────────────────────────────────────────────────────────────────────[0m
+
+ [1mWelcome.[0m
+
+ gnosys gives your AI agents persistent memory — a centralized brain
+ they keep across sessions. This wizard takes about 90 seconds.
+
+   step 1   pick a default LLM provider
+   step 2   validate the API key
+   step 3   wire up MCP for detected IDEs
+   step 4   (optional) task routing & dream mode
+
+                                                   [38;5;242m^C exits cleanly at any time[0m
+
+[1G[0JFound 1 project. Upgrade to v6.2.1? [Y/n] [43G
+ [38;5;242mcancelled · no changes written[0m
+
+
+Setup cancelled.
+wizard renders and cancels gracefully
+ok - setup-wizard-first-screen
+
+── setup-non-interactive ──────────────────────────────────────
+  Model:        claude-sonnet-4-6
+  Structuring:  claude-haiku-4-5
+  API key:      skipped
+  IDE setup:    skipped
+  Mode:         agent
+ok - setup-non-interactive
+
+── web-init-wizard ──────────────────────────────────────
+spawn gnosys web init
+
+[1mWeb Knowledge Base Setup[0m
+
+[2mThis sets up a /knowledge/ directory in your project.
+Gnosys crawls your site, converts pages to markdown, and
+builds a search index. Everything deploys with your app.
+
+No API keys are stored in your project. The LLM key is
+read from an environment variable at build time.[0m
+
+[1mStep 1/3[0m [2m—[0m Content source
+
+[2m  • Deployed site:  https://yoursite.com/sitemap.xml
+  • Local dev:      http://localhost:3000/sitemap.xml
+  • Not ready yet:  press Enter (add later in gnosys.json)[0m
+
+[1G[0JSitemap URL: [14Ghttps://example.com/sitemap.xml
+
+[1mStep 2/3[0m [2m—[0m LLM enrichment
+
+[2mLLM enrichment generates better tags, keyword clouds, and
+frontmatter for each page. Without it, Gnosys uses TF-IDF
+keyword extraction (free, no API key needed, decent quality).[0m
+
+
+[1G[0JEnable LLM enrichment? [Y/n] [30Gn
+
+[2mStep 3/3 — Skipped (no LLM = no API key needed)[0m
+
+[1G[0JOutput directory (./knowledge): [33G
+[32m✓[0m Created ./knowledge/
+[32m✓[0m Updated gnosys.json with web config
+[32m✓[0m Sitemap: https://example.com/sitemap.xml
+[32m✓[0m LLM enrichment: disabled (TF-IDF mode)
+
+[1mNext steps:[0m
+  1. Run: [36mgnosys web build[0m
+  2. Add to package.json: [36m"postbuild": "npx gnosys web build"[0m
+
+[2mEvery deploy will re-crawl and rebuild the search index automatically.[0m
+[2mTip: add semantic search with [36mgnosys web build --embeddings openai[0m[2m (see docs/web-semantic-search.md).[0m
+web init wizard OK
+ok - web-init-wizard
+
+── isolation-no-stray-writes ──────────────────────────────────────
+isolation OK (all writes confined to HOME)
+ok - isolation-no-stray-writes
+
+══════════════════════════════════════════════════
+setup UI tests: 6 passed, 0 failed
+real 11.12
+user 8.37
+sys 1.18

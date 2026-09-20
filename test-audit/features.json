@@ -1,0 +1,1228 @@
+{
+  "commit": "203c4e7",
+  "method": "independent-source-feature-inventory",
+  "notes": [
+    "Inventory was derived only from README, docs, CLI/MCP registration, exported modules, sandbox and extension source. No test files or coverage reports were used.",
+    "Obligations are inferred acceptance criteria from these sources, not claims of passing behavior. Runtime execution is outside this inventory subtask.",
+    "docs/multi-machine-sync-v13.md:5 says no offline reads; src/lib/syncClient.ts:184 explicitly permits accepted offline snapshots. Retain this as documentation/implementation divergence, not two passing contracts.",
+    "README.md describes 56 tools and tiers; generated docs/mcp-tools.md is stronger than README for freeform-add rejection.",
+    "extensions/vscode/extension.js calls obsolete gnosys dashboard and uses execSync with interpolated path. Source labels it a stub; it remains a shipped repository surface deserving audit.",
+    "Legacy remote DB fallback and v13 snapshot client path coexist. Tests should state which topology they exercise."
+  ],
+  "features": [
+    {
+      "id": "F01",
+      "name": "Installation, binaries, optional dependencies",
+      "sources": [
+        "package.json:8",
+        "package.json:19",
+        "README.md:26"
+      ],
+      "obligations": {
+        "success": [
+          "Installed gnosys and gnosys-mcp execute documented CLI and MCP entry points"
+        ],
+        "failure": [
+          "Missing SQLite or embeddings produce actionable degradation instead of crashing unrelated commands"
+        ],
+        "boundary": [
+          "Node >=20.12; package includes runnable dist and executable bins"
+        ],
+        "permissions": [
+          "Postinstall and errors do not disclose keys"
+        ]
+      },
+      "criticalModules": [
+        "src/postinstall.ts",
+        "src/cli.ts",
+        "src/index.ts",
+        "src/lib/installOutput.ts"
+      ]
+    },
+    {
+      "id": "F02",
+      "name": "Project initialization, identity and registration",
+      "sources": [
+        "src/cli/project.ts:16",
+        "docs/mcp-tools.md:26"
+      ],
+      "obligations": {
+        "success": [
+          "Init creates identity, registry and tags and selects the project for subsequent writes"
+        ],
+        "failure": [
+          "Missing/unwritable project directory reports failure"
+        ],
+        "boundary": [
+          "Repeated init preserves config and identity; duplicate paths/project IDs do not duplicate registration"
+        ],
+        "permissions": [
+          "Explicit projectRoot routes to requested project"
+        ]
+      },
+      "criticalModules": [
+        "src/cli/project.ts",
+        "src/lib/projectIdentity.ts",
+        "src/lib/db.ts",
+        "src/lib/resolver.ts"
+      ]
+    },
+    {
+      "id": "F03",
+      "name": "Layered config and task/provider routing",
+      "sources": [
+        "docs/configuration.md:7",
+        "docs/configuration.md:39",
+        "src/lib/config.ts:208"
+      ],
+      "obligations": {
+        "success": [
+          "Project overrides global then defaults; task override selects provider and model"
+        ],
+        "failure": [
+          "Invalid config or missing default provider returns actionable error"
+        ],
+        "boundary": [
+          "Partial nested configs retain inherited keys; update changes only requested keys"
+        ],
+        "permissions": [
+          "Secrets are not printed by config display"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/config.ts",
+        "src/lib/configCommand.ts",
+        "src/lib/projectIdentity.ts"
+      ]
+    },
+    {
+      "id": "F04",
+      "name": "Interactive setup, model selection and IDE wiring",
+      "sources": [
+        "docs/setup-walkthrough.md:36",
+        "docs/setup-walkthrough.md:97",
+        "src/cli/setup.ts:13"
+      ],
+      "obligations": {
+        "success": [
+          "First-run provider/model/key/routing/IDE choices persist and installed client configuration starts MCP"
+        ],
+        "failure": [
+          "Invalid keys/models and unavailable local models provide recovery; cancelled prompts stop cleanly"
+        ],
+        "boundary": [
+          "Existing IDE entries survive merge; paths containing spaces work; non-TTY invocation is bounded"
+        ],
+        "permissions": [
+          "Only selected IDE configs are changed; secret destinations and permissions match selection"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/setup.ts",
+        "src/lib/setup/coldStart.ts",
+        "src/lib/ideMcpInstall.ts",
+        "src/lib/mcpClientConfig.ts",
+        "src/lib/modelValidation.ts",
+        "src/lib/interactiveGuard.ts"
+      ]
+    },
+    {
+      "id": "F05",
+      "name": "API key storage and precedence",
+      "sources": [
+        "docs/configuration.md:20",
+        "docs/threat-model.md:21"
+      ],
+      "obligations": {
+        "success": [
+          "Configured key then scoped/global/keychain/legacy env resolution selects expected credential"
+        ],
+        "failure": [
+          "Missing key and inaccessible keychain surface useful failure without leaking credentials"
+        ],
+        "boundary": [
+          "Provider-specific lookup; repeated save replaces one key; platform-specific storage works"
+        ],
+        "permissions": [
+          "POSIX key files are private; errors and rendered config redact secrets"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/apiKeyVault.ts",
+        "src/lib/setupKeys.ts",
+        "src/lib/config.ts",
+        "src/lib/llm.ts"
+      ]
+    },
+    {
+      "id": "F06",
+      "name": "LLM generation, streaming, vision and retry contract",
+      "sources": [
+        "docs/llm-provider-contract.md:23",
+        "docs/cost-and-limits.md:5",
+        "src/lib/llm.ts:58"
+      ],
+      "obligations": {
+        "success": [
+          "Each supported provider returns complete text and ordered stream tokens using selected task model; vision includes image"
+        ],
+        "failure": [
+          "Auth and malformed provider responses fail visibly; transient failures retry; timeout aborts"
+        ],
+        "boundary": [
+          "Default maxTokens 4096, generation 60s and probes 10s; streamed partial failures do not silently succeed"
+        ],
+        "permissions": [
+          "Keys remain outside generated context and diagnostic output"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/llm.ts",
+        "src/lib/retry.ts",
+        "src/lib/modelValidation.ts"
+      ]
+    },
+    {
+      "id": "F07",
+      "name": "Memory creation and provenance",
+      "sources": [
+        "src/cli/core.ts:67",
+        "src/cli/memory.ts:74",
+        "src/lib/ingest.ts:211",
+        "src/index.ts:847"
+      ],
+      "obligations": {
+        "success": [
+          "Structured creation persists literal title/category/tags/content/scope/provenance without LLM; freeform structures and persists input"
+        ],
+        "failure": [
+          "Invalid structured fields and unavailable write target fail without partial memory"
+        ],
+        "boundary": [
+          "Duplicate inputs; confidence endpoints 0 and 1; empty content; large content; scope defaults"
+        ],
+        "permissions": [
+          "Optional stores reject writes; global requires explicit target; MCP freeform add is rejected unless GNOSYS_ALLOW_FREEFORM_ADD=1"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/addStructuredCommand.ts",
+        "src/lib/addCommand.ts",
+        "src/lib/ingest.ts",
+        "src/lib/dbWrite.ts",
+        "src/index.ts"
+      ]
+    },
+    {
+      "id": "F08",
+      "name": "Read, resolve and update memories",
+      "sources": [
+        "src/cli/core.ts:11",
+        "src/cli/memory.ts:31",
+        "src/lib/resolver.ts:281"
+      ],
+      "obligations": {
+        "success": [
+          "Read resolves IDs and layer-prefixed paths with correct content; update persists selected fields and timestamps"
+        ],
+        "failure": [
+          "Unknown/ambiguous ID and read-only target report failure"
+        ],
+        "boundary": [
+          "ID versus path precedence; short/long/raw IDs; field updates preserve unrelated values"
+        ],
+        "permissions": [
+          "No cross-project write caused by cwd fallback when project is supplied"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/readCommand.ts",
+        "src/lib/updateCommand.ts",
+        "src/lib/resolver.ts",
+        "src/lib/store.ts",
+        "src/lib/dbWrite.ts",
+        "src/lib/idFormat.ts"
+      ]
+    },
+    {
+      "id": "F09",
+      "name": "Keyword search and lightweight discovery",
+      "sources": [
+        "docs/search-modes.md:5",
+        "src/cli/core.ts:23",
+        "src/cli/core.ts:38"
+      ],
+      "obligations": {
+        "success": [
+          "Literal title/content/tag queries rank expected memories; discover returns metadata without full content"
+        ],
+        "failure": [
+          "Malformed FTS input remains safe and gives defined output"
+        ],
+        "boundary": [
+          "Empty, punctuation, Unicode, quoted, ID and code-symbol queries; limit and ties; stale FTS after update/delete"
+        ],
+        "permissions": [
+          "Scope/store filters exclude disallowed results"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/search.ts",
+        "src/lib/dbSearch.ts",
+        "src/lib/ftsQuery.ts",
+        "src/lib/discoverCommand.ts",
+        "src/lib/searchCommand.ts"
+      ]
+    },
+    {
+      "id": "F10",
+      "name": "Semantic embeddings, reindex and hybrid ranking",
+      "sources": [
+        "docs/search-modes.md:11",
+        "src/cli/data.ts:116"
+      ],
+      "obligations": {
+        "success": [
+          "Reindex writes embeddings; paraphrase query finds semantic neighbor; RRF k=60 combines both rankings"
+        ],
+        "failure": [
+          "Absent embeddings gives keyword-only hybrid and empty semantic results; provider failures are surfaced"
+        ],
+        "boundary": [
+          "Repeat reindex replaces stale vectors; dimension mismatch, zero vector and empty index; limit enforcement"
+        ],
+        "permissions": [
+          "Embedding generation uses configured provider and redacts credentials"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/embeddings.ts",
+        "src/lib/embedDb.ts",
+        "src/lib/embedQueue.ts",
+        "src/lib/hybridSearch.ts"
+      ]
+    },
+    {
+      "id": "F11",
+      "name": "Federated scopes, ambiguity and working set",
+      "sources": [
+        "docs/configuration.md:52",
+        "src/lib/federated.ts:190",
+        "src/lib/federated.ts:223",
+        "src/lib/federated.ts:398"
+      ],
+      "obligations": {
+        "success": [
+          "Project/user/global tier boosts and score breakdown match selected project; working set selects recent changes; ambiguity identifies multiple projects"
+        ],
+        "failure": [
+          "Unknown project and invalid scope are handled explicitly"
+        ],
+        "boundary": [
+          "No-global filter, empty projects, time-window boundary, duplicate memory across sources and deterministic ties"
+        ],
+        "permissions": [
+          "Explicit project and scope filters remain effective through all retrieval modes"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/federated.ts",
+        "src/lib/fsearchCommand.ts",
+        "src/lib/ambiguityCommand.ts",
+        "src/lib/workingSetCommand.ts"
+      ]
+    },
+    {
+      "id": "F12",
+      "name": "Recall and host hooks",
+      "sources": [
+        "src/cli/runtime.ts:60",
+        "src/cli/runtime.ts:78",
+        "src/lib/recall.ts:99"
+      ],
+      "obligations": {
+        "success": [
+          "Recall produces usable gnosys-recall block with matching content; wildcard chooses reinforcement/confidence/recency; hook emits host-compatible output"
+        ],
+        "failure": [
+          "Unavailable store/provider does not corrupt hook protocol or hang host"
+        ],
+        "boundary": [
+          "Aggressive versus threshold mode; limit, token/context budget and empty query; trace ID correlation"
+        ],
+        "permissions": [
+          "Recall respects project scope; hook stdout contains only intended protocol payload"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/recall.ts",
+        "src/lib/recallCommand.ts",
+        "src/lib/recallHookCommand.ts",
+        "src/lib/heartbeat.ts"
+      ]
+    },
+    {
+      "id": "F13",
+      "name": "Question answering with citations",
+      "sources": [
+        "docs/mcp-tools.md:9",
+        "src/cli/data.ts:164"
+      ],
+      "obligations": {
+        "success": [
+          "Question retrieves relevant memories, synthesizes answer and returns resolvable citations; streaming and JSON represent same answer"
+        ],
+        "failure": [
+          "No memories, provider failure and missing embedding fallback report useful outcomes"
+        ],
+        "boundary": [
+          "Retrieval limit; duplicate citations; long memory context"
+        ],
+        "permissions": [
+          "Stored instructions are treated as data and credentials are excluded from prompts"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/ask.ts",
+        "src/lib/askCommand.ts",
+        "src/lib/llm.ts"
+      ]
+    },
+    {
+      "id": "F14",
+      "name": "Lists, lenses, stale detection and tags",
+      "sources": [
+        "src/cli/core.ts:53",
+        "src/cli/memory.ts:11",
+        "src/cli/memory.ts:152",
+        "src/cli/memory.ts:174"
+      ],
+      "obligations": {
+        "success": [
+          "Category/tag/status/authority/author/confidence/date filters return exactly matching memories; tags add/list persist"
+        ],
+        "failure": [
+          "Invalid filter/date/number/category receives defined error"
+        ],
+        "boundary": [
+          "AND versus OR, any versus all tags, inclusive confidence/date cutoffs, empty results and duplicate tag addition"
+        ],
+        "permissions": [
+          "Read-only layer remains readable but tag/write operations target writable registry"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/lensing.ts",
+        "src/lib/tags.ts",
+        "src/lib/listCommand.ts",
+        "src/lib/lensCommand.ts",
+        "src/lib/staleCommand.ts"
+      ]
+    },
+    {
+      "id": "F15",
+      "name": "Reinforcement and outcome reflection",
+      "sources": [
+        "docs/mcp-tools.md:44",
+        "src/cli/memory.ts:60",
+        "src/cli/trace.ts:26",
+        "src/sandbox/server.ts:126"
+      ],
+      "obligations": {
+        "success": [
+          "Useful resets decay/increments reinforcement; not_relevant changes routing only; outdated flags review; reflect stores outcome and links related memories"
+        ],
+        "failure": [
+          "Unknown memory and invalid outcome/delta fail meaningfully"
+        ],
+        "boundary": [
+          "Confidence remains within 0..1; repeated outcomes and empty related list; success versus failure delta"
+        ],
+        "permissions": [
+          "Client add-only restrictions block unsupported update/reinforce operations"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/reinforceCommand.ts",
+        "src/lib/reflectCommand.ts",
+        "src/lib/dbWrite.ts",
+        "src/sandbox/server.ts"
+      ]
+    },
+    {
+      "id": "F16",
+      "name": "Wikilinks, graph and relationship traversal",
+      "sources": [
+        "src/cli/browse.ts:47",
+        "src/cli/browse.ts:57",
+        "src/cli/trace.ts:46",
+        "docs/mcp-tools.md:50"
+      ],
+      "obligations": {
+        "success": [
+          "Title and path-display links resolve outgoing/backlinks; reindex graph yields nodes/edges; BFS follows direction/type/depth"
+        ],
+        "failure": [
+          "Unknown root and broken wikilinks produce defined results"
+        ],
+        "boundary": [
+          "Cycles visit each memory once; root depth 0, max depth 10, empty graph, orphan targets"
+        ],
+        "permissions": [
+          "Graph/traverse results obey intended project scope"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/wikilinks.ts",
+        "src/lib/graph.ts",
+        "src/lib/graphCommand.ts",
+        "src/lib/traverseCommand.ts",
+        "src/sandbox/server.ts"
+      ]
+    },
+    {
+      "id": "F17",
+      "name": "Codebase tracing into procedural memories",
+      "sources": [
+        "src/cli/trace.ts:12",
+        "src/lib/trace.ts:223"
+      ],
+      "obligations": {
+        "success": [
+          "Trace real source creates procedural memories and call-chain relationships with project association"
+        ],
+        "failure": [
+          "Missing/unreadable directory and parse failure report bounded errors"
+        ],
+        "boundary": [
+          "Max-files cap, unsupported file types, recursive directories, no matching functions and repeated trace"
+        ],
+        "permissions": [
+          "Read only requested directory; writes use requested project"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/trace.ts",
+        "src/lib/traceCommand.ts",
+        "src/index.ts"
+      ]
+    },
+    {
+      "id": "F18",
+      "name": "Context sweep and deduplication",
+      "sources": [
+        "src/cli/memory.ts:163",
+        "docs/mcp-tools.md:13"
+      ],
+      "obligations": {
+        "success": [
+          "Sweep extracts atomic novel memories and augments changed knowledge"
+        ],
+        "failure": [
+          "Malformed LLM structured output and write failure report partial/error state"
+        ],
+        "boundary": [
+          "Dry-run has no writes; repeated identical context creates no duplicate"
+        ],
+        "permissions": [
+          "Target store and declared/imported provenance preserved"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/commitContextCommand.ts",
+        "src/lib/ingest.ts",
+        "src/lib/structuredIngest.ts"
+      ]
+    },
+    {
+      "id": "F19",
+      "name": "Bulk bootstrap and structured data import",
+      "sources": [
+        "src/cli/data.ts:11",
+        "src/cli/data.ts:46",
+        "src/lib/import.ts:50"
+      ],
+      "obligations": {
+        "success": [
+          "Markdown bootstrap and CSV/JSON/JSONL import persist mapped title/content/tags/category; summary counts reflect actual writes"
+        ],
+        "failure": [
+          "Bad mapping, malformed source, missing file and HTTP failure report source/record error"
+        ],
+        "boundary": [
+          "Dry-run, skip-existing, offset/limit, concurrency, empty input, frontmatter preservation"
+        ],
+        "permissions": [
+          "URL imports enforce SSRF and redirect guards; selected scope controls writes"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/bootstrap.ts",
+        "src/lib/import.ts",
+        "src/lib/importCommand.ts",
+        "src/lib/structuredIngest.ts",
+        "src/lib/webIngest.ts"
+      ]
+    },
+    {
+      "id": "F20",
+      "name": "Document and multimodal ingestion",
+      "sources": [
+        "src/cli/memory.ts:108",
+        "docs/mcp-tools.md:25",
+        "src/lib/multimodalIngest.ts:214"
+      ],
+      "obligations": {
+        "success": [
+          "PDF/DOCX/TXT/MD/image/audio/video extract content into atomic linked memories; structured and LLM modes work"
+        ],
+        "failure": [
+          "Unsupported/corrupt files, missing vision/transcription provider and ffmpeg failure are useful failures"
+        ],
+        "boundary": [
+          "Chunk limits, overlap, empty extraction, non-ASCII content, glob batch, duplicate source and dry-run"
+        ],
+        "permissions": [
+          "Reads user-selected files only; credentials stay out of extracted content"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/multimodalIngest.ts",
+        "src/lib/pdfExtract.ts",
+        "src/lib/docxExtract.ts",
+        "src/lib/imageExtract.ts",
+        "src/lib/audioExtract.ts",
+        "src/lib/videoExtract.ts",
+        "src/lib/chunkSplitter.ts",
+        "src/lib/fileDetect.ts"
+      ]
+    },
+    {
+      "id": "F21",
+      "name": "Inline and filesystem attachments",
+      "sources": [
+        "src/cli/memory.ts:132",
+        "src/cli/memory.ts:142",
+        "src/lib/attachments.ts:224"
+      ],
+      "obligations": {
+        "success": [
+          "Attach stores exact bytes/MIME/name; retrieve returns same bytes or writes requested file; inline blobs survive sync/export"
+        ],
+        "failure": [
+          "Missing file/memory/attachment and oversized attachment report error"
+        ],
+        "boundary": [
+          "10 MiB accepted, one byte over rejected; identical bytes no rewrite; binary/NUL and empty file round trip"
+        ],
+        "permissions": [
+          "Output path handling and file-read scope remain deliberate"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/attachments.ts",
+        "src/lib/attachCommand.ts",
+        "src/index.ts"
+      ]
+    },
+    {
+      "id": "F22",
+      "name": "Maintenance, decay, consolidation and archive",
+      "sources": [
+        "src/cli/maintenance.ts:16",
+        "src/cli/maintenance.ts:27",
+        "src/lib/maintenance.ts:91",
+        "src/lib/archive.ts:390"
+      ],
+      "obligations": {
+        "success": [
+          "Duplicate detection, decay and consolidation act on eligible memories; dearchive restores searchable memory"
+        ],
+        "failure": [
+          "Missing embeddings/provider, failed write and nonexistent archived match report useful state"
+        ],
+        "boundary": [
+          "Dry-run changes nothing; threshold/time boundaries; repeated maintenance; archived/superseded exclusions"
+        ],
+        "permissions": [
+          "Automatic versus explicit application respects caller option; unrelated projects remain unchanged"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/maintenance.ts",
+        "src/lib/archive.ts",
+        "src/lib/maintainCommand.ts",
+        "src/lib/dearchiveCommand.ts"
+      ]
+    },
+    {
+      "id": "F23",
+      "name": "Dream engine, scheduling and reports",
+      "sources": [
+        "README.md:56",
+        "src/cli/dream.ts:10",
+        "src/lib/dream.ts:1208"
+      ],
+      "obligations": {
+        "success": [
+          "Dream generates summaries/relationships/review suggestions and confidence decay; log/report show completed/skipped/failed cycles"
+        ],
+        "failure": [
+          "Unavailable provider and phase failure produce bounded partial report; active user aborts idle work"
+        ],
+        "boundary": [
+          "No deletion; max runtime, night/idle/cooldown boundaries, skipped phases, repeated/concurrent runs"
+        ],
+        "permissions": [
+          "Only designated node runs unless force; scheduler install writes correct user service"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/dream.ts",
+        "src/lib/dreamCommand.ts",
+        "src/lib/dreamLaunchd.ts",
+        "src/lib/dreamRunLog.ts",
+        "src/lib/dreamReport.ts"
+      ]
+    },
+    {
+      "id": "F24",
+      "name": "Preferences and generated agent rules",
+      "sources": [
+        "src/cli/agent.ts:12",
+        "src/cli/agent.ts:46",
+        "src/index.ts:3170"
+      ],
+      "obligations": {
+        "success": [
+          "Set/get/list/delete user preference round trip; rules block contains preferences and project conventions"
+        ],
+        "failure": [
+          "Unknown preference deletion and absent rules target report clear status"
+        ],
+        "boundary": [
+          "Repeated injection yields one block and preserves surrounding user text; escaped text"
+        ],
+        "permissions": [
+          "MCP sync is read-only unless commit_to_disk=true; user preferences apply across projects"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/preferences.ts",
+        "src/lib/rulesGen.ts",
+        "src/lib/prefCommand.ts",
+        "src/lib/syncCommand.ts",
+        "src/index.ts"
+      ]
+    },
+    {
+      "id": "F25",
+      "name": "Statistics, timeline, audit and history",
+      "sources": [
+        "src/cli/browse.ts:11",
+        "src/cli/browse.ts:22",
+        "src/cli/browse.ts:35",
+        "src/cli/runtime.ts:88"
+      ],
+      "obligations": {
+        "success": [
+          "Counts/category/status/provenance/date summaries match persisted memories; audit/history show actual operations chronologically"
+        ],
+        "failure": [
+          "Invalid dates/unknown memory produce defined result"
+        ],
+        "boundary": [
+          "Empty DB, boundary timestamps, limits, archived records and trace-ID correlation"
+        ],
+        "permissions": [
+          "Audit does not expose secrets and respects requested filters"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/audit.ts",
+        "src/lib/historyCommand.ts",
+        "src/lib/timeline.ts",
+        "src/lib/statsCommand.ts"
+      ]
+    },
+    {
+      "id": "F26",
+      "name": "Project/system status, briefing and HTML dashboards",
+      "sources": [
+        "src/cli/agent.ts:82",
+        "src/cli/agent.ts:104",
+        "src/cli/agent.ts:121"
+      ],
+      "obligations": {
+        "success": [
+          "Briefings and portfolio show correct project memories/status/roadmap; system status reports DB/provider/embedding health; status template produces parseable heading format"
+        ],
+        "failure": [
+          "Unreachable provider/missing status memory does not invent success"
+        ],
+        "boundary": [
+          "Empty projects, archived/dead registry entries, HTML-sensitive memory titles and malformed status headings"
+        ],
+        "permissions": [
+          "Rendered HTML escapes stored content; project selection controls report scope"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/dashboard.ts",
+        "src/lib/portfolio.ts",
+        "src/lib/portfolioHtml.ts",
+        "src/lib/statusCommand.ts",
+        "src/lib/updateStatusCommand.ts"
+      ]
+    },
+    {
+      "id": "F27",
+      "name": "Obsidian vault export",
+      "sources": [
+        "src/cli/exportCmds.ts:24",
+        "docs/mcp-tools.md:18",
+        "src/lib/export.ts:58"
+      ],
+      "obligations": {
+        "success": [
+          "Export produces valid Markdown/frontmatter/wikilinks/summaries/reviews/graph with preserved content"
+        ],
+        "failure": [
+          "Invalid output path/write failure reports error without corrupt partial output"
+        ],
+        "boundary": [
+          "Default active versus all; overwrite option; slug collisions; malicious titles/category; repeated export"
+        ],
+        "permissions": [
+          "Export leaves DB unchanged and every output remains inside destination"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/export.ts",
+        "src/lib/exportCommand.ts",
+        "src/lib/atomicWrite.ts"
+      ]
+    },
+    {
+      "id": "F28",
+      "name": "Portable project export/import",
+      "sources": [
+        "src/cli/exportCmds.ts:40",
+        "src/cli/data.ts:104",
+        "src/lib/exportProject.ts:15",
+        "src/lib/importProject.ts:72"
+      ],
+      "obligations": {
+        "success": [
+          "Bundle round trip preserves memories, blobs, embeddings, relationships and optional audit; directory override applies"
+        ],
+        "failure": [
+          "Bad gzip/JSON/format/version and invalid strategy fail without destructive partial import"
+        ],
+        "boundary": [
+          "Merge skips duplicates; replace affects target; new-id remaps relationship/audit references; archived option"
+        ],
+        "permissions": [
+          "Import cannot overwrite unrelated project memory IDs through collision"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/exportProject.ts",
+        "src/lib/importProject.ts",
+        "src/lib/exportCommand.ts",
+        "src/lib/importProjectCommand.ts"
+      ]
+    },
+    {
+      "id": "F29",
+      "name": "Database durability, migration, backup and restore",
+      "sources": [
+        "src/lib/db.ts:400",
+        "src/cli/runtime.ts:101",
+        "src/cli/runtime.ts:113",
+        "src/cli/runtime.ts:124"
+      ],
+      "obligations": {
+        "success": [
+          "Committed memory/FTS/relationships survive close/reopen and schema upgrade; backup/restore reproduce exact data"
+        ],
+        "failure": [
+          "Unavailable SQLite, invalid backup, locked/corrupt DB and failed migration report failure preserving previous state"
+        ],
+        "boundary": [
+          "Repeated migration no-op; crash during writes; binary fields; transaction atomicity; reopen invalidates statement cache"
+        ],
+        "permissions": [
+          "SQL values bound and columns allowlisted; DB and sidecars private; migrations preserve existing user DB"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/db.ts",
+        "src/lib/dbWrite.ts",
+        "src/lib/backupCommand.ts",
+        "src/lib/restoreCommand.ts",
+        "src/lib/migrateDbCommand.ts",
+        "src/lib/atomicWrite.ts"
+      ]
+    },
+    {
+      "id": "F30",
+      "name": "Machine identity, path mapping and project migration",
+      "sources": [
+        "docs/configuration.md:67",
+        "src/cli/remote.ts:35",
+        "src/cli/project.ts:152",
+        "src/lib/projectPaths.ts:30"
+      ],
+      "obligations": {
+        "success": [
+          "Stable machine identity maps one project across machine-local roots; migration updates identity and DB registration"
+        ],
+        "failure": [
+          "Unknown root, missing moved project and conflicting target report failure"
+        ],
+        "boundary": [
+          "Hostname change regenerates ID unless GNOSYS_MACHINE_ID pinned; repeated scan/migrate deduplicates; spaces/nested roots"
+        ],
+        "permissions": [
+          "Machine-local settings are not synced; paths resolve under selected root"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/machineConfig.ts",
+        "src/lib/machineRegistry.ts",
+        "src/lib/projectPaths.ts",
+        "src/lib/projectScan.ts",
+        "src/lib/migrate.ts",
+        "src/lib/machineMigrate.ts"
+      ]
+    },
+    {
+      "id": "F31",
+      "name": "Legacy push/pull synchronization and conflicts",
+      "sources": [
+        "README.md:57",
+        "src/cli/setup.ts:109",
+        "src/cli/setup.ts:140",
+        "src/lib/remote.ts:213"
+      ],
+      "obligations": {
+        "success": [
+          "Push/pull transfers new/changed memories including binaries and metadata; status reports accurate pending/conflicts"
+        ],
+        "failure": [
+          "Offline remote queues writes and reports reachability; failure does not acknowledge lost writes"
+        ],
+        "boundary": [
+          "Two-sided conflict skip-and-flag; local/remote resolution; repeated sync; deletion/tombstone and timestamp ties"
+        ],
+        "permissions": [
+          "Conflict choice follows explicit caller choice; local/remote paths are distinct"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/remote.ts",
+        "src/lib/setupRemotePushCommand.ts",
+        "src/lib/setupRemotePullCommand.ts",
+        "src/lib/setupRemoteResolveCommand.ts",
+        "src/lib/syncLock.ts"
+      ]
+    },
+    {
+      "id": "F32",
+      "name": "Snapshot client reads, pending overlays and offline adds",
+      "sources": [
+        "docs/multi-machine-sync-v13.md:3",
+        "src/lib/syncClient.ts:116",
+        "src/lib/syncSnapshot.ts:174"
+      ],
+      "obligations": {
+        "success": [
+          "Client accepts verified newer snapshots; local pending adds appear once until receipt; offline adds persist"
+        ],
+        "failure": [
+          "Bad checksum/copy failure keeps prior accepted snapshot; unreachable master preserves visible pending adds"
+        ],
+        "boundary": [
+          "Snapshot epoch/version comparison; receipt dedup; source currently allows last accepted offline snapshot despite older docs"
+        ],
+        "permissions": [
+          "Connected clients stage adds and reject unsupported mutations; do not mutate published snapshots"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/syncClient.ts",
+        "src/lib/syncSnapshot.ts",
+        "src/lib/clientReadOverlay.ts",
+        "src/lib/clientReadResolve.ts",
+        "src/lib/syncStaging.ts"
+      ]
+    },
+    {
+      "id": "F33",
+      "name": "Master staged ingestion, ownership and timers",
+      "sources": [
+        "docs/multi-machine-sync-v13.md:17",
+        "src/lib/syncIngest.ts:102",
+        "src/lib/masterLease.ts:67",
+        "src/cli/setup.ts:160"
+      ],
+      "obligations": {
+        "success": [
+          "Master ingests valid staged adds, records receipts, publishes snapshots and reports waiting/failed counts"
+        ],
+        "failure": [
+          "Malformed/checksum/schema-invalid files quarantine; wrong/stale lease aborts write; timer errors reported"
+        ],
+        "boundary": [
+          "Consecutive sweeps create no duplicate; stale temp quarantine; crash between insert/receipt; concurrent actors"
+        ],
+        "permissions": [
+          "Master DB must be local disk; machine identity and epoch fence reject non-owner writes"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/syncIngest.ts",
+        "src/lib/syncStaging.ts",
+        "src/lib/masterLease.ts",
+        "src/lib/syncIngestTimer.ts",
+        "src/lib/syncIngestStartup.ts",
+        "src/lib/localDiskCheck.ts"
+      ]
+    },
+    {
+      "id": "F34",
+      "name": "MCP stdio contract and dynamic toolset tiers",
+      "sources": [
+        "README.md:142",
+        "docs/mcp-toolsets.md:17",
+        "src/index.ts:121",
+        "src/index.ts:4096"
+      ],
+      "obligations": {
+        "success": [
+          "Real initialize/list-tools/call round trip works; core/standard/full sets match catalog; set emits list_changed"
+        ],
+        "failure": [
+          "Unknown tool, invalid schema and bad GNOSYS_MCP_TOOLSET return defined error/fallback"
+        ],
+        "boundary": [
+          "Each new session starts configured tier; shrink/expand repeatedly; stdout never contains logs"
+        ],
+        "permissions": [
+          "Tier state is isolated per HTTP session; freeform guard and projectRoot apply through MCP"
+        ]
+      },
+      "criticalModules": [
+        "src/index.ts",
+        "src/cli/runtime.ts",
+        "src/lib/log.ts"
+      ]
+    },
+    {
+      "id": "F35",
+      "name": "HTTP MCP hosting, authentication and session lifecycle",
+      "sources": [
+        "docs/network-mcp.md:55",
+        "src/lib/mcpHttp.ts:119"
+      ],
+      "obligations": {
+        "success": [
+          "Authenticated initialize/call/delete session work; health returns liveness and session count"
+        ],
+        "failure": [
+          "Unauthorized 401; forbidden Origin 403; invalid JSON 400; unknown route 404; oversized 413; stalled body 408"
+        ],
+        "boundary": [
+          "4 MiB default body limit, idle timeout/reaper, concurrent sessions, malformed IDs and server close"
+        ],
+        "permissions": [
+          "Non-loopback without token refuses startup; bearer exact match; default-deny Origin; health discloses no memory"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/mcpHttp.ts",
+        "src/cli/runtime.ts",
+        "src/index.ts"
+      ]
+    },
+    {
+      "id": "F36",
+      "name": "Remote connect and centralization",
+      "sources": [
+        "src/cli/remote.ts:11",
+        "src/cli/remote.ts:24",
+        "docs/network-mcp.md:39"
+      ],
+      "obligations": {
+        "success": [
+          "Connect writes usable URL/bearer client config; centralize copies consistent local brain"
+        ],
+        "failure": [
+          "Invalid URL, unreachable host or existing target without force report error"
+        ],
+        "boundary": [
+          "Print mode does not write; IDE config merge preserves peers; repeated operation"
+        ],
+        "permissions": [
+          "Token is protected; source brain remains intact; force is required for overwrite"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/connectCommand.ts",
+        "src/lib/centralize.ts",
+        "src/lib/centralizeCommand.ts",
+        "src/lib/mcpClientConfig.ts"
+      ]
+    },
+    {
+      "id": "F37",
+      "name": "Sandbox lifecycle, socket protocol and generated helper",
+      "sources": [
+        "src/cli/sandbox.ts:13",
+        "src/cli/sandbox.ts:50",
+        "src/sandbox/server.ts:126",
+        "src/sandbox/server.ts:663"
+      ],
+      "obligations": {
+        "success": [
+          "Start/status/stop operate real background process; generated helper calls add/recall/read/update successfully through socket"
+        ],
+        "failure": [
+          "Malformed request, unknown method, unavailable DB/socket and stale PID fail clearly"
+        ],
+        "boundary": [
+          "Repeated start/stop, newline framing, concurrent requests, response IDs, large/chunked payload and abrupt disconnect"
+        ],
+        "permissions": [
+          "Socket and PID location respect selected DB/user boundary; helper preserves project scope"
+        ]
+      },
+      "criticalModules": [
+        "src/sandbox/server.ts",
+        "src/sandbox/client.ts",
+        "src/sandbox/manager.ts",
+        "src/sandbox/helper-template.ts",
+        "src/lib/helperGenerateCommand.ts"
+      ]
+    },
+    {
+      "id": "F38",
+      "name": "Web knowledge ingestion and index lifecycle",
+      "sources": [
+        "src/cli/web.ts:23",
+        "src/cli/web.ts:36",
+        "src/cli/web.ts:83",
+        "src/cli/web.ts:104"
+      ],
+      "obligations": {
+        "success": [
+          "Sitemap/directory/URL source builds knowledge Markdown and usable index; add/update/remove rebuild correct documents"
+        ],
+        "failure": [
+          "Bad URL/sitemap/source, provider failure and unsupported source give useful errors"
+        ],
+        "boundary": [
+          "Dry-run changes nothing; prune only orphaned docs; unchanged content skips; concurrency; empty sites"
+        ],
+        "permissions": [
+          "SSRF rejects private/loopback/metadata and rechecks redirects; output paths remain within knowledge root"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/webIngest.ts",
+        "src/lib/webIndex.ts",
+        "src/lib/webBuildCommand.ts",
+        "src/lib/webRemoveCommand.ts",
+        "src/lib/webUpdateCommand.ts"
+      ]
+    },
+    {
+      "id": "F39",
+      "name": "Serverless lexical/hybrid search and vector builds",
+      "sources": [
+        "docs/web-semantic-search.md:32",
+        "docs/web-semantic-search.md:53",
+        "docs/web-semantic-search.md:105",
+        "src/lib/staticSearch.ts:117"
+      ],
+      "obligations": {
+        "success": [
+          "gnosys/web loads v1/v2 index and returns correct TF-IDF rankings; quantized vectors combine with RRF; concept expansion uses 0.5 weight"
+        ],
+        "failure": [
+          "Missing/malformed index reports error; model/dimension mismatch warns then yields lexical-only result"
+        ],
+        "boundary": [
+          "Absent query vector/vectors retains lexical behavior; zero vectors; quantization round trip; cache invalidation; expandQuery false"
+        ],
+        "permissions": [
+          "Runtime imports zero native/embedding deps and makes no embedding API calls"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/staticSearch.ts",
+        "src/lib/webVectors.ts",
+        "src/lib/webIndex.ts",
+        "src/lib/webBuildIndexCommand.ts"
+      ]
+    },
+    {
+      "id": "F40",
+      "name": "Doctor, cleanup, upgrade and project housekeeping",
+      "sources": [
+        "src/cli/maintenance.ts:74",
+        "src/cli/maintenance.ts:110",
+        "src/cli/maintenance.ts:235",
+        "src/cli/remote.ts:194"
+      ],
+      "obligations": {
+        "success": [
+          "Doctor identifies actual config/DB/provider problems; cleanup/prune remove only selected legacy artifacts; upgrade installs package then reports status"
+        ],
+        "failure": [
+          "Package manager/network failure and unavailable paths fail visibly"
+        ],
+        "boundary": [
+          "Dry-run no mutation; yes/noninteractive flows; repeated cleanup; missing already-removed artifacts"
+        ],
+        "permissions": [
+          "Cleanup/prune confirmation honored; upgrade uses argv-safe package manager invocation; unrelated files preserved"
+        ]
+      },
+      "criticalModules": [
+        "src/lib/doctorCommand.ts",
+        "src/lib/cleanup.ts",
+        "src/lib/upgrade.ts",
+        "src/lib/packageManager.ts",
+        "src/lib/projectsCommand.ts",
+        "src/cli/maintenance.ts"
+      ]
+    },
+    {
+      "id": "F41",
+      "name": "VS Code extension commands",
+      "sources": [
+        "extensions/vscode/package.json:21",
+        "extensions/vscode/extension.js:17"
+      ],
+      "obligations": {
+        "success": [
+          "Reinforce active memory produces persisted reinforcement and feedback; dashboard command launches functioning dashboard"
+        ],
+        "failure": [
+          "No editor, outside-store file and CLI error show correct message"
+        ],
+        "boundary": [
+          "Spaces, quotes and shell metacharacters in selected path; extension activation scope"
+        ],
+        "permissions": [
+          "Selected file cannot inject shell commands; store detection uses actual path boundary"
+        ]
+      },
+      "criticalModules": [
+        "extensions/vscode/extension.js"
+      ]
+    }
+  ]
+}

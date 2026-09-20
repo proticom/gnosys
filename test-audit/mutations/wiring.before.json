@@ -1,0 +1,35 @@
+[
+  {
+    "id": "cli-parent-path",
+    "file": "src/cli/setup.ts",
+    "description": "Register remote setup under the root command instead of setup; leaf names still exist.",
+    "search": "const setupRemoteCmd = setupCmd",
+    "replace": "const setupRemoteCmd = program",
+    "tests": [
+      "src/test/cli-command-wiring.test.ts"
+    ],
+    "build": true
+  },
+  {
+    "id": "web-index-skip-write",
+    "file": "src/lib/webBuildIndexCommand.ts",
+    "description": "Skip writing the search index unless embeddings were requested.",
+    "search": "await writeIndex(index, outputPath);",
+    "replace": "if (opts.embeddings) await writeIndex(index, outputPath);",
+    "tests": [
+      "src/test/webVectors-command-handler.test.ts"
+    ],
+    "testName": "does not build vectors when"
+  },
+  {
+    "id": "web-corrupt-size",
+    "file": "src/lib/webStatusCommand.ts",
+    "description": "Report the wrong byte size for a corrupt vector file.",
+    "search": "vectorsInfo = { exists: true, size: vectorsStat.size };",
+    "replace": "vectorsInfo = { exists: true, size: vectorsStat.size + 1 };",
+    "tests": [
+      "src/test/webVectors-command-handler.test.ts"
+    ],
+    "testName": "reports corrupt vector JSON"
+  }
+]

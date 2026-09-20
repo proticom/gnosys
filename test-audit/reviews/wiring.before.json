@@ -1,0 +1,2465 @@
+{
+  "files": [
+    {
+      "path": "src/test/add-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires add to runAddCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Persist a memory through the CLI in an isolated database with the LLM HTTP boundary stubbed; read back title, content, scope, and provenance.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/addCommand.ts"
+          ]
+        },
+        {
+          "line": 29,
+          "name": "exports runAddCommand with correct module imports",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Persist a memory through the CLI in an isolated database with the LLM HTTP boundary stubbed; read back title, content, scope, and provenance.",
+          "productionModules": [
+            "src/lib/addCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/add-structured-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires add-structured to runAddStructuredCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Invoke structured add with valid and malformed tags; assert persisted fields or exact validation error and unchanged row count.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/addStructuredCommand.ts"
+          ]
+        },
+        {
+          "line": 32,
+          "name": "exports runAddStructuredCommand with tags JSON validation",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Invoke structured add with valid and malformed tags; assert persisted fields or exact validation error and unchanged row count.",
+          "productionModules": [
+            "src/lib/addStructuredCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/ambiguity-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires ambiguity to runAmbiguityCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed competing project names and invoke ambiguity; assert candidate IDs and the unambiguous result.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/ambiguityCommand.ts"
+          ]
+        },
+        {
+          "line": 22,
+          "name": "exports runAmbiguityCommand with ambiguity markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed competing project names and invoke ambiguity; assert candidate IDs and the unambiguous result.",
+          "productionModules": [
+            "src/lib/ambiguityCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/ask-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires ask to runAskCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Stub only the LLM HTTP boundary; invoke ask with stored memories and assert the rendered answer, cited memory IDs, and unavailable-provider error.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/askCommand.ts"
+          ]
+        },
+        {
+          "line": 25,
+          "name": "exports runAskCommand with LLM, federated, stream, and cleanup markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Stub only the LLM HTTP boundary; invoke ask with stored memories and assert the rendered answer, cited memory IDs, and unavailable-provider error.",
+          "productionModules": [
+            "src/lib/askCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/audit-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires audit to runAuditCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed an audit log and assert JSON records obey operation, date, and limit filters.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/auditCommand.ts"
+          ]
+        },
+        {
+          "line": 25,
+          "name": "exports runAuditCommand with audit markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed an audit log and assert JSON records obey operation, date, and limit filters.",
+          "productionModules": [
+            "src/lib/auditCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/backup-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires backup to runBackupCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Back up an isolated database, reopen the backup, and assert its memories and project records.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/backupCommand.ts"
+          ]
+        },
+        {
+          "line": 24,
+          "name": "exports runBackupCommand with backup markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Back up an isolated database, reopen the backup, and assert its memories and project records.",
+          "productionModules": [
+            "src/lib/backupCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/bootstrap-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires bootstrap to runBootstrapCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Import concrete Markdown files into an isolated store and assert persisted rows, skipped duplicates, and dry-run nonmutation.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/bootstrapCommand.ts"
+          ]
+        },
+        {
+          "line": 27,
+          "name": "exports runBootstrapCommand with discoverFiles and bootstrap markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Import concrete Markdown files into an isolated store and assert persisted rows, skipped duplicates, and dry-run nonmutation.",
+          "productionModules": [
+            "src/lib/bootstrapCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/briefing-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires briefing to runBriefingCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed two projects and invoke briefing; assert selected project content, all-project output, and unknown-project error.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/briefingCommand.ts"
+          ]
+        },
+        {
+          "line": 25,
+          "name": "exports runBriefingCommand with briefing markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed two projects and invoke briefing; assert selected project content, all-project output, and unknown-project error.",
+          "productionModules": [
+            "src/lib/briefingCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/centralize-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires centralize to runCentralizeCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Copy an isolated local brain to a temporary destination and reopen it to verify records and repeat-run handling.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/centralizeCommand.ts"
+          ]
+        },
+        {
+          "line": 24,
+          "name": "exports runCentralizeCommand with centralize markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Copy an isolated local brain to a temporary destination and reopen it to verify records and repeat-run handling.",
+          "productionModules": [
+            "src/lib/centralizeCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/check-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires check to runCheckCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Use HTTP boundary responses for configured providers and assert connected and failed task output plus exit status.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/checkCommand.ts"
+          ]
+        },
+        {
+          "line": 22,
+          "name": "exports runCheckCommand with check markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Use HTTP boundary responses for configured providers and assert connected and failed task output plus exit status.",
+          "productionModules": [
+            "src/lib/checkCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/cli-command-wiring.test.ts",
+      "tests": [
+        {
+          "line": 16,
+          "name": "every .command() declared in source is registered at runtime",
+          "classification": "WEAK",
+          "evidence": "Executes built CLI --help but flattens all parents into a Set of leaf names; wrong-parent/missing duplicate subcommands are indistinguishable, and expected commands derive from source.",
+          "action": "Replace with an independently reviewed literal command-path contract, checking each full parent/child path and help/usage, plus behavioral smoke cases.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/cli/*.ts"
+          ],
+          "mutationRequired": "Remove one of multiple same-named subcommands and prove the original flattened-name assertion survives."
+        }
+      ]
+    },
+    {
+      "path": "src/test/commit-context-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires commit-context to runCommitContextCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Stub only LLM HTTP extraction, invoke the public command, and verify extracted memories persist or remain absent in dry-run.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/commitContextCommand.ts"
+          ]
+        },
+        {
+          "line": 25,
+          "name": "exports runCommitContextCommand with extraction and commit markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Stub only LLM HTTP extraction, invoke the public command, and verify extracted memories persist or remain absent in dry-run.",
+          "productionModules": [
+            "src/lib/commitContextCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/config-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires config subcommands to extracted handlers",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Set and show configuration in an isolated directory; assert effective JSON values and errors for unknown fields.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/configCommand.ts"
+          ]
+        },
+        {
+          "line": 39,
+          "name": "exports named config handler functions",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Set and show configuration in an isolated directory; assert effective JSON values and errors for unknown fields.",
+          "productionModules": [
+            "src/lib/configCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/connect-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 10,
+          "name": "wires connect to runConnectCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Generate configuration in a temporary project and assert emitted or persisted URL, token, and IDE-specific transport shape.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/connectCommand.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "exports runConnectCommand with connect markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Generate configuration in a temporary project and assert emitted or persisted URL, token, and IDE-specific transport shape.",
+          "productionModules": [
+            "src/lib/connectCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/dearchive-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires dearchive to runDearchiveCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed archived memories, run dearchive, and read back selected active rows while unrelated rows remain archived.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/dearchiveCommand.ts"
+          ]
+        },
+        {
+          "line": 22,
+          "name": "exports runDearchiveCommand with dearchive markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed archived memories, run dearchive, and read back selected active rows while unrelated rows remain archived.",
+          "productionModules": [
+            "src/lib/dearchiveCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/discover-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires discover to runDiscoverCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed memories from two projects and assert query metadata, scope, limit, and empty-result output.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/discoverCommand.ts"
+          ]
+        },
+        {
+          "line": 26,
+          "name": "exports runDiscoverCommand with federated and default FTS markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed memories from two projects and assert query metadata, scope, limit, and empty-result output.",
+          "productionModules": [
+            "src/lib/discoverCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/doctor-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires doctor to runDoctorCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Run doctor against deliberately healthy and broken isolated stores and assert actual findings and exit status.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/doctorCommand.ts"
+          ]
+        },
+        {
+          "line": 27,
+          "name": "exports runDoctorCommand handler",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Run doctor against deliberately healthy and broken isolated stores and assert actual findings and exit status.",
+          "productionModules": [
+            "src/lib/doctorCommand.ts"
+          ]
+        },
+        {
+          "line": 31,
+          "name": "uses correct relative imports for archive and embeddings",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Run doctor against deliberately healthy and broken isolated stores and assert actual findings and exit status.",
+          "productionModules": [
+            "src/lib/doctorCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/dream-log-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires dream log to runDreamLogCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed run records with different dates and outcomes; assert --last, --since, failures-only, and JSON results.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/dreamLogCommand.ts"
+          ]
+        },
+        {
+          "line": 26,
+          "name": "exports runDreamLogCommand with dream log markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed run records with different dates and outcomes; assert --last, --since, failures-only, and JSON results.",
+          "productionModules": [
+            "src/lib/dreamLogCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/dream-report-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires dream report to runDreamReportCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Generate an HTML report from fixed run records and inspect exact rendered metrics and escaped text.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/dreamReport.ts"
+          ]
+        },
+        {
+          "line": 24,
+          "name": "exports runDreamReportCommand with dream report markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Generate an HTML report from fixed run records and inspect exact rendered metrics and escaped text.",
+          "productionModules": [
+            "src/lib/dreamReport.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/dream-run-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires bare dream and dream run to runDreamCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Use isolated dream state and a stubbed LLM HTTP boundary; assert lock/window gates, persisted findings, and emitted report.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/dreamCommand.ts"
+          ]
+        },
+        {
+          "line": 29,
+          "name": "exports runDreamCommand with dream cycle markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Use isolated dream state and a stubbed LLM HTTP boundary; assert lock/window gates, persisted findings, and emitted report.",
+          "productionModules": [
+            "src/lib/dreamCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/export-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires export parent, vault, and project via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Export an isolated project or vault and read output files to assert records, archived filters, and audit inclusion.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/exportCommand.ts"
+          ]
+        },
+        {
+          "line": 24,
+          "name": "exports export handlers with cleanup-safe markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Export an isolated project or vault and read output files to assert records, archived filters, and audit inclusion.",
+          "productionModules": [
+            "src/lib/exportCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/fsearch-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires fsearch to runFsearchCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed scoped memories and assert actual ranked IDs, scope filtering, and limit in public command output.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/fsearchCommand.ts"
+          ]
+        },
+        {
+          "line": 24,
+          "name": "exports runFsearchCommand with federated and output markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed scoped memories and assert actual ranked IDs, scope filtering, and limit in public command output.",
+          "productionModules": [
+            "src/lib/fsearchCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/graph-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires graph to runGraphCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed linked and orphaned memories; assert literal graph nodes, edges, counts, and empty output.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/graphCommand.ts"
+          ]
+        },
+        {
+          "line": 22,
+          "name": "exports runGraphCommand with graph markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed linked and orphaned memories; assert literal graph nodes, edges, counts, and empty output.",
+          "productionModules": [
+            "src/lib/graphCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/helper-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 7,
+          "name": "declares helper as a parent container with generate subcommand handler",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command. Duplicates source checks in the corresponding leaf command-handler files.",
+          "action": "Delete duplicate marker assertions after replacing them with exact runtime parent/child path checks.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        },
+        {
+          "line": 21,
+          "name": "has no parent action between helper declaration and generate subcommand",
+          "classification": "COUPLED",
+          "evidence": "Slices concatenated CLI source by variable spelling/whitespace and asserts absence of .action; registration semantics are not executed.",
+          "action": "Run the bare parent command and its --help form; assert literal child commands, usage, and exit status.",
+          "productionModules": []
+        }
+      ]
+    },
+    {
+      "path": "src/test/helper-generate-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires helper generate to runHelperGenerateCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Generate into a temporary directory and inspect usable helper exports plus the emitted path.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/helperGenerateCommand.ts"
+          ]
+        },
+        {
+          "line": 24,
+          "name": "exports runHelperGenerateCommand with helper generate markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Generate into a temporary directory and inspect usable helper exports plus the emitted path.",
+          "productionModules": [
+            "src/lib/helperGenerateCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/history-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires history to runHistoryCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed memory audit entries and assert exact chronological output and limit for the requested memory.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/historyCommand.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "exports runHistoryCommand with history markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed memory audit entries and assert exact chronological output and limit for the requested memory.",
+          "productionModules": [
+            "src/lib/historyCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/hybrid-search-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires hybrid-search to runHybridSearchCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Stub only embeddings HTTP; assert ranked seeded memory IDs, mode, limits, and empty results.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/hybridSearchCommand.ts"
+          ]
+        },
+        {
+          "line": 27,
+          "name": "exports runHybridSearchCommand with federated and local hybrid markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Stub only embeddings HTTP; assert ranked seeded memory IDs, mode, limits, and empty results.",
+          "productionModules": [
+            "src/lib/hybridSearchCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/import-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires parent import to runImportCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Import concrete JSON/CSV data; read back mapped rows and assert malformed mapping errors.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/importCommand.ts"
+          ]
+        },
+        {
+          "line": 25,
+          "name": "exports runImportCommand with validation and import markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Import concrete JSON/CSV data; read back mapped rows and assert malformed mapping errors.",
+          "productionModules": [
+            "src/lib/importCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/import-project-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires import project to runImportProjectCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Import a real bundle, reopen the database, and assert project identity, memories, conflict strategy, and invalid-strategy errors.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/importProjectCommand.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "exports runImportProjectCommand with cleanup-safe import markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Import a real bundle, reopen the database, and assert project identity, memories, conflict strategy, and invalid-strategy errors.",
+          "productionModules": [
+            "src/lib/importProjectCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/ingest-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires ingest to runIngestCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Ingest a concrete temporary text file and assert persisted content, attachment listing, and missing-file error.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/ingestCommand.ts"
+          ]
+        },
+        {
+          "line": 25,
+          "name": "exports runIngestCommand with list-attachments and file branches",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Ingest a concrete temporary text file and assert persisted content, attachment listing, and missing-file error.",
+          "productionModules": [
+            "src/lib/ingestCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/init-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 7,
+          "name": "wires init options, project registration, and IDE hooks",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Run init in a temporary directory and inspect identity, registration, and IDE hook artifacts.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/lens-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires lens to runLensCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed memories with differing categories/tags and assert exact selected IDs for AND and OR filters.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/lensCommand.ts"
+          ]
+        },
+        {
+          "line": 26,
+          "name": "exports runLensCommand with lens markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed memories with differing categories/tags and assert exact selected IDs for AND and OR filters.",
+          "productionModules": [
+            "src/lib/lensCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/links-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires links to runLinksCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed outgoing links and backlinks; invoke links and assert exact source/target IDs and missing-memory error.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/linksCommand.ts"
+          ]
+        },
+        {
+          "line": 22,
+          "name": "exports runLinksCommand with links markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed outgoing links and backlinks; invoke links and assert exact source/target IDs and missing-memory error.",
+          "productionModules": [
+            "src/lib/linksCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/list-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires list to runListCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed multiple categories/scopes and assert exact returned IDs and filtering in CLI JSON output.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/listCommand.ts"
+          ]
+        },
+        {
+          "line": 26,
+          "name": "exports runListCommand with list markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed multiple categories/scopes and assert exact returned IDs and filtering in CLI JSON output.",
+          "productionModules": [
+            "src/lib/listCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/machine-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 7,
+          "name": "declares machine as a parent container with show and migrate subcommands",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command. Duplicates source checks in the corresponding leaf command-handler files.",
+          "action": "Delete duplicate marker assertions after replacing them with exact runtime parent/child path checks.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "has no parent action between machine declaration and first leaf command",
+          "classification": "COUPLED",
+          "evidence": "Slices concatenated CLI source by variable spelling/whitespace and asserts absence of .action; registration semantics are not executed.",
+          "action": "Run the bare parent command and its --help form; assert literal child commands, usage, and exit status.",
+          "productionModules": []
+        }
+      ]
+    },
+    {
+      "path": "src/test/machine-show-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 7,
+          "name": "wires machine show subcommand for local machine.json (machineId, roots, remote for network)",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Write an isolated machine.json and assert the public machine show JSON values.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/maintain-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires maintain to runMaintainCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed stale and active memories and assert actual maintenance outcomes, report counts, and dry-run nonmutation.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/maintainCommand.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "exports runMaintainCommand with maintain markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed stale and active memories and assert actual maintenance outcomes, report counts, and dry-run nonmutation.",
+          "productionModules": [
+            "src/lib/maintainCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/migrate-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires migrate to runMigrateCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Migrate a temporary project and reopen destination storage to verify identity, records, and preserved source on failure.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/migrateCommand.ts"
+          ]
+        },
+        {
+          "line": 25,
+          "name": "exports runMigrateCommand with migrate markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Migrate a temporary project and reopen destination storage to verify identity, records, and preserved source on failure.",
+          "productionModules": [
+            "src/lib/migrateCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/migrate-db-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires migrate-db to runMigrateDbCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed a legacy store, run migration twice, and assert central records and no duplicate rows.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/migrateDbCommand.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "exports runMigrateDbCommand with migrate-db markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed a legacy store, run migration twice, and assert central records and no duplicate rows.",
+          "productionModules": [
+            "src/lib/migrateDbCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/pref-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires pref subcommands to handlers via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Set, get, and delete a preference in an isolated database and assert persisted values and unknown-key feedback.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/prefCommand.ts"
+          ]
+        },
+        {
+          "line": 35,
+          "name": "exports pref handlers with preference markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Set, get, and delete a preference in an isolated database and assert persisted values and unknown-key feedback.",
+          "productionModules": [
+            "src/lib/prefCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/projects-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires projects to runProjectsCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed active and missing project paths; assert project listing and dry-run/prune effects.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/projectsCommand.ts"
+          ]
+        },
+        {
+          "line": 26,
+          "name": "exports runProjectsCommand with projects markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed active and missing project paths; assert project listing and dry-run/prune effects.",
+          "productionModules": [
+            "src/lib/projectsCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/read-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires read to runReadCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Read a concrete stored memory by ID and path; assert exact text/JSON content and missing-memory error.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/readCommand.ts"
+          ]
+        },
+        {
+          "line": 22,
+          "name": "exports runReadCommand with DB-first and resolver fallback markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Read a concrete stored memory by ID and path; assert exact text/JSON content and missing-memory error.",
+          "productionModules": [
+            "src/lib/readCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/recall-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires recall to runRecallCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed relevant scoped memories and assert selected IDs, XML/text rendering, limits, and no-result output.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/recallCommand.ts"
+          ]
+        },
+        {
+          "line": 25,
+          "name": "exports runRecallCommand with federated and legacy audit markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed relevant scoped memories and assert selected IDs, XML/text rendering, limits, and no-result output.",
+          "productionModules": [
+            "src/lib/recallCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/reflect-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires reflect to runReflectCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Record a reflection through the public command and read back confidence changes, relationships, and report values.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/reflectCommand.ts"
+          ]
+        },
+        {
+          "line": 26,
+          "name": "exports runReflectCommand with reflect markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Record a reflection through the public command and read back confidence changes, relationships, and report values.",
+          "productionModules": [
+            "src/lib/reflectCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/reindex-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires reindex to runReindexCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Reindex concrete stored memories, then query through the public search API and assert exact result IDs.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/reindexCommand.ts"
+          ]
+        },
+        {
+          "line": 21,
+          "name": "exports runReindexCommand with reindex markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Reindex concrete stored memories, then query through the public search API and assert exact result IDs.",
+          "productionModules": [
+            "src/lib/reindexCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/reindex-graph-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires reindex-graph to runReindexGraphCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Reindex linked concrete memories and assert the resulting graph edges and stats.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/reindexGraphCommand.ts"
+          ]
+        },
+        {
+          "line": 21,
+          "name": "exports runReindexGraphCommand with reindex-graph markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Reindex linked concrete memories and assert the resulting graph edges and stats.",
+          "productionModules": [
+            "src/lib/reindexGraphCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/reinforce-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires reinforce to runReinforceCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Reinforce a seeded memory and read back modified timestamps/feedback records; verify non-useful signals do not reset decay.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/reinforceCommand.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "exports runReinforceCommand with reinforce markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Reinforce a seeded memory and read back modified timestamps/feedback records; verify non-useful signals do not reset decay.",
+          "productionModules": [
+            "src/lib/reinforceCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/restore-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires restore to runRestoreCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Restore a real temporary backup, reopen it, and assert memories/projects plus invalid-backup failure.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/restoreCommand.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "exports runRestoreCommand with restore markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Restore a real temporary backup, reopen it, and assert memories/projects plus invalid-backup failure.",
+          "productionModules": [
+            "src/lib/restoreCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/sandbox-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 7,
+          "name": "declares sandbox as a parent container with leaf subcommand handlers",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command. Duplicates source checks in the corresponding leaf command-handler files.",
+          "action": "Delete duplicate marker assertions after replacing them with exact runtime parent/child path checks.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        },
+        {
+          "line": 33,
+          "name": "has no parent action between sandbox declaration and first leaf command",
+          "classification": "COUPLED",
+          "evidence": "Slices concatenated CLI source by variable spelling/whitespace and asserts absence of .action; registration semantics are not executed.",
+          "action": "Run the bare parent command and its --help form; assert literal child commands, usage, and exit status.",
+          "productionModules": []
+        }
+      ]
+    },
+    {
+      "path": "src/test/sandbox-start-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires sandbox start to runSandboxStartCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Start a sandbox with an isolated socket/database, use the real client to query it, and assert running status.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/sandboxStartCommand.ts"
+          ]
+        },
+        {
+          "line": 25,
+          "name": "exports runSandboxStartCommand with sandbox start markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Start a sandbox with an isolated socket/database, use the real client to query it, and assert running status.",
+          "productionModules": [
+            "src/lib/sandboxStartCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/sandbox-status-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires sandbox status to runSandboxStatusCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Inspect a real isolated sandbox running and stopped and assert JSON status and human output.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/sandboxStatusCommand.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "exports runSandboxStatusCommand with sandbox status markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Inspect a real isolated sandbox running and stopped and assert JSON status and human output.",
+          "productionModules": [
+            "src/lib/sandboxStatusCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/sandbox-stop-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires sandbox stop to runSandboxStopCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Stop a real isolated sandbox and assert its socket/process is gone plus second-stop result.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/sandboxStopCommand.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "exports runSandboxStopCommand with sandbox stop markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Stop a real isolated sandbox and assert its socket/process is gone plus second-stop result.",
+          "productionModules": [
+            "src/lib/sandboxStopCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/scan-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires scan to ensureMachineConfig, getMachineConfigPath, and scanProjects",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Create a temporary root with known project identities and assert registered paths and project IDs.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/projectScan.ts"
+          ]
+        },
+        {
+          "line": 33,
+          "name": "exports scanProjects with project discovery markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Create a temporary root with known project identities and assert registered paths and project IDs.",
+          "productionModules": [
+            "src/lib/projectScan.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/search-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires search to runSearchCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed distinct memories and assert exact query matches, scope filters, ordering, and no-result output.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/searchCommand.ts"
+          ]
+        },
+        {
+          "line": 26,
+          "name": "exports runSearchCommand with federated and default FTS markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed distinct memories and assert exact query matches, scope filters, ordering, and no-result output.",
+          "productionModules": [
+            "src/lib/searchCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/semantic-search-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires semantic-search to runSemanticSearchCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Stub embeddings HTTP only and assert seeded memory ranking through semantic-search.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/semanticSearchCommand.ts"
+          ]
+        },
+        {
+          "line": 25,
+          "name": "exports runSemanticSearchCommand with semantic-only and cleanup markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Stub embeddings HTTP only and assert seeded memory ranking through semantic-search.",
+          "productionModules": [
+            "src/lib/semanticSearchCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 7,
+          "name": "wires bare setup to runSetup and summary wizard paths",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Use isolated configuration/state and assert the public command output plus any resulting files.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-dream-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 7,
+          "name": "wires setup dream to runDreamSetup with the current directory",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Use isolated configuration/state and assert the public command output plus any resulting files.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-ides-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 7,
+          "name": "wires setup ides to interactive and --all IDE setup handlers",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Use isolated configuration/state and assert the public command output plus any resulting files.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-keys-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 7,
+          "name": "wires setup keys to the table UI (provider table, keychain actions)",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Use isolated configuration/state and assert the public command output plus any resulting files.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-models-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 7,
+          "name": "wires setup models to runModelsSetup with provider/model/validate options",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Use isolated configuration/state and assert the public command output plus any resulting files.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-preferences-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 7,
+          "name": "wires setup preferences to runPreferencesReview with readline cleanup",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Use isolated configuration/state and assert the public command output plus any resulting files.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-providers-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 7,
+          "name": "wires setup providers to runProvidersSetup",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Use isolated configuration/state and assert the public command output plus any resulting files.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-remote-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires bare setup remote to runSetupRemoteCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Use isolated configuration/state and assert the public command output plus any resulting files.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/setupRemoteCommand.ts"
+          ]
+        },
+        {
+          "line": 22,
+          "name": "exports runSetupRemoteCommand with setup-remote markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Invoke the public handler with isolated state and assert output, persisted changes, and errors.",
+          "productionModules": [
+            "src/lib/setupRemoteCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-remote-doctor-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 10,
+          "name": "documents `gnosys setup remote doctor --ingest` for Windows / manual timer users",
+          "classification": "COUPLED",
+          "evidence": "Checks the doctor command string in syncIngestSystemd.ts and an unrelated global doctor import; never invokes setup remote doctor.",
+          "action": "Generate the platform timer artifact and assert its usable command, then run setup remote doctor --help to prove its actual command path.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/syncIngestSystemd.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-remote-pull-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires setup remote pull to runSetupRemotePullCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Synchronize two isolated stores and assert pulled records, conflict policy, report counts, and idempotency.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/setupRemotePullCommand.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "exports runSetupRemotePullCommand with pull markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Synchronize two isolated stores and assert pulled records, conflict policy, report counts, and idempotency.",
+          "productionModules": [
+            "src/lib/setupRemotePullCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-remote-push-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires setup remote push to runSetupRemotePushCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Synchronize two isolated stores and assert remote records, conflict policy, report counts, and idempotency.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/setupRemotePushCommand.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "exports runSetupRemotePushCommand with push markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Synchronize two isolated stores and assert remote records, conflict policy, report counts, and idempotency.",
+          "productionModules": [
+            "src/lib/setupRemotePushCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-remote-resolve-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires setup remote resolve to runSetupRemoteResolveCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Create a real local/remote conflict and assert the selected version is persisted on both sides.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/setupRemoteResolveCommand.ts"
+          ]
+        },
+        {
+          "line": 22,
+          "name": "exports runSetupRemoteResolveCommand with resolve markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Create a real local/remote conflict and assert the selected version is persisted on both sides.",
+          "productionModules": [
+            "src/lib/setupRemoteResolveCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-remote-status-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires setup remote status to runSetupRemoteStatusCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Set up isolated local/remote stores with conflicts and assert exact status JSON and hints.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/setupRemoteStatusCommand.ts"
+          ]
+        },
+        {
+          "line": 22,
+          "name": "exports runSetupRemoteStatusCommand with remote status markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Set up isolated local/remote stores with conflicts and assert exact status JSON and hints.",
+          "productionModules": [
+            "src/lib/setupRemoteStatusCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-remote-sync-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires setup remote sync to runSetupRemoteSyncCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Sync isolated local/remote stores and assert each side, conflicts, and automatic-mode exit behavior.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/setupRemoteSyncCommand.ts"
+          ]
+        },
+        {
+          "line": 24,
+          "name": "exports runSetupRemoteSyncCommand with sync markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Sync isolated local/remote stores and assert each side, conflicts, and automatic-mode exit behavior.",
+          "productionModules": [
+            "src/lib/setupRemoteSyncCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-remote-timer-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires setup remote timer to runSyncIngestTimerCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Run timer command with only OS service boundary replaced and inspect emitted service/plist arguments and status.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/syncIngestTimerCommand.ts"
+          ]
+        },
+        {
+          "line": 25,
+          "name": "exports runSyncIngestTimerCommand with install/uninstall/status paths",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Run timer command with only OS service boundary replaced and inspect emitted service/plist arguments and status.",
+          "productionModules": [
+            "src/lib/syncIngestTimerCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-routing-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 7,
+          "name": "wires setup routing to runRoutingSetup with readline cleanup",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Use isolated configuration/state and assert the public command output plus any resulting files.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/setup-sync-projects-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires setup sync-projects to runSetupSyncProjectsCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Run against temporary registered project directories and assert identity and agent-rule file results.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/setupSyncProjectsCommand.ts"
+          ]
+        },
+        {
+          "line": 22,
+          "name": "exports runSetupSyncProjectsCommand with sync-projects operational markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Run against temporary registered project directories and assert identity and agent-rule file results.",
+          "productionModules": [
+            "src/lib/setupSyncProjectsCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/stale-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires stale to runStaleCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Freeze time, seed reviewed and modified dates, and assert exact selected memories and order at the cutoff.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/staleCommand.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "exports runStaleCommand with stale markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Freeze time, seed reviewed and modified dates, and assert exact selected memories and order at the cutoff.",
+          "productionModules": [
+            "src/lib/staleCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/stats-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires stats to runStatsCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed mixed project/user/global memories and assert literal category/status/project counts.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/statsCommand.ts"
+          ]
+        },
+        {
+          "line": 24,
+          "name": "exports runStatsCommand with stats markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed mixed project/user/global memories and assert literal category/status/project counts.",
+          "productionModules": [
+            "src/lib/statsCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/status-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 10,
+          "name": "wires status to runStatusCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Run each requested status view on isolated populated state and assert exact JSON findings and generated report content.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/statusCommand.ts"
+          ]
+        },
+        {
+          "line": 24,
+          "name": "exports runStatusCommand with status markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Run each requested status view on isolated populated state and assert exact JSON findings and generated report content.",
+          "productionModules": [
+            "src/lib/statusCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/stores-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 7,
+          "name": "wires stores to runStoresCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Configure isolated stores and assert rendered paths, layers, and writable permissions.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/sync-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires sync to runSyncCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Sync seeded memories into temporary agent files and assert generated sections and preservation of unrelated content.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/syncCommand.ts"
+          ]
+        },
+        {
+          "line": 24,
+          "name": "exports runSyncCommand with sync markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Sync seeded memories into temporary agent files and assert generated sections and preservation of unrelated content.",
+          "productionModules": [
+            "src/lib/syncCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/tags-add-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires tags-add to runTagsAddCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Add a tag through the command and read the registry; assert category membership and duplicate handling.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/tagsAddCommand.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "exports runTagsAddCommand with tags-add markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Add a tag through the command and read the registry; assert category membership and duplicate handling.",
+          "productionModules": [
+            "src/lib/tagsAddCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/tags-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires tags to runTagsCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Load a concrete registry and assert exact sorted tags in public output.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/tagsCommand.ts"
+          ]
+        },
+        {
+          "line": 22,
+          "name": "exports runTagsCommand with tags markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Load a concrete registry and assert exact sorted tags in public output.",
+          "productionModules": [
+            "src/lib/tagsCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/timeline-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires timeline to runTimelineCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Freeze time and seed known creation/modification dates; assert exact period grouping and project filtering.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/timelineCommand.ts"
+          ]
+        },
+        {
+          "line": 25,
+          "name": "exports runTimelineCommand with timeline markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Freeze time and seed known creation/modification dates; assert exact period grouping and project filtering.",
+          "productionModules": [
+            "src/lib/timelineCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/trace-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires trace to runTraceCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Trace a small concrete source directory and assert persisted function memories, relationships, and count output.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/traceCommand.ts"
+          ]
+        },
+        {
+          "line": 24,
+          "name": "exports runTraceCommand with trace markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Trace a small concrete source directory and assert persisted function memories, relationships, and count output.",
+          "productionModules": [
+            "src/lib/traceCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/traverse-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires traverse to runTraverseCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed a small directed graph and assert literal returned nodes for depth and relation filters.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/traverseCommand.ts"
+          ]
+        },
+        {
+          "line": 24,
+          "name": "exports runTraverseCommand with traverse markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed a small directed graph and assert literal returned nodes for depth and relation filters.",
+          "productionModules": [
+            "src/lib/traverseCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/update-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires update to runUpdateCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Update a stored memory, reopen it, and assert changed fields, cross-links, and unchanged unrelated fields.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/updateCommand.ts"
+          ]
+        },
+        {
+          "line": 28,
+          "name": "exports runUpdateCommand with update markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Update a stored memory, reopen it, and assert changed fields, cross-links, and unchanged unrelated fields.",
+          "productionModules": [
+            "src/lib/updateCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/update-status-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires update-status to runUpdateStatusCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Seed project status data and assert generated prompt plus unknown-project failure.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/updateStatusCommand.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "exports runUpdateStatusCommand with update-status markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Seed project status data and assert generated prompt plus unknown-project failure.",
+          "productionModules": [
+            "src/lib/updateStatusCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/upgrade-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 7,
+          "name": "registers upgrade options and helpers",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Replace the external package-manager process boundary only and assert command behavior, output, and sync decisions.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        },
+        {
+          "line": 21,
+          "name": "covers sync prompt and failure paths",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Replace the external package-manager process boundary only and assert command behavior, output, and sync decisions.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/web-add-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires web add to runWebAddCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Serve a local fixture page, invoke web add, and inspect generated Markdown/index plus unchanged-content behavior.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/webAddCommand.ts"
+          ]
+        },
+        {
+          "line": 26,
+          "name": "exports runWebAddCommand with web add markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Serve a local fixture page, invoke web add, and inspect generated Markdown/index plus unchanged-content behavior.",
+          "productionModules": [
+            "src/lib/webAddCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/web-build-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires web build to runWebBuildCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Build from a temporary content directory and inspect exact written Markdown/index/vector artifacts and JSON counts.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/webBuildCommand.ts"
+          ]
+        },
+        {
+          "line": 28,
+          "name": "exports runWebBuildCommand with web build markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Build from a temporary content directory and inspect exact written Markdown/index/vector artifacts and JSON counts.",
+          "productionModules": [
+            "src/lib/webBuildCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/web-build-index-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires web build-index to runWebBuildIndexCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Index concrete Markdown files and read generated JSON to assert documents, tokens, options, and errors.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/webBuildIndexCommand.ts"
+          ]
+        },
+        {
+          "line": 26,
+          "name": "exports runWebBuildIndexCommand with web build-index markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Index concrete Markdown files and read generated JSON to assert documents, tokens, options, and errors.",
+          "productionModules": [
+            "src/lib/webBuildIndexCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/web-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 7,
+          "name": "declares web as a parent container with leaf subcommand handlers",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command. Duplicates source checks in the corresponding leaf command-handler files.",
+          "action": "Delete duplicate marker assertions after replacing them with exact runtime parent/child path checks.",
+          "productionModules": [
+            "src/cli.ts"
+          ]
+        },
+        {
+          "line": 63,
+          "name": "has no parent action between web declaration and first leaf command",
+          "classification": "COUPLED",
+          "evidence": "Slices concatenated CLI source by variable spelling/whitespace and asserts absence of .action; registration semantics are not executed.",
+          "action": "Run the bare parent command and its --help form; assert literal child commands, usage, and exit status.",
+          "productionModules": []
+        }
+      ]
+    },
+    {
+      "path": "src/test/web-ingest-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires web ingest to runWebIngestCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Ingest a temporary content directory or local HTTP fixture and inspect generated Markdown and reported changes.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/webIngestCommand.ts"
+          ]
+        },
+        {
+          "line": 29,
+          "name": "exports runWebIngestCommand with web ingest markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Ingest a temporary content directory or local HTTP fixture and inspect generated Markdown and reported changes.",
+          "productionModules": [
+            "src/lib/webIngestCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/web-init-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires web init to runWebInitCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Invoke non-interactive init in a temporary directory; inspect created config/output directory and emitted guidance.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/webInitCommand.ts"
+          ]
+        },
+        {
+          "line": 27,
+          "name": "exports runWebInitCommand with web init markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Invoke non-interactive init in a temporary directory; inspect created config/output directory and emitted guidance.",
+          "productionModules": [
+            "src/lib/webInitCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/web-remove-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires web remove to runWebRemoveCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Remove one temporary knowledge file and inspect rebuilt index; assert traversal attempts preserve outside files.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/webRemoveCommand.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "exports runWebRemoveCommand with web remove markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Remove one temporary knowledge file and inspect rebuilt index; assert traversal attempts preserve outside files.",
+          "productionModules": [
+            "src/lib/webRemoveCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/web-status-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires web status to runWebStatusCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Create concrete knowledge, index, and vector files; assert exact public counts and missing/corrupt-file results.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/webStatusCommand.ts"
+          ]
+        },
+        {
+          "line": 23,
+          "name": "exports runWebStatusCommand with web status markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Create concrete knowledge, index, and vector files; assert exact public counts and missing/corrupt-file results.",
+          "productionModules": [
+            "src/lib/webStatusCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/web-update-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires web update to runWebUpdateCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Update a temporary source/file and inspect generated content/index; assert traversal attempts preserve outside files.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/webUpdateCommand.ts"
+          ]
+        },
+        {
+          "line": 25,
+          "name": "exports runWebUpdateCommand with web update markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Update a temporary source/file and inspect generated content/index; assert traversal attempts preserve outside files.",
+          "productionModules": [
+            "src/lib/webUpdateCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/webVectors-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 148,
+          "name": "builds vectors for a valid embeddings provider and reports stats in JSON",
+          "classification": "COUPLED",
+          "evidence": "Calls the real handler but mocks all index/vector generation and writes; fixture-derived vectors and internal call arguments cannot prove vectors were built.",
+          "action": "Use concrete Markdown/config and stub only embedding HTTP; inspect real vector/index files and JSON stats.",
+          "productionModules": [
+            "src/lib/webBuildIndexCommand.ts"
+          ]
+        },
+        {
+          "line": 171,
+          "name": "rejects an invalid embeddings provider before writing output",
+          "classification": "STRONG",
+          "evidence": "Real public handler validates bad-provider and emits the literal invalid-provider message with exit code 1 before writes.",
+          "action": "Keep validation behavior; replace mocked internal writers with real temporary output and assert no artifacts.",
+          "productionModules": [
+            "src/lib/webBuildIndexCommand.ts"
+          ]
+        },
+        {
+          "line": 184,
+          "name": "does not build vectors when --embeddings is absent",
+          "classification": "WEAK",
+          "evidence": "Only asserts no mocked buildVectors call and an absent vectors field; any otherwise broken successful JSON response without vectors passes.",
+          "action": "Assert exact successful index summary and a real written searchable index while the vector artifact stays absent.",
+          "productionModules": [
+            "src/lib/webBuildIndexCommand.ts"
+          ],
+          "mutationRequired": "Mutate the asserted public output or omit required index persistence; verify original assertion survives."
+        },
+        {
+          "line": 194,
+          "name": "generates and attaches expansions by default when a provider resolves",
+          "classification": "COUPLED",
+          "evidence": "Stubs generateExpansions and attachExpansions, then asserts writeIndex received the same prebuilt expanded fixture; no artifact is written.",
+          "action": "Stub only LLM HTTP and assert real persisted v2 expansions and search behavior.",
+          "productionModules": [
+            "src/lib/webBuildIndexCommand.ts"
+          ]
+        },
+        {
+          "line": 210,
+          "name": "honors --no-expansions and writes a v1 index",
+          "classification": "COUPLED",
+          "evidence": "Mocks index building/writing; checks internal provider/generation calls are absent and the fixture is passed to writeIndex.",
+          "action": "Build a real index with expansions disabled and assert v1 JSON and document search results.",
+          "productionModules": [
+            "src/lib/webBuildIndexCommand.ts"
+          ]
+        },
+        {
+          "line": 221,
+          "name": "skips expansions without crashing when no LLM provider is resolvable",
+          "classification": "COUPLED",
+          "evidence": "Throws from mocked getLLMProvider and asserts a mocked write receives the fixture; no actual index can be observed.",
+          "action": "Use config with unavailable provider and assert a real v1 index remains usable plus concrete success output.",
+          "productionModules": [
+            "src/lib/webBuildIndexCommand.ts"
+          ]
+        },
+        {
+          "line": 236,
+          "name": "threads vector options through the full build command",
+          "classification": "COUPLED",
+          "evidence": "Asserts internal ingest/vector arguments and reports stats from a mocked vector fixture; cannot detect broken real ingestion, embedding, or persistence.",
+          "action": "Run the full build on local fixture content with only HTTP boundaries stubbed and inspect Markdown/index/vector files.",
+          "productionModules": [
+            "src/lib/webBuildCommand.ts"
+          ]
+        },
+        {
+          "line": 264,
+          "name": "skips index and vector generation during dry runs",
+          "classification": "COUPLED",
+          "evidence": "Checks mocked ingestion received dryRun and mocked writers were not called; does not observe whether real content or files changed.",
+          "action": "Snapshot concrete file bytes before and after dry-run, assert literal planned counts and unchanged artifacts.",
+          "productionModules": [
+            "src/lib/webBuildCommand.ts"
+          ]
+        },
+        {
+          "line": 285,
+          "name": "reports vector model, dimensions, count, and size in text and JSON output",
+          "classification": "STRONG",
+          "evidence": "Creates a real vectors JSON file and asserts real public text/JSON contains literal model, dimensions, count, and generation date.",
+          "action": "Keep the real filesystem/output check; strengthen byte-size to an exact expected value.",
+          "productionModules": [
+            "src/lib/webStatusCommand.ts"
+          ]
+        },
+        {
+          "line": 314,
+          "name": "reports a missing vectors file with a build hint",
+          "classification": "STRONG",
+          "evidence": "Real handler reads a directory without vectors and returns the exact build hint plus JSON {exists:false}.",
+          "action": "Keep; replace mocked configuration with a temporary real config when consolidating the suite.",
+          "productionModules": [
+            "src/lib/webStatusCommand.ts"
+          ]
+        },
+        {
+          "line": 323,
+          "name": "reports corrupt vector JSON as present with size only",
+          "classification": "WEAK",
+          "evidence": "Real handler reads corrupt JSON but only checks positive size/existence and absent fields; an incorrect positive byte count survives.",
+          "action": "Assert complete vectors output equals {exists:true,size:9} for the literal {not-json input.",
+          "productionModules": [
+            "src/lib/webStatusCommand.ts"
+          ],
+          "mutationRequired": "Mutate the asserted public output or omit required index persistence; verify original assertion survives."
+        },
+        {
+          "line": 337,
+          "name": "keeps the init wizard non-interactive while mentioning the embeddings option",
+          "classification": "COUPLED",
+          "evidence": "Reads webInitCommand.ts as text for embeddings-tip/docs substrings; never verifies non-interactive init claimed in the test name.",
+          "action": "Run non-interactive init in a temporary directory and assert config/artifacts plus emitted tips.",
+          "productionModules": [
+            "src/lib/webInitCommand.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/test/working-set-command-handler.test.ts",
+      "tests": [
+        {
+          "line": 13,
+          "name": "wires working-set to runWorkingSetCommand via dynamic import",
+          "classification": "COUPLED",
+          "evidence": "Reads concatenated CLI source and asserts spelling of registrations/options/imports; never parses or invokes the claimed command.",
+          "action": "Replace with runtime CLI command-path/help/argument checks and behavioral invocation. Freeze time and seed project records around the window boundary; assert literal returned IDs and ordering.",
+          "productionModules": [
+            "src/cli.ts",
+            "src/lib/workingSetCommand.ts"
+          ]
+        },
+        {
+          "line": 24,
+          "name": "exports runWorkingSetCommand with working-set markers",
+          "classification": "COUPLED",
+          "evidence": "Reads production source as text and asserts handler/import/branch markers; never executes the claimed behavior.",
+          "action": "Replace source markers. Freeze time and seed project records around the window boundary; assert literal returned IDs and ordering.",
+          "productionModules": [
+            "src/lib/workingSetCommand.ts"
+          ]
+        }
+      ]
+    }
+  ],
+  "counts": {
+    "COUPLED": 184,
+    "WEAK": 3,
+    "STRONG": 3
+  },
+  "fileCount": 96,
+  "testCount": 190
+}

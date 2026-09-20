@@ -1,0 +1,82 @@
+[
+  {
+    "id": "web-index-write",
+    "file": "src/lib/webBuildIndexCommand.ts",
+    "search": "await writeIndex(index, outputPath);",
+    "replace": "void outputPath;",
+    "description": "Report successful index creation without writing the artifact.",
+    "tests": [
+      "src/test/webVectors-command-handler.test.ts"
+    ]
+  },
+  {
+    "id": "web-index-validation",
+    "file": "src/lib/webBuildIndexCommand.ts",
+    "search": "if (!VECTOR_PROVIDERS.has(normalized)) {",
+    "replace": "if (false) {",
+    "description": "Allow an invalid embedding provider to bypass validation.",
+    "tests": [
+      "src/test/webVectors-command-handler.test.ts"
+    ]
+  },
+  {
+    "id": "web-build-write",
+    "file": "src/lib/webBuildCommand.ts",
+    "search": "await writeIndex(index, indexPath);",
+    "replace": "void indexPath;",
+    "description": "Skip writing the full-build search index.",
+    "tests": [
+      "src/test/webVectors-command-handler.test.ts"
+    ]
+  },
+  {
+    "id": "web-dry-run",
+    "file": "src/lib/webBuildCommand.ts",
+    "search": "if (!opts.dryRun) {",
+    "replace": "if (true) {",
+    "description": "Write generated artifacts during a requested dry run.",
+    "tests": [
+      "src/test/webVectors-command-handler.test.ts"
+    ]
+  },
+  {
+    "id": "web-status-count",
+    "file": "src/lib/webStatusCommand.ts",
+    "search": "count: Object.keys(vectorMap).length,",
+    "replace": "count: Object.keys(vectorMap).length + 1,",
+    "description": "Report an incorrect vector document count.",
+    "tests": [
+      "src/test/webVectors-command-handler.test.ts"
+    ]
+  },
+  {
+    "id": "web-status-missing",
+    "file": "src/lib/webStatusCommand.ts",
+    "search": "let vectorsInfo: VectorsInfo = { exists: false };",
+    "replace": "let vectorsInfo: VectorsInfo = { exists: true };",
+    "description": "Report nonexistent vector artifacts as present.",
+    "tests": [
+      "src/test/webVectors-command-handler.test.ts"
+    ]
+  },
+  {
+    "id": "web-corrupt-size",
+    "file": "src/lib/webStatusCommand.ts",
+    "search": "vectorsInfo = { exists: true, size: vectorsStat.size };",
+    "replace": "vectorsInfo = { exists: true, size: vectorsStat.size + 1 };",
+    "description": "Report an incorrect corrupt-vector byte size.",
+    "tests": [
+      "src/test/webVectors-command-handler.test.ts"
+    ]
+  },
+  {
+    "id": "web-init-write",
+    "file": "src/lib/webInitCommand.ts",
+    "search": "if (!config.web) {",
+    "replace": "if (false) {",
+    "description": "Skip persisting the new web configuration.",
+    "tests": [
+      "src/test/webVectors-command-handler.test.ts"
+    ]
+  }
+]
