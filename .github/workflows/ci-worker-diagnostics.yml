@@ -9,13 +9,18 @@ permissions:
 
 jobs:
   diagnose:
+    name: Node ${{ matrix.node-version }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ["24.18.1", "24.20.0", "24.21.0"]
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
-          node-version: 24.20.0
+          node-version: ${{ matrix.node-version }}
           cache: npm
       - name: Install dependencies
         run: npm ci
@@ -49,6 +54,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ci-worker-diagnostics
+          name: ci-worker-diagnostics-node-${{ matrix.node-version }}
           path: diagnostic-results/
           if-no-files-found: warn
