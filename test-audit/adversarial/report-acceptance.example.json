@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Example only. Root must supply reviewed immutable commits and actual run receipts. This file does not authorize application changes.",
+  "acceptancePath": "test-audit/adversarial/acceptance.json",
+  "acceptance": {
+    "applicationFixCommits": [
+      "<full 40-character first approved application commit>",
+      "<full 40-character next approved application commit>"
+    ],
+    "applicationFixRef": "<full 40-character reviewed combined application commit>",
+    "ordinaryRun": {
+      "path": "test-audit/evidence/after-repair-full-suite.json",
+      "sha256": "<SHA-256 of that exact JSON report>",
+      "applicationDigest": "<digest emitted by verifyApplicationAcceptance or the mutation runner for the accepted application>",
+      "testSourceHashes": {
+        "src/test/example.test.ts": "<SHA-256 of current test source bytes>"
+      }
+    }
+  },
+  "defectResolutionExamples": [
+    {
+      "kind": "fixed",
+      "cases": [
+        {
+          "file": "src/test/example.test.ts",
+          "name": "Exact full runtime name"
+        }
+      ],
+      "fixCommits": [
+        "<commit included in applicationFixCommits>"
+      ],
+      "ordinaryEvidence": "test-audit/evidence/after-repair-full-suite.json",
+      "faultMutationIds": [
+        "repair-direct-fault-id"
+      ]
+    },
+    {
+      "kind": "open",
+      "cases": [
+        {
+          "file": "src/test/example.test.ts",
+          "name": "Exact still-failing runtime name"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/evidence/new-defect-ordinary.json",
+      "reason": "Passing portions of the contract can be documented in the parent defect evidence; cases lists only remaining failures."
+    },
+    {
+      "kind": "deferred",
+      "cases": [
+        {
+          "file": "src/test/chunk-splitter.test.ts",
+          "name": "fnv1a D-G3-001: matches the multi-character 32-bit FNV-1a vector"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/evidence/D-G3-001.reproduced.json",
+      "reason": "Hash behavior repair deferred by the user."
+    }
+  ],
+  "mutationEvidenceRequirements": {
+    "kind": "fault-injection",
+    "stage": "after",
+    "applicationDigest": "<accepted application digest, on the record or containing result object>",
+    "before": "exitCode 0 and exact case passed",
+    "mutated": "positive integer exitCode, exact case failed, no runner error or unexpected-pass diagnostic",
+    "restored": "exitCode 0 and exact case passed",
+    "killedBy": "includes exact file/name",
+    "applicationRestored": true
+  },
+  "pipeline": [
+    "Generate current-inventory.json after changing tests.",
+    "Generate complete reconciliation.json with the same final suite path; it supplies validated literal and expanded runtime-name mapping.",
+    "Record acceptance.json ordinaryRun receipt and defect resolution objects.",
+    "Run node scripts/test-audit-ledger.mjs <same-suite-path> --strict.",
+    "Run node scripts/test-audit-report.mjs <same-suite-path> --strict."
+  ],
+  "notes": [
+    "No acceptance.json preserves the prior completed no-application-change audit behavior.",
+    "Application repair base is fixed to ec19554. Approved commits must have one parent and be ordered for patch application. Replaying only their application patches in a temporary index must match applicationFixRef.",
+    "Application bytes, tracked additions/deletions, untracked files, symbolic links and executable modes are checked against applicationFixRef.",
+    "Fixed cases must be ordinary tests in the current inventory/reconciliation, have a matching current suite/report/source receipt, and kill an actual post-repair fault. Inverse probes do not qualify.",
+    "Open/deferred cases must remain it.fails and have exact ordinary failed observations. They do not require temporary repairs and cannot populate a PROTECTED feature row.",
+    "With acceptance active, all changed/new ordinary case proofs require actual fault-injection pass/fail/pass; historical inverse probes cannot satisfy a renamed or partially repaired ordinary case."
+  ]
+}

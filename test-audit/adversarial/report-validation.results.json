@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "fixture": "/var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-report-validation-S6eWcT",
+  "checks": [
+    {
+      "name": "No acceptance manifest preserves completed legacy audit",
+      "status": "passed"
+    },
+    {
+      "name": "Listed repair patches reproduce exact accepted application tree",
+      "status": "passed"
+    },
+    {
+      "name": "Unlisted commit in an already approved file is rejected",
+      "status": "passed"
+    },
+    {
+      "name": "Two explicitly approved application commits are accepted",
+      "status": "passed"
+    },
+    {
+      "name": "Uncommitted bytes inside an approved file are rejected",
+      "status": "passed"
+    },
+    {
+      "name": "Uncommitted executable mode is rejected",
+      "status": "passed"
+    },
+    {
+      "name": "Untracked application file is rejected",
+      "status": "passed"
+    },
+    {
+      "name": "Fixed case accepts real ordinary and direct fault pass/fail/pass",
+      "status": "passed"
+    },
+    {
+      "name": "CI fault cannot satisfy an application fixed-case direct fault",
+      "status": "passed"
+    },
+    {
+      "name": "Inverse repair probe cannot satisfy a fixed-case direct fault",
+      "status": "passed"
+    },
+    {
+      "name": "A different before-case pass cannot satisfy the repaired case",
+      "status": "passed"
+    },
+    {
+      "name": "Stale ordinary suite receipt is rejected",
+      "status": "passed"
+    },
+    {
+      "name": "Strict ledger and report accept fixed defect while preserving original count",
+      "status": "passed"
+    },
+    {
+      "name": "Strict ledger exits nonzero for inverse-only fixed-case proof",
+      "status": "passed"
+    },
+    {
+      "name": "Ordinary partial-repair case outside open.cases cannot use inverse proof",
+      "status": "passed"
+    },
+    {
+      "name": "CI guard fault satisfies ordinary proof and stays outside application score",
+      "status": "passed"
+    },
+    {
+      "name": "Expanded loop names map to one current ordinary declaration",
+      "status": "passed"
+    },
+    {
+      "name": "Each expanded loop case needs its own failed fault observation",
+      "status": "passed"
+    },
+    {
+      "name": "New open xfail needs ordinary failure without inverse repair credit",
+      "status": "passed"
+    },
+    {
+      "name": "Strict ledger accepts new open case without a repair probe",
+      "status": "passed"
+    },
+    {
+      "name": "D-G3-001 cannot silently leave deferred status",
+      "status": "passed"
+    },
+    {
+      "name": "Explicit deferred reason and ordinary failure are accepted",
+      "status": "passed"
+    },
+    {
+      "name": "Report rejects successful feature protection from an xfail",
+      "status": "passed"
+    },
+    {
+      "name": "Known-defect feature row has zero successful behavior cases",
+      "status": "passed"
+    }
+  ],
+  "note": "Controlled synthetic repository checks; these are validator tests, not Gnosys defect proofs."
+}

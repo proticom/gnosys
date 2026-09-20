@@ -657,10 +657,3 @@ export async function configureFromPath(
 }
 
 export { machineStagingDir as stagingDirForMachine, clientPresencePath } from "./syncStaging.js";
-
-export const __test = {
-  matchesTypedPhrase,
-  detectClonedStagingPresence,
-  stagingDirForMachine: machineStagingDir,
-  clientPresencePath,
-};

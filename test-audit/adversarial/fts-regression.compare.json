@@ -1,0 +1,51 @@
+{
+  "temporaryDirectory": "/var/folders/mj/kr233fj93lz6plngmhzsxv5m0000gn/T/gnosys-fts-reopen-repro-ih8ecxnx",
+  "results": [
+    {
+      "ref": "a420e3b",
+      "commit": "a420e3b727c33a578aed2c089d72841f5a4441f9",
+      "exit": 0,
+      "observation": {
+        "initial": [
+          "reopen-repro-memory"
+        ],
+        "markerBefore": null,
+        "afterDrop": [
+          "reopen-repro-memory"
+        ],
+        "afterReopen": [
+          "reopen-repro-memory"
+        ],
+        "available": true,
+        "memoryContent": "Saffron restoration preserves this memory.",
+        "ftsExists": 0,
+        "ftsRows": null,
+        "userVersion": 5
+      },
+      "stderr": ""
+    },
+    {
+      "ref": "29a59b0",
+      "commit": "29a59b0b8ecdeb6e0796515d787aada530fe7335",
+      "exit": 0,
+      "observation": {
+        "initial": [
+          "reopen-repro-memory"
+        ],
+        "markerBefore": {
+          "value": "1"
+        },
+        "afterDrop": [
+          "reopen-repro-memory"
+        ],
+        "afterReopen": [],
+        "available": true,
+        "memoryContent": "Saffron restoration preserves this memory.",
+        "ftsExists": 1,
+        "ftsRows": 0,
+        "userVersion": 5
+      },
+      "stderr": ""
+    }
+  ]
+}

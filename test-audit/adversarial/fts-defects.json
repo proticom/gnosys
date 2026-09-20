@@ -1,0 +1,41 @@
+[
+  {
+    "id": "ADV-FTS-001",
+    "title": "Reopening after external FTS loss makes persisted memories unsearchable",
+    "module": "src/lib/db.ts",
+    "test": "src/test/fts-adversarial.test.ts",
+    "testName": "FTS duplicate attacks ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable",
+    "introducedBy": "29a59b0b8ecdeb6e0796515d787aada530fe7335",
+    "observedAt": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+    "expected": {
+      "memory": "saffron survives index loss",
+      "search": [
+        "fts-recovery"
+      ],
+      "version": 5
+    },
+    "actual": {
+      "memory": "saffron survives index loss",
+      "search": [],
+      "version": 5
+    },
+    "evidence": "Actual GnosysDB insert/search succeeds, raw separate SQLite drops the index, LIKE fallback still finds the record, then GnosysDB.reopen recreates an empty FTS table without repopulating it. Independent predecessor a420 versus29a comparison confirms this was introduced by29a.",
+    "reproduction": "node test-audit/adversarial/fts-routing-reproduce.mjs",
+    "evidenceFiles": [
+      "test-audit/adversarial/fts-ordinary.json",
+      "test-audit/adversarial/fts-ordinary.log",
+      "test-audit/adversarial/fts-regression.compare.json"
+    ],
+    "resolution": {
+      "kind": "open",
+      "cases": [
+        {
+          "file": "src/test/fts-adversarial.test.ts",
+          "name": "FTS duplicate attacks ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable"
+        }
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/fts-ordinary.json",
+      "reason": "New regression reported without application repair, as instructed."
+    }
+  }
+]

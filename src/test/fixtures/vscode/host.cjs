@@ -13,7 +13,10 @@ const vscode = {
     },
   },
   window: {
-    activeTextEditor: activeFile ? { document: { uri: { fsPath: activeFile } } } : undefined,
+    activeTextEditor: activeFile ? { document: {
+      uri: { fsPath: activeFile },
+      getText() { return fs.readFileSync(activeFile, "utf8"); },
+    } } : undefined,
     showWarningMessage(message) { result.warnings.push(message); },
     showInformationMessage(message) { result.information.push(message); },
     showErrorMessage(message) { result.errors.push(message); },

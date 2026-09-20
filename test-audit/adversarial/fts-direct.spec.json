@@ -1,0 +1,39 @@
+[
+  {
+    "id": "ADV-FTS-repeat-insert",
+    "description": "Remove INSERT trigger FTS replacement so repeated writes append index rows.",
+    "file": "src/lib/db.ts",
+    "search": "  DELETE FROM memories_fts WHERE id = new.id;\n",
+    "replace": "",
+    "tests": [
+      "src/test/fts-adversarial.test.ts",
+      "src/test/lifecycle-invariants.test.ts"
+    ],
+    "testName": "three writes yield one hit|writing the same memory twice",
+    "kind": "fault-injection"
+  },
+  {
+    "id": "ADV-FTS-skip-legacy-healing",
+    "description": "Skip legacy index repair on application open.",
+    "file": "src/lib/db.ts",
+    "search": "    this.healFtsIndex();\n",
+    "replace": "",
+    "tests": [
+      "src/test/fts-adversarial.test.ts"
+    ],
+    "testName": "opening a populated v5 database",
+    "kind": "fault-injection"
+  },
+  {
+    "id": "ADV-FTS-repeat-healing",
+    "description": "Rebuild already repaired FTS and overwrite its marker on every open.",
+    "file": "src/lib/db.ts",
+    "search": "  private healFtsIndex(): void {\n    const repaired = this.db.prepare(\"SELECT 1 FROM gnosys_meta WHERE key = ?\");\n    if (repaired.get(FTS_REPAIR_META_KEY)) return;\n\n    this.db.transaction(() => {\n      if (repaired.get(FTS_REPAIR_META_KEY)) return;\n      this.db.exec(`\n        DROP TRIGGER IF EXISTS memories_fts_ai;\n        DROP TRIGGER IF EXISTS memories_fts_ad;\n        DROP TRIGGER IF EXISTS memories_fts_au;\n      `);\n      this.db.exec(FTS_TRIGGERS_SQL);\n      this.db.exec(`\n        DELETE FROM memories_fts;\n        INSERT INTO memories_fts(id, title, category, tags, relevance, content, summary)\n        SELECT id, title, category, tags, relevance, content, summary FROM memories;\n      `);\n      this.db.prepare(\"INSERT INTO gnosys_meta (key, value, updated) VALUES (?, ?, ?)\")\n        .run(FTS_REPAIR_META_KEY, \"1\", new Date().toISOString());\n    }).immediate();\n  }\n",
+    "replace": "  private healFtsIndex(): void {\n    const repaired = this.db.prepare(\"SELECT 1 FROM gnosys_meta WHERE key = ?\");\n\n    this.db.transaction(() => {\n        this.db.exec(`\n        DROP TRIGGER IF EXISTS memories_fts_ai;\n        DROP TRIGGER IF EXISTS memories_fts_ad;\n        DROP TRIGGER IF EXISTS memories_fts_au;\n      `);\n      this.db.exec(FTS_TRIGGERS_SQL);\n      this.db.exec(`\n        DELETE FROM memories_fts;\n        INSERT INTO memories_fts(id, title, category, tags, relevance, content, summary)\n        SELECT id, title, category, tags, relevance, content, summary FROM memories;\n      `);\n      this.db.prepare(\"INSERT OR REPLACE INTO gnosys_meta (key, value, updated) VALUES (?, ?, ?)\")\n        .run(FTS_REPAIR_META_KEY, \"1\", new Date().toISOString());\n    }).immediate();\n  }\n",
+    "tests": [
+      "src/test/fts-adversarial.test.ts"
+    ],
+    "testName": "opening a populated v5 database",
+    "kind": "fault-injection"
+  }
+]

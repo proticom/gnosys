@@ -1,0 +1,18 @@
+{
+  "additionalTestsAmendments": [
+    {
+      "file": "src/test/lifecycle-invariants.test.ts",
+      "afterNames": [
+        "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result"
+      ],
+      "action": "added",
+      "afterClassification": "STRONG",
+      "defectId": "G2-D002",
+      "mutationIds": [
+        "ADV-FTS-repeat-insert"
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/fts-routing.f4-final.suite.json",
+      "evidence": "Removed it.fails after approved FTS fix. Two public syncMemoryToDb writes yield exactly one memory and one search hit. Direct INSERT-trigger fault kills this ordinary case and restoration passes. Historical inverse probe remains provenance only."
+    }
+  ]
+}

@@ -63,7 +63,8 @@ describe("VS Code extension public commands", () => {
   });
 
   it("reports a process launch failure to the editor", () => {
-    const result = run("gnosys.reinforceMemory", path.join(directory, "missing-project/.gnosys/memory.md"));
+    env.PATH = path.join(directory, "no-executables");
+    const result = run("gnosys.reinforceMemory", memoryFile);
     expect(result.warnings).toEqual([]);
     expect(result.information).toEqual([]);
     expect(result.errors).toEqual(["Reinforce failed: spawnSync npx ENOENT"]);
@@ -83,11 +84,13 @@ describe("VS Code extension public commands", () => {
     });
   });
 
-  it("D-VSC-003: passes shell syntax in a filename as literal text", () => {
-    run("gnosys.reinforceMemory", path.join(directory, ".gnosys/decisions/$(touch audit-injected).md"));
+  it.fails("D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename", () => {
+    const selected = path.join(directory, ".gnosys/decisions/$(touch audit-injected).md");
+    fs.copyFileSync(memoryFile, selected);
+    run("gnosys.reinforceMemory", selected);
     const calls = fs.readFileSync(path.join(directory, "invocations.jsonl"), "utf8").trim().split("\n").map((line) => JSON.parse(line));
-    expect(calls).toEqual([["gnosys", "reinforce", "decisions/$(touch audit-injected).md"]]);
     expect(fs.existsSync(path.join(directory, "audit-injected"))).toBe(false);
+    expect(calls).toEqual([["gnosys", "reinforce", "vscode-memory", "--signal", "useful"]]);
   });
 
   it("D-VSC-004: the dashboard action opens a command supported by the installed CLI", () => {

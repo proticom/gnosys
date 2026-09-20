@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "base": "ec1955434bbd43136d8bbf3b92ef8d696aa78a38",
+  "applicationFixRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+  "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+  "additionalTests": [
+    {
+      "file": "src/test/fts-adversarial.test.ts",
+      "afterNames": [
+        "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search"
+      ],
+      "action": "added",
+      "defectId": "G2-D002",
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "ADV-FTS-repeat-insert"
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/fts-routing.f4-final.suite.json",
+      "evidence": "Three writes leave one stored memory and exactly one ID in each of searchFts, discoverFts, public hybrid archive fallback and hybrid keyword results. Removing the INSERT-trigger replacement kills this case; restored application passes."
+    },
+    {
+      "file": "src/test/fts-adversarial.test.ts",
+      "afterNames": [
+        "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories"
+      ],
+      "action": "added",
+      "defectId": "G2-D002",
+      "afterClassification": "STRONG",
+      "mutationIds": [
+        "ADV-FTS-skip-legacy-healing",
+        "ADV-FTS-repeat-healing"
+      ],
+      "ordinaryEvidence": "test-audit/adversarial/fts-routing.f4-final.suite.json",
+      "evidence": "A raw native SQLite fixture contains three duplicate cobalt index rows and a separate quartz row. Opening via GnosysDB yields exactly one hit each and preserves both contents/schema version5. A second open leaves native data_version unchanged. Skipping repair and repeating repair each kill the case; both restored runs pass."
+    },
+    {
+      "file": "src/test/fts-adversarial.test.ts",
+      "afterNames": [
+        "FTS duplicate attacks ADV-FTS-001: reopening after external FTS loss keeps the existing memory searchable"
+      ],
+      "action": "expected_failure",
+      "defectId": "ADV-FTS-001",
+      "afterClassification": "STRONG",
+      "mutationIds": [],
+      "ordinaryEvidence": "test-audit/adversarial/fts-ordinary.json",
+      "evidence": "Ordinary construction, insert and search succeed. After raw native DROP TABLE, LIKE fallback still finds the memory; reopen preserves content but search becomes empty. Ordinary failure reproduced on approved f4b9135; no temporary repair or successful feature-protection claim."
+    },
+    {
+      "file": "src/test/routing-reset-adversarial.test.ts",
+      "afterNames": [
+        "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value"
+      ],
+      "action": "expected_failure",
+      "defectId": "DEF-G1-001",
+      "afterClassification": "STRONG",
+      "mutationIds": [],
+      "ordinaryEvidence": "test-audit/adversarial/routing-ordinary.json",
+      "evidence": "Actual runRoutingSetup readline interaction reports reset success, but persisted old taskModels remain. Unrelated values including llm and dream remain byte-identical after canonical JSON serialization. Ordinary failure confirms the reset defect; source whitespace preservation is not claimed."
+    },
+    {
+      "file": "src/test/routing-reset-adversarial.test.ts",
+      "afterNames": [
+        "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config"
+      ],
+      "action": "expected_failure",
+      "defectId": "DEF-G1-001",
+      "afterClassification": "STRONG",
+      "mutationIds": [],
+      "ordinaryEvidence": "test-audit/adversarial/routing-ordinary.json",
+      "evidence": "Actual runRoutingSetup readline interaction reports reset success, but persisted old taskModels remain. Unrelated values including llm and dream remain byte-identical after canonical JSON serialization. Ordinary failure confirms the reset defect; source whitespace preservation is not claimed."
+    }
+  ],
+  "verification": {
+    "suite": "test-audit/adversarial/fts-routing.f4-final.suite.json",
+    "passed": 14,
+    "failed": 0,
+    "expectedFailures": 5,
+    "ordinaryFailures": 5,
+    "mutationEvidence": "test-audit/adversarial/fts-direct.f4-final.results.json",
+    "faults": {
+      "tested": 3,
+      "killed": 3,
+      "survived": 0
+    },
+    "node": "22.17.1",
+    "typecheck": "passed",
+    "biome": "passed",
+    "applicationDiffFromApprovedRef": "empty",
+    "v584UpdateConfigDiff": "empty"
+  },
+  "limitations": [
+    "Archive search uses public hybridSearch semantic fallback over the central database. Standalone archive.db is outside this defect.",
+    "Routing preserves canonical serialized JSON values; raw source whitespace may change.",
+    "Open expected failures reproduce defects and do not establish successful feature protection."
+  ],
+  "files": {
+    "src/test/fts-adversarial.test.ts": "a5d9ba8e7eed35ab41c0bbdb6739f57ce261ba5f2c1b0a8287119850ec6143cb",
+    "src/test/routing-reset-adversarial.test.ts": "711201ca29e79a589417b5eaaa8f3cef9c7d1ff7004e4241f22dd78e0ef30259",
+    "src/test/setup-ui-summary.test.ts": "169124065c3f5c03f36b4d11b7755646112edb09c604a906e3b6ac076edd7084",
+    "src/test/lifecycle-invariants.test.ts": "10f32d8ff64a6f4814678d77810616652fe4f7082f232fae7f3436c64a97d983"
+  }
+}

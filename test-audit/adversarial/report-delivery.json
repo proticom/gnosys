@@ -1,0 +1,11 @@
+{
+  "files": {
+    "scripts/test-audit-ledger.mjs": "0da6f1ee692d940427e8bb60b08af373550d977cb1d69a195674d275165d63d1",
+    "scripts/test-audit-report.mjs": "9a7719fce14dfaec5bae775189d6dc9cac11a0b0a5b1102ab629aa2c94414532"
+  },
+  "validationChecks": 24,
+  "validation": "test-audit/adversarial/report-validation.results.json",
+  "shape": "test-audit/adversarial/report-acceptance.example.json",
+  "patch": "test-audit/adversarial/report-ci-amendment.patch",
+  "scope": "Incremental CI proof acceptance amendment. Application fixed-defect proofs still require fault-injection; CI faults stay outside application mutation score."
+}

@@ -108,14 +108,14 @@ describe("Phase C — settings panel (summary)", () => {
     expect(result.changed).toBe(false);
   });
 
-  it("marks an edited routing section after saving and reloading its config", async () => {
+  it.fails("marks an edited routing section after saving and reloading its config", async () => {
     config({ llm: { defaultProvider: "ollama" }, taskModels: { structuring: { provider: "xai", model: "grok-4.20" } } });
     const result = await wizard(["2", "4", "y", "done"]);
     expect(result.changed).toBe(true);
     const routingRows = result.text.split("\n").filter(line => line.includes(" 2   task routing"));
     expect(routingRows).toHaveLength(2);
     expect(routingRows[0]).toContain("mixed (xai, ollama)");
-    expect(routingRows[1]).toMatch(/mixed \(xai, ollama\)\s+✓/);
+    expect(routingRows[1]).toMatch(/all ollama\s+✓/);
   });
 
   it.fails("DEF-G1-001 reset routing clears persisted task overrides", async () => {

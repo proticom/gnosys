@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
+import { verifyDefectAcceptance } from "./test-audit-ledger.mjs";
 
 const read = (file) => JSON.parse(fs.readFileSync(file, "utf8"));
 const write = (file, value) => fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
@@ -16,6 +17,10 @@ const coverage = fs.existsSync("test-audit/feature-coverage.json") ? read("test-
 const completion = fs.existsSync("test-audit/completion.json") ? read("test-audit/completion.json") : { complete: false, checks: [], blockers: [] };
 const suitePath = process.argv[2] || reconciliation?.evidence.runtime || "test-audit/evidence/final-full-suite.json";
 const suite = read(suitePath);
+const acceptance = verifyDefectAcceptance({ records: ledger.experiments, runtimeRows: ledger.runtimeRows, suiteFile: suitePath });
+if (acceptance && (acceptance.manifestSha256 !== ledger.acceptance?.manifestSha256 || acceptance.defectsSha256 !== ledger.acceptance?.defectsSha256)) {
+  throw new Error("Regenerate the ledger after changing the acceptance manifest or defect resolutions");
+}
 if (reconciliation && path.resolve(suitePath) !== path.resolve(reconciliation.evidence.runtime)) {
   throw new Error("Report and reconciliation must use the same runtime evidence");
 }
@@ -28,8 +33,9 @@ const escape = (value) => String(value ?? "").replaceAll("|", "\\|").replaceAll(
 const link = (file) => `[${file}](${file})`;
 const expectedFailureCases = reconciliation?.currentDeclarations.filter((test) => /\bfails\b/.test(test.declaration))
   .flatMap((test) => test.runtimeCases.map((runtime) => ({ file: test.file, name: runtime.name }))) || [];
-const undocumentedFailures = expectedFailureCases.filter((test) => !defects.some((defect) => defect.test === test.file
-  && (defect.testNames || [defect.testName || defect.id]).some((name) => test.name.includes(name))));
+const undocumentedFailures = expectedFailureCases.filter((test) => !defects.some((defect) => acceptance
+  ? ["open", "deferred"].includes(defect.resolution?.kind) && defect.resolution.cases.some((entry) => entry.file === test.file && entry.name === test.name)
+  : defect.test === test.file && (defect.testNames || [defect.testName || defect.id]).some((name) => test.name.includes(name))));
 const expectedFailureKeys = new Set(expectedFailureCases.map((test) => JSON.stringify([test.file, test.name])));
 const externalActions = read("test-audit/reviews/external.after.json").tests;
 const caseKey = (test) => JSON.stringify([test.file, test.name]);
@@ -40,6 +46,8 @@ for (const action of externalActions.filter((action) => action.afterClassificati
 }
 const invalidFeatureReferences = coverage.flatMap((row) => (row.tests || []).filter((test) => !strongCaseKeys.has(caseKey(test)))
   .map((test) => ({ featureId: row.featureId, obligationKind: row.obligationKind, ...test })));
+const expectedFailuresClaimedProtected = acceptance ? coverage.filter((row) => row.status === "PROTECTED"
+  && row.tests?.some((test) => expectedFailureKeys.has(caseKey(test)))) : [];
 const featureSummary = features.map((feature) => {
   const rows = coverage.filter((row) => row.featureId === feature.id);
   const behaviorCases = new Set(rows.flatMap((row) => row.tests || []).map(caseKey).filter((key) => !expectedFailureKeys.has(key)));
@@ -55,12 +63,13 @@ const changedApplicationPaths = [...new Set([
   ...execFileSync("git", ["diff", "--name-only", previous.baseCommit, "--", ...applicationPaths], { encoding: "utf8" }).trim().split("\n"),
   ...execFileSync("git", ["ls-files", "--others", "--exclude-standard", "--", ...applicationPaths], { encoding: "utf8" }).trim().split("\n"),
 ].filter(Boolean))];
+const applicationAccepted = acceptance ? Object.values(acceptance.issues).every((rows) => rows.length === 0) : changedApplicationPaths.length === 0;
 const missingObligations = features.flatMap((feature) => Object.entries(feature.obligations).flatMap(([kind, obligations]) =>
   obligations.filter((obligation) => !coverage.some((row) => row.featureId === feature.id && row.obligationKind === kind && row.obligation === obligation))));
 const done = completion.complete && ledger.sourceCounts.pending === 0 && Object.values(ledger.issues).every((rows) => rows.length === 0)
   && reconciliation?.complete && reconciliation.allCurrentClassificationsStrong
   && suite.numFailedTests === 0 && suite.numPendingTests === 0 && !undocumentedFailures.length && !missingObligations.length
-  && !invalidFeatureReferences.length && !changedApplicationPaths.length;
+  && !invalidFeatureReferences.length && !expectedFailuresClaimedProtected.length && applicationAccepted;
 if (completion.complete && !done) throw new Error("Completion requested with unresolved evidence");
 const originalCount = ledger.sourceRows.length;
 const currentCount = current.files.reduce((sum, file) => sum + file.tests.length, 0);
@@ -78,7 +87,11 @@ const external = collection.test_cases_outside_vitest.map((test) => {
   return { ...test, afterClassification: action?.afterClassification || null, action: action?.action || "pending", mutationIds: action?.mutationIds || [] };
 });
 const unresolved = ledger.sourceCounts.pending;
-const verdict = `The baseline was green, but ${deficient} of ${originalCount} source test declarations failed the behavior standard in the reviewed classification ledger. Corrected tests expose ${defects.length} application defects, retained as expected failures because this audit changes no application code. The latest full suite passes ${latestFullSuite.passed} runtime cases with ${latestFullSuite.failed} unexpected failures and ${latestFullSuite.skipped} skipped tests. ${done ? `All test actions and mutation proofs are reconciled. The feature matrix identifies ${obligationStatusCounts.NO_STRONG_COVERAGE || 0} obligations with no Strong test protection.` : `The audit remains in progress: ${unresolved} original declarations still await final action records, and the feature mapping is not complete.`} See ${link("test-audit/ledger.json")} and ${link(suitePath)}.`;
+const defectCounts = Object.fromEntries(["fixed", "open", "deferred"].map((kind) => [kind, defects.filter((defect) => defect.resolution?.kind === kind).length]));
+const defectVerdict = acceptance
+  ? `The original test audit at ${acceptance.application.baseCommit} changed no application code. The current repair review records ${defectCounts.fixed} fixed, ${defectCounts.open} open and ${defectCounts.deferred} deferred defects. Approved application repairs and current case evidence are recorded in ${link("test-audit/adversarial/acceptance.json")}.`
+  : `Corrected tests expose ${defects.length} application defects, retained as expected failures because this audit changes no application code.`;
+const verdict = `The baseline was green, but ${deficient} of ${originalCount} source test declarations failed the behavior standard in the reviewed classification ledger. ${defectVerdict} The latest full suite passes ${latestFullSuite.passed} runtime cases with ${latestFullSuite.failed} unexpected failures and ${latestFullSuite.skipped} skipped tests. ${done ? `All test actions and mutation proofs are reconciled. The feature matrix identifies ${obligationStatusCounts.NO_STRONG_COVERAGE || 0} obligations with no Strong test protection.` : `The audit remains in progress: ${unresolved} original declarations still await final action records, and the feature mapping is not complete.`} See ${link("test-audit/ledger.json")} and ${link(suitePath)}.`;
 const totals = { before: beforeCounts, after: done ? Object.fromEntries(classes.map((name) => [name, reconciliation.counts.declarationClassifications[name] || 0])) : null };
 write("test-audit.json", {
   schemaVersion: 1, status: done ? "complete" : "in_progress", mode: "audit-and-fix", baseCommit: previous.baseCommit,
@@ -101,6 +114,9 @@ write("test-audit.json", {
   externalTests: external.map(({ id, name, classification, afterClassification, mutationIds }) => ({ id, name, beforeClassification: classification, afterClassification, mutationIds })),
   verification: completion.verification || [],
   blocked: completion.blockers, applicationCodeChanged: changedApplicationPaths.length > 0, changedApplicationPaths, defects,
+  ...(acceptance ? { defectCounts, applicationAcceptance: acceptance.application, acceptanceIssues: acceptance.issues,
+    originalAudit: { baseCommit: previous.baseCommit, completedCommit: acceptance.application.baseCommit, applicationCodeChanged: false },
+    expectedFailuresClaimedProtected } : {}),
 });
 const featureRows = features.flatMap((feature) => Object.entries(feature.obligations).flatMap(([kind, obligations]) => obligations.map((obligation) => {
   const matching = coverage.filter((row) => row.featureId === feature.id && row.obligationKind === kind && row.obligation === obligation);
@@ -111,7 +127,10 @@ const featureRows = features.flatMap((feature) => Object.entries(feature.obligat
 const mutationRows = ledger.experiments.map((record) => `| ${escape(record.id)} | ${escape(record.file)} | ${record.kind} | ${record.stage} | ${record.outcome} | ${record.killedBy?.length || 0} | ${record.evidence.map((file) => link(`test-audit/mutations/${file}`)).join(", ")} |`);
 const testRows = ledger.sourceRows.map((row) => `| ${escape(row.id)} | ${escape(row.name)} | ${row.beforeClassification} | ${row.action === "deleted" ? "Deleted" : row.afterClassification || "Pending"} | ${escape(row.evidence)}${row.structuralReason ? ` ${escape(row.structuralReason)}` : ""} | ${row.action}; ${row.mutationIds.map(escape).join(", ")} |`);
 const additionalRows = ledger.additions.map((row) => `| ${escape(row.file || "See runtime table")} | ${escape((row.afterNames || [row.name]).join("; "))} | Added | ${row.afterClassification || row.classification || "STRONG"} | ${escape(row.evidence || row.proof)} | ${row.action}; ${(row.mutationIds || []).map(escape).join(", ")} |`);
-const runtimeRows = ledger.runtimeRows.map((row) => `| ${escape(row.file)} | ${escape(row.name)} | ${row.classification} | ${row.status} | ${row.killedByProof ? "Killed recorded fault or inverse defect probe" : "See source review"} |`);
+const runtimeRows = ledger.runtimeRows.map((row) => `| ${escape(row.file)} | ${escape(row.name)} | ${row.classification} | ${row.status} | ${row.defectResolution
+  ? row.defectResolution === "fixed" ? row.killedByProof ? "Ordinary pass and direct fault proof" : "Missing direct fault proof"
+    : row.ordinaryDefectEvidence ? `Ordinary failure reproduced (${row.defectResolution}); no successful behavior claim` : "Missing ordinary failure reproduction"
+  : row.killedByProof ? "Killed recorded fault or inverse defect probe" : "See source review"} |`);
 const checklist = [
   [true, "Isolate the committed baseline on test-audit."],
   [true, "Run baseline Vitest, Docker, and CI scenarios."],
@@ -119,7 +138,7 @@ const checklist = [
   [unresolved === 0, "Complete all original test actions."],
   [ledger.issues.missingCaseKills.length === 0 && ledger.issues.missingSurvival.length === 0 && unresolved === 0, "Reconcile surviving faults and every changed/new test kill."],
   [done, "Complete the feature protection matrix and fill unprotected feature gaps."],
-  [done, "Run final checks, confirm no application changes, and commit all audit work."],
+  [done, acceptance ? "Run final checks and verify only explicitly accepted application repairs." : "Run final checks, confirm no application changes, and commit all audit work."],
 ];
 fs.writeFileSync("TEST_AUDIT.md", `# Test audit\n\n${checklist.map(([complete, label]) => `- [${complete ? "x" : " "}] ${label}`).join("\n")}\n\n${verdict}
 
@@ -135,7 +154,9 @@ The baseline passed ${previous.baseline.passed} tests, with ${previous.baseline.
 
 ## Defects found
 
-${defects.map((defect) => `### ${defect.id}: ${defect.title}\n\n${defect.evidence}\n\nExpected: ${defect.expected}\n\nObserved: ${defect.actual}\n\nReproduce after building with \`${defect.reproduction}\`. ${defect.status}\n\nEvidence: ${(defect.evidenceFiles || []).map(link).join(", ")}.`).join("\n\n")}
+${defects.map((defect) => `### ${defect.id}: ${defect.title}\n\n${defect.evidence}\n\nExpected: ${defect.expected}\n\nOriginally observed: ${defect.actual}\n\n${acceptance
+  ? `Current resolution: ${defect.resolution?.kind || "missing"}. ${defect.resolution?.reason || ""}\n\nHistorical reproduction: \`${defect.reproduction}\`. ${defect.resolution?.kind === "fixed" ? `Fix commits: ${(defect.resolution.fixCommits || []).join(", ")}. Direct fault proofs: ${(defect.resolution.faultMutationIds || []).join(", ")}.` : "Retained as an expected failure; ordinary failure evidence establishes the unresolved defect."}\n\nCurrent evidence: ${defect.resolution?.ordinaryEvidence ? link(defect.resolution.ordinaryEvidence) : "missing"}.`
+  : `Reproduce after building with \`${defect.reproduction}\`. ${defect.status}`}\n\nHistorical evidence: ${(defect.evidenceFiles || []).map(link).join(", ")}.`).join("\n\n")}
 
 ## Feature protection matrix
 
@@ -159,7 +180,7 @@ ${done ? `The selected post-repair fault set killed ${ledger.mutationScore.kille
 
 The score retains three surviving draft experiments. G1-lens-author and G1-lens-authority rotated fixture indexes by two, which returned the already-correct records for those selections. Rotating by one in the corrected faults produces wrong records and is killed by the final tests. The g2-dream-closed-db draft did not reach the injected error branch and was discarded; retained scheduling cases have separate killed faults. These survivors are visible in the table and do not count as proof for a rewritten test.
 
-The mutation runner restores exact original application bytes after each experiment, verifies the application digest, and reruns the selected tests. Every completed changed/new test has a named failing assertion in its proof record. The report distinguishes inverse repair probes: repairing a known bug temporarily must make its expected-failure test report an unexpected pass.
+The mutation runner restores exact original application bytes after each experiment, verifies the application digest, and reruns the selected tests. ${acceptance ? "Fixed defects require ordinary passing cases and direct fault-injection pass/fail/pass evidence on the accepted application. Open and deferred expected failures require an ordinary failing reproduction; no temporary repair is required. These probes do not establish successful feature behavior." : "Every completed changed/new test has a named failing assertion in its proof record. The report distinguishes inverse repair probes: repairing a known bug temporarily must make its expected-failure test report an unexpected pass."}
 
 | Mutation | Target | Kind | Test stage | Result | Failing cases | Evidence |
 | --- | --- | --- | --- | --- | ---: | --- |
@@ -194,6 +215,8 @@ ${runtimeRows.join("\n")}
 
 This audit targets the committed gnosys-public package at ${previous.baseCommit} (6.2.1), in an isolated test-audit worktree. The workspace root is not a repository. The original checkout has unrelated uncommitted changes and remains outside this audit. No push or PR is authorized.
 
+${acceptance ? `The original completed audit remains at ${acceptance.application.baseCommit}. Current application bytes and executable modes must match ${acceptance.application.applicationFixRef}; replaying only the approved application-fix commits from that audit commit must produce the same application tree. Extra application edits remain rejected. Approved commits: ${acceptance.application.applicationFixCommits.join(", ")}.` : ""}
+
 Node 22.17.1, Vitest 4.1.9, TypeScript 5.9.3, tsx 4.22.4, better-sqlite3 11.10.0, and MCP SDK 1.29.0 match the installed baseline dependencies. CI collects src/**/*.test.ts on Linux and macOS; runner exclusions cover dist and node_modules. Coverage exclusions are distinct from test collection and are not evidence of protection. Docker setup and the two CI scenarios run in separate jobs. The npm test, coverage, and watch commands now build before starting, so CLI subprocess tests begin with current compiled artifacts.
 
 The sandbox initially rejected loopback listeners with EPERM. Authorized local HTTP/PTY runs pass. Docker setup tests run without networking or host mounts. Real provider credentials, operating-system integration, and physical network-share behavior are reported as unverified where boundary doubles or temporary local directories are used.
@@ -202,3 +225,4 @@ ${completion.checks.map((check) => `- ${escape(check)}`).join("\n")}
 ${completion.blockers.length ? completion.blockers.map((blocker) => `- ${escape(typeof blocker === "string" ? blocker : blocker.description)}`).join("\n") : done ? "No additional execution blockers remain." : "Final platform/service blocker reconciliation remains pending."}
 `);
 process.stdout.write(`Report updated: ${originalCount - unresolved}/${originalCount} action records; ${latestFullSuite.passed} latest runtime passes.\n`);
+if (process.argv.includes("--strict") && !done) process.exitCode = 1;

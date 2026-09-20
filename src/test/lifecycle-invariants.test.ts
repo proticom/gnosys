@@ -51,7 +51,7 @@ describe("memory lifecycle through database reads and search", () => {
     expect(env.db.searchFts("replacementword")).toEqual([]);
     expect(env.db.getAllMemories()).toEqual([]);
   });
-  it.fails("writing the same memory twice keeps one searchable result", () => {
+  it("writing the same memory twice keeps one searchable result", () => {
     const fm = makeFrontmatter({ id: "repeat-001", title: "Repeat write" });
     syncMemoryToDb(env.db, fm, "uniqueword");
     syncMemoryToDb(env.db, fm, "uniqueword");

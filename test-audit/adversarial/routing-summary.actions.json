@@ -1,0 +1,18 @@
+{
+  "actions": [
+    {
+      "beforeId": "src/test/setup-ui-summary.test.ts:153",
+      "beforeName": "buildTrailingMap marks edited sections with \u2713",
+      "beforeClassification": "COUPLED",
+      "action": "expected_failure",
+      "afterNames": [
+        "Phase C \u2014 settings panel (summary) marks an edited routing section after saving and reloading its config"
+      ],
+      "afterClassification": "STRONG",
+      "defectId": "DEF-G1-001",
+      "mutationIds": [],
+      "ordinaryEvidence": "test-audit/adversarial/routing-summary-ordinary.json",
+      "evidence": "Corrected contradictory ordinary expectation: reset should display all ollama and edited marker after reload. It currently displays mixed(xai,ollama), so this desired behavior remains it.fails under DEF-G1-001. The ordinary run fails at the exact all-ollama summary assertion."
+    }
+  ]
+}

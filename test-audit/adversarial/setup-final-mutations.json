@@ -1,0 +1,27 @@
+[
+  {
+    "id": "setup-cancellation-success-regression",
+    "file": "src/lib/setup.ts",
+    "description": "Return success on cancellation at both provider and later IDE prompts.",
+    "search": "      console.log(\"\\n\\nSetup cancelled.\");\n      process.exit(130);",
+    "replace": "      console.log(\"\\n\\nSetup cancelled.\");\n      process.exit(0);",
+    "tests": [
+      "src/test/setup-adversarial.test.ts",
+      "src/test/setup-ctrlc.test.ts"
+    ],
+    "testName": "G2-D001|gnosys setup exits cleanly",
+    "build": true
+  },
+  {
+    "id": "setup-completion-exit-status",
+    "file": "src/lib/setup.ts",
+    "description": "Return a failing status after successful interactive setup completion.",
+    "search": "    setupCompleted = true;\n    rl.close();",
+    "replace": "    setupCompleted = true;\n    process.exitCode = 9;\n    rl.close();",
+    "tests": [
+      "src/test/setup-adversarial.test.ts"
+    ],
+    "testName": "completes the interactive",
+    "build": true
+  }
+]

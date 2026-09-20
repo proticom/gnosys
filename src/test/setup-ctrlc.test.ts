@@ -69,7 +69,7 @@ beforeAll(async () => {
 }, 40_000);
 
 describe("Phase B — Ctrl+C clean exit", () => {
-  it.fails("gnosys setup exits cleanly on SIGINT", () => {
+  it("gnosys setup exits cleanly on SIGINT", () => {
     expect(results[0].code, results[0].transcript).toBe(130);
   });
 

@@ -332,21 +332,22 @@ CREATE TABLE IF NOT EXISTS sync_snapshot_manifest (
 );
 `;
 
-// FTS5 sync triggers — created separately (can't use IF NOT EXISTS on triggers)
+const FTS_REPAIR_META_KEY = "memories_fts_unique_id_v1";
+
+// REPLACE may skip DELETE triggers, so INSERT must replace the FTS row itself.
 const FTS_TRIGGERS_SQL = `
 CREATE TRIGGER IF NOT EXISTS memories_fts_ai AFTER INSERT ON memories BEGIN
+  DELETE FROM memories_fts WHERE id = new.id;
   INSERT INTO memories_fts(id, title, category, tags, relevance, content, summary)
   VALUES (new.id, new.title, new.category, new.tags, new.relevance, new.content, new.summary);
 END;
 
 CREATE TRIGGER IF NOT EXISTS memories_fts_ad AFTER DELETE ON memories BEGIN
-  INSERT INTO memories_fts(memories_fts, id, title, category, tags, relevance, content, summary)
-  VALUES ('delete', old.id, old.title, old.category, old.tags, old.relevance, old.content, old.summary);
+  DELETE FROM memories_fts WHERE id = old.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS memories_fts_au AFTER UPDATE ON memories BEGIN
-  INSERT INTO memories_fts(memories_fts, id, title, category, tags, relevance, content, summary)
-  VALUES ('delete', old.id, old.title, old.category, old.tags, old.relevance, old.content, old.summary);
+  DELETE FROM memories_fts WHERE id = old.id;
   INSERT INTO memories_fts(id, title, category, tags, relevance, content, summary)
   VALUES (new.id, new.title, new.category, new.tags, new.relevance, new.content, new.summary);
 END;
@@ -634,15 +635,7 @@ export class GnosysDB {
       // Longer busy timeout for network shares (10s)
       enableWAL(this.db, 10000);
       this.db.pragma("foreign_keys = ON");
-      // v5.12.1: heal FTS triggers on recovery. updateMemory/deleteMemory may
-      // drop a trigger in their inconsistency fallback; recreating here
-      // (idempotent CREATE TRIGGER IF NOT EXISTS) means recovery restores
-      // them instead of waiting for the next process start.
-      try {
-        this.db.exec(FTS_TRIGGERS_SQL);
-      } catch {
-        // non-fatal — applySchema() heals at next open
-      }
+      this.applySchema();
       this.available = true;
     } catch {
       // reopen failed — leave unavailable; caller surfaces error
@@ -734,12 +727,7 @@ export class GnosysDB {
     // Apply main schema
     this.db.exec(SCHEMA_SQL);
 
-    // Apply triggers (separate because of FTS5 delete syntax)
-    try {
-      this.db.exec(FTS_TRIGGERS_SQL);
-    } catch {
-      // Triggers may already exist — that's fine
-    }
+    this.db.exec(FTS_TRIGGERS_SQL);
 
     // Fresh DBs (user_version 0) get the full schema first, then migrate
     // to stamp user_version and apply any incremental steps idempotently.
@@ -747,6 +735,29 @@ export class GnosysDB {
     if (versionAfterSchema < SCHEMA_VERSION) {
       this.migrateSchema(versionAfterSchema);
     }
+    this.healFtsIndex();
+  }
+
+  private healFtsIndex(): void {
+    const repaired = this.db.prepare("SELECT 1 FROM gnosys_meta WHERE key = ?");
+    if (repaired.get(FTS_REPAIR_META_KEY)) return;
+
+    this.db.transaction(() => {
+      if (repaired.get(FTS_REPAIR_META_KEY)) return;
+      this.db.exec(`
+        DROP TRIGGER IF EXISTS memories_fts_ai;
+        DROP TRIGGER IF EXISTS memories_fts_ad;
+        DROP TRIGGER IF EXISTS memories_fts_au;
+      `);
+      this.db.exec(FTS_TRIGGERS_SQL);
+      this.db.exec(`
+        DELETE FROM memories_fts;
+        INSERT INTO memories_fts(id, title, category, tags, relevance, content, summary)
+        SELECT id, title, category, tags, relevance, content, summary FROM memories;
+      `);
+      this.db.prepare("INSERT INTO gnosys_meta (key, value, updated) VALUES (?, ?, ?)")
+        .run(FTS_REPAIR_META_KEY, "1", new Date().toISOString());
+    }).immediate();
   }
 
   /**
@@ -1068,77 +1079,13 @@ export class GnosysDB {
     const sql = `UPDATE memories SET ${fields.join(", ")} WHERE id = ?`;
 
     return this.withRecovery(() => {
-    try {
       this.db.prepare(sql).run(...values);
-    } catch {
-      // FTS5 update trigger may fail if INSERT OR REPLACE left FTS inconsistent.
-      // Workaround: drop the trigger, update manually, rebuild FTS entry.
-      this.db.exec("DROP TRIGGER IF EXISTS memories_fts_au");
-      this.db.prepare(sql).run(...values);
-
-      // Recreate trigger
-      try {
-        this.db.exec(`
-          CREATE TRIGGER IF NOT EXISTS memories_fts_au AFTER UPDATE ON memories BEGIN
-            INSERT INTO memories_fts(memories_fts, id, title, category, tags, relevance, content, summary)
-            VALUES ('delete', old.id, old.title, old.category, old.tags, old.relevance, old.content, old.summary);
-            INSERT INTO memories_fts(id, title, category, tags, relevance, content, summary)
-            VALUES (new.id, new.title, new.category, new.tags, new.relevance, new.content, new.summary);
-          END;
-        `);
-      } catch {
-        // Trigger recreation failed — not critical
-      }
-    }
-
-    // Manually sync FTS: remove old entry, insert updated entry (reliable for standalone FTS5)
-    try {
-      this.db.prepare("DELETE FROM memories_fts WHERE id = ?").run(id);
-    } catch {
-      // Old FTS entry may not exist — that's OK
-    }
-
-    const newMem = this.db.prepare("SELECT * FROM memories WHERE id = ?").get(id) as DbMemory | undefined;
-    if (newMem) {
-      try {
-        this.db.prepare(
-          "INSERT INTO memories_fts(id, title, category, tags, relevance, content, summary) VALUES (?, ?, ?, ?, ?, ?, ?)"
-        ).run(newMem.id, newMem.title, newMem.category, newMem.tags, newMem.relevance, newMem.content, newMem.summary);
-      } catch {
-        // FTS insert may fail — not critical
-      }
-    }
     });
   }
 
   deleteMemory(id: string): void {
     return this.withRecovery(() => {
-    // FTS5 delete trigger may fail if INSERT OR REPLACE left FTS inconsistent.
-    try {
       this.db.prepare("DELETE FROM memories WHERE id = ?").run(id);
-    } catch {
-      // FTS trigger failed — drop trigger, delete without it
-      this.db.exec("DROP TRIGGER IF EXISTS memories_fts_ad");
-      this.db.prepare("DELETE FROM memories WHERE id = ?").run(id);
-      // Recreate trigger
-      try {
-        this.db.exec(`
-          CREATE TRIGGER IF NOT EXISTS memories_fts_ad AFTER DELETE ON memories BEGIN
-            INSERT INTO memories_fts(memories_fts, id, title, category, tags, relevance, content, summary)
-            VALUES ('delete', old.id, old.title, old.category, old.tags, old.relevance, old.content, old.summary);
-          END;
-        `);
-      } catch {
-        // Trigger recreation failed — not critical
-      }
-    }
-
-    // Ensure FTS entry is also removed (direct DELETE is reliable for standalone FTS5)
-    try {
-      this.db.prepare("DELETE FROM memories_fts WHERE id = ?").run(id);
-    } catch {
-      // FTS entry may not exist — that's OK
-    }
     });
   }
 
@@ -1547,29 +1494,7 @@ export class GnosysDB {
 
   updateEmbedding(id: string, embedding: Buffer): void {
     this.withRecovery(() => {
-      const sql = "UPDATE memories SET embedding = ? WHERE id = ?";
-      try {
-        this.db.prepare(sql).run(embedding, id);
-      } catch {
-        // v5.13.0: same failure mode updateMemory works around — the FTS5
-        // AFTER UPDATE trigger's 'delete' command errors on standalone FTS5
-        // tables. embedding isn't an FTS column, so drop the trigger,
-        // update, recreate; the FTS entry itself needs no rebuild.
-        this.db.exec("DROP TRIGGER IF EXISTS memories_fts_au");
-        this.db.prepare(sql).run(embedding, id);
-        try {
-          this.db.exec(`
-            CREATE TRIGGER IF NOT EXISTS memories_fts_au AFTER UPDATE ON memories BEGIN
-              INSERT INTO memories_fts(memories_fts, id, title, category, tags, relevance, content, summary)
-              VALUES ('delete', old.id, old.title, old.category, old.tags, old.relevance, old.content, old.summary);
-              INSERT INTO memories_fts(id, title, category, tags, relevance, content, summary)
-              VALUES (new.id, new.title, new.category, new.tags, new.relevance, new.content, new.summary);
-            END;
-          `);
-        } catch {
-          // Trigger recreation failed — not critical
-        }
-      }
+      this.db.prepare("UPDATE memories SET embedding = ? WHERE id = ?").run(embedding, id);
     });
   }
 

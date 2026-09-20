@@ -1,0 +1,169 @@
+{
+  "numTotalTestSuites": 4,
+  "numPassedTestSuites": 0,
+  "numFailedTestSuites": 4,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 9,
+  "numPassedTests": 5,
+  "numFailedTests": 4,
+  "numPendingTests": 0,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1789892755589,
+  "success": false,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "routing reset attacks"
+          ],
+          "fullName": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+          "status": "failed",
+          "title": "DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+          "duration": 152.77591700000002,
+          "failureMessages": [
+            "AssertionError: {\"structuring\":{\"provider\":\"ollama\",\"model\":\"old-structuring\"},\"synthesis\":{\"provider\":\"lmstudio\",\"model\":\"old-synthesis\"},\"vision\":{\"provider\":\"ollama\",\"model\":\"old-vision\"},\"transcription\":{\"provider\":\"lmstudio\",\"model\":\"old-transcription\"}}: expected { structuring: { \u2026(2) }, \u2026(3) } to deeply equal {}\n    at /private/tmp/gnosys-adversarial-db/src/test/routing-reset-adversarial.test.ts:90:58\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+          ],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "routing reset attacks"
+          ],
+          "fullName": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+          "status": "failed",
+          "title": "DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+          "duration": 30.69633399999998,
+          "failureMessages": [
+            "AssertionError: {\"structuring\":{\"provider\":\"ollama\",\"model\":\"new-structuring\"},\"synthesis\":{\"provider\":\"lmstudio\",\"model\":\"old-synthesis\"},\"vision\":{\"provider\":\"ollama\",\"model\":\"old-vision\"},\"transcription\":{\"provider\":\"lmstudio\",\"model\":\"old-transcription\"}}: expected { structuring: { \u2026(2) }, \u2026(3) } to deeply equal { structuring: { \u2026(2) } }\n    at /private/tmp/gnosys-adversarial-db/src/test/routing-reset-adversarial.test.ts:99:58\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+          ],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1789892755770,
+      "endTime": 1789892755953.6963,
+      "status": "failed",
+      "message": "",
+      "name": "/private/tmp/gnosys-adversarial-db/src/test/routing-reset-adversarial.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "Phase C \u2014 settings panel (summary)"
+          ],
+          "fullName": "Phase C \u2014 settings panel (summary) formatMultiMachineSyncSummary shows NA when remote is not configured",
+          "status": "passed",
+          "title": "formatMultiMachineSyncSummary shows NA when remote is not configured",
+          "duration": 2.3278339999999957,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "Phase C \u2014 settings panel (summary)"
+          ],
+          "fullName": "Phase C \u2014 settings panel (summary) describeMultiMachineSyncPanel shows NA with no remote meta or machine config",
+          "status": "passed",
+          "title": "describeMultiMachineSyncPanel shows NA with no remote meta or machine config",
+          "duration": 21.494166000000007,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "Phase C \u2014 settings panel (summary)"
+          ],
+          "fullName": "Phase C \u2014 settings panel (summary) renders panel row 4 with NA when multi-machine sync is not configured",
+          "status": "passed",
+          "title": "renders panel row 4 with NA when multi-machine sync is not configured",
+          "duration": 88.870791,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "Phase C \u2014 settings panel (summary)"
+          ],
+          "fullName": "Phase C \u2014 settings panel (summary) renders panel rows for a fresh config (no default provider)",
+          "status": "passed",
+          "title": "renders panel rows for a fresh config (no default provider)",
+          "duration": 9.465000000000032,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "Phase C \u2014 settings panel (summary)"
+          ],
+          "fullName": "Phase C \u2014 settings panel (summary) renders panel rows after a switch to xai",
+          "status": "passed",
+          "title": "renders panel rows after a switch to xai",
+          "duration": 8.652749999999969,
+          "failureMessages": [],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "Phase C \u2014 settings panel (summary)"
+          ],
+          "fullName": "Phase C \u2014 settings panel (summary) marks an edited routing section after saving and reloading its config",
+          "status": "failed",
+          "title": "marks an edited routing section after saving and reloading its config",
+          "duration": 28.999415999999997,
+          "failureMessages": [
+            "AssertionError: expected ' \u2502  2   task routing         mixed (x\u2026' to match /all ollama\\s+\u2713/\n    at /private/tmp/gnosys-adversarial-db/src/test/setup-ui-summary.test.ts:118:28\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+          ],
+          "meta": {},
+          "tags": []
+        },
+        {
+          "ancestorTitles": [
+            "Phase C \u2014 settings panel (summary)"
+          ],
+          "fullName": "Phase C \u2014 settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides",
+          "status": "failed",
+          "title": "DEF-G1-001 reset routing clears persisted task overrides",
+          "duration": 13.584375000000023,
+          "failureMessages": [
+            "AssertionError: expected { structuring: { \u2026(2) } } to deeply equal {}\n    at /private/tmp/gnosys-adversarial-db/src/test/setup-ui-summary.test.ts:124:74\n    at file:///Users/edward/MSDev/projects/gnosys-ai/gnosys-public/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+          ],
+          "meta": {},
+          "tags": []
+        }
+      ],
+      "startTime": 1789892756376,
+      "endTime": 1789892756549.5845,
+      "status": "failed",
+      "message": "",
+      "name": "/private/tmp/gnosys-adversarial-db/src/test/setup-ui-summary.test.ts"
+    }
+  ],
+  "sourceEvidence": [
+    "test-audit/adversarial/routing-ordinary.json",
+    "test-audit/adversarial/routing-summary-ordinary.json"
+  ]
+}

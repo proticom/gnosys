@@ -1,0 +1,40 @@
+{
+  "applicationFixRef": "f4b9135ae350fad937a66f03a9bc3ccfbd8c6906",
+  "applicationDigest": "059ec3ee279146604895d9aba2dbc56f56480450e6c52fe27a2a32db0016b412",
+  "files": {
+    "src/test/fts-adversarial.test.ts": "a5d9ba8e7eed35ab41c0bbdb6739f57ce261ba5f2c1b0a8287119850ec6143cb",
+    "src/test/routing-reset-adversarial.test.ts": "711201ca29e79a589417b5eaaa8f3cef9c7d1ff7004e4241f22dd78e0ef30259",
+    "src/test/setup-ui-summary.test.ts": "169124065c3f5c03f36b4d11b7755646112edb09c604a906e3b6ac076edd7084",
+    "src/test/lifecycle-invariants.test.ts": "10f32d8ff64a6f4814678d77810616652fe4f7082f232fae7f3436c64a97d983",
+    "scripts/test-audit-ledger.mjs": "0da6f1ee692d940427e8bb60b08af373550d977cb1d69a195674d275165d63d1",
+    "scripts/test-audit-report.mjs": "9a7719fce14dfaec5bae775189d6dc9cac11a0b0a5b1102ab629aa2c94414532"
+  },
+  "testPatch": "test-audit/adversarial/fts-routing.final.patch",
+  "ledgerPatch": "test-audit/adversarial/report-ci-amendment.patch",
+  "evidence": [
+    "fts-routing.additions.json",
+    "fts-lifecycle.actions.json",
+    "routing-summary.actions.json",
+    "fts-defects.json",
+    "fts-routing.resolutions.json",
+    "fts-routing.feature-coverage.json",
+    "fts-direct.spec.json",
+    "fts-direct.f4-final.results.json",
+    "fts-routing.f4-final.suite.json",
+    "fts-ordinary.json",
+    "fts-ordinary.log",
+    "routing-ordinary.json",
+    "routing-ordinary.log",
+    "routing-summary-ordinary.json",
+    "routing-summary-ordinary.log",
+    "routing-all-ordinary.json",
+    "fts-regression.compare.json",
+    "fts-routing-reproduce.mjs",
+    "fts-routing.desired-mutations.json",
+    "report-validation.mjs",
+    "report-validation.results.json",
+    "report-delivery.json",
+    "report-acceptance.example.json"
+  ],
+  "historicalArtifactWarning": "fts-direct.results.json and fts-direct.f4b9135.results.json are earlier successful runs. Use fts-direct.f4-final.results.json for final acceptance. Initial expected-failure fts checkpoint is historical; current fts-ordinary.json proves only ADV-FTS-001 and records two fixed G2-D002 passes."
+}

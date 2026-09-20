@@ -58,7 +58,7 @@ async function driveSetup(finish: Finish): Promise<WizardResult> {
 }
 
 describe("setup exit status after the provider prompt", () => {
-  it.fails("G2-D001 Ctrl+C at IDE integration exits 130", async () => {
+  it("G2-D001 Ctrl+C at IDE integration exits 130", async () => {
     const result = await driveSetup("interrupt-ides");
     expect(result.promptsAnswered, result.transcript).toBe(2);
     expect(result.transcript).toContain("IDE Integration");

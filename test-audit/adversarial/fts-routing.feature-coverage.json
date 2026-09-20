@@ -1,0 +1,53 @@
+[
+  {
+    "featureId": "F09",
+    "obligationKind": "boundary",
+    "obligation": "Empty, punctuation, Unicode, quoted, ID and code-symbol queries; limit and ties; stale FTS after update/delete",
+    "tests": [
+      {
+        "file": "src/test/fts-adversarial.test.ts",
+        "name": "FTS duplicate attacks G2-D002: three writes yield one hit in FTS, discover, archive and hybrid keyword search",
+        "mutationIds": [
+          "ADV-FTS-repeat-insert"
+        ]
+      },
+      {
+        "file": "src/test/fts-adversarial.test.ts",
+        "name": "FTS duplicate attacks G2-D002: opening a populated v5 database heals duplicate FTS rows once without losing memories",
+        "mutationIds": [
+          "ADV-FTS-skip-legacy-healing",
+          "ADV-FTS-repeat-healing"
+        ]
+      },
+      {
+        "file": "src/test/lifecycle-invariants.test.ts",
+        "name": "memory lifecycle through database reads and search writing the same memory twice keeps one searchable result",
+        "mutationIds": [
+          "ADV-FTS-repeat-insert"
+        ]
+      }
+    ],
+    "limitations": "Protects repeated-write uniqueness across four central search surfaces and one-time legacy duplicate healing. Does not cover all listed query shapes. New ADV-FTS-001 ordinary reproduction shows search loss after external FTS deletion and reopen.",
+    "status": "PARTIAL"
+  },
+  {
+    "featureId": "F03",
+    "obligationKind": "boundary",
+    "obligation": "Partial nested configs retain inherited keys; update changes only requested keys",
+    "tests": [],
+    "defectCases": [
+      {
+        "file": "src/test/routing-reset-adversarial.test.ts",
+        "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+        "defectId": "DEF-G1-001"
+      },
+      {
+        "file": "src/test/routing-reset-adversarial.test.ts",
+        "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+        "defectId": "DEF-G1-001"
+      }
+    ],
+    "limitations": "Reset and reset-then-one-override remain ordinary failures. All unrelated canonical JSON values, including llm and dream, are preserved, but reset contract has no successful protection from these cases.",
+    "status": "KNOWN_DEFECT"
+  }
+]
