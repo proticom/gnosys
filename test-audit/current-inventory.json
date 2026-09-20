@@ -22243,7 +22243,7 @@
     },
     {
       "path": "src/test/routing-reset-adversarial.test.ts",
-      "sha256": "711201ca29e79a589417b5eaaa8f3cef9c7d1ff7004e4241f22dd78e0ef30259",
+      "sha256": "890257b11b4a6be68435a19a2ce7958bb21d0dff454d5d6d2f08861573259157",
       "imports": [
         "node:fs",
         "node:os",
@@ -22262,7 +22262,7 @@
           "suites": [
             "routing reset attacks"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [
             "toBe",
             "toEqual",
@@ -22283,7 +22283,7 @@
           "suites": [
             "routing reset attacks"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [
             "toBe",
             "toBe",
@@ -24607,7 +24607,7 @@
     },
     {
       "path": "src/test/setup-ui-summary.test.ts",
-      "sha256": "169124065c3f5c03f36b4d11b7755646112edb09c604a906e3b6ac076edd7084",
+      "sha256": "b324446724c6b870ba4461578d33fd4cb6a2316631c8aae7bc16bf3e8b33495b",
       "imports": [
         "vitest",
         "node:fs",
@@ -24731,7 +24731,7 @@
           "suites": [
             "Phase C — settings panel (summary)"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [
             "toBe",
             "toHaveLength",
@@ -24753,7 +24753,7 @@
           "suites": [
             "Phase C — settings panel (summary)"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [
             "toEqual"
           ],
@@ -32908,7 +32908,7 @@
     },
     {
       "path": "src/test/vscode-adversarial.test.ts",
-      "sha256": "5d242f1841fdefce9232180b26e8e9be409c55dd5fd856036fc6d2b4d88bea93",
+      "sha256": "15d68ae59cdfdea10df29d729a1a2a1a989912b98c70c648c7ae2c59456027fd",
       "imports": [
         "node:child_process",
         "node:crypto",
@@ -32929,7 +32929,7 @@
           "suites": [
             "VS Code adversarial public commands"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [],
           "signals": {
             "noLocalExpect": true,
@@ -32946,7 +32946,7 @@
           "suites": [
             "VS Code adversarial public commands"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [
             "toEqual",
             "toEqual",
@@ -32992,7 +32992,7 @@
           "suites": [
             "VS Code adversarial public commands"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [],
           "signals": {
             "noLocalExpect": true,
@@ -33009,7 +33009,7 @@
           "suites": [
             "VS Code adversarial public commands"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [
             "toBe",
             "toEqual"
@@ -33075,7 +33075,7 @@
     },
     {
       "path": "src/test/vscode-extension.test.ts",
-      "sha256": "c22054ca1eb1cfbafc9588cea47ac02b9c33f50556e5e6600f998eab96645386",
+      "sha256": "9fa294ef38086fe54d3a9dd47f07499a47fbad191b38e1dcc44ef98834ee33c2",
       "imports": [
         "node:child_process",
         "node:fs",
@@ -33154,7 +33154,7 @@
           "suites": [
             "VS Code extension public commands"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [
             "toBe",
             "toISOString",
@@ -33194,7 +33194,7 @@
           "suites": [
             "VS Code extension public commands"
           ],
-          "declaration": "it.fails",
+          "declaration": "it",
           "assertions": [
             "toBe",
             "toEqual"

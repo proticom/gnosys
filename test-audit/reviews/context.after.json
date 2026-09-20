@@ -66,7 +66,7 @@
         "ADV-CTX-D001-provider-f4b9135",
         "RELEASE-CTX-D001-provider-e9d605f"
       ],
-      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) ADV-CTX-D001-provider-f4b9135; exact application restoration passes. See test-audit/mutations/release.*.results.json."
+      "evidence": "Ordinary case passes at 518785a1efed60cf1369e79303e173a276d84f7b and fails under direct fault(s) ADV-CTX-D001-provider-f4b9135; exact application restoration passes. See test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/commit-context.test.ts",
@@ -78,7 +78,7 @@
         "ADV-CTX-D002-lookup-f4b9135",
         "RELEASE-CTX-D002-lookup-e9d605f"
       ],
-      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) ADV-CTX-D002-lookup-f4b9135; exact application restoration passes. See test-audit/mutations/release.*.results.json."
+      "evidence": "Ordinary case passes at 518785a1efed60cf1369e79303e173a276d84f7b and fails under direct fault(s) ADV-CTX-D002-lookup-f4b9135; exact application restoration passes. See test-audit/mutations/release.*.results.json."
     }
   ]
 }

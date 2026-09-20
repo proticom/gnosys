@@ -33,16 +33,18 @@
         "vscode-command-error",
         "vscode-e2-launch-error-hidden"
       ],
-      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) vscode-e2-launch-error-hidden; exact application restoration passes. See test-audit/mutations/release.*.results.json."
+      "evidence": "Ordinary case passes at 518785a1efed60cf1369e79303e173a276d84f7b and fails under direct fault(s) vscode-e2-launch-error-hidden; exact application restoration passes. See test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-extension.test.ts",
       "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failure reproduced for D-VSC-001; see test-audit/release-review/open-ordinary.json. This detects an open defect and does not prove successful behavior."
+      "mutationIds": [
+        "vscode-final-wrong-signal"
+      ],
+      "evidence": "Ordinary case passes at 518785a1efed60cf1369e79303e173a276d84f7b and fails under direct fault(s) vscode-final-wrong-signal; exact application restoration passes. See test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-extension.test.ts",
@@ -53,16 +55,18 @@
       "mutationIds": [
         "vscode-e2-directory-substring"
       ],
-      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) vscode-e2-directory-substring; exact application restoration passes. See test-audit/mutations/release.*.results.json."
+      "evidence": "Ordinary case passes at 518785a1efed60cf1369e79303e173a276d84f7b and fails under direct fault(s) vscode-e2-directory-substring; exact application restoration passes. See test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-extension.test.ts",
       "name": "VS Code extension public commands D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failure reproduced for D-VSC-001; see test-audit/release-review/open-ordinary.json. This detects an open defect and does not prove successful behavior."
+      "mutationIds": [
+        "vscode-final-wrong-signal"
+      ],
+      "evidence": "Ordinary case passes at 518785a1efed60cf1369e79303e173a276d84f7b and fails under direct fault(s) vscode-final-wrong-signal; exact application restoration passes. See test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-extension.test.ts",
@@ -73,7 +77,7 @@
       "mutationIds": [
         "vscode-e2-removed-dashboard-command"
       ],
-      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) vscode-e2-removed-dashboard-command; exact application restoration passes. See test-audit/mutations/release.*.results.json."
+      "evidence": "Ordinary case passes at 518785a1efed60cf1369e79303e173a276d84f7b and fails under direct fault(s) vscode-e2-removed-dashboard-command; exact application restoration passes. See test-audit/mutations/release.*.results.json."
     }
   ]
 }

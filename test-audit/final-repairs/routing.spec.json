@@ -1,0 +1,25 @@
+[
+  {
+    "id": "release-routing-reset-retains-overrides",
+    "file": "src/lib/setup/sections/routing.ts",
+    "search": "    await setDefaultAndClearTaskOverrides(storePath);",
+    "replace": "    await updateConfig(storePath, { taskModels: {} });",
+    "description": "Restore deep-merge reset that retains old overrides.",
+    "tests": [
+      "src/test/setup-ui-summary.test.ts",
+      "src/test/routing-reset-adversarial.test.ts"
+    ],
+    "testName": "marks an edited routing|DEF-G1-001"
+  },
+  {
+    "id": "release-routing-reset-drops-dream",
+    "file": "src/lib/config.ts",
+    "search": "  GnosysConfigSchema.parse(deepMergeConfig(inherited, merged));\n  await atomicWriteFile(configPath, JSON.stringify(merged, null, 2) + \"\\n\");",
+    "replace": "  GnosysConfigSchema.parse(deepMergeConfig(inherited, merged));\n  await atomicWriteFile(configPath, JSON.stringify({ ...merged, dream: undefined }, null, 2) + \"\\n\");",
+    "description": "Clear overrides but drop unrelated Dream configuration.",
+    "tests": [
+      "src/test/routing-reset-adversarial.test.ts"
+    ],
+    "testName": "DEF-G1-001:"
+  }
+]

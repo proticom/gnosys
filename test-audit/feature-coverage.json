@@ -375,7 +375,7 @@
     "featureId": "F03",
     "obligationKind": "boundary",
     "obligation": "Partial nested configs retain inherited keys; update changes only requested keys",
-    "status": "KNOWN_DEFECT",
+    "status": "PARTIAL",
     "tests": [
       {
         "file": "src/test/v600-chat-config-backcompat.test.ts",
@@ -405,25 +405,35 @@
       {
         "file": "src/test/setup-ui-summary.test.ts",
         "name": "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides",
-        "mutationIds": []
+        "mutationIds": [
+          "release-routing-reset-retains-overrides"
+        ]
       },
       {
         "file": "src/test/routing-reset-adversarial.test.ts",
         "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
-        "mutationIds": []
+        "mutationIds": [
+          "release-routing-reset-retains-overrides",
+          "release-routing-reset-drops-dream"
+        ]
       },
       {
         "file": "src/test/routing-reset-adversarial.test.ts",
         "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
-        "mutationIds": []
+        "mutationIds": [
+          "release-routing-reset-retains-overrides",
+          "release-routing-reset-drops-dream"
+        ]
       },
       {
         "file": "src/test/setup-ui-summary.test.ts",
         "name": "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config",
-        "mutationIds": []
+        "mutationIds": [
+          "release-routing-reset-retains-overrides"
+        ]
       }
     ],
-    "limitations": "DEF-G1-001 remains open. Reset retains multiple overrides and reset-then-one-override retains old tasks. The corrected summary expects all ollama and fails. Serialized bytes of every unrelated JSON value, including llm and dream, remain unchanged. Whole-file whitespace is not asserted. Original v584 deep-merge tests remain byte-identical and pass."
+    "limitations": "Reset removes all local overrides and reset-then-edit keeps only the new structuring override. Serialized unrelated JSON values including llm and dream remain identical. Old-reset and lost-Dream faults fail their ordinary cases; unchanged v584 deep-merge tests pass. Source whitespace is not the preservation contract. Global inherited overrides are reported by the application but are outside these four repair cases."
   },
   {
     "featureId": "F03",
@@ -497,7 +507,9 @@
       {
         "file": "src/test/setup-ui-summary.test.ts",
         "name": "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config",
-        "mutationIds": []
+        "mutationIds": [
+          "release-routing-reset-retains-overrides"
+        ]
       },
       {
         "file": "src/test/ide-init-golden.test.ts",
@@ -6693,12 +6705,14 @@
     "featureId": "F41",
     "obligationKind": "success",
     "obligation": "Reinforce active memory produces persisted reinforcement and feedback; dashboard command launches functioning dashboard",
-    "status": "KNOWN_DEFECT",
+    "status": "PARTIAL",
     "tests": [
       {
         "file": "src/test/vscode-extension.test.ts",
         "name": "VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-wrong-signal"
+        ]
       },
       {
         "file": "src/test/vscode-extension.test.ts",
@@ -6710,7 +6724,10 @@
       {
         "file": "src/test/vscode-adversarial.test.ts",
         "name": "VS Code adversarial public commands D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-constant-id",
+          "vscode-final-wrong-signal"
+        ]
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
@@ -6720,13 +6737,13 @@
         ]
       }
     ],
-    "limitations": "The dashboard invokes a command derived from built CLI registration and exits0; a removed-command fault is killed. D-VSC-001 remains open: reinforcement passes a file path and omits the useful signal. A fresh unrelated UUID and decoy records expose hardcoded or wrong-ID behavior. Native VS Code is represented by a host boundary double while the actual local CLI runs."
+    "limitations": "The dashboard command is derived from built CLI registration and exits 0. Reinforcement uses a fresh selected frontmatter ID with decoy records and the useful signal, updating only the selected memory. Fixed-ID and wrong-signal faults fail ordinary cases. Extension commands run through a VS Code API shim, not native VS Code."
   },
   {
     "featureId": "F41",
     "obligationKind": "failure",
     "obligation": "No editor, outside-store file and CLI error show correct message",
-    "status": "KNOWN_DEFECT",
+    "status": "PARTIAL",
     "tests": [
       {
         "file": "src/test/vscode-extension.test.ts",
@@ -6753,71 +6770,103 @@
       {
         "file": "src/test/vscode-adversarial.test.ts",
         "name": "VS Code adversarial public commands D-VSC-001: absent ID warns without launching a subprocess",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-missing-id-launch"
+        ]
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
         "name": "VS Code adversarial public commands D-VSC-001: empty ID warns without launching a subprocess",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-missing-id-launch"
+        ]
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
         "name": "VS Code adversarial public commands D-VSC-001: body-only ID warns without launching a subprocess",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-missing-id-launch"
+        ]
       }
     ],
-    "limitations": "No-editor/outside-store notifications and a real missing-executable error are protected. The launch-error fixture now supplies a valid memory document, so it does not require launching for unreadable IDs. Missing, empty and body-only IDs still fail the required warning/no-subprocess contract under D-VSC-001. Native VS Code UI is not launched."
+    "limitations": "Missing, empty and body-only IDs warn and launch no subprocess. A forced launch without an ID fails all three cases. No-editor, outside-store and real missing-executable errors remain protected, including an error-notification fault. Native editor integration is not exercised."
   },
   {
     "featureId": "F41",
     "obligationKind": "boundary",
     "obligation": "Spaces, quotes and shell metacharacters in selected path; extension activation scope",
-    "status": "KNOWN_DEFECT",
+    "status": "PARTIAL",
     "tests": [
       {
         "file": "src/test/vscode-extension.test.ts",
         "name": "VS Code extension public commands D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-wrong-signal"
+        ]
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
         "name": "VS Code adversarial public commands D-VSC-003: backticks in the selected path cannot execute shell text or change the selected ID",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-constant-id",
+          "vscode-final-wrong-signal"
+        ]
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
         "name": "VS Code adversarial public commands D-VSC-003: command substitution in the selected path cannot execute shell text or change the selected ID",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-constant-id",
+          "vscode-final-wrong-signal"
+        ]
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
         "name": "VS Code adversarial public commands D-VSC-003: semicolon in the selected path cannot execute shell text or change the selected ID",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-constant-id",
+          "vscode-final-wrong-signal"
+        ]
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
         "name": "VS Code adversarial public commands D-VSC-003: and operator in the selected path cannot execute shell text or change the selected ID",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-constant-id",
+          "vscode-final-wrong-signal"
+        ]
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
         "name": "VS Code adversarial public commands D-VSC-003: pipe in the selected path cannot execute shell text or change the selected ID",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-constant-id",
+          "vscode-final-wrong-signal"
+        ]
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
         "name": "VS Code adversarial public commands D-VSC-003: quotes in the selected path cannot execute shell text or change the selected ID",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-constant-id",
+          "vscode-final-wrong-signal"
+        ]
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
         "name": "VS Code adversarial public commands D-VSC-003: spaces in the selected path cannot execute shell text or change the selected ID",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-constant-id",
+          "vscode-final-wrong-signal"
+        ]
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
         "name": "VS Code adversarial public commands D-VSC-003: newline in the selected path cannot execute shell text or change the selected ID",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-constant-id",
+          "vscode-final-wrong-signal"
+        ]
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
@@ -6827,13 +6876,13 @@
         ]
       }
     ],
-    "limitations": "All eight hostile filename forms remain exercised. Variable reinforcement arguments use shell-free argv; transport preserves the supplied bytes and creates no execution marker. A direct variable-shell fault fails the ordinary transport test. The user's clarified ruling permits the exact constant dashboard command, which is registered by the built CLI and exits0. Complete selected-ID reinforcement still fails under D-VSC-001. The passing transport test does not pin a filename where the CLI requires a memory ID."
+    "limitations": "All eight hostile filename forms pass with selected-ID reinforcement and shell-free literal argv. Variable-shell, constant-ID and wrong-signal faults fail ordinary cases. The exact constant dashboard command is permitted and exits 0. Native VS Code and Windows remain unverified."
   },
   {
     "featureId": "F41",
     "obligationKind": "permissions",
     "obligation": "Selected file cannot inject shell commands; store detection uses actual path boundary",
-    "status": "KNOWN_DEFECT",
+    "status": "PARTIAL",
     "tests": [
       {
         "file": "src/test/vscode-extension.test.ts",
@@ -6845,7 +6894,9 @@
       {
         "file": "src/test/vscode-extension.test.ts",
         "name": "VS Code extension public commands D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-wrong-signal"
+        ]
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
@@ -6878,7 +6929,10 @@
       {
         "file": "src/test/vscode-adversarial.test.ts",
         "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with POSIX separators",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-constant-id",
+          "vscode-final-wrong-signal"
+        ]
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
@@ -6911,7 +6965,10 @@
       {
         "file": "src/test/vscode-adversarial.test.ts",
         "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with Windows separators",
-        "mutationIds": []
+        "mutationIds": [
+          "vscode-final-constant-id",
+          "vscode-final-wrong-signal"
+        ]
       },
       {
         "file": "src/test/vscode-adversarial.test.ts",
@@ -6921,6 +6978,6 @@
         ]
       }
     ],
-    "limitations": "All four lookalike components reject with both separator styles; the substring fault fails nine ordinary cases. Deep exact .gnosys paths reach reinforcement, but successful ID resolution remains blocked by D-VSC-001. D-VSC-003 is fixed under the clarified variable-argument ruling: constant dashboard shell text is permitted. Backslash paths are tested on a POSIX host, not native Windows."
+    "limitations": "All four lookalike components reject with both separator styles. Deep exact .gnosys paths resolve the selected ID and reinforce only that record. The substring fault fails nine ordinary cases. Windows separators are exercised on POSIX, not native Windows."
   }
 ]

@@ -1,0 +1,96 @@
+[
+  {
+    "id": "vscode-e2-directory-substring",
+    "file": "extensions/vscode/extension.js",
+    "description": "Accept .gnosys as a substring rather than an exact path component.",
+    "search": "const memoryDirectory = /(?:^|[\\\\/])\\.gnosys(?:[\\\\/]|$)/.exec(filePath);",
+    "replace": "const memoryDirectory = /\\.gnosys/.exec(filePath);",
+    "tests": [
+      "src/test/vscode-adversarial.test.ts",
+      "src/test/vscode-extension.test.ts"
+    ],
+    "testName": "D-VSC-002: rejects"
+  },
+  {
+    "id": "vscode-e2-removed-dashboard-command",
+    "file": "extensions/vscode/extension.js",
+    "description": "Launch removed dashboard command instead of registered status successor.",
+    "search": "terminal.sendText(\"npx gnosys status --system\");",
+    "replace": "terminal.sendText(\"npx gnosys dashboard\");",
+    "tests": [
+      "src/test/vscode-adversarial.test.ts",
+      "src/test/vscode-extension.test.ts"
+    ],
+    "testName": "D-VSC-004:"
+  },
+  {
+    "id": "vscode-e2-launch-error-hidden",
+    "file": "extensions/vscode/extension.js",
+    "description": "Downgrade a failed process launch to a warning so the user no longer receives the error notification.",
+    "search": "vscode.window.showErrorMessage(",
+    "replace": "vscode.window.showWarningMessage(",
+    "tests": [
+      "src/test/vscode-extension.test.ts"
+    ],
+    "testName": "reports a process launch failure"
+  },
+  {
+    "id": "dashboard-unescaped-stored-content",
+    "file": "src/lib/portfolioHtml.ts",
+    "description": "Drop output escaping so stored memory titles are emitted as live HTML in roadmap, activity and action cards.",
+    "search": "  return str.replace(/&/g, \"&amp;\").replace(/</g, \"&lt;\").replace(/>/g, \"&gt;\").replace(/\"/g, \"&quot;\");",
+    "replace": "  return str;",
+    "tests": [
+      "src/test/dashboard-html-adversarial.test.ts"
+    ],
+    "testName": "renders malicious",
+    "build": false
+  },
+  {
+    "id": "vscode-release-variable-shell",
+    "file": "extensions/vscode/extension.js",
+    "description": "Reintroduce shell evaluation for the selected memory ID instead of argv transport.",
+    "search": "execFileSync(\"npx\", [\"gnosys\", \"reinforce\", memoryId, \"--signal\", \"useful\"], {",
+    "replace": "require(\"child_process\").execSync(`npx gnosys reinforce \"${memoryId}\" --signal useful`, {",
+    "tests": [
+      "src/test/vscode-adversarial.test.ts"
+    ],
+    "testName": "variable arguments"
+  },
+  {
+    "file": "extensions/vscode/extension.js",
+    "tests": [
+      "src/test/vscode-extension.test.ts",
+      "src/test/vscode-adversarial.test.ts"
+    ],
+    "testName": "D-VSC-001:|D-VSC-002: accepts|D-VSC-003: reads|selected path",
+    "id": "vscode-final-constant-id",
+    "search": "memoryId = identity && (identity[1] ?? identity[2] ?? identity[3]).trim();",
+    "replace": "memoryId = identity && \"vscode-memory\";",
+    "description": "Replace selected identity with a fixture constant."
+  },
+  {
+    "file": "extensions/vscode/extension.js",
+    "tests": [
+      "src/test/vscode-extension.test.ts",
+      "src/test/vscode-adversarial.test.ts"
+    ],
+    "testName": "D-VSC-001:|D-VSC-002: accepts|D-VSC-003: reads|selected path",
+    "id": "vscode-final-missing-id-launch",
+    "search": "if (!memoryId) {",
+    "replace": "if (false) {",
+    "description": "Attempt subprocess launch when the document has no frontmatter identity."
+  },
+  {
+    "file": "extensions/vscode/extension.js",
+    "tests": [
+      "src/test/vscode-extension.test.ts",
+      "src/test/vscode-adversarial.test.ts"
+    ],
+    "testName": "D-VSC-001:|D-VSC-002: accepts|D-VSC-003: reads|selected path",
+    "id": "vscode-final-wrong-signal",
+    "search": "[\"gnosys\", \"reinforce\", memoryId, \"--signal\", \"useful\"]",
+    "replace": "[\"gnosys\", \"reinforce\", memoryId, \"--signal\", \"not_relevant\"]",
+    "description": "Lose the useful reinforcement effect and exact argument contract."
+  }
+]

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "base": "203c4e7",
-  "cwd": "/Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-test-audit-qa",
+  "cwd": "/Users/edward/MSDev/projects/gnosys-ai/worktrees/gnosys-release-6.2.2",
   "evidence": {
-    "runtime": "test-audit/release-review/full-suite.json",
+    "runtime": "test-audit/final-repairs/full-suite.json",
     "baselineRuntime": "test-audit/evidence/baseline.json",
     "actionFiles": [
       "adversarial.after.json",
@@ -36628,8 +36628,8 @@
       "runtimePattern": "^routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value$",
       "dynamicName": false,
       "bodyHash": "8cae7c67d278360dd45fb0590de54bd51e4ec77ae79644019223cc268f89948a",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
@@ -36640,7 +36640,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:25",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -36660,8 +36660,8 @@
       "runtimePattern": "^routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config$",
       "dynamicName": false,
       "bodyHash": "549cf4b4904137be3b6582a23e3ed9980b940a79899952ee31bd0398147e392c",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
@@ -36672,7 +36672,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:26",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -40503,8 +40503,8 @@
       "runtimePattern": "^Phase C — settings panel \\(summary\\) marks an edited routing section after saving and reloading its config$",
       "dynamicName": false,
       "bodyHash": "72e55d4bd8bd383a7bf605c5d65cc0ecbc3930dcb2ca189255bc0cab7f80bf2b",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "changed_or_renamed",
       "originalIds": [
         "src/test/setup-ui-summary.test.ts:153"
@@ -40517,7 +40517,7 @@
           "actions": [
             {
               "ref": "group1.after.json#original:388",
-              "action": "expected_failure",
+              "action": "rewritten",
               "beforeId": "src/test/setup-ui-summary.test.ts:153",
               "classification": "STRONG"
             }
@@ -40537,8 +40537,8 @@
       "runtimePattern": "^Phase C — settings panel \\(summary\\) DEF-G1-001 reset routing clears persisted task overrides$",
       "dynamicName": false,
       "bodyHash": "b3935930cfd2579b1e5ad74abc32902c1fc3bbed794ca614847cfd38ba6b888a",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
@@ -40549,7 +40549,7 @@
           "actions": [
             {
               "ref": "group1.after.json#additional:0",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -52815,8 +52815,8 @@
       "runtimePattern": "^VS Code adversarial public commands D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant$",
       "dynamicName": false,
       "bodyHash": "b73980e479163a8291027b1fa57c69d28767aefc2cf77ae7d4885700cbfdd4a2",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
@@ -52827,7 +52827,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:29",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -52847,8 +52847,8 @@
       "runtimePattern": "^VS Code adversarial public commands D-VSC-001: [\\s\\S]*? warns without launching a subprocess$",
       "dynamicName": true,
       "bodyHash": "d0bc7a2b256194c0e76e6da943562bd2cd169da8fea11804aa4865dec875725d",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
@@ -52859,7 +52859,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:30",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -52871,7 +52871,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:31",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -52883,7 +52883,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:32",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -53019,8 +53019,8 @@
       "runtimePattern": "^VS Code adversarial public commands D-VSC-002: accepts deeply nested exact \\.gnosys with [\\s\\S]*? separators$",
       "dynamicName": true,
       "bodyHash": "4e2e743cf8743c80887112d0f0b84a0dd55a3cc372677bfa8a2603cfe5dd2e7e",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
@@ -53031,7 +53031,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:37",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -53043,7 +53043,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:42",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -53063,8 +53063,8 @@
       "runtimePattern": "^VS Code adversarial public commands D-VSC-003: [\\s\\S]*? in the selected path cannot execute shell text or change the selected ID$",
       "dynamicName": true,
       "bodyHash": "b37610943916e329c2692d34067d1774871d71f3e82fb1751ca3ca919a031f17",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
@@ -53075,7 +53075,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:43",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -53087,7 +53087,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:44",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -53099,7 +53099,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:45",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -53111,7 +53111,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:46",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -53123,7 +53123,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:47",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -53135,7 +53135,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:48",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -53147,7 +53147,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:49",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -53159,7 +53159,7 @@
           "actions": [
             {
               "ref": "adversarial.after.json#additional:50",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -53339,8 +53339,8 @@
       "runtimePattern": "^VS Code extension public commands D-VSC-001: reinforcing an open memory resets its persisted decay date$",
       "dynamicName": false,
       "bodyHash": "0bfd90ccfe2d004ea34aa2ae4648712f1224c7a058221f5553b5d4bc3fc6c2b0",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
@@ -53351,7 +53351,7 @@
           "actions": [
             {
               "ref": "vscode.after.json#additional:3",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -53403,8 +53403,8 @@
       "runtimePattern": "^VS Code extension public commands D-VSC-003: reads the selected memory ID without evaluating shell syntax in its filename$",
       "dynamicName": false,
       "bodyHash": "32edf22308e88b144f8c2f2a7e3383fa81539fc12592048bbf4a4f5b2ff9439a",
-      "registrationHash": "f7a7a906e08f577abbddf8bb8cc670a30a77f37cd6ef342bb181b651372641b5",
-      "declaration": "it.fails",
+      "registrationHash": "86ddb82e95a829f3fb5968ba5420354a8825ce9709e21988b38d5df2a46bcca7",
+      "declaration": "it",
       "change": "new",
       "originalIds": [],
       "classification": "STRONG",
@@ -53415,7 +53415,7 @@
           "actions": [
             {
               "ref": "vscode.after.json#additional:5",
-              "action": "expected_failure",
+              "action": "added",
               "beforeId": null,
               "classification": "STRONG"
             }
@@ -76707,7 +76707,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:25",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -76723,7 +76723,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:26",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -78723,7 +78723,7 @@
       "actions": [
         {
           "ref": "group1.after.json#original:388",
-          "action": "expected_failure",
+          "action": "rewritten",
           "beforeId": "src/test/setup-ui-summary.test.ts:153",
           "classification": "STRONG"
         }
@@ -78739,7 +78739,7 @@
       "actions": [
         {
           "ref": "group1.after.json#additional:0",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84483,7 +84483,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:29",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84499,7 +84499,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:30",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84515,7 +84515,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:31",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84531,7 +84531,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:32",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84611,7 +84611,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:37",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84691,7 +84691,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:42",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84707,7 +84707,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:43",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84723,7 +84723,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:44",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84739,7 +84739,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:45",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84755,7 +84755,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:46",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84771,7 +84771,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:47",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84787,7 +84787,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:48",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84803,7 +84803,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:49",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84819,7 +84819,7 @@
       "actions": [
         {
           "ref": "adversarial.after.json#additional:50",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84915,7 +84915,7 @@
       "actions": [
         {
           "ref": "vscode.after.json#additional:3",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }
@@ -84947,7 +84947,7 @@
       "actions": [
         {
           "ref": "vscode.after.json#additional:5",
-          "action": "expected_failure",
+          "action": "added",
           "beforeId": null,
           "classification": "STRONG"
         }

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "typecheck",
+    "command": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "exitCode": 0,
+    "seconds": 3.29
+  },
+  {
+    "name": "lint",
+    "command": [
+      "npm",
+      "run",
+      "lint"
+    ],
+    "exitCode": 0,
+    "seconds": 1.78
+  },
+  {
+    "name": "knip",
+    "command": [
+      "npm",
+      "run",
+      "knip"
+    ],
+    "exitCode": 0,
+    "seconds": 1.34
+  }
+]

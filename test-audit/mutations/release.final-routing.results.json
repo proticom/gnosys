@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 1,
+  "applicationDigest": "0231721fb346e5028164aa0a32c4d7c68622c34876abb0281ac9699328630c5f",
+  "results": [
+    {
+      "id": "release-routing-reset-retains-overrides",
+      "file": "src/lib/setup/sections/routing.ts",
+      "kind": "fault-injection",
+      "description": "Restore deep-merge reset that retains old overrides.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 767,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/routing-reset-adversarial.test.ts",
+            "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/routing-reset-adversarial.test.ts",
+            "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 779,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/routing-reset-adversarial.test.ts",
+            "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+            "status": "failed",
+            "failures": [
+              "AssertionError: {\"structuring\":{\"provider\":\"ollama\",\"model\":\"old-structuring\"},\"synthesis\":{\"provider\":\"lmstudio\",\"model\":\"old-synthesis\"},\"vision\":{\"provider\":\"ollama\",\"model\":\"old-vision\"},\"transcription\":{\"provider\":\"lmstudio\",\"model\":\"old-transcription\"}}: expected { structuring: { …(2) }, …(3) } to deeply equal {}\n    at <repo>/src/test/routing-reset-adversarial.test.ts:90:58\n    at file://<repo>/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/routing-reset-adversarial.test.ts",
+            "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+            "status": "failed",
+            "failures": [
+              "AssertionError: {\"structuring\":{\"provider\":\"ollama\",\"model\":\"new-structuring\"},\"synthesis\":{\"provider\":\"lmstudio\",\"model\":\"old-synthesis\"},\"vision\":{\"provider\":\"ollama\",\"model\":\"old-vision\"},\"transcription\":{\"provider\":\"lmstudio\",\"model\":\"old-transcription\"}}: expected { structuring: { …(2) }, …(3) } to deeply equal { structuring: { …(2) } }\n    at <repo>/src/test/routing-reset-adversarial.test.ts:99:58\n    at file://<repo>/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected ' │  2   task routing         mixed (x…' to match /all ollama\\s+✓/\n    at <repo>/src/test/setup-ui-summary.test.ts:118:28\n    at file://<repo>/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected { structuring: { …(2) } } to deeply equal {}\n    at <repo>/src/test/setup-ui-summary.test.ts:124:74\n    at file://<repo>/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 756,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/routing-reset-adversarial.test.ts",
+            "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/routing-reset-adversarial.test.ts",
+            "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/setup-ui-summary.test.ts",
+            "name": "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/routing-reset-adversarial.test.ts",
+          "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value"
+        },
+        {
+          "file": "src/test/routing-reset-adversarial.test.ts",
+          "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config"
+        },
+        {
+          "file": "src/test/setup-ui-summary.test.ts",
+          "name": "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config"
+        },
+        {
+          "file": "src/test/setup-ui-summary.test.ts",
+          "name": "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides"
+        }
+      ],
+      "applicationRestored": true
+    },
+    {
+      "id": "release-routing-reset-drops-dream",
+      "file": "src/lib/config.ts",
+      "kind": "fault-injection",
+      "description": "Clear overrides but drop unrelated Dream configuration.",
+      "before": {
+        "exitCode": 0,
+        "durationMs": 538,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/routing-reset-adversarial.test.ts",
+            "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/routing-reset-adversarial.test.ts",
+            "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "mutated": {
+        "exitCode": 1,
+        "durationMs": 541,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/routing-reset-adversarial.test.ts",
+            "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected Buffer[ 123, 34, 108, 108, 109, …(372) ] to deeply equal Buffer[ 123, 34, 108, 108, 109, …(706) ]\n    at <repo>/src/test/routing-reset-adversarial.test.ts:89:34\n    at file://<repo>/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          },
+          {
+            "file": "src/test/routing-reset-adversarial.test.ts",
+            "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+            "status": "failed",
+            "failures": [
+              "AssertionError: expected Buffer[ 123, 34, 108, 108, 109, …(686) ] to deeply equal Buffer[ 123, 34, 108, 108, 109, …(706) ]\n    at <repo>/src/test/routing-reset-adversarial.test.ts:98:34\n    at file://<repo>/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+            ]
+          }
+        ]
+      },
+      "restored": {
+        "exitCode": 0,
+        "durationMs": 531,
+        "error": null,
+        "tests": [
+          {
+            "file": "src/test/routing-reset-adversarial.test.ts",
+            "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
+            "status": "passed",
+            "failures": []
+          },
+          {
+            "file": "src/test/routing-reset-adversarial.test.ts",
+            "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
+            "status": "passed",
+            "failures": []
+          }
+        ]
+      },
+      "outcome": "killed",
+      "killedBy": [
+        {
+          "file": "src/test/routing-reset-adversarial.test.ts",
+          "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value"
+        },
+        {
+          "file": "src/test/routing-reset-adversarial.test.ts",
+          "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config"
+        }
+      ],
+      "applicationRestored": true
+    }
+  ]
+}

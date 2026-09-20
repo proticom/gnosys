@@ -1,69 +1,42 @@
 {
   "complete": true,
   "checks": [
-    "Final application e9d605f (code through 2606b05) is integrated into test-audit. Nine defects are fixed, five remain open and D-G3-001 stays deferred. Evidence and release limitations: [final QA review](test-audit/release-review/REVIEW.md).",
-    "Combined suite: 1,746 passed, zero unexpected failures or skips, including 24 expected failures; 107.45 seconds. Evidence: [full suite](test-audit/release-review/full-suite.json).",
-    "Coverage suite: 1,746 passed in 120.2 seconds; configured thresholds pass. Statements 71.54%, branches 61.28%, functions 80.89%, lines 73.46%. Evidence: [coverage suite](test-audit/release-review/coverage-suite.json) and [summary](test-audit/release-review/coverage-summary.json).",
-    "Typecheck, lint and Knip exit 0 on the final QA tree. Lint retains 23 warnings. Both real CLI CI scenarios pass. Evidence: [static and CI checks](test-audit/release-review/static-ci-checks.json).",
-    "Both normal CLI/MCP import-persistence cases pass with unchanged assertions and direct caller-DB-omission fault kills. The variable-argument shell test now permits the exact constant dashboard command under the clarified ruling. It preserves shell-free transport checks without pinning incorrect path-only argv. Evidence: [context proofs](test-audit/release-review/release-context-mutations.results.json) and [extension proofs](test-audit/release-review/vscode.results.json).",
-    "All 24 remaining expected-failure cases fail as ordinary tests; source markers and application bytes were restored. D-VSC-001, DEF-G1-001, ADV-CTX-001, D-DASH-001 and ADV-FTS-001 remain OPEN. D-G3-001 remains DEFERRED. Evidence: [ordinary reproductions](test-audit/release-review/open-ordinary.json).",
-    "All 1,748 original declarations, 1,568 current declarations and 1,746 runtime cases reconcile with zero missing kills, survival proofs, unmapped cases or acceptance issues. Every original WEAK/HOLLOW classification retains surviving-fault or explicit structural evidence. Evidence: [ledger](test-audit/ledger.json) and [reconciliation](test-audit/reconciliation.json).",
-    "The final-source replay kills 26 application faults and 2 CI faults. Repeated identical context faults retain canonical IDs to avoid score inflation. Inverse repair unexpected passes receive no protection credit. The complete targeted score is 508/511, with 3 historical survivors visible. Evidence: [ID mapping](test-audit/release-review/mutation-id-aliases.json) and [ledger](test-audit/ledger.json).",
-    "All ten original KNOWN_DEFECT feature rows are restated from final evidence, retaining 41 feature groups and 164 obligations. Import persistence is now partial successful coverage; central FTS recovery remains a distinct known defect. Evidence: [feature restatus](test-audit/release-review/feature-restatus.json).",
-    "All six Docker setup scenarios pass against the final packed CLI using ephemeral tmpfs fixture directories with no network or host mounts. The default runner cannot create four fixtures because its disk is full. No data was deleted. Evidence: [default run](test-audit/release-review/docker.json) and [tmpfs replay](test-audit/release-review/docker-tmpfs.json).",
-    "Application bytes/modes match e9d605f; 29 explicitly listed application commits reproduce that tree from ec19554. The docs-only handoff commit is excluded from application patches. The original dirty checkout was not edited. Evidence: [source integrity](test-audit/release-review/source-integrity.json).",
-    "v584 config tests and the 50/100 ms read assertions remain byte-identical to ec19554 and pass. The coverage guard rejects missing base refs with exit 2; the local-storage workflow makes no network-share claim. Evidence: [unchanged tests](test-audit/release-review/unchanged-tests.json), [CI checks](test-audit/release-review/static-ci-checks.json), and [workflow review](test-audit/adversarial/ci-review.json).",
-    "Metadata generators were rerun and produced identical records. The strict application-acceptance guard rejected the docs-only commit until the manifest selected only actual application patches. Evidence: [metadata replay](test-audit/release-review/metadata-replay.json).",
-    "Behavior-over-implementation kept the real ID/signal contract separate from shell transport and preserved all persistence assertions. The configurable reconciliation script is the rerunnable mechanism for applying evidence from another approved application revision."
+    "Application commits 5834a4b and 518785a repair selected-memory identity and routing reset. Eleven defects are fixed, three remain open, and D-G3-001 remains DEFERRED. Evidence: test-audit/final-repairs/REVIEW.md.",
+    "The final full suite completes 1,746 cases with zero unexpected failures or skips, including four retained expected failures. Evidence: test-audit/final-repairs/full-suite.json.",
+    "Twenty cases were promoted by changing ten it.fails markers only. All assertions and v584 bytes remain unchanged. The focused 43-case run passes. Evidence: test-audit/final-repairs/marker-integrity.json and unit.json.",
+    "All 31 application faults are killed at the accepted application digest and every restored run passes. Historical CI fault proofs remain at their recorded revisions. Evidence: test-audit/final-repairs/mutation-summary.json.",
+    "All original declarations, current declarations and runtime cases reconcile under strict checks. Acceptance uses actual application commits and current source hashes. Evidence: test-audit/ledger.json and test-audit/reconciliation.json.",
+    "Every previously KNOWN_DEFECT feature row was restated against ordinary results and fault evidence. The inventory remains 41 groups and 164 obligations. Evidence: test-audit/final-repairs/feature-restatus.json.",
+    "Typecheck, lint and Knip exit 0; lint retains 23 warnings. Evidence: test-audit/final-repairs/static-checks.json.",
+    "The four remaining expected failures reproduce as ordinary failures. Repaired cases receive credit only for ordinary passes and direct fault kills. Evidence: test-audit/final-repairs/open-ordinary.json.",
+    "CI pins Node24.18.1 after a captured native Node24.20/24.21 cleanup abort. Parsed workflow validation preserved all four coverage conditions and Node20/22 jobs. Final Linux full-suite and coverage verification remains a release prerequisite."
   ],
   "blockers": [
     {
       "kind": "known_application_defects",
-      "description": "The automated suite has zero unexpected failures, but five open defects remain: D-VSC-001 selected-memory ID/signal handling, DEF-G1-001 routing reset, ADV-CTX-001 JSON config key disclosure, D-DASH-001 generated project-name click-handler injection, and ADV-FTS-001 central FTS recovery after table loss. D-G3-001 is explicitly deferred. These are documented release risks, not successful behavior."
+      "description": "ADV-CTX-001 JSON key disclosure, D-DASH-001 stored project-name handler injection and ADV-FTS-001 lost-index recovery remain OPEN. D-G3-001 remains DEFERRED."
     },
     {
-      "kind": "local_docker_disk_full",
-      "description": "The default Docker runner fails four fixture-directory creations with ENOSPC. The same final packed image and unchanged six tests pass with ephemeral tmpfs fixture directories. No Docker data was deleted; the ordinary local runner remains capacity-limited."
+      "kind": "linux_coverage_pending",
+      "description": "Final Linux/Node24.18.1 full-suite and coverage must pass before release. Diagnostic preload is omitted from these runs because it changes subprocess stderr. Historical coverage does not validate the final application delta."
     },
     {
       "kind": "hosted_runner_flake_risks",
-      "description": "First-CI-run watchlist: src/test/phase7b.read-paths.test.ts:104 requires 100-memory reads below 100 ms; line124 requires FTS below 50 ms. Both thresholds are unchanged. Hosted contention and cold caches may exceed them."
+      "description": "Unchanged phase7b read tests require 100-memory reads below 100 ms and FTS below 50 ms. Hosted contention remains a flake risk; thresholds were not loosened."
     },
     {
-      "kind": "platform_and_class_review_limits",
-      "description": "Live provider credentials, native keychain/scheduler actions, native Windows/VS Code and physical network shares were not exercised. The 25 changed final application files were source-reviewed, but this bounded QA pass does not independently prove every class-sweep scenario in FIX_HANDOFF.md. Existing combined tests and named direct fault replays define the verified scope."
-    },
-    {
-      "kind": "ci_matrix_not_executed",
-      "description": "Local macOS Node 22.17.1 and the isolated Node 22 Docker image were exercised. No remote CI run, push, version bump, tag or publish was performed."
-    },
-    {
-      "kind": "existing_coverage_scope_limit",
-      "description": "Unresolved coverage bases fail correctly. Added modules absent from coverage-summary remain skipped by the pre-existing scope rule; the pinned baseline check adds no application module and does not establish excluded-module coverage."
+      "kind": "platform_limits",
+      "description": "Native VS Code, native Windows, live provider credentials, native keychain/scheduler behavior and physical network shares are not established by this QA pass. The earlier default Docker runner hit fixture ENOSPC; its historical tmpfs replay is not a new final-source run."
     }
   ],
   "verification": [
     {
-      "name": "full_suite",
-      "passed": 1746,
-      "failed": 0,
-      "skipped": 0,
-      "expectedFailureCases": 24,
-      "durationSeconds": 107.45,
-      "evidence": "test-audit/release-review/full-suite.json"
-    },
-    {
-      "name": "coverage",
+      "name": "full-suite",
       "exitCode": 0,
       "passed": 1746,
-      "durationSeconds": 120.2,
-      "percentages": {
-        "statements": 71.54,
-        "branches": 61.28,
-        "functions": 80.89,
-        "lines": 73.46
-      },
-      "evidence": "test-audit/release-review/coverage-suite.json"
+      "failed": 0,
+      "expectedFailures": 4,
+      "evidence": "test-audit/final-repairs/full-suite.json"
     },
     {
       "name": "typecheck",
@@ -72,11 +45,9 @@
         "run",
         "typecheck"
       ],
-      "environmentOverrides": {},
       "exitCode": 0,
-      "expectedExit": 0,
-      "durationSeconds": 3.09,
-      "evidence": "test-audit/release-review/static-ci-checks.json"
+      "seconds": 3.29,
+      "evidence": "test-audit/final-repairs/static-checks.json"
     },
     {
       "name": "lint",
@@ -85,11 +56,9 @@
         "run",
         "lint"
       ],
-      "environmentOverrides": {},
       "exitCode": 0,
-      "expectedExit": 0,
-      "durationSeconds": 0.32,
-      "evidence": "test-audit/release-review/static-ci-checks.json"
+      "seconds": 1.78,
+      "evidence": "test-audit/final-repairs/static-checks.json"
     },
     {
       "name": "knip",
@@ -98,76 +67,9 @@
         "run",
         "knip"
       ],
-      "environmentOverrides": {},
       "exitCode": 0,
-      "expectedExit": 0,
-      "durationSeconds": 0.74,
-      "evidence": "test-audit/release-review/static-ci-checks.json"
-    },
-    {
-      "name": "ci-multi-project",
-      "command": [
-        "node",
-        "scripts/test-ci-scenarios.mjs",
-        "multi-project"
-      ],
-      "exitCode": 0,
-      "durationSeconds": 1.61,
-      "evidence": "test-audit/release-review/static-ci-checks.json"
-    },
-    {
-      "name": "ci-local-storage",
-      "command": [
-        "node",
-        "scripts/test-ci-scenarios.mjs",
-        "local-storage"
-      ],
-      "exitCode": 0,
-      "durationSeconds": 0.56,
-      "evidence": "test-audit/release-review/static-ci-checks.json"
-    },
-    {
-      "name": "coverage-base-pinned",
-      "command": [
-        "node",
-        "scripts/check-new-file-coverage.mjs"
-      ],
-      "environmentOverrides": {
-        "COVERAGE_BASE_REF": "203c4e7"
-      },
-      "exitCode": 0,
-      "expectedExit": 0,
-      "durationSeconds": 0.15,
-      "evidence": "test-audit/release-review/static-ci-checks.json"
-    },
-    {
-      "name": "coverage-base-missing",
-      "command": [
-        "node",
-        "scripts/check-new-file-coverage.mjs"
-      ],
-      "environmentOverrides": {
-        "COVERAGE_BASE_REF": "audit-ref-that-does-not-exist"
-      },
-      "exitCode": 2,
-      "expectedExit": 2,
-      "durationSeconds": 0.04,
-      "evidence": "test-audit/release-review/static-ci-checks.json"
-    },
-    {
-      "name": "e2e:setup:default",
-      "exitCode": 1,
-      "passed": 2,
-      "failed": 4,
-      "failureKind": "fixture mkdir ENOSPC",
-      "evidence": "test-audit/release-review/docker.json"
-    },
-    {
-      "name": "e2e:setup:tmpfs",
-      "exitCode": 0,
-      "passed": 6,
-      "durationSeconds": 5.18,
-      "evidence": "test-audit/release-review/docker-tmpfs.json"
+      "seconds": 1.34,
+      "evidence": "test-audit/final-repairs/static-checks.json"
     }
   ]
 }

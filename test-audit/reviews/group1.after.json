@@ -8353,13 +8353,15 @@
       "beforeId": "src/test/setup-ui-summary.test.ts:153",
       "beforeName": "buildTrailingMap marks edited sections with ✓",
       "beforeClassification": "COUPLED",
-      "action": "expected_failure",
+      "action": "rewritten",
       "afterNames": [
         "Phase C — settings panel (summary) marks an edited routing section after saving and reloading its config"
       ],
       "afterClassification": "STRONG",
-      "evidence": "Ordinary failure reproduced for DEF-G1-001; see test-audit/release-review/open-ordinary.json. This detects an open defect and does not prove successful behavior.",
-      "mutationIds": [],
+      "evidence": "Ordinary case passes at 518785a1efed60cf1369e79303e173a276d84f7b and fails under direct fault(s) release-routing-reset-retains-overrides; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
+      "mutationIds": [
+        "release-routing-reset-retains-overrides"
+      ],
       "productionModules": [
         "src/lib/setup/summary.ts"
       ],
@@ -11698,10 +11700,12 @@
         "Phase C — settings panel (summary) DEF-G1-001 reset routing clears persisted task overrides"
       ],
       "afterClassification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "DEF-G1-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failure reproduced for DEF-G1-001; see test-audit/release-review/open-ordinary.json. This detects an open defect and does not prove successful behavior."
+      "mutationIds": [
+        "release-routing-reset-retains-overrides"
+      ],
+      "evidence": "Ordinary case passes at 518785a1efed60cf1369e79303e173a276d84f7b and fails under direct fault(s) release-routing-reset-retains-overrides; exact application restoration passes. See test-audit/mutations/release.*.results.json."
     }
   ]
 }

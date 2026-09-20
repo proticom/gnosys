@@ -1626,7 +1626,7 @@
       "afterNames": [
         "bulk import concurrency through CLI and MCP CLI uses configured concurrency for real provider requests"
       ],
-      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) ADV-CTX-G2D003-provider-f4b9135; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
+      "evidence": "Ordinary case passes at 518785a1efed60cf1369e79303e173a276d84f7b and fails under direct fault(s) ADV-CTX-G2D003-provider-f4b9135; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
       "mutationIds": [
         "ADV-CTX-G2D003-provider-f4b9135",
         "RELEASE-CTX-G2D003-provider-e9d605f"
@@ -1659,7 +1659,7 @@
       "afterNames": [
         "bulk import concurrency through CLI and MCP CLI concurrency flag overrides configured concurrency"
       ],
-      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) ADV-CTX-G2D003-provider-f4b9135; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
+      "evidence": "Ordinary case passes at 518785a1efed60cf1369e79303e173a276d84f7b and fails under direct fault(s) ADV-CTX-G2D003-provider-f4b9135; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
       "mutationIds": [
         "ADV-CTX-G2D003-provider-f4b9135",
         "RELEASE-CTX-G2D003-provider-e9d605f"
@@ -4520,7 +4520,7 @@
       "afterNames": [
         "Phase B — Ctrl+C clean exit gnosys setup exits cleanly on SIGINT"
       ],
-      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) setup-cancellation-success-regression; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
+      "evidence": "Ordinary case passes at 518785a1efed60cf1369e79303e173a276d84f7b and fails under direct fault(s) setup-cancellation-success-regression; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
       "mutationIds": [
         "setup-cancellation-success-regression"
       ],
@@ -6716,7 +6716,7 @@
       "mutationIds": [
         "ADV-FTS-repeat-insert"
       ],
-      "evidence": "Ordinary case passes at e9d605f66268a6599c6064d54bc4df6f4f094369 and fails under direct fault(s) ADV-FTS-repeat-insert; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
+      "evidence": "Ordinary case passes at 518785a1efed60cf1369e79303e173a276d84f7b and fails under direct fault(s) ADV-FTS-repeat-insert; exact application restoration passes. See test-audit/mutations/release.*.results.json.",
       "afterClassification": "STRONG"
     }
   ]

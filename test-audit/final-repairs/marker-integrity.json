@@ -1,0 +1,30 @@
+{
+  "applicationRef": "518785a",
+  "files": [
+    {
+      "file": "src/test/vscode-extension.test.ts",
+      "changedDeclarations": 2,
+      "markerOnly": true,
+      "sha256": "9fa294ef38086fe54d3a9dd47f07499a47fbad191b38e1dcc44ef98834ee33c2"
+    },
+    {
+      "file": "src/test/vscode-adversarial.test.ts",
+      "changedDeclarations": 4,
+      "markerOnly": true,
+      "sha256": "15d68ae59cdfdea10df29d729a1a2a1a989912b98c70c648c7ae2c59456027fd"
+    },
+    {
+      "file": "src/test/routing-reset-adversarial.test.ts",
+      "changedDeclarations": 2,
+      "markerOnly": true,
+      "sha256": "890257b11b4a6be68435a19a2ce7958bb21d0dff454d5d6d2f08861573259157"
+    },
+    {
+      "file": "src/test/setup-ui-summary.test.ts",
+      "changedDeclarations": 2,
+      "markerOnly": true,
+      "sha256": "b324446724c6b870ba4461578d33fd4cb6a2316631c8aae7bc16bf3e8b33495b"
+    }
+  ],
+  "v584Unchanged": true
+}

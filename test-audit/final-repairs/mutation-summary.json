@@ -1,0 +1,12 @@
+{
+  "applicationDigest": "0231721fb346e5028164aa0a32c4d7c68622c34876abb0281ac9699328630c5f",
+  "applicationFaults": 31,
+  "killed": 31,
+  "restored": 31,
+  "proofFiles": [
+    "test-audit/mutations/release.final-vscode.results.json",
+    "test-audit/mutations/release.final-routing.results.json",
+    "test-audit/mutations/release.final-previous.results.json"
+  ],
+  "unchangedCiEvidence": "test-audit/mutations/release.ci-http.results.json"
+}

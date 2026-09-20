@@ -19,7 +19,7 @@
       "action": "expected_failure",
       "defectId": "ADV-CTX-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces ADV-CTX-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces ADV-CTX-001; test-audit/final-repairs/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/context-adversarial.test.ts",
@@ -227,7 +227,7 @@
       "action": "expected_failure",
       "defectId": "D-DASH-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-DASH-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces D-DASH-001; test-audit/final-repairs/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/fts-adversarial.test.ts",
@@ -259,7 +259,7 @@
       "action": "expected_failure",
       "defectId": "ADV-FTS-001",
       "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces ADV-FTS-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "evidence": "Ordinary failing assertion reproduces ADV-FTS-001; test-audit/final-repairs/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
     },
     {
       "file": "src/test/http-json-adversarial.test.ts",
@@ -276,19 +276,25 @@
       "file": "src/test/routing-reset-adversarial.test.ts",
       "name": "routing reset attacks DEF-G1-001: reset clears several overrides and preserves every unrelated config value",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "DEF-G1-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces DEF-G1-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "release-routing-reset-retains-overrides",
+        "release-routing-reset-drops-dream"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) release-routing-reset-retains-overrides, release-routing-reset-drops-dream. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/routing-reset-adversarial.test.ts",
       "name": "routing reset attacks DEF-G1-001: reset then set one new override does not restore old routing or change unrelated config",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "DEF-G1-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces DEF-G1-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "release-routing-reset-retains-overrides",
+        "release-routing-reset-drops-dream"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) release-routing-reset-retains-overrides, release-routing-reset-drops-dream. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/setup-adversarial.test.ts",
@@ -316,37 +322,46 @@
       "file": "src/test/vscode-adversarial.test.ts",
       "name": "VS Code adversarial public commands D-VSC-001: resolves a unique selected frontmatter ID instead of a basename or fixture constant",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "vscode-final-constant-id",
+        "vscode-final-wrong-signal"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-final-constant-id, vscode-final-wrong-signal. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
       "name": "VS Code adversarial public commands D-VSC-001: absent ID warns without launching a subprocess",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "vscode-final-missing-id-launch"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-final-missing-id-launch. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
       "name": "VS Code adversarial public commands D-VSC-001: empty ID warns without launching a subprocess",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "vscode-final-missing-id-launch"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-final-missing-id-launch. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
       "name": "VS Code adversarial public commands D-VSC-001: body-only ID warns without launching a subprocess",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "vscode-final-missing-id-launch"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-final-missing-id-launch. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -396,10 +411,13 @@
       "file": "src/test/vscode-adversarial.test.ts",
       "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with POSIX separators",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "vscode-final-constant-id",
+        "vscode-final-wrong-signal"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-final-constant-id, vscode-final-wrong-signal. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
@@ -449,82 +467,109 @@
       "file": "src/test/vscode-adversarial.test.ts",
       "name": "VS Code adversarial public commands D-VSC-002: accepts deeply nested exact .gnosys with Windows separators",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "vscode-final-constant-id",
+        "vscode-final-wrong-signal"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-final-constant-id, vscode-final-wrong-signal. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
       "name": "VS Code adversarial public commands D-VSC-003: backticks in the selected path cannot execute shell text or change the selected ID",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "vscode-final-constant-id",
+        "vscode-final-wrong-signal"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-final-constant-id, vscode-final-wrong-signal. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
       "name": "VS Code adversarial public commands D-VSC-003: command substitution in the selected path cannot execute shell text or change the selected ID",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "vscode-final-constant-id",
+        "vscode-final-wrong-signal"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-final-constant-id, vscode-final-wrong-signal. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
       "name": "VS Code adversarial public commands D-VSC-003: semicolon in the selected path cannot execute shell text or change the selected ID",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "vscode-final-constant-id",
+        "vscode-final-wrong-signal"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-final-constant-id, vscode-final-wrong-signal. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
       "name": "VS Code adversarial public commands D-VSC-003: and operator in the selected path cannot execute shell text or change the selected ID",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "vscode-final-constant-id",
+        "vscode-final-wrong-signal"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-final-constant-id, vscode-final-wrong-signal. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
       "name": "VS Code adversarial public commands D-VSC-003: pipe in the selected path cannot execute shell text or change the selected ID",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "vscode-final-constant-id",
+        "vscode-final-wrong-signal"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-final-constant-id, vscode-final-wrong-signal. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
       "name": "VS Code adversarial public commands D-VSC-003: quotes in the selected path cannot execute shell text or change the selected ID",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "vscode-final-constant-id",
+        "vscode-final-wrong-signal"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-final-constant-id, vscode-final-wrong-signal. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
       "name": "VS Code adversarial public commands D-VSC-003: spaces in the selected path cannot execute shell text or change the selected ID",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "vscode-final-constant-id",
+        "vscode-final-wrong-signal"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-final-constant-id, vscode-final-wrong-signal. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",
       "name": "VS Code adversarial public commands D-VSC-003: newline in the selected path cannot execute shell text or change the selected ID",
       "classification": "STRONG",
-      "action": "expected_failure",
+      "action": "added",
       "defectId": "D-VSC-001",
-      "mutationIds": [],
-      "evidence": "Ordinary failing assertion reproduces D-VSC-001; test-audit/release-review/open-ordinary.json records the actual failure. No successful behavior or inverse-repair credit is claimed."
+      "mutationIds": [
+        "vscode-final-constant-id",
+        "vscode-final-wrong-signal"
+      ],
+      "evidence": "Measured pass/fail/pass against direct fault(s) vscode-final-constant-id, vscode-final-wrong-signal. The actual failing assertions and restored runs are in test-audit/mutations/release.*.results.json."
     },
     {
       "file": "src/test/vscode-adversarial.test.ts",

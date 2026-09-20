@@ -1,0 +1,26 @@
+{
+  "suitePath": "test-audit/final-repairs/full-suite.json",
+  "ordinaryFailurePath": "test-audit/final-repairs/open-ordinary.json",
+  "reconciliationPath": "test-audit/reconciliation.json",
+  "applicationFixRef": "518785a1efed60cf1369e79303e173a276d84f7b",
+  "applicationDigest": "0231721fb346e5028164aa0a32c4d7c68622c34876abb0281ac9699328630c5f",
+  "proofPrefix": "release.",
+  "fixRefs": {
+    "D-VSC-003": "b8ac52b",
+    "ADV-CTX-002": "9a98800",
+    "D-VSC-001": "5834a4bdf4dbd12b032fa10c26618bc01632bfd9",
+    "DEF-G1-001": "518785a1efed60cf1369e79303e173a276d84f7b"
+  },
+  "reasons": {
+    "D-VSC-003": "FIXED. Variable selected-memory arguments bypass the shell. The exact constant dashboard command remains permitted and succeeds through the registered built CLI. Selected ID behavior is separately fixed under D-VSC-001.",
+    "ADV-CTX-002": "FIXED. Both normal CLI and MCP imports persist the two literal records in the target central database. Removing each callers database argument makes its ordinary persistence case fail; restoration passes.",
+    "ADV-FTS-001": "OPEN. Central db.ts is unchanged from f4b9135. After FTS table loss, reopening still leaves the stored memory unsearchable. The archive and sidecar class repairs do not repair this central-index recovery case.",
+    "ADV-CTX-001": "OPEN. Real config show --json still prints the fake stored custom-provider key.",
+    "D-DASH-001": "OPEN. A stored project name still injects executable JavaScript into the generated dashboard click handler.",
+    "D-VSC-001": "FIXED. Selected frontmatter identity and useful signal reach the CLI as literal argv. Unique IDs, decoys, missing IDs, nested separators and hostile filenames pass. Constant-ID, missing-ID-launch and wrong-signal faults are killed.",
+    "DEF-G1-001": "FIXED. Reset clears all local task overrides, preserves unrelated raw configuration values, and reset-then-edit retains only the new override. Reverting reset and dropping Dream configuration are killed. v584 tests remain unchanged."
+  },
+  "caseDefects": {
+    "VS Code adversarial public commands D-VSC-003: variable arguments use shell-free argv while the constant dashboard command runs": "D-VSC-003"
+  }
+}
