@@ -7,7 +7,7 @@
  * Commands:
  *   - Gnosys: Reinforce Memory — increments reinforcement_count on the
  *     currently open .md file if it's inside a .gnosys/ directory.
- *   - Gnosys: Show Dashboard — runs `gnosys dashboard` in the terminal.
+ *   - Gnosys: Show Dashboard — runs `gnosys status --system` in the terminal.
  */
 
 const vscode = require("vscode");
@@ -63,7 +63,7 @@ function activate(context) {
     () => {
       const terminal = vscode.window.createTerminal("Gnosys Dashboard");
       terminal.show();
-      terminal.sendText("npx gnosys dashboard");
+      terminal.sendText("npx gnosys status --system");
     }
   );
 
