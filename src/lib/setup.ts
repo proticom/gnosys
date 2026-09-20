@@ -1431,7 +1431,7 @@ export async function runSetup(opts: {
   rl.on("close", () => {
     if (!setupCompleted) {
       console.log("\n\nSetup cancelled.");
-      process.exit(0);
+      process.exit(130);
     }
   });
 
