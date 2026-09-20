@@ -2735,7 +2735,8 @@
         "F29",
         "F37",
         "F01"
-      ]
+      ],
+      "structuralReason": "Asserts only a locally constructed SandboxStatus object. The application is never called; every application import could return undefined and the assertions would still pass."
     },
     {
       "beforeId": "src/test/phase9e.network-share-polish.test.ts:235",
@@ -2756,7 +2757,8 @@
         "F29",
         "F37",
         "F01"
-      ]
+      ],
+      "structuralReason": "Asserts only a locally constructed SandboxStatus object. The application is never called; every application import could return undefined and the assertions would still pass."
     },
     {
       "beforeId": "src/test/phase9e.network-share-polish.test.ts:245",
@@ -2803,7 +2805,8 @@
         "F29",
         "F37",
         "F01"
-      ]
+      ],
+      "structuralReason": "Asserts only a locally constructed SandboxStatus object. The application is never called; every application import could return undefined and the assertions would still pass."
     },
     {
       "beforeId": "src/test/phase9e.network-share-polish.test.ts:272",
@@ -2824,7 +2827,8 @@
         "F29",
         "F37",
         "F01"
-      ]
+      ],
+      "structuralReason": "Asserts only a locally constructed SandboxStatus object. The application is never called; every application import could return undefined and the assertions would still pass."
     },
     {
       "beforeId": "src/test/phase9e.network-share-polish.test.ts:289",
@@ -2871,7 +2875,8 @@
         "F29",
         "F37",
         "F01"
-      ]
+      ],
+      "structuralReason": "Checks README strings or the existence of CONTRIBUTING.md without executing application behavior. A realistic application defect cannot affect this check."
     },
     {
       "beforeId": "src/test/phase9e.network-share-polish.test.ts:327",
@@ -2893,7 +2898,8 @@
         "F29",
         "F37",
         "F01"
-      ]
+      ],
+      "structuralReason": "Checks README strings or the existence of CONTRIBUTING.md without executing application behavior. A realistic application defect cannot affect this check."
     },
     {
       "beforeId": "src/test/phase9e.network-share-polish.test.ts:331",
