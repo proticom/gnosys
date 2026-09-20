@@ -31,10 +31,11 @@ export async function runCommitContextCommand(
       const tagRegistry = new GnosysTagRegistry(writeTarget.store.getStorePath());
       await tagRegistry.load();
       const { GnosysIngestion } = await import("./ingest.js");
-      const ingestion = new GnosysIngestion(writeTarget.store, tagRegistry);
+      const ccConfig = await loadConfig(writeTarget.store.getStorePath());
+      const ingestion = new GnosysIngestion(writeTarget.store, tagRegistry, ccConfig);
   
       if (!ingestion.isLLMAvailable) {
-        console.error("Error: No LLM provider available. Add an API key to ~/.config/gnosys/.env or use a local model: gnosys config set provider ollama");
+        console.error("Error: No LLM provider available. Run 'gnosys setup' to configure a provider and its credentials.");
         process.exit(1);
       }
   
@@ -49,8 +50,6 @@ export async function runCommitContextCommand(
       // Step 1: Extract candidates via LLM abstraction
       console.log("Extracting knowledge candidates from context...");
   
-      // Load config for the write target store
-      const ccConfig = await loadConfig(writeTarget.store.getStorePath());
       let extractProvider: LLMProvider;
       try {
         extractProvider = getLLMProvider(ccConfig, "structuring");
