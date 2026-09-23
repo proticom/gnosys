@@ -5,6 +5,16 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.2.4] - 2026-09-22
+
+Includes the application fixes documented for 6.2.3. Neither 6.2.2 nor 6.2.3
+was published to npm; their Git tags remain unchanged.
+
+### Fixed
+
+- Run the publishing job in the existing `npm` GitHub environment required by
+  the npm trusted publisher. Preserve the environment's release-tag restriction.
+
 ## [6.2.3] - 2026-09-20
 
 Includes the fixes prepared for 6.2.2, whose npm publication failed. The 6.2.2
