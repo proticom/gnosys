@@ -18,7 +18,7 @@
 
 # Gnosys — One Brain. Zero Context Bloat.
 
-**Gnosys gives AI agents persistent memory that survives across sessions, projects, and machines.**
+**Gnosys gives AI agents persistent, portable, and shared memory that survives across sessions, projects, and machines.**
 
 <p align="center">
   <a href="https://x.ai/bot/g9DYB8WEL5lf7QXvXI1Li"><img src="docs/bot-avatar/gnosys-bot-eyes.gif" alt="Animated Gnosys bot avatar" width="128"></a>
