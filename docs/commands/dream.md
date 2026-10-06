@@ -154,6 +154,26 @@ npm run cli -- dream --help
 node scripts/audit-commands.mjs --write
 ```
 
+## Relationship coverage and state
+
+Dream validates relationship replies one item at a time. Invalid items produce warnings; valid items are saved. A clear "No relationships found." reply counts as completed analysis. Malformed whole replies get at most three attempts per source-content hash, then Dream marks those sources analyzed. Changed source content can be analyzed again.
+
+An unchanged, fully analyzed corpus needs no relationship calls. When the corpus changes, new source content takes priority, followed by the sources analyzed longest ago. Unrelated edits therefore permit rotating coverage instead of repeatedly selecting the newest 30 memories.
+
+Dream writes state through a temporary file and atomic rename. It removes superseded corpus fingerprints and records older than 90 days. Errors and warnings use one line each, limited to 300 characters and 20 entries per list.
+
+## Reviewer simulation
+
+Use a database copy to repeat relationship parsing and coverage checks without an LLM:
+
+```bash
+node --import tsx scripts/check-dream-review.mjs --db /tmp/gnosys-copy.db --mode badtype --runs 2
+```
+
+The script copies the supplied database and optional `--state dream-state.json` into a new temporary directory. It isolates Gnosys state and config, injects deterministic replies, and checks that memory IDs, titles, and content survive unchanged and SQLite integrity remains `ok`. Output includes source IDs, relationships saved, errors, warnings, and state size. It does not print memory bodies.
+
+`--mode badtype` inserts one invalid relationship type per batch. `valid` returns valid relationships, and `none` returns "No relationships found." `cover` starts with every source marked analyzed and changes an unrelated index entry between runs to check rotation. `static` marks the current corpus fully analyzed and leaves it unchanged to check that paid calls stop. `--cap 12` sets the per-run call budget. `--source-root /tmp/baseline` runs the same check against another source snapshot with its dependencies installed.
+
 ## Related commands
 
 - `gnosys setup dream` — configure designation, provider, schedule.
