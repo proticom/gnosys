@@ -1,0 +1,26 @@
+import type { HybridSearchResult } from "./searchTypes.js";
+
+type SearchPresentation =
+  | { kind: "hybrid"; embeddingCount: number }
+  | { kind: "semantic" }
+  | { kind: "keyword-fallback"; requested: "hybrid" | "semantic" };
+
+export function formatMcpSearchResults({ query, results, search }: {
+  query: string;
+  results: HybridSearchResult[];
+  search: SearchPresentation;
+}): string {
+  const warning = search.kind === "keyword-fallback"
+    ? "Semantic embeddings unavailable. Keyword-only results. Run `gnosys doctor` for the fix.\n\n"
+    : "";
+  const semantic = search.kind === "semantic" || (search.kind === "keyword-fallback" && search.requested === "semantic");
+  const resultKind = semantic ? `${search.kind === "keyword-fallback" ? "keyword" : "semantic"} results` : "results";
+  if (results.length === 0) {
+    return `${warning}No ${resultKind} for "${query}". ${semantic ? "Try a broader query." : "Try different keywords."}`;
+  }
+  const indexed = search.kind === "hybrid" ? ` (${search.embeddingCount} embeddings indexed)` : "";
+  const formatted = results.map((result) =>
+    `**${result.title}** (score: ${result.score.toFixed(4)}, via: ${result.sources.join("+")})\n  Path: ${result.relativePath}\n  ${result.snippet.substring(0, 150)}...`
+  ).join("\n\n");
+  return `${warning}Found ${results.length} ${resultKind} for "${query}"${indexed}:\n\n${formatted}`;
+}

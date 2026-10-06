@@ -21,20 +21,6 @@ describe("hybrid search degrade warnings (v5.12.3)", () => {
     "utf-8",
   );
 
-  it("gnosys_hybrid_search warns when the semantic leg can't run", () => {
-    expect(index).toContain("const degradeWarning =");
-    expect(index).toContain(
-      `outcome.kind === "keyword-fallback"`,
-    );
-    expect(index).toContain("outcome.note");
-    expect(index).toContain(
-      "hybridSearch.searchWithStatus(query, limit || 15, requestedMode)",
-    );
-    // The warning is prepended to BOTH the zero-result and the found-results outputs
-    expect(index).toContain('`${degradeWarning}No results for "${query}"');
-    expect(index).toContain('`${degradeWarning}Found ${results.length} results');
-  });
-
   it("gnosys_semantic_search announces keyword fallback", () => {
     expect(index).toContain(
       "Falls back to keyword search with an explicit note when embeddings are unavailable",

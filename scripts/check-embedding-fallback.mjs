@@ -116,11 +116,14 @@ try {
     assert.notEqual(result.isError, true);
     const text = result.content.map(item => item.text ?? "").join("\n");
     assert.match(text, /JWT authentication/);
-    assert.match(text, /search ran keyword-only/);
-    assert.match(text, /npm install @huggingface\/transformers/);
+    assert.equal(text.split("\n\n")[0], "Semantic embeddings unavailable. Keyword-only results. Run `gnosys doctor` for the fix.");
+    assert.equal(text.includes("npm install"), false);
+    assert.equal(text.includes("embeddings indexed"), false);
+    assert.equal(text.includes(installed), false);
     assert.match(text, /via: keyword/);
   }
   assert.equal((stderr.match(/Gnosys embedding warning:/g) ?? []).length, 1);
+  assert.match(stderr, /Gnosys embedding warning:.*npm install @huggingface\/transformers@\^4\.2\.0 --prefix/);
   assert.deepEqual(invalidLines, []);
   process.stdout.write("PASS: missing-package doctor, setup, CLI fallback, MCP fallback, one stderr startup warning, JSON-RPC-only stdout.\n");
 } finally {

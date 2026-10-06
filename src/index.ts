@@ -44,6 +44,7 @@ import { z } from "zod";
 import fs from "fs/promises";
 import type { MemoryFrontmatter } from "./lib/store.js";
 import { GnosysSearch } from "./lib/search.js";
+import { formatMcpSearchResults } from "./lib/mcpSearchResults.js";
 import { GnosysTagRegistry } from "./lib/tags.js";
 import { GnosysResolver } from "./lib/resolver.js";
 import { applyLens, type LensFilter } from "./lib/lensing.js";
@@ -2274,20 +2275,14 @@ regTool(
       const requestedMode = (mode as "keyword" | "semantic" | "hybrid") || "hybrid";
       const outcome = await hybridSearch.searchWithStatus(query, limit || 15, requestedMode);
       const results = outcome.results;
-      const degradeWarning = outcome.kind === "keyword-fallback" ? `${outcome.note}\n\n` : "";
-
-      if (results.length === 0) {
-        return {
-          content: [{ type: "text", text: `${degradeWarning}No results for "${query}". Try different keywords.` }],
-        };
-      }
-
-      const formatted = results
-        .map(
-          (r) =>
-            `**${r.title}** (score: ${r.score.toFixed(4)}, via: ${r.sources.join("+")})\n  Path: ${r.relativePath}\n  ${r.snippet.substring(0, 150)}...`
-        )
-        .join("\n\n");
+      const text = formatMcpSearchResults({
+        query,
+        results,
+        search: outcome.kind === "keyword-fallback"
+          ? { kind: "keyword-fallback", requested: "hybrid" }
+          : { kind: "hybrid", embeddingCount: hybridSearch.embeddingCount() },
+      });
+      if (results.length === 0) return { content: [{ type: "text", text }] };
 
       // Reinforce used memories (best-effort, non-blocking)
       // Use default resolver here since hybridSearch operates across all stores
@@ -2301,15 +2296,7 @@ regTool(
         ).catch(() => {}); // Fire-and-forget
       }
 
-      const embCount = hybridSearch.embeddingCount();
-      return {
-        content: [
-          {
-            type: "text",
-            text: `${degradeWarning}Found ${results.length} results for "${query}" (${embCount} embeddings indexed):\n\n${formatted}`,
-          },
-        ],
-      };
+      return { content: [{ type: "text", text }] };
     } catch (err) {
       return {
         content: [{ type: "text", text: `Search failed: ${err instanceof Error ? err.message : String(err)}` }],
@@ -2342,25 +2329,14 @@ regTool(
     try {
       const outcome = await hybridSearch.searchWithStatus(query, limit || 15, "semantic");
       const results = outcome.results;
-      const degradeWarning = outcome.kind === "keyword-fallback" ? `${outcome.note}\n\n` : "";
-      const resultKind = outcome.kind === "keyword-fallback" ? "keyword" : "semantic";
-
-      if (results.length === 0) {
-        return {
-          content: [{ type: "text", text: `${degradeWarning}No ${resultKind} results for "${query}". Try a broader query.` }],
-        };
-      }
-
-      const formatted = results
-        .map(
-          (r) =>
-            `**${r.title}** (score: ${r.score.toFixed(4)}, via: ${r.sources.join("+")})\n  Path: ${r.relativePath}\n  ${r.snippet.substring(0, 150)}...`
-        )
-        .join("\n\n");
-
-      return {
-        content: [{ type: "text", text: `${degradeWarning}Found ${results.length} ${resultKind} results for "${query}":\n\n${formatted}` }],
-      };
+      const text = formatMcpSearchResults({
+        query,
+        results,
+        search: outcome.kind === "keyword-fallback"
+          ? { kind: "keyword-fallback", requested: "semantic" }
+          : { kind: "semantic" },
+      });
+      return { content: [{ type: "text", text }] };
     } catch (err) {
       return {
         content: [{ type: "text", text: `Semantic search failed: ${err instanceof Error ? err.message : String(err)}` }],

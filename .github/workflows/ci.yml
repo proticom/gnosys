@@ -50,6 +50,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Check embedding fallback
+        run: node scripts/check-embedding-fallback.mjs
+
       - name: Run tests
         run: npm test
 
