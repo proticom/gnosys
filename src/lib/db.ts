@@ -169,6 +169,21 @@ export interface MigrationStats {
 
 const SCHEMA_VERSION = 5;
 
+const FTS_SOURCE_COLUMNS = ["id", "title", "category", "tags", "relevance", "content", "summary"] as const;
+
+const MEMORIES_FTS_SQL = `
+CREATE VIRTUAL TABLE IF NOT EXISTS memories_fts USING fts5(
+  id,
+  title,
+  category,
+  tags,
+  relevance,
+  content,
+  summary,
+  tokenize='porter unicode61'
+);
+`;
+
 const SCHEMA_SQL = `
 CREATE TABLE IF NOT EXISTS memories (
   id                  TEXT PRIMARY KEY,
@@ -213,16 +228,7 @@ CREATE INDEX IF NOT EXISTS idx_memories_scope ON memories(scope);
 CREATE INDEX IF NOT EXISTS idx_memories_modified ON memories(modified);
 CREATE INDEX IF NOT EXISTS idx_memories_created ON memories(created);
 
-CREATE VIRTUAL TABLE IF NOT EXISTS memories_fts USING fts5(
-  id,
-  title,
-  category,
-  tags,
-  relevance,
-  content,
-  summary,
-  tokenize='porter unicode61'
-);
+${MEMORIES_FTS_SQL}
 
 CREATE TABLE IF NOT EXISTS relationships (
   source_id   TEXT NOT NULL,
@@ -964,6 +970,29 @@ export class GnosysDB {
       `);
       } catch {
         // Sync tables/indexes may already exist — fine
+      }
+    }
+
+    // Every upgrade: index memories rows missing from memories_fts. The
+    // insert trigger only covers rows written after the FTS table exists, so
+    // a DB that never had one stays unsearchable. NOT IN makes a rerun a
+    // no-op; a NULL id in the FTS table would turn NOT IN into NULL for
+    // every row. Legacy DBs reach this before SCHEMA_SQL, so memories may
+    // not exist yet. A failed backfill only costs search, so it must not
+    // stop the DB from opening.
+    const memoryCols = new Set(
+      (this.db.pragma("table_info(memories)") as Array<{ name: string }>).map((c) => c.name),
+    );
+    if (FTS_SOURCE_COLUMNS.every((c) => memoryCols.has(c))) {
+      try {
+        this.db.exec(MEMORIES_FTS_SQL);
+        this.db.exec(`
+          INSERT INTO memories_fts(${FTS_SOURCE_COLUMNS.join(", ")})
+          SELECT ${FTS_SOURCE_COLUMNS.join(", ")} FROM memories
+          WHERE id NOT IN (SELECT id FROM memories_fts WHERE id IS NOT NULL)
+        `);
+      } catch (err) {
+        logError(err, { op: "migrateSchema.ftsBackfill" });
       }
     }
 
