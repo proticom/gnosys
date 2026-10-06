@@ -5,6 +5,23 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **`store: "personal"` writes no longer fail.** `gnosys_add_structured` and
+  `gnosys_add` with `store: "personal"` hit `CHECK constraint failed` because
+  the store layer name was written as the DB scope. Personal memories now
+  persist with scope `user`.
+- **`projectRoot` now scopes `gnosys_search`, `gnosys_discover` and
+  `gnosys_recall`.** A call with `projectRoot` sees that project's memories
+  plus user and global memories, and no longer returns other projects'
+  memories. Calls without `projectRoot` and `gnosys_federated_search` still
+  search every project.
+- **Legacy databases without an FTS index become searchable.** Upgrading a
+  v1-shaped database that had no `memories_fts` table now indexes its
+  existing rows during migration.
+
 ## [6.2.1] — 2026-07-16
 
 ### Changed
