@@ -54,7 +54,7 @@ import { getLLMProvider, type LLMProvider } from "./lib/llm.js";
 import { recall, formatRecall, } from "./lib/recall.js";
 import { initAudit, readAuditLog, formatAuditTimeline } from "./lib/audit.js";
 import { logError } from "./lib/log.js";
-import { GnosysDB, type MemoryScope } from "./lib/db.js";
+import { GnosysDB, isVisibleInProject, type MemoryScope, type ProjectVisibility } from "./lib/db.js";
 import { syncMemoryToDb, syncUpdateToDb, syncDearchiveToDb, syncReinforcementToDb, auditToDb } from "./lib/dbWrite.js";
 import { createProjectIdentity, readProjectIdentity, } from "./lib/projectIdentity.js";
 import { setPreference, getPreference, getAllPreferences, deletePreference, KNOWN_PREFERENCE_KEYS, suggestPreferenceKey } from "./lib/preferences.js";
@@ -316,6 +316,8 @@ interface ToolContext {
   centralDb: GnosysDB | null;
   /** v3.0: Project identity from .gnosys/gnosys.json */
   projectId: string | null;
+  /** Set only for projectRoot calls: reads see that project plus user/global. */
+  visibility?: ProjectVisibility;
   /** v13: Client read context (snapshot/master + pending overlay). */
   clientRead?: ClientReadContext | null;
   /** True when `search` was created for this call (projectRoot-scoped) and
@@ -429,6 +431,7 @@ async function resolveToolContext(projectRoot?: string): Promise<ToolContext> {
     gnosysDb: scopedDb,
     centralDb: applied.centralDb,
     projectId,
+    visibility: { projectId },
     clientRead: applied.clientRead,
     ownsSearch: scopedSearch !== null,
   };
@@ -494,11 +497,11 @@ regTool(
     // v2.0 DB-backed fast path
     if (ctx.centralDb?.isAvailable() && ctx.centralDb?.isMigrated()) {
       const lim = limit || 20;
-      let results = ctx.centralDb.discoverFts(query, lim);
+      let results = ctx.centralDb.discoverFts(query, lim, ctx.visibility);
       if (ctx.clientRead?.pendingOverlay.length) {
         results = mergeOverlayDiscoverResults(
           results,
-          ctx.clientRead.pendingOverlay,
+          ctx.clientRead.pendingOverlay.filter((p) => isVisibleInProject(p, ctx.visibility)),
           query,
           lim,
           (p) => ({
@@ -658,11 +661,11 @@ regTool(
     // v2.0 DB-backed fast path
     if (ctx.centralDb?.isAvailable() && ctx.centralDb?.isMigrated()) {
       const lim = limit || 20;
-      let results = ctx.centralDb.searchFts(query, lim);
+      let results = ctx.centralDb.searchFts(query, lim, ctx.visibility);
       if (ctx.clientRead?.pendingOverlay.length) {
         results = mergeOverlaySearchResults(
           results,
-          ctx.clientRead.pendingOverlay,
+          ctx.clientRead.pendingOverlay.filter((p) => isVisibleInProject(p, ctx.visibility)),
           query,
           lim,
           (p) => ({
@@ -2966,6 +2969,7 @@ regTool(
       recallConfig,
       gnosysDb: ctx.centralDb || undefined,
       pendingOverlay: ctx.clientRead?.pendingOverlay,
+      visibility: ctx.visibility,
     });
 
     return {

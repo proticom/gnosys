@@ -96,6 +96,39 @@ export interface DbProjectLocation {
 
 export type MemoryScope = "project" | "user" | "global";
 
+/**
+ * Restricts a read to one project's memories plus the shared user and global
+ * tiers. `projectId: null` (an unregistered projectRoot) sees only the shared
+ * tiers.
+ */
+export interface ProjectVisibility {
+  projectId: string | null;
+}
+
+/** Row-level form of {@link visibilitySql}, for rows that never touch SQL. */
+export function isVisibleInProject(
+  row: { scope: string | null; project_id: string | null },
+  visibility: ProjectVisibility | undefined,
+): boolean {
+  if (!visibility) return true;
+  if (row.scope === "user" || row.scope === "global") return true;
+  return visibility.projectId !== null && row.project_id === visibility.projectId;
+}
+
+/** SQL form of {@link isVisibleInProject}; `alias` is the memories table alias. */
+function visibilitySql(
+  visibility: ProjectVisibility | undefined,
+  alias: string,
+): { clause: string; params: string[] } {
+  if (!visibility) return { clause: "", params: [] };
+  const shared = `${alias}scope IN ('user','global')`;
+  if (visibility.projectId === null) return { clause: ` AND ${shared}`, params: [] };
+  return {
+    clause: ` AND (${shared} OR ${alias}project_id = ?)`,
+    params: [visibility.projectId],
+  };
+}
+
 export interface DbRelationship {
   source_id: string;
   target_id: string;
@@ -1300,9 +1333,11 @@ export class GnosysDB {
   searchFts(
     query: string,
     limit: number = 20,
+    visibility?: ProjectVisibility,
   ): Array<{ id: string; title: string; snippet: string; rank: number; project_id: string | null }> {
     const terms = ftsTerms(query);
     if (terms.length === 0) return [];
+    const vis = visibilitySql(visibility, "m.");
 
     // v5.8.0 (#7): join memories so callers can render project-prefixed IDs.
     return this.withRecovery(() => {
@@ -1315,10 +1350,10 @@ export class GnosysDB {
                  m.project_id AS project_id
           FROM memories_fts fts
           JOIN memories m ON m.id = fts.id
-          WHERE memories_fts MATCH ?
+          WHERE memories_fts MATCH ?${vis.clause}
           ORDER BY fts.rank
           LIMIT ?
-        `).all(match, limit) as Array<{
+        `).all(match, ...vis.params, limit) as Array<{
           id: string; title: string; snippet: string; rank: number; project_id: string | null;
         }>;
 
@@ -1330,11 +1365,12 @@ export class GnosysDB {
     } catch {
       // FTS5 syntax error — fallback to LIKE
       const pattern = `%${terms.join(" ")}%`;
+      const likeVis = visibilitySql(visibility, "");
       return this.prep(`
         SELECT id, title, substr(content, 1, 200) as snippet, 0 as rank, project_id
-        FROM memories WHERE content LIKE ? OR title LIKE ? OR tags LIKE ?
+        FROM memories WHERE (content LIKE ? OR title LIKE ? OR tags LIKE ?)${likeVis.clause}
         LIMIT ?
-      `).all(pattern, pattern, pattern, limit) as Array<{
+      `).all(pattern, pattern, pattern, ...likeVis.params, limit) as Array<{
         id: string; title: string; snippet: string; rank: number; project_id: string | null;
       }>;
     }
@@ -1344,16 +1380,18 @@ export class GnosysDB {
   discoverFts(
     query: string,
     limit: number = 20,
+    visibility?: ProjectVisibility,
   ): Array<{ id: string; title: string; relevance: string; rank: number; project_id: string | null }> {
     const terms = ftsTerms(query);
     if (terms.length === 0) return [];
+    const vis = visibilitySql(visibility, "m.");
 
     // v5.7.1 (#14): join `memories` so callers can render project-prefixed IDs.
     const select = `
       SELECT m.id AS id, m.title AS title, m.relevance AS relevance, fts.rank AS rank, m.project_id AS project_id
       FROM memories_fts fts
       JOIN memories m ON m.id = fts.id
-      WHERE memories_fts MATCH ?
+      WHERE memories_fts MATCH ?${vis.clause}
       ORDER BY fts.rank
       LIMIT ?
     `;
@@ -1362,7 +1400,7 @@ export class GnosysDB {
     // syntax failures still degrade gracefully to "no results".
     const tryRun = (match: string) => {
       try {
-        return this.prep(select).all(match, limit) as Array<{
+        return this.prep(select).all(match, ...vis.params, limit) as Array<{
           id: string; title: string; relevance: string; rank: number; project_id: string | null;
         }>;
       } catch (err) {
@@ -1525,12 +1563,13 @@ export class GnosysDB {
    * resource asks for "the best memories, no query" — rank by how often a
    * memory proved useful (reinforcement), then confidence, then recency.
    */
-  getTopActiveMemories(limit: number = 15): DbMemory[] {
+  getTopActiveMemories(limit: number = 15, visibility?: ProjectVisibility): DbMemory[] {
+    const vis = visibilitySql(visibility, "");
     return this.withRecovery(() =>
       this.prep(
-        `SELECT ${LEAN_MEMORY_PROJECTION} FROM memories WHERE tier = 'active' AND status = 'active'
+        `SELECT ${LEAN_MEMORY_PROJECTION} FROM memories WHERE tier = 'active' AND status = 'active'${vis.clause}
          ORDER BY reinforcement_count DESC, confidence DESC, modified DESC LIMIT ?`,
-      ).all(limit) as DbMemory[],
+      ).all(...vis.params, limit) as DbMemory[],
     );
   }
 
