@@ -82,6 +82,7 @@ export interface DreamRunRecord {
   effectiveness: DreamEffectivenessRecord;
   reviewSuggestions?: ReviewSuggestion[];
   errors: string[];
+  warnings?: string[];
   skipReason?: string;
 }
 
@@ -93,6 +94,11 @@ export interface DreamState {
   analyzedFingerprints: Record<string, {
     kind: "summary" | "critique" | "relationship";
     lastAnalyzedAt: string;
+    memoryIds: string[];
+  }>;
+  relationshipRetries?: Record<string, {
+    attempts: number;
+    lastAttemptAt: string;
     memoryIds: string[];
   }>;
 }
@@ -224,7 +230,38 @@ export function readDreamState(baseDir?: string): DreamState {
 export function writeDreamState(state: DreamState, baseDir?: string): void {
   const file = getDreamStatePath(baseDir);
   fs.mkdirSync(path.dirname(file), { recursive: true });
-  fs.writeFileSync(file, `${JSON.stringify(state, null, 2)}\n`, "utf8");
+  const cutoff = (state.lastRunAt ? Date.parse(state.lastRunAt) : Date.now()) - 90 * 24 * 60 * 60 * 1000;
+  const fingerprintsSeen = new Set<string>();
+  const analyzedFingerprints = Object.fromEntries(Object.entries(state.analyzedFingerprints)
+    .reverse()
+    .sort(([, a], [, b]) => Date.parse(b.lastAnalyzedAt) - Date.parse(a.lastAnalyzedAt))
+    .filter(([key, entry]) => {
+      if (!(Date.parse(entry.lastAnalyzedAt) >= cutoff)) return false;
+      const identity = key.startsWith("relationship-source:")
+        ? key.split(":").slice(0, 2).join(":")
+        : JSON.stringify([entry.kind, [...entry.memoryIds].sort()]);
+      if (fingerprintsSeen.has(identity)) return false;
+      fingerprintsSeen.add(identity);
+      return true;
+    }));
+  const retriesSeen = new Set<string>();
+  const relationshipRetries = state.relationshipRetries && Object.fromEntries(Object.entries(state.relationshipRetries)
+    .reverse()
+    .sort(([, a], [, b]) => Date.parse(b.lastAttemptAt) - Date.parse(a.lastAttemptAt))
+    .filter(([, entry]) => {
+      if (!(Date.parse(entry.lastAttemptAt) >= cutoff)) return false;
+      const identity = JSON.stringify([...entry.memoryIds].sort());
+      if (retriesSeen.has(identity)) return false;
+      retriesSeen.add(identity);
+      return true;
+    }));
+  const temporaryFile = `${file}.${crypto.randomUUID()}.tmp`;
+  try {
+    fs.writeFileSync(temporaryFile, `${JSON.stringify({ ...state, analyzedFingerprints, relationshipRetries }, null, 2)}\n`, "utf8");
+    fs.renameSync(temporaryFile, file);
+  } finally {
+    fs.rmSync(temporaryFile, { force: true });
+  }
 }
 
 export function appendDreamRun(record: DreamRunRecord): void {
