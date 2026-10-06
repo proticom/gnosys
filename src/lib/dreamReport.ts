@@ -8,13 +8,13 @@ export interface DreamReportOptions {
   last?: string;
 }
 
-const ReviewSuggestionsSchema = z.array(z.object({
+const ReviewSuggestionSchema = z.object({
   memoryId: z.string(),
   title: z.string(),
   reason: z.string(),
   currentConfidence: z.number(),
   suggestedAction: z.enum(["review", "consider-archive", "consider-merge", "needs-update"]),
-}));
+});
 
 function escapeHtml(value: unknown): string {
   return String(value ?? "")
@@ -51,8 +51,10 @@ export function generateDreamDashboardHtml(runs: DreamRunRecord[]): string {
     run.phases.some((phase) => phase.name === "critique" && phase.status === "ran") &&
     Array.isArray(run.reviewSuggestions)
   );
-  const parsedReviews = ReviewSuggestionsSchema.safeParse(latestReviewRun?.reviewSuggestions ?? []);
-  const suggestions = parsedReviews.success ? parsedReviews.data : [];
+  const suggestions = (latestReviewRun?.reviewSuggestions ?? []).flatMap((item) => {
+    const parsed = ReviewSuggestionSchema.safeParse(item);
+    return parsed.success ? [parsed.data] : [];
+  });
   const topReviews = [...suggestions]
     .sort((a, b) => a.currentConfidence - b.currentConfidence || a.memoryId.localeCompare(b.memoryId))
     .slice(0, 20);
