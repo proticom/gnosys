@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `gnosys_semantic_search` now falls back to keyword search when semantic
+  embeddings are unavailable, instead of returning an error. Each hit uses
+  `(score: X, via: keyword|semantic)` to show its score and search method.
+  MCP fallback notes point to `gnosys doctor`; doctor and the startup warning
+  retain the full install command.
+- Dream regenerates existing summaries once after upgrade because summary
+  fingerprints now track the prompt content. A brain with about 64 existing summaries needs about 64
+  summary calls, spread over the first few nights under `maxLLMCallsPerRun`.
+
 - Search, discovery, hybrid, semantic, and federated search use compact date labels
   for active memories and status/date/replacement labels for history. Replacements
   rank before predecessors, including at small limits. MCP `activeOnly` and CLI
@@ -48,6 +57,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Legacy databases without an FTS index become searchable.** Upgrading a
   v1-shaped database that had no `memories_fts` table now indexes its
   existing rows during migration.
+- Dream errors now appear in audit rows and `gnosys dream log`, with compact,
+  bounded messages. Invalid relationship items produce warnings while valid
+  items are retained.
 
 ## [6.2.1] — 2026-07-16
 

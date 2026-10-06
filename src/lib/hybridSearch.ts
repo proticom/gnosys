@@ -15,9 +15,14 @@ import { GnosysArchive } from "./archive.js";
 import { GnosysDbSearch } from "./dbSearch.js";
 import type { GnosysDB } from "./db.js";
 import type { HybridSearchResult, SearchMode } from "./searchTypes.js";
+import { checkEmbeddingPackage, EmbeddingUnavailableError } from "./embeddingHealth.js";
 import { rankReplacements } from "./searchStatus.js";
 
 export type { HybridSearchResult, SearchMode } from "./searchTypes.js";
+
+type SearchOutcome =
+  | { kind: "requested"; results: HybridSearchResult[] }
+  | { kind: "keyword-fallback"; results: HybridSearchResult[]; note: string };
 
 /** RRF constant k — standard value from Cormack et al. 2009 */
 const RRF_K = 60;
@@ -49,6 +54,31 @@ export class GnosysHybridSearch {
       this.dbSearch = new GnosysDbSearch(gnosysDb);
       this.gnosysDb = gnosysDb;
     }
+  }
+
+  async searchWithStatus(query: string, limit = 15, mode: SearchMode = "hybrid", activeOnly = false): Promise<SearchOutcome> {
+    if (mode === "keyword") {
+      return { kind: "requested", results: await this.hybridSearch(query, limit, mode, activeOnly) };
+    }
+    const runtime = checkEmbeddingPackage();
+    let reason: string;
+    if (runtime.kind === "unavailable") {
+      reason = runtime.message;
+    } else if (!this.canRunSemantic()) {
+      reason = "No embeddings indexed. Run gnosys_reindex to build embeddings and enable semantic recall (CLI: gnosys reindex).";
+    } else {
+      try {
+        return { kind: "requested", results: await this.hybridSearch(query, limit, mode, activeOnly) };
+      } catch (error) {
+        if (!(error instanceof EmbeddingUnavailableError)) throw error;
+        reason = error.message;
+      }
+    }
+    return {
+      kind: "keyword-fallback",
+      results: await this.hybridSearch(query, limit, "keyword", activeOnly),
+      note: `Semantic embeddings unavailable — ${mode} search ran keyword-only. ${reason}`,
+    };
   }
 
   /**

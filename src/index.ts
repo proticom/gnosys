@@ -45,6 +45,7 @@ import { z } from "zod";
 import fs from "fs/promises";
 import type { MemoryFrontmatter } from "./lib/store.js";
 import { GnosysSearch } from "./lib/search.js";
+import { formatMcpSearchResults } from "./lib/mcpSearchResults.js";
 import { GnosysTagRegistry } from "./lib/tags.js";
 import { GnosysResolver } from "./lib/resolver.js";
 import { applyLens, type LensFilter } from "./lib/lensing.js";
@@ -2287,28 +2288,16 @@ regTool(
 
     try {
       const requestedMode = (mode as "keyword" | "semantic" | "hybrid") || "hybrid";
-      const results = await hybridSearch.hybridSearch(query, limit || 15, requestedMode, activeOnly);
-
-      // v5.12.3: hybrid used to degrade to keyword-only silently when the
-      // semantic leg can't run (embeddings are only built by gnosys_reindex,
-      // and DB mode also needs the store-local query embedder). Say so loudly.
-      const degradeWarning =
-        requestedMode !== "keyword" && !hybridSearch.canRunSemantic()
-          ? `⚠️ Semantic embeddings unavailable — ${requestedMode} search ran keyword-only. Run gnosys_reindex to build embeddings and enable semantic recall.\n\n`
-          : "";
-
-      if (results.length === 0) {
-        return {
-          content: [{ type: "text", text: `${degradeWarning}No results for "${query}". Try different keywords.` }],
-        };
-      }
-
-      const formatted = results
-        .map(
-          (r) =>
-            `**${r.title}** (score: ${r.score.toFixed(4)}, via: ${r.sources.join("+")}) ${formatSearchStatus(r)}\n  Path: ${r.relativePath}\n  ${r.snippet.substring(0, 150)}...`
-        )
-        .join("\n\n");
+      const outcome = await hybridSearch.searchWithStatus(query, limit || 15, requestedMode, activeOnly);
+      const results = outcome.results;
+      const text = formatMcpSearchResults({
+        query,
+        results,
+        search: outcome.kind === "keyword-fallback"
+          ? { kind: "keyword-fallback", requested: "hybrid" }
+          : { kind: "hybrid", embeddingCount: hybridSearch.embeddingCount() },
+      });
+      if (results.length === 0) return { content: [{ type: "text", text }] };
 
       // Reinforce used memories (best-effort, non-blocking)
       // Use default resolver here since hybridSearch operates across all stores
@@ -2322,15 +2311,7 @@ regTool(
         ).catch(() => {}); // Fire-and-forget
       }
 
-      const embCount = hybridSearch.embeddingCount();
-      return {
-        content: [
-          {
-            type: "text",
-            text: `${degradeWarning}Found ${results.length} results for "${query}" (${embCount} embeddings indexed):\n\n${formatted}`,
-          },
-        ],
-      };
+      return { content: [{ type: "text", text }] };
     } catch (err) {
       return {
         content: [{ type: "text", text: `Search failed: ${err instanceof Error ? err.message : String(err)}` }],
@@ -2343,7 +2324,7 @@ regTool(
 // ─── Tool: gnosys_semantic_search ────────────────────────────────────────
 regTool(
   "gnosys_semantic_search",
-  "Search memories using semantic similarity only (no keyword matching). Finds conceptually related memories even without exact keyword matches. Includes status, modified date, and replacement IDs; replacements rank before their history. Requires embeddings — run gnosys_reindex first. Set activeOnly=true to exclude non-active memories (default false).",
+  "Search memories using semantic similarity. Finds conceptually related memories even without exact keyword matches. Falls back to keyword search with an explicit note when embeddings are unavailable. Includes status, modified date, and replacement IDs; replacements rank before their history. Run gnosys_reindex to build embeddings. Set activeOnly=true to exclude non-active memories (default false).",
   {
     query: z.string().describe("Natural language search query"),
     limit: z.number().optional().describe("Max results (default 15)"),
@@ -2362,34 +2343,16 @@ regTool(
     }
 
     try {
-      // v5.12.3: semantic search without a working semantic leg either
-      // returns nothing or (in DB mode) keyword hits mislabeled as semantic —
-      // refuse with the exact reason instead.
-      if (!hybridSearch.canRunSemantic()) {
-        return {
-          content: [{ type: "text", text: `⚠️ Semantic embeddings unavailable — semantic search cannot run. Run gnosys_reindex to build embeddings, then retry.` }],
-          isError: true,
-        };
-      }
-
-      const results = await hybridSearch.hybridSearch(query, limit || 15, "semantic", activeOnly);
-
-      if (results.length === 0) {
-        return {
-          content: [{ type: "text", text: `No semantic results for "${query}". Try a broader query.` }],
-        };
-      }
-
-      const formatted = results
-        .map(
-          (r) =>
-            `**${r.title}** (similarity: ${r.score.toFixed(4)}) ${formatSearchStatus(r)}\n  Path: ${r.relativePath}\n  ${r.snippet.substring(0, 150)}...`
-        )
-        .join("\n\n");
-
-      return {
-        content: [{ type: "text", text: `Found ${results.length} semantic results for "${query}":\n\n${formatted}` }],
-      };
+      const outcome = await hybridSearch.searchWithStatus(query, limit || 15, "semantic", activeOnly);
+      const results = outcome.results;
+      const text = formatMcpSearchResults({
+        query,
+        results,
+        search: outcome.kind === "keyword-fallback"
+          ? { kind: "keyword-fallback", requested: "semantic" }
+          : { kind: "semantic" },
+      });
+      return { content: [{ type: "text", text }] };
     } catch (err) {
       return {
         content: [{ type: "text", text: `Semantic search failed: ${err instanceof Error ? err.message : String(err)}` }],
@@ -4371,15 +4334,17 @@ async function initHeavyDeps(): Promise<void> {
   // v5.13.0: write-time embeddings (serve mode only) — new and updated
   // memories get vectors without waiting for a manual reindex. Best-effort:
   // queued writes drain on an unref'd timer and never block a tool call.
-  if (centralDb?.isAvailable() && centralDb.isMigrated()) {
+  const { checkEmbeddingPackage } = await import("./lib/embeddingHealth.js");
+  const embeddingRuntime = checkEmbeddingPackage();
+  if (embeddingRuntime.kind === "available" && centralDb?.isAvailable() && centralDb.isMigrated()) {
     const { enableWriteTimeEmbedding } = await import("./lib/embedQueue.js");
     enableWriteTimeEmbedding(() => centralDb, embeddings);
     console.error("Write-time embeddings: enabled (central DB)");
   }
 
-  const embCount = embeddings.hasEmbeddings() ? embeddings.count() : 0;
+  const embCount = hybridSearch.embeddingCount();
   console.error(
-    `Hybrid search: ${embCount > 0 ? `ready (${embCount} embeddings)` : "available (run gnosys_reindex to build embeddings)"}`,
+    `Hybrid search: ${embeddingRuntime.kind === "unavailable" ? "keyword fallback (local embeddings unavailable)" : embCount > 0 ? `ready (${embCount} embeddings)` : "available (run gnosys_reindex to build embeddings)"}`,
   );
   console.error(
     `Ask engine: ${askEngine.isLLMAvailable ? `ready (${askEngine.providerName}/${askEngine.modelName})` : "disabled (configure LLM provider)"}`,
@@ -4500,6 +4465,11 @@ export async function startMcpServer() {
   }
 
   console.error("Gnosys MCP server starting.");
+  const { checkEmbeddingPackage } = await import("./lib/embeddingHealth.js");
+  const embeddingRuntime = checkEmbeddingPackage();
+  if (embeddingRuntime.kind === "unavailable") {
+    console.error(`Gnosys embedding warning: ${embeddingRuntime.message} Hybrid and semantic search will use keywords until repaired.`);
+  }
   console.error("Active stores:");
   console.error(resolver.getSummary());
 

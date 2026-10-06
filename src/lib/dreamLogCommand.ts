@@ -1,3 +1,4 @@
+import { boundedDreamMessages } from "./dreamDiagnostics.js";
 import { GnosysDB } from "./db.js";
 
 export type DreamLogOptions = {
@@ -28,7 +29,9 @@ export async function runDreamLogCommand(
     const runs = centralDb.getRecentDreamRuns(limit, {
       failuresOnly: !!opts.failuresOnly,
       sinceIso,
-    });
+    }).map((run) => Number(run.details.errors) > 0 && !Array.isArray(run.details.errorMessages)
+      ? { ...run, details: { ...run.details, errorDetailsMissing: true } }
+      : run);
     const wantJson = !!opts.json || !!context.parentJson;
     // JSON path always emits a structured response — including empty runs.
     if (wantJson) {
@@ -48,6 +51,7 @@ export async function runDreamLogCommand(
       const d = r.details as Record<string, unknown>;
       const dur = r.durationMs != null ? `${(r.durationMs / 1000).toFixed(1)}s` : "—";
       const summaries = Number(d.summariesGenerated || 0);
+      const updated = Number(d.summariesUpdated || 0);
       const decays = Number(d.decayUpdated || 0);
       const reviews = Number(d.reviewSuggestions || 0);
       const rels = Number(d.relationshipsDiscovered || 0);
@@ -57,13 +61,23 @@ export async function runDreamLogCommand(
         ? `${RED}provider unreachable${RESET}`
         : errors > 0
           ? `${RED}${errors} error(s)${RESET}`
-          : summaries + decays + rels > 0
+          : summaries + updated + decays + rels > 0
             ? `${GREEN}did work${RESET}`
             : `${DIM}no LLM work${RESET}`;
       console.log(`  ${r.completed} ${DIM}(${dur})${RESET} ${status}`);
-      console.log(`    decays=${decays} summaries=${summaries} reviews=${reviews} relations=${rels}`);
+      console.log(`    decays=${decays} summaries=${summaries} updated=${updated} reviews=${reviews} relations=${rels}`);
       if (d.provider) {
         console.log(`    ${DIM}provider=${d.provider}${d.model ? "/" + d.model : ""}${RESET}`);
+      }
+      if (Array.isArray(d.errorMessages)) {
+        for (const message of boundedDreamMessages(d.errorMessages)) {
+          console.log(`    ${RED}${message}${RESET}`);
+        }
+      } else if (errors > 0) {
+        console.log("    Error details were not saved by this older Dream run.");
+      }
+      if (Array.isArray(d.warningMessages)) {
+        for (const message of boundedDreamMessages(d.warningMessages)) console.log(`    Warning: ${message}`);
       }
     }
   } finally {
