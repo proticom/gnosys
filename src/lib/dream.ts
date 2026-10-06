@@ -27,6 +27,7 @@ import { type LLMProvider, createProvider } from "./llm.js";
 import { notifyDesktop } from "./desktopNotify.js";
 import { syncConfidenceToDb, auditToDb } from "./dbWrite.js";
 import { logError } from "./log.js";
+import { boundedDreamMessages, formatDreamError } from "./dreamDiagnostics.js";
 import { getGnosysHome } from "./paths.js";
 import {
   type DreamEffectivenessRecord,
@@ -110,6 +111,7 @@ export interface DreamReport {
   relationshipsDiscovered: number;
   duplicatesFound: number;
   errors: string[];
+  warnings?: string[];
   aborted: boolean;
   abortReason?: string;
   id?: string;
@@ -133,13 +135,24 @@ export interface ReviewSuggestion {
   suggestedAction: "review" | "consider-archive" | "consider-merge" | "needs-update";
 }
 
-const DreamRelationshipsSchema = z.array(z.object({
+const DreamRelationshipSchema = z.object({
   source_id: z.string().min(1),
   target_id: z.string().min(1),
   rel_type: z.enum(["references", "depends_on", "contradicts", "extends", "supersedes", "related_to"]),
   label: z.string(),
   confidence: z.number().min(0).max(1),
-}));
+});
+
+type RelationshipReply =
+  | { kind: "parsed"; relationships: z.infer<typeof DreamRelationshipSchema>[]; invalidCount: number }
+  | { kind: "invalid"; message: string };
+
+const MAX_RELATIONSHIP_ATTEMPTS = 3;
+
+const DreamCritiqueSchema = z.object({
+  action: z.enum(["ok", "review", "consider-archive", "consider-merge", "needs-update"]),
+  reason: z.string().optional(),
+});
 
 function fingerprintText(kind: string, text: string): string {
   return `${kind}:${crypto.createHash("sha256").update(text).digest("hex").slice(0, 24)}`;
@@ -214,7 +227,7 @@ export class GnosysDreamEngine {
       this.provider = createProvider(provider, model, this.config);
     } catch (err) {
       this.provider = null;
-      this.providerInitError = err instanceof Error ? err.message : String(err);
+      this.providerInitError = formatDreamError(err);
     }
   }
 
@@ -355,7 +368,7 @@ export class GnosysDreamEngine {
         phase: phase.name,
         label,
         status: "failed",
-        reason: err instanceof Error ? err.message : String(err),
+        reason: formatDreamError(err),
         provider: this.provider.name,
         model: this.provider.model,
         memoryIds,
@@ -427,6 +440,7 @@ export class GnosysDreamEngine {
       relationshipsDiscovered: 0,
       duplicatesFound: 0,
       errors: [],
+      warnings: [],
       aborted: false,
       machine: { hostname: os.hostname(), machineId: this.machineId },
       provider: this.dreamConfig.provider,
@@ -515,7 +529,7 @@ export class GnosysDreamEngine {
       this.addTouched(decayPhase, decayResult.memoryIds);
       log("decay", `Updated ${report.decayUpdated} memories`);
     } catch (err) {
-      report.errors.push(`Decay sweep: ${err instanceof Error ? err.message : String(err)}`);
+      report.errors.push(`Decay sweep: ${formatDreamError(err)}`);
     } finally {
       this.finishPhase(decayPhase, decayStart);
     }
@@ -595,7 +609,7 @@ export class GnosysDreamEngine {
           log("embedding-health", `Embedded ${embedded}/${missingBefore} missing (${total} total)`);
         }
       } catch (err) {
-        report.errors.push(`Embedding health: ${err instanceof Error ? err.message : String(err)}`);
+        report.errors.push(`Embedding health: ${formatDreamError(err)}`);
       } finally {
         this.finishPhase(embedPhase, embedStart);
       }
@@ -619,7 +633,7 @@ export class GnosysDreamEngine {
         this.addTouched(critiquePhase, report.reviewSuggestions.map((s) => s.memoryId));
         log("critique", `Generated ${report.reviewSuggestions.length} review suggestions`);
       } catch (err) {
-        report.errors.push(`Self-critique: ${err instanceof Error ? err.message : String(err)}`);
+        report.errors.push(`Self-critique: ${formatDreamError(err)}`);
       } finally {
         this.finishPhase(critiquePhase, critiqueStart);
       }
@@ -645,7 +659,7 @@ export class GnosysDreamEngine {
         this.addTouched(summariesPhase, summaryResult.memoryIds);
         log("summaries", `Generated ${summaryResult.generated}, updated ${summaryResult.updated}`);
       } catch (err) {
-        report.errors.push(`Summary generation: ${err instanceof Error ? err.message : String(err)}`);
+        report.errors.push(`Summary generation: ${formatDreamError(err)}`);
       } finally {
         this.finishPhase(summariesPhase, summariesStart);
       }
@@ -668,10 +682,11 @@ export class GnosysDreamEngine {
         const relationshipsResult = await this.discoverRelationships(log, relationshipsPhase);
         report.relationshipsDiscovered = relationshipsResult.count;
         report.errors.push(...relationshipsResult.errors);
+        report.warnings = relationshipsResult.warnings;
         this.addTouched(relationshipsPhase, relationshipsResult.memoryIds);
         log("relationships", `Discovered ${report.relationshipsDiscovered} new relationships`);
       } catch (err) {
-        report.errors.push(`Relationship discovery: ${err instanceof Error ? err.message : String(err)}`);
+        report.errors.push(`Relationship discovery: ${formatDreamError(err)}`);
       } finally {
         this.finishPhase(relationshipsPhase, relationshipsStart);
       }
@@ -681,6 +696,8 @@ export class GnosysDreamEngine {
   }
 
   private finalize(report: DreamReport): DreamReport {
+    report.errors = boundedDreamMessages(report.errors);
+    report.warnings = boundedDreamMessages(report.warnings ?? []);
     report.finishedAt = new Date().toISOString();
     report.durationMs = Date.now() - this.startTime;
     report.llmCalls = this.llmCalls;
@@ -757,6 +774,8 @@ export class GnosysDreamEngine {
       usefulOutputScore: report.effectiveness.usefulOutputScore,
       errors: report.errors.length,
       errorMessages: [...report.errors],
+      warnings: report.warnings?.length ?? 0,
+      warningMessages: report.warnings ?? [],
       aborted: report.aborted,
       providerUnreachable: !this.provider,
       provider: this.dreamConfig.provider,
@@ -846,7 +865,7 @@ export class GnosysDreamEngine {
             suggestions.push(llmSuggestion);
           }
         } catch (err) {
-          log("critique", `LLM critique failed for ${mem.id}: ${err instanceof Error ? err.message : String(err)}`);
+          log("critique", `LLM critique failed for ${mem.id}: ${formatDreamError(err)}`);
         }
       }
     }
@@ -950,15 +969,15 @@ Respond with ONLY one of these JSON objects (no explanation):
       const jsonMatch = response.match(/\{[^}]+\}/);
       if (!jsonMatch) return null;
 
-      const parsed = JSON.parse(jsonMatch[0]);
-      if (parsed.action === "ok") return null;
+      const parsed = DreamCritiqueSchema.safeParse(JSON.parse(jsonMatch[0]));
+      if (!parsed.success || parsed.data.action === "ok") return null;
 
       return {
         memoryId: mem.id,
         title: mem.title,
-        reason: parsed.reason || "LLM flagged for review",
+        reason: parsed.data.reason || "LLM flagged for review",
         currentConfidence: mem.confidence,
-        suggestedAction: parsed.action as ReviewSuggestion["suggestedAction"],
+        suggestedAction: parsed.data.action,
       };
     } catch {
       return null;
@@ -1028,7 +1047,7 @@ Respond with ONLY one of these JSON objects (no explanation):
           touched.push(...memories.map((m) => m.id));
         }
       } catch (err) {
-        log("summaries", `Failed to summarize ${category}: ${err instanceof Error ? err.message : String(err)}`);
+        log("summaries", `Failed to summarize ${category}: ${formatDreamError(err)}`);
       }
     }
 
@@ -1088,14 +1107,16 @@ Category summary:`;
   private async discoverRelationships(
     log: (phase: string, detail: string) => void,
     phase: DreamRunPhaseRecord,
-  ): Promise<{ count: number; memoryIds: string[]; errors: string[] }> {
-    if (!this.provider) return { count: 0, memoryIds: [], errors: [] };
+  ): Promise<{ count: number; memoryIds: string[]; errors: string[]; warnings: string[] }> {
+    if (!this.provider) return { count: 0, memoryIds: [], errors: [], warnings: [] };
 
     const memories = this.db.getActiveMemories()
       .sort((a, b) => b.created.localeCompare(a.created) || a.id.localeCompare(b.id));
-    if (memories.length < 3) return { count: 0, memoryIds: [], errors: [] };
+    if (memories.length < 3) return { count: 0, memoryIds: [], errors: [], warnings: [] };
 
     const errors: string[] = [];
+    const warnings: string[] = [];
+    const retries = this.dreamState.relationshipRetries ??= {};
     let discovered = 0;
     const touched = new Set<string>();
     const today = new Date().toISOString().split("T")[0];
@@ -1110,22 +1131,26 @@ Category summary:`;
     }
 
     const analyzed = { ...this.dreamState.analyzedFingerprints, ...this.pendingFingerprints };
-    const analyzedSourceHashes = new Set(Object.keys(analyzed)
-      .filter((key) => key.startsWith("relationship-source:"))
-      .map((key) => key.split(":")[1]));
+    const sourceAnalysisTimes = new Map<string, string>();
+    for (const [key, entry] of Object.entries(analyzed)) {
+      if (!key.startsWith("relationship-source:")) continue;
+      const sourceHash = key.split(":").slice(0, 2).join(":");
+      const previous = sourceAnalysisTimes.get(sourceHash) ?? "";
+      if (entry.lastAnalyzedAt > previous) sourceAnalysisTimes.set(sourceHash, entry.lastAnalyzedAt);
+    }
     const corpusHash = fingerprintText("corpus", [...memories]
       .sort((a, b) => a.id.localeCompare(b.id))
       .map((memory) => `${relationshipIndexText(memory)}\n${relationshipSourceText(memory)}`)
       .join("\n"));
     const sources = memories.map((memory) => {
       const sourceHash = fingerprintText("relationship-source", relationshipSourceText(memory));
-      return { memory, fingerprint: `${sourceHash}:${corpusHash}`, analyzedBefore: analyzedSourceHashes.has(sourceHash.split(":")[1]) };
-    }).filter((source) => !analyzed[source.fingerprint])
-      .sort((a, b) => Number(a.analyzedBefore) - Number(b.analyzedBefore))
+      return { memory, sourceHash, fingerprint: `${sourceHash}:${corpusHash}`, lastAnalyzedAt: sourceAnalysisTimes.get(sourceHash) ?? "" };
+    }).filter((source) => !analyzed[source.fingerprint] && (retries[source.sourceHash]?.attempts ?? 0) < MAX_RELATIONSHIP_ATTEMPTS)
+      .sort((a, b) => a.lastAnalyzedAt.localeCompare(b.lastAnalyzedAt))
       .slice(0, 30);
     if (sources.length === 0) {
       this.recordLLMSkip(phase, "relationships", "all source content already analyzed");
-      return { count: 0, memoryIds: [], errors: [] };
+      return { count: 0, memoryIds: [], errors: [], warnings: [] };
     }
     const selectedIds = new Set(sources.map((source) => source.memory.id));
     const candidates = [
@@ -1146,10 +1171,33 @@ Category summary:`;
       log("relationships", `Analyzing relationships for: ${batchTitles}`);
 
       try {
-        const relationships = await this.findRelationships(batch, candidates, memoryIndex, phase);
-        if (relationships === null) continue;
+        const reply = await this.findRelationships(batch, candidates, memoryIndex, phase);
+        if (reply === null) continue;
+        if (reply.kind === "invalid") {
+          const exhausted: string[] = [];
+          for (const source of sourceBatch) {
+            const attempts = (retries[source.sourceHash]?.attempts ?? 0) + 1;
+            retries[source.sourceHash] = {
+              attempts, lastAttemptAt: new Date().toISOString(), memoryIds: [source.memory.id],
+            };
+            if (attempts >= MAX_RELATIONSHIP_ATTEMPTS) {
+              exhausted.push(source.memory.id);
+              this.pendingFingerprints[source.fingerprint] = {
+                kind: "relationship", lastAnalyzedAt: new Date().toISOString(), memoryIds: [source.memory.id],
+              };
+            }
+          }
+          if (exhausted.length > 0) {
+            warnings.push(`Relationship discovery: retry limit reached for ${exhausted.join(",")}; marked analyzed.`);
+          }
+          if (exhausted.length < sourceBatch.length) errors.push(`Relationship discovery: ${reply.message}`);
+          continue;
+        }
+        if (reply.invalidCount > 0) {
+          warnings.push(`Relationship discovery: dropped ${reply.invalidCount} invalid item(s) in batch ${batch.map((memory) => memory.id).join(",")}.`);
+        }
 
-        for (const rel of relationships) {
+        for (const rel of reply.relationships) {
           const key = `${rel.source_id}→${rel.target_id}→${rel.rel_type}`;
           if (existingPairs.has(key)) continue;
 
@@ -1168,17 +1216,18 @@ Category summary:`;
           touched.add(rel.target_id);
         }
         for (const source of sourceBatch) {
+          delete retries[source.sourceHash];
           this.pendingFingerprints[source.fingerprint] = {
             kind: "relationship", lastAnalyzedAt: new Date().toISOString(), memoryIds: [source.memory.id],
           };
         }
       } catch (err) {
-        log("relationships", `Failed for batch: ${err instanceof Error ? err.message : String(err)}`);
-        errors.push(`Relationship discovery: ${err instanceof Error ? err.message : String(err)}`);
+        log("relationships", `Failed for batch: ${formatDreamError(err)}`);
+        errors.push(`Relationship discovery: ${formatDreamError(err)}`);
       }
     }
 
-    return { count: discovered, memoryIds: Array.from(touched), errors };
+    return { count: discovered, memoryIds: Array.from(touched), errors, warnings };
   }
 
   /**
@@ -1189,7 +1238,7 @@ Category summary:`;
     candidates: DbMemory[],
     memoryIndex: string,
     phase: DreamRunPhaseRecord,
-  ): Promise<z.infer<typeof DreamRelationshipsSchema> | null> {
+  ): Promise<RelationshipReply | null> {
     if (!this.provider) return null;
 
     const sourceContext = sources.map(relationshipSourceText).join("\n\n");
@@ -1209,34 +1258,47 @@ Only output relationships with confidence >= 0.7. Do NOT create self-referencing
 Output ONLY the JSON array, no explanation.`;
 
     const fingerprint = fingerprintText("relationship", prompt);
-    try {
-      const response = await this.generateWithAccounting(
-        phase,
-        `relationships:${sources.map((s) => s.id).join(",")}`,
-        prompt,
-        1024,
-        sources.map((s) => s.id),
-        fingerprint,
-      );
-      if (response === null) {
-        return this.dreamState.analyzedFingerprints[fingerprint] || this.pendingFingerprints[fingerprint] ? [] : null;
-      }
+    const response = await this.generateWithAccounting(
+      phase,
+      `relationships:${sources.map((s) => s.id).join(",")}`,
+      prompt,
+      1024,
+      sources.map((s) => s.id),
+      fingerprint,
+    );
+    if (response === null) {
+      return this.dreamState.analyzedFingerprints[fingerprint] || this.pendingFingerprints[fingerprint]
+        ? { kind: "parsed", relationships: [], invalidCount: 0 } : null;
+    }
+    if (/^(?:none|no (?:meaningful )?relationships(?: (?:found|identified))?)[.!]?$/i.test(response.trim())) {
+      return { kind: "parsed", relationships: [], invalidCount: 0 };
+    }
 
+    let items: unknown[];
+    try {
       const jsonMatch = response.match(/\[[\s\S]*\]/);
       if (!jsonMatch) throw new Error("Relationship response did not contain a JSON array; it will be retried.");
-      const parsed: unknown = JSON.parse(jsonMatch[0]);
-      const relationships = DreamRelationshipsSchema.parse(parsed);
-      const candidateIds = new Set(candidates.map((memory) => memory.id));
-      return relationships.filter((relationship) =>
-        candidateIds.has(relationship.source_id) &&
-        candidateIds.has(relationship.target_id) &&
-        relationship.source_id !== relationship.target_id &&
-        relationship.confidence >= 0.7
-      );
+      items = z.array(z.unknown()).parse(JSON.parse(jsonMatch[0]));
     } catch (err) {
       delete this.pendingFingerprints[fingerprint];
-      throw err;
+      return { kind: "invalid", message: formatDreamError(err) };
     }
+    const relationships: z.infer<typeof DreamRelationshipSchema>[] = [];
+    let invalidCount = 0;
+    const candidateIds = new Set(candidates.map((memory) => memory.id));
+    for (const item of items) {
+      const parsed = DreamRelationshipSchema.safeParse(item);
+      if (!parsed.success) {
+        invalidCount++;
+        continue;
+      }
+      const relationship = parsed.data;
+      if (candidateIds.has(relationship.source_id) && candidateIds.has(relationship.target_id) &&
+        relationship.source_id !== relationship.target_id && relationship.confidence >= 0.7) {
+        relationships.push(relationship);
+      }
+    }
+    return { kind: "parsed", relationships, invalidCount };
   }
 }
 
@@ -1436,6 +1498,11 @@ export function formatDreamReport(report: DreamReport): string {
       lines.push(`    Reason: ${s.reason}`);
     }
     lines.push("");
+  }
+
+  if (report.warnings?.length) {
+    lines.push(`Warnings (${report.warnings.length}):`);
+    for (const warning of report.warnings) lines.push(`  ! ${warning}`);
   }
 
   if (report.errors.length > 0) {

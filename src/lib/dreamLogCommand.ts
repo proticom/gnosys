@@ -1,3 +1,4 @@
+import { boundedDreamMessages } from "./dreamDiagnostics.js";
 import { GnosysDB } from "./db.js";
 
 export type DreamLogOptions = {
@@ -67,11 +68,14 @@ export async function runDreamLogCommand(
         console.log(`    ${DIM}provider=${d.provider}${d.model ? "/" + d.model : ""}${RESET}`);
       }
       if (Array.isArray(d.errorMessages)) {
-        for (const message of d.errorMessages) {
-          if (typeof message === "string") console.log(`    ${RED}${message}${RESET}`);
+        for (const message of boundedDreamMessages(d.errorMessages)) {
+          console.log(`    ${RED}${message}${RESET}`);
         }
       } else if (errors > 0) {
         console.log("    Error details were not saved by this older Dream run.");
+      }
+      if (Array.isArray(d.warningMessages)) {
+        for (const message of boundedDreamMessages(d.warningMessages)) console.log(`    Warning: ${message}`);
       }
     }
   } finally {
