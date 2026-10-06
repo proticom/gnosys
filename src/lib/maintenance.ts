@@ -421,24 +421,24 @@ Merged content:`;
       modified: today,
       last_reviewed: today,
       status: "active",
-      supersedes: `${pair.memoryA.frontmatter.id}, ${pair.memoryB.frontmatter.id}`,
     };
 
     // Write the merged memory to central DB
     const filename = `${mergedTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}.md`;
     const sourcePath = `${category}/${filename}`;
 
-    if (this.db) {
-      syncMemoryToDb(this.db, newFrontmatter, mergedContent, sourcePath);
-
-      // Mark originals as superseded in DB
-      syncUpdateToDb(this.db, pair.memoryA.frontmatter.id, {
-        status: "superseded",
-        superseded_by: newId,
-      });
-      syncUpdateToDb(this.db, pair.memoryB.frontmatter.id, {
-        status: "superseded",
-        superseded_by: newId,
+    const db = this.db;
+    if (db) {
+      db.transaction(() => {
+        const source = db.getMemory(pair.memoryA.frontmatter.id);
+        if (!source) throw new Error(`Memory not found: ${pair.memoryA.frontmatter.id}`);
+        syncMemoryToDb(db, newFrontmatter, mergedContent, sourcePath, source.project_id, source.scope);
+        for (const memory of [pair.memoryA, pair.memoryB]) {
+          syncUpdateToDb(db, memory.frontmatter.id, {
+            status: "superseded",
+            superseded_by: newId,
+          });
+        }
       });
     }
 

@@ -18,6 +18,7 @@ import type { GnosysDB, DbMemory } from "./db.js";
 import type { MemoryFrontmatter, } from "./store.js";
 import { fnv1a } from "./db.js";
 import { queueMemoryEmbedding } from "./embedQueue.js";
+import { applySupersession, type SupersessionOptions } from "./supersession.js";
 
 /** Coerce Date objects (from gray-matter parsing) to ISO date strings. */
 function toDateStr(value: unknown): string | null {
@@ -85,8 +86,9 @@ export function syncMemoryToDb(
 export function syncUpdateToDb(
   db: GnosysDB,
   id: string,
-  updates: Partial<MemoryFrontmatter>,
-  newContent?: string
+  updates: { [K in keyof MemoryFrontmatter]?: K extends "status" ? string : MemoryFrontmatter[K] },
+  newContent?: string,
+  options: SupersessionOptions = {},
 ): void {
   if (!db.isAvailable()) return;
 
@@ -100,8 +102,6 @@ export function syncUpdateToDb(
   }
   if (updates.confidence !== undefined) dbUpdates.confidence = updates.confidence;
   if (updates.relevance !== undefined) dbUpdates.relevance = updates.relevance as string;
-  if (updates.supersedes !== undefined) dbUpdates.supersedes = updates.supersedes || null;
-  if (updates.superseded_by !== undefined) dbUpdates.superseded_by = updates.superseded_by || null;
   if (updates.reinforcement_count !== undefined) dbUpdates.reinforcement_count = updates.reinforcement_count;
   if (updates.last_reinforced !== undefined) dbUpdates.last_reinforced = updates.last_reinforced || null;
   if (updates.tags !== undefined) {
@@ -123,67 +123,10 @@ export function syncUpdateToDb(
     dbUpdates.content_hash = fnv1a(newContent);
   }
 
-  const linkFields: Array<"supersedes" | "superseded_by"> = ["supersedes", "superseded_by"];
-  const changesLinks = linkFields.some((field) => updates[field] !== undefined);
-  const onlyLinks = changesLinks && newContent === undefined &&
-    Object.keys(updates).every((field) => field === "supersedes" || field === "superseded_by" || field === "status");
-  if (!onlyLinks) dbUpdates.modified = new Date().toISOString().split("T")[0];
-
+  dbUpdates.modified = new Date().toISOString();
   db.transaction(() => {
-    const current = db.getMemory(id);
-    if (changesLinks && !current) throw new Error(`Memory not found: ${id}`);
-    for (const field of linkFields) {
-      const targetId = dbUpdates[field];
-      if (!targetId) continue;
-      if (!db.getMemory(targetId)) throw new Error(`Memory not found: ${targetId}`);
-    }
-
-    const clearLink = (memoryId: string, field: "supersedes" | "superseded_by") => {
-      const memory = db.getMemory(memoryId);
-      if (!memory) return;
-      db.updateMemory(memoryId, {
-        [field]: null,
-        ...(field === "superseded_by" && memory.status === "superseded"
-          ? { status: memory.tier === "archive" ? "archived" : "active" }
-          : {}),
-      });
-    };
-
-    for (const field of linkFields) {
-      const targetId = dbUpdates[field];
-      if (targetId === undefined) continue;
-      const inverse = field === "supersedes" ? "superseded_by" : "supersedes";
-      const previousId = current?.[field];
-      if (previousId && previousId !== targetId && db.getMemory(previousId)?.[inverse] === id) {
-        clearLink(previousId, inverse);
-      }
-      if (targetId) {
-        const displacedId = db.getMemory(targetId)?.[inverse];
-        if (displacedId && displacedId !== id && db.getMemory(displacedId)?.[field] === targetId) {
-          clearLink(displacedId, field);
-        }
-        db.updateMemory(targetId, {
-          [inverse]: id,
-          ...(inverse === "superseded_by" ? { status: "superseded" } : {}),
-        });
-      }
-    }
-    if (dbUpdates.superseded_by) dbUpdates.status = "superseded";
-    else if (dbUpdates.superseded_by === null && current?.status === "superseded" && updates.status === undefined) {
-      dbUpdates.status = current.tier === "archive" ? "archived" : "active";
-    }
+    applySupersession(db, id, updates, options);
     db.updateMemory(id, dbUpdates);
-    if (changesLinks) {
-      for (const field of linkFields) {
-        const visited = new Set<string>();
-        let next: string | null = id;
-        while (next) {
-          if (visited.has(next)) throw new Error("Supersession would create a cycle.");
-          visited.add(next);
-          next = db.getMemory(next)?.[field] ?? null;
-        }
-      }
-    }
   });
 
   // v5.13.0: re-embed when searchable text changed (title/content/tags/

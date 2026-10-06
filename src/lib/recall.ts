@@ -21,6 +21,7 @@
  * No LLM calls. No embeddings. Pure index lookup. Sub-50ms.
  */
 
+import { GnosysArchive } from "./archive.js";
 import type { GnosysSearch } from "./search.js";
 import type { GnosysResolver } from "./resolver.js";
 import type { GnosysDB } from "./db.js";
@@ -137,12 +138,12 @@ export async function recall(
 
   // Step 1: Fast keyword search on active memories (FTS5 — sub-10ms)
   const fetchLimit = Math.max(limit * 2, 15);
-  const activeResults = options.search.discover(query, fetchLimit, true);
+  const activeResults = options.search.discover(query, fetchLimit, false, { excludeSuperseded: true });
   const allRanks = activeResults.map((r) => r.rank);
 
   for (const r of activeResults) {
     const memory = await options.resolver.readMemory(r.relative_path);
-    if (memory) {
+    if (memory && memory.frontmatter.status !== "superseded" && !memory.frontmatter.superseded_by) {
       const relevanceScore = normalizeRank(r.rank, allRanks);
       memories.push({
         id: memory.frontmatter.id,
@@ -151,14 +152,36 @@ export async function recall(
         relevance: memory.frontmatter.relevance || "",
         confidence: memory.frontmatter.confidence,
         path: r.relative_path,
-        fromArchive: false,
+        fromArchive: memory.frontmatter.status === "archived",
         snippet: memory.content.substring(0, 300),
         relevanceScore,
       });
     }
   }
 
-  const result = applyRecallFiltering(memories, activeResults.length, 0, limit, cfg, start);
+  let totalArchived = 0;
+  if (memories.length < limit && options.storePath) {
+    const archive = new GnosysArchive(options.storePath);
+    try {
+      if (archive.isAvailable()) {
+        totalArchived = archive.getStats().totalArchived;
+        const existingTitles = new Set(memories.map((memory) => memory.title.toLowerCase()));
+        for (const row of archive.searchArchive(query, limit - memories.length, { excludeSuperseded: true })) {
+          if (existingTitles.has(row.title.toLowerCase())) continue;
+          memories.push({
+            id: row.id, title: row.title, category: row.category, relevance: row.tags,
+            confidence: 0, path: `archive:${row.category}/${row.id}`, fromArchive: true,
+            snippet: row.snippet, relevanceScore: 0.5,
+          });
+        }
+      }
+    } catch {
+      // A missing or unreadable archive must not discard live results.
+    } finally {
+      archive.close();
+    }
+  }
+  const result = applyRecallFiltering(memories, memories.filter((memory) => !memory.fromArchive).length, totalArchived, limit, cfg, start);
 
   auditLog({
     operation: "recall",
@@ -201,7 +224,7 @@ function recallFromDb(
   // searchable terms now serves top active memories ranked by
   // reinforcement, confidence, and recency.
   if (ftsTerms(query).length === 0) {
-    const top = db.getTopActiveMemories(fetchLimit);
+    const top = db.getTopRecallMemories(fetchLimit);
     for (let i = 0; i < top.length; i++) {
       const mem = top[i];
       memories.push({
@@ -211,7 +234,7 @@ function recallFromDb(
         relevance: mem.relevance || "",
         confidence: mem.confidence,
         path: mem.id,
-        fromArchive: false,
+        fromArchive: mem.tier === "archive" || mem.status === "archived",
         snippet: mem.content.substring(0, 300),
         // Rank-derived score, floored above minRelevance (0.4 default) so
         // non-aggressive mode keeps top memories too.
@@ -219,7 +242,7 @@ function recallFromDb(
       });
     }
     const wildcardCounts = db.getMemoryCount();
-    const result = applyRecallFiltering(memories, top.length, wildcardCounts.archived, limit, cfg, start);
+    const result = applyRecallFiltering(memories, top.filter((memory) => memory.tier !== "archive" && memory.status !== "archived").length, wildcardCounts.archived, limit, cfg, start);
     db.logAudit({
       timestamp: new Date().toISOString(),
       operation: "recall",
@@ -236,7 +259,7 @@ function recallFromDb(
     });
     return result;
   }
-  let dbResults = db.discoverFts(query, fetchLimit, true);
+  let dbResults = db.discoverFts(query, fetchLimit, false, { excludeSuperseded: true });
   if (pendingOverlay?.length) {
     dbResults = mergeOverlayDiscoverResults(
       dbResults,
@@ -261,7 +284,7 @@ function recallFromDb(
       const pending = pendingOverlay.find((p) => p.id === r.id);
       if (pending) mem = pendingAddToDbMemory(pending);
     }
-    if (mem && mem.tier === "active" && mem.status === "active") {
+    if (mem && mem.status !== "superseded" && !mem.superseded_by) {
       const relevanceScore = normalizeRank(r.rank, allRanks);
       memories.push({
         id: mem.id,
@@ -270,7 +293,7 @@ function recallFromDb(
         relevance: mem.relevance || "",
         confidence: mem.confidence,
         path: mem.id,
-        fromArchive: false,
+        fromArchive: mem.tier === "archive" || mem.status === "archived",
         snippet: mem.content.substring(0, 300),
         relevanceScore,
       });
@@ -283,7 +306,7 @@ function recallFromDb(
     memories,
     dbResults.filter((r) => {
       const m = db.getMemory(r.id);
-      return m && m.tier === "active";
+      return m && m.tier === "active" && m.status !== "archived";
     }).length,
     counts.archived,
     limit,
@@ -320,7 +343,7 @@ function applyRecallFiltering(
   cfg: RecallConfig,
   startTime: number
 ): RecallResult {
-  const sorted = [...memories].sort((a, b) => b.relevanceScore - a.relevanceScore);
+  const sorted = [...memories].sort((a, b) => Number(a.fromArchive) - Number(b.fromArchive) || b.relevanceScore - a.relevanceScore);
   let filtered: RecallMemory[];
 
   if (cfg.aggressive) {

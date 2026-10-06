@@ -6,7 +6,7 @@ export type HybridSearchCommandOptions = {
   limit: string;
   mode: string;
   json?: boolean;
-  currentOnly?: boolean;
+  activeOnly?: boolean;
   federated?: boolean;
   scope?: string;
   directory?: string;
@@ -43,6 +43,7 @@ export async function runHybridSearchCommand(
             limit: parseInt(opts.limit, 10),
             projectId,
             scopeFilter,
+            activeOnly: opts.activeOnly ?? false,
           });
 
           outputResult(!!opts.json, { query, projectId, mode: "federated", count: results.length, results }, () => {
@@ -94,7 +95,7 @@ export async function runHybridSearchCommand(
         );
       }
 
-      const results = await hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), mode, opts.currentOnly);
+      const results = await hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), mode, opts.activeOnly);
   
       if (results.length === 0) {
         outputResult(!!opts.json, { query, mode, results: [] }, () => {

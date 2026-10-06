@@ -44,8 +44,8 @@ export class GnosysDbSearch {
   /**
    * FTS5 search — compatible with GnosysSearch.search()
    */
-  search(query: string, limit: number = 20, currentOnly: boolean = false): SearchResult[] {
-    const results = this.db.searchFts(query, limit, currentOnly);
+  search(query: string, limit: number = 20, activeOnly: boolean = false): SearchResult[] {
+    const results = this.db.searchFts(query, limit, activeOnly);
     return results.map((r) => ({
       relative_path: r.id,      // In db mode, we use memory ID as the key
       title: r.title,
@@ -58,8 +58,8 @@ export class GnosysDbSearch {
   /**
    * FTS5 discover — compatible with GnosysSearch.discover()
    */
-  discover(query: string, limit: number = 20, currentOnly: boolean = false): DiscoverResult[] {
-    const results = this.db.discoverFts(query, limit, currentOnly);
+  discover(query: string, limit: number = 20, activeOnly: boolean = false): DiscoverResult[] {
+    const results = this.db.discoverFts(query, limit, activeOnly);
     return results.map((r) => ({
       relative_path: r.id,      // In db mode, we use memory ID as the key
       title: r.title,
@@ -78,7 +78,7 @@ export class GnosysDbSearch {
     limit: number = 15,
     mode: SearchMode = "hybrid",
     embedQuery?: (text: string) => Promise<Float32Array>,
-    currentOnly: boolean = false,
+    activeOnly: boolean = false,
   ): Promise<HybridSearchResult[]> {
     // Check if we have embeddings for semantic/hybrid
     const hasEmbeddings = this.db.getEmbeddingCount() > 0;
@@ -91,20 +91,20 @@ export class GnosysDbSearch {
     let results: HybridSearchResult[];
 
     if (mode === "keyword") {
-      results = this.keywordSearch(query, candidateLimit, currentOnly);
+      results = this.keywordSearch(query, candidateLimit, activeOnly);
     } else if (mode === "semantic" && embedQuery) {
-      results = await this.semanticSearch(query, candidateLimit, embedQuery, currentOnly);
+      results = await this.semanticSearch(query, candidateLimit, embedQuery, activeOnly);
     } else if (mode === "hybrid" && embedQuery) {
       const [kw, sem] = await Promise.all([
-        this.keywordSearch(query, candidateLimit, currentOnly),
-        this.semanticSearch(query, candidateLimit, embedQuery, currentOnly),
+        this.keywordSearch(query, candidateLimit, activeOnly),
+        this.semanticSearch(query, candidateLimit, embedQuery, activeOnly),
       ]);
       results = this.rrfFusion(kw, sem, candidateLimit);
     } else {
-      results = this.keywordSearch(query, candidateLimit, currentOnly);
+      results = this.keywordSearch(query, candidateLimit, activeOnly);
     }
 
-    return currentOnly ? results.slice(0, limit) : this.rankResults(results, limit);
+    return activeOnly ? results.slice(0, limit) : this.rankResults(results, limit);
   }
 
   private rankResults(results: HybridSearchResult[], limit: number): HybridSearchResult[] {
@@ -127,8 +127,8 @@ export class GnosysDbSearch {
   /**
    * FTS5 keyword search → HybridSearchResult
    */
-  private keywordSearch(query: string, limit: number, currentOnly: boolean): HybridSearchResult[] {
-    const results = this.db.searchFts(query, limit, currentOnly);
+  private keywordSearch(query: string, limit: number, activeOnly: boolean): HybridSearchResult[] {
+    const results = this.db.searchFts(query, limit, activeOnly);
     return results.map((r, i) => ({
       relativePath: r.id,
       title: r.title,
@@ -148,10 +148,10 @@ export class GnosysDbSearch {
     query: string,
     limit: number,
     embedQuery: (text: string) => Promise<Float32Array>,
-    currentOnly: boolean,
+    activeOnly: boolean,
   ): Promise<HybridSearchResult[]> {
     const queryVec = await embedQuery(query);
-    const allEmbeddings = this.db.getAllEmbeddings(currentOnly);
+    const allEmbeddings = this.db.getAllEmbeddings(activeOnly);
 
     const scored: Array<{ id: string; similarity: number }> = [];
     for (const entry of allEmbeddings) {

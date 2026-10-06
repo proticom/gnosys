@@ -64,8 +64,8 @@ describe("wildcard recall (gnosys://recall resource path)", () => {
 
   it('recall("*") returns top active memories instead of nothing (the v4.0.0 bug)', async () => {
     const result = await doRecall("*");
-    expect(result.memories.length).toBe(3);
-    expect(result.memories.map((m) => m.id)).toEqual(["wild-top", "wild-mid", "wild-low"]);
+    expect(result.memories.length).toBe(4);
+    expect(result.memories.map((m) => m.id)).toEqual(["wild-top", "wild-mid", "wild-low", "wild-archived"]);
   });
 
   it("wildcard ordering prefers reinforcement, then confidence, then recency", async () => {
@@ -74,10 +74,10 @@ describe("wildcard recall (gnosys://recall resource path)", () => {
     expect(result.memories[0].relevanceScore).toBeGreaterThan(result.memories[2].relevanceScore);
   });
 
-  it("archived and superseded memories are excluded from wildcard recall", async () => {
+  it("wildcard recall falls back to archived memories and excludes superseded memories", async () => {
     const result = await doRecall("*");
     const ids = result.memories.map((m) => m.id);
-    expect(ids).not.toContain("wild-archived");
+    expect(result.memories.find((memory) => memory.id === "wild-archived")?.fromArchive).toBe(true);
     expect(ids).not.toContain("wild-superseded");
   });
 
@@ -91,7 +91,7 @@ describe("wildcard recall (gnosys://recall resource path)", () => {
 
   it("pure-punctuation queries behave like wildcard", async () => {
     const result = await doRecall("--- !!!");
-    expect(result.memories.length).toBe(3);
+    expect(result.memories.length).toBe(4);
   });
 
   it("respects the limit option", async () => {
@@ -113,7 +113,7 @@ describe("wildcard recall (gnosys://recall resource path)", () => {
       gnosysDb: env.db,
       recallConfig: { aggressive: false, maxMemories: 8, minRelevance: 0.4 },
     });
-    expect(result.memories.length).toBe(3);
+    expect(result.memories.length).toBe(4);
   });
 
   it("real keyword recall is unchanged (regression guard)", async () => {

@@ -1,15 +1,17 @@
 export function formatSearchStatus(memory: {
-  status?: string;
+  status?: string | null;
   tier?: string;
   modified?: string;
   superseded_by?: string | null;
 }): string {
-  const status = memory.status === "active" && memory.tier === "archive"
-    ? "archived"
-    : memory.status || "active";
+  const status = memory.superseded_by
+    ? "superseded"
+    : (memory.status ?? "active") === "active" && memory.tier === "archive"
+      ? "archived"
+      : memory.status || "active";
   const date = memory.modified?.slice(0, 10) || "unknown date";
   const replacement = memory.superseded_by ? `; superseded by ${memory.superseded_by}` : "";
-  return `[${status}; ${date}${replacement}]`;
+  return status === "active" && !replacement ? `[${date}]` : `[${status}; ${date}${replacement}]`;
 }
 
 export interface SearchMemoryMetadata {

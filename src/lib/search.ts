@@ -65,6 +65,7 @@ export class GnosysSearch {
       CREATE TABLE IF NOT EXISTS search_metadata (
         relative_path TEXT PRIMARY KEY, id TEXT, status TEXT, tier TEXT, modified TEXT, superseded_by TEXT
       );
+      CREATE INDEX IF NOT EXISTS search_metadata_id ON search_metadata(id);
       CREATE VIRTUAL TABLE IF NOT EXISTS memories_fts USING fts5(
         relative_path,
         title,
@@ -188,13 +189,18 @@ export class GnosysSearch {
     return memories.length;
   }
 
+  getMemoryPath(id: string): string | null {
+    const row = this.db?.prepare("SELECT relative_path FROM search_metadata WHERE id = ? LIMIT 1").get(id) as { relative_path: string } | undefined;
+    return row?.relative_path ?? null;
+  }
+
   private indexMetadata(relativePath: string, id: string, metadata: SearchMemoryMetadata): void {
     this.db.prepare("INSERT OR REPLACE INTO search_metadata VALUES (?, ?, ?, ?, ?, ?)")
       .run(relativePath, id, metadata.status, metadata.tier, metadata.modified, metadata.superseded_by);
   }
 
-  private rankResults<T extends SearchResult | DiscoverResult>(results: T[], limit: number, currentOnly: boolean): T[] {
-    if (currentOnly) return results.slice(0, limit);
+  private rankResults<T extends SearchResult | DiscoverResult>(results: T[], limit: number, activeOnly: boolean): T[] {
+    if (activeOnly) return results.slice(0, limit);
     return rankReplacements({
       results, limit, key: (result) => result.relative_path,
       replacement: (result) => {
@@ -213,10 +219,10 @@ export class GnosysSearch {
   /**
    * Search memories by keyword query.
    */
-  search(query: string, limit: number = 20, currentOnly: boolean = false): SearchResult[] {
+  search(query: string, limit: number = 20, activeOnly: boolean = false): SearchResult[] {
     if (!this.db) return [];
     const candidateLimit = limit * 2;
-    const statusFilter = currentOnly ? "AND m.status = 'active' AND m.tier = 'active'" : "";
+    const statusFilter = activeOnly ? "AND COALESCE(m.status, 'active') = 'active' AND m.tier = 'active' AND NULLIF(m.superseded_by, '') IS NULL" : "";
     const terms = ftsTerms(query);
     if (terms.length === 0) return [];
 
@@ -237,8 +243,8 @@ export class GnosysSearch {
       // v5.12.3: AND first (precision), OR retry when AND finds nothing —
       // multi-word queries previously required every term to match.
       const results = stmt.all(ftsAndQuery(terms), candidateLimit) as SearchResult[];
-      if (results.length > 0 || terms.length === 1) return this.rankResults(results, limit, currentOnly);
-      return this.rankResults(stmt.all(ftsOrQuery(terms), candidateLimit) as SearchResult[], limit, currentOnly);
+      if (results.length > 0 || terms.length === 1) return this.rankResults(results, limit, activeOnly);
+      return this.rankResults(stmt.all(ftsOrQuery(terms), candidateLimit) as SearchResult[], limit, activeOnly);
     } catch {
       // If FTS5 query fails, fall back to simple LIKE search
       const likeStmt = this.db.prepare(`
@@ -253,7 +259,7 @@ export class GnosysSearch {
         LIMIT ?
       `);
       const pattern = `%${terms.join(" ")}%`;
-      return this.rankResults(likeStmt.all(pattern, pattern, pattern, candidateLimit) as SearchResult[], limit, currentOnly);
+      return this.rankResults(likeStmt.all(pattern, pattern, pattern, candidateLimit) as SearchResult[], limit, activeOnly);
     }
   }
 
@@ -262,10 +268,12 @@ export class GnosysSearch {
    * Returns lightweight metadata only — no file contents.
    * This is the primary discovery mechanism replacing the static manifest.
    */
-  discover(query: string, limit: number = 20, currentOnly: boolean = false): DiscoverResult[] {
+  discover(query: string, limit: number = 20, activeOnly: boolean = false, options: { excludeSuperseded?: boolean } = {}): DiscoverResult[] {
     if (!this.db) return [];
     const candidateLimit = limit * 2;
-    const statusFilter = currentOnly ? "AND m.status = 'active' AND m.tier = 'active'" : "";
+    const statusFilter = activeOnly
+      ? "AND COALESCE(m.status, 'active') = 'active' AND m.tier = 'active' AND NULLIF(m.superseded_by, '') IS NULL"
+      : options.excludeSuperseded ? "AND COALESCE(m.status, 'active') <> 'superseded' AND NULLIF(m.superseded_by, '') IS NULL" : "";
     const terms = ftsTerms(query);
     if (terms.length === 0) return [];
 
@@ -280,13 +288,13 @@ export class GnosysSearch {
       FROM memories_fts
       LEFT JOIN search_metadata m ON m.relative_path = memories_fts.relative_path
       WHERE memories_fts MATCH ? ${statusFilter}
-      ORDER BY rank
+      ORDER BY ${options.excludeSuperseded ? "(m.tier = 'archive' OR COALESCE(m.status, 'active') = 'archived'), " : ""}rank
       LIMIT ?
     `);
 
     const tryRun = (match: string): DiscoverResult[] => {
       try {
-        return this.rankResults(stmt.all(match, candidateLimit) as DiscoverResult[], limit, currentOnly);
+        return this.rankResults(stmt.all(match, candidateLimit) as DiscoverResult[], limit, activeOnly || !!options.excludeSuperseded);
       } catch {
         return [];
       }

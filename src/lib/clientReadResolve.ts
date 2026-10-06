@@ -90,9 +90,9 @@ export function discoverWithOverlay(
   resolved: ResolvedClientRead,
   query: string,
   limit: number,
-  currentOnly = false,
+  activeOnly = false,
 ): ReturnType<GnosysDB["discoverFts"]> {
-  const base = resolved.db.discoverFts(query, limit, currentOnly);
+  const base = resolved.db.discoverFts(query, limit, activeOnly);
   if (resolved.pendingOverlay.length === 0) return base;
   return mergeOverlayDiscoverResults(
     base,
@@ -117,9 +117,9 @@ export function searchWithOverlay(
   resolved: ResolvedClientRead,
   query: string,
   limit: number,
-  currentOnly = false,
+  activeOnly = false,
 ): ReturnType<GnosysDB["searchFts"]> {
-  const base = resolved.db.searchFts(query, limit, currentOnly);
+  const base = resolved.db.searchFts(query, limit, activeOnly);
   if (resolved.pendingOverlay.length === 0) return base;
   return mergeOverlaySearchResults(
     base,

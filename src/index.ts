@@ -479,7 +479,7 @@ function resolveWriteScope(
 // ─── Tool: gnosys_discover ──────────────────────────────────────────────
 regTool(
   "gnosys_discover",
-  "Discover relevant memories by describing what you're working on. Searches relevance keyword clouds across all stores. Returns lightweight metadata (title, path, relevance keywords, status, modified date, replacement ID) — NO file contents. Use gnosys_read to load specific memories you need. Call this FIRST when starting a task to find what Gnosys knows. Set currentOnly=true to exclude non-active memories (default false).",
+  "Discover relevant memories by describing what you're working on. Searches relevance keyword clouds across all stores. Returns lightweight metadata (title, path, relevance keywords, status, modified date, replacement ID) — NO file contents. Use gnosys_read to load specific memories you need. Call this FIRST when starting a task to find what Gnosys knows. Set activeOnly=true to exclude non-active memories (default false).",
   {
     query: z
       .string()
@@ -487,16 +487,16 @@ regTool(
         "Describe what you're working on or looking for. Use keywords, not sentences. Example: 'auth JWT session tokens' or 'deployment CI/CD pipeline'"
       ),
     limit: z.number().optional().describe("Max results (default 20)"),
-    currentOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
+    activeOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
     projectRoot: projectRootParam,
   },
-  async ({ query, limit, currentOnly, projectRoot }) => {
+  async ({ query, limit, activeOnly, projectRoot }) => {
     const ctx = await resolveToolContext(projectRoot);
     try {
     // v2.0 DB-backed fast path
     if (ctx.centralDb?.isAvailable() && ctx.centralDb?.isMigrated()) {
       const lim = limit || 20;
-      let results = ctx.centralDb.discoverFts(query, lim, currentOnly);
+      let results = ctx.centralDb.discoverFts(query, lim, activeOnly);
       if (ctx.clientRead?.pendingOverlay.length) {
         results = mergeOverlayDiscoverResults(
           results,
@@ -537,7 +537,7 @@ regTool(
       };
     }
 
-    const results = ctx.search.discover(query, limit || 20, currentOnly);
+    const results = ctx.search.discover(query, limit || 20, activeOnly);
     if (results.length === 0) {
       return {
         content: [
@@ -605,7 +605,8 @@ regTool(
           `created: '${dbMem.created}'`,
           `modified: '${dbMem.modified}'`,
         ];
-        if (dbMem.supersedes) headerLines.push(`supersedes: ${dbMem.supersedes}`);
+        const predecessors = ctx.centralDb.getPredecessorIds(dbMem.id);
+        if (predecessors.length) headerLines.push(`supersedes: ${predecessors.join(", ")}`);
         if (dbMem.superseded_by) headerLines.push(`superseded_by: ${dbMem.superseded_by}`);
         if (dbMem.source_file) {
           headerLines.push(
@@ -654,20 +655,20 @@ regTool(
 // ─── Tool: gnosys_search ─────────────────────────────────────────────────
 regTool(
   "gnosys_search",
-  "Search memories by keyword across all stores. Returns matches with snippets, status, modified date, and replacement IDs. History stays visible; replacements rank first. Set currentOnly=true to exclude non-active memories (default false).",
+  "Search memories by keyword across all stores. Returns matches with snippets, status, modified date, and replacement IDs. History stays visible; replacements rank first. Set activeOnly=true to exclude non-active memories (default false).",
   {
     query: z.string().describe("Search query (keywords)"),
     limit: z.number().optional().describe("Max results (default 20)"),
-    currentOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
+    activeOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
     projectRoot: projectRootParam,
   },
-  async ({ query, limit, currentOnly, projectRoot }) => {
+  async ({ query, limit, activeOnly, projectRoot }) => {
     const ctx = await resolveToolContext(projectRoot);
     try {
     // v2.0 DB-backed fast path
     if (ctx.centralDb?.isAvailable() && ctx.centralDb?.isMigrated()) {
       const lim = limit || 20;
-      let results = ctx.centralDb.searchFts(query, lim, currentOnly);
+      let results = ctx.centralDb.searchFts(query, lim, activeOnly);
       if (ctx.clientRead?.pendingOverlay.length) {
         results = mergeOverlaySearchResults(
           results,
@@ -708,7 +709,7 @@ regTool(
       };
     }
 
-    const results = ctx.search.search(query, limit || 20, currentOnly);
+    const results = ctx.search.search(query, limit || 20, activeOnly);
     if (results.length === 0) {
       return {
         content: [
@@ -996,21 +997,10 @@ regTool(
         response += `\n\nProposed new tags (not yet in registry): ${proposed}\nUse gnosys_tags_add to approve them.`;
       }
 
-      // Contradiction / overlap detection: search for closely related memories
-      if (ctx.search && result.relevance) {
-        const related = ctx.search.discover(result.relevance.split(" ").slice(0, 5).join(" "), 5);
-        // Filter out the memory we just added
-        const overlaps = related.filter(
-          (r) => r.title !== result.title
-        );
-        if (overlaps.length > 0) {
-          response += `\n\n⚠️ Potential overlaps detected — review these for contradictions:`;
-          for (const o of overlaps.slice(0, 3)) {
-            response += `\n  - ${o.title} (${o.relative_path})`;
-          }
-          response += `\nUse gnosys_read to compare, then gnosys_update with supersedes/superseded_by if needed.`;
-        }
-      }
+      const overlapWarning = memoryOverlapWarning(ctx.centralDb, {
+        id, relevance: result.relevance, scope: scopeResult.scope, projectId: scopeResult.projectId,
+      });
+      if (overlapWarning) response += `\n\n${overlapWarning}`;
 
       return { content: [{ type: "text", text: response }] };
     } catch (err) {
@@ -1025,7 +1015,7 @@ regTool(
 // ─── Tool: gnosys_add_structured ─────────────────────────────────────────
 regTool(
   "gnosys_add_structured",
-  "Preferred for LLM agents: add a memory with structured fields you supply (title, category, tags, content). Optional supersedes validates the predecessor ID and links both memories. Reports potential overlaps. No server-side LLM call.",
+  "Preferred for LLM agents: add a memory with structured fields you supply (title, category, tags, content). Optional supersedes accepts one or more comma-separated predecessor IDs and creates two-way links. A successor may have many predecessors. IDs are validated and cycles rejected. Links stay within the same scope and project unless allowCrossScope=true. Reports up to three active overlaps in the writer scope and project. No server-side LLM call.",
   {
     title: z.string().describe("Memory title"),
     category: z.string().describe("Category name"),
@@ -1043,10 +1033,11 @@ regTool(
       .enum(["declared", "observed", "imported", "inferred"])
       .optional(),
     confidence: z.number().min(0).max(1).optional(),
-    supersedes: z.string().optional().describe("ID of the memory this replaces"),
+    supersedes: z.string().optional().describe("Comma-separated IDs of memories this replaces"),
+    allowCrossScope: z.boolean().optional().describe("Allow supersession across scopes or projects (default false)"),
     projectRoot: projectRootParam,
   },
-  async ({ title, category, tags, relevance, content, store: targetStore, author, authority, confidence, supersedes, projectRoot }) => {
+  async ({ title, category, tags, relevance, content, store: targetStore, author, authority, confidence, supersedes, allowCrossScope, projectRoot }) => {
     try {
       const ctx = await resolveToolContext(projectRoot);
       const writeTarget = ctx.resolver.getWriteTarget(
@@ -1107,14 +1098,14 @@ regTool(
           scopeResult.projectId,
           scopeResult.scope,
         );
-        if (supersedes) syncUpdateToDb(db, id, { supersedes });
+        if (supersedes) syncUpdateToDb(db, id, { supersedes }, undefined, { allowCrossScope });
       });
       auditToDb(ctx.centralDb, "write", id, { tool: "gnosys_add_structured", category });
 
       if (ctx.search) await reindexAllStores();
 
       let response = `Memory added to [${writeTarget.label}]: **${title}**\nID: ${id}`;
-      const overlapWarning = memoryOverlapWarning(db, { id, relevance: relevance || "", supersedes });
+      const overlapWarning = memoryOverlapWarning(db, { id, relevance: relevance || "", supersedes, scope: scopeResult.scope, projectId: scopeResult.projectId });
       if (overlapWarning) response += `\n\n${overlapWarning}`;
       return { content: [{ type: "text", text: response }] };
     } catch (err) {
@@ -1432,7 +1423,7 @@ regTool(
 // ─── Tool: gnosys_update ─────────────────────────────────────────────────
 regTool(
   "gnosys_update",
-  "Update an existing memory's fields and/or content by id or path.",
+  "Update an existing memory's fields and/or content by id or path. Supersession creates two-way links and supports many predecessors per successor. Target IDs are validated and cycles rejected. Links stay within the same scope and project unless allowCrossScope=true. Set superseded_by to an empty string to unlink this predecessor.",
   {
     path: z.string().describe("Memory id or path"),
     title: z.string().optional().describe("New title"),
@@ -1441,11 +1432,12 @@ regTool(
       .optional()
       .describe("New tags object"),
     status: z
-      .enum(["active", "archived", "superseded"])
+      .string()
       .optional()
-      .describe("New status"),
+      .describe("New status; explicit values override automatic supersession status"),
     confidence: z.number().min(0).max(1).optional().describe("New confidence"),
-    supersedes: z.string().optional().describe("ID this memory supersedes"),
+    supersedes: z.string().optional().describe("Comma-separated predecessor IDs to link to this memory"),
+    allowCrossScope: z.boolean().optional().describe("Allow supersession across scopes or projects (default false)"),
     relevance: z.string().optional().describe("New relevance keyword cloud"),
     superseded_by: z.string().optional().describe("ID that supersedes this one"),
     content: z.string().optional().describe("New markdown content (replaces body)"),
@@ -1460,77 +1452,85 @@ regTool(
     relevance,
     supersedes,
     superseded_by,
+    allowCrossScope,
     content: newContent,
     projectRoot,
   }) => {
-    const ctx = await resolveToolContext(projectRoot);
+    try {
+      const ctx = await resolveToolContext(projectRoot);
 
-    if (!ctx.centralDb?.isAvailable()) {
+      if (!ctx.centralDb?.isAvailable()) {
+        return {
+          content: [{ type: "text", text: "Database not available. Cannot update memory." }],
+          isError: true,
+        };
+      }
+
+      // DB-first lookup: resolve memory ID from central DB (mirrors gnosys_read pattern)
+      let memoryId: string;
+      let currentTitle: string;
+
+      const dbMem = ctx.centralDb.getMemory(memPath);
+      if (dbMem) {
+        memoryId = dbMem.id;
+        currentTitle = dbMem.title;
+      } else {
+        // Fallback to legacy file resolver
+        const memory = await ctx.resolver.readMemory(memPath);
+        if (!memory) {
+          return {
+            content: [{ type: "text", text: `Memory not found: ${memPath}` }],
+            isError: true,
+          };
+        }
+        if (!memory.frontmatter.id) {
+          return {
+            content: [{ type: "text", text: `Memory has no ID: ${memPath}` }],
+            isError: true,
+          };
+        }
+        memoryId = memory.frontmatter.id;
+        currentTitle = memory.frontmatter.title || memPath;
+      }
+
+      // Build updates object — only include defined fields
+      const updates: Parameters<typeof syncUpdateToDb>[2] = {};
+      if (title !== undefined) updates.title = title;
+      if (tags !== undefined) updates.tags = tags as Record<string, string[]>;
+      if (status !== undefined) updates.status = status;
+      if (confidence !== undefined) updates.confidence = confidence;
+      if (relevance !== undefined) updates.relevance = relevance;
+      if (supersedes !== undefined) updates.supersedes = supersedes;
+      if (superseded_by !== undefined) updates.superseded_by = superseded_by;
+
+      const fullContent = newContent ? `# ${title || currentTitle}\n\n${newContent}` : undefined;
+
+      // Write update to DB only (SQLite is sole source of truth)
+      syncUpdateToDb(ctx.centralDb, memoryId, updates, fullContent, { allowCrossScope });
+      auditToDb(ctx.centralDb, "write", memoryId, { tool: "gnosys_update", changed: Object.keys(updates) });
+
+      // Rebuild search index
+      if (ctx.search) await reindexAllStores();
+
+      const changedFields = Object.keys(updates);
+      if (newContent) changedFields.push("content");
+
+      const updatedTitle = title || currentTitle;
+
       return {
-        content: [{ type: "text", text: "Database not available. Cannot update memory." }],
+        content: [
+          {
+            type: "text",
+            text: `Memory updated: **${updatedTitle}**\nID: ${memoryId}\nChanged: ${changedFields.join(", ")}`,
+          },
+        ],
+      };
+    } catch (err) {
+      return {
+        content: [{ type: "text", text: formatMcpError("updating memory", err) }],
         isError: true,
       };
     }
-
-    // DB-first lookup: resolve memory ID from central DB (mirrors gnosys_read pattern)
-    let memoryId: string;
-    let currentTitle: string;
-
-    const dbMem = ctx.centralDb.getMemory(memPath);
-    if (dbMem) {
-      memoryId = dbMem.id;
-      currentTitle = dbMem.title;
-    } else {
-      // Fallback to legacy file resolver
-      const memory = await ctx.resolver.readMemory(memPath);
-      if (!memory) {
-        return {
-          content: [{ type: "text", text: `Memory not found: ${memPath}` }],
-          isError: true,
-        };
-      }
-      if (!memory.frontmatter.id) {
-        return {
-          content: [{ type: "text", text: `Memory has no ID: ${memPath}` }],
-          isError: true,
-        };
-      }
-      memoryId = memory.frontmatter.id;
-      currentTitle = memory.frontmatter.title || memPath;
-    }
-
-    // Build updates object — only include defined fields
-    const updates: Partial<MemoryFrontmatter> = {};
-    if (title !== undefined) updates.title = title;
-    if (tags !== undefined) updates.tags = tags as Record<string, string[]>;
-    if (status !== undefined) updates.status = status;
-    if (confidence !== undefined) updates.confidence = confidence;
-    if (relevance !== undefined) updates.relevance = relevance;
-    if (supersedes !== undefined) updates.supersedes = supersedes;
-    if (superseded_by !== undefined) updates.superseded_by = superseded_by;
-
-    const fullContent = newContent ? `# ${title || currentTitle}\n\n${newContent}` : undefined;
-
-    // Write update to DB only (SQLite is sole source of truth)
-    syncUpdateToDb(ctx.centralDb, memoryId, updates, fullContent);
-    auditToDb(ctx.centralDb, "write", memoryId, { tool: "gnosys_update", changed: Object.keys(updates) });
-
-    // Rebuild search index
-    if (ctx.search) await reindexAllStores();
-
-    const changedFields = Object.keys(updates);
-    if (newContent) changedFields.push("content");
-
-    const updatedTitle = title || currentTitle;
-
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Memory updated: **${updatedTitle}**\nID: ${memoryId}\nChanged: ${changedFields.join(", ")}`,
-        },
-      ],
-    };
   }
 );
 
@@ -2261,15 +2261,15 @@ regTool(
 // ─── Tool: gnosys_hybrid_search ──────────────────────────────────────────
 regTool(
   "gnosys_hybrid_search",
-  "Search memories using hybrid keyword + semantic search with Reciprocal Rank Fusion. Combines FTS5 keyword matching with embedding-based semantic similarity for best results. Includes status, modified date, and replacement IDs; replacements rank before their history. Run gnosys_reindex first if embeddings don't exist yet. Set currentOnly=true to exclude non-active memories (default false).",
+  "Search memories using hybrid keyword + semantic search with Reciprocal Rank Fusion. Combines FTS5 keyword matching with embedding-based semantic similarity for best results. Includes status, modified date, and replacement IDs; replacements rank before their history. Run gnosys_reindex first if embeddings don't exist yet. Set activeOnly=true to exclude non-active memories (default false).",
   {
     query: z.string().describe("Natural language search query"),
     limit: z.number().optional().describe("Max results (default 15)"),
     mode: z.enum(["keyword", "semantic", "hybrid"]).optional().describe("Search mode (default: hybrid)"),
-    currentOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
+    activeOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
     projectRoot: projectRootParam,
   },
-  async ({ query, limit, mode, currentOnly, projectRoot }) => {
+  async ({ query, limit, mode, activeOnly, projectRoot }) => {
     // Note: hybridSearch is module-level (heavy) and not scoped per project
     (projectRoot); // quiets unused warning if any
     // v5.9.1 (#100): wait for the background heavy-init to finish.
@@ -2283,7 +2283,7 @@ regTool(
 
     try {
       const requestedMode = (mode as "keyword" | "semantic" | "hybrid") || "hybrid";
-      const results = await hybridSearch.hybridSearch(query, limit || 15, requestedMode, currentOnly);
+      const results = await hybridSearch.hybridSearch(query, limit || 15, requestedMode, activeOnly);
 
       // v5.12.3: hybrid used to degrade to keyword-only silently when the
       // semantic leg can't run (embeddings are only built by gnosys_reindex,
@@ -2339,14 +2339,14 @@ regTool(
 // ─── Tool: gnosys_semantic_search ────────────────────────────────────────
 regTool(
   "gnosys_semantic_search",
-  "Search memories using semantic similarity only (no keyword matching). Finds conceptually related memories even without exact keyword matches. Includes status, modified date, and replacement IDs; replacements rank before their history. Requires embeddings — run gnosys_reindex first. Set currentOnly=true to exclude non-active memories (default false).",
+  "Search memories using semantic similarity only (no keyword matching). Finds conceptually related memories even without exact keyword matches. Includes status, modified date, and replacement IDs; replacements rank before their history. Requires embeddings — run gnosys_reindex first. Set activeOnly=true to exclude non-active memories (default false).",
   {
     query: z.string().describe("Natural language search query"),
     limit: z.number().optional().describe("Max results (default 15)"),
-    currentOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
+    activeOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
     projectRoot: projectRootParam,
   },
-  async ({ query, limit, currentOnly, projectRoot }) => {
+  async ({ query, limit, activeOnly, projectRoot }) => {
     // Note: hybridSearch is module-level (heavy) and not scoped per project
     (projectRoot); // quiets unused warning if any
     await ensureHeavyDeps();
@@ -2368,7 +2368,7 @@ regTool(
         };
       }
 
-      const results = await hybridSearch.hybridSearch(query, limit || 15, "semantic", currentOnly);
+      const results = await hybridSearch.hybridSearch(query, limit || 15, "semantic", activeOnly);
 
       if (results.length === 0) {
         return {

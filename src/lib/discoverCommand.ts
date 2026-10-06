@@ -4,7 +4,7 @@ import { logError } from "./log.js";
 export type DiscoverCommandOptions = {
   limit: string;
   json?: boolean;
-  currentOnly?: boolean;
+  activeOnly?: boolean;
   federated?: boolean;
   scope?: string;
   directory?: string;
@@ -39,6 +39,7 @@ export async function runDiscoverCommand(
             limit: parseInt(opts.limit, 10),
             projectId,
             scopeFilter,
+            activeOnly: opts.activeOnly ?? false,
           });
 
           outputResult(!!opts.json, { query, projectId, count: results.length, results }, () => {
@@ -66,7 +67,7 @@ export async function runDiscoverCommand(
         process.exit(1);
       }
       try {
-        const results = discoverWithOverlay(resolved, query, parseInt(opts.limit, 10), opts.currentOnly);
+        const results = discoverWithOverlay(resolved, query, parseInt(opts.limit, 10), opts.activeOnly);
         if (results.length === 0) {
           outputResult(!!opts.json, { query, results: [] }, () => {
             console.log(`No memories found for "${query}". Try gnosys search for full-text.`);

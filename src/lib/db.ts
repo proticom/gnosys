@@ -995,11 +995,17 @@ export class GnosysDB {
     );
   }
 
+  getPredecessorIds(successorId: string): string[] {
+    return this.withRecovery(() =>
+      (this.prep("SELECT id FROM memories WHERE superseded_by = ? ORDER BY id").all(successorId) as Array<{ id: string }>).map((row) => row.id),
+    );
+  }
+
   getActiveMemories(): DbMemory[] {
     // v5.12.x perf: project NULL for the two BLOB columns — see
     // LEAN_MEMORY_PROJECTION for the rationale and measured numbers.
     return this.withRecovery(() =>
-      this.prep(`SELECT ${LEAN_MEMORY_PROJECTION} FROM memories WHERE tier = 'active' AND status = 'active'`).all() as DbMemory[],
+      this.prep(`SELECT ${LEAN_MEMORY_PROJECTION} FROM memories WHERE tier = 'active' AND COALESCE(status, 'active') = 'active' AND NULLIF(superseded_by, '') IS NULL`).all() as DbMemory[],
     );
   }
 
@@ -1176,7 +1182,7 @@ export class GnosysDB {
   getMemoriesByProject(projectId: string, includeArchived = false): DbMemory[] {
     const sql = includeArchived
       ? "SELECT * FROM memories WHERE project_id = ?"
-      : "SELECT * FROM memories WHERE project_id = ? AND tier = 'active' AND status = 'active'";
+      : "SELECT * FROM memories WHERE project_id = ? AND tier = 'active' AND COALESCE(status, 'active') = 'active' AND NULLIF(superseded_by, '') IS NULL";
     return this.withRecovery(() => this.prep(sql).all(projectId) as DbMemory[]);
   }
 
@@ -1186,7 +1192,7 @@ export class GnosysDB {
   getMemoriesByScope(scope: MemoryScope): DbMemory[] {
     return this.withRecovery(() =>
       this.prep(
-        "SELECT * FROM memories WHERE scope = ? AND tier = 'active' AND status = 'active'"
+        "SELECT * FROM memories WHERE scope = ? AND tier = 'active' AND COALESCE(status, 'active') = 'active' AND NULLIF(superseded_by, '') IS NULL"
       ).all(scope) as DbMemory[],
     );
   }
@@ -1311,17 +1317,17 @@ export class GnosysDB {
   searchFts(
     query: string,
     limit: number = 20,
-    currentOnly: boolean = false,
+    activeOnly: boolean = false,
   ): FtsSearchResult[] {
     const candidateLimit = limit * 2;
-    const statusFilter = currentOnly ? "AND m.status = 'active' AND m.tier = 'active'" : "";
+    const statusFilter = activeOnly ? "AND COALESCE(m.status, 'active') = 'active' AND m.tier = 'active' AND NULLIF(m.superseded_by, '') IS NULL" : "";
     const terms = ftsTerms(query);
     if (terms.length === 0) return [];
 
     const finish = (results: FtsSearchResult[]) => rankReplacements({
       results, limit, key: (result) => result.id,
       replacement: (result) => {
-        if (currentOnly) return null;
+        if (activeOnly) return null;
         const memory = result.superseded_by ? this.getMemory(result.superseded_by) : null;
         return memory ? {
           id: memory.id, title: memory.title, snippet: memory.content.substring(0, 200), rank: result.rank,
@@ -1367,17 +1373,26 @@ export class GnosysDB {
   discoverFts(
     query: string,
     limit: number = 20,
-    currentOnly: boolean = false,
+    activeOnly: boolean = false,
+    options: { excludeSuperseded?: boolean; scope?: string; projectId?: string | null } = {},
   ): FtsDiscoverResult[] {
     const candidateLimit = limit * 2;
-    const statusFilter = currentOnly ? "AND m.status = 'active' AND m.tier = 'active'" : "";
+    const statusFilter = activeOnly
+      ? "AND COALESCE(m.status, 'active') = 'active' AND m.tier = 'active' AND NULLIF(m.superseded_by, '') IS NULL"
+      : options.excludeSuperseded ? "AND COALESCE(m.status, 'active') <> 'superseded' AND NULLIF(m.superseded_by, '') IS NULL" : "";
+    const scopeFilter = options.scope
+      ? `AND m.scope = ?${options.scope === "project" ? " AND m.project_id IS ?" : ""}`
+      : "";
+    const scopeParams = options.scope
+      ? options.scope === "project" ? [options.scope, options.projectId ?? null] : [options.scope]
+      : [];
     const terms = ftsTerms(query);
     if (terms.length === 0) return [];
 
     const finish = (results: FtsDiscoverResult[]) => rankReplacements({
       results, limit, key: (result) => result.id,
       replacement: (result) => {
-        if (currentOnly) return null;
+        if (activeOnly || options.excludeSuperseded) return null;
         const memory = result.superseded_by ? this.getMemory(result.superseded_by) : null;
         return memory ? {
           id: memory.id, title: memory.title, relevance: memory.relevance, rank: result.rank,
@@ -1392,8 +1407,8 @@ export class GnosysDB {
       SELECT m.id AS id, m.title AS title, m.relevance AS relevance, fts.rank AS rank, m.project_id AS project_id, m.status, m.tier, m.modified, m.superseded_by
       FROM memories_fts fts
       JOIN memories m ON m.id = fts.id
-      WHERE memories_fts MATCH ? ${statusFilter}
-      ORDER BY fts.rank
+      WHERE memories_fts MATCH ? ${statusFilter} ${scopeFilter}
+      ORDER BY ${options.excludeSuperseded ? "(m.tier = 'archive' OR COALESCE(m.status, 'active') = 'archived'), " : ""}fts.rank
       LIMIT ?
     `;
 
@@ -1401,7 +1416,7 @@ export class GnosysDB {
     // syntax failures still degrade gracefully to "no results".
     const tryRun = (match: string) => {
       try {
-        return this.prep(select).all(match, candidateLimit) as FtsDiscoverResult[];
+        return this.prep(select).all(match, ...scopeParams, candidateLimit) as FtsDiscoverResult[];
       } catch (err) {
         if (GnosysDB.isCorruptionError(err)) throw err;
         return [];
@@ -1558,15 +1573,15 @@ export class GnosysDB {
   }
 
   /**
-   * v5.13.1: top active memories for wildcard recall. The gnosys://recall
+   * Top recall candidates, with archived memories after the active tier. The gnosys://recall
    * resource asks for "the best memories, no query" — rank by how often a
    * memory proved useful (reinforcement), then confidence, then recency.
    */
-  getTopActiveMemories(limit: number = 15): DbMemory[] {
+  getTopRecallMemories(limit: number = 15): DbMemory[] {
     return this.withRecovery(() =>
       this.prep(
-        `SELECT ${LEAN_MEMORY_PROJECTION} FROM memories WHERE tier = 'active' AND status = 'active'
-         ORDER BY reinforcement_count DESC, confidence DESC, modified DESC LIMIT ?`,
+        `SELECT ${LEAN_MEMORY_PROJECTION} FROM memories WHERE COALESCE(status, 'active') <> 'superseded' AND NULLIF(superseded_by, '') IS NULL
+         ORDER BY (tier = 'archive' OR COALESCE(status, 'active') = 'archived'), reinforcement_count DESC, confidence DESC, modified DESC LIMIT ?`,
       ).all(limit) as DbMemory[],
     );
   }
@@ -1614,9 +1629,9 @@ export class GnosysDB {
     });
   }
 
-  getAllEmbeddings(currentOnly: boolean = false): Array<{ id: string; embedding: Buffer }> {
+  getAllEmbeddings(activeOnly: boolean = false): Array<{ id: string; embedding: Buffer }> {
     return this.withRecovery(() =>
-      this.db.prepare(`SELECT id, embedding FROM memories WHERE embedding IS NOT NULL${currentOnly ? " AND status = 'active' AND tier = 'active'" : ""}`).all() as Array<{ id: string; embedding: Buffer }>,
+      this.db.prepare(`SELECT id, embedding FROM memories WHERE embedding IS NOT NULL${activeOnly ? " AND COALESCE(status, 'active') = 'active' AND NULLIF(superseded_by, '') IS NULL AND tier = 'active'" : ""}`).all() as Array<{ id: string; embedding: Buffer }>,
     );
   }
 

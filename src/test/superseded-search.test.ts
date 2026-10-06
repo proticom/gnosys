@@ -1,4 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import Database from "better-sqlite3";
+import path from "node:path";
+import { federatedSearch, federatedDiscover } from "../lib/federated.js";
+import { formatSearchStatus } from "../lib/searchStatus.js";
 import { GnosysDbSearch } from "../lib/dbSearch.js";
 import { recall } from "../lib/recall.js";
 import { GnosysSearch } from "../lib/search.js";
@@ -47,7 +51,7 @@ describe("history-visible search", () => {
     });
   }
 
-  it("current-only modes fill top-k despite many stronger superseded matches", async () => {
+  it("active-only modes fill top-k despite many stronger superseded matches", async () => {
     for (let index = 0; index < 30; index++) {
       env.db.insertMemory(makeMemory({ id: `historical-${index}`, title: "routing routing routing", relevance: "routing", status: "superseded", embedding: Buffer.from(new Float32Array([1, 0]).buffer) }));
     }
@@ -55,6 +59,66 @@ describe("history-visible search", () => {
     for (const mode of ["keyword", "semantic", "hybrid"] as const) {
       expect((await search.hybridSearch("routing", 1, mode, async () => new Float32Array([1, 0]), true)).map((row) => row.memoryId)).toEqual(["new"]);
     }
+  });
+
+  it("treats legacy NULL status as active across retrieval paths", async () => {
+    const sqlite = new Database(path.join(env.tmpDir, "gnosys.db"));
+    try {
+      const trigger = sqlite.prepare("SELECT sql FROM sqlite_master WHERE type = 'trigger' AND name = 'memories_fts_au'").get() as { sql: string };
+      sqlite.transaction(() => {
+        sqlite.exec("DROP TRIGGER memories_fts_au");
+        sqlite.prepare("UPDATE memories SET status = NULL WHERE id = ?").run("new");
+        sqlite.exec(trigger.sql);
+      })();
+    } finally {
+      sqlite.close();
+    }
+    expect(env.db.searchFts("routing", 10, true).map((row) => row.id)).toEqual(["new"]);
+    expect(env.db.discoverFts("routing", 10, true).map((row) => row.id)).toEqual(["new"]);
+    expect(env.db.getActiveMemories().map((row) => row.id)).toEqual(["new"]);
+    expect(env.db.getAllEmbeddings(true).map((row) => row.id)).toEqual(["new"]);
+    expect(federatedSearch(env.db, "routing").map((row) => row.id)).toEqual(["new"]);
+    expect(federatedDiscover(env.db, "routing").map((row) => row.id)).toEqual(["new"]);
+    expect((await recall("routing", { gnosysDb: env.db, limit: 1 })).memories.map((row) => row.id)).toEqual(["new"]);
+    expect(formatSearchStatus({ status: null, modified: "2026-10-06" })).toBe("[2026-10-06]");
+  });
+
+  it.each([federatedSearch, federatedDiscover])("federated activeOnly filters history before the candidate limit", (search) => {
+    for (let index = 0; index < 40; index++) {
+      env.db.insertMemory(makeMemory({ id: `fan-${index}`, title: "routing routing routing", relevance: "routing routing", content: "routing", status: "superseded" }));
+    }
+    expect(search(env.db, "routing", { limit: 1, activeOnly: true }).map((row) => row.id)).toEqual(["new"]);
+  });
+
+  it("recall includes completed and archived rows but excludes superseded rows", async () => {
+    env.db.updateMemory("new", { status: "completed" });
+    for (let index = 0; index < 40; index++) {
+      env.db.insertMemory(makeMemory({ id: `old-archive-${index}`, title: "routing", relevance: "routing", tier: "archive", status: "superseded" }));
+    }
+    const result = await recall("routing", { gnosysDb: env.db, limit: 10 });
+    expect(result.memories.map((row) => ({ id: row.id, fromArchive: row.fromArchive }))).toEqual([
+      { id: "new", fromArchive: false },
+      { id: "archive", fromArchive: true },
+    ]);
+  });
+
+  it("treats archived status as fallback even when its tier is active", async () => {
+    env.db.updateMemory("archive", { tier: "active" });
+    const result = await recall("routing", { gnosysDb: env.db, limit: 10 });
+    expect(result.memories.map((row) => ({ id: row.id, fromArchive: row.fromArchive }))).toEqual([
+      { id: "new", fromArchive: false },
+      { id: "archive", fromArchive: true },
+    ]);
+    expect((await recall("routing", { gnosysDb: env.db, limit: 1 })).memories.map((row) => row.id)).toEqual(["new"]);
+  });
+
+  it("excludes linked rows with explicit active status from activeOnly and recall", async () => {
+    env.db.updateMemory("old", { status: "active" });
+    expect(env.db.searchFts("routing", 10, true).map((row) => row.id)).toEqual(["new"]);
+    expect(env.db.discoverFts("routing", 10, true).map((row) => row.id)).toEqual(["new"]);
+    expect(env.db.getAllEmbeddings(true).map((row) => row.id)).toEqual(["new"]);
+    expect((await recall("routing", { gnosysDb: env.db, limit: 10 })).memories.map((row) => row.id)).toEqual(["new", "archive"]);
+    expect(formatSearchStatus({ status: "active", modified: "2026-10-06", superseded_by: "new" })).toBe("[superseded; 2026-10-06; superseded by new]");
   });
 
   it("retrieves a linked replacement outside the keyword candidate window", () => {
@@ -103,15 +167,15 @@ describe("legacy search metadata", () => {
   });
   afterEach(async () => { vi.restoreAllMocks(); search.close(); embeddings.close(); await cleanupTestEnv(env); });
 
-  it.each([false, true])("semantic CLI applies currentOnly=%s before limiting results", async (currentOnly) => {
+  it.each([false, true])("semantic CLI applies activeOnly=%s before limiting results", async (activeOnly) => {
     vi.spyOn(GnosysEmbeddings.prototype, "embed").mockResolvedValue(new Float32Array([1, 0]));
     const output = vi.spyOn(console, "log").mockImplementation(() => {});
-    await runSemanticSearchCommand(async () => resolver, "routing", { limit: "10", currentOnly });
+    await runSemanticSearchCommand(async () => resolver, "routing", { limit: "10", activeOnly });
     const lines = output.mock.calls.flat().filter((line): line is string => typeof line === "string");
-    expect(lines.filter((line) => line.startsWith("  ") && !line.startsWith("    "))).toEqual(currentOnly
-      ? ["  Correction [active; 2026-10-06]"]
+    expect(lines.filter((line) => line.startsWith("  ") && !line.startsWith("    "))).toEqual(activeOnly
+      ? ["  Correction [2026-10-06]"]
       : [
-        "  Correction [active; 2026-10-06]",
+        "  Correction [2026-10-06]",
         "  routing routing routing [superseded; 2025-01-01; superseded by new]",
         "  routing archive [archived; 2025-01-01]",
       ]);
@@ -137,6 +201,36 @@ describe("legacy search metadata", () => {
     expect(results.map((row) => row.memoryId)).toEqual(["new", "old"]);
     expect(results[0]).toMatchObject({ status: "active", fromArchive: false });
     expect(results[1]).toMatchObject({ status: "archived", modified: "2025-01-01", superseded_by: "new" });
+  });
+
+  it("legacy recall restores archive fallback without superseded candidates", async () => {
+    const store = env.store!;
+    const archive = new GnosysArchive(env.tmpDir);
+    try {
+      for (let index = 0; index < 20; index++) {
+        await store.writeMemory("decisions", `expired-${index}.md`, makeFrontmatter({ id: `expired-${index}`, title: "fallback fallback", status: "superseded" }), "fallback");
+        const memory = await store.readMemory(`decisions/expired-${index}.md`);
+        if (!memory) throw new Error("Missing fixture");
+        await archive.archiveMemory(memory);
+      }
+      await store.writeMemory("decisions", "decayed.md", makeFrontmatter({ id: "decayed", title: "fallback" }), "fallback still useful");
+      const memory = await store.readMemory("decisions/decayed.md");
+      if (!memory) throw new Error("Missing fixture");
+      await archive.archiveMemory(memory);
+    } finally {
+      archive.close();
+    }
+    const result = await recall("fallback", { search, resolver, storePath: env.tmpDir, limit: 1 });
+    expect(result.memories.map((row) => ({ id: row.id, fromArchive: row.fromArchive }))).toEqual([
+      { id: "decayed", fromArchive: true },
+    ]);
+  });
+
+  it("resolves only indexed replacement ids instead of loading every memory", async () => {
+    const bulkRead = vi.spyOn(resolver, "getAllMemories");
+    const hybrid = new GnosysHybridSearch(search, embeddings, resolver, env.tmpDir);
+    expect((await hybrid.hybridSearch("routing", 1, "keyword")).map((row) => row.memoryId)).toEqual(["new"]);
+    expect(bulkRead.mock.calls).toEqual([]);
   });
 
   for (const method of ["search", "discover"] as const) {

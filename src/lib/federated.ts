@@ -53,6 +53,7 @@ export interface ProjectBriefing {
 }
 
 export interface FederatedSearchOptions {
+  activeOnly?: boolean;
   /** Limit total results */
   limit?: number;
   /** Current project ID (auto-detected if omitted) */
@@ -118,7 +119,7 @@ function buildFederatedResults<T extends { id: string }>(
   for (let i = 0; i < rawResults.length; i++) {
     const r = rawResults[i];
     const mem = db.getMemory(r.id);
-    if (!mem || mem.status !== "active") continue;
+    if (!mem) continue;
 
     const scope = (mem.scope || "project") as MemoryScope;
 
@@ -194,7 +195,7 @@ export function federatedSearch(
 ): FederatedResult[] {
   const limit = opts.limit ?? 20;
   // Run FTS5 search across ALL memories (no scope filter at query time)
-  const rawResults = db.searchFts(query, limit * 3);
+  const rawResults = db.searchFts(query, limit * 3, opts.activeOnly ?? true);
   return buildFederatedResults(db, rawResults, (r) => r.snippet, opts, true);
 }
 
@@ -208,7 +209,7 @@ export function federatedDiscover(
   opts: FederatedSearchOptions = {},
 ): FederatedResult[] {
   const limit = opts.limit ?? 20;
-  const rawResults = db.discoverFts(query, limit * 3);
+  const rawResults = db.discoverFts(query, limit * 3, opts.activeOnly ?? true);
   return buildFederatedResults(db, rawResults, (r) => r.relevance, opts, false);
 }
 
@@ -362,7 +363,7 @@ export function generateBriefing(
     projectName: project.name,
     workingDirectory: effectiveProjectPath(db, project, machine) ?? "(not on this machine)",
     totalMemories: allProjectMems.length,
-    activeMemories: allProjectMems.filter((m) => m.status === "active").length,
+    activeMemories: allProjectMems.filter((m) => (m.status ?? "active") === "active").length,
     categories,
     recentActivity,
     topTags,

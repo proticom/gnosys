@@ -9,16 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Search, discovery, hybrid search, and semantic search label memory status,
-  modified date, and replacement ID. Superseded and archived history remains
-  visible by default. Linked replacements rank before predecessors and survive
-  small result limits. Use MCP `currentOnly` or CLI `--current-only` to return
-  active memories only.
-- Memory reads include both supersession links. Structured adds accept
-  `supersedes`, validate the target, and warn about overlapping active memories.
-  Updates validate and link either direction atomically. Supersession preserves
-  the historical memory's modified date.
-- Recall and its hook filter non-active memories before candidate limits.
+- Search, discovery, hybrid search, and semantic search use compact date labels
+  for active memories and status/date/replacement labels for history. Replacements
+  rank before predecessors, including at small limits. MCP `activeOnly` and CLI
+  `--active-only` replace `currentOnly` and `--current-only`. NULL legacy statuses
+  count as active without a data migration. Federated filtering precedes limits.
+- Supersession supports many predecessors per successor. Each predecessor owns
+  its `superseded_by` link; the successor's `supersedes` lists all predecessors
+  in stable order. Linking or unlinking one predecessor leaves the others intact.
+  Status and link changes update `modified` so remote sync can detect them.
+  Explicit caller statuses are preserved; unlinking an implicitly superseded row
+  restores active or archived status according to its tier.
+- Structured adds and updates validate IDs, reject cycles, and link both
+  directions atomically. A bad `supersedes` ID now rejects the add. Cross-scope
+  and cross-project links require MCP `allowCrossScope: true`. Reads show all
+  predecessors. Overlap warnings show at most three active matches in the
+  writer's scope and project.
+- Recall and its hook exclude superseded rows before candidate limits while
+  retaining archive fallback. Legacy hybrid replacement lookup reads only
+  the required IDs.
 
 ## [6.2.1] — 2026-07-16
 

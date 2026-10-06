@@ -5,7 +5,7 @@ import type { GnosysResolver } from "./resolver.js";
 export type SemanticSearchCommandOptions = {
   limit: string;
   json?: boolean;
-  currentOnly?: boolean;
+  activeOnly?: boolean;
 };
 
 type GetResolver = () => Promise<GnosysResolver>;
@@ -42,7 +42,7 @@ export async function runSemanticSearchCommand(
       const embeddings = new GnosysEmbeddings(storePath);
       const hybridSearch = new GnosysHybridSearch(search, embeddings, resolver, storePath);
   
-      const results = opts.currentOnly
+      const results = opts.activeOnly
         ? await hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), "semantic", true)
         : await hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), "semantic");
   

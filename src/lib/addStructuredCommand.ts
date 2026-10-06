@@ -69,7 +69,7 @@ export async function runAddStructuredCommand(
   
             console.log(`Memory added (scope: ${scope}): ${opts.title}`);
             console.log(`ID: ${id}`);
-            const warning = memoryOverlapWarning(db, { id, relevance: opts.relevance, supersedes: opts.supersedes });
+            const warning = memoryOverlapWarning(db, { id, relevance: opts.relevance, supersedes: opts.supersedes, scope, projectId });
             if (warning) console.log(warning);
             return;
           } catch (err) {
@@ -133,7 +133,7 @@ export async function runAddStructuredCommand(
   
           console.log(`Memory added: ${opts.title}`);
           console.log(`ID: ${id}`);
-          const warning = memoryOverlapWarning(db, { id, relevance: opts.relevance, supersedes: opts.supersedes });
+          const warning = memoryOverlapWarning(db, { id, relevance: opts.relevance, supersedes: opts.supersedes, scope: "project", projectId });
           if (warning) console.log(warning);
         } finally {
           centralDb?.close();

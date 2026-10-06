@@ -16,7 +16,7 @@ gnosys discover "auth tokens" --json --id-format raw
 | Option | Description |
 |--------|-------------|
 | `-n, --limit <number>` | Max results (default `20`) |
-| `--current-only` | Return only active memories; default includes history |
+| `--active-only` | Return only active memories; default includes history |
 | `--json` | Output results as JSON |
 | `--federated` | Tier-boosted cross-scope discovery (project > user > global) |
 | `--scope <scope>` | Filter scopes: `project`, `user`, `global` (comma-separated) |
@@ -79,7 +79,7 @@ npm run cli -- discover --help
 
 ## Memory history
 
-Results include status, modified date (`YYYY-MM-DD`), and `superseded by <id>` when set. For example, `[superseded; 2026-09-01; superseded by deci-042]`. Active replacements rank above their predecessors, including when the result limit is one. Superseded and archived memories remain visible by default. Use `--current-only` to exclude them. The MCP equivalent is `currentOnly: true` (default `false`).
+Active results show only the modified date, such as `[2026-10-06]`. History includes status and date, with `superseded by <id>` when set. For example, `[superseded; 2026-09-01; superseded by deci-042]`. Active replacements rank above their predecessors, including when the result limit is one. Superseded and archived memories remain visible by default. Use `--active-only` to exclude them. The MCP equivalent is `activeOnly: true` (default `false`).
 
 This applies to the default search path. Federated search retains its existing active-only behavior.
 

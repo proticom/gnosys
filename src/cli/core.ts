@@ -24,12 +24,12 @@ program
   .description("Discover relevant memories by keyword. Use --federated for tier-boosted cross-scope discovery.")
   .option("-n, --limit <number>", "Max results", "20")
   .option("--json", "Output as JSON")
-  .option("--current-only", "Only active memories (default includes history)")
+  .option("--active-only", "Only active memories (default includes history)")
   .option("--federated", "Use federated discovery with tier boosting (project > user > global)")
   .option("--scope <scope>", "Filter by scope: project, user, global (comma-separated for multiple)")
   .option("-d, --directory <dir>", "Project directory for context")
   .option("--id-format <format>", "ID display format: short | long | raw (default: short)", "short")
-  .action(async (query: string, opts: { limit: string; json?: boolean; currentOnly?: boolean; federated?: boolean; scope?: string; directory?: string; idFormat?: string }) => {
+  .action(async (query: string, opts: { limit: string; json?: boolean; activeOnly?: boolean; federated?: boolean; scope?: string; directory?: string; idFormat?: string }) => {
     const { runDiscoverCommand } = await import("../lib/discoverCommand.js");
     await runDiscoverCommand(query, opts);
   });
@@ -40,12 +40,12 @@ program
   .description("Search memories by keyword. Use --federated for tier-boosted cross-scope search.")
   .option("-n, --limit <number>", "Max results", "20")
   .option("--json", "Output as JSON")
-  .option("--current-only", "Only active memories (default includes history)")
+  .option("--active-only", "Only active memories (default includes history)")
   .option("--federated", "Use federated search with tier boosting (project > user > global)")
   .option("--scope <scope>", "Filter by scope: project, user, global (comma-separated for multiple)")
   .option("-d, --directory <dir>", "Project directory for context")
   .option("--id-format <format>", "ID display format: short | long | raw (default: short)", "short")
-  .action(async (query: string, opts: { limit: string; json?: boolean; currentOnly?: boolean; federated?: boolean; scope?: string; directory?: string; idFormat?: string }) => {
+  .action(async (query: string, opts: { limit: string; json?: boolean; activeOnly?: boolean; federated?: boolean; scope?: string; directory?: string; idFormat?: string }) => {
     const { runSearchCommand } = await import("../lib/searchCommand.js");
     await runSearchCommand(query, opts);
   });
