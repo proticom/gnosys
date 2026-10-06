@@ -1735,9 +1735,10 @@ export class GnosysDB {
     for (const r of recent) {
       const d = r.details;
       const summaries = Number(d.summariesGenerated || 0);
+      const updated = Number(d.summariesUpdated || 0);
       const decays = Number(d.decayUpdated || 0);
       const rels = Number(d.relationshipsDiscovered || 0);
-      if (summaries + decays + rels > 0) {
+      if (summaries + updated + decays + rels > 0) {
         return { completed: r.completed, details: d };
       }
     }

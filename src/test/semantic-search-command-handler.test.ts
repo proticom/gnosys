@@ -30,11 +30,11 @@ describe("gnosys semantic-search command wiring", () => {
     expect(handler).toContain("new GnosysHybridSearch");
     expect(handler).toContain(
     // v5.12.1 marker update (approved): production parseInt gained explicit radix 10
-      'hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), "semantic")',
+      'hybridSearch.searchWithStatus(query, parseInt(opts.limit, 10), "semantic")',
     );
     expect(handler).toContain("relativePath: r.relativePath");
     expect(handler).toContain(
-      'No semantic results for "${query}". Run gnosys reindex first.',
+      'No ${mode} results for "${query}". Run gnosys reindex first.',
     );
     expect(handler).toContain("search.close()");
     expect(handler).toContain("embeddings.close()");

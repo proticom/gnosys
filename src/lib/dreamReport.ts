@@ -1,11 +1,20 @@
 import fs from "fs";
 import path from "path";
+import { z } from "zod";
 import { readDreamRuns, type DreamRunRecord } from "./dreamRunLog.js";
 
 export interface DreamReportOptions {
   output?: string;
   last?: string;
 }
+
+const ReviewSuggestionsSchema = z.array(z.object({
+  memoryId: z.string(),
+  title: z.string(),
+  reason: z.string(),
+  currentConfidence: z.number(),
+  suggestedAction: z.enum(["review", "consider-archive", "consider-merge", "needs-update"]),
+}));
 
 function escapeHtml(value: unknown): string {
   return String(value ?? "")
@@ -37,6 +46,22 @@ export function generateDreamDashboardHtml(runs: DreamRunRecord[]): string {
   const totalUseful = sum(sorted, (r) => r.effectiveness.usefulOutputScore);
   const maxUseful = Math.max(1, ...sorted.map((r) => r.effectiveness.usefulOutputScore));
   const maxCost = Math.max(0.000001, ...sorted.map((r) => r.totals.estimatedCostUsd));
+
+  const latestReviewRun = sorted.find((run) =>
+    run.phases.some((phase) => phase.name === "critique" && phase.status === "ran") &&
+    Array.isArray(run.reviewSuggestions)
+  );
+  const parsedReviews = ReviewSuggestionsSchema.safeParse(latestReviewRun?.reviewSuggestions ?? []);
+  const suggestions = parsedReviews.success ? parsedReviews.data : [];
+  const topReviews = [...suggestions]
+    .sort((a, b) => a.currentConfidence - b.currentConfidence || a.memoryId.localeCompare(b.memoryId))
+    .slice(0, 20);
+  const reviewRows = topReviews.map((suggestion) => `<tr>
+    <td><code>${escapeHtml(suggestion.memoryId)}</code><br>${escapeHtml(suggestion.title)}</td>
+    <td>${escapeHtml(suggestion.suggestedAction)}</td>
+    <td>${suggestion.currentConfidence.toFixed(2)}</td>
+    <td>${escapeHtml(suggestion.reason)}</td>
+  </tr>`).join("\n");
 
   const rows = sorted.map((run) => {
     const phaseSummary = run.phases
@@ -103,6 +128,10 @@ export function generateDreamDashboardHtml(runs: DreamRunRecord[]): string {
     <div class="card"><div class="label">Estimated Cost</div><div class="metric">${fmtMoney(totalCost)}</div></div>
     <div class="card"><div class="label">Useful Output</div><div class="metric">${totalUseful}</div></div>
   </section>
+
+  <h2>Review suggestions</h2>
+  <p class="hint">${latestReviewRun ? `Latest review snapshot: ${escapeHtml(latestReviewRun.startedAt)}. Showing ${topReviews.length} of ${suggestions.length} suggestions, lowest confidence first.` : "No review snapshot recorded yet."} These are advisory flags. Dream does not archive or delete memories. Inspect an item with <code>gnosys read &lt;memory-id&gt;</code>.</p>
+  ${reviewRows ? `<table><thead><tr><th>Memory</th><th>Suggested action</th><th>Confidence</th><th>Reason</th></tr></thead><tbody>${reviewRows}</tbody></table>` : "<p>No review suggestions in the latest snapshot.</p>"}
 
   <h2>Recent Runs</h2>
   <div class="runChart"><div></div><div class="label">Useful output</div><div class="label">Cost</div></div>

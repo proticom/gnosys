@@ -46,7 +46,7 @@ _Generated from `src/index.ts` by `scripts/gen-mcp-tools.mjs`. Do not edit by ha
 | `gnosys_remote_resolve` | Resolve a sync conflict by choosing which version to keep. Use after gnosys_remote_status reveals conflicts. The agent should present the local and remote versions to the user and call this with their choice. |
 | `gnosys_remote_status` | Check the status of remote sync (multi-machine). Returns pending pushes, pulls, conflicts, and reachability. Agents should surface this to the user when there are pending changes or conflicts. |
 | `gnosys_search` | Search memories by keyword across all stores. Returns matching file paths with relevance snippets. |
-| `gnosys_semantic_search` | Search memories using semantic similarity only (no keyword matching). Finds conceptually related memories even without exact keyword matches. Requires embeddings — run gnosys_reindex first. |
+| `gnosys_semantic_search` | Search memories using semantic similarity. Finds conceptually related memories even without exact keyword matches. Falls back to keyword search with an explicit note when embeddings are unavailable. Run gnosys_reindex to build embeddings. |
 | `gnosys_stale` | Find memories that haven't been modified or reviewed within a given number of days. Useful for identifying knowledge that may be outdated. |
 | `gnosys_stats` | Summary statistics across all memories — totals by category, status, author, authority, average confidence, and date ranges. |
 | `gnosys_stores` | Debug tool — lists all detected Gnosys stores across registered projects, MCP workspace roots, cwd, and environment variables. Shows which store is active and helps diagnose multi-project routing. |

@@ -4,6 +4,7 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 import type { DbMemory } from "./db.js";
+import type { ReviewSuggestion } from "./dream.js";
 import type { DreamConfig } from "./config.js";
 import { getGnosysHome } from "./paths.js";
 
@@ -79,6 +80,7 @@ export interface DreamRunRecord {
     estimatedCostUsd: number;
   };
   effectiveness: DreamEffectivenessRecord;
+  reviewSuggestions?: ReviewSuggestion[];
   errors: string[];
   skipReason?: string;
 }

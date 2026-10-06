@@ -67,6 +67,14 @@ export async function runDoctorCommand(
         console.log("Gnosys Doctor");
         console.log("=============\n");
     
+        const { checkEmbeddingRuntime } = await import("./embeddingHealth.js");
+        const embeddingRuntime = await checkEmbeddingRuntime();
+        console.log("Local embedding runtime:");
+        console.log(embeddingRuntime.kind === "available"
+          ? "  ✓ available (model loads on first semantic search or reindex)"
+          : `  ✗ unavailable. ${embeddingRuntime.message}`);
+        console.log("");
+
         // Check local gnosys.db (legacy — should NOT exist in DB-only architecture)
         if (stores.length > 0) {
           const localDbPath = path.join(stores[0].path, "gnosys.db");

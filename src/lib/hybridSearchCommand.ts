@@ -61,7 +61,7 @@ export async function runHybridSearchCommand(
         }
         return;
       }
-  
+
       // Legacy file-based hybrid search
       const resolver = await getResolver();
       const stores = resolver.getStores();
@@ -69,59 +69,61 @@ export async function runHybridSearchCommand(
         console.error("No stores found.");
         process.exit(1);
       }
-  
+
       const storePath = stores[0].path;
       const search = new GnosysSearch(storePath);
       search.clearIndex();
       for (const s of stores) {
         await search.addStoreMemories(s.store, s.label);
       }
-  
+
       const { GnosysEmbeddings } = await import("./embeddings.js");
       const { GnosysHybridSearch } = await import("./hybridSearch.js");
       const embeddings = new GnosysEmbeddings(storePath);
-      const hybridSearch = new GnosysHybridSearch(search, embeddings, resolver, storePath);
-  
+      const { resolveClientRead } = await import("./clientReadResolve.js");
+      const central = resolveClientRead();
+      const hybridSearch = new GnosysHybridSearch(search, embeddings, resolver, storePath, central?.db);
+
       const mode = opts.mode as "keyword" | "semantic" | "hybrid";
 
-      // v5.12.3: hybrid used to degrade to keyword-only silently when the
-      // semantic leg can't run. Warn on stderr so --json stdout stays clean.
-      if (mode !== "keyword" && !hybridSearch.canRunSemantic()) {
-        console.error(
-          `⚠ Semantic embeddings unavailable — ${mode} search will run keyword-only. Run 'gnosys reindex' to build embeddings.`
-        );
-      }
+      try {
+        const outcome = await hybridSearch.searchWithStatus(query, parseInt(opts.limit, 10), mode);
+        const results = outcome.results;
+        const note = outcome.kind === "keyword-fallback" ? outcome.note : undefined;
+        const effectiveMode = outcome.kind === "keyword-fallback" ? "keyword" : mode;
+        if (note) console.error(note);
 
-      const results = await hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), mode);
-  
-      if (results.length === 0) {
-        outputResult(!!opts.json, { query, mode, results: [] }, () => {
-          console.log(`No results for "${query}". Try gnosys reindex to build embeddings.`);
-        });
-      } else {
-        outputResult(!!opts.json, { query, mode, count: results.length, results }, () => {
-          console.log(`Found ${results.length} results for "${query}" (mode: ${mode}):\n`);
-          for (const r of results) {
-            console.log(`  ${r.title}`);
-            console.log(`    Path: ${r.relativePath}`);
-            console.log(`    Score: ${r.score.toFixed(4)} (via: ${r.sources.join("+")})`);
-            console.log(`    ${r.snippet.substring(0, 120)}...\n`);
-          }
-        });
-  
-        // Reinforce used memories (best-effort)
-        const writeTarget = resolver.getWriteTarget();
-        if (writeTarget) {
-          const { GnosysMaintenanceEngine } = await import("./maintenance.js");
-          await GnosysMaintenanceEngine.reinforceBatch(
-            writeTarget.store,
-            results.map((r) => r.relativePath)
-          ).catch((err) => {
-            // Best-effort, but don't be fully silent (sprint 2026-07-02).
-            console.error(`gnosys: reinforcement skipped: ${err instanceof Error ? err.message : String(err)}`);
+        if (results.length === 0) {
+          outputResult(!!opts.json, { query, mode: effectiveMode, requestedMode: mode, note, results: [] }, () => {
+            console.log(`No results for "${query}". Try gnosys reindex to build embeddings.`);
           });
+        } else {
+          outputResult(!!opts.json, { query, mode: effectiveMode, requestedMode: mode, note, count: results.length, results }, () => {
+            console.log(`Found ${results.length} results for "${query}" (mode: ${effectiveMode}):\n`);
+            for (const r of results) {
+              console.log(`  ${r.title}`);
+              console.log(`    Path: ${r.relativePath}`);
+              console.log(`    Score: ${r.score.toFixed(4)} (via: ${r.sources.join("+")})`);
+              console.log(`    ${r.snippet.substring(0, 120)}...\n`);
+            }
+          });
+
+          // Reinforce used memories (best-effort)
+          const writeTarget = resolver.getWriteTarget();
+          if (writeTarget) {
+            const { GnosysMaintenanceEngine } = await import("./maintenance.js");
+            await GnosysMaintenanceEngine.reinforceBatch(
+              writeTarget.store,
+              results.map((r) => r.relativePath)
+            ).catch((err) => {
+              // Best-effort, but don't be fully silent (sprint 2026-07-02).
+              console.error(`gnosys: reinforcement skipped: ${err instanceof Error ? err.message : String(err)}`);
+            });
+          }
         }
+      } finally {
+        search.close();
+        embeddings.close();
+        central?.release();
       }
-      search.close();
-      embeddings.close();
 }

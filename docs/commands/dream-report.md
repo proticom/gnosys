@@ -2,6 +2,8 @@
 
 Generate a self-contained HTML dashboard from the local Dream Mode run log.
 
+The report includes the top 20 review suggestions from the latest critique snapshot. It shows the total snapshot size, memory IDs, reasons, and suggested actions. Skipped runs do not replace the latest snapshot. These are suggestions for a person to review; Dream never deletes or archives memories.
+
 ## Usage
 
 ```bash

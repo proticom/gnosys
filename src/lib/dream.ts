@@ -5,10 +5,10 @@
  *
  * Dream Mode runs during idle periods (configurable threshold) and performs:
  *   1. Confidence decay sweep — apply exponential decay to unreinforced memories
- *   2. Summary generation — hierarchical summaries per category
- *   3. Self-critique — score memories but NEVER delete; produces a review list
- *   4. Relationship discovery — find new links between memories
- *   5. Deduplication pass — flag similar memories for human review
+ *   2. Embedding health — backfill missing vectors when embeddings are initialized
+ *   3. Self-critique — produce advisory review suggestions
+ *   4. Summary generation — summarize the newest memories in each category
+ *   5. Relationship discovery — process unreviewed or changed memory content
  *
  * Safety guarantees:
  *   - Never deletes or archives autonomously
@@ -19,6 +19,8 @@
  */
 
 import os from "os";
+import crypto from "crypto";
+import { z } from "zod";
 import type { GnosysDB, DbMemory } from "./db.js";
 import { getProviderModel, type GnosysConfig, type LLMProviderName } from "./config.js";
 import { type LLMProvider, createProvider } from "./llm.js";
@@ -129,6 +131,26 @@ export interface ReviewSuggestion {
   reason: string;
   currentConfidence: number;
   suggestedAction: "review" | "consider-archive" | "consider-merge" | "needs-update";
+}
+
+const DreamRelationshipsSchema = z.array(z.object({
+  source_id: z.string().min(1),
+  target_id: z.string().min(1),
+  rel_type: z.enum(["references", "depends_on", "contradicts", "extends", "supersedes", "related_to"]),
+  label: z.string(),
+  confidence: z.number().min(0).max(1),
+}));
+
+function fingerprintText(kind: string, text: string): string {
+  return `${kind}:${crypto.createHash("sha256").update(text).digest("hex").slice(0, 24)}`;
+}
+
+function relationshipSourceText(memory: DbMemory): string {
+  return `[${memory.id}] "${memory.title}" — ${memory.content.substring(0, 200)}`;
+}
+
+function relationshipIndexText(memory: DbMemory): string {
+  return `[${memory.id}] ${memory.title} (${memory.category}) — ${(memory.relevance || "").substring(0, 80)} — ${memory.content.substring(0, 80)}`;
 }
 
 // ─── Decay Constants ─────────────────────────────────────────────────────
@@ -645,6 +667,7 @@ export class GnosysDreamEngine {
       try {
         const relationshipsResult = await this.discoverRelationships(log, relationshipsPhase);
         report.relationshipsDiscovered = relationshipsResult.count;
+        report.errors.push(...relationshipsResult.errors);
         this.addTouched(relationshipsPhase, relationshipsResult.memoryIds);
         log("relationships", `Discovered ${report.relationshipsDiscovered} new relationships`);
       } catch (err) {
@@ -714,7 +737,7 @@ export class GnosysDreamEngine {
     // LLM-dependent counters moved. Resetting the consecutive-failure count
     // here ensures Layer 4 doesn't keep firing once dream is healthy again.
     const llmDidWork =
-      report.summariesGenerated > 0 || report.relationshipsDiscovered > 0;
+      report.summariesGenerated > 0 || report.summariesUpdated > 0 || report.relationshipsDiscovered > 0;
     if (llmDidWork) {
       this.db.resetDreamConsecutiveFailures();
     }
@@ -726,12 +749,14 @@ export class GnosysDreamEngine {
       decayUpdated: report.decayUpdated,
       summariesGenerated: report.summariesGenerated,
       reviewSuggestions: report.reviewSuggestions.length,
+      summariesUpdated: report.summariesUpdated,
       relationshipsDiscovered: report.relationshipsDiscovered,
       llmCallsMade: report.totals.llmCallsMade,
       llmCallsSkipped: report.totals.llmCallsSkipped,
       estimatedCostUsd: report.totals.estimatedCostUsd,
       usefulOutputScore: report.effectiveness.usefulOutputScore,
       errors: report.errors.length,
+      errorMessages: [...report.errors],
       aborted: report.aborted,
       providerUnreachable: !this.provider,
       provider: this.dreamConfig.provider,
@@ -970,22 +995,12 @@ Respond with ONLY one of these JSON objects (no explanation):
       const check = this.shouldStop();
       if (check.stop) break;
 
-      const memories = this.db.getMemoriesByCategory(category);
+      const memories = this.db.getMemoriesByCategory(category)
+        .filter((memory) => memory.status === "active")
+        .sort((a, b) => b.created.localeCompare(a.created) || a.id.localeCompare(b.id));
       if (memories.length < 2) continue; // Not enough to summarize
 
-      // Check if summary exists and is still current
       const existing = this.db.getSummary("category", category);
-      if (existing) {
-        const existingIds = JSON.parse(existing.source_ids) as string[];
-        const currentIds = memories.map((m) => m.id);
-        const unchanged = existingIds.length === currentIds.length &&
-          existingIds.every((id) => currentIds.includes(id));
-        if (unchanged) {
-          phase.llmCallsSkipped++;
-          phase.reason = phase.reason || "unchanged summaries skipped";
-          continue; // No new memories in this category
-        }
-      }
 
       log("summaries", `Summarizing ${category} (${memories.length} memories)...`);
 
@@ -1044,7 +1059,7 @@ The summary should:
 - Note any contradictions or evolving decisions
 - Be useful as a quick reference for someone new to the project
 
-Memories in "${category}":
+Newest memories in "${category}" (${Math.min(20, memories.length)} of ${memories.length}):
 
 ${memoryTexts}
 
@@ -1057,7 +1072,7 @@ Category summary:`;
         prompt,
         1024,
         memories.map((m) => m.id),
-        fingerprintMemories("summary", memories),
+        fingerprintText("summary", prompt),
       );
     } catch {
       return null;
@@ -1073,12 +1088,14 @@ Category summary:`;
   private async discoverRelationships(
     log: (phase: string, detail: string) => void,
     phase: DreamRunPhaseRecord,
-  ): Promise<{ count: number; memoryIds: string[] }> {
-    if (!this.provider) return { count: 0, memoryIds: [] };
+  ): Promise<{ count: number; memoryIds: string[]; errors: string[] }> {
+    if (!this.provider) return { count: 0, memoryIds: [], errors: [] };
 
-    const memories = this.db.getActiveMemories();
-    if (memories.length < 3) return { count: 0, memoryIds: [] };
+    const memories = this.db.getActiveMemories()
+      .sort((a, b) => b.created.localeCompare(a.created) || a.id.localeCompare(b.id));
+    if (memories.length < 3) return { count: 0, memoryIds: [], errors: [] };
 
+    const errors: string[] = [];
     let discovered = 0;
     const touched = new Set<string>();
     const today = new Date().toISOString().split("T")[0];
@@ -1092,25 +1109,45 @@ Category summary:`;
       }
     }
 
-    // Build a compact index of all memories for the LLM
-    const memoryIndex = memories
-      .slice(0, 50) // Limit to 50 most relevant
-      .map((m) => `[${m.id}] ${m.title} (${m.category}) — ${(m.relevance || "").substring(0, 80)}`)
-      .join("\n");
+    const analyzed = { ...this.dreamState.analyzedFingerprints, ...this.pendingFingerprints };
+    const analyzedSourceHashes = new Set(Object.keys(analyzed)
+      .filter((key) => key.startsWith("relationship-source:"))
+      .map((key) => key.split(":")[1]));
+    const corpusHash = fingerprintText("corpus", [...memories]
+      .sort((a, b) => a.id.localeCompare(b.id))
+      .map((memory) => `${relationshipIndexText(memory)}\n${relationshipSourceText(memory)}`)
+      .join("\n"));
+    const sources = memories.map((memory) => {
+      const sourceHash = fingerprintText("relationship-source", relationshipSourceText(memory));
+      return { memory, fingerprint: `${sourceHash}:${corpusHash}`, analyzedBefore: analyzedSourceHashes.has(sourceHash.split(":")[1]) };
+    }).filter((source) => !analyzed[source.fingerprint])
+      .sort((a, b) => Number(a.analyzedBefore) - Number(b.analyzedBefore))
+      .slice(0, 30);
+    if (sources.length === 0) {
+      this.recordLLMSkip(phase, "relationships", "all source content already analyzed");
+      return { count: 0, memoryIds: [], errors: [] };
+    }
+    const selectedIds = new Set(sources.map((source) => source.memory.id));
+    const candidates = [
+      ...sources.map((source) => source.memory),
+      ...memories.filter((memory) => !selectedIds.has(memory.id)),
+    ].slice(0, 50);
+    const memoryIndex = candidates.map(relationshipIndexText).join("\n");
 
-    // Process in batches of 5 source memories
     const batchSize = 5;
-    for (let i = 0; i < Math.min(memories.length, 30); i += batchSize) {
+    for (let i = 0; i < sources.length; i += batchSize) {
       const check = this.shouldStop();
       if (check.stop) break;
 
-      const batch = memories.slice(i, i + batchSize);
+      const sourceBatch = sources.slice(i, i + batchSize);
+      const batch = sourceBatch.map((source) => source.memory);
       const batchTitles = batch.map((m) => `[${m.id}] ${m.title}`).join(", ");
 
       log("relationships", `Analyzing relationships for: ${batchTitles}`);
 
       try {
-        const relationships = await this.findRelationships(batch, memoryIndex, phase);
+        const relationships = await this.findRelationships(batch, candidates, memoryIndex, phase);
+        if (relationships === null) continue;
 
         for (const rel of relationships) {
           const key = `${rel.source_id}→${rel.target_id}→${rel.rel_type}`;
@@ -1130,12 +1167,18 @@ Category summary:`;
           touched.add(rel.source_id);
           touched.add(rel.target_id);
         }
+        for (const source of sourceBatch) {
+          this.pendingFingerprints[source.fingerprint] = {
+            kind: "relationship", lastAnalyzedAt: new Date().toISOString(), memoryIds: [source.memory.id],
+          };
+        }
       } catch (err) {
         log("relationships", `Failed for batch: ${err instanceof Error ? err.message : String(err)}`);
+        errors.push(`Relationship discovery: ${err instanceof Error ? err.message : String(err)}`);
       }
     }
 
-    return { count: discovered, memoryIds: Array.from(touched) };
+    return { count: discovered, memoryIds: Array.from(touched), errors };
   }
 
   /**
@@ -1143,14 +1186,13 @@ Category summary:`;
    */
   private async findRelationships(
     sources: DbMemory[],
+    candidates: DbMemory[],
     memoryIndex: string,
     phase: DreamRunPhaseRecord,
-  ): Promise<Array<{ source_id: string; target_id: string; rel_type: string; label: string; confidence: number }>> {
-    if (!this.provider) return [];
+  ): Promise<z.infer<typeof DreamRelationshipsSchema> | null> {
+    if (!this.provider) return null;
 
-    const sourceContext = sources
-      .map((m) => `[${m.id}] "${m.title}" — ${m.content.substring(0, 200)}`)
-      .join("\n\n");
+    const sourceContext = sources.map(relationshipSourceText).join("\n\n");
 
     const prompt = `You are a knowledge graph assistant. Given these source memories and a full memory index, identify meaningful relationships.
 
@@ -1166,6 +1208,7 @@ For each relationship found, output a JSON array of objects with: source_id, tar
 Only output relationships with confidence >= 0.7. Do NOT create self-referencing relationships.
 Output ONLY the JSON array, no explanation.`;
 
+    const fingerprint = fingerprintText("relationship", prompt);
     try {
       const response = await this.generateWithAccounting(
         phase,
@@ -1173,28 +1216,26 @@ Output ONLY the JSON array, no explanation.`;
         prompt,
         1024,
         sources.map((s) => s.id),
-        fingerprintMemories("relationship", sources),
+        fingerprint,
       );
-      if (!response) return [];
+      if (response === null) {
+        return this.dreamState.analyzedFingerprints[fingerprint] || this.pendingFingerprints[fingerprint] ? [] : null;
+      }
 
-      // Extract JSON array from response
       const jsonMatch = response.match(/\[[\s\S]*\]/);
-      if (!jsonMatch) return [];
-
-      const parsed = JSON.parse(jsonMatch[0]);
-      if (!Array.isArray(parsed)) return [];
-
-      // Validate entries
-      return parsed.filter(
-        (r: any) =>
-          r.source_id &&
-          r.target_id &&
-          r.rel_type &&
-          r.source_id !== r.target_id &&
-          r.confidence >= 0.7
+      if (!jsonMatch) throw new Error("Relationship response did not contain a JSON array; it will be retried.");
+      const parsed: unknown = JSON.parse(jsonMatch[0]);
+      const relationships = DreamRelationshipsSchema.parse(parsed);
+      const candidateIds = new Set(candidates.map((memory) => memory.id));
+      return relationships.filter((relationship) =>
+        candidateIds.has(relationship.source_id) &&
+        candidateIds.has(relationship.target_id) &&
+        relationship.source_id !== relationship.target_id &&
+        relationship.confidence >= 0.7
       );
-    } catch {
-      return [];
+    } catch (err) {
+      delete this.pendingFingerprints[fingerprint];
+      throw err;
     }
   }
 }
@@ -1382,7 +1423,6 @@ export function formatDreamReport(report: DreamReport): string {
   lines.push(`  Summaries generated: ${report.summariesGenerated}`);
   lines.push(`  Summaries updated: ${report.summariesUpdated}`);
   lines.push(`  Relationships discovered: ${report.relationshipsDiscovered}`);
-  lines.push(`  Duplicates flagged: ${report.duplicatesFound}`);
   if (report.totals) {
     lines.push(`  LLM calls: ${report.totals.llmCallsMade} made, ${report.totals.llmCallsSkipped} skipped`);
     lines.push(`  Estimated cost: $${report.totals.estimatedCostUsd.toFixed(6)}`);
