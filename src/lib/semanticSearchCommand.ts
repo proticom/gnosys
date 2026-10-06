@@ -1,3 +1,4 @@
+import { EMBEDDING_FALLBACK_NOTE } from "./embeddingHealth.js";
 import { formatSearchStatus } from "./searchStatus.js";
 import { GnosysSearch } from "./search.js";
 import type { GnosysResolver } from "./resolver.js";
@@ -40,42 +41,58 @@ export async function runSemanticSearchCommand(
       const { GnosysEmbeddings } = await import("./embeddings.js");
       const { GnosysHybridSearch } = await import("./hybridSearch.js");
       const embeddings = new GnosysEmbeddings(storePath);
-      const hybridSearch = new GnosysHybridSearch(search, embeddings, resolver, storePath);
+      const { resolveClientRead } = await import("./clientReadResolve.js");
+      const central = resolveClientRead();
+      const hybridSearch = new GnosysHybridSearch(search, embeddings, resolver, storePath, central?.db);
   
-      const results = opts.activeOnly
-        ? await hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), "semantic", true)
-        : await hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), "semantic");
+      try {
+        const outcome = opts.activeOnly
+          ? await hybridSearch.searchWithStatus(query, parseInt(opts.limit, 10), "semantic", true)
+          : await hybridSearch.searchWithStatus(query, parseInt(opts.limit, 10), "semantic");
+        const results = outcome.results;
+        const note = outcome.kind === "keyword-fallback" ? outcome.note : undefined;
+        const resultNote = note ? EMBEDDING_FALLBACK_NOTE : undefined;
+        const mode = outcome.kind === "keyword-fallback" ? "keyword" : "semantic";
+        if (note) console.error(note);
   
-      outputResult(
-        !!opts.json,
-        {
-          query,
-          count: results.length,
-          results: results.map((r) => ({
-            title: r.title,
-            relativePath: r.relativePath,
-            score: r.score,
-            snippet: r.snippet,
-            status: r.status,
-            modified: r.modified,
-            superseded_by: r.superseded_by,
-          })),
-        },
-        () => {
-          if (results.length === 0) {
-            console.log(`No semantic results for "${query}". Run gnosys reindex first.`);
-            return;
-          }
+        outputResult(
+          !!opts.json,
+          {
+            query,
+            mode,
+            requestedMode: "semantic",
+            note: resultNote,
+            count: results.length,
+            results: results.map((r, index) => ({
+              position: index + 1,
+              title: r.title,
+              relativePath: r.relativePath,
+              score: r.score,
+              snippet: r.snippet,
+              sources: r.sources,
+              status: r.status,
+              modified: r.modified,
+              superseded_by: r.superseded_by,
+            })),
+          },
+          () => {
+            if (results.length === 0) {
+              console.log(`No ${mode} results for "${query}". Run gnosys reindex first.`);
+              return;
+            }
   
-          console.log(`Found ${results.length} semantic results for "${query}":\n`);
-          for (const r of results) {
-            console.log(`  ${r.title} ${formatSearchStatus(r)}`);
-            console.log(`    Path: ${r.relativePath}`);
-            console.log(`    Similarity: ${r.score.toFixed(4)}`);
-            console.log(`    ${r.snippet.substring(0, 120)}...\n`);
-          }
-        },
-      );
-      search.close();
-      embeddings.close();
+            console.log(`Found ${results.length} ${mode} results for "${query}":\n`);
+            for (const r of results) {
+              console.log(`  ${r.title} ${formatSearchStatus(r)}`);
+              console.log(`    (score: ${r.score.toFixed(4)}, via: ${r.sources.join("+")})`);
+              console.log(`    Path: ${r.relativePath}`);
+              console.log(`    ${r.snippet.substring(0, 120)}...\n`);
+            }
+          },
+        );
+      } finally {
+        search.close();
+        embeddings.close();
+        central?.release();
+      }
 }

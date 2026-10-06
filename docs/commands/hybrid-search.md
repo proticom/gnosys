@@ -45,7 +45,7 @@ When not using federated/scope:
 1. Resolves stores via the resolver; exits if none (`No stores found.`).
 2. Builds a fresh `GnosysSearch` index from all stores.
 3. Loads `GnosysEmbeddings` and `GnosysHybridSearch`.
-4. Runs `hybridSearch(query, limit, mode)` for keyword, semantic, or hybrid fusion.
+4. Searches the central DB when available, using keyword, semantic, or hybrid fusion.
 
 No results:
 
@@ -65,11 +65,11 @@ Always calls `search.close()` and `embeddings.close()`.
 
 ## Embedding prerequisites
 
-Semantic and hybrid modes require embeddings. Run `gnosys reindex` if searches return empty or embeddings are missing.
+Semantic and hybrid modes use keyword search with an explicit fallback note if the embedding runtime, model, or vectors are unavailable. Run `gnosys doctor` for the exact repair command and `gnosys reindex` to build vectors. The CLI prints fallback notes to stderr. MCP includes them in the tool result.
 
 ## JSON output
 
-With `--json`, output includes query, mode, count, and result objects. Federated mode adds `projectId` and `mode: "federated"`.
+With `--json`, output includes query, effective mode, requested mode, and result objects. Keyword fallback adds a `note` explaining the cause. Federated mode adds `projectId` and `mode: "federated"`.
 
 ## Validation
 

@@ -2,6 +2,8 @@
 
 Show recent Dream Mode runs from the central audit log.
 
+New rows include the actual error messages and a separate `updated` count for revised category summaries. Older failed rows show that their error details were not saved. Check `dream-runs.jsonl` for those older messages.
+
 ## Usage
 
 ```bash

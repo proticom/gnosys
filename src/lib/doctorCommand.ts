@@ -67,6 +67,14 @@ export async function runDoctorCommand(
         console.log("Gnosys Doctor");
         console.log("=============\n");
     
+        const { checkEmbeddingRuntime } = await import("./embeddingHealth.js");
+        const embeddingRuntime = await checkEmbeddingRuntime();
+        console.log("Local embedding runtime:");
+        console.log(embeddingRuntime.kind === "available"
+          ? "  ✓ available (model loads on first semantic search or reindex)"
+          : `  ✗ unavailable. ${embeddingRuntime.message}`);
+        console.log("");
+
         // Check local gnosys.db (legacy — should NOT exist in DB-only architecture)
         if (stores.length > 0) {
           const localDbPath = path.join(stores[0].path, "gnosys.db");
@@ -74,7 +82,7 @@ export async function runDoctorCommand(
           if (localDbExists) {
             console.log("Local Store (gnosys.db):");
             console.log("  ⚠ Local gnosys.db found — this is a legacy artifact (pre-v2.0 file-based store).");
-            console.log("  All memories live in the central DB now (~/.gnosys/gnosys.db).");
+            console.log(`  All memories live in the central DB now (${GnosysDB.getCentralDbPath()}).`);
             console.log(`  Path: ${localDbPath}`);
     
             if (opts.fix) {
@@ -106,7 +114,7 @@ export async function runDoctorCommand(
         }
     
         // Check central DB
-        console.log("Central DB (~/.gnosys/gnosys.db):");
+        console.log(`Central DB (${GnosysDB.getCentralDbPath()}):`);
         try {
           const db = GnosysDB.openCentral();
           if (db.isAvailable() && db.isMigrated()) {
