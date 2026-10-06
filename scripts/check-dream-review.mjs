@@ -5,6 +5,9 @@ import os from "node:os";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { pathToFileURL } from "node:url";
+import { register } from "tsx/esm/api";
+
+register();
 
 const { values } = parseArgs({ options: {
   db: { type: "string" },
@@ -14,8 +17,8 @@ const { values } = parseArgs({ options: {
   runs: { type: "string", default: "2" },
   cap: { type: "string", default: "100" },
 } });
-if (!values.db || !["badtype", "valid", "none", "cover", "static"].includes(values.mode)) {
-  throw new Error("Usage: node --import tsx scripts/check-dream-review.mjs --db COPY.db [--state dream-state.json] [--source-root PATH] [--mode badtype|valid|none|cover|static] [--runs 2] [--cap 100]");
+if (!["badtype", "valid", "none", "cover", "static"].includes(values.mode)) {
+  throw new Error("Usage: node scripts/check-dream-review.mjs [--db COPY.db] [--state dream-state.json] [--source-root PATH] [--mode badtype|valid|none|cover|static] [--runs 2] [--cap 100]");
 }
 const runs = Number(values.runs);
 const cap = Number(values.cap);
@@ -27,8 +30,10 @@ const stateDir = path.join(scratch, "state");
 fs.mkdirSync(store);
 fs.mkdirSync(stateDir);
 const copiedDb = path.join(store, "gnosys.db");
-fs.copyFileSync(values.db, copiedDb);
-if (fs.existsSync(`${values.db}-wal`)) fs.copyFileSync(`${values.db}-wal`, `${copiedDb}-wal`);
+if (values.db) {
+  fs.copyFileSync(values.db, copiedDb);
+  if (fs.existsSync(`${values.db}-wal`)) fs.copyFileSync(`${values.db}-wal`, `${copiedDb}-wal`);
+}
 const stateFile = path.join(stateDir, "dream-state.json");
 if (values.state) fs.copyFileSync(values.state, stateFile);
 else fs.writeFileSync(stateFile, JSON.stringify({ analyzedFingerprints: {} }));
@@ -44,6 +49,23 @@ const [{ GnosysDB }, { GnosysDreamEngine, DEFAULT_DREAM_CONFIG }, { DEFAULT_CONF
 ]);
 const db = new GnosysDB(store);
 assert.equal(db.isAvailable(), true);
+if (!values.db) {
+  const timestamp = new Date().toISOString();
+  for (let index = 0; index < 60; index++) {
+    const id = `fixture-${String(index).padStart(3, "0")}`;
+    db.insertMemory({
+      id, title: `Review fixture ${index}`, category: "general",
+      content: `Review fixture ${index} records a distinct decision.`, summary: null,
+      tags: "[]", relevance: "review fixture", author: "ai", authority: "declared",
+      confidence: 0.9, reinforcement_count: 0, content_hash: id, status: "active",
+      tier: "active", supersedes: null, superseded_by: null, last_reinforced: null,
+      created: timestamp, modified: timestamp, embedding: null,
+      source_path: null, source_file: null, source_page: null, source_timerange: null,
+      attachment_data: null, attachment_mime: null, attachment_name: null,
+      project_id: null, scope: "global",
+    });
+  }
+}
 db.countMemoriesMissingEmbedding = () => 0;
 const before = db.getActiveMemories();
 const protectedContentDigest = (memories) => crypto.createHash("sha256")
@@ -121,6 +143,14 @@ try {
       lastSuccessfulRunAt: state.lastSuccessfulRunAt ?? null,
     });
     assert.equal(protectedContentDigest(db.getActiveMemories()), protectedBefore, "Memory IDs, titles, or content changed");
+    if (!values.db && values.mode === "badtype" && cap >= 100 && run <= 2) {
+      assert.equal(report.relationshipsDiscovered, 24);
+      assert.deepEqual(report.errors, []);
+      assert.equal(report.warnings.length, 6);
+      for (const warning of report.warnings) assert.match(warning, /dropped 1 item\(s\) in batch .*: 1 invalid\.$/);
+      assert.equal(picked.length, 30);
+      assert.equal(picked.filter((id) => previousPicked.includes(id)).length, 0);
+    }
     previousPicked = picked;
   }
   assert.deepEqual(db.db.pragma("integrity_check"), [{ integrity_check: "ok" }]);

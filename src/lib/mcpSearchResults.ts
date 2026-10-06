@@ -1,4 +1,5 @@
 import type { HybridSearchResult } from "./searchTypes.js";
+import { EMBEDDING_FALLBACK_NOTE } from "./embeddingHealth.js";
 
 type SearchPresentation =
   | { kind: "hybrid"; embeddingCount: number }
@@ -11,7 +12,7 @@ export function formatMcpSearchResults({ query, results, search }: {
   search: SearchPresentation;
 }): string {
   const warning = search.kind === "keyword-fallback"
-    ? "Semantic embeddings unavailable. Keyword-only results. Run `gnosys doctor` for the fix.\n\n"
+    ? `${EMBEDDING_FALLBACK_NOTE}\n\n`
     : "";
   const semantic = search.kind === "semantic" || (search.kind === "keyword-fallback" && search.requested === "semantic");
   const resultKind = semantic ? `${search.kind === "keyword-fallback" ? "keyword" : "semantic"} results` : "results";

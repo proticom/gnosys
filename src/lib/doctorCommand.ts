@@ -82,7 +82,7 @@ export async function runDoctorCommand(
           if (localDbExists) {
             console.log("Local Store (gnosys.db):");
             console.log("  ⚠ Local gnosys.db found — this is a legacy artifact (pre-v2.0 file-based store).");
-            console.log("  All memories live in the central DB now (~/.gnosys/gnosys.db).");
+            console.log(`  All memories live in the central DB now (${GnosysDB.getCentralDbPath()}).`);
             console.log(`  Path: ${localDbPath}`);
     
             if (opts.fix) {
@@ -114,7 +114,7 @@ export async function runDoctorCommand(
         }
     
         // Check central DB
-        console.log("Central DB (~/.gnosys/gnosys.db):");
+        console.log(`Central DB (${GnosysDB.getCentralDbPath()}):`);
         try {
           const db = GnosysDB.openCentral();
           if (db.isAvailable() && db.isMigrated()) {

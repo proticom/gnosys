@@ -1,3 +1,4 @@
+import { EMBEDDING_FALLBACK_NOTE } from "./embeddingHealth.js";
 import { GnosysSearch } from "./search.js";
 import type { GnosysResolver } from "./resolver.js";
 
@@ -90,15 +91,16 @@ export async function runHybridSearchCommand(
         const outcome = await hybridSearch.searchWithStatus(query, parseInt(opts.limit, 10), mode);
         const results = outcome.results;
         const note = outcome.kind === "keyword-fallback" ? outcome.note : undefined;
+        const resultNote = note ? EMBEDDING_FALLBACK_NOTE : undefined;
         const effectiveMode = outcome.kind === "keyword-fallback" ? "keyword" : mode;
         if (note) console.error(note);
 
         if (results.length === 0) {
-          outputResult(!!opts.json, { query, mode: effectiveMode, requestedMode: mode, note, results: [] }, () => {
+          outputResult(!!opts.json, { query, mode: effectiveMode, requestedMode: mode, note: resultNote, results: [] }, () => {
             console.log(`No results for "${query}". Try gnosys reindex to build embeddings.`);
           });
         } else {
-          outputResult(!!opts.json, { query, mode: effectiveMode, requestedMode: mode, note, count: results.length, results }, () => {
+          outputResult(!!opts.json, { query, mode: effectiveMode, requestedMode: mode, note: resultNote, count: results.length, results }, () => {
             console.log(`Found ${results.length} results for "${query}" (mode: ${effectiveMode}):\n`);
             for (const r of results) {
               console.log(`  ${r.title}`);

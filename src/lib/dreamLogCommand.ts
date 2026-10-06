@@ -29,7 +29,9 @@ export async function runDreamLogCommand(
     const runs = centralDb.getRecentDreamRuns(limit, {
       failuresOnly: !!opts.failuresOnly,
       sinceIso,
-    });
+    }).map((run) => Number(run.details.errors) > 0 && !Array.isArray(run.details.errorMessages)
+      ? { ...run, details: { ...run.details, errorDetailsMissing: true } }
+      : run);
     const wantJson = !!opts.json || !!context.parentJson;
     // JSON path always emits a structured response — including empty runs.
     if (wantJson) {

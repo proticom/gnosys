@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, readdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readdirSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -61,13 +61,16 @@ try {
   const doctor = cli(["doctor"]);
   assert.match(doctor.stdout, /Local embedding runtime:\s+✗ unavailable/);
   assert.match(doctor.stdout, /npm install @huggingface\/transformers@\^4\.2\.0 --prefix/);
+  assert(doctor.stdout.includes(`Central DB (${path.join(brain, "gnosys.db")}):`));
+  assert(doctor.stdout.includes(`--prefix '${realpathSync(installed)}/'`));
   for (const command of ["hybrid-search", "semantic-search"]) {
     const result = cli([command, "authentication", "--json"]);
     const payload = JSON.parse(result.stdout);
     assert.equal(payload.mode, "keyword");
     assert.equal(payload.results[0].relativePath, "auth-001");
-    assert.match(payload.note, /search ran keyword-only/);
-    assert.match(payload.note, /npm install @huggingface\/transformers/);
+    assert.equal(payload.note, "Semantic embeddings unavailable. Keyword-only results. Run `gnosys doctor` for the fix.");
+    assert.equal(payload.note.includes(installed), false);
+    assert(result.stderr.includes(`--prefix '${realpathSync(installed)}/'`));
     assert.match(result.stderr, /search ran keyword-only/);
   }
   const setup = cli(["setup", "--non-interactive"]);

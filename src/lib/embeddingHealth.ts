@@ -5,6 +5,8 @@ export type EmbeddingRuntimeStatus =
   | { kind: "available" }
   | { kind: "unavailable"; message: string };
 
+export const EMBEDDING_FALLBACK_NOTE = "Semantic embeddings unavailable. Keyword-only results. Run `gnosys doctor` for the fix.";
+
 const packageRoot = fileURLToPath(new URL("../../", import.meta.url));
 const quotedRoot = `'${packageRoot.replaceAll("'", "'\\''")}'`;
 export const EMBEDDING_INSTALL_HINT =

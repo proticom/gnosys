@@ -143,8 +143,10 @@ const DreamRelationshipSchema = z.object({
   confidence: z.number().min(0).max(1),
 });
 
+type RelationshipDrops = Record<"invalid" | "unknown id" | "self-link" | "below confidence", number>;
+
 type RelationshipReply =
-  | { kind: "parsed"; relationships: z.infer<typeof DreamRelationshipSchema>[]; invalidCount: number }
+  | { kind: "parsed"; relationships: z.infer<typeof DreamRelationshipSchema>[]; drops: RelationshipDrops }
   | { kind: "invalid"; message: string };
 
 const MAX_RELATIONSHIP_ATTEMPTS = 3;
@@ -1190,11 +1192,13 @@ Category summary:`;
           if (exhausted.length > 0) {
             warnings.push(`Relationship discovery: retry limit reached for ${exhausted.join(",")}; marked analyzed.`);
           }
-          if (exhausted.length < sourceBatch.length) errors.push(`Relationship discovery: ${reply.message}`);
+          errors.push(`Relationship discovery: ${reply.message}`);
           continue;
         }
-        if (reply.invalidCount > 0) {
-          warnings.push(`Relationship discovery: dropped ${reply.invalidCount} invalid item(s) in batch ${batch.map((memory) => memory.id).join(",")}.`);
+        const dropped = Object.entries(reply.drops).filter(([, count]) => count > 0);
+        const droppedCount = dropped.reduce((total, [, count]) => total + count, 0);
+        if (droppedCount > 0) {
+          warnings.push(`Relationship discovery: dropped ${droppedCount} item(s) in batch ${batch.map((memory) => memory.id).join(",")}: ${dropped.map(([reason, count]) => `${count} ${reason}`).join(", ")}.`);
         }
 
         for (const rel of reply.relationships) {
@@ -1266,12 +1270,13 @@ Output ONLY the JSON array, no explanation.`;
       sources.map((s) => s.id),
       fingerprint,
     );
+    const drops: RelationshipDrops = { invalid: 0, "unknown id": 0, "self-link": 0, "below confidence": 0 };
     if (response === null) {
       return this.dreamState.analyzedFingerprints[fingerprint] || this.pendingFingerprints[fingerprint]
-        ? { kind: "parsed", relationships: [], invalidCount: 0 } : null;
+        ? { kind: "parsed", relationships: [], drops } : null;
     }
     if (/^(?:none|no (?:meaningful )?relationships(?: (?:found|identified))?)[.!]?$/i.test(response.trim())) {
-      return { kind: "parsed", relationships: [], invalidCount: 0 };
+      return { kind: "parsed", relationships: [], drops };
     }
 
     let items: unknown[];
@@ -1284,21 +1289,25 @@ Output ONLY the JSON array, no explanation.`;
       return { kind: "invalid", message: formatDreamError(err) };
     }
     const relationships: z.infer<typeof DreamRelationshipSchema>[] = [];
-    let invalidCount = 0;
     const candidateIds = new Set(candidates.map((memory) => memory.id));
     for (const item of items) {
       const parsed = DreamRelationshipSchema.safeParse(item);
       if (!parsed.success) {
-        invalidCount++;
+        drops.invalid++;
         continue;
       }
       const relationship = parsed.data;
-      if (candidateIds.has(relationship.source_id) && candidateIds.has(relationship.target_id) &&
-        relationship.source_id !== relationship.target_id && relationship.confidence >= 0.7) {
+      if (!candidateIds.has(relationship.source_id) || !candidateIds.has(relationship.target_id)) {
+        drops["unknown id"]++;
+      } else if (relationship.source_id === relationship.target_id) {
+        drops["self-link"]++;
+      } else if (relationship.confidence < 0.7) {
+        drops["below confidence"]++;
+      } else {
         relationships.push(relationship);
       }
     }
-    return { kind: "parsed", relationships, invalidCount };
+    return { kind: "parsed", relationships, drops };
   }
 }
 

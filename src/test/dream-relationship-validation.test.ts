@@ -46,7 +46,7 @@ it.each([
   expect(db.getRelationshipsFrom("a").map(({ target_id, label }) => ({ target_id, label })))
     .toEqual([{ target_id: "b", label: "shared decision" }]);
   expect(report.errors).toEqual([]);
-  expect(report.warnings).toEqual(["Relationship discovery: dropped 1 invalid item(s) in batch a,b,c."]);
+  expect(report.warnings).toEqual(["Relationship discovery: dropped 1 item(s) in batch a,b,c: 1 invalid."]);
   const state = readDreamState(home);
   expect(state.lastSuccessfulRunAt).toBe(report.finishedAt);
   expect(Object.values(state.analyzedFingerprints).filter((entry) => entry.memoryIds.length === 1).length).toBe(3);
@@ -67,7 +67,8 @@ it("stops retrying a malformed reply after three attempts even when unrelated co
   generate.mockResolvedValue("I could not finish this analysis.");
   const reports = [];
   for (let attempt = 0; attempt < 4; attempt++) reports.push(await engine().dream());
-  expect(reports.map((report) => report.errors.length)).toEqual([1, 1, 0, 0]);
+  expect(reports.map((report) => report.errors.length)).toEqual([1, 1, 1, 0]);
+  expect(reports[2].errors).toEqual(["Relationship discovery: Relationship response did not contain a JSON array; it will be retried."]);
   expect(reports[2].warnings).toEqual(["Relationship discovery: retry limit reached for a,b,c; marked analyzed."]);
   expect(generate.mock.calls.length).toBe(3);
   db.insertMemory(makeMemory({ id: "d" }));
@@ -77,4 +78,29 @@ it("stops retrying a malformed reply after three attempts even when unrelated co
   db.updateMemory("a", { content: "Changed source content" });
   const changed = await engine().dream();
   expect(changed.llmCalls?.filter((call) => call.phase === "relationships" && call.status === "made").flatMap((call) => call.memoryIds)).toEqual(["a", "d"]);
+});
+
+it("counts every rejected category once while saving valid edges and marking the batch analyzed", async () => {
+  const valid = { source_id: "a", target_id: "b", rel_type: "related_to", label: "accepted", confidence: 0.7 };
+  generate.mockResolvedValue(JSON.stringify([
+    valid,
+    { ...valid, rel_type: "causes" },
+    { ...valid, target_id: "missing" },
+    { ...valid, source_id: "missing", confidence: 0.2 },
+    { ...valid, target_id: "a" },
+    { ...valid, confidence: 0.69 },
+  ]));
+  const report = await engine().dream();
+  expect(report.relationshipsDiscovered).toBe(1);
+  expect(db.getRelationshipsFrom("a").map(({ target_id, label }) => ({ target_id, label })))
+    .toEqual([{ target_id: "b", label: "accepted" }]);
+  expect(report.errors).toEqual([]);
+  expect(report.warnings).toEqual([
+    "Relationship discovery: dropped 5 item(s) in batch a,b,c: 1 invalid, 2 unknown id, 1 self-link, 1 below confidence.",
+  ]);
+  const state = readDreamState(home);
+  expect(Object.values(state.analyzedFingerprints).filter((entry) => entry.memoryIds.length === 1)
+    .flatMap((entry) => entry.memoryIds).sort()).toEqual(["a", "b", "c"]);
+  await engine().dream();
+  expect(generate.mock.calls.length).toBe(1);
 });

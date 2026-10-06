@@ -1,3 +1,4 @@
+import { EMBEDDING_FALLBACK_NOTE } from "./embeddingHealth.js";
 import { GnosysSearch } from "./search.js";
 import type { GnosysResolver } from "./resolver.js";
 
@@ -46,6 +47,7 @@ export async function runSemanticSearchCommand(
         const outcome = await hybridSearch.searchWithStatus(query, parseInt(opts.limit, 10), "semantic");
         const results = outcome.results;
         const note = outcome.kind === "keyword-fallback" ? outcome.note : undefined;
+        const resultNote = note ? EMBEDDING_FALLBACK_NOTE : undefined;
         const mode = outcome.kind === "keyword-fallback" ? "keyword" : "semantic";
         if (note) console.error(note);
   
@@ -55,7 +57,7 @@ export async function runSemanticSearchCommand(
             query,
             mode,
             requestedMode: "semantic",
-            note,
+            note: resultNote,
             count: results.length,
             results: results.map((r) => ({
               title: r.title,

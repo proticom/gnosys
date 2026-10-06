@@ -54,7 +54,9 @@ it("persists embedding errors in the audit row and prints them through dream log
   expect(output.mock.calls.flat().join("\n")).toContain(message);
   output.mockClear();
   await runDreamLogCommand({ last: "1", json: true });
-  expect(JSON.parse(output.mock.calls.flat().join("\n")).runs[0].details.errorMessages).toEqual([message]);
+  const details = JSON.parse(output.mock.calls.flat().join("\n")).runs[0].details;
+  expect(details.errorMessages).toEqual([message]);
+  expect("errorDetailsMissing" in details).toBe(false);
 });
 
 it("labels older failed rows without inventing a message", async () => {
@@ -69,6 +71,11 @@ it("labels older failed rows without inventing a message", async () => {
   const output = vi.spyOn(console, "log").mockImplementation(() => {});
   await runDreamLogCommand({ last: "1" });
   expect(output.mock.calls.flat().join("\n")).toContain("Error details were not saved by this older Dream run.");
+  output.mockClear();
+  await runDreamLogCommand({ last: "1", json: true });
+  expect(JSON.parse(output.mock.calls.flat().join("\n")).runs[0].details)
+    .toEqual({ errors: 1, errorDetailsMissing: true });
+  expect(db.getRecentDreamRuns(1)[0].details).toEqual({ errors: 1 });
 });
 
 it("counts summary updates as work in the audit consumer", async () => {
