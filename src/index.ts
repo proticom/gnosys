@@ -54,7 +54,7 @@ import { getLLMProvider, type LLMProvider } from "./lib/llm.js";
 import { recall, formatRecall, } from "./lib/recall.js";
 import { initAudit, readAuditLog, formatAuditTimeline } from "./lib/audit.js";
 import { logError } from "./lib/log.js";
-import { GnosysDB } from "./lib/db.js";
+import { GnosysDB, type MemoryScope } from "./lib/db.js";
 import { syncMemoryToDb, syncUpdateToDb, syncDearchiveToDb, syncReinforcementToDb, auditToDb } from "./lib/dbWrite.js";
 import { createProjectIdentity, readProjectIdentity, } from "./lib/projectIdentity.js";
 import { setPreference, getPreference, getAllPreferences, deletePreference, KNOWN_PREFERENCE_KEYS, suggestPreferenceKey } from "./lib/preferences.js";
@@ -451,12 +451,13 @@ function resolveWriteScope(
   ctx: ToolContext,
   targetStore: "project" | "personal" | "global" | undefined,
 ):
-  | { ok: true; scope: "project" | "personal" | "global"; projectId: string | null }
+  | { ok: true; scope: MemoryScope; projectId: string | null }
   | { ok: false; error: string } {
-  const scope = targetStore || "project";
-  if (scope === "global" || scope === "personal") {
-    return { ok: true, scope, projectId: null };
-  }
+  const store = targetStore || "project";
+  // The "personal" store layer persists as DB scope "user"; the memories
+  // CHECK constraint only admits project/user/global.
+  if (store === "personal") return { ok: true, scope: "user", projectId: null };
+  if (store === "global") return { ok: true, scope: "global", projectId: null };
   if (!ctx.projectId) {
     return {
       ok: false,
