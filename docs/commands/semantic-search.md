@@ -1,6 +1,6 @@
 # gnosys semantic-search
 
-Search using semantic similarity only (requires embeddings).
+Search using semantic similarity. If embeddings are unavailable, return keyword results with an explicit fallback note.
 
 ## Usage
 
@@ -23,22 +23,16 @@ gnosys semantic-search "auth tokens" --json
 1. Resolves stores via the resolver; exits if none (`No stores found.`).
 2. Builds a fresh `GnosysSearch` index from all stores.
 3. Loads `GnosysEmbeddings` and `GnosysHybridSearch`.
-4. Runs semantic-only search: `hybridSearch(query, limit, "semantic")`.
-5. Closes search and embeddings handles.
+4. Searches the central DB when available. Uses semantic search, or keyword search if the embedding runtime, model, or vectors are unavailable.
+5. Closes search, embeddings, and central DB handles.
 
 ## Embedding prerequisites
 
-Semantic search requires embeddings. If none exist:
-
-```text
-No semantic results for "<query>". Run gnosys reindex first.
-```
-
-Run `gnosys reindex` to build embeddings before using this command.
+Run `gnosys doctor` to check the local runtime, then `gnosys reindex` to build vectors. Missing packages produce an install command targeting the Gnosys package directory. Model loading errors preserve the cause in the fallback note. The CLI also prints the note to stderr, keeping JSON stdout valid.
 
 ## Human output
 
-On success, prints title, path, similarity score, and snippet preview for each result.
+On success, prints the effective search mode, title, path, score, and snippet preview for each result.
 
 ## JSON output
 
@@ -47,12 +41,16 @@ With `--json`:
 ```json
 {
   "query": "...",
+  "mode": "semantic",
+  "requestedMode": "semantic",
   "count": 3,
   "results": [
     { "title": "...", "relativePath": "...", "score": 0.92, "snippet": "..." }
   ]
 }
 ```
+
+Fallback results set `mode` to `keyword` and include a `note` explaining why. Keyword scores are not semantic similarity scores.
 
 ## Validation
 

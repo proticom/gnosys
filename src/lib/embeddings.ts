@@ -15,6 +15,7 @@ try {
 import path from "path";
 import fs from "fs/promises";
 import { enableWAL } from "./lock.js";
+import { EmbeddingUnavailableError, embeddingFailureMessage } from "./embeddingHealth.js";
 
 // Type for the pipeline function from @huggingface/transformers
 type Pipeline = (texts: string[], options?: Record<string, unknown>) => Promise<{ tolist(): number[][] }>;
@@ -64,10 +65,8 @@ export class GnosysEmbeddings {
     let transformers: any;
     try {
       transformers = await import("@huggingface/transformers");
-    } catch {
-      throw new Error(
-        "Local embeddings require @huggingface/transformers. Install it with: npm install @huggingface/transformers"
-      );
+    } catch (error) {
+      throw new EmbeddingUnavailableError(embeddingFailureMessage(error));
     }
     // `env.cacheDir` is the actual knob transformers.js uses for its on-disk
     // model cache. Without it the model lands in the package's own
@@ -117,12 +116,15 @@ export class GnosysEmbeddings {
    * Embed a single text string. Returns a Float32Array of dimension 384.
    */
   async embed(text: string): Promise<Float32Array> {
-    await this.init();
-    if (!this.pipeline) throw new Error("Embedding model not initialized");
-
-    const output = await this.pipeline([text], { pooling: "mean", normalize: true });
-    const nested = output.tolist();
-    return new Float32Array(nested[0]);
+    try {
+      await this.init();
+      if (!this.pipeline) throw new Error("Embedding model not initialized");
+      const output = await this.pipeline([text], { pooling: "mean", normalize: true });
+      return new Float32Array(output.tolist()[0]);
+    } catch (error) {
+      if (error instanceof EmbeddingUnavailableError) throw error;
+      throw new EmbeddingUnavailableError(`Embedding model failed: ${error instanceof Error ? error.message : String(error)}. Run gnosys doctor, then retry gnosys reindex.`);
+    }
   }
 
   /**

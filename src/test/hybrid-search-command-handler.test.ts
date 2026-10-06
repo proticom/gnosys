@@ -31,7 +31,7 @@ describe("gnosys hybrid-search command wiring", () => {
     expect(handler).toContain("new GnosysSearch(storePath)");
     expect(handler).toContain("new GnosysEmbeddings(storePath)");
     expect(handler).toContain("new GnosysHybridSearch");
-    expect(handler).toContain("hybridSearch.hybridSearch(query");
+    expect(handler).toContain("hybridSearch.searchWithStatus(query");
     expect(handler).toContain("GnosysMaintenanceEngine.reinforceBatch");
     expect(handler).toContain("search.close()");
     expect(handler).toContain("embeddings.close()");

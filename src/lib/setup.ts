@@ -1392,6 +1392,10 @@ export async function runSetup(opts: {
     return runKeysSetup();
   }
 
+  const { checkEmbeddingPackage } = await import("./embeddingHealth.js");
+  const embeddingRuntime = checkEmbeddingPackage();
+  if (embeddingRuntime.kind === "unavailable") console.error(`Embedding setup: ${embeddingRuntime.message}`);
+
   const version = getVersion();
   const projectDir = opts.directory ? path.resolve(opts.directory) : process.cwd();
 

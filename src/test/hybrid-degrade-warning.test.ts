@@ -21,33 +21,19 @@ describe("hybrid search degrade warnings (v5.12.3)", () => {
     "utf-8",
   );
 
-  it("gnosys_hybrid_search warns when the semantic leg can't run", () => {
-    expect(index).toContain("const degradeWarning =");
+  it("gnosys_semantic_search announces keyword fallback", () => {
     expect(index).toContain(
-      `requestedMode !== "keyword" && !hybridSearch.canRunSemantic()`,
-    );
-    expect(index).toContain("search ran keyword-only");
-    expect(index).toContain(
-      "Run gnosys_reindex to build embeddings and enable semantic recall",
-    );
-    // The warning is prepended to BOTH the zero-result and the found-results outputs
-    expect(index).toContain('`${degradeWarning}No results for "${query}"');
-    expect(index).toContain('`${degradeWarning}Found ${results.length} results');
-  });
-
-  it("gnosys_semantic_search refuses loudly instead of returning generic empty", () => {
-    expect(index).toContain(
-      "Semantic embeddings unavailable — semantic search cannot run",
+      "Falls back to keyword search with an explicit note when embeddings are unavailable",
     );
   });
 
   it("CLI hybrid-search warns on stderr (stdout stays clean for --json)", () => {
     expect(handler).toContain(
-      `if (mode !== "keyword" && !hybridSearch.canRunSemantic())`,
+      `if (note) console.error(note);`,
     );
     expect(handler).toContain("console.error(");
-    expect(handler).toContain("search will run keyword-only");
-    expect(handler).toContain("Run 'gnosys reindex' to build embeddings");
+    expect(handler).toContain('outcome.kind === "keyword-fallback"');
+    expect(handler).toContain("outcome.note");
   });
 
   // v5.13.0: assertion updated alongside the gate redesign — in DB mode the

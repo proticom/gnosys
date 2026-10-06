@@ -28,6 +28,10 @@ async function main() {
     process.exit(0);
   }
 
+  const { checkEmbeddingPackage } = await import("./lib/embeddingHealth.js");
+  const embeddingRuntime = checkEmbeddingPackage();
+  if (embeddingRuntime.kind === "unavailable") out(`  Embedding setup: ${embeddingRuntime.message}`);
+
   // Detect if this is an upgrade (central DB exists) or fresh install
   const centralDbPath = GnosysDB.getCentralDbPath();
   const isUpgrade = existsSync(centralDbPath);

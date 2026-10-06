@@ -151,6 +151,9 @@ program
       process.exit(1);
     }
 
+    const { EMBEDDING_INSTALL_HINT } = await import("../lib/embeddingHealth.js");
+    console.log(`Check optional embeddings with gnosys doctor. If unavailable, run: ${EMBEDDING_INSTALL_HINT}`);
+
     // Read the newly-installed version (best-effort — we may still be the
     // old binary in-process; this is purely informational).
     let newVersion = "(see npm output)";
