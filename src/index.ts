@@ -9,6 +9,7 @@
 // IMPORTANT: We use dotenv.parse() instead of dotenv.config() because
 // dotenv v17+ writes injection notices to stdout, which corrupts the
 // MCP stdio JSON protocol. parse() is a pure function with no side effects.
+import { formatSearchStatus } from "./lib/searchStatus.js";
 import dotenv from "dotenv";
 import path from "path";
 import { AsyncLocalStorage } from "async_hooks";
@@ -55,6 +56,7 @@ import { recall, formatRecall, } from "./lib/recall.js";
 import { initAudit, readAuditLog, formatAuditTimeline } from "./lib/audit.js";
 import { logError } from "./lib/log.js";
 import { GnosysDB } from "./lib/db.js";
+import { memoryOverlapWarning } from "./lib/memoryOverlap.js";
 import { syncMemoryToDb, syncUpdateToDb, syncDearchiveToDb, syncReinforcementToDb, auditToDb } from "./lib/dbWrite.js";
 import { createProjectIdentity, readProjectIdentity, } from "./lib/projectIdentity.js";
 import { setPreference, getPreference, getAllPreferences, deletePreference, KNOWN_PREFERENCE_KEYS, suggestPreferenceKey } from "./lib/preferences.js";
@@ -477,7 +479,7 @@ function resolveWriteScope(
 // ─── Tool: gnosys_discover ──────────────────────────────────────────────
 regTool(
   "gnosys_discover",
-  "Discover relevant memories by describing what you're working on. Searches relevance keyword clouds across all stores. Returns lightweight metadata (title, path, relevance keywords) — NO file contents. Use gnosys_read to load specific memories you need. Call this FIRST when starting a task to find what Gnosys knows.",
+  "Discover relevant memories by describing what you're working on. Searches relevance keyword clouds across all stores. Returns lightweight metadata (title, path, relevance keywords, status, modified date, replacement ID) — NO file contents. Use gnosys_read to load specific memories you need. Call this FIRST when starting a task to find what Gnosys knows. Set currentOnly=true to exclude non-active memories (default false).",
   {
     query: z
       .string()
@@ -485,15 +487,16 @@ regTool(
         "Describe what you're working on or looking for. Use keywords, not sentences. Example: 'auth JWT session tokens' or 'deployment CI/CD pipeline'"
       ),
     limit: z.number().optional().describe("Max results (default 20)"),
+    currentOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
     projectRoot: projectRootParam,
   },
-  async ({ query, limit, projectRoot }) => {
+  async ({ query, limit, currentOnly, projectRoot }) => {
     const ctx = await resolveToolContext(projectRoot);
     try {
     // v2.0 DB-backed fast path
     if (ctx.centralDb?.isAvailable() && ctx.centralDb?.isMigrated()) {
       const lim = limit || 20;
-      let results = ctx.centralDb.discoverFts(query, lim);
+      let results = ctx.centralDb.discoverFts(query, lim, currentOnly);
       if (ctx.clientRead?.pendingOverlay.length) {
         results = mergeOverlayDiscoverResults(
           results,
@@ -506,6 +509,10 @@ regTool(
             relevance: "",
             rank: 0,
             project_id: p.project_id,
+            status: "active",
+            tier: "active",
+            modified: p.created,
+            superseded_by: null,
           }),
         );
       }
@@ -515,7 +522,7 @@ regTool(
         };
       }
       const formatted = results
-        .map((r) => `**${r.title}**\n  ID: ${r.id}${r.relevance ? `\n  Relevance: ${r.relevance}` : ""}`)
+        .map((r) => `**${r.title}** ${formatSearchStatus(r)}\n  ID: ${r.id}${r.relevance ? `\n  Relevance: ${r.relevance}` : ""}`)
         .join("\n\n");
       return {
         content: [{ type: "text", text: `Found ${results.length} relevant memories for "${query}":\n\n${formatted}\n\nUse gnosys_read to load any of these.` }],
@@ -530,7 +537,7 @@ regTool(
       };
     }
 
-    const results = ctx.search.discover(query, limit || 20);
+    const results = ctx.search.discover(query, limit || 20, currentOnly);
     if (results.length === 0) {
       return {
         content: [
@@ -545,7 +552,7 @@ regTool(
     const formatted = results
       .map(
         (r) =>
-          `**${r.title}**\n  Path: ${r.relative_path}${r.relevance ? `\n  Relevance: ${r.relevance}` : ""}`
+          `**${r.title}** ${formatSearchStatus(r)}\n  Path: ${r.relative_path}${r.relevance ? `\n  Relevance: ${r.relevance}` : ""}`
       )
       .join("\n\n");
 
@@ -566,7 +573,7 @@ regTool(
 // ─── Tool: gnosys_read ───────────────────────────────────────────────────
 regTool(
   "gnosys_read",
-  "Read a specific memory. Accepts a memory ID (e.g., 'arch-012') or layer-prefixed path (e.g., 'project:decisions/why-not-rag.md'). Without a prefix, searches all stores in precedence order.",
+  "Read a specific memory. Accepts a memory ID (e.g., 'arch-012') or layer-prefixed path (e.g., 'project:decisions/why-not-rag.md'). Without a prefix, searches all stores in precedence order. Includes supersedes and superseded_by links when set.",
   {
     path: z.string().describe("Memory ID or path, optionally prefixed with store layer"),
     projectRoot: projectRootParam,
@@ -598,6 +605,8 @@ regTool(
           `created: '${dbMem.created}'`,
           `modified: '${dbMem.modified}'`,
         ];
+        if (dbMem.supersedes) headerLines.push(`supersedes: ${dbMem.supersedes}`);
+        if (dbMem.superseded_by) headerLines.push(`superseded_by: ${dbMem.superseded_by}`);
         if (dbMem.source_file) {
           headerLines.push(
             `source_file: ${dbMem.source_file}${dbMem.source_page != null ? ` (page ${Number(dbMem.source_page)})` : ""}`,
@@ -645,19 +654,20 @@ regTool(
 // ─── Tool: gnosys_search ─────────────────────────────────────────────────
 regTool(
   "gnosys_search",
-  "Search memories by keyword across all stores. Returns matching file paths with relevance snippets.",
+  "Search memories by keyword across all stores. Returns matches with snippets, status, modified date, and replacement IDs. History stays visible; replacements rank first. Set currentOnly=true to exclude non-active memories (default false).",
   {
     query: z.string().describe("Search query (keywords)"),
     limit: z.number().optional().describe("Max results (default 20)"),
+    currentOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
     projectRoot: projectRootParam,
   },
-  async ({ query, limit, projectRoot }) => {
+  async ({ query, limit, currentOnly, projectRoot }) => {
     const ctx = await resolveToolContext(projectRoot);
     try {
     // v2.0 DB-backed fast path
     if (ctx.centralDb?.isAvailable() && ctx.centralDb?.isMigrated()) {
       const lim = limit || 20;
-      let results = ctx.centralDb.searchFts(query, lim);
+      let results = ctx.centralDb.searchFts(query, lim, currentOnly);
       if (ctx.clientRead?.pendingOverlay.length) {
         results = mergeOverlaySearchResults(
           results,
@@ -670,6 +680,10 @@ regTool(
             snippet: p.content.substring(0, 200),
             rank: 0,
             project_id: p.project_id,
+            status: "active",
+            tier: "active",
+            modified: p.created,
+            superseded_by: null,
           }),
         );
       }
@@ -679,7 +693,7 @@ regTool(
         };
       }
       const formatted = results
-        .map((r) => `**${r.title}** (${r.id})\n${r.snippet.replace(/>>>/g, "**").replace(/<<</g, "**")}`)
+        .map((r) => `**${r.title}** (${r.id}) ${formatSearchStatus(r)}\n${r.snippet.replace(/>>>/g, "**").replace(/<<</g, "**")}`)
         .join("\n\n");
       return {
         content: [{ type: "text", text: `Found ${results.length} results for "${query}":\n\n${formatted}` }],
@@ -694,7 +708,7 @@ regTool(
       };
     }
 
-    const results = ctx.search.search(query, limit || 20);
+    const results = ctx.search.search(query, limit || 20, currentOnly);
     if (results.length === 0) {
       return {
         content: [
@@ -709,7 +723,7 @@ regTool(
     const formatted = results
       .map(
         (r) =>
-          `**${r.title}** (${r.relative_path})\n${r.snippet.replace(/>>>/g, "**").replace(/<<</g, "**")}`
+          `**${r.title}** (${r.relative_path}) ${formatSearchStatus(r)}\n${r.snippet.replace(/>>>/g, "**").replace(/<<</g, "**")}`
       )
       .join("\n\n");
 
@@ -1011,7 +1025,7 @@ regTool(
 // ─── Tool: gnosys_add_structured ─────────────────────────────────────────
 regTool(
   "gnosys_add_structured",
-  "Preferred for LLM agents: add a memory with structured fields you supply (title, category, tags, content) — no server-side LLM call.",
+  "Preferred for LLM agents: add a memory with structured fields you supply (title, category, tags, content). Optional supersedes validates the predecessor ID and links both memories. Reports potential overlaps. No server-side LLM call.",
   {
     title: z.string().describe("Memory title"),
     category: z.string().describe("Category name"),
@@ -1029,9 +1043,10 @@ regTool(
       .enum(["declared", "observed", "imported", "inferred"])
       .optional(),
     confidence: z.number().min(0).max(1).optional(),
+    supersedes: z.string().optional().describe("ID of the memory this replaces"),
     projectRoot: projectRootParam,
   },
-  async ({ title, category, tags, relevance, content, store: targetStore, author, authority, confidence, projectRoot }) => {
+  async ({ title, category, tags, relevance, content, store: targetStore, author, authority, confidence, supersedes, projectRoot }) => {
     try {
       const ctx = await resolveToolContext(projectRoot);
       const writeTarget = ctx.resolver.getWriteTarget(
@@ -1082,26 +1097,26 @@ regTool(
       const fullContent = `# ${title}\n\n${content}`;
 
       // Write to DB only (SQLite is sole source of truth)
-      syncMemoryToDb(
-        ctx.centralDb,
-        frontmatter,
-        fullContent,
-        undefined,
-        scopeResult.projectId,
-        scopeResult.scope,
-      );
+      const db = ctx.centralDb;
+      db.transaction(() => {
+        syncMemoryToDb(
+          db,
+          frontmatter,
+          fullContent,
+          undefined,
+          scopeResult.projectId,
+          scopeResult.scope,
+        );
+        if (supersedes) syncUpdateToDb(db, id, { supersedes });
+      });
       auditToDb(ctx.centralDb, "write", id, { tool: "gnosys_add_structured", category });
 
       if (ctx.search) await reindexAllStores();
 
-      return {
-        content: [
-          {
-            type: "text",
-            text: `Memory added to [${writeTarget.label}]: **${title}**\nID: ${id}`,
-          },
-        ],
-      };
+      let response = `Memory added to [${writeTarget.label}]: **${title}**\nID: ${id}`;
+      const overlapWarning = memoryOverlapWarning(db, { id, relevance: relevance || "", supersedes });
+      if (overlapWarning) response += `\n\n${overlapWarning}`;
+      return { content: [{ type: "text", text: response }] };
     } catch (err) {
       return {
         content: [{ type: "text", text: formatMcpError("adding structured memory", err) }],
@@ -1499,11 +1514,6 @@ regTool(
     // Write update to DB only (SQLite is sole source of truth)
     syncUpdateToDb(ctx.centralDb, memoryId, updates, fullContent);
     auditToDb(ctx.centralDb, "write", memoryId, { tool: "gnosys_update", changed: Object.keys(updates) });
-
-    // Supersession cross-linking: if A supersedes B, mark B as superseded_by A
-    if (supersedes) {
-      syncUpdateToDb(ctx.centralDb, supersedes, { superseded_by: memoryId, status: "superseded" });
-    }
 
     // Rebuild search index
     if (ctx.search) await reindexAllStores();
@@ -2251,14 +2261,15 @@ regTool(
 // ─── Tool: gnosys_hybrid_search ──────────────────────────────────────────
 regTool(
   "gnosys_hybrid_search",
-  "Search memories using hybrid keyword + semantic search with Reciprocal Rank Fusion. Combines FTS5 keyword matching with embedding-based semantic similarity for best results. Run gnosys_reindex first if embeddings don't exist yet.",
+  "Search memories using hybrid keyword + semantic search with Reciprocal Rank Fusion. Combines FTS5 keyword matching with embedding-based semantic similarity for best results. Includes status, modified date, and replacement IDs; replacements rank before their history. Run gnosys_reindex first if embeddings don't exist yet. Set currentOnly=true to exclude non-active memories (default false).",
   {
     query: z.string().describe("Natural language search query"),
     limit: z.number().optional().describe("Max results (default 15)"),
     mode: z.enum(["keyword", "semantic", "hybrid"]).optional().describe("Search mode (default: hybrid)"),
+    currentOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
     projectRoot: projectRootParam,
   },
-  async ({ query, limit, mode, projectRoot }) => {
+  async ({ query, limit, mode, currentOnly, projectRoot }) => {
     // Note: hybridSearch is module-level (heavy) and not scoped per project
     (projectRoot); // quiets unused warning if any
     // v5.9.1 (#100): wait for the background heavy-init to finish.
@@ -2272,7 +2283,7 @@ regTool(
 
     try {
       const requestedMode = (mode as "keyword" | "semantic" | "hybrid") || "hybrid";
-      const results = await hybridSearch.hybridSearch(query, limit || 15, requestedMode);
+      const results = await hybridSearch.hybridSearch(query, limit || 15, requestedMode, currentOnly);
 
       // v5.12.3: hybrid used to degrade to keyword-only silently when the
       // semantic leg can't run (embeddings are only built by gnosys_reindex,
@@ -2291,7 +2302,7 @@ regTool(
       const formatted = results
         .map(
           (r) =>
-            `**${r.title}** (score: ${r.score.toFixed(4)}, via: ${r.sources.join("+")})\n  Path: ${r.relativePath}\n  ${r.snippet.substring(0, 150)}...`
+            `**${r.title}** (score: ${r.score.toFixed(4)}, via: ${r.sources.join("+")}) ${formatSearchStatus(r)}\n  Path: ${r.relativePath}\n  ${r.snippet.substring(0, 150)}...`
         )
         .join("\n\n");
 
@@ -2328,13 +2339,14 @@ regTool(
 // ─── Tool: gnosys_semantic_search ────────────────────────────────────────
 regTool(
   "gnosys_semantic_search",
-  "Search memories using semantic similarity only (no keyword matching). Finds conceptually related memories even without exact keyword matches. Requires embeddings — run gnosys_reindex first.",
+  "Search memories using semantic similarity only (no keyword matching). Finds conceptually related memories even without exact keyword matches. Includes status, modified date, and replacement IDs; replacements rank before their history. Requires embeddings — run gnosys_reindex first. Set currentOnly=true to exclude non-active memories (default false).",
   {
     query: z.string().describe("Natural language search query"),
     limit: z.number().optional().describe("Max results (default 15)"),
+    currentOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
     projectRoot: projectRootParam,
   },
-  async ({ query, limit, projectRoot }) => {
+  async ({ query, limit, currentOnly, projectRoot }) => {
     // Note: hybridSearch is module-level (heavy) and not scoped per project
     (projectRoot); // quiets unused warning if any
     await ensureHeavyDeps();
@@ -2356,7 +2368,7 @@ regTool(
         };
       }
 
-      const results = await hybridSearch.hybridSearch(query, limit || 15, "semantic");
+      const results = await hybridSearch.hybridSearch(query, limit || 15, "semantic", currentOnly);
 
       if (results.length === 0) {
         return {
@@ -2367,7 +2379,7 @@ regTool(
       const formatted = results
         .map(
           (r) =>
-            `**${r.title}** (similarity: ${r.score.toFixed(4)})\n  Path: ${r.relativePath}\n  ${r.snippet.substring(0, 150)}...`
+            `**${r.title}** (similarity: ${r.score.toFixed(4)}) ${formatSearchStatus(r)}\n  Path: ${r.relativePath}\n  ${r.snippet.substring(0, 150)}...`
         )
         .join("\n\n");
 

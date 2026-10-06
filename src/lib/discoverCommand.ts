@@ -1,8 +1,10 @@
+import { formatSearchStatus } from "./searchStatus.js";
 import { logError } from "./log.js";
 
 export type DiscoverCommandOptions = {
   limit: string;
   json?: boolean;
+  currentOnly?: boolean;
   federated?: boolean;
   scope?: string;
   directory?: string;
@@ -64,7 +66,7 @@ export async function runDiscoverCommand(
         process.exit(1);
       }
       try {
-        const results = discoverWithOverlay(resolved, query, parseInt(opts.limit, 10));
+        const results = discoverWithOverlay(resolved, query, parseInt(opts.limit, 10), opts.currentOnly);
         if (results.length === 0) {
           outputResult(!!opts.json, { query, results: [] }, () => {
             console.log(`No memories found for "${query}". Try gnosys search for full-text.`);
@@ -81,7 +83,7 @@ export async function runDiscoverCommand(
           for (const r of results) {
             const projectName = r.project_id ? projectNames.get(r.project_id) || null : null;
             const displayId = formatMemoryId(r.id, projectName, idFormat);
-            console.log(`  ${r.title}`);
+            console.log(`  ${r.title} ${formatSearchStatus(r)}`);
             console.log(`    id: ${displayId}`);
             if (r.relevance) console.log(`    Relevance: ${r.relevance}`);
             console.log();

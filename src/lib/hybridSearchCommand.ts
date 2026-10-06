@@ -1,3 +1,4 @@
+import { formatSearchStatus } from "./searchStatus.js";
 import { GnosysSearch } from "./search.js";
 import type { GnosysResolver } from "./resolver.js";
 
@@ -5,6 +6,7 @@ export type HybridSearchCommandOptions = {
   limit: string;
   mode: string;
   json?: boolean;
+  currentOnly?: boolean;
   federated?: boolean;
   scope?: string;
   directory?: string;
@@ -92,7 +94,7 @@ export async function runHybridSearchCommand(
         );
       }
 
-      const results = await hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), mode);
+      const results = await hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), mode, opts.currentOnly);
   
       if (results.length === 0) {
         outputResult(!!opts.json, { query, mode, results: [] }, () => {
@@ -102,7 +104,7 @@ export async function runHybridSearchCommand(
         outputResult(!!opts.json, { query, mode, count: results.length, results }, () => {
           console.log(`Found ${results.length} results for "${query}" (mode: ${mode}):\n`);
           for (const r of results) {
-            console.log(`  ${r.title}`);
+            console.log(`  ${r.title} ${formatSearchStatus(r)}`);
             console.log(`    Path: ${r.relativePath}`);
             console.log(`    Score: ${r.score.toFixed(4)} (via: ${r.sources.join("+")})`);
             console.log(`    ${r.snippet.substring(0, 120)}...\n`);

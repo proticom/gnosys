@@ -37,7 +37,7 @@ gnosys update mem-002 --content "Replacement body"
 5. Maps CLI options to update fields (`superseded-by` → `superseded_by`).
 6. When `--content` is set, builds full markdown with `# title` header.
 7. Writes via `syncUpdateToDb`.
-8. When `--supersedes` is set, cross-links the superseded memory.
+8. Either `--supersedes` or `--superseded-by` validates the target and cross-links both memories atomically. Missing IDs and cycles are rejected. Relationship-only changes preserve modified dates.
 9. Closes DB in `finally`.
 
 ## Output

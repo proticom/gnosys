@@ -5,6 +5,21 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Search, discovery, hybrid search, and semantic search label memory status,
+  modified date, and replacement ID. Superseded and archived history remains
+  visible by default. Linked replacements rank before predecessors and survive
+  small result limits. Use MCP `currentOnly` or CLI `--current-only` to return
+  active memories only.
+- Memory reads include both supersession links. Structured adds accept
+  `supersedes`, validate the target, and warn about overlapping active memories.
+  Updates validate and link either direction atomically. Supersession preserves
+  the historical memory's modified date.
+- Recall and its hook filter non-active memories before candidate limits.
+
 ## [6.2.1] — 2026-07-16
 
 ### Changed

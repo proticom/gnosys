@@ -90,8 +90,9 @@ export function discoverWithOverlay(
   resolved: ResolvedClientRead,
   query: string,
   limit: number,
-): Array<{ id: string; title: string; relevance: string; rank: number; project_id: string | null }> {
-  const base = resolved.db.discoverFts(query, limit);
+  currentOnly = false,
+): ReturnType<GnosysDB["discoverFts"]> {
+  const base = resolved.db.discoverFts(query, limit, currentOnly);
   if (resolved.pendingOverlay.length === 0) return base;
   return mergeOverlayDiscoverResults(
     base,
@@ -104,6 +105,10 @@ export function discoverWithOverlay(
       relevance: "",
       rank: 0,
       project_id: p.project_id,
+      status: "active",
+      tier: "active",
+      modified: p.created,
+      superseded_by: null,
     }),
   );
 }
@@ -112,8 +117,9 @@ export function searchWithOverlay(
   resolved: ResolvedClientRead,
   query: string,
   limit: number,
-): Array<{ id: string; title: string; snippet: string; rank: number; project_id: string | null }> {
-  const base = resolved.db.searchFts(query, limit);
+  currentOnly = false,
+): ReturnType<GnosysDB["searchFts"]> {
+  const base = resolved.db.searchFts(query, limit, currentOnly);
   if (resolved.pendingOverlay.length === 0) return base;
   return mergeOverlaySearchResults(
     base,
@@ -126,6 +132,10 @@ export function searchWithOverlay(
       snippet: p.content.substring(0, 200),
       rank: 0,
       project_id: p.project_id,
+      status: "active",
+      tier: "active",
+      modified: p.created,
+      superseded_by: null,
     }),
   );
 }

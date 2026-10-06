@@ -81,6 +81,7 @@ program
   .option("-a, --author <author>", "Author", "human")
   .option("--authority <authority>", "Authority level", "declared")
   .option("--confidence <n>", "Confidence 0-1", "0.8")
+  .option("--supersedes <id>", "ID of the memory this replaces")
   .option("-s, --store <store>", "Target store", undefined)
   .option("--user", "Store as user-scoped memory (scope: user)")
   .option("--global", "Store as global-scoped memory (scope: global)")
@@ -94,6 +95,7 @@ program
       author: string;
       authority: string;
       confidence: string;
+      supersedes?: string;
       store?: string;
       user?: boolean;
       global?: boolean;

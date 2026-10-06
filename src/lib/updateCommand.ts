@@ -64,15 +64,9 @@ export async function runUpdateCommand(
   try {
     const { syncUpdateToDb } = await import("./dbWrite.js");
     syncUpdateToDb(centralDb, memoryId, updates as Parameters<typeof syncUpdateToDb>[2], fullContent);
+    if (opts.supersedes) console.log(`Cross-linked: ${opts.supersedes} marked as superseded.`);
+    if (opts.supersededBy) console.log(`Cross-linked: ${memoryId} marked as superseded by ${opts.supersededBy}.`);
 
-    if (opts.supersedes) {
-      syncUpdateToDb(
-        centralDb,
-        opts.supersedes,
-        { superseded_by: memoryId, status: "superseded" } as Parameters<typeof syncUpdateToDb>[2],
-      );
-      console.log(`Cross-linked: ${opts.supersedes} marked as superseded.`);
-    }
   } finally {
     centralDb?.close();
   }

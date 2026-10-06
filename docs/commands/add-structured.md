@@ -24,6 +24,7 @@ gnosys add-structured --title "Tagged" --category notes --content "Tagged conten
 | Option | Description |
 |--------|-------------|
 | `--tags <json>` | Tags as JSON object (default `{}`) |
+| `--supersedes <id>` | Existing memory replaced by this one; also accepted as MCP `supersedes` |
 | `--relevance <keywords>` | Keyword cloud for discovery (defaults to content snippet) |
 | `-a, --author <author>` | Author (default `human`) |
 | `--authority <authority>` | Authority level (default `declared`) |
@@ -33,6 +34,8 @@ gnosys add-structured --title "Tagged" --category notes --content "Tagged conten
 | `--global` | Store as global-scoped memory (`scope: global`) |
 
 ## Behavior
+
+`--supersedes <id>` validates the target before writing and links both memories in one transaction. The old memory becomes `superseded` and keeps its original modified date. An unknown ID rejects the add. Overlapping active memories produce a warning; an intentional predecessor is excluded from that warning.
 
 ### User or global scope (`--user` / `--global`)
 

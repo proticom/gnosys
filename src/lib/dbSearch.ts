@@ -13,6 +13,7 @@
 import type { GnosysDB, DbMemory } from "./db.js";
 import type { SearchResult, DiscoverResult } from "./search.js";
 import type { HybridSearchResult, SearchMode } from "./searchTypes.js";
+import { rankReplacements } from "./searchStatus.js";
 
 // ─── Cosine similarity for inline embeddings ────────────────────────────
 
@@ -43,26 +44,28 @@ export class GnosysDbSearch {
   /**
    * FTS5 search — compatible with GnosysSearch.search()
    */
-  search(query: string, limit: number = 20): SearchResult[] {
-    const results = this.db.searchFts(query, limit);
+  search(query: string, limit: number = 20, currentOnly: boolean = false): SearchResult[] {
+    const results = this.db.searchFts(query, limit, currentOnly);
     return results.map((r) => ({
       relative_path: r.id,      // In db mode, we use memory ID as the key
       title: r.title,
       snippet: r.snippet,
       rank: r.rank,
+      status: r.status, tier: r.tier, modified: r.modified, superseded_by: r.superseded_by,
     }));
   }
 
   /**
    * FTS5 discover — compatible with GnosysSearch.discover()
    */
-  discover(query: string, limit: number = 20): DiscoverResult[] {
-    const results = this.db.discoverFts(query, limit);
+  discover(query: string, limit: number = 20, currentOnly: boolean = false): DiscoverResult[] {
+    const results = this.db.discoverFts(query, limit, currentOnly);
     return results.map((r) => ({
       relative_path: r.id,      // In db mode, we use memory ID as the key
       title: r.title,
       relevance: r.relevance,
       rank: r.rank,
+      status: r.status, tier: r.tier, modified: r.modified, superseded_by: r.superseded_by,
     }));
   }
 
@@ -74,7 +77,8 @@ export class GnosysDbSearch {
     query: string,
     limit: number = 15,
     mode: SearchMode = "hybrid",
-    embedQuery?: (text: string) => Promise<Float32Array>
+    embedQuery?: (text: string) => Promise<Float32Array>,
+    currentOnly: boolean = false,
   ): Promise<HybridSearchResult[]> {
     // Check if we have embeddings for semantic/hybrid
     const hasEmbeddings = this.db.getEmbeddingCount() > 0;
@@ -83,38 +87,48 @@ export class GnosysDbSearch {
       mode = "keyword";
     }
 
+    const candidateLimit = limit * 2;
     let results: HybridSearchResult[];
 
     if (mode === "keyword") {
-      results = this.keywordSearch(query, limit);
+      results = this.keywordSearch(query, candidateLimit, currentOnly);
     } else if (mode === "semantic" && embedQuery) {
-      results = await this.semanticSearch(query, limit, embedQuery);
+      results = await this.semanticSearch(query, candidateLimit, embedQuery, currentOnly);
     } else if (mode === "hybrid" && embedQuery) {
       const [kw, sem] = await Promise.all([
-        this.keywordSearch(query, limit * 2),
-        this.semanticSearch(query, limit * 2, embedQuery),
+        this.keywordSearch(query, candidateLimit, currentOnly),
+        this.semanticSearch(query, candidateLimit, embedQuery, currentOnly),
       ]);
-      results = this.rrfFusion(kw, sem, limit);
+      results = this.rrfFusion(kw, sem, candidateLimit);
     } else {
-      results = this.keywordSearch(query, limit);
+      results = this.keywordSearch(query, candidateLimit, currentOnly);
     }
 
-    // Fill in from archive tier if active results are thin
-    if (results.length < limit) {
-      const archiveResults = this.searchArchiveTier(query, limit - results.length);
-      const existingIds = new Set(results.map((r) => r.relativePath));
-      const newResults = archiveResults.filter((r) => !existingIds.has(r.relativePath));
-      results = [...results, ...newResults];
-    }
+    return currentOnly ? results.slice(0, limit) : this.rankResults(results, limit);
+  }
 
-    return results.slice(0, limit);
+  private rankResults(results: HybridSearchResult[], limit: number): HybridSearchResult[] {
+    return rankReplacements({
+      results, limit, key: (result) => result.relativePath,
+      replacement: (result) => {
+        const memory = result.superseded_by ? this.db.getMemory(result.superseded_by) : null;
+        return memory ? {
+          relativePath: memory.id, memoryId: memory.id,
+          title: memory.title, snippet: memory.content.substring(0, 200),
+          score: result.score, sources: result.sources,
+          status: memory.status, tier: memory.tier,
+          modified: memory.modified, superseded_by: memory.superseded_by,
+          fromArchive: memory.tier === "archive",
+        } : null;
+      },
+    });
   }
 
   /**
    * FTS5 keyword search → HybridSearchResult
    */
-  private keywordSearch(query: string, limit: number): HybridSearchResult[] {
-    const results = this.db.searchFts(query, limit);
+  private keywordSearch(query: string, limit: number, currentOnly: boolean): HybridSearchResult[] {
+    const results = this.db.searchFts(query, limit, currentOnly);
     return results.map((r, i) => ({
       relativePath: r.id,
       title: r.title,
@@ -122,7 +136,8 @@ export class GnosysDbSearch {
       score: 1 / (60 + i + 1),
       sources: ["keyword"] as ("keyword" | "semantic" | "archive")[],
       memoryId: r.id,
-      fromArchive: false,
+      fromArchive: r.tier === "archive",
+      status: r.status, tier: r.tier, modified: r.modified, superseded_by: r.superseded_by,
     }));
   }
 
@@ -132,10 +147,11 @@ export class GnosysDbSearch {
   private async semanticSearch(
     query: string,
     limit: number,
-    embedQuery: (text: string) => Promise<Float32Array>
+    embedQuery: (text: string) => Promise<Float32Array>,
+    currentOnly: boolean,
   ): Promise<HybridSearchResult[]> {
     const queryVec = await embedQuery(query);
-    const allEmbeddings = this.db.getAllEmbeddings();
+    const allEmbeddings = this.db.getAllEmbeddings(currentOnly);
 
     const scored: Array<{ id: string; similarity: number }> = [];
     for (const entry of allEmbeddings) {
@@ -159,36 +175,11 @@ export class GnosysDbSearch {
           sources: ["semantic"],
           memoryId: mem.id,
           fromArchive: mem.tier === "archive",
+          status: mem.status, tier: mem.tier, modified: mem.modified, superseded_by: mem.superseded_by,
         });
       }
     }
     return results;
-  }
-
-  /**
-   * Search archive tier (memories with tier='archive')
-   */
-  private searchArchiveTier(query: string, limit: number): HybridSearchResult[] {
-    // Use FTS5 but filter to archive tier after
-    const results = this.db.searchFts(query, limit * 2);
-    const archiveResults: HybridSearchResult[] = [];
-
-    for (const r of results) {
-      const mem = this.db.getMemory(r.id);
-      if (mem && mem.tier === "archive") {
-        archiveResults.push({
-          relativePath: mem.id,
-          title: mem.title,
-          snippet: r.snippet,
-          score: 0.001,
-          sources: ["archive"],
-          memoryId: mem.id,
-          fromArchive: true,
-        });
-        if (archiveResults.length >= limit) break;
-      }
-    }
-    return archiveResults;
   }
 
   /**

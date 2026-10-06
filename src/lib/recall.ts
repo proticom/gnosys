@@ -23,7 +23,6 @@
 
 import type { GnosysSearch } from "./search.js";
 import type { GnosysResolver } from "./resolver.js";
-import { GnosysArchive } from "./archive.js";
 import type { GnosysDB } from "./db.js";
 import {
   mergeOverlayDiscoverResults,
@@ -138,7 +137,7 @@ export async function recall(
 
   // Step 1: Fast keyword search on active memories (FTS5 — sub-10ms)
   const fetchLimit = Math.max(limit * 2, 15);
-  const activeResults = options.search.discover(query, fetchLimit);
+  const activeResults = options.search.discover(query, fetchLimit, true);
   const allRanks = activeResults.map((r) => r.rank);
 
   for (const r of activeResults) {
@@ -159,42 +158,7 @@ export async function recall(
     }
   }
 
-  // Step 2: Archive fallback if active results are thin
-  let totalArchived = 0;
-  if (memories.length < limit && options.storePath) {
-    try {
-      const archive = new GnosysArchive(options.storePath);
-      if (archive.isAvailable()) {
-        const stats = archive.getStats();
-        totalArchived = stats.totalArchived;
-
-        const archiveResults = archive.searchArchive(query, limit - memories.length);
-        const existingTitles = new Set(memories.map((m) => m.title.toLowerCase()));
-
-        for (const ar of archiveResults) {
-          if (!existingTitles.has(ar.title.toLowerCase())) {
-            memories.push({
-              id: ar.id,
-              title: ar.title,
-              category: ar.category,
-              relevance: ar.tags,
-              confidence: 0,
-              path: `archive:${ar.category}/${ar.id}`,
-              fromArchive: true,
-              snippet: ar.snippet,
-              relevanceScore: 0.5,
-            });
-          }
-        }
-        archive.close();
-      }
-    } catch {
-      // Archive not available — degrade gracefully
-    }
-  }
-
-  // Step 3: Apply filtering
-  const result = applyRecallFiltering(memories, activeResults.length, totalArchived, limit, cfg, start);
+  const result = applyRecallFiltering(memories, activeResults.length, 0, limit, cfg, start);
 
   auditLog({
     operation: "recall",
@@ -272,7 +236,7 @@ function recallFromDb(
     });
     return result;
   }
-  let dbResults = db.discoverFts(query, fetchLimit);
+  let dbResults = db.discoverFts(query, fetchLimit, true);
   if (pendingOverlay?.length) {
     dbResults = mergeOverlayDiscoverResults(
       dbResults,
@@ -285,6 +249,7 @@ function recallFromDb(
         relevance: "",
         rank: 0,
         project_id: p.project_id,
+        status: "active", tier: "active", modified: p.created, superseded_by: null,
       }),
     );
   }
@@ -312,33 +277,8 @@ function recallFromDb(
     }
   }
 
-  // Step 2: Archive tier fallback if active results are thin
   const counts = db.getMemoryCount();
-  if (memories.length < limit) {
-    for (const r of dbResults) {
-      if (memories.length >= limit) break;
-      const mem = db.getMemory(r.id);
-      if (mem && mem.tier === "archive") {
-        const existingIds = new Set(memories.map((m) => m.id));
-        if (!existingIds.has(mem.id)) {
-          const relevanceScore = normalizeRank(r.rank, allRanks);
-          memories.push({
-            id: mem.id,
-            title: mem.title,
-            category: mem.category,
-            relevance: mem.relevance || "",
-            confidence: mem.confidence,
-            path: mem.id,
-            fromArchive: true,
-            snippet: mem.content.substring(0, 300),
-            relevanceScore,
-          });
-        }
-      }
-    }
-  }
 
-  // Step 3: Apply same filtering logic
   const result = applyRecallFiltering(
     memories,
     dbResults.filter((r) => {

@@ -15,6 +15,7 @@ gnosys semantic-search "auth tokens" --json
 | Option | Description |
 |--------|-------------|
 | `-l, --limit <n>` | Max results (default `15`) |
+| `--current-only` | Return only active memories; default includes history |
 | `--json` | Output results as JSON |
 
 ## Behavior
@@ -59,6 +60,10 @@ With `--json`:
 cd gnosys-public
 npm run cli -- semantic-search --help
 ```
+
+## Memory history
+
+Results include status, modified date (`YYYY-MM-DD`), and `superseded by <id>` when set. For example, `[superseded; 2026-09-01; superseded by deci-042]`. Active replacements rank above their predecessors, including when the result limit is one. Superseded and archived memories remain visible by default. Use `--current-only` to exclude them. The MCP equivalent is `currentOnly: true` (default `false`).
 
 ## Related commands
 

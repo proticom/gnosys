@@ -1,9 +1,11 @@
+import { formatSearchStatus } from "./searchStatus.js";
 import { GnosysSearch } from "./search.js";
 import type { GnosysResolver } from "./resolver.js";
 
 export type SemanticSearchCommandOptions = {
   limit: string;
   json?: boolean;
+  currentOnly?: boolean;
 };
 
 type GetResolver = () => Promise<GnosysResolver>;
@@ -40,7 +42,9 @@ export async function runSemanticSearchCommand(
       const embeddings = new GnosysEmbeddings(storePath);
       const hybridSearch = new GnosysHybridSearch(search, embeddings, resolver, storePath);
   
-      const results = await hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), "semantic");
+      const results = opts.currentOnly
+        ? await hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), "semantic", true)
+        : await hybridSearch.hybridSearch(query, parseInt(opts.limit, 10), "semantic");
   
       outputResult(
         !!opts.json,
@@ -52,6 +56,9 @@ export async function runSemanticSearchCommand(
             relativePath: r.relativePath,
             score: r.score,
             snippet: r.snippet,
+            status: r.status,
+            modified: r.modified,
+            superseded_by: r.superseded_by,
           })),
         },
         () => {
@@ -62,7 +69,7 @@ export async function runSemanticSearchCommand(
   
           console.log(`Found ${results.length} semantic results for "${query}":\n`);
           for (const r of results) {
-            console.log(`  ${r.title}`);
+            console.log(`  ${r.title} ${formatSearchStatus(r)}`);
             console.log(`    Path: ${r.relativePath}`);
             console.log(`    Similarity: ${r.score.toFixed(4)}`);
             console.log(`    ${r.snippet.substring(0, 120)}...\n`);
