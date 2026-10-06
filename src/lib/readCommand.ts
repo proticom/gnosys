@@ -44,6 +44,8 @@ export async function runReadCommand(
           `created: '${dbMem.created}'`,
           `modified: '${dbMem.modified}'`,
         ];
+        if (dbMem.supersedes) headerLines.push(`supersedes: ${dbMem.supersedes}`);
+        if (dbMem.superseded_by) headerLines.push(`superseded_by: ${dbMem.superseded_by}`);
         if (dbMem.source_file) {
           headerLines.push(
             `source_file: ${dbMem.source_file}${dbMem.source_page != null ? ` (page ${Number(dbMem.source_page)})` : ""}`,

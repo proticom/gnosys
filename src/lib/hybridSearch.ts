@@ -16,6 +16,7 @@ import { GnosysDbSearch } from "./dbSearch.js";
 import type { GnosysDB } from "./db.js";
 import type { HybridSearchResult, SearchMode } from "./searchTypes.js";
 import { checkEmbeddingPackage, EmbeddingUnavailableError } from "./embeddingHealth.js";
+import { rankReplacements } from "./searchStatus.js";
 
 export type { HybridSearchResult, SearchMode } from "./searchTypes.js";
 
@@ -55,9 +56,9 @@ export class GnosysHybridSearch {
     }
   }
 
-  async searchWithStatus(query: string, limit = 15, mode: SearchMode = "hybrid"): Promise<SearchOutcome> {
+  async searchWithStatus(query: string, limit = 15, mode: SearchMode = "hybrid", activeOnly = false): Promise<SearchOutcome> {
     if (mode === "keyword") {
-      return { kind: "requested", results: await this.hybridSearch(query, limit, mode) };
+      return { kind: "requested", results: await this.hybridSearch(query, limit, mode, activeOnly) };
     }
     const runtime = checkEmbeddingPackage();
     let reason: string;
@@ -67,7 +68,7 @@ export class GnosysHybridSearch {
       reason = "No embeddings indexed. Run gnosys_reindex to build embeddings and enable semantic recall (CLI: gnosys reindex).";
     } else {
       try {
-        return { kind: "requested", results: await this.hybridSearch(query, limit, mode) };
+        return { kind: "requested", results: await this.hybridSearch(query, limit, mode, activeOnly) };
       } catch (error) {
         if (!(error instanceof EmbeddingUnavailableError)) throw error;
         reason = error.message;
@@ -75,19 +76,20 @@ export class GnosysHybridSearch {
     }
     return {
       kind: "keyword-fallback",
-      results: await this.hybridSearch(query, limit, "keyword"),
+      results: await this.hybridSearch(query, limit, "keyword", activeOnly),
       note: `Semantic embeddings unavailable — ${mode} search ran keyword-only. ${reason}`,
     };
   }
 
   /**
    * Main hybrid search entry point.
-   * Searches active memories first; if results are insufficient, also searches archive.db.
+   * Keeps history visible and puts linked replacements before their predecessors.
    */
   async hybridSearch(
     query: string,
     limit: number = 15,
-    mode: SearchMode = "hybrid"
+    mode: SearchMode = "hybrid",
+    activeOnly: boolean = false,
   ): Promise<HybridSearchResult[]> {
     // v2.0 DB-backed fast path: run entirely from gnosys.db
     if (this.dbSearch) {
@@ -98,7 +100,7 @@ export class GnosysHybridSearch {
       const embedQuery = this.dbSearch.hasEmbeddings()
         ? (text: string) => this.embeddings.embed(text)
         : undefined;
-      return this.dbSearch.hybridSearch(query, limit, mode, embedQuery);
+      return this.dbSearch.hybridSearch(query, limit, mode, embedQuery, activeOnly);
     }
 
     // Auto-downgrade to keyword if no embeddings available
@@ -111,23 +113,24 @@ export class GnosysHybridSearch {
       }
     }
 
+    const candidateLimit = limit * 2;
     let results: HybridSearchResult[];
 
     if (mode === "keyword") {
-      results = this.keywordSearch(query, limit);
+      results = this.keywordSearch(query, candidateLimit, activeOnly);
     } else if (mode === "semantic") {
-      results = await this.semanticSearch(query, limit);
+      results = await this.semanticSearch(query, candidateLimit, activeOnly);
     } else {
       // Hybrid: run both and fuse with RRF
       const [keywordResults, semanticResults] = await Promise.all([
-        this.keywordSearch(query, limit * 2),
-        this.semanticSearch(query, limit * 2),
+        this.keywordSearch(query, candidateLimit, activeOnly),
+        this.semanticSearch(query, candidateLimit, activeOnly),
       ]);
-      results = this.rrfFusion(keywordResults, semanticResults, limit);
+      results = this.rrfFusion(keywordResults, semanticResults, candidateLimit);
     }
 
     // If active results are insufficient, search archive.db
-    if (results.length < limit) {
+    if (!activeOnly && results.length < limit) {
       const archiveResults = this.searchArchive(query, limit - results.length);
       if (archiveResults.length > 0) {
         // Deduplicate by title (archive results won't have same relativePath)
@@ -139,7 +142,33 @@ export class GnosysHybridSearch {
       }
     }
 
-    return results.slice(0, limit);
+    if (activeOnly || !results.some((result) => result.superseded_by)) return results.slice(0, limit);
+    const byId = new Map<string, LayeredMemory>();
+    const pending = results.flatMap((result) => result.superseded_by ? [result.superseded_by] : []);
+    const visited = new Set<string>();
+    for (const id of pending) {
+      if (visited.has(id)) continue;
+      visited.add(id);
+      const path = this.search.getMemoryPath(id);
+      const memory = path ? await this.resolver.readMemory(path) : null;
+      if (!memory) continue;
+      byId.set(id, memory);
+      if (memory.frontmatter.superseded_by) pending.push(memory.frontmatter.superseded_by);
+    }
+    return rankReplacements({
+      results, limit, key: (result) => result.memoryId ?? result.relativePath,
+      replacement: (result) => {
+        const memory = result.superseded_by ? byId.get(result.superseded_by) : null;
+        return memory ? {
+          ...result, relativePath: `${memory.sourceLabel}:${memory.relativePath}`,
+          memoryId: memory.frontmatter.id, title: memory.frontmatter.title,
+          snippet: memory.content.substring(0, 200), status: memory.frontmatter.status,
+          tier: memory.frontmatter.status === "archived" ? "archive" : "active",
+          fromArchive: memory.frontmatter.status === "archived",
+          modified: memory.frontmatter.modified, superseded_by: memory.frontmatter.superseded_by ?? null,
+        } : null;
+      },
+    });
   }
 
   /**
@@ -151,6 +180,21 @@ export class GnosysHybridSearch {
       if (!archive.isAvailable()) return [];
 
       const archiveResults = archive.searchArchive(query, limit);
+      const metadata = new Map(archiveResults.map((result) => {
+        const archived = archive.getArchivedMemory(result.id);
+        let modified = archived?.archived_date ?? "";
+        let supersededBy: string | null = null;
+        if (archived) {
+          try {
+            const frontmatter: unknown = JSON.parse(archived.yaml_frontmatter);
+            if (frontmatter && typeof frontmatter === "object") {
+              if ("modified" in frontmatter && typeof frontmatter.modified === "string") modified = frontmatter.modified;
+              if ("superseded_by" in frontmatter && typeof frontmatter.superseded_by === "string") supersededBy = frontmatter.superseded_by;
+            }
+          } catch { /* Older archive rows can lack serialized frontmatter. */ }
+        }
+        return [result.id, { modified, superseded_by: supersededBy }];
+      }));
       archive.close();
 
       return archiveResults.map((ar) => ({
@@ -161,6 +205,7 @@ export class GnosysHybridSearch {
         sources: ["archive"] as ("keyword" | "semantic" | "archive")[],
         memoryId: ar.id,
         fromArchive: true,
+        status: "archived", tier: "archive", ...metadata.get(ar.id),
       }));
     } catch {
       return [];
@@ -170,12 +215,14 @@ export class GnosysHybridSearch {
   /**
    * Keyword search via existing FTS5.
    */
-  private keywordSearch(query: string, limit: number): HybridSearchResult[] {
-    const results = this.search.search(query, limit);
+  private keywordSearch(query: string, limit: number, activeOnly: boolean): HybridSearchResult[] {
+    const results = this.search.search(query, limit, activeOnly);
     return results.map((r, i) => ({
       relativePath: r.relative_path,
+      memoryId: r.memoryId,
       title: r.title,
       snippet: r.snippet,
+      status: r.status, tier: r.tier, modified: r.modified, superseded_by: r.superseded_by,
       score: 1 / (RRF_K + i + 1), // RRF score based on rank position
       sources: ["keyword"] as ("keyword" | "semantic")[],
     }));
@@ -186,7 +233,8 @@ export class GnosysHybridSearch {
    */
   private async semanticSearch(
     query: string,
-    limit: number
+    limit: number,
+    activeOnly: boolean,
   ): Promise<HybridSearchResult[]> {
     // Embed the query
     const queryEmbedding = await this.embeddings.embed(query);
@@ -205,20 +253,23 @@ export class GnosysHybridSearch {
 
     // Sort by similarity descending
     scored.sort((a, b) => b.similarity - a.similarity);
-    const topN = scored.slice(0, limit);
 
     // Load memory metadata for results
     const results: HybridSearchResult[] = [];
-    for (const item of topN) {
+    for (const item of scored) {
       const memory = await this.resolver.readMemory(item.filePath);
-      if (memory) {
+      if (memory && (!activeOnly || ((memory.frontmatter.status ?? "active") === "active" && !memory.frontmatter.superseded_by))) {
         results.push({
           relativePath: item.filePath,
           title: memory.frontmatter.title,
           snippet: memory.content.substring(0, 200),
           score: item.similarity,
           sources: ["semantic"],
+          memoryId: memory.frontmatter.id, status: memory.frontmatter.status,
+          tier: memory.frontmatter.status === "archived" ? "archive" : "active",
+          modified: memory.frontmatter.modified, superseded_by: memory.frontmatter.superseded_by ?? null,
         });
+        if (results.length >= limit) break;
       }
     }
 

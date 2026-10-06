@@ -18,6 +18,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fingerprints now track the prompt content. A brain with about 64 existing summaries needs about 64
   summary calls, spread over the first few nights under `maxLLMCallsPerRun`.
 
+- Search, discovery, hybrid, semantic, and federated search use compact date labels
+  for active memories and status/date/replacement labels for history. Replacements
+  rank before predecessors, including at small limits. MCP `activeOnly` and CLI
+  `--active-only` replace `currentOnly` and `--current-only`. NULL legacy statuses
+  count as active without a data migration. Federated filtering precedes limits.
+  Federated CLI and MCP searches include history by default. CLI search,
+  discover, and hybrid JSON results include a 1-based `position` for the final
+  replacement-first order; raw ranks and scores remain retrieval signals.
+- Supersession supports many predecessors per successor. Each predecessor owns
+  its `superseded_by` link; the successor's `supersedes` lists all predecessors
+  in stable order. Linking or unlinking one predecessor leaves the others intact.
+  One-sided legacy `supersedes` text on a successor is normalized to its real
+  predecessor list the next time its supersession links are touched.
+  Status and link changes update `modified` so remote sync can detect them.
+  Explicit caller statuses are preserved; unlinking an implicitly superseded row
+  restores active or archived status according to its tier.
+- Structured adds and updates validate IDs, reject cycles, and link both
+  directions atomically. A bad `supersedes` ID now rejects the add. Cross-scope
+  and cross-project links require MCP `allowCrossScope: true` or CLI
+  `--allow-cross-scope`. Reads show all predecessors. Overlap warnings show at most three active matches in the
+  writer's scope and project.
+- Recall and its hook exclude superseded rows before candidate limits while
+  retaining archive fallback for queries. Wildcard recall remains active-only.
+  Legacy hybrid replacement lookup reads only the required IDs.
+
 ### Fixed
 
 - Dream errors now appear in audit rows and `gnosys dream log`, with compact,

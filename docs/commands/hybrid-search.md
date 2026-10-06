@@ -18,6 +18,7 @@ gnosys hybrid-search "auth tokens" --json
 |--------|-------------|
 | `-l, --limit <n>` | Max results (default `15`) |
 | `-m, --mode <mode>` | Search mode: `keyword`, `semantic`, or `hybrid` (default `hybrid`) |
+| `--active-only` | Return only active memories; default includes history |
 | `--json` | Output results as JSON |
 | `--federated` | Federated search with tier boosting (project > user > global) |
 | `--scope <scope>` | Filter scopes: `project`, `user`, `global` (comma-separated) |
@@ -76,6 +77,12 @@ With `--json`, output includes query, effective mode, requested mode, and result
 cd gnosys-public
 npm run cli -- hybrid-search --help
 ```
+
+## Memory history
+
+Active results show only the modified date, such as `[2026-10-06]`. History includes status and date, with `superseded by <id>` when set. For example, `[superseded; 2026-09-01; superseded by deci-042]`. Active replacements rank above their predecessors, including when the result limit is one. Superseded and archived memories remain visible by default. Use `--active-only` to exclude them. The MCP equivalent is `activeOnly: true` (default `false`).
+
+This also applies to federated search. JSON results are ordered with replacements before their predecessors. Each result includes a 1-based `position`; use it to preserve the emitted order. `rank` and `score` retain their retrieval values and do not define the final order.
 
 ## Related commands
 

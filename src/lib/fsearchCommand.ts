@@ -1,9 +1,12 @@
+import { formatSearchStatus } from "./searchStatus.js";
+
 export type FsearchCommandOptions = {
   limit: string;
   directory?: string;
   global: boolean;
   scope?: string;
   json: boolean;
+  activeOnly?: boolean;
 };
 
 export async function runFsearchCommand(
@@ -25,7 +28,8 @@ export async function runFsearchCommand(
           projectId,
           includeGlobal: opts.global,
           scopeFilter,
-        });
+          activeOnly: opts.activeOnly ?? false,
+        }).map((result, index) => ({ ...result, position: index + 1 }));
 
         if (opts.json) {
           console.log(JSON.stringify({ query, projectId, count: results.length, results }, null, 2));
@@ -35,7 +39,8 @@ export async function runFsearchCommand(
           console.log(ctx);
           for (const [i, r] of results.entries()) {
             const proj = r.projectName ? ` [${r.projectName}]` : "";
-            console.log(`\n${i + 1}. ${r.title} (${r.category})${proj}`);
+            console.log(`\n${i + 1}. ${r.title} (${r.category})${proj} ${formatSearchStatus(r)}`);
+            console.log(`   id: ${r.id}`);
             console.log(`   scope: ${r.scope} | score: ${r.score.toFixed(4)} | boosts: ${r.boosts.join(", ")}`);
             if (r.snippet) console.log(`   ${r.snippet.substring(0, 120)}`);
           }

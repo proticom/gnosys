@@ -60,9 +60,10 @@ program
   .option("-l, --limit <n>", "Max results", "20")
   .option("-d, --directory <dir>", "Project directory for context")
   .option("--no-global", "Exclude global-scope memories")
+  .option("--active-only", "Only active memories (default includes history)")
   .option("--scope <scope>", "Filter by scope: project, user, global (comma-separated)")
   .option("--json", "Output as JSON")
-  .action(async (query: string, opts: { limit: string; directory?: string; global: boolean; scope?: string; json: boolean }) => {
+  .action(async (query: string, opts: { limit: string; directory?: string; global: boolean; scope?: string; json: boolean; activeOnly?: boolean }) => {
     const { runFsearchCommand } = await import("../lib/fsearchCommand.js");
     await runFsearchCommand(query, opts);
   });

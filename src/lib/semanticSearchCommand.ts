@@ -1,10 +1,12 @@
 import { EMBEDDING_FALLBACK_NOTE } from "./embeddingHealth.js";
+import { formatSearchStatus } from "./searchStatus.js";
 import { GnosysSearch } from "./search.js";
 import type { GnosysResolver } from "./resolver.js";
 
 export type SemanticSearchCommandOptions = {
   limit: string;
   json?: boolean;
+  activeOnly?: boolean;
 };
 
 type GetResolver = () => Promise<GnosysResolver>;
@@ -44,7 +46,9 @@ export async function runSemanticSearchCommand(
       const hybridSearch = new GnosysHybridSearch(search, embeddings, resolver, storePath, central?.db);
   
       try {
-        const outcome = await hybridSearch.searchWithStatus(query, parseInt(opts.limit, 10), "semantic");
+        const outcome = opts.activeOnly
+          ? await hybridSearch.searchWithStatus(query, parseInt(opts.limit, 10), "semantic", true)
+          : await hybridSearch.searchWithStatus(query, parseInt(opts.limit, 10), "semantic");
         const results = outcome.results;
         const note = outcome.kind === "keyword-fallback" ? outcome.note : undefined;
         const resultNote = note ? EMBEDDING_FALLBACK_NOTE : undefined;
@@ -59,11 +63,16 @@ export async function runSemanticSearchCommand(
             requestedMode: "semantic",
             note: resultNote,
             count: results.length,
-            results: results.map((r) => ({
+            results: results.map((r, index) => ({
+              position: index + 1,
               title: r.title,
               relativePath: r.relativePath,
               score: r.score,
               snippet: r.snippet,
+              sources: r.sources,
+              status: r.status,
+              modified: r.modified,
+              superseded_by: r.superseded_by,
             })),
           },
           () => {
@@ -74,9 +83,9 @@ export async function runSemanticSearchCommand(
   
             console.log(`Found ${results.length} ${mode} results for "${query}":\n`);
             for (const r of results) {
-              console.log(`  ${r.title}`);
+              console.log(`  ${r.title} ${formatSearchStatus(r)}`);
+              console.log(`    (score: ${r.score.toFixed(4)}, via: ${r.sources.join("+")})`);
               console.log(`    Path: ${r.relativePath}`);
-              console.log(`    Score: ${r.score.toFixed(4)}`);
               console.log(`    ${r.snippet.substring(0, 120)}...\n`);
             }
           },

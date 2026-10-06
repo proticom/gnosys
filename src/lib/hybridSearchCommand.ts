@@ -1,4 +1,5 @@
 import { EMBEDDING_FALLBACK_NOTE } from "./embeddingHealth.js";
+import { formatSearchStatus } from "./searchStatus.js";
 import { GnosysSearch } from "./search.js";
 import type { GnosysResolver } from "./resolver.js";
 
@@ -6,6 +7,7 @@ export type HybridSearchCommandOptions = {
   limit: string;
   mode: string;
   json?: boolean;
+  activeOnly?: boolean;
   federated?: boolean;
   scope?: string;
   directory?: string;
@@ -42,14 +44,16 @@ export async function runHybridSearchCommand(
             limit: parseInt(opts.limit, 10),
             projectId,
             scopeFilter,
+            activeOnly: opts.activeOnly ?? false,
           });
 
-          outputResult(!!opts.json, { query, projectId, mode: "federated", count: results.length, results }, () => {
+          outputResult(!!opts.json, { query, projectId, mode: "federated", count: results.length, results: results.map((result, index) => ({ ...result, position: index + 1 })) }, () => {
             if (results.length === 0) { console.log(`No results for "${query}".`); return; }
             console.log(`Found ${results.length} results for "${query}" (mode: federated):\n`);
             for (const [i, r] of results.entries()) {
               const proj = r.projectName ? ` [${r.projectName}]` : "";
-              console.log(`${i + 1}. ${r.title} (${r.category})${proj}`);
+              console.log(`${i + 1}. ${r.title} (${r.category})${proj} ${formatSearchStatus(r)}`);
+              console.log(`   id: ${r.id}`);
               console.log(`   scope: ${r.scope} | score: ${r.score.toFixed(4)} | boosts: ${r.boosts.join(", ")}`);
               if (r.snippet) console.log(`   ${r.snippet.substring(0, 120)}`);
             }
@@ -88,7 +92,7 @@ export async function runHybridSearchCommand(
       const mode = opts.mode as "keyword" | "semantic" | "hybrid";
 
       try {
-        const outcome = await hybridSearch.searchWithStatus(query, parseInt(opts.limit, 10), mode);
+        const outcome = await hybridSearch.searchWithStatus(query, parseInt(opts.limit, 10), mode, opts.activeOnly);
         const results = outcome.results;
         const note = outcome.kind === "keyword-fallback" ? outcome.note : undefined;
         const resultNote = note ? EMBEDDING_FALLBACK_NOTE : undefined;
@@ -100,12 +104,12 @@ export async function runHybridSearchCommand(
             console.log(`No results for "${query}". Try gnosys reindex to build embeddings.`);
           });
         } else {
-          outputResult(!!opts.json, { query, mode: effectiveMode, requestedMode: mode, note: resultNote, count: results.length, results }, () => {
+          outputResult(!!opts.json, { query, mode: effectiveMode, requestedMode: mode, note: resultNote, count: results.length, results: results.map((result, index) => ({ ...result, position: index + 1 })) }, () => {
             console.log(`Found ${results.length} results for "${query}" (mode: ${effectiveMode}):\n`);
             for (const r of results) {
-              console.log(`  ${r.title}`);
+              console.log(`  ${r.title} ${formatSearchStatus(r)}`);
+              console.log(`    (score: ${r.score.toFixed(4)}, via: ${r.sources.join("+")})`);
               console.log(`    Path: ${r.relativePath}`);
-              console.log(`    Score: ${r.score.toFixed(4)} (via: ${r.sources.join("+")})`);
               console.log(`    ${r.snippet.substring(0, 120)}...\n`);
             }
           });

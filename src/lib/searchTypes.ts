@@ -1,8 +1,10 @@
 /** Shared search result types (extracted to break hybridSearch ↔ dbSearch static cycle). */
 
+import type { SearchMemoryMetadata } from "./searchStatus.js";
+
 export type SearchMode = "keyword" | "semantic" | "hybrid";
 
-export interface HybridSearchResult {
+export interface HybridSearchResult extends Partial<SearchMemoryMetadata> {
   relativePath: string;
   title: string;
   snippet: string;

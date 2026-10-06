@@ -1,3 +1,4 @@
+import type { syncUpdateToDb } from "./dbWrite.js";
 import { GnosysDB } from "./db.js";
 import type { GnosysResolver } from "./resolver.js";
 
@@ -7,6 +8,7 @@ export type UpdateCommandOptions = {
   confidence?: string;
   relevance?: string;
   supersedes?: string;
+  allowCrossScope?: boolean;
   supersededBy?: string;
   content?: string;
 };
@@ -49,30 +51,24 @@ export async function runUpdateCommand(
     process.exit(1);
   }
 
-  const updates: Record<string, unknown> = {};
-  if (opts.title !== undefined) updates.title = opts.title;
-  if (opts.status !== undefined) updates.status = opts.status;
-  if (opts.confidence !== undefined) updates.confidence = parseFloat(opts.confidence);
-  if (opts.relevance !== undefined) updates.relevance = opts.relevance;
-  if (opts.supersedes !== undefined) updates.supersedes = opts.supersedes;
-  if (opts.supersededBy !== undefined) updates.superseded_by = opts.supersededBy;
-
-  const fullContent = opts.content
-    ? `# ${opts.title || currentTitle}\n\n${opts.content}`
-    : undefined;
-
+  const updates: Parameters<typeof syncUpdateToDb>[2] = {};
   try {
-    const { syncUpdateToDb } = await import("./dbWrite.js");
-    syncUpdateToDb(centralDb, memoryId, updates as Parameters<typeof syncUpdateToDb>[2], fullContent);
+    const { syncUpdateToDb, updateStatusSchema } = await import("./dbWrite.js");
+    if (opts.title !== undefined) updates.title = opts.title;
+    if (opts.status !== undefined) updates.status = updateStatusSchema.parse(opts.status);
+    if (opts.confidence !== undefined) updates.confidence = parseFloat(opts.confidence);
+    if (opts.relevance !== undefined) updates.relevance = opts.relevance;
+    if (opts.supersedes !== undefined) updates.supersedes = opts.supersedes;
+    if (opts.supersededBy !== undefined) updates.superseded_by = opts.supersededBy;
 
-    if (opts.supersedes) {
-      syncUpdateToDb(
-        centralDb,
-        opts.supersedes,
-        { superseded_by: memoryId, status: "superseded" } as Parameters<typeof syncUpdateToDb>[2],
-      );
-      console.log(`Cross-linked: ${opts.supersedes} marked as superseded.`);
-    }
+    const fullContent = opts.content
+      ? `# ${opts.title || currentTitle}\n\n${opts.content}`
+      : undefined;
+
+    syncUpdateToDb(centralDb, memoryId, updates, fullContent, { allowCrossScope: opts.allowCrossScope });
+    if (opts.supersedes) console.log(`Cross-linked: ${opts.supersedes} marked as superseded.`);
+    if (opts.supersededBy) console.log(`Cross-linked: ${memoryId} marked as superseded by ${opts.supersededBy}.`);
+
   } finally {
     centralDb?.close();
   }

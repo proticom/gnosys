@@ -68,3 +68,5 @@ npm run cli -- read --help
 
 - `gnosys discover` — find memories by keyword before reading one.
 - `gnosys search` — full-text search across memories.
+
+Supersession links appear as `supersedes: <old-id>` and `superseded_by: <new-id>` when set. Follow these links to compare historical and current guidance.

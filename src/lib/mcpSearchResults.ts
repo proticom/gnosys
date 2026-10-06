@@ -1,4 +1,5 @@
 import type { HybridSearchResult } from "./searchTypes.js";
+import { formatSearchStatus } from "./searchStatus.js";
 import { EMBEDDING_FALLBACK_NOTE } from "./embeddingHealth.js";
 
 type SearchPresentation =
@@ -20,8 +21,10 @@ export function formatMcpSearchResults({ query, results, search }: {
     return `${warning}No ${resultKind} for "${query}". ${semantic ? "Try a broader query." : "Try different keywords."}`;
   }
   const indexed = search.kind === "hybrid" ? ` (${search.embeddingCount} embeddings indexed)` : "";
-  const formatted = results.map((result) =>
-    `**${result.title}** (score: ${result.score.toFixed(4)}, via: ${result.sources.join("+")})\n  Path: ${result.relativePath}\n  ${result.snippet.substring(0, 150)}...`
-  ).join("\n\n");
+  const formatted = results.map((result) => {
+    const status = result.modified !== undefined || result.status !== undefined || result.tier !== undefined || result.superseded_by !== undefined
+      ? ` ${formatSearchStatus(result)}` : "";
+    return `**${result.title}** (score: ${result.score.toFixed(4)}, via: ${result.sources.join("+")})${status}\n  Path: ${result.relativePath}\n  ${result.snippet.substring(0, 150)}...`;
+  }).join("\n\n");
   return `${warning}Found ${results.length} ${resultKind} for "${query}"${indexed}:\n\n${formatted}`;
 }
