@@ -118,10 +118,11 @@ program
   .option("-l, --limit <n>", "Max results", "15")
   .option("-m, --mode <mode>", "Search mode: keyword | semantic | hybrid", "hybrid")
   .option("--json", "Output as JSON")
+  .option("--active-only", "Only active memories (default includes history)")
   .option("--federated", "Use federated search with tier boosting (project > user > global)")
   .option("--scope <scope>", "Filter by scope: project, user, global (comma-separated)")
   .option("-d, --directory <dir>", "Project directory for context")
-  .action(async (query: string, opts: { limit: string; mode: string; json?: boolean; federated?: boolean; scope?: string; directory?: string }) => {
+  .action(async (query: string, opts: { limit: string; mode: string; json?: boolean; activeOnly?: boolean; federated?: boolean; scope?: string; directory?: string }) => {
     const { runHybridSearchCommand } = await import("../lib/hybridSearchCommand.js");
     await runHybridSearchCommand(getResolver, query, opts);
   });
@@ -132,7 +133,8 @@ program
   .description("Search using semantic similarity only (requires embeddings)")
   .option("-l, --limit <n>", "Max results", "15")
   .option("--json", "Output as JSON")
-  .action(async (query: string, opts: { limit: string; json?: boolean }) => {
+  .option("--active-only", "Only active memories (default includes history)")
+  .action(async (query: string, opts: { limit: string; json?: boolean; activeOnly?: boolean }) => {
     const { runSemanticSearchCommand } = await import("../lib/semanticSearchCommand.js");
     await runSemanticSearchCommand(getResolver, query, opts);
   });

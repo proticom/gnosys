@@ -21,10 +21,11 @@ gnosys update mem-002 --content "Replacement body"
 | Option | Description |
 |--------|-------------|
 | `--title <title>` | New title |
-| `--status <status>` | New status (`active`, `archived`, `superseded`) |
+| `--status <status>` | New status: `active`, `archived`, `superseded`, or legacy `completed` |
 | `--confidence <n>` | New confidence (0–1) |
 | `--relevance <keywords>` | Updated relevance keyword cloud |
-| `--supersedes <id>` | ID of memory this supersedes |
+| `--allow-cross-scope` | Allow supersession across scopes or projects (default false) |
+| `--supersedes <id>` | Comma-separated predecessor IDs to link to this successor |
 | `--superseded-by <id>` | ID of memory that supersedes this one |
 | `--content <content>` | New markdown content (replaces body) |
 
@@ -37,8 +38,9 @@ gnosys update mem-002 --content "Replacement body"
 5. Maps CLI options to update fields (`superseded-by` → `superseded_by`).
 6. When `--content` is set, builds full markdown with `# title` header.
 7. Writes via `syncUpdateToDb`.
-8. When `--supersedes` is set, cross-links the superseded memory.
-9. Closes DB in `finally`.
+8. Either `--supersedes` or `--superseded-by` validates the target and cross-links both memories atomically. Missing IDs and cycles are rejected. A successor can have many predecessors. Its `supersedes` list is derived from their `superseded_by` links in stable order. All changed rows get a new modified timestamp. Links stay in the same scope and project; opt in with `--allow-cross-scope` (MCP `allowCrossScope: true`).
+9. To unlink one predecessor, update it with `--superseded-by ""`. Clearing the derived successor list is rejected while predecessors exist. Other predecessors stay unchanged. An explicit status is preserved; otherwise unlinking restores active or archived status according to tier.
+10. Closes DB in `finally`.
 
 ## Output
 

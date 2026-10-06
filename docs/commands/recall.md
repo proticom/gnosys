@@ -1,6 +1,6 @@
 # gnosys recall
 
-Return relevant memories as injectable context for agents and hosts.
+Return relevant memories as injectable context for agents and hosts. Superseded rows are excluded before candidate limits. Archived memories remain available as fallback when active results are sparse. The recall hook uses the same policy.
 
 ## Usage
 

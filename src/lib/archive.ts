@@ -303,9 +303,12 @@ export class GnosysArchive {
   /**
    * Search the archive using FTS5.
    */
-  searchArchive(query: string, limit: number = 20): ArchiveSearchResult[] {
+  searchArchive(query: string, limit: number = 20, options: { excludeSuperseded?: boolean } = {}): ArchiveSearchResult[] {
     if (!this.db) return [];
 
+    const statusFilter = options.excludeSuperseded
+      ? "AND COALESCE(CASE WHEN json_valid(yaml_frontmatter) THEN json_extract(yaml_frontmatter, '$.status') END, 'active') <> 'superseded' AND NULLIF(CASE WHEN json_valid(yaml_frontmatter) THEN json_extract(yaml_frontmatter, '$.superseded_by') END, '') IS NULL"
+      : "";
     const terms = ftsTerms(query);
     if (terms.length === 0) return [];
 
@@ -319,7 +322,7 @@ export class GnosysArchive {
         am.category
       FROM archive_fts
       JOIN archived_memories am ON archive_fts.id = am.id
-      WHERE archive_fts MATCH ?
+      WHERE archive_fts MATCH ? ${statusFilter}
       ORDER BY rank
       LIMIT ?
     `);
@@ -341,7 +344,7 @@ export class GnosysArchive {
           tags,
           category
         FROM archived_memories
-        WHERE content LIKE ? OR title LIKE ? OR tags LIKE ?
+        WHERE (content LIKE ? OR title LIKE ? OR tags LIKE ?) ${statusFilter}
         LIMIT ?
       `);
       const pattern = `%${terms.join(" ")}%`;

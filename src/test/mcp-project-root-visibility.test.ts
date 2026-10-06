@@ -3,10 +3,11 @@
  * projectRoot=p1 returned project-scoped memories that belong to p2.
  *
  * Intended semantics (projectRoot "routes the call to that project's store";
- * federated design ranks project > user > global): a projectRoot-scoped read
- * sees that project's memories plus the shared user and global tiers, never
- * another project's. gnosys_federated_search stays the explicit cross-project
- * tool, and calls without projectRoot keep the whole-brain view.
+ * federated design ranks project > user > global): a read scoped to a
+ * registered projectRoot sees that project's memories plus the shared user and
+ * global tiers, never another project's. gnosys_federated_search stays the
+ * explicit cross-project tool. Calls without projectRoot, or with a root that
+ * was never gnosys_init'ed, keep the whole-brain view.
  *
  * Drives the real MCP server (dist/index.js) over stdio against an isolated
  * GNOSYS_HOME.
@@ -137,6 +138,13 @@ describe("projectRoot-scoped reads", () => {
 
   it("gnosys_search without projectRoot keeps the whole-brain view", async () => {
     const text = await call("gnosys_search", { query: KEYWORD });
+    expect(owners(text)).toEqual(["global", "p1", "p2", "user"]);
+  });
+
+  it("an unregistered projectRoot keeps the whole-brain view", async () => {
+    const unregistered = path.join(base, "not-initialized");
+    fs.mkdirSync(unregistered, { recursive: true });
+    const text = await call("gnosys_search", { query: KEYWORD, projectRoot: unregistered });
     expect(owners(text)).toEqual(["global", "p1", "p2", "user"]);
   });
 

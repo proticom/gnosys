@@ -1,4 +1,6 @@
 import { GnosysDB } from "./db.js";
+import { syncUpdateToDb } from "./dbWrite.js";
+import { memoryOverlapWarning } from "./memoryOverlap.js";
 
 export type AddStructuredOptions = {
   title: string;
@@ -9,6 +11,8 @@ export type AddStructuredOptions = {
   author: string;
   authority: string;
   confidence: string;
+  supersedes?: string;
+  allowCrossScope?: boolean;
   store?: string;
   user?: boolean;
   global?: boolean;
@@ -34,34 +38,40 @@ export async function runAddStructuredCommand(
             const id = `mem-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
             const projectId = opts.global ? null : await resolveProjectId();
   
-            centralDb.insertMemory({
-              id,
-              title: opts.title,
-              category: opts.category,
-              content: `# ${opts.title}\n\n${opts.content}`,
-              summary: null,
-              tags: opts.tags,
-              relevance: opts.relevance || opts.content.slice(0, 200),
-              author: opts.author,
-              authority: opts.authority,
-              confidence: parseFloat(opts.confidence),
-              reinforcement_count: 0,
-              content_hash: "",
-              status: "active",
-              tier: "active",
-              supersedes: null,
-              superseded_by: null,
-              last_reinforced: null,
-              created: now,
-              modified: now,
-              embedding: null,
-              source_path: null,
-              project_id: projectId,
-              scope,
+            const db = centralDb;
+            db.transaction(() => {
+              db.insertMemory({
+                id,
+                title: opts.title,
+                category: opts.category,
+                content: `# ${opts.title}\n\n${opts.content}`,
+                summary: null,
+                tags: opts.tags,
+                relevance: opts.relevance || opts.content.slice(0, 200),
+                author: opts.author,
+                authority: opts.authority,
+                confidence: parseFloat(opts.confidence),
+                reinforcement_count: 0,
+                content_hash: "",
+                status: "active",
+                tier: "active",
+                supersedes: null,
+                superseded_by: null,
+                last_reinforced: null,
+                created: now,
+                modified: now,
+                embedding: null,
+                source_path: null,
+                project_id: projectId,
+                scope,
+              });
+              if (opts.supersedes) syncUpdateToDb(db, id, { supersedes: opts.supersedes }, undefined, { allowCrossScope: opts.allowCrossScope });
             });
   
             console.log(`Memory added (scope: ${scope}): ${opts.title}`);
             console.log(`ID: ${id}`);
+            const warning = memoryOverlapWarning(db, { id, relevance: opts.relevance, supersedes: opts.supersedes, scope, projectId });
+            if (warning) console.log(warning);
             return;
           } catch (err) {
             console.error(`Error: ${err instanceof Error ? err.message : err}`);
@@ -92,34 +102,40 @@ export async function runAddStructuredCommand(
             ? JSON.stringify(tags)
             : JSON.stringify(Object.values(tags).flat());
   
-          centralDb.insertMemory({
-            id,
-            title: opts.title,
-            category: opts.category,
-            content,
-            summary: null,
-            tags: tagsJson,
-            relevance: opts.relevance || opts.content.slice(0, 200),
-            author: opts.author,
-            authority: opts.authority,
-            confidence: parseFloat(opts.confidence),
-            reinforcement_count: 0,
-            content_hash: "",
-            status: "active",
-            tier: "active",
-            supersedes: null,
-            superseded_by: null,
-            last_reinforced: null,
-            created: now,
-            modified: now,
-            embedding: null,
-            source_path: null,
-            project_id: projectId,
-            scope: "project",
+          const db = centralDb;
+          db.transaction(() => {
+            db.insertMemory({
+              id,
+              title: opts.title,
+              category: opts.category,
+              content,
+              summary: null,
+              tags: tagsJson,
+              relevance: opts.relevance || opts.content.slice(0, 200),
+              author: opts.author,
+              authority: opts.authority,
+              confidence: parseFloat(opts.confidence),
+              reinforcement_count: 0,
+              content_hash: "",
+              status: "active",
+              tier: "active",
+              supersedes: null,
+              superseded_by: null,
+              last_reinforced: null,
+              created: now,
+              modified: now,
+              embedding: null,
+              source_path: null,
+              project_id: projectId,
+              scope: "project",
+            });
+            if (opts.supersedes) syncUpdateToDb(db, id, { supersedes: opts.supersedes }, undefined, { allowCrossScope: opts.allowCrossScope });
           });
   
           console.log(`Memory added: ${opts.title}`);
           console.log(`ID: ${id}`);
+          const warning = memoryOverlapWarning(db, { id, relevance: opts.relevance, supersedes: opts.supersedes, scope: "project", projectId });
+          if (warning) console.log(warning);
         } finally {
           centralDb?.close();
         }
