@@ -16,6 +16,7 @@ gnosys search "auth tokens" --json --id-format raw
 | Option | Description |
 |--------|-------------|
 | `-n, --limit <number>` | Max results (default `20`) |
+| `--active-only` | Return only active memories; default includes history |
 | `--json` | Output results as JSON |
 | `--federated` | Tier-boosted cross-scope search (project > user > global) |
 | `--scope <scope>` | Filter scopes: `project`, `user`, `global` (comma-separated) |
@@ -75,6 +76,12 @@ With `--json`:
 cd gnosys-public
 npm run cli -- search --help
 ```
+
+## Memory history
+
+Active results show only the modified date, such as `[2026-10-06]`. History includes status and date, with `superseded by <id>` when set. For example, `[superseded; 2026-09-01; superseded by deci-042]`. Active replacements rank above their predecessors, including when the result limit is one. Superseded and archived memories remain visible by default. Use `--active-only` to exclude them. The MCP equivalent is `activeOnly: true` (default `false`).
+
+This also applies to federated search. JSON results are ordered with replacements before their predecessors. Each result includes a 1-based `position`; use it to preserve the emitted order. `rank` and `score` retain their retrieval values and do not define the final order.
 
 ## Related commands
 

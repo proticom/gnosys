@@ -185,6 +185,7 @@ export function handleRequest(db: GnosysDB, req: SandboxRequest): SandboxRespons
           const results = federatedSearch(db, query as string, {
             limit: Number(limit),
             projectId: project_id as string | undefined,
+            activeOnly: true,
           });
           return {
             id: req.id,

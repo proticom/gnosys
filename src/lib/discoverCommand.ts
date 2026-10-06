@@ -1,8 +1,10 @@
+import { formatSearchStatus } from "./searchStatus.js";
 import { logError } from "./log.js";
 
 export type DiscoverCommandOptions = {
   limit: string;
   json?: boolean;
+  activeOnly?: boolean;
   federated?: boolean;
   scope?: string;
   directory?: string;
@@ -37,13 +39,15 @@ export async function runDiscoverCommand(
             limit: parseInt(opts.limit, 10),
             projectId,
             scopeFilter,
+            activeOnly: opts.activeOnly ?? false,
           });
 
-          outputResult(!!opts.json, { query, projectId, count: results.length, results }, () => {
+          outputResult(!!opts.json, { query, projectId, count: results.length, results: results.map((result, index) => ({ ...result, position: index + 1 })) }, () => {
             if (results.length === 0) { console.log(`No memories found for "${query}".`); return; }
             for (const [i, r] of results.entries()) {
               const proj = r.projectName ? ` [${r.projectName}]` : "";
-              console.log(`${i + 1}. ${r.title} (${r.category})${proj}`);
+              console.log(`${i + 1}. ${r.title} (${r.category})${proj} ${formatSearchStatus(r)}`);
+              console.log(`   id: ${r.id}`);
               console.log(`   scope: ${r.scope} | score: ${r.score.toFixed(4)}`);
             }
           });
@@ -64,7 +68,7 @@ export async function runDiscoverCommand(
         process.exit(1);
       }
       try {
-        const results = discoverWithOverlay(resolved, query, parseInt(opts.limit, 10));
+        const results = discoverWithOverlay(resolved, query, parseInt(opts.limit, 10), opts.activeOnly);
         if (results.length === 0) {
           outputResult(!!opts.json, { query, results: [] }, () => {
             console.log(`No memories found for "${query}". Try gnosys search for full-text.`);
@@ -76,12 +80,12 @@ export async function runDiscoverCommand(
         const idFormat = parseIdFormat(opts.idFormat);
         const projectNames = buildProjectNameLookup(resolved.localDb);
   
-        outputResult(!!opts.json, { query, count: results.length, results }, () => {
+        outputResult(!!opts.json, { query, count: results.length, results: results.map((result, index) => ({ ...result, position: index + 1 })) }, () => {
           console.log(`Found ${results.length} relevant memories for "${query}":\n`);
           for (const r of results) {
             const projectName = r.project_id ? projectNames.get(r.project_id) || null : null;
             const displayId = formatMemoryId(r.id, projectName, idFormat);
-            console.log(`  ${r.title}`);
+            console.log(`  ${r.title} ${formatSearchStatus(r)}`);
             console.log(`    id: ${displayId}`);
             if (r.relevance) console.log(`    Relevance: ${r.relevance}`);
             console.log();

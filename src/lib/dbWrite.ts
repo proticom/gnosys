@@ -14,10 +14,14 @@
  * become optional — controlled by config.
  */
 
+import { z } from "zod";
 import type { GnosysDB, DbMemory } from "./db.js";
 import type { MemoryFrontmatter, } from "./store.js";
 import { fnv1a } from "./db.js";
 import { queueMemoryEmbedding } from "./embedQueue.js";
+import { applySupersession, type SupersessionOptions } from "./supersession.js";
+
+export const updateStatusSchema = z.enum(["active", "archived", "superseded", "completed"]);
 
 /** Coerce Date objects (from gray-matter parsing) to ISO date strings. */
 function toDateStr(value: unknown): string | null {
@@ -85,8 +89,9 @@ export function syncMemoryToDb(
 export function syncUpdateToDb(
   db: GnosysDB,
   id: string,
-  updates: Partial<MemoryFrontmatter>,
-  newContent?: string
+  updates: { [K in keyof MemoryFrontmatter]?: K extends "status" ? z.infer<typeof updateStatusSchema> : MemoryFrontmatter[K] },
+  newContent?: string,
+  options: SupersessionOptions = {},
 ): void {
   if (!db.isAvailable()) return;
 
@@ -95,13 +100,11 @@ export function syncUpdateToDb(
   if (updates.title !== undefined) dbUpdates.title = updates.title;
   if (updates.category !== undefined) dbUpdates.category = updates.category;
   if (updates.status !== undefined) {
-    dbUpdates.status = updates.status;
+    dbUpdates.status = updateStatusSchema.parse(updates.status);
     if (updates.status === "archived") dbUpdates.tier = "archive";
   }
   if (updates.confidence !== undefined) dbUpdates.confidence = updates.confidence;
   if (updates.relevance !== undefined) dbUpdates.relevance = updates.relevance as string;
-  if (updates.supersedes !== undefined) dbUpdates.supersedes = updates.supersedes || null;
-  if (updates.superseded_by !== undefined) dbUpdates.superseded_by = updates.superseded_by || null;
   if (updates.reinforcement_count !== undefined) dbUpdates.reinforcement_count = updates.reinforcement_count;
   if (updates.last_reinforced !== undefined) dbUpdates.last_reinforced = updates.last_reinforced || null;
   if (updates.tags !== undefined) {
@@ -123,9 +126,11 @@ export function syncUpdateToDb(
     dbUpdates.content_hash = fnv1a(newContent);
   }
 
-  dbUpdates.modified = new Date().toISOString().split("T")[0];
-
-  db.updateMemory(id, dbUpdates);
+  dbUpdates.modified = new Date().toISOString();
+  db.transaction(() => {
+    applySupersession(db, id, updates, options);
+    db.updateMemory(id, dbUpdates);
+  });
 
   // v5.13.0: re-embed when searchable text changed (title/content/tags/
   // relevance feed the embedding recipe). No-op unless the queue is enabled.

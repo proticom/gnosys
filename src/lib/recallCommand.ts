@@ -30,7 +30,7 @@ export async function runRecallCommand(
           const projectId = await detectCurrentProject(resolved.db, opts.directory || undefined);
           const scopeFilter = opts.scope ? opts.scope.split(",").map(s => s.trim()) as any : undefined;
           const limit = opts.limit ? parseInt(opts.limit, 10) : 10;
-          const results = federatedSearch(resolved.db, query, { limit, projectId, scopeFilter });
+          const results = federatedSearch(resolved.db, query, { limit, projectId, scopeFilter, activeOnly: true });
   
           // Format as recall-like output with scope info
           const recallResult = {
