@@ -137,3 +137,12 @@ describe("supersession writes", () => {
     expect(env.db.getMemory("old")?.modified).toBe(now);
   });
 });
+
+it("rejects a misspelled status before changing data or links", () => {
+  expect(() => syncUpdateToDb(env.db, "old", {
+    // @ts-expect-error Exercise an untyped caller at the write boundary.
+    status: "actve", superseded_by: "correction",
+  })).toThrow();
+  expect(env.db.getMemory("old")).toMatchObject({ status: "active", superseded_by: null, modified: "2025-01-02" });
+  expect(env.db.getMemory("correction")?.supersedes).toBe(null);
+});

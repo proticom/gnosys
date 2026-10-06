@@ -24,6 +24,7 @@ gnosys add-structured --title "Tagged" --category notes --content "Tagged conten
 | Option | Description |
 |--------|-------------|
 | `--tags <json>` | Tags as JSON object (default `{}`) |
+| `--allow-cross-scope` | Allow supersession across scopes or projects (default false) |
 | `--supersedes <id>` | Comma-separated predecessor IDs; also accepted as MCP `supersedes` |
 | `--relevance <keywords>` | Keyword cloud for discovery (defaults to content snippet) |
 | `-a, --author <author>` | Author (default `human`) |
@@ -35,7 +36,7 @@ gnosys add-structured --title "Tagged" --category notes --content "Tagged conten
 
 ## Behavior
 
-`--supersedes <id>` validates every target and links both directions in one transaction. A successor can replace many predecessors, which stay superseded. Its `supersedes` field lists their IDs in stable order. Status and link changes bump modified timestamps. An unknown ID or cycle rejects the add. Links stay within the same scope and project; MCP `gnosys_add_structured` can opt in with `allowCrossScope: true`.
+`--supersedes <id>` validates every target and links both directions in one transaction. A successor can replace many predecessors, which stay superseded. Its `supersedes` field lists their IDs in stable order. Status and link changes bump modified timestamps. An unknown ID or cycle rejects the add. Links stay within the same scope and project; opt in with `--allow-cross-scope` (MCP `allowCrossScope: true`).
 
 Overlap warnings show at most three active memories in the writer's scope and project. Intentional predecessors are excluded.
 

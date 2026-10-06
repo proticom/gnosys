@@ -12,6 +12,7 @@ export type AddStructuredOptions = {
   authority: string;
   confidence: string;
   supersedes?: string;
+  allowCrossScope?: boolean;
   store?: string;
   user?: boolean;
   global?: boolean;
@@ -64,7 +65,7 @@ export async function runAddStructuredCommand(
                 project_id: projectId,
                 scope,
               });
-              if (opts.supersedes) syncUpdateToDb(db, id, { supersedes: opts.supersedes });
+              if (opts.supersedes) syncUpdateToDb(db, id, { supersedes: opts.supersedes }, undefined, { allowCrossScope: opts.allowCrossScope });
             });
   
             console.log(`Memory added (scope: ${scope}): ${opts.title}`);
@@ -128,7 +129,7 @@ export async function runAddStructuredCommand(
               project_id: projectId,
               scope: "project",
             });
-            if (opts.supersedes) syncUpdateToDb(db, id, { supersedes: opts.supersedes });
+            if (opts.supersedes) syncUpdateToDb(db, id, { supersedes: opts.supersedes }, undefined, { allowCrossScope: opts.allowCrossScope });
           });
   
           console.log(`Memory added: ${opts.title}`);

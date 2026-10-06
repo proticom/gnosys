@@ -46,12 +46,13 @@ export async function runHybridSearchCommand(
             activeOnly: opts.activeOnly ?? false,
           });
 
-          outputResult(!!opts.json, { query, projectId, mode: "federated", count: results.length, results }, () => {
+          outputResult(!!opts.json, { query, projectId, mode: "federated", count: results.length, results: results.map((result, index) => ({ ...result, position: index + 1 })) }, () => {
             if (results.length === 0) { console.log(`No results for "${query}".`); return; }
             console.log(`Found ${results.length} results for "${query}" (mode: federated):\n`);
             for (const [i, r] of results.entries()) {
               const proj = r.projectName ? ` [${r.projectName}]` : "";
-              console.log(`${i + 1}. ${r.title} (${r.category})${proj}`);
+              console.log(`${i + 1}. ${r.title} (${r.category})${proj} ${formatSearchStatus(r)}`);
+              console.log(`   id: ${r.id}`);
               console.log(`   scope: ${r.scope} | score: ${r.score.toFixed(4)} | boosts: ${r.boosts.join(", ")}`);
               if (r.snippet) console.log(`   ${r.snippet.substring(0, 120)}`);
             }
@@ -102,7 +103,7 @@ export async function runHybridSearchCommand(
           console.log(`No results for "${query}". Try gnosys reindex to build embeddings.`);
         });
       } else {
-        outputResult(!!opts.json, { query, mode, count: results.length, results }, () => {
+        outputResult(!!opts.json, { query, mode, count: results.length, results: results.map((result, index) => ({ ...result, position: index + 1 })) }, () => {
           console.log(`Found ${results.length} results for "${query}" (mode: ${mode}):\n`);
           for (const r of results) {
             console.log(`  ${r.title} ${formatSearchStatus(r)}`);

@@ -10,6 +10,8 @@ import { GnosysHybridSearch } from "../lib/hybridSearch.js";
 import { GnosysEmbeddings } from "../lib/embeddings.js";
 import { GnosysResolver } from "../lib/resolver.js";
 import { GnosysArchive } from "../lib/archive.js";
+import { z } from "zod";
+import { runHybridSearchCommand } from "../lib/hybridSearchCommand.js";
 import { runSemanticSearchCommand } from "../lib/semanticSearchCommand.js";
 import { createTestEnv, cleanupTestEnv, makeMemory, makeFrontmatter, type TestEnv } from "./_helpers.js";
 
@@ -77,8 +79,8 @@ describe("history-visible search", () => {
     expect(env.db.discoverFts("routing", 10, true).map((row) => row.id)).toEqual(["new"]);
     expect(env.db.getActiveMemories().map((row) => row.id)).toEqual(["new"]);
     expect(env.db.getAllEmbeddings(true).map((row) => row.id)).toEqual(["new"]);
-    expect(federatedSearch(env.db, "routing").map((row) => row.id)).toEqual(["new"]);
-    expect(federatedDiscover(env.db, "routing").map((row) => row.id)).toEqual(["new"]);
+    expect(federatedSearch(env.db, "routing", { activeOnly: true }).map((row) => row.id)).toEqual(["new"]);
+    expect(federatedDiscover(env.db, "routing", { activeOnly: true }).map((row) => row.id)).toEqual(["new"]);
     expect((await recall("routing", { gnosysDb: env.db, limit: 1 })).memories.map((row) => row.id)).toEqual(["new"]);
     expect(formatSearchStatus({ status: null, modified: "2026-10-06" })).toBe("[2026-10-06]");
   });
@@ -88,6 +90,23 @@ describe("history-visible search", () => {
       env.db.insertMemory(makeMemory({ id: `fan-${index}`, title: "routing routing routing", relevance: "routing routing", content: "routing", status: "superseded" }));
     }
     expect(search(env.db, "routing", { limit: 1, activeOnly: true }).map((row) => row.id)).toEqual(["new"]);
+  });
+
+  it.each([federatedSearch, federatedDiscover])("federated defaults include labelled history and promote replacements after boosts", (search) => {
+    env.db.updateMemory("old", { reinforcement_count: 100, modified: new Date().toISOString() });
+    env.db.updateMemory("new", { confidence: 0.1 });
+    const results = search(env.db, "routing");
+    expect(results.map((row) => row.id)).toEqual(["new", "old", "archive"]);
+    expect(results[1]).toMatchObject({ status: "superseded", superseded_by: "new" });
+    expect(results[2]).toMatchObject({ status: "archived", tier: "archive" });
+    expect(search(env.db, "routing", { limit: 1 }).map((row) => row.id)).toEqual(["new"]);
+  });
+
+  it.each([federatedSearch, federatedDiscover])("federated promotes linked replacements outside the query and respects scope filters", (search) => {
+    env.db.updateMemory("old", { reinforcement_count: 100, modified: new Date().toISOString() });
+    env.db.updateMemory("new", { title: "Correction", content: "An entirely different phrase.", relevance: "unrelated", scope: "global" });
+    expect(search(env.db, "routing", { limit: 1 }).map((row) => row.id)).toEqual(["new"]);
+    expect(search(env.db, "routing", { scopeFilter: ["project"] }).map((row) => row.id)).toEqual(["old", "archive"]);
   });
 
   it("recall includes completed and archived rows but excludes superseded rows", async () => {
@@ -166,6 +185,18 @@ describe("legacy search metadata", () => {
     embeddings.storeEmbedding("decisions/archive.md", new Float32Array([0.5, 0.5]), "archive");
   });
   afterEach(async () => { vi.restoreAllMocks(); search.close(); embeddings.close(); await cleanupTestEnv(env); });
+
+  it("hybrid CLI JSON numbers the final replacement-first order", async () => {
+    const output = vi.spyOn(console, "log").mockImplementation(() => {});
+    await runHybridSearchCommand(async () => resolver, "routing", { limit: "10", mode: "keyword", json: true });
+    const text = z.string().parse(output.mock.calls[0]?.[0]);
+    const result = z.object({ results: z.array(z.object({ title: z.string(), position: z.number() })) }).parse(JSON.parse(text));
+    expect(result.results).toEqual([
+      { title: "Correction", position: 1 },
+      { title: "routing routing routing", position: 2 },
+      { title: "routing archive", position: 3 },
+    ]);
+  });
 
   it.each([false, true])("semantic CLI applies activeOnly=%s before limiting results", async (activeOnly) => {
     vi.spyOn(GnosysEmbeddings.prototype, "embed").mockResolvedValue(new Float32Array([1, 0]));

@@ -13,10 +13,11 @@ import type { GnosysDB, DbMemory, DbProject, MemoryScope } from "./db.js";
 import { findProjectIdentity } from "./projectIdentity.js";
 import { readMachineConfig, type MachineConfig } from "./machineConfig.js";
 import { effectiveProjectPath } from "./projectPaths.js";
+import { rankReplacements, type SearchMemoryMetadata } from "./searchStatus.js";
 
 // ─── Types ──────────────────────────────────────────────────────────────
 
-export interface FederatedResult {
+export interface FederatedResult extends SearchMemoryMetadata {
   id: string;
   title: string;
   category: string;
@@ -175,13 +176,23 @@ function buildFederatedResults<T extends { id: string }>(
       projectId: mem.project_id,
       projectName: mem.project_id ? (projectMap.get(mem.project_id) || null) : null,
       boosts,
+      status: mem.status,
+      tier: mem.tier,
+      modified: mem.modified,
+      superseded_by: mem.superseded_by,
     });
   }
 
   // Sort by boosted score descending
   scored.sort((a, b) => b.score - a.score);
 
-  return scored.slice(0, limit);
+  const candidates = new Map(scored.map((result) => [result.id, result]));
+  return rankReplacements({
+    results: scored,
+    limit,
+    key: (result) => result.id,
+    replacement: (result) => result.superseded_by ? candidates.get(result.superseded_by) ?? null : null,
+  });
 }
 
 /**
@@ -195,7 +206,7 @@ export function federatedSearch(
 ): FederatedResult[] {
   const limit = opts.limit ?? 20;
   // Run FTS5 search across ALL memories (no scope filter at query time)
-  const rawResults = db.searchFts(query, limit * 3, opts.activeOnly ?? true);
+  const rawResults = db.searchFts(query, limit * 3, opts.activeOnly ?? false);
   return buildFederatedResults(db, rawResults, (r) => r.snippet, opts, true);
 }
 
@@ -209,7 +220,7 @@ export function federatedDiscover(
   opts: FederatedSearchOptions = {},
 ): FederatedResult[] {
   const limit = opts.limit ?? 20;
-  const rawResults = db.discoverFts(query, limit * 3, opts.activeOnly ?? true);
+  const rawResults = db.discoverFts(query, limit * 3, opts.activeOnly ?? false);
   return buildFederatedResults(db, rawResults, (r) => r.relevance, opts, false);
 }
 

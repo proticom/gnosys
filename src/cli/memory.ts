@@ -31,9 +31,10 @@ program
   .command("update <memoryPath>")
   .description("Update an existing memory's frontmatter and/or content")
   .option("--title <title>", "New title")
-  .option("--status <status>", "New status (for example active, archived, superseded, completed)")
+  .option("--status <status>", "New status (active, archived, superseded, completed)")
   .option("--confidence <n>", "New confidence (0-1)")
   .option("--relevance <keywords>", "Updated relevance keyword cloud")
+  .option("--allow-cross-scope", "Allow supersession across scopes or projects")
   .option("--supersedes <id>", "Comma-separated predecessor IDs to link to this memory")
   .option("--superseded-by <id>", "ID of memory that supersedes this one")
   .option("--content <content>", "New markdown content (replaces body)")
@@ -46,6 +47,7 @@ program
         confidence?: string;
         relevance?: string;
         supersedes?: string;
+        allowCrossScope?: boolean;
         supersededBy?: string;
         content?: string;
       },
@@ -81,6 +83,7 @@ program
   .option("-a, --author <author>", "Author", "human")
   .option("--authority <authority>", "Authority level", "declared")
   .option("--confidence <n>", "Confidence 0-1", "0.8")
+  .option("--allow-cross-scope", "Allow supersession across scopes or projects")
   .option("--supersedes <id>", "Comma-separated IDs of memories this replaces")
   .option("-s, --store <store>", "Target store", undefined)
   .option("--user", "Store as user-scoped memory (scope: user)")
@@ -96,6 +99,7 @@ program
       authority: string;
       confidence: string;
       supersedes?: string;
+      allowCrossScope?: boolean;
       store?: string;
       user?: boolean;
       global?: boolean;

@@ -14,11 +14,14 @@
  * become optional — controlled by config.
  */
 
+import { z } from "zod";
 import type { GnosysDB, DbMemory } from "./db.js";
 import type { MemoryFrontmatter, } from "./store.js";
 import { fnv1a } from "./db.js";
 import { queueMemoryEmbedding } from "./embedQueue.js";
 import { applySupersession, type SupersessionOptions } from "./supersession.js";
+
+export const updateStatusSchema = z.enum(["active", "archived", "superseded", "completed"]);
 
 /** Coerce Date objects (from gray-matter parsing) to ISO date strings. */
 function toDateStr(value: unknown): string | null {
@@ -86,7 +89,7 @@ export function syncMemoryToDb(
 export function syncUpdateToDb(
   db: GnosysDB,
   id: string,
-  updates: { [K in keyof MemoryFrontmatter]?: K extends "status" ? string : MemoryFrontmatter[K] },
+  updates: { [K in keyof MemoryFrontmatter]?: K extends "status" ? z.infer<typeof updateStatusSchema> : MemoryFrontmatter[K] },
   newContent?: string,
   options: SupersessionOptions = {},
 ): void {
@@ -97,7 +100,7 @@ export function syncUpdateToDb(
   if (updates.title !== undefined) dbUpdates.title = updates.title;
   if (updates.category !== undefined) dbUpdates.category = updates.category;
   if (updates.status !== undefined) {
-    dbUpdates.status = updates.status;
+    dbUpdates.status = updateStatusSchema.parse(updates.status);
     if (updates.status === "archived") dbUpdates.tier = "archive";
   }
   if (updates.confidence !== undefined) dbUpdates.confidence = updates.confidence;

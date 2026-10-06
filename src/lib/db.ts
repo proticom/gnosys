@@ -1573,15 +1573,15 @@ export class GnosysDB {
   }
 
   /**
-   * Top recall candidates, with archived memories after the active tier. The gnosys://recall
+   * Top active recall candidates. The gnosys://recall
    * resource asks for "the best memories, no query" — rank by how often a
    * memory proved useful (reinforcement), then confidence, then recency.
    */
   getTopRecallMemories(limit: number = 15): DbMemory[] {
     return this.withRecovery(() =>
       this.prep(
-        `SELECT ${LEAN_MEMORY_PROJECTION} FROM memories WHERE COALESCE(status, 'active') <> 'superseded' AND NULLIF(superseded_by, '') IS NULL
-         ORDER BY (tier = 'archive' OR COALESCE(status, 'active') = 'archived'), reinforcement_count DESC, confidence DESC, modified DESC LIMIT ?`,
+        `SELECT ${LEAN_MEMORY_PROJECTION} FROM memories WHERE tier = 'active' AND COALESCE(status, 'active') = 'active' AND NULLIF(superseded_by, '') IS NULL
+         ORDER BY reinforcement_count DESC, confidence DESC, modified DESC LIMIT ?`,
       ).all(limit) as DbMemory[],
     );
   }

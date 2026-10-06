@@ -57,7 +57,7 @@ import { initAudit, readAuditLog, formatAuditTimeline } from "./lib/audit.js";
 import { logError } from "./lib/log.js";
 import { GnosysDB } from "./lib/db.js";
 import { memoryOverlapWarning } from "./lib/memoryOverlap.js";
-import { syncMemoryToDb, syncUpdateToDb, syncDearchiveToDb, syncReinforcementToDb, auditToDb } from "./lib/dbWrite.js";
+import { updateStatusSchema, syncMemoryToDb, syncUpdateToDb, syncDearchiveToDb, syncReinforcementToDb, auditToDb } from "./lib/dbWrite.js";
 import { createProjectIdentity, readProjectIdentity, } from "./lib/projectIdentity.js";
 import { setPreference, getPreference, getAllPreferences, deletePreference, KNOWN_PREFERENCE_KEYS, suggestPreferenceKey } from "./lib/preferences.js";
 import { syncRules, generateRulesBlock, } from "./lib/rulesGen.js";
@@ -1015,7 +1015,7 @@ regTool(
 // ─── Tool: gnosys_add_structured ─────────────────────────────────────────
 regTool(
   "gnosys_add_structured",
-  "Preferred for LLM agents: add a memory with structured fields you supply (title, category, tags, content). Optional supersedes accepts one or more comma-separated predecessor IDs and creates two-way links. A successor may have many predecessors. IDs are validated and cycles rejected. Links stay within the same scope and project unless allowCrossScope=true. Reports up to three active overlaps in the writer scope and project. No server-side LLM call.",
+  "Add a memory with structured fields; no LLM call. supersedes adds links to comma-separated predecessor IDs; to unlink, call gnosys_update on the predecessor with superseded_by=''. Cross-scope or cross-project links require allowCrossScope=true. Reports up to three active overlaps.",
   {
     title: z.string().describe("Memory title"),
     category: z.string().describe("Category name"),
@@ -1423,7 +1423,7 @@ regTool(
 // ─── Tool: gnosys_update ─────────────────────────────────────────────────
 regTool(
   "gnosys_update",
-  "Update an existing memory's fields and/or content by id or path. Supersession creates two-way links and supports many predecessors per successor. Target IDs are validated and cycles rejected. Links stay within the same scope and project unless allowCrossScope=true. Set superseded_by to an empty string to unlink this predecessor.",
+  "Update a memory by id or path. supersedes adds links; to unlink, call gnosys_update on the predecessor with superseded_by=''. Links validate IDs, reject cycles, and require allowCrossScope=true across scopes or projects.",
   {
     path: z.string().describe("Memory id or path"),
     title: z.string().optional().describe("New title"),
@@ -1431,8 +1431,7 @@ regTool(
       .record(z.string(), z.array(z.string()))
       .optional()
       .describe("New tags object"),
-    status: z
-      .string()
+    status: updateStatusSchema
       .optional()
       .describe("New status; explicit values override automatic supersession status"),
     confidence: z.number().min(0).max(1).optional().describe("New confidence"),
@@ -3287,14 +3286,15 @@ regTool(
 
 regTool(
   "gnosys_federated_search",
-  "Search across all scopes (project → user → global) with tier boosting. Results from the current project rank highest. Returns score breakdown showing which boosts were applied.",
+  "Search across project, user, and global scopes with scope and recency boosts. Returns memory IDs, status labels, modified dates, replacement IDs, and score breakdowns. Replacements rank before their history. Set activeOnly=true to exclude non-active memories (default false).",
   {
     query: z.string().describe("Search query"),
     limit: z.number().optional().describe("Max results (default: 20)"),
     projectRoot: z.string().optional().describe("Project root directory for context detection"),
+    activeOnly: z.boolean().optional().describe("Only active memories"),
     includeGlobal: z.boolean().optional().describe("Include global-scope memories (default: true)"),
   },
-  async ({ query, limit, projectRoot, includeGlobal }) => {
+  async ({ query, limit, projectRoot, includeGlobal, activeOnly }) => {
     const ctx = await resolveToolContext(projectRoot);
     try {
     if (!ctx.centralDb?.isAvailable()) {
@@ -3308,6 +3308,7 @@ regTool(
       limit: limit || 20,
       projectId,
       includeGlobal: includeGlobal !== false,
+      activeOnly: activeOnly ?? false,
     });
 
     if (results.length === 0) {
@@ -3317,7 +3318,7 @@ regTool(
     const lines = results.map((r, i) => {
       const projectLabel = r.projectName ? ` [${r.projectName}]` : "";
       const boostLabel = r.boosts.length > 0 ? ` (${r.boosts.join(", ")})` : "";
-      return `${i + 1}. **${r.title}** (${r.category})${projectLabel}\n   scope: ${r.scope} | score: ${r.score.toFixed(4)}${boostLabel}\n   ${r.snippet}`;
+      return `${i + 1}. **${r.title}** (${r.category})${projectLabel} ${formatSearchStatus(r)}\n   ID: ${r.id}\n   scope: ${r.scope} | score: ${r.score.toFixed(4)}${boostLabel}\n   ${r.snippet}`;
     });
 
     const contextNote = projectId ? `Context: project ${projectId}` : "Context: no project detected";

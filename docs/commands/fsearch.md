@@ -19,6 +19,7 @@ gnosys fsearch "auth tokens" --directory /path/to/project --limit 10
 | `-d, --directory <dir>` | Project directory for context detection |
 | `--no-global` | Exclude global-scope memories |
 | `--scope <scope>` | Filter scopes: `project`, `user`, `global` (comma-separated) |
+| `--active-only` | Return only active memories; default includes history |
 | `--json` | Output results as JSON |
 
 ## Behavior
@@ -31,7 +32,7 @@ gnosys fsearch "auth tokens" --directory /path/to/project --limit 10
 
 ## Human output
 
-Prints project context line, then ranked results with scope, score, boosts, and snippet preview.
+Prints project context, then results with memory ID, compact status and modified-date label, scope, score, boosts, and snippet preview. Replacements appear before their predecessors. History remains visible by default in both CLI and MCP; use `--active-only` or `activeOnly: true` to exclude it.
 
 No results:
 
@@ -61,6 +62,8 @@ No project detected
   "results": [ ... ]
 }
 ```
+
+JSON results are ordered. Each result includes a 1-based `position`; use it to preserve replacement-first order instead of sorting by `score`.
 
 ## Validation
 

@@ -105,7 +105,7 @@ This package installs two binaries:
 | `gnosys_preference_get` | Get a user preference by key, or list all preferences. |
 | `gnosys_preference_delete` | Delete a user preference by key. |
 | `gnosys_sync` | Get the current user preferences + project conventions formatted as a GNOSYS:START/GNOSYS:END block. |
-| `gnosys_federated_search` | Search across all scopes (project → user → global) with tier boosting. |
+| `gnosys_federated_search` | Search across scopes with boosts, memory IDs, status labels, and replacements before history. |
 | `gnosys_detect_ambiguity` | Check if a query matches memories in multiple projects. |
 | `gnosys_briefing` | Generate a project briefing — a summary of memory state, categories, recent activity, and top tags. |
 | `gnosys_portfolio` | Portfolio dashboard — shows all registered projects with memory counts, categories, status snapshots, roadmap items, and recent activity. |

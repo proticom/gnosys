@@ -9,13 +9,15 @@ import { cleanupTestEnv, createTestEnv, makeFrontmatter, makeMemory, makeProject
 
 let env: TestEnv;
 let engine: GnosysMaintenanceEngine;
+const generate = vi.fn(async () => "Keep both the first and second retention constraints.");
 
 beforeEach(async () => {
+  generate.mockClear();
   env = await createTestEnv("maintenance-supersession", { withStore: true });
   vi.spyOn(llm, "getLLMProvider").mockReturnValue({
     name: "ollama",
     model: "fixture",
-    generate: async () => "Keep both the first and second retention constraints.",
+    generate,
     testConnection: async () => true,
   });
   const resolver = new GnosysResolver();
@@ -47,6 +49,7 @@ describe("maintenance supersession", () => {
   it("consolidates both predecessors and preserves their project", async () => {
     const report = await engine.maintain({ autoApply: true });
     expect(report.consolidated).toBe(1);
+    expect(generate).toHaveBeenCalledTimes(1);
     const merged = env.db.getAllMemories().find(memory => memory.id !== "A" && memory.id !== "B");
     expect(merged).toMatchObject({
       status: "active", supersedes: "A, B", scope: "project", project_id: "project-a",
@@ -69,6 +72,7 @@ describe("maintenance supersession", () => {
       expect.stringContaining("Cannot supersede across scope or project:"),
     ]);
     expect(env.db.getAllMemories()).toEqual(before);
+    expect(generate).toHaveBeenCalledTimes(0);
   });
 
   it("rolls back the replacement and first link when the second link fails", async () => {

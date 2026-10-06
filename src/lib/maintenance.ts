@@ -376,6 +376,16 @@ export class GnosysMaintenanceEngine {
       return;
     }
 
+    if (this.db) {
+      const source = this.db.getMemory(pair.memoryA.frontmatter.id);
+      const other = this.db.getMemory(pair.memoryB.frontmatter.id);
+      if (!source) throw new Error(`Memory not found: ${pair.memoryA.frontmatter.id}`);
+      if (!other) throw new Error(`Memory not found: ${pair.memoryB.frontmatter.id}`);
+      if (source.scope !== other.scope || (source.scope === "project" && source.project_id !== other.project_id)) {
+        throw new Error(`Cannot supersede across scope or project: ${other.id}.`);
+      }
+    }
+
     const prompt = `You are a knowledge management assistant. Merge these two memories into a single, comprehensive memory. Preserve all unique information from both. Output ONLY the merged markdown content (no frontmatter).
 
 ## Memory A: ${pair.memoryA.frontmatter.title}

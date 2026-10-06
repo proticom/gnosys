@@ -67,3 +67,33 @@ describe("CLI supersession writes", () => {
     expect(env.db.getIdsModifiedSince("2024-02-03").map((row) => row.id).sort()).toEqual(["correction", "old"]);
   });
 });
+
+it("CLI update rejects a misspelled status without changing the memory", async () => {
+  await expect(runUpdateCommand(async () => { throw new Error("Unexpected legacy lookup"); }, "old", { status: "actve" })).rejects.toThrow();
+  expect(env.db.getMemory("old")).toMatchObject({ status: "active", modified: "2024-02-03" });
+});
+
+it.each(["project", "user", "global"])("CLI add can opt into cross-scope supersession from %s", async scope => {
+  env.db.updateMemory("old", { scope: scope === "global" ? "project" : "global" });
+  const opts = { ...options, user: scope === "user", global: scope === "global", supersedes: "old" };
+  const error = vi.spyOn(console, "error").mockImplementation(() => {});
+  await expect(runAddStructuredCommand(opts, async () => null)).rejects.toThrow(
+    scope === "project" ? "Cannot supersede across scope or project" : 'process.exit unexpectedly called with "1"',
+  );
+  if (scope !== "project") expect(error).toHaveBeenCalledWith(expect.stringContaining("Cannot supersede across scope or project"));
+  expect(env.db.getAllMemories().map(memory => memory.id)).toEqual(["old"]);
+  await runAddStructuredCommand({ ...opts, allowCrossScope: true }, async () => null);
+  const replacement = env.db.getAllMemories().find(memory => memory.id !== "old");
+  expect(replacement).toMatchObject({ scope, supersedes: "old", status: "active" });
+  expect(env.db.getMemory("old")).toMatchObject({ status: "superseded", superseded_by: replacement?.id });
+});
+
+it("CLI update can opt into cross-scope supersession", async () => {
+  env.db.insertMemory(makeMemory({ id: "global-replacement", scope: "global" }));
+  const resolver = async () => { throw new Error("Unexpected legacy lookup"); };
+  await expect(runUpdateCommand(resolver, "old", { supersededBy: "global-replacement" })).rejects.toThrow("Cannot supersede across scope or project");
+  expect(env.db.getMemory("old")?.superseded_by).toBe(null);
+  await runUpdateCommand(resolver, "old", { supersededBy: "global-replacement", allowCrossScope: true });
+  expect(env.db.getMemory("old")).toMatchObject({ status: "superseded", superseded_by: "global-replacement" });
+  expect(env.db.getMemory("global-replacement")?.supersedes).toBe("old");
+});

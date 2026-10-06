@@ -20,6 +20,7 @@ const RETRIEVAL_TOOLS = [
   "gnosys_discover",
   "gnosys_hybrid_search",
   "gnosys_semantic_search",
+  "gnosys_federated_search",
 ];
 
 let base: string;
@@ -41,7 +42,7 @@ async function retrieve(name: string, args: Record<string, unknown> = {}): Promi
 }
 
 function titles(text: string): string[] {
-  return [...text.matchAll(/^\*\*([^\n]+?)\*\*(?: \(|[^\n]*\n {2}(?:ID|Path):)/gm)].map((match) => match[1]);
+  return [...text.matchAll(/^(?:\d+\. )?\*\*([^\n]+?)\*\*(?: \(|[^\n]*\n {2}(?:ID|Path):)/gm)].map((match) => match[1]);
 }
 
 beforeAll(async () => {
@@ -169,8 +170,8 @@ it("recall fills its candidate window without superseded rows and retains archiv
   expect(output).toContain("[[deci-archived]]");
 });
 
-it("CLI keyword search accepts --active-only and returns the correction", () => {
-  const output = execFileSync(process.execPath, [resolve("dist/cli.js"), "search", "amber", "--active-only"], {
+it.each(["search", "fsearch"])("CLI %s accepts --active-only and returns the correction", (command) => {
+  const output = execFileSync(process.execPath, [resolve("dist/cli.js"), command, "amber", "--active-only"], {
     cwd: base,
     env: childEnv,
     encoding: "utf8",
@@ -321,4 +322,30 @@ it("MCP rejects a cross-scope update unless allowCrossScope is set", async () =>
   } finally {
     after.close();
   }
+});
+
+it("MCP rejects misspelled status without changing the memory", async () => {
+  const result = await client.callTool({ name: "gnosys_update", arguments: { path: NEW_ID, status: "actve", projectRoot: base } });
+  expect(result.isError).toBe(true);
+  expect(JSON.stringify(result.content)).toContain("Invalid option: expected one of");
+  const db = new GnosysDB(join(base, ".gnosys"));
+  try {
+    expect(db.getMemory(NEW_ID)?.status).toBe("active");
+  } finally {
+    db.close();
+  }
+});
+
+it.each(["search", "discover", "hybrid-search", "fsearch"])("CLI %s JSON preserves replacement-first positions", (command) => {
+  const args = [resolve("dist/cli.js"), command, "amber", "--json", "--limit", "40"];
+  if (command === "hybrid-search") args.push("--federated");
+  const output = execFileSync(process.execPath, args, {
+    cwd: base, env: childEnv, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
+  });
+  const { results } = z.object({ results: z.array(z.object({ title: z.string(), position: z.number() })) }).parse(JSON.parse(output));
+  expect(results[0]).toEqual({ title: NEW_TITLE, position: 1 });
+  const oldIndex = results.findIndex((result) => result.title === OLD_TITLE);
+  expect(oldIndex).toBeGreaterThan(0);
+  expect(results[oldIndex].position).toBe(oldIndex + 1);
+  expect(results.map((result) => result.position)).toEqual(Array.from({ length: 26 }, (_, index) => index + 1));
 });

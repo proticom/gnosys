@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { copyFileSync, mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
@@ -70,6 +71,8 @@ async function call(name, args) {
 }
 try {
   await client.connect(transport);
+  const updateTool = (await client.listTools()).tools.find(tool => tool.name === "gnosys_update");
+  assert.deepEqual(updateTool.inputSchema.properties.status.enum, ["active", "archived", "superseded", "completed"]);
   await call("gnosys_init", { directory: projectRoot, projectName: "supersession-check" });
   const ids = [];
   for (const title of ["Fanin first", "Fanin second", "Fanin replacement"]) {
@@ -95,6 +98,54 @@ try {
   const predecessorList = [a, b].sort().join(", ");
   assert.equal(report.rows[2].supersedes, predecessorList);
   assert.equal(report.reads[2].split("\n").find(line => line.startsWith("supersedes:")), `supersedes: ${predecessorList}`);
+
+  const invalid = await client.callTool({
+    name: "gnosys_update", arguments: { projectRoot, path: replacement, status: "actve" },
+  });
+  assert.equal(invalid.isError, true);
+  assert.match(JSON.stringify(invalid.content), /active.*archived.*superseded.*completed/);
+
+  report.federated = await call("gnosys_federated_search", { query: "faninlink" });
+  assert.ok(report.federated.indexOf(`ID: ${replacement}`) < report.federated.indexOf(`ID: ${a}`));
+  assert.ok(report.federated.includes(`superseded by ${replacement}`));
+  const active = await call("gnosys_federated_search", { query: "faninlink", activeOnly: true });
+  assert.ok(active.includes(`ID: ${replacement}`));
+  assert.ok(!active.includes(`ID: ${a}`));
+  assert.ok(!active.includes(`ID: ${b}`));
+
+  function cli(...args) {
+    return execFileSync(process.execPath, [join(worktree, "dist/cli.js"), ...args], {
+      cwd: projectRoot,
+      env: { PATH: process.env.PATH ?? "", GNOSYS_HOME: home, GNOSYS_CONFIG_DIR: join(home, "config"),
+        GNOSYS_PERSONAL: home, GNOSYS_GLOBAL: home, GNOSYS_LOCAL_ONLY: "1", NODE_ENV: "test" },
+      encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
+    });
+  }
+  for (const command of ["search", "discover", "hybrid-search"]) {
+    const args = command === "hybrid-search" ? ["--federated"] : [];
+    const result = JSON.parse(cli(command, "faninlink", "--json", ...args));
+    assert.equal(result.results[0].id, replacement);
+    assert.deepEqual(result.results.map(row => row.position), [1, 2, 3]);
+  }
+
+  const global = await call("gnosys_add_structured", {
+    title: "Global boundary check", category: "decisions", tags: {}, content: "boundary check", store: "global",
+  });
+  const globalId = global.match(/ID:\s*([A-Za-z0-9_-]+)/)?.[1];
+  assert.equal(typeof globalId, "string");
+  cli("update", replacement, "--superseded-by", globalId, "--allow-cross-scope");
+  cli("add-structured", "--title", "CLI boundary correction", "--category", "decisions",
+    "--content", "boundary check", "--supersedes", globalId, "--allow-cross-scope");
+  const checked = new Database(join(home, "gnosys.db"), { readonly: true });
+  try {
+    const row = checked.prepare("SELECT status, superseded_by FROM memories WHERE id = ?").get(globalId);
+    const successor = checked.prepare("SELECT title, supersedes, scope FROM memories WHERE id = ?").get(row.superseded_by);
+    assert.equal(row.status, "superseded");
+    assert.deepEqual(successor, { title: "CLI boundary correction", supersedes: globalId, scope: "project" });
+  } finally {
+    checked.close();
+  }
+  report.finalReviewChecks = "status validation, federated labels/order/filter, CLI positions, CLI cross-scope flags";
   report.result = "PASS";
 } catch (error) {
   report.result = "FAIL";

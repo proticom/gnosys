@@ -42,13 +42,14 @@ export async function runSearchCommand(
             activeOnly: opts.activeOnly ?? false,
           });
 
-          outputResult(!!opts.json, { query, projectId, count: results.length, results }, () => {
+          outputResult(!!opts.json, { query, projectId, count: results.length, results: results.map((result, index) => ({ ...result, position: index + 1 })) }, () => {
             if (results.length === 0) { console.log(`No results for "${query}".`); return; }
             const ctx = projectId ? `Context: project ${projectId}` : "No project detected";
             console.log(ctx);
             for (const [i, r] of results.entries()) {
               const proj = r.projectName ? ` [${r.projectName}]` : "";
-              console.log(`\n${i + 1}. ${r.title} (${r.category})${proj}`);
+              console.log(`\n${i + 1}. ${r.title} (${r.category})${proj} ${formatSearchStatus(r)}`);
+              console.log(`   id: ${r.id}`);
               console.log(`   scope: ${r.scope} | score: ${r.score.toFixed(4)} | boosts: ${r.boosts.join(", ")}`);
               if (r.snippet) console.log(`   ${r.snippet.substring(0, 120)}`);
             }
@@ -82,7 +83,7 @@ export async function runSearchCommand(
         const idFormat = parseIdFormat(opts.idFormat);
         const projectNames = buildProjectNameLookup(resolved.localDb);
   
-        outputResult(!!opts.json, { query, count: results.length, results }, () => {
+        outputResult(!!opts.json, { query, count: results.length, results: results.map((result, index) => ({ ...result, position: index + 1 })) }, () => {
           console.log(`Found ${results.length} results for "${query}":\n`);
           for (const r of results) {
             const projectName = r.project_id ? projectNames.get(r.project_id) || null : null;
