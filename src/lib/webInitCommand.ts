@@ -1,3 +1,5 @@
+import { safeQuestion } from "./setup/ui/safePrompt.js";
+
 export type WebInitCommandOptions = {
   source: string;
   output: string;
@@ -76,7 +78,7 @@ export async function runWebInitCommand(
         console.log(`  \u2022 Local dev:      http://localhost:3000/sitemap.xml`);
         console.log(`  \u2022 Not ready yet:  press Enter (add later in gnosys.json)${RESET}`);
         console.log();
-        const urlAnswer = await rl.question("Sitemap URL: ");
+        const urlAnswer = await safeQuestion(rl, "Sitemap URL: ");
         sitemapUrl = urlAnswer.trim();
         console.log();
 
@@ -93,7 +95,7 @@ export async function runWebInitCommand(
         }
         console.log();
 
-        const enrichAnswer = await rl.question("Enable LLM enrichment? [Y/n] ");
+        const enrichAnswer = await safeQuestion(rl, "Enable LLM enrichment? [Y/n] ");
         llmEnrich = !enrichAnswer.trim().toLowerCase().startsWith("n");
         console.log();
 
@@ -107,7 +109,7 @@ export async function runWebInitCommand(
           console.log();
 
           const defaultEnv = providerEnvVars[agentProvider] || "ANTHROPIC_API_KEY";
-          const envAnswer = await rl.question(`Env var name for API key (${defaultEnv}): `);
+          const envAnswer = await safeQuestion(rl, `Env var name for API key (${defaultEnv}): `);
           envVarName = envAnswer.trim() || defaultEnv;
         } else {
           console.log(`${DIM}Step 3/3 \u2014 Skipped (no LLM = no API key needed)${RESET}`);
@@ -116,11 +118,10 @@ export async function runWebInitCommand(
         console.log();
 
         // Output dir
-        const dirAnswer = await rl.question(`Output directory (${opts.output}): `);
+        const dirAnswer = await safeQuestion(rl, `Output directory (${opts.output}): `);
         outputDir = dirAnswer.trim() || opts.output;
 
-        rl.close();
-      } catch {
+      } finally {
         rl.close();
       }
     }

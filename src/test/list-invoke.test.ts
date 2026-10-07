@@ -4,6 +4,7 @@ import { tmpdir } from "os";
 import { join } from "path";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { GnosysDB } from "../lib/db.js";
+import { makeMemory } from "./_helpers.js";
 import { runListCommand } from "../lib/listCommand.js";
 
 let base: string;
@@ -51,6 +52,7 @@ beforeAll(() => {
     project_id: null,
     scope: "user",
   });
+  db.insertMemory(makeMemory({ id: "deci-502", title: "Unrelated tag", tags: '["different-tag"]', scope: "user", project_id: null }));
   db.close();
 });
 afterAll(() => {

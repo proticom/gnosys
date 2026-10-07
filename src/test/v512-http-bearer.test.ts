@@ -26,7 +26,7 @@ async function start(): Promise<string> {
   return `http://127.0.0.1:${(handle.server.address() as AddressInfo).port}/mcp`;
 }
 
-const init = JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: {} });
+const init = JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-03-26", capabilities: {}, clientInfo: { name: "auth-contract", version: "1.0.0" } } });
 const CT = { "content-type": "application/json" };
 
 describe("v5.12 bearer token (missing / wrong / correct)", () => {
@@ -44,7 +44,7 @@ describe("v5.12 bearer token (missing / wrong / correct)", () => {
     expect(r.status).toBe(401);
   });
 
-  it("correct token → passes the auth gate (not 401)", async () => {
+  it("correct token initializes an authenticated MCP session", async () => {
     const r = await fetch(await start(), {
       method: "POST",
       headers: {
@@ -54,6 +54,13 @@ describe("v5.12 bearer token (missing / wrong / correct)", () => {
       },
       body: init,
     });
-    expect(r.status).not.toBe(401);
+    expect(r.status).toBe(200);
+    const data = (await r.text()).split("\n").find((line) => line.startsWith("data: "));
+    expect(JSON.parse(data!.slice(6))).toEqual({
+      jsonrpc: "2.0", id: 1, result: {
+        protocolVersion: "2025-03-26", capabilities: {},
+        serverInfo: { name: "t", version: "1.0.0" },
+      },
+    });
   });
 });

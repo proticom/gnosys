@@ -61,7 +61,12 @@ describe("v5.12 centralizeDb", () => {
 
   it("overwrites with force", async () => {
     await centralizeDb({ to: target, sourceDb: sourceDb() });
-    await expect(centralizeDb({ to: target, force: true, sourceDb: sourceDb() })).resolves.toBeTruthy();
+    env.db.insertMemory(makeMemory({ id: "force-new", title: "Added after the first copy" }));
+    await centralizeDb({ to: target, force: true, sourceDb: sourceDb() });
+    const copy = new GnosysDB(target);
+    try {
+      expect(copy.getMemory("force-new")?.title).toBe("Added after the first copy");
+    } finally { copy.close(); }
   });
 
   it("throws when the source brain is missing", async () => {

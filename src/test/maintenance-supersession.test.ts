@@ -5,7 +5,8 @@ import { GnosysEmbeddings } from "../lib/embeddings.js";
 import * as llm from "../lib/llm.js";
 import { GnosysMaintenanceEngine } from "../lib/maintenance.js";
 import { GnosysResolver } from "../lib/resolver.js";
-import { cleanupTestEnv, createTestEnv, makeFrontmatter, makeMemory, makeProject, type TestEnv } from "./_helpers.js";
+import { writeProjectIdentity } from "../lib/projectIdentity.js";
+import { cleanupTestEnv, createTestEnv, makeMemory, makeProject, type TestEnv } from "./_helpers.js";
 
 let env: TestEnv;
 let engine: GnosysMaintenanceEngine;
@@ -13,7 +14,7 @@ const generate = vi.fn(async () => "Keep both the first and second retention con
 
 beforeEach(async () => {
   generate.mockClear();
-  env = await createTestEnv("maintenance-supersession", { withStore: true });
+  env = await createTestEnv("maintenance-supersession");
   vi.spyOn(llm, "getLLMProvider").mockReturnValue({
     name: "ollama",
     model: "fixture",
@@ -21,19 +22,19 @@ beforeEach(async () => {
     testConnection: async () => true,
   });
   const resolver = new GnosysResolver();
-  await resolver.addProjectStore(env.tmpDir);
-  const store = resolver.getWriteTarget()?.store;
-  if (!store) throw new Error("Missing fixture store");
+  const storePath = join(env.tmpDir, ".gnosys");
+  await resolver.addProjectStore(storePath);
+  await writeProjectIdentity(env.tmpDir, {
+    projectId: "project-a", projectName: "Maintenance fixture", workingDirectory: env.tmpDir,
+    user: "test", agentRulesTarget: null, obsidianVault: null,
+    createdAt: "2026-10-06T12:00:00.000Z", schemaVersion: 1,
+  });
   env.db.insertProject(makeProject({ id: "project-a" }));
   env.db.insertProject(makeProject({ id: "project-b" }));
-  const embeddings = new GnosysEmbeddings(env.tmpDir);
-  const today = new Date().toISOString().split("T")[0];
+  const embeddings = new GnosysEmbeddings(storePath);
   for (const id of ["A", "B"]) {
     const title = `Cache retention policy ${id}`;
-    await store.writeMemory("decisions", `${id}.md`, makeFrontmatter({
-      id, title, created: today, modified: today,
-    }), `Retention constraint ${id}`, { autoCommit: false });
-    env.db.insertMemory(makeMemory({ id, title, category: "decisions", project_id: "project-a" }));
+    env.db.insertMemory(makeMemory({ id, title, category: "decisions", content: `Retention constraint ${id}`, project_id: "project-a" }));
     embeddings.storeEmbedding(`decisions/${id}.md`, new Float32Array([1, 0]), id);
   }
   embeddings.close();
@@ -64,13 +65,32 @@ describe("maintenance supersession", () => {
     { scope: "global", project_id: null },
     { scope: "project", project_id: "project-b" },
   ])("rejects cross-boundary consolidation atomically: $scope/$project_id", async updates => {
-    env.db.updateMemory("B", updates);
-    const before = env.db.getAllMemories();
-    const report = await engine.maintain({ autoApply: true });
+    let before = env.db.getAllMemories();
+    const report = await engine.maintain({ autoApply: true, onProgress: (step) => {
+      if (step === "Applying changes") {
+        env.db.updateMemory("B", updates);
+        before = env.db.getAllMemories();
+      }
+    } });
     expect(report.consolidated).toBe(0);
     expect(report.actions).toEqual([
       expect.stringContaining("Cannot supersede across scope or project:"),
     ]);
+    expect(env.db.getAllMemories()).toEqual(before);
+    expect(generate).toHaveBeenCalledTimes(0);
+  });
+
+  it.each([
+    { scope: "global", project_id: null },
+    { scope: "project", project_id: "project-b" },
+  ])("excludes memories outside the selected project before consolidation: $scope/$project_id", async updates => {
+    env.db.updateMemory("B", updates);
+    const before = env.db.getAllMemories();
+    const report = await engine.maintain({ autoApply: true });
+    expect(report.totalMemories).toBe(1);
+    expect(report.duplicates).toEqual([]);
+    expect(report.consolidated).toBe(0);
+    expect(report.actions).toEqual([]);
     expect(env.db.getAllMemories()).toEqual(before);
     expect(generate).toHaveBeenCalledTimes(0);
   });

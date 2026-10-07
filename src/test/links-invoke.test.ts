@@ -92,9 +92,10 @@ describe("runLinksCommand (in-process invoke)", () => {
   it("emits structured JSON with outgoing/backlinks arrays (--json)", async () => {
     await runLinksCommand(getResolver, "decisions/source.md", { json: true });
     const parsed = JSON.parse(logged());
-    expect(parsed.title).toBe("Source memory");
-    expect(parsed.outgoing.length).toBeGreaterThanOrEqual(1);
-    expect(Array.isArray(parsed.backlinks)).toBe(true);
+    expect(parsed).toEqual({
+      memoryPath: "decisions/source.md", title: "Source memory", backlinks: [],
+      outgoing: [{ target: "target", displayText: null, sourcePath: "decisions/source.md", sourceTitle: "Source memory" }],
+    });
   });
 
   it("exits with an error for a missing memory path", async () => {

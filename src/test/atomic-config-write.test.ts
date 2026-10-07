@@ -2,10 +2,11 @@
  * Atomic config file writes — no truncated files, no temp litter.
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { promises as fsp } from "node:fs";
 import { atomicWriteFile, atomicWriteFileSync } from "../lib/atomicWrite.js";
 
 let workDir: string;
@@ -15,6 +16,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.restoreAllMocks();
   rmSync(workDir, { recursive: true, force: true });
 });
 
@@ -34,13 +36,16 @@ describe("atomic config writes", () => {
     expect(tmpFilesLeft()).toEqual([]);
   });
 
-  it("atomicWriteFile overwrites an existing file atomically", async () => {
+  it("atomicWriteFile preserves the previous content if replacement fails", async () => {
     const dest = join(workDir, "gnosys.json");
     writeFileSync(dest, '{"old":true}\n', "utf-8");
 
     const next = JSON.stringify({ new: true }, null, 2) + "\n";
     await atomicWriteFile(dest, next);
 
+    expect(readFileSync(dest, "utf-8")).toBe(next);
+    vi.spyOn(fsp, "rename").mockRejectedValueOnce(new Error("injected rename failure"));
+    await expect(atomicWriteFile(dest, "truncated replacement")).rejects.toThrow("injected rename failure");
     expect(readFileSync(dest, "utf-8")).toBe(next);
     expect(tmpFilesLeft()).toEqual([]);
   });

@@ -76,4 +76,10 @@ describe("superseded replacements under project visibility", () => {
     const ids = db.searchFts("narwhalprism", 10).map((r) => r.id);
     expect(ids).toEqual(["deci-p2-new", "deci-p1-old"]);
   });
+
+  it.each(["project", "user", "global"])("context dedupe excludes a successor in another %s boundary", (scope) => {
+    db.updateMemory("deci-p2-new", { scope });
+    const ids = db.discoverFts("narwhalprism", 3, false, { scope: "project", projectId: "p1" }).map((hit) => hit.id);
+    expect(ids).toEqual(["deci-p1-old"]);
+  });
 });

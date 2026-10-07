@@ -712,13 +712,3 @@ export async function runKeysSetup(opts?: KeysSetupOpts): Promise<void> {
     }
   }
 }
-
-export const setupKeysTestHooks = {
-  chooseKeyDestination,
-  copyToKeychain,
-  deleteKey,
-  listKeyLocations,
-  removeDotenvKeys,
-  updateKey,
-  validateProviderKey,
-};

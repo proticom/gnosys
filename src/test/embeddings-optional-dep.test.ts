@@ -32,7 +32,7 @@ describe("embeddings optional dep (@huggingface/transformers)", () => {
 
   it("returns a 384-dim vector when transformers is available", async () => {
     const mockPipelineFn = vi.fn().mockResolvedValue({
-      tolist: () => [Array.from({ length: 384 }, (_, i) => i / 384)],
+      tolist: () => [[0.25, -0.5, ...Array.from({ length: 381 }, () => 0), 1]],
     });
     vi.doMock("@huggingface/transformers", () => ({
       pipeline: vi.fn().mockResolvedValue(mockPipelineFn),
@@ -48,5 +48,7 @@ describe("embeddings optional dep (@huggingface/transformers)", () => {
     const vector = await embeddings.embed("hello");
     expect(vector).toBeInstanceOf(Float32Array);
     expect(vector.length).toBe(384);
+    expect(Array.from(vector.slice(0, 2))).toEqual([0.25, -0.5]);
+    expect(vector[383]).toBe(1);
   });
 });

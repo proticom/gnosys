@@ -1,4 +1,5 @@
 import { loadConfig } from "./config.js";
+import { GnosysDB } from "./db.js";
 import type { GnosysResolver } from "./resolver.js";
 
 type GetResolver = () => Promise<GnosysResolver>;
@@ -24,7 +25,8 @@ export async function runMaintainCommand(
 
   const cfg = await loadConfig(stores[0].path);
 
-  const engine = new GnosysMaintenanceEngine(resolver, cfg);
+  const centralDb = GnosysDB.openCentral();
+  const engine = new GnosysMaintenanceEngine(resolver, cfg, centralDb);
   const report = await engine.maintain({
     dryRun: opts.dryRun,
     autoApply: opts.autoApply,
@@ -41,7 +43,7 @@ export async function runMaintainCommand(
       process.stdout.write(`\r[${current}/${total}] ${step}...`);
       if (current === total) process.stdout.write("\n");
     },
-  });
+  }).finally(() => centralDb.close());
 
   console.log("");
   console.log(formatMaintenanceReport(report));

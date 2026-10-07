@@ -104,6 +104,10 @@ describe("audit_log sync", () => {
     // Second push should find no new entries
     const second = await sync.push();
     expect(second.auditPushed).toBeUndefined();
+    const remote = new GnosysDB(remoteTmp);
+    try {
+      expect(remote.queryAuditLog({ limit: 10 }).map(({ memory_id, operation }) => ({ memory_id, operation }))).toEqual([{ memory_id: "mem-1", operation: "write" }]);
+    } finally { remote.close(); }
   });
 
   it("first push sends ALL local entries regardless of remote contents (full convergence)", async () => {
@@ -148,6 +152,10 @@ describe("audit_log sync", () => {
 
     const result = await sync.push();
     expect(result.auditPushed).toBe(3);
+    const verification = new GnosysDB(remoteTmp);
+    try {
+      expect(verification.queryAuditLog({ limit: 10 }).map((entry) => entry.memory_id).sort()).toEqual(["new1", "new2", "older-than-remote", "remote-only"]);
+    } finally { verification.close(); }
   });
 
   it("full sync (push + pull) merges audit entries from both sides", async () => {
@@ -177,11 +185,15 @@ describe("audit_log sync", () => {
     // records machine-local remote_push / remote_pull observability rows.
     const localEntries = local.queryAuditLog({ limit: 10 });
     const memoryAudits = localEntries.filter((e) => e.operation === "write" || e.operation === "read");
-    expect(memoryAudits).toHaveLength(2);
+    expect(memoryAudits.map(({ memory_id, operation }) => ({ memory_id, operation })).sort((a, b) => String(a.memory_id).localeCompare(String(b.memory_id)))).toEqual([
+      { memory_id: "from-local", operation: "write" }, { memory_id: "from-remote", operation: "read" },
+    ]);
 
     const remote2 = new GnosysDB(remoteTmp);
     const remoteEntries = remote2.queryAuditLog({ limit: 10 });
-    expect(remoteEntries).toHaveLength(2);
+    expect(remoteEntries.map(({ memory_id, operation }) => ({ memory_id, operation })).sort((a, b) => String(a.memory_id).localeCompare(String(b.memory_id)))).toEqual([
+      { memory_id: "from-local", operation: "write" }, { memory_id: "from-remote", operation: "read" },
+    ]);
     remote2.close();
 
     expect(result.errors).toEqual([]);

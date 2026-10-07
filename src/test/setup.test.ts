@@ -2,12 +2,15 @@
  * Tests for the setup wizard helpers and model tier data.
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import fs from "fs/promises";
 import path from "path";
 import os from "os";
+import { createInterface, type Interface } from "readline/promises";
+import { PassThrough } from "stream";
 import {
-  PROVIDER_TIERS,
+  pickProvider,
+  pickModel,
   getStructuringModel,
   writeApiKey,
   detectIDEs,
@@ -20,58 +23,58 @@ import {
   resolveTaskModel,
 } from "../lib/config.js";
 
+async function choose(run: (rl: Interface) => Promise<string>, answer: string) {
+  const input = new PassThrough();
+  const output = new PassThrough();
+  const rl = createInterface({ input, output });
+  const lines: string[] = [];
+  const log = vi.spyOn(console, "log").mockImplementation((...args: unknown[]) => {
+    lines.push(args.map(String).join(" ").replace(/\x1b\[[0-9;]*m/g, "").trim());
+  });
+  try {
+    const pending = run(rl);
+    input.write(answer + "\n");
+    return { value: await pending, lines };
+  } finally {
+    rl.close();
+    log.mockRestore();
+  }
+}
+
 describe("Setup Wizard", () => {
-  describe("PROVIDER_TIERS", () => {
-    it("has entries for all 9 providers", () => {
-      const providers = Object.keys(PROVIDER_TIERS);
-      expect(providers).toContain("anthropic");
-      expect(providers).toContain("openai");
-      expect(providers).toContain("groq");
-      expect(providers).toContain("xai");
-      expect(providers).toContain("mistral");
-      expect(providers).toContain("openrouter");
-      expect(providers).toContain("ollama");
-      expect(providers).toContain("lmstudio");
-      expect(providers).toContain("custom");
-      expect(providers).toHaveLength(9);
+  describe("provider and model selection", () => {
+    it("returns the provider selected through each menu option", async () => {
+      const selected: string[] = [];
+      for (let choice = 1; choice <= 9; choice++) {
+        selected.push((await choose((rl) => pickProvider(rl, {}, "Provider"), String(choice))).value);
+      }
+      expect(selected).toEqual([
+        "anthropic", "openai", "ollama", "groq", "xai", "mistral", "lmstudio", "openrouter", "custom",
+      ]);
     });
 
-    it("each provider with tiers has exactly one recommended model", () => {
-      for (const [provider, tiers] of Object.entries(PROVIDER_TIERS)) {
-        if (tiers.length === 0) continue; // custom has no tiers
-        const recommended = tiers.filter((t) => t.recommended);
-        expect(
-          recommended,
-          `${provider} should have exactly 1 recommended tier`
-        ).toHaveLength(1);
+    it("returns cloud model selections and renders the recommended model with prices", async () => {
+      const selected: string[] = [];
+      for (const choice of ["1", "2", "3"]) {
+        const result = await choose((rl) => pickModel(rl, "anthropic", {}, "Model"), choice);
+        selected.push(result.value);
+        expect(result.lines).toContain("2. Balanced (claude-sonnet-4-6)  $3.00–$15.00/M tokens  <- recommended");
       }
+      expect(selected).toEqual(["claude-haiku-4-5", "claude-sonnet-4-6", "claude-opus-4-6"]);
     });
 
-    it("custom provider has empty tiers array", () => {
-      expect(PROVIDER_TIERS.custom).toEqual([]);
+    it("accepts a typed model for the custom provider", async () => {
+      expect((await choose((rl) => pickModel(rl, "custom", {}, "Model"), "my-local-model")).value)
+        .toBe("my-local-model");
     });
 
-    it("all tiers have required fields", () => {
-      for (const [provider, tiers] of Object.entries(PROVIDER_TIERS)) {
-        for (const tier of tiers) {
-          expect(tier.name, `${provider} tier missing name`).toBeTruthy();
-          expect(tier.model, `${provider} tier missing model`).toBeTruthy();
-          expect(typeof tier.input).toBe("number");
-          expect(typeof tier.output).toBe("number");
-          expect(typeof tier.recommended).toBe("boolean");
-        }
-      }
-    });
-
-    it("local providers (ollama, lmstudio) have zero pricing", () => {
-      for (const tier of PROVIDER_TIERS.ollama) {
-        expect(tier.input).toBe(0);
-        expect(tier.output).toBe(0);
-      }
-      for (const tier of PROVIDER_TIERS.lmstudio) {
-        expect(tier.input).toBe(0);
-        expect(tier.output).toBe(0);
-      }
+    it("selects local models and renders their literal menu labels", async () => {
+      const ollama = await choose((rl) => pickModel(rl, "ollama", {}, "Model"), "1");
+      const studio = await choose((rl) => pickModel(rl, "lmstudio", {}, "Model"), "1");
+      expect(ollama.value).toBe("llama3.2");
+      expect(studio.value).toBe("default");
+      expect(ollama.lines).toContain("1. Llama 3.2 (default)  <- recommended");
+      expect(studio.lines).toContain("1. Default  <- recommended");
     });
   });
 
@@ -164,47 +167,32 @@ describe("Setup Wizard", () => {
 
     beforeEach(async () => {
       tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "gnosys-ide-test-"));
+      vi.spyOn(os, "homedir").mockReturnValue(tmpDir);
+      vi.stubEnv("PATH", tmpDir);
+      const stat = fs.stat;
+      vi.spyOn(fs, "stat").mockImplementation((file) => {
+        if (!String(file).startsWith(tmpDir + path.sep)) return Promise.reject(new Error("ENOENT"));
+        return stat(file);
+      });
     });
 
     afterEach(async () => {
+      vi.restoreAllMocks();
+      vi.unstubAllEnvs();
       await fs.rm(tmpDir, { recursive: true, force: true });
     });
 
-    it("returns an array of strings (IDE detection depends on host environment)", async () => {
-      // detectIDEs checks global installs (home dir, PATH, /Applications),
-      // not the project directory. We can only verify the return type is correct
-      // and it doesn't crash — actual results depend on what's installed.
-      const ides = await detectIDEs(tmpDir);
-      expect(Array.isArray(ides)).toBe(true);
-      for (const ide of ides) {
-        expect(typeof ide).toBe("string");
-        expect([
-          "claude",
-          "claude-desktop",
-          "cursor",
-          "codex",
-          "gemini-cli",
-          "antigravity",
-          "grok-build", // v5.9.4 Bug 12 — added with Grok Build integration
-        ]).toContain(ide);
+    it("detects the IDE marker directories in the selected home", async () => {
+      for (const directory of [".claude", ".cursor", ".grok"]) {
+        await fs.mkdir(path.join(tmpDir, directory));
       }
+      expect(await detectIDEs(tmpDir)).toEqual(["claude", "cursor", "grok-build"]);
     });
 
-    it("returns empty array for bare directory", async () => {
-      const ides = await detectIDEs(tmpDir);
-      // detectIDEs checks global installs (home dir, PATH, /Applications),
-      // so filter out any globally-installed IDEs on the test machine
-      const globallyInstalled = [
-        "claude",
-        "claude-desktop",
-        "cursor",
-        "codex",
-        "gemini-cli",
-        "antigravity",
-        "grok-build", // v5.9.4 Bug 12
-      ];
-      const projectOnly = ides.filter((i) => !globallyInstalled.includes(i));
-      expect(projectOnly).toHaveLength(0);
+    it("detects a newly installed IDE after an initially empty home", async () => {
+      expect(await detectIDEs(tmpDir)).toEqual([]);
+      await fs.mkdir(path.join(tmpDir, ".cursor"));
+      expect(await detectIDEs(tmpDir)).toEqual(["cursor"]);
     });
   });
 

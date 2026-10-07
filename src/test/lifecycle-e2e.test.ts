@@ -28,15 +28,6 @@ afterEach(async () => {
   await cleanupTestEnv(env);
 });
 
-function sqlite(db: TestEnv["db"]) {
-  return (db as unknown as {
-    db: {
-      pragma: (s: string, opts?: { simple: boolean }) => unknown;
-      prepare: (sql: string) => { get: (...args: unknown[]) => unknown };
-    };
-  }).db;
-}
-
 describe("memory lifecycle e2e", () => {
   it("add → read → update → archive → dearchive → reinforce×3 → maintain stays consistent", async () => {
     const initialContent = "# Lifecycle Test\n\nOriginal body.";
@@ -105,18 +96,9 @@ describe("memory lifecycle e2e", () => {
     await resolver.addProjectStore(env.tmpDir);
     const engine = new GnosysMaintenanceEngine(resolver, undefined, env.db);
     const report = await engine.maintain({ dryRun: false, autoApply: false });
-    expect(report).toBeTruthy();
-    expect(report.totalMemories).toBeGreaterThan(0);
-
-    // 8. consistency
-    expect(sqlite(env.db).pragma("integrity_check", { simple: true })).toBe("ok");
-
-    const ids = env.db.getAllMemories().map((m) => m.id);
-    expect(ids.filter((x) => x === MEMORY_ID).length).toBe(1);
-
-    const ftsRow = sqlite(env.db)
-      .prepare("SELECT COUNT(*) AS c FROM memories_fts WHERE id = ?")
-      .get(MEMORY_ID) as { c: number };
-    expect(ftsRow.c).toBeGreaterThanOrEqual(1);
+    expect(report.totalMemories).toBe(1);
+    expect(env.db.getAllMemories().map((memory) => memory.id)).toEqual(["life-001"]);
+    expect(env.db.searchFts("Lifecycle").map((memory) => ({ id: memory.id, title: memory.title })))
+      .toEqual([{ id: "life-001", title: "Lifecycle Test" }]);
   }, 30_000);
 });

@@ -98,12 +98,20 @@ function configApiKey(config: GnosysConfig, provider: LLMProviderName): string |
   }
 }
 
+function escapeShellDoubleQuoted(value: string): string {
+  return value.replace(/[\\"$`]/g, "\\$&");
+}
+
+function shellArgument(value: string): string {
+  return /^[A-Za-z0-9_./:-]+$/.test(value) ? value : `'${value.replace(/'/g, "'\\''")}'`;
+}
+
 function readFromKeychain(service: string): string | undefined {
   if (process.env.VITEST) return undefined;
   if (process.platform === "darwin") {
     try {
       return execSync(
-        `security find-generic-password -a "$USER" -s "${service}" -w 2>/dev/null`,
+        `security find-generic-password -a "$USER" -s "${escapeShellDoubleQuoted(service)}" -w 2>/dev/null`,
         { stdio: "pipe", encoding: "utf-8", timeout: 2000 },
       ).trim() || undefined;
     } catch {
@@ -113,7 +121,7 @@ function readFromKeychain(service: string): string | undefined {
   if (process.platform === "linux") {
     try {
       return execSync(
-        `secret-tool lookup service gnosys account ${service} 2>/dev/null`,
+        `secret-tool lookup service gnosys account ${shellArgument(service)} 2>/dev/null`,
         { stdio: "pipe", encoding: "utf-8", timeout: 2000 },
       ).trim() || undefined;
     } catch {
@@ -255,7 +263,7 @@ export function detectSecretSource(
   if (process.platform === "darwin" && !process.env.VITEST) {
     try {
       const result = execSync(
-        `security find-generic-password -a "$USER" -s "${service}" -w 2>/dev/null`,
+        `security find-generic-password -a "$USER" -s "${escapeShellDoubleQuoted(service)}" -w 2>/dev/null`,
         { stdio: "pipe", encoding: "utf-8", timeout: 2000 },
       ).trim();
       if (result) return "macOS Keychain";
@@ -266,7 +274,7 @@ export function detectSecretSource(
   if (process.platform === "linux" && !process.env.VITEST) {
     try {
       const result = execSync(
-        `secret-tool lookup service gnosys account ${service} 2>/dev/null`,
+        `secret-tool lookup service gnosys account ${shellArgument(service)} 2>/dev/null`,
         { stdio: "pipe", encoding: "utf-8", timeout: 2000 },
       ).trim();
       if (result) return "GNOME Keyring";
@@ -366,7 +374,7 @@ export function deleteStoredSecret(service: string): boolean {
   if (process.platform === "darwin") {
     try {
       execSync(
-        `security delete-generic-password -a "$USER" -s "${service}" 2>/dev/null`,
+        `security delete-generic-password -a "$USER" -s "${escapeShellDoubleQuoted(service)}" 2>/dev/null`,
         { stdio: "pipe" },
       );
       return true;
@@ -376,7 +384,7 @@ export function deleteStoredSecret(service: string): boolean {
   }
   if (process.platform === "linux") {
     try {
-      execSync(`secret-tool clear service gnosys account ${service}`, {
+      execSync(`secret-tool clear service gnosys account ${shellArgument(service)}`, {
         stdio: "pipe",
       });
       return true;
@@ -401,7 +409,7 @@ export function writeApiKeyToKeychain(service: string, key: string): boolean {
   if (process.platform !== "darwin") return false;
   try {
     execSync(
-      `security add-generic-password -a "$USER" -s "${service}" -w "${key.replace(/"/g, '\\"')}" -U`,
+      `security add-generic-password -a "$USER" -s "${escapeShellDoubleQuoted(service)}" -w "${escapeShellDoubleQuoted(key)}" -U`,
       { stdio: "pipe" },
     );
     return true;
@@ -419,7 +427,7 @@ export function writeApiKeyToSecretTool(
   try {
     execSync("which secret-tool", { stdio: "pipe" });
     execSync(
-      `printf "%s" "${key.replace(/"/g, '\\"')}" | secret-tool store --label="${label}" service gnosys account ${service}`,
+      `printf "%s" "${escapeShellDoubleQuoted(key)}" | secret-tool store --label="${escapeShellDoubleQuoted(label)}" service gnosys account ${shellArgument(service)}`,
       { stdio: "pipe", shell: "/bin/sh" },
     );
     return true;

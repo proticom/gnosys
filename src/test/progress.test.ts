@@ -7,14 +7,18 @@ describe("createProgress", () => {
   });
 
   it("returns a no-op progress instance when verbose is false", () => {
+    const writes: string[] = [];
+    vi.spyOn(process.stderr, "write").mockImplementation((chunk) => {
+      writes.push(String(chunk));
+      return true;
+    });
     const progress = createProgress(false);
-    expect(progress.noop).toBe(true);
-    expect(() => {
-      progress.header("ignored");
-      progress.step("ignored");
-      progress.tick("ignored");
-      progress.done("ignored");
-    }).not.toThrow();
+    progress.header("ignored");
+    progress.step("ignored");
+    progress.tick("ignored");
+    progress.done("ignored");
+    progress.emit({ kind: "header", text: "ignored" });
+    expect(writes).toEqual([]);
   });
 
   it("emits header, step, and done lines when verbose is true", () => {

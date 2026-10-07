@@ -15,6 +15,9 @@ let errSpy: ReturnType<typeof vi.spyOn>;
 const logged = () => logSpy.mock.calls.map((c: unknown[]) => c.join(" ")).join("\n");
 
 beforeAll(() => {
+  vi.stubEnv("GNOSYS_STORES", "");
+  vi.stubEnv("GNOSYS_PERSONAL", "");
+  vi.stubEnv("GNOSYS_GLOBAL", "");
   base = mkdtempSync(join(tmpdir(), "gnosys-stores-invoke-"));
   const home = join(base, ".gnosys");
   mkdirSync(home, { recursive: true });
@@ -23,6 +26,7 @@ beforeAll(() => {
   mkdirSync(join(projectDir, ".gnosys"), { recursive: true });
 });
 afterAll(() => {
+  vi.unstubAllEnvs();
   if (origHome === undefined) delete process.env.GNOSYS_HOME;
   else process.env.GNOSYS_HOME = origHome;
   rmSync(base, { recursive: true, force: true });
@@ -41,14 +45,13 @@ describe("runStoresCommand (in-process invoke)", () => {
   it("prints the resolver summary including the project store", async () => {
     await runStoresCommand(() => GnosysResolver.resolveForProject(projectDir));
     const out = logged();
-    expect(out.length).toBeGreaterThan(0);
-    expect(out).toContain("project");
+    expect(out).toBe(`[project] ${join(projectDir, ".gnosys")} (read-write)`);
     expect(errSpy).not.toHaveBeenCalled();
   });
 
   it("still prints a summary when no project store exists", async () => {
     await runStoresCommand(() => GnosysResolver.resolveForProject(join(base, "nope")));
-    expect(logSpy).toHaveBeenCalled();
+    expect(logged()).toBe("No stores found. Create a .gnosys/ directory or set GNOSYS_PERSONAL.");
     expect(errSpy).not.toHaveBeenCalled();
   });
 });

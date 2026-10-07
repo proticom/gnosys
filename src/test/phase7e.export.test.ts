@@ -55,12 +55,10 @@ describe("Phase 7e: Obsidian Export Bridge", () => {
 
       expect(report.memoriesExported).toBe(2);
 
-      // Verify directory was created
-      const files = await fsp.readdir(exportDir, { recursive: true });
-      const mdFiles = (files as string[]).filter((f) =>
-        f.toString().endsWith(".md")
-      );
-      expect(mdFiles.length).toBeGreaterThanOrEqual(2);
+      expect(await fsp.readFile(path.join(exportDir, "decisions/decision-one.md"), "utf8"))
+        .toContain("We chose [[exp-002|Concept Two]] for this.");
+      expect(await fsp.readFile(path.join(exportDir, "concepts/concept-two.md"), "utf8"))
+        .toContain("A concept that relates to decision one.");
     });
 
     it("exported files preserve wikilinks", async () => {
@@ -87,27 +85,17 @@ describe("Phase 7e: Obsidian Export Bridge", () => {
       const exporter = new GnosysExporter(env.db);
       await exporter.export({ targetDir: exportDir });
 
-      // Find exported files and check wikilinks preserved
-      const files = await fsp.readdir(exportDir, { recursive: true });
-      const sourceFiles = (files as string[]).filter(
-        (f) =>
-          f.toString().includes("wikilink") ||
-          f.toString().includes("Wikilink")
-      );
-
-      if (sourceFiles.length > 0) {
-        const content = await fsp.readFile(
-          path.join(exportDir, sourceFiles[0]),
-          "utf-8"
-        );
-        expect(content).toContain("[[");
-      }
+      expect(await fsp.readFile(path.join(exportDir, "decisions/wikilink-source.md"), "utf8"))
+        .toContain("References [[wl-002|Target Memory]].");
+      expect(await fsp.readFile(path.join(exportDir, "concepts/target-memory.md"), "utf8"))
+        .toContain("The target of a wikilink.");
     });
 
     it("only exports active memories when activeOnly=true", async () => {
       env.db.insertMemory(
         makeMemory({
           id: "act-001",
+          category: "decisions",
           title: "Active",
           content: "Active memory.",
           status: "active",
@@ -117,6 +105,7 @@ describe("Phase 7e: Obsidian Export Bridge", () => {
       env.db.insertMemory(
         makeMemory({
           id: "arc-001",
+          category: "decisions",
           title: "Archived",
           content: "Archived memory.",
           status: "archived",
@@ -133,6 +122,10 @@ describe("Phase 7e: Obsidian Export Bridge", () => {
       });
 
       expect(report.memoriesExported).toBe(1);
+      expect(await fsp.readFile(path.join(exportDir, "decisions/active.md"), "utf8"))
+        .toContain("Active memory.");
+      await expect(fsp.readFile(path.join(exportDir, "decisions/archived.md"), "utf8"))
+        .rejects.toMatchObject({ code: "ENOENT" });
     });
   });
 
@@ -143,6 +136,7 @@ describe("Phase 7e: Obsidian Export Bridge", () => {
       env.db.insertMemory(
         makeMemory({
           id: "rt-001",
+          category: "decisions",
           title: "Round Trip Test",
           content: "# Round Trip Test\n\nContent survives round trip.",
           confidence: 0.85,
@@ -154,21 +148,10 @@ describe("Phase 7e: Obsidian Export Bridge", () => {
       const exporter = new GnosysExporter(env.db);
       await exporter.export({ targetDir: exportDir });
 
-      // Read exported files
-      const files = await fsp.readdir(exportDir, { recursive: true });
-      const mdFiles = (files as string[]).filter((f) =>
-        f.toString().endsWith(".md")
-      );
-
-      expect(mdFiles.length).toBeGreaterThan(0);
-
-      // Verify the exported file content
-      const content = await fsp.readFile(
-        path.join(exportDir, mdFiles[0]),
-        "utf-8"
-      );
-      expect(content).toContain("---");
-      expect(content).toContain("Round Trip Test");
+      const content = await fsp.readFile(path.join(exportDir, "decisions/round-trip-test.md"), "utf8");
+      expect(content).toContain("id: rt-001");
+      expect(content).toContain("confidence: 0.85");
+      expect(content).toContain("# Round Trip Test\n\nContent survives round trip.");
     });
   });
 });

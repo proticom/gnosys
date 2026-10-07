@@ -19,6 +19,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "fs";
+import { z } from "zod";
 import path from "path";
 import { handleRequest, } from "../sandbox/server.js";
 import { traceCodebase } from "../lib/trace.js";
@@ -163,10 +164,8 @@ describe("TC-10.5: Reflection API — auto-discovers memories when no IDs provid
     });
 
     expect(res.ok).toBe(true);
-    const result = res.result as any;
-    // Should have found at least the JWT memory via search
-    expect(result.memories_updated.length).toBeGreaterThanOrEqual(0);
-    expect(result.reflection_id).toMatch(/^mem-/);
+    expect(res.result).toMatchObject({ memories_updated: [{ id: "mem-auth-001", confidence: 0.75, reinforcement_count: 1 }] });
+    expect(env.db.getMemory("mem-auth-001")).toMatchObject({ confidence: 0.75, reinforcement_count: 1 });
   });
 });
 
@@ -219,14 +218,14 @@ export function parseDate(s: string): Date {
     const result = traceCodebase(env.db, env.tmpDir, { projectId: "proj-test" });
     expect(result.memoriesCreated).toBe(2);
 
-    // Verify memories exist in DB
-    for (const memId of result.memoryIds) {
-      const mem = env.db.getMemory(memId);
-      expect(mem).not.toBeNull();
-      expect(mem!.category).toBe("how");
-      expect(mem!.title).toMatch(/^How: /);
-      expect(mem!.project_id).toBe("proj-test");
-    }
+    expect(result.memoryIds).toHaveLength(2);
+    expect(result.memoryIds.map(id => {
+      const memory = env.db.getMemory(id);
+      return { title: memory?.title, category: memory?.category, projectId: memory?.project_id };
+    }).sort((a, b) => (a.title ?? "").localeCompare(b.title ?? ""))).toEqual([
+      { title: "How: formatDate (src/utils.ts)", category: "how", projectId: "proj-test" },
+      { title: "How: parseDate (src/utils.ts)", category: "how", projectId: "proj-test" },
+    ]);
   });
 });
 
@@ -255,17 +254,15 @@ function step3(): string {
     expect(result.memoriesCreated).toBe(3);
     expect(result.relationshipsCreated).toBeGreaterThan(0);
 
-    // Find the step1 memory
-    const step1Mem = result.memoryIds.find((id) => {
-      const mem = env.db.getMemory(id);
-      return mem?.title.includes("step1");
-    });
-    expect(step1Mem).toBeDefined();
-
-    // Check leads_to relationship exists from step1
-    const rels = env.db.getRelationshipsFrom(step1Mem!);
-    const leadsTo = rels.filter((r) => r.rel_type === "leads_to");
-    expect(leadsTo.length).toBeGreaterThan(0);
+    const edges = result.memoryIds.flatMap(id => env.db.getRelationshipsFrom(id)).map(edge => [
+      env.db.getMemory(edge.source_id)?.title, edge.rel_type, env.db.getMemory(edge.target_id)?.title,
+    ]).sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
+    expect(edges).toEqual([
+      ["How: step1 (src/pipeline.ts)", "leads_to", "How: step2 (src/pipeline.ts)"],
+      ["How: step2 (src/pipeline.ts)", "follows_from", "How: step1 (src/pipeline.ts)"],
+      ["How: step2 (src/pipeline.ts)", "leads_to", "How: step3 (src/pipeline.ts)"],
+      ["How: step3 (src/pipeline.ts)", "follows_from", "How: step2 (src/pipeline.ts)"],
+    ]);
   });
 });
 
@@ -409,32 +406,23 @@ function processData(data: string): string {
     expect(traceResult.memoriesCreated).toBe(3);
     expect(traceResult.relationshipsCreated).toBeGreaterThan(0);
 
-    // Step 2: Reflect on the traced code
+    const handler = env.db.getMemoriesByCategory("how").find(memory => memory.title === "How: handleRequest (src/handler.ts)");
+    if (!handler) throw new Error("Traced handler memory is missing");
     const reflectRes = req("reflect", {
       outcome: "handleRequest pipeline works correctly",
-      memory_ids: traceResult.memoryIds.slice(0, 2),
+      memory_ids: [handler.id],
       success: true,
     });
     expect(reflectRes.ok).toBe(true);
-    const reflectResult = reflectRes.result as any;
-
-    // Step 3: Traverse from the reflection memory
-    const traverseRes = req("traverse", {
-      id: reflectResult.reflection_id,
-      depth: 3,
-    });
+    const reflection = z.object({ reflection_id: z.string() }).parse(reflectRes.result);
+    const traverseRes = req("traverse", { id: reflection.reflection_id, depth: 3 });
     expect(traverseRes.ok).toBe(true);
-    const traverseResult = traverseRes.result as any;
-
-    // The reflection should connect to the traced memories
-    expect(traverseResult.total).toBeGreaterThan(1);
-
-    // Verify we can reach the traced procedural memories through the chain
-    const nodeIds = traverseResult.nodes.map((n: any) => n.id);
-    expect(nodeIds).toContain(reflectResult.reflection_id);
-
-    // At least one traced memory should be reachable
-    const tracedReachable = traceResult.memoryIds.some((id: string) => nodeIds.includes(id));
-    expect(tracedReachable).toBe(true);
+    const traversal = z.object({ nodes: z.array(z.object({ title: z.string(), depth: z.number(), via_rel: z.string().nullable() })) }).parse(traverseRes.result);
+    expect(traversal.nodes.map(node => [node.title, node.depth, node.via_rel]).sort((a, b) => String(a[0]).localeCompare(String(b[0])))).toEqual([
+      ["How: handleRequest (src/handler.ts)", 1, "validates"],
+      ["How: processData (src/handler.ts)", 2, "leads_to"],
+      ["How: validateInput (src/handler.ts)", 2, "leads_to"],
+      ["Reflection: handleRequest pipeline works correctly", 0, null],
+    ]);
   });
 });

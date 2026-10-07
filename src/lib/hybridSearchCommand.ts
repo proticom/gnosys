@@ -120,7 +120,8 @@ export async function runHybridSearchCommand(
             const { GnosysMaintenanceEngine } = await import("./maintenance.js");
             await GnosysMaintenanceEngine.reinforceBatch(
               writeTarget.store,
-              results.map((r) => r.relativePath)
+              results.map((r) => r.relativePath),
+              central?.localDb,
             ).catch((err) => {
               // Best-effort, but don't be fully silent (sprint 2026-07-02).
               console.error(`gnosys: reinforcement skipped: ${err instanceof Error ? err.message : String(err)}`);

@@ -15,7 +15,6 @@ import {
   attachFileToMemory,
   getMemoryAttachment,
   detachFromMemory,
-  MAX_INLINE_ATTACHMENT_BYTES,
 } from "../lib/attachments.js";
 import { createTestEnv, cleanupTestEnv, makeMemory, type TestEnv } from "./_helpers.js";
 
@@ -83,7 +82,7 @@ describe("inline attachments — round-trip", () => {
 describe("inline attachments — guardrails", () => {
   it("rejects files larger than the size cap", async () => {
     env.db.insertMemory(makeMemory({ id: "deci-010" }));
-    const big = Buffer.alloc(MAX_INLINE_ATTACHMENT_BYTES + 1, 0x41);
+    const big = Buffer.alloc(10 * 1024 * 1024 + 1, 0x41);
     const file = writeTempFile("big.bin", big);
     await expect(attachFileToMemory(env.db, "deci-010", file)).rejects.toThrow(/exceeds/i);
   });

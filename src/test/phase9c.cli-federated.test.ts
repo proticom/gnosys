@@ -10,6 +10,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { GnosysDB } from "../lib/db.js";
 import { execSync } from "child_process";
 import path from "path";
 import fs from "fs";
@@ -242,7 +243,7 @@ describe("TC-9c.3: Federated discover with scope filter", () => {
   it("federatedDiscover returns results with scope info", () => {
     const results = federatedDiscover(env.db, "api", { limit: 10 });
 
-    expect(results.length).toBe(2);
+    expect(results.map(({ id, scope }) => ({ id, scope }))).toEqual([{ id: "disc-p1", scope: "project" }, { id: "disc-u1", scope: "user" }]);
     for (const r of results) {
       expect(r.scope).toBeDefined();
       expect(r.score).toBeGreaterThan(0);
@@ -328,40 +329,31 @@ describe("TC-9c.5: CLI --json output includes scope info", () => {
   it("gnosys list --json produces valid JSON", () => {
     const output = cli("list", tmpDir, { json: true });
     const parsed = JSON.parse(extractJson(output));
-    expect(parsed).toHaveProperty("count");
-    expect(Array.isArray(parsed.memories)).toBe(true);
+    expect(parsed).toEqual({ count: 0, memories: [] });
   });
 
   it("gnosys search --json produces valid JSON with results array", () => {
-    // Add a memory first
-    try {
-      execSync(
-        `${CLI} add-structured --title "Test search target" --content "Searchable content about databases" --category general`,
-        {
-          encoding: "utf-8",
-          env: { ...process.env, GNOSYS_PROJECT: tmpDir, GNOSYS_HOME: path.join(tmpDir, ".test-central") },
-          stdio: ["pipe", "pipe", "pipe"],
-        }
-      );
-    } catch { /* may fail without LLM, but add-structured should work */ }
+    cli('add-structured --title "Test search target" --content "Searchable content about databases" --category concepts', tmpDir);
 
     const output = cli("search databases", tmpDir, { json: true });
     const parsed = JSON.parse(extractJson(output));
     expect(parsed).toHaveProperty("query", "databases");
-    expect(parsed).toHaveProperty("results");
+    expect(parsed.results).toHaveLength(1);
+    expect(parsed.results[0]).toMatchObject({ title: "Test search target" });
+    expect(parsed.results[0].snippet).toContain("databases");
   });
 
   it("gnosys stats --json produces valid JSON", () => {
     const output = cli("stats", tmpDir, { json: true });
     const parsed = JSON.parse(extractJson(output));
-    expect(typeof parsed.totalCount).toBe("number");
+    expect(parsed).toEqual({ totalCount: 0 });
   });
 
   it("gnosys status --system --json produces valid JSON", () => {
     // v5.7.1: 'gnosys dashboard' was removed; equivalent is 'status --system'.
     const output = cli("status --system --json", tmpDir);
     const parsed = JSON.parse(extractJson(output));
-    expect(parsed).toBeDefined();
+    expect(parsed).toMatchObject({ totalMemories: 0, gnosysDb: null, recall: { aggressive: true, maxMemories: 8, minRelevance: 0.4 } });
   });
 });
 
@@ -379,23 +371,11 @@ describe("TC-9c.6: CLI parity — all major commands functional", () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
-  it("gnosys --help lists all commands", () => {
-    const output = execSync(`${CLI} --help`, { encoding: "utf-8" });
-    // Check for key commands
-    expect(output).toContain("search");
-    expect(output).toContain("discover");
-    expect(output).toContain("recall");
-    expect(output).toContain("ask");
-    expect(output).toContain("fsearch");
-    expect(output).toContain("hybrid-search");
-    expect(output).toContain("list");
-    expect(output).toContain("add");
-    expect(output).toContain("update");
-    expect(output).toContain("reinforce");
-    expect(output).toContain("sync");
-    expect(output).toContain("dashboard");
-    expect(output).toContain("audit");
-    expect(output).toContain("sandbox");
+  it("gnosys --help lists public top-level commands", () => {
+    const output = cli("--help", tmpDir);
+    for (const name of ["search", "discover", "recall", "ask", "fsearch", "hybrid-search", "list", "add", "update", "reinforce", "sync", "status", "audit", "sandbox"]) {
+      expect(output).toMatch(new RegExp(`^\\s+${name}(?:\\s|$)`, "m"));
+    }
   });
 
   it("gnosys search --help shows --federated and --scope flags", () => {
@@ -441,27 +421,23 @@ describe("TC-9c.6: CLI parity — all major commands functional", () => {
   });
 
   it("gnosys audit --json outputs valid JSON", () => {
-    const output = cli("audit --json", tmpDir);
+    const db = new GnosysDB(path.join(tmpDir, ".test-central"));
+    db.logAudit({ timestamp: new Date().toISOString(), operation: "write", memory_id: "audit-cli-fixture", details: '{"source":"audit-test"}', duration_ms: 7, trace_id: "audit-cli-trace" });
+    db.close();
+    const output = cli("audit --operation write --json", tmpDir);
     const parsed = JSON.parse(extractJson(output));
-    expect(parsed).toHaveProperty("entries");
+    expect(parsed).toEqual([{ timestamp: expect.any(String), operation: "write", memoryId: "audit-cli-fixture", details: { source: "audit-test" }, durationMs: 7, traceId: "audit-cli-trace" }]);
   });
 
   it("gnosys tags lists the tag registry without error", () => {
-    const output = execSync(`${CLI} tags`, {
-      encoding: "utf-8",
-      env: { ...process.env, GNOSYS_PROJECT: tmpDir, GNOSYS_HOME: path.join(tmpDir, ".test-central") },
-      stdio: ["pipe", "pipe", "pipe"],
-    });
-    // Tags command produces text output (no --json support)
-    expect(typeof output).toBe("string");
+    const output = cli("tags", tmpDir);
+    expect(output).toContain("\ndomain:\n");
+    expect(output).toContain("architecture");
+    expect(output).toContain("status_tag:\n  deprecated, draft, experimental, stable");
   });
 
   it("gnosys lens runs without error", () => {
-    const output = execSync(`${CLI} lens`, {
-      encoding: "utf-8",
-      env: { ...process.env, GNOSYS_PROJECT: tmpDir, GNOSYS_HOME: path.join(tmpDir, ".test-central") },
-      stdio: ["pipe", "pipe", "pipe"],
-    });
-    expect(typeof output).toBe("string");
+    const output = cli("lens", tmpDir);
+    expect(output).toBe("No memories match the lens filter.\n");
   });
 });

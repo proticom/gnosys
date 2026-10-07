@@ -90,6 +90,11 @@ describe("runGraphCommand (in-process invoke)", () => {
 
     await runGraphCommand({ json: true });
     const parsed = JSON.parse(logged());
-    expect(parsed.totalLinks).toBeGreaterThanOrEqual(1);
+    expect(parsed.totalLinks).toBe(1);
+    expect(parsed.orphanedLinks).toEqual([]);
+    expect(parsed.nodes).toEqual([
+      { path: "decisions/deci-201.md", title: "Memory deci-201", outgoing: [{ target: "deci-202", displayText: null, sourcePath: "decisions/deci-201.md", sourceTitle: "Memory deci-201" }], incoming: [] },
+      { path: "decisions/deci-202.md", title: "Memory deci-202", outgoing: [], incoming: [{ target: "deci-202", displayText: null, sourcePath: "decisions/deci-201.md", sourceTitle: "Memory deci-201" }] },
+    ]);
   });
 });

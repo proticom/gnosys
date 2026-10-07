@@ -45,9 +45,14 @@ describe("pref set/get (in-process invoke)", () => {
     expect(out).toContain("commit-convention");
     expect(out).toContain("conventional-commits");
     expect(process.exitCode).toBeUndefined();
+    logSpy.mockClear();
+    await runPrefGetCommand("commit-convention", { json: true });
+    expect(JSON.parse(logged())).toMatchObject({ key: "commit-convention", value: "conventional-commits" });
   });
 
   it("reads the stored preference back", async () => {
+    await runPrefSetCommand("commit-convention", "conventional-commits", {});
+    logSpy.mockClear();
     await runPrefGetCommand("commit-convention", {});
     expect(logged()).toContain("conventional-commits");
     expect(errSpy).not.toHaveBeenCalled();

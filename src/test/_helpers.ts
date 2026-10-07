@@ -84,7 +84,8 @@ export function cli(
   const centralDir = opts.centralDir || defaultCentralDir(projectDir);
   return execSync(cmd, {
     encoding: "utf-8",
-    env: { ...process.env, GNOSYS_PROJECT: projectDir, GNOSYS_HOME: centralDir },
+    cwd: projectDir,
+    env: { ...process.env, GNOSYS_HOME: centralDir },
     stdio: ["pipe", "pipe", "pipe"],
   });
 }
@@ -102,18 +103,6 @@ export function extractJson(output: string): string {
   else if (objStart >= 0) start = objStart;
   else if (arrStart >= 0) start = arrStart;
   return start >= 0 ? output.slice(start) : output;
-}
-
-/**
- * Run a gnosys CLI command and parse JSON output.
- */
-export function cliJson<T = unknown>(
-  command: string,
-  projectDir: string,
-  opts: { centralDir?: string } = {}
-): T {
-  const output = cli(command, projectDir, { json: true, centralDir: opts.centralDir });
-  return JSON.parse(extractJson(output)) as T;
 }
 
 /**
@@ -301,26 +290,4 @@ export function seedMultiProjectMemories(
   ids.push(globalId);
 
   return ids;
-}
-
-// ─── CLI source concatenation (v6.2.1 cli split) ────────────────────────
-// src/cli.ts was split into per-domain registration modules under
-// src/cli/*.ts. Source-marker tests that used to read src/cli.ts now read
-// the concatenated sources so their substring assertions keep working.
-export function readCliSource(): string {
-  const srcRoot = path.resolve("src");
-  const parts = [fs.readFileSync(path.join(srcRoot, "cli.ts"), "utf-8")];
-  const cliDir = path.join(srcRoot, "cli");
-  for (const f of fs.readdirSync(cliDir).sort()) {
-    if (f.endsWith(".ts")) parts.push(fs.readFileSync(path.join(cliDir, f), "utf-8"));
-  }
-  // The split moved action bodies one directory deeper, so their lazy
-  // imports became "../lib/..." / "../index.js". Normalize back to the
-  // original "./lib/..." / "./index.js" spelling so the hundreds of
-  // pre-split wiring assertions (`import("./lib/xCommand.js")`) keep
-  // matching without rewriting every test.
-  return parts
-    .join("\n")
-    .replaceAll('import("../lib/', 'import("./lib/')
-    .replaceAll('import("../index.js")', 'import("./index.js")');
 }

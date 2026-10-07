@@ -7,7 +7,7 @@ import { mkdirSync, writeFileSync, rmSync, existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { tmpdir } from "os";
 import { migrateProject, writeProjectIdentity } from "../lib/projectIdentity.js";
-import { readCliSource } from "./_helpers.js"; // v6.2.1 cli split
+
 
 describe("shell injection argv form", () => {
   let base: string;
@@ -50,25 +50,25 @@ describe("shell injection argv form", () => {
     ).toContain("spaced path copy");
   });
 
-  it("does not use shell-string cp/open patterns in source", () => {
-    const projectIdentity = readFileSync(
-      join(process.cwd(), "src/lib/projectIdentity.ts"),
-      "utf-8",
-    );
-    const cli = readCliSource(); // v6.2.1 cli split: read src/cli.ts + src/cli/*.ts
-    const statusCommand = readFileSync(
-      join(process.cwd(), "src/lib/statusCommand.ts"),
-      "utf-8",
-    );
-
-    // projectIdentity uses safe argv form for cp (added in security hardening)
-    expect(projectIdentity).not.toMatch(/cp -a "\$\{/);
-    expect(projectIdentity).toMatch(/execFileSync\("cp"/);
-
-    // statusCommand (the --web dashboard path) uses safe argv form for open.
-    // cli no longer contains the open call after the status command refactor.
-    expect(cli).not.toMatch(/open "\$\{/);
-    expect(statusCommand).not.toMatch(/open "\$\{/);
-    expect(statusCommand).toMatch(/execFile\("open"/);
+  it("copies literal shell syntax without executing it", async () => {
+    base = join(tmpdir(), `gnosys-shell-syntax-${Date.now()}`);
+    const marker = join(base, "OWNED");
+    const sourcePath = join(base, `source-$(touch ${marker})`);
+    const targetPath = join(base, "target");
+    mkdirSync(join(sourcePath, ".gnosys", "decisions"), { recursive: true });
+    mkdirSync(targetPath, { recursive: true });
+    await writeProjectIdentity(sourcePath, {
+      projectId: "shell-literal", projectName: "literal", workingDirectory: sourcePath,
+      user: "tester", agentRulesTarget: null, obsidianVault: null,
+      createdAt: "2026-01-01", schemaVersion: 1,
+    });
+    writeFileSync(join(sourcePath, ".gnosys", "decisions", "note.md"), "# Literal shell path\n");
+    let result: Awaited<ReturnType<typeof migrateProject>> | undefined;
+    let failure: unknown;
+    try { result = await migrateProject({ sourcePath, targetPath }); } catch (error) { failure = error; }
+    expect(existsSync(marker)).toBe(false);
+    expect(failure).toBeUndefined();
+    expect(result?.memoryFileCount).toBe(1);
+    expect(readFileSync(join(targetPath, ".gnosys", "decisions", "note.md"), "utf8")).toBe("# Literal shell path\n");
   });
 });

@@ -5,7 +5,7 @@ import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { z } from "zod";
 import { GnosysDB } from "../lib/db.js";
 import { createProjectIdentity } from "../lib/projectIdentity.js";
@@ -132,6 +132,15 @@ afterAll(async () => {
 });
 
 describe.each(RETRIEVAL_TOOLS)("%s superseded history", (name) => {
+  beforeEach(() => {
+    const db = new GnosysDB(join(base, ".gnosys"));
+    try {
+      db.updateMemory(NEW_ID, { modified: "2026-10-06T12:00:00.000Z", reinforcement_count: 0, last_reinforced: null });
+    } finally {
+      db.close();
+    }
+  });
+
   it("ranks the correction before its predecessors and labels dates and status", async () => {
     const output = await retrieve(name);
     const resultTitles = titles(output);

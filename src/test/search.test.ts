@@ -134,7 +134,7 @@ describe("GnosysSearch", () => {
 
       // "PostgreSQL" is in content, not in relevance/title/tags
       const results = search.discover("PostgreSQL", 10);
-      expect(results.length).toBeGreaterThan(0);
+      expect(results.map(row => ({ title: row.title, path: row.relative_path }))).toEqual([{ title: "Unrelated Title", path: "decisions/hidden.md" }]);
     });
   });
 

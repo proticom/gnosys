@@ -1,3 +1,4 @@
+// biome-ignore-all lint/suspicious/noApproximativeNumericConstant: Rounded index scores are literal public-output expectations.
 /**
  * Tests for structuredIngest.ts — No-LLM fallback for web knowledge base.
  */
@@ -145,18 +146,12 @@ describe("extractStructuredFrontmatter", () => {
       "https://example.com/blog/test",
       defaultCategories
     );
-    expect(fm).toHaveProperty("id");
-    expect(fm).toHaveProperty("title");
-    expect(fm).toHaveProperty("category");
-    expect(fm).toHaveProperty("tags");
-    expect(fm).toHaveProperty("tags.domain");
-    expect(fm).toHaveProperty("tags.type");
-    expect(fm).toHaveProperty("relevance");
-    expect(fm).toHaveProperty("author");
-    expect(fm).toHaveProperty("authority");
-    expect(fm).toHaveProperty("confidence");
-    expect(fm).toHaveProperty("created");
-    expect(fm).toHaveProperty("status");
+    expect(fm).toMatchObject({
+      id: "blog-test", title: "Test", category: "blog",
+      tags: { domain: [], type: ["article"] }, relevance: "",
+      author: "auto-structured", authority: "imported", confidence: 0.7, status: "active",
+    });
+    expect(fm.created).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 });
 
@@ -176,8 +171,8 @@ describe("computeTfIdf", () => {
     // "postgresql" appears in d1 and d3, so it has lower IDF than "frontend" (only d2)
     const d2Terms = results.get("d2")!;
     const frontendScore = d2Terms.find((t) => t.term === "frontend")?.score;
-    expect(frontendScore).toBeDefined();
-    expect(frontendScore!).toBeGreaterThan(0);
+    expect(frontendScore).toBe(1.3863);
+    expect(results.get("d1")?.find((term) => term.term === "postgresql")?.score).toBe(0.9163);
   });
 
   it("handles single-document corpus", () => {
@@ -192,7 +187,8 @@ describe("computeTfIdf", () => {
 
     // "learning" appears twice, should have higher TF
     const learningTerm = terms.find((t) => t.term === "learning");
-    expect(learningTerm).toBeDefined();
+    expect(learningTerm).toEqual({ term: "learning", score: 0.6931 });
+    expect(terms.find((term) => term.term === "machine")).toEqual({ term: "machine", score: 0.3466 });
   });
 
   it("filters stop words", () => {
@@ -215,7 +211,7 @@ describe("computeTfIdf", () => {
 
     const results = computeTfIdf(docs, 10);
     const terms = results.get("d1")!;
-    expect(terms.length).toBeLessThanOrEqual(10);
+    expect(terms.map(({ term }) => term)).toEqual(["word0", "word1", "word2", "word3", "word4", "word5", "word6", "word7", "word8", "word9"]);
   });
 
   it("returns empty map for empty input", () => {

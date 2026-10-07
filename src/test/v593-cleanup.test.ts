@@ -2,16 +2,10 @@
  * Phase H — `gnosys cleanup` classification + non-interactive cleanup.
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import fs from "fs";
 import os from "os";
 import path from "path";
-
-// We need a workspace OUTSIDE the OS tmpdir for the "alive" tests
-// because `isTempPath` (correctly) treats everything under tmpdir() as
-// temp. Use the gnosys-public repo's `coverage` dir as a stable non-tmp
-// playground; clean up after each test.
-const NONTMP_ROOT = path.resolve(".test-cleanup-workspace");
 
 let tmpConfig: string;
 let tmpHome: string;
@@ -20,17 +14,22 @@ let nonTmpHome: string;
 beforeEach(() => {
   tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-cleanup-home-"));
   tmpConfig = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-cleanup-cfg-"));
-  fs.mkdirSync(NONTMP_ROOT, { recursive: true });
-  nonTmpHome = fs.mkdtempSync(path.join(NONTMP_ROOT, "home-"));
-  process.env.HOME = nonTmpHome;
-  process.env.GNOSYS_CONFIG_DIR = tmpConfig;
+  nonTmpHome = path.join(path.parse(process.cwd()).root, "gnosys-cleanup-fixture", path.basename(tmpHome));
+  const statSync = fs.statSync;
+  vi.spyOn(fs, "statSync").mockImplementation((file, options) => {
+    const value = String(file);
+    const target = value.startsWith(nonTmpHome + path.sep) ? path.join(tmpHome, path.relative(nonTmpHome, value)) : file;
+    return statSync(target, options);
+  });
+  vi.stubEnv("HOME", nonTmpHome);
+  vi.stubEnv("GNOSYS_CONFIG_DIR", tmpConfig);
 });
 
 afterEach(() => {
   fs.rmSync(tmpHome, { recursive: true, force: true });
   fs.rmSync(tmpConfig, { recursive: true, force: true });
-  fs.rmSync(nonTmpHome, { recursive: true, force: true });
-  delete process.env.GNOSYS_CONFIG_DIR;
+  vi.restoreAllMocks();
+  vi.unstubAllEnvs();
 });
 
 async function load() {
@@ -44,13 +43,8 @@ function writeRegistry(entries: string[]): void {
 
 describe("Phase H — gnosys cleanup classification", () => {
   it("alive: directory with .gnosys/ subdir", async () => {
-    const aliveDir = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-alive-"));
-    try {
-      // The "alive" tmp dir is under tmpdir, which our isTempPath
-      // classifies as `temp`. To exercise the alive branch we move
-      // outside the tmpdir prefix.
       const realDir = path.join(nonTmpHome, "real-project");
-      fs.mkdirSync(path.join(realDir, ".gnosys"), { recursive: true });
+      fs.mkdirSync(path.join(tmpHome, path.relative(nonTmpHome, realDir), ".gnosys"), { recursive: true });
       writeRegistry([realDir]);
 
       const { classifyRegistryEntries } = await load();
@@ -58,14 +52,11 @@ describe("Phase H — gnosys cleanup classification", () => {
       expect(result.alive).toContain(realDir);
       expect(result.dead).toHaveLength(0);
       expect(result.temp).toHaveLength(0);
-    } finally {
-      fs.rmSync(aliveDir, { recursive: true, force: true });
-    }
   });
 
   it("dead: directory exists but no .gnosys/", async () => {
     const deadDir = path.join(nonTmpHome, "no-gnosys-here");
-    fs.mkdirSync(deadDir, { recursive: true });
+    fs.mkdirSync(path.join(tmpHome, path.relative(nonTmpHome, deadDir)), { recursive: true });
     writeRegistry([deadDir]);
 
     const { classifyRegistryEntries } = await load();
@@ -107,9 +98,9 @@ describe("Phase H — gnosys cleanup classification", () => {
 describe("Phase H — gnosys cleanup non-interactive write", () => {
   it("with yes=true removes dead+temp and keeps alive", async () => {
     const realDir = path.join(nonTmpHome, "real");
-    fs.mkdirSync(path.join(realDir, ".gnosys"), { recursive: true });
+    fs.mkdirSync(path.join(tmpHome, path.relative(nonTmpHome, realDir), ".gnosys"), { recursive: true });
     const deadDir = path.join(nonTmpHome, "no-gnosys");
-    fs.mkdirSync(deadDir, { recursive: true });
+    fs.mkdirSync(path.join(tmpHome, path.relative(nonTmpHome, deadDir)), { recursive: true });
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-temp-"));
 
     try {
@@ -131,7 +122,7 @@ describe("Phase H — gnosys cleanup non-interactive write", () => {
 
   it("dry-run (interactive=false, yes=false) does NOT write", async () => {
     const deadDir = path.join(nonTmpHome, "no-gnosys-2");
-    fs.mkdirSync(deadDir, { recursive: true });
+    fs.mkdirSync(path.join(tmpHome, path.relative(nonTmpHome, deadDir)), { recursive: true });
     writeRegistry([deadDir]);
 
     const before = fs.readFileSync(path.join(tmpConfig, "projects.json"), "utf-8");
@@ -146,7 +137,7 @@ describe("Phase H — gnosys cleanup non-interactive write", () => {
 
   it("no stale entries → no write, removed=0", async () => {
     const realDir = path.join(nonTmpHome, "real-2");
-    fs.mkdirSync(path.join(realDir, ".gnosys"), { recursive: true });
+    fs.mkdirSync(path.join(tmpHome, path.relative(nonTmpHome, realDir), ".gnosys"), { recursive: true });
     writeRegistry([realDir]);
 
     const { cleanupRegistry } = await load();

@@ -258,10 +258,12 @@ export async function performImport(
       stage: "deduplicating",
     });
 
-    const existing = await store.getAllMemories();
-    existingTitles = new Set(
-      existing.map((m) => m.frontmatter.title.toLowerCase())
-    );
+    const titles = db
+      ? db.getAllMemories()
+        .filter((memory) => memory.project_id === (projectId ?? null) && memory.scope === (scope ?? "project"))
+        .map((memory) => memory.title)
+      : (await store.getAllMemories()).map((memory) => memory.frontmatter.title);
+    existingTitles = new Set(titles.map((title) => title.toLowerCase()));
   }
 
   // Phase 3 & 4: Ingest + Write

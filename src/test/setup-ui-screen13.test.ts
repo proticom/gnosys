@@ -17,14 +17,11 @@ async function load() {
 }
 
 describe("Screen 13 — config set helpers", () => {
-  it("KNOWN_CONFIG_KEYS includes the documented keys", async () => {
-    const { KNOWN_CONFIG_KEYS } = await load();
-    expect(KNOWN_CONFIG_KEYS).toContain("provider");
-    expect(KNOWN_CONFIG_KEYS).toContain("model");
-    expect(KNOWN_CONFIG_KEYS).toContain("task");
-    expect(KNOWN_CONFIG_KEYS).toContain("recall");
-    expect(KNOWN_CONFIG_KEYS).toContain("anthropic-model");
-    expect(KNOWN_CONFIG_KEYS).toContain("xai-model");
+  it("suggests documented keys for misspelled config inputs", async () => {
+    const { suggestConfigKey } = await load();
+    expect(["providr", "modle", "taskk", "recalll", "anthropic-modl", "xai-modl"].map(suggestConfigKey)).toEqual([
+      "provider", "model", "task", "recall", "anthropic-model", "xai-model",
+    ]);
   });
 
   it("suggestConfigKey returns null on exact match", async () => {

@@ -80,14 +80,11 @@ describe("DOCX bomb resistance", () => {
 </w:document>`;
 
     const filePath = await writeMinimalDocx(documentXml, "billion-laughs.docx");
-    const start = Date.now();
-    try {
-      const chunks = await extractDocxText(filePath);
-      expect(Array.isArray(chunks)).toBe(true);
-    } catch (err) {
-      // xmldom does not expand custom entities — rejects quickly instead of expanding.
-      expect(err).toBeInstanceOf(Error);
-    }
-    expect(Date.now() - start).toBeLessThan(10_000);
+    await expect(extractDocxText(filePath)).rejects.toThrow("entity not found:&lol9;");
+    const benignPath = await writeMinimalDocx(
+      '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:r><w:t>Safe document text.</w:t></w:r></w:p></w:body></w:document>',
+      "benign.docx",
+    );
+    expect(await extractDocxText(benignPath)).toEqual([{ text: "Safe document text.", sectionHeading: undefined }]);
   }, 30_000);
 });

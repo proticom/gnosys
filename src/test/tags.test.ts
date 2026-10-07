@@ -75,7 +75,10 @@ describe("GnosysTagRegistry", () => {
     it("adds a tag to a new category", async () => {
       const added = await registry.addTag("status_tag", "stable");
       expect(added).toBe(true);
-      expect(registry.hasTag("stable")).toBe(true);
+      expect(registry.getRegistry().status_tag).toEqual(["stable"]);
+      const saved = JSON.parse(await fs.readFile(path.join(tmpDir, ".config", "tags.json"), "utf-8"));
+      expect(saved.status_tag).toEqual(["stable"]);
+      expect(saved.domain).toEqual(["architecture", "auth", "testing"]);
     });
 
     it("returns false if tag already exists", async () => {
@@ -94,9 +97,14 @@ describe("GnosysTagRegistry", () => {
       await emptyRegistry.load();
       const reg = emptyRegistry.getRegistry();
       // Default registry has 4 categories: domain, type, concern, status_tag
-      expect(Object.keys(reg).length).toBe(4);
-      expect(reg.domain).toBeDefined();
-      expect(reg.domain.length).toBeGreaterThan(0);
+      expect(Object.keys(reg)).toEqual(["domain", "type", "concern", "status_tag"]);
+      expect(reg.domain).toEqual([
+        "auth", "database", "frontend", "backend", "deployment", "api", "cli", "mcp", "wiki", "obsidian",
+        "architecture", "retrieval", "search", "ingestion", "memory", "lensing", "decay", "reinforcement",
+        "contradiction", "tags", "git", "typescript", "tooling", "roadmap", "scope",
+      ]);
+      expect(JSON.parse(await fs.readFile(path.join(emptyDir, ".config", "tags.json"), "utf-8")).status_tag)
+        .toEqual(["core", "experimental", "deprecated", "phased"]);
       await fs.rm(emptyDir, { recursive: true, force: true });
     });
   });

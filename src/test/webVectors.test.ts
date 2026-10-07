@@ -5,16 +5,9 @@ import os from "os";
 import path from "path";
 
 const embedBatchMock = vi.hoisted(() => vi.fn());
-const localStorePaths = vi.hoisted((): string[] => []);
-
-vi.mock("../lib/embeddings.js", () => ({
-  GnosysEmbeddings: class {
-    constructor(storePath: string) {
-      localStorePaths.push(storePath);
-    }
-
-    embedBatch = embedBatchMock;
-  },
+vi.mock("@huggingface/transformers", () => ({
+  env: {},
+  pipeline: vi.fn().mockResolvedValue(embedBatchMock),
 }));
 
 import {
@@ -77,7 +70,7 @@ beforeEach(() => {
   envBackup = { ...process.env };
   vi.stubGlobal("fetch", vi.fn());
   embedBatchMock.mockReset();
-  localStorePaths.length = 0;
+  process.env.GNOSYS_CACHE_DIR = path.join(tmpDir, "model-cache");
   delete process.env.OPENAI_API_KEY;
   delete process.env.GNOSYS_GLOBAL_OPENAI_KEY;
   delete process.env.GNOSYS_OPENAI_KEY;
@@ -135,8 +128,8 @@ describe("buildVectors API providers", () => {
     expect(vectors.scale).toBeCloseTo(0.4 / 127);
     expect(vectors.offset).toBe(0);
     expect(Object.keys(vectors.vectors).sort()).toEqual(["doc-a", "doc-b"]);
-    expect(vectors.vectors["doc-a"]).toHaveLength(3);
-    expect(vectors.vectors["doc-a"].every((value) => value >= -128 && value <= 127)).toBe(true);
+    expect(vectors.vectors["doc-a"]).toEqual([32, 63, 95]);
+    expect(vectors.vectors["doc-b"]).toEqual([-63, 0, 127]);
   });
 
   it("posts Voyage embedding requests using VOYAGE_API_KEY only", async () => {
@@ -184,15 +177,11 @@ describe("buildVectors local provider", () => {
     const storePath = path.join(tmpDir, ".gnosys");
     makeMd("a.md", { id: "local-a", title: "Local A", relevance: "alpha", status: "active" }, "body a");
     makeMd("b.md", { id: "local-b", title: "Local B", relevance: "beta", status: "active" }, "body b");
-    embedBatchMock.mockResolvedValue([
-      new Float32Array([0.25, 0.5]),
-      new Float32Array([-0.5, 0]),
-    ]);
+    embedBatchMock.mockResolvedValue({ tolist: () => [[0.25, 0.5], [-0.5, 0]] });
 
     const vectors = await buildVectors(tmpDir, { provider: "local", storePath });
 
-    expect(localStorePaths).toEqual([storePath]);
-    expect(embedBatchMock).toHaveBeenCalledWith(["Local A\nalpha\nbody a", "Local B\nbeta\nbody b"]);
+    expect(embedBatchMock).toHaveBeenCalledWith(["Local A\nalpha\nbody a", "Local B\nbeta\nbody b"], { pooling: "mean", normalize: true });
     expect(vectors.model).toBe("Xenova/all-MiniLM-L6-v2");
     expect(vectors.dims).toBe(2);
     expect(vectors.vectors["local-a"]).toEqual([64, 127]);
@@ -225,7 +214,10 @@ describe("int8 quantization", () => {
       .sort((a, b) => b.score - a.score)
       .map((entry) => entry.index);
 
-    expect(quantizedRanking).toEqual(floatRanking);
+    expect(quantizedRanking).toEqual([0, 1, 2, 4, 3]);
+    expect(floatRanking).toEqual([0, 1, 2, 4, 3]);
+    expect(quantizeVector([0.95, 0.22, 0.08, 0.01], scale)).toEqual([126, 29, 11, 1]);
+    expect(dequantizeVector([0, 64, -127], 0.01)).toEqual([0, 0.64, -1.27]);
   });
 });
 

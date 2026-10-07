@@ -69,14 +69,29 @@ describe("wildcard recall (gnosys://recall resource path)", () => {
   });
 
   it("wildcard ordering prefers reinforcement, then confidence, then recency", async () => {
-    const result = await doRecall("*");
-    expect(result.memories[0].id).toBe("wild-top");
-    expect(result.memories[0].relevanceScore).toBeGreaterThan(result.memories[2].relevanceScore);
+    const isolated = await createTestEnv("recall-ties");
+    const isolatedSearch = new GnosysSearch(isolated.tmpDir);
+    try {
+      for (const fields of [
+        { id: "older", reinforcement_count: 2, confidence: 0.9, modified: "2026-01-01" },
+        { id: "recent", reinforcement_count: 2, confidence: 0.9, modified: "2026-06-01" },
+        { id: "confident", reinforcement_count: 2, confidence: 1, modified: "2025-01-01" },
+        { id: "reinforced", reinforcement_count: 3, confidence: 0.5, modified: "2024-01-01" },
+      ]) isolated.db.insertMemory(makeMemory(fields));
+      const result = await recall("*", {
+        search: isolatedSearch, resolver, storePath: isolated.tmpDir, gnosysDb: isolated.db,
+      });
+      expect(result.memories.map((memory) => memory.id)).toEqual(["reinforced", "confident", "recent", "older"]);
+    } finally {
+      isolatedSearch.close();
+      await cleanupTestEnv(isolated);
+    }
   });
 
   it("archived and superseded memories are excluded from wildcard recall", async () => {
     const result = await doRecall("*");
     const ids = result.memories.map((m) => m.id);
+    expect(ids).toEqual(["wild-top", "wild-mid", "wild-low"]);
     expect(ids).not.toContain("wild-archived");
     expect(ids).not.toContain("wild-superseded");
   });
