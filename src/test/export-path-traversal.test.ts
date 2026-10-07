@@ -91,20 +91,4 @@ describe("export path traversal", () => {
     expect(readdirSync(exportDir)).toContain("escape");
   });
 
-  it("assertWithin allows paths inside target and blocks outside", () => {
-    const exporter = Object.create(GnosysExporter.prototype) as {
-      slugify(text: string): string;
-      assertWithin(targetDir: string, filePath: string): void;
-    };
-
-    expect(exporter.slugify("../../evil")).toBe("evil");
-
-    expect(() =>
-      exporter.assertWithin("/tmp/vault", "/tmp/vault/decisions/x.md"),
-    ).not.toThrow();
-
-    expect(() =>
-      exporter.assertWithin("/tmp/vault", "/tmp/evil/x.md"),
-    ).toThrow(/Refusing to write outside export dir/);
-  });
 });

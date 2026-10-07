@@ -104,6 +104,7 @@ export class GnosysSearch {
     if (!this.db) return 0;
     const memories = await store.getAllMemories();
 
+    const deletePath = this.db.prepare("DELETE FROM memories_fts WHERE relative_path = ?");
     const insert = this.db.prepare(
       "INSERT INTO memories_fts (relative_path, title, category, tags, relevance, content) VALUES (?, ?, ?, ?, ?, ?)"
     );
@@ -125,6 +126,7 @@ export class GnosysSearch {
           tier: m.frontmatter.status === "archived" ? "archive" : "active",
           modified: m.frontmatter.modified, superseded_by: m.frontmatter.superseded_by ?? null,
         });
+        deletePath.run(indexPath);
         insert.run(
           indexPath,
           m.frontmatter.title,
@@ -147,6 +149,7 @@ export class GnosysSearch {
   addDbMemories(memories: Array<{ id: string; title: string; category: string; tags: string; relevance: string | null; content: string } & Partial<SearchMemoryMetadata>>, storeLabel?: string): number {
     if (!this.db) return 0;
 
+    const deletePath = this.db.prepare("DELETE FROM memories_fts WHERE relative_path = ?");
     const insert = this.db.prepare(
       "INSERT INTO memories_fts (relative_path, title, category, tags, relevance, content) VALUES (?, ?, ?, ?, ?, ?)"
     );
@@ -174,6 +177,7 @@ export class GnosysSearch {
           status: m.status ?? "active", tier: m.tier ?? "active",
           modified: m.modified ?? "", superseded_by: m.superseded_by ?? null,
         });
+        deletePath.run(indexPath);
         insert.run(
           indexPath,
           m.title,

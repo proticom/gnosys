@@ -19,11 +19,12 @@ import * as os from "os";
 import * as path from "path";
 import { GnosysDB } from "../lib/db.js";
 import { getMachineId } from "../lib/remote.js";
-import * as machineConfigMod from "../lib/machineConfig.js";
+
 
 const STALE_ID = "unknown-mp9cyh4j";
 const ORIGINAL_HOSTNAME_ENV = process.env.HOSTNAME;
 const ORIGINAL_COMPUTERNAME_ENV = process.env.COMPUTERNAME;
+const ORIGINAL_CONFIG_DIR = process.env.GNOSYS_CONFIG_DIR;
 
 interface Env {
   dir: string;
@@ -32,6 +33,7 @@ interface Env {
 
 async function makeDb(): Promise<Env> {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-v595-"));
+  process.env.GNOSYS_CONFIG_DIR = path.join(dir, "config");
   const db = new GnosysDB(dir);
   return { dir, db };
 }
@@ -43,11 +45,16 @@ async function cleanup(env: Env): Promise<void> {
 
 describe("v5.9.5 — self-healing machine_id", () => {
   beforeEach(() => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-01-01T00:00:00.000Z"));
     process.env.HOSTNAME = "EdsMacStudio";
     delete process.env.COMPUTERNAME;
   });
 
   afterEach(() => {
+    vi.useRealTimers();
+    if (ORIGINAL_CONFIG_DIR === undefined) delete process.env.GNOSYS_CONFIG_DIR;
+    else process.env.GNOSYS_CONFIG_DIR = ORIGINAL_CONFIG_DIR;
     if (ORIGINAL_HOSTNAME_ENV === undefined) delete process.env.HOSTNAME;
     else process.env.HOSTNAME = ORIGINAL_HOSTNAME_ENV;
     if (ORIGINAL_COMPUTERNAME_ENV === undefined) delete process.env.COMPUTERNAME;
@@ -55,39 +62,32 @@ describe("v5.9.5 — self-healing machine_id", () => {
   });
 
   it("heals a stale `unknown-<rand>` cache when a real hostname is available", async () => {
-    const spy = vi.spyOn(machineConfigMod, "readMachineConfig").mockReturnValue(null);
     const env = await makeDb();
     try {
       env.db.setMeta("machine_id", STALE_ID);
       const id = getMachineId(env.db);
       expect(id).not.toBe(STALE_ID);
-      expect(id.startsWith("EdsMacStudio-")).toBe(true);
-      expect(env.db.getMeta("machine_id")).toBe(id);
+      expect(id).toBe("EdsMacStudio-mjuohs00");
+      expect(env.db.getMeta("machine_id")).toBe("EdsMacStudio-mjuohs00");
     } finally {
-      spy.mockRestore();
       await cleanup(env);
     }
   });
 
   it("heals a stale `dream_machine_id` pointing at the same broken cached id", async () => {
-    const spy = vi.spyOn(machineConfigMod, "readMachineConfig").mockReturnValue(null);
     const env = await makeDb();
     try {
       env.db.setMeta("machine_id", STALE_ID);
       env.db.setDreamMachineId(STALE_ID);
       const id = getMachineId(env.db);
-      expect(id.startsWith("EdsMacStudio-")).toBe(true);
-      expect(env.db.getDreamMachineId()).toBe(id);
+      expect(id).toBe("EdsMacStudio-mjuohs00");
+      expect(env.db.getDreamMachineId()).toBe("EdsMacStudio-mjuohs00");
     } finally {
-      spy.mockRestore();
       await cleanup(env);
     }
   });
 
   it("leaves a real cached id untouched (no churn)", async () => {
-    // v5.11+ machine identity prefers machine.json (never synced) over legacy meta.
-    // Force legacy path for this test's "no churn on real meta id" intent.
-    const spy = vi.spyOn(machineConfigMod, "readMachineConfig").mockReturnValue(null);
     const env = await makeDb();
     try {
       const realId = "EdsMacStudio-abc123";
@@ -96,23 +96,20 @@ describe("v5.9.5 — self-healing machine_id", () => {
       expect(id).toBe(realId);
       expect(env.db.getMeta("machine_id")).toBe(realId);
     } finally {
-      spy.mockRestore();
       await cleanup(env);
     }
   });
 
   it("leaves an unrelated `dream_machine_id` alone when machine_id heals", async () => {
-    const spy = vi.spyOn(machineConfigMod, "readMachineConfig").mockReturnValue(null);
     const env = await makeDb();
     try {
       env.db.setMeta("machine_id", STALE_ID);
       env.db.setDreamMachineId("OtherMachine-xyz789");
       const id = getMachineId(env.db);
-      expect(id.startsWith("EdsMacStudio-")).toBe(true);
+      expect(id).toBe("EdsMacStudio-mjuohs00");
       // dream_machine_id pointed at a DIFFERENT machine — don't touch it.
       expect(env.db.getDreamMachineId()).toBe("OtherMachine-xyz789");
     } finally {
-      spy.mockRestore();
       await cleanup(env);
     }
   });

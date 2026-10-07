@@ -1,26 +1,42 @@
-import { readFileSync } from "fs";
-import { join } from "path";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import { spawnSync } from "node:child_process";
 import { describe, expect, it } from "vitest";
-import { readCliSource } from "./_helpers.js"; // v6.2.1 cli split
+import { GnosysDB } from "../lib/db.js";
+
+function seedVersion(directory: string, value: string): void {
+  const db = new GnosysDB(directory);
+  try { db.setMeta("audit-seed", value); } finally { db.close(); }
+}
+
+function readVersion(directory: string): string | null {
+  const db = new GnosysDB(directory);
+  try { return db.getMeta("audit-seed"); } finally { db.close(); }
+}
 
 describe("gnosys centralize for network MCP seeding", () => {
-  const cli = readCliSource(); // v6.2.1 cli split: read src/cli.ts + src/cli/*.ts
-  const handler = readFileSync(
-    join(process.cwd(), "src/lib/centralizeCommand.ts"),
-    "utf-8",
-  );
-
-  it("wires centralize --to for seeding a central brain (e.g. Docker volume or host for http serve)", () => {
-    expect(cli).toContain('.command("centralize")');
-    expect(cli).toContain('.requiredOption("--to <dir>"');
-    expect(cli).toContain("--from-local");
-    expect(cli).toContain("--force");
-    expect(cli).toContain(
-      'const { runCentralizeCommand } = await import("./lib/centralizeCommand.js")',
-    );
-    expect(cli).toContain("await runCentralizeCommand(opts)");
-    // Network use case: seed the /data volume for a central gnosys serve --transport http
-    expect(handler).toContain("centralizeDb");
-    expect(handler).toContain("GNOSYS_HOME");
+  it("copies the local brain through --to and overwrites only with --force", () => {
+    const base = mkdtempSync(join(tmpdir(), "gnosys-centralize-cli-"));
+    const source = join(base, "source");
+    const target = join(base, "target");
+    const run = (...extra: string[]) => spawnSync(process.execPath, [resolve("dist/cli.js"), "centralize", "--from-local", "--to", target, ...extra], {
+      env: { ...process.env, GNOSYS_HOME: source, GNOSYS_CONFIG_DIR: join(base, "config"), GNOSYS_LOCAL_ONLY: "1", GNOSYS_SKIP_UPGRADE_NUDGE: "1" },
+      cwd: base, encoding: "utf8", timeout: 10000,
+    });
+    try {
+      seedVersion(source, "first");
+      const copied = run();
+      expect(copied.status, copied.stderr).toBe(0);
+      expect(readVersion(target)).toBe("first");
+      seedVersion(source, "second");
+      const refused = run();
+      expect(refused.status).toBe(1);
+      expect(refused.stderr).toContain("Target already exists");
+      expect(readVersion(target)).toBe("first");
+      const forced = run("--force");
+      expect(forced.status, forced.stderr).toBe(0);
+      expect(readVersion(target)).toBe("second");
+    } finally { rmSync(base, { recursive: true, force: true }); }
   });
 });

@@ -122,6 +122,8 @@ describe("federatedSearch", () => {
     const newResult = results.find((r) => r.id === "new-mem");
     expect(newResult).toBeDefined();
     expect(newResult!.boosts).toContain("recent");
+    const withoutRecency = federatedSearch(db, "architecture", { projectId: "proj-1", recencyWindowHours: 0 }).find(result => result.id === "new-mem");
+    expect(newResult!.score / withoutRecency!.score).toBeCloseTo(1.3, 10);
   });
 
   it("respects includeGlobal=false", () => {
@@ -140,7 +142,7 @@ describe("federatedSearch", () => {
     }));
 
     const results = federatedSearch(db, "design patterns", { includeGlobal: false });
-    expect(results.every((r) => r.scope !== "global")).toBe(true);
+    expect(results.map(result => [result.id, result.scope])).toEqual([["proj-mem", "project"]]);
   });
 
   it("returns empty array for no matches", () => {
@@ -172,6 +174,9 @@ describe("federatedSearch", () => {
     if (reinforced) {
       expect(reinforced.boosts.some((b) => b.startsWith("reinforced:"))).toBe(true);
     }
+    db.updateMemory("reinforced", { reinforcement_count: 0 });
+    const withoutReinforcement = federatedSearch(db, "REST GraphQL API", { projectId: "proj-1" }).find(result => result.id === "reinforced");
+    expect(reinforced!.score / withoutReinforcement!.score).toBeCloseTo(1.25, 10);
   });
 });
 

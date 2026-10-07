@@ -201,7 +201,7 @@ export async function collectDashboardData(
   if (stores.length > 0) {
     try {
       const { GnosysMaintenanceEngine } = await import("./maintenance.js");
-      const engine = new GnosysMaintenanceEngine(resolver, config);
+      const engine = new GnosysMaintenanceEngine(resolver, config, gnosysDb);
       const health = await engine.getHealthReport();
       maintenance = {
         staleCount: health.staleCount,

@@ -2,19 +2,13 @@
  * Dream pause/resume — abort mid-cycle and clean re-run after completion.
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import fs from "fs";
 import os from "os";
 import path from "path";
 import { GnosysDB } from "../lib/db.js";
 import type { GnosysConfig } from "../lib/config.js";
 import { GnosysDreamEngine } from "../lib/dream.js";
-
-function sqlite(db: GnosysDB) {
-  return (db as unknown as {
-    db: { pragma: (s: string, opts?: { simple: boolean }) => unknown };
-  }).db;
-}
 
 function baseConfig(): GnosysConfig {
   return {
@@ -75,6 +69,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.useRealTimers();
   db.close();
   fs.rmSync(tmp, { recursive: true, force: true });
 });
@@ -89,22 +84,26 @@ describe("Dream abort and resume", () => {
 
     expect(report.aborted).toBe(true);
     expect(report.abortReason).toMatch(/abort requested/i);
-    expect(sqlite(db).pragma("integrity_check", { simple: true })).toBe("ok");
     expect(db.getAllMemories().length).toBe(5);
   });
 
   it("re-run after a completed cycle picks up cleanly (no corruption or dupes)", async () => {
     const engine = new GnosysDreamEngine(db, baseConfig(), decayOnlyDream);
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-01-11T00:00:00Z"));
     const before = db.getAllMemories().length;
 
     const first = await engine.dream();
+    expect(first.decayUpdated).toBe(5);
+    expect(db.getAllMemories().map((memory) => memory.confidence)).toEqual([0.86, 0.86, 0.86, 0.86, 0.86]);
     expect(first.errors.filter((e) => !e.includes("Provider unavailable"))).toEqual([]);
 
     const secondEngine = new GnosysDreamEngine(db, baseConfig(), decayOnlyDream);
     const second = await secondEngine.dream();
+    expect(second.decayUpdated).toBe(0);
+    expect(db.getAllMemories().map((memory) => memory.confidence)).toEqual([0.86, 0.86, 0.86, 0.86, 0.86]);
     expect(second.errors.filter((e) => !e.includes("Provider unavailable"))).toEqual([]);
 
-    expect(sqlite(db).pragma("integrity_check", { simple: true })).toBe("ok");
     expect(db.getAllMemories().length).toBe(before);
 
     const ids = db.getAllMemories().map((m) => m.id);

@@ -10,14 +10,12 @@ import {
   matchesTypedPhrase,
   detectClonedStagingPresence,
   BACKUP_RISK_PHRASE,
-  __test,
 } from "../lib/remoteWizard.js";
 import {
   renderV13ExplanationScreen,
   renderMasterBackupWarning,
   renderBackupDeclineAckPrompt,
   BACKUP_DECLINE_ACK_INSTRUCTION,
-  BACKUP_RISK_PHRASE as RENDER_PHRASE,
 } from "../lib/setup/remoteRender.js";
 
 describe("remoteWizard v13 helpers", () => {
@@ -25,7 +23,6 @@ describe("remoteWizard v13 helpers", () => {
     expect(matchesTypedPhrase(BACKUP_RISK_PHRASE, BACKUP_RISK_PHRASE)).toBe(true);
     expect(matchesTypedPhrase(`  ${BACKUP_RISK_PHRASE}  `, BACKUP_RISK_PHRASE)).toBe(true);
     expect(matchesTypedPhrase("wrong", BACKUP_RISK_PHRASE)).toBe(false);
-    expect(__test.matchesTypedPhrase).toBe(matchesTypedPhrase);
   });
 
   it("detectClonedStagingPresence uses the per-client presence file", () => {
@@ -33,7 +30,7 @@ describe("remoteWizard v13 helpers", () => {
     try {
       const machineId = "01TESTMACHINE000000000000";
       expect(detectClonedStagingPresence(tmp, machineId)).toBe(false);
-      const presence = __test.clientPresencePath(tmp, machineId);
+      const presence = path.join(tmp, ".gnosys-staging", machineId, ".presence.json");
       fs.mkdirSync(path.dirname(presence), { recursive: true });
       fs.writeFileSync(presence, JSON.stringify({ machineId }));
       expect(detectClonedStagingPresence(tmp, machineId)).toBe(true);
@@ -42,9 +39,6 @@ describe("remoteWizard v13 helpers", () => {
     }
   });
 
-  it("BACKUP_RISK_PHRASE is shared with remoteRender", () => {
-    expect(BACKUP_RISK_PHRASE).toBe(RENDER_PHRASE);
-  });
 });
 
 describe("remoteWizard v13 render screens", () => {

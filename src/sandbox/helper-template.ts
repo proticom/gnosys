@@ -37,7 +37,7 @@ function generateHelperSource(projectId: string | null): string {
  */
 
 import net from "net";
-import { execSync, spawn } from "child_process";
+import { execFileSync, execSync, spawn } from "child_process";
 import path from "path";
 import os from "os";
 import fs from "fs";
@@ -111,7 +111,7 @@ async function ensureRunning(): Promise<void> {
     fs.mkdirSync(sandboxDir, { recursive: true });
     const gnosysBin = execSync("which gnosys 2>/dev/null || echo ''", { encoding: "utf8" }).trim();
     if (gnosysBin) {
-      execSync(\`\${gnosysBin} sandbox start\`, { stdio: "ignore", timeout: 10_000 });
+      execFileSync(gnosysBin, ["sandbox", "start"], { stdio: "ignore", timeout: 10_000 });
     } else {
       throw new Error("Cannot auto-start sandbox. Run 'gnosys sandbox start' manually.");
     }

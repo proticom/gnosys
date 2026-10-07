@@ -2,7 +2,7 @@
  * Best-effort local-disk detection for master folder setup (v13).
  */
 
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import path from "path";
 
 export const LOCAL_DISK_ACK_PHRASE = "LOCAL DISK ONLY";
@@ -17,7 +17,7 @@ export function checkMasterPathLocalDisk(folderPath: string): LocalDiskCheckResu
   const resolved = path.resolve(folderPath);
   if (process.platform === "darwin") {
     try {
-      const out = execSync(`df -T "${resolved}"`, { encoding: "utf-8", stdio: ["ignore", "pipe", "ignore"] });
+      const out = execFileSync("df", ["-T", resolved], { encoding: "utf-8", stdio: ["ignore", "pipe", "ignore"] });
       const line = out.trim().split("\n")[1] ?? "";
       const fsType = line.split(/\s+/)[1]?.toLowerCase() ?? "";
       const networkTypes = new Set([

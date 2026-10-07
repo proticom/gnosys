@@ -93,8 +93,9 @@ describe("Screen 7 — dream render", () => {
       discoverRelationships: false,
     });
     const subTaskLines = lines.filter((l) => l.includes("self-critique") || l.includes("discover"));
-    for (const line of subTaskLines) {
-      expect(line).toContain("○");
-    }
+    expect(subTaskLines).toEqual([
+      "     ○  self-critique         review and re-rank existing memories",
+      "     ○  discover relationships  link related memories explicitly",
+    ]);
   });
 });

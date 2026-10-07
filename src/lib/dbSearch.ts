@@ -104,6 +104,17 @@ export class GnosysDbSearch {
       results = this.keywordSearch(query, candidateLimit, activeOnly);
     }
 
+    if (!activeOnly && results.length < limit) {
+      const existing = new Set(results.map((result) => result.relativePath));
+      const remaining = limit - results.length;
+      const archived = this.keywordSearch(query, remaining * 2, false)
+        .filter((result) => result.fromArchive && !existing.has(result.relativePath))
+        .slice(0, remaining);
+      results.push(...archived.map((result) => ({
+        ...result, score: 0.001, sources: ["archive"] satisfies HybridSearchResult["sources"],
+      })));
+    }
+
     return activeOnly ? results.slice(0, limit) : this.rankResults(results, limit);
   }
 

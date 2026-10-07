@@ -72,13 +72,11 @@ describe("Final Acceptance Tests", () => {
       const outputB = cliInit(projBDir, { centralDir });
       expect(outputB).toContain("Gnosys store");
 
-      // Both should have gnosys.json
-      expect(
-        fs.existsSync(path.join(projADir, ".gnosys", "gnosys.json"))
-      ).toBe(true);
-      expect(
-        fs.existsSync(path.join(projBDir, ".gnosys", "gnosys.json"))
-      ).toBe(true);
+      for (const projectDir of [projADir, projBDir]) {
+        const identity = JSON.parse(fs.readFileSync(path.join(projectDir, ".gnosys/gnosys.json"), "utf8"));
+        expect(identity.projectId).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+        expect(db.getProject(identity.projectId)).toMatchObject({ name: path.basename(projectDir), working_directory: projectDir });
+      }
     });
 
     it("both projects have unique projectIds", () => {
@@ -98,6 +96,8 @@ describe("Final Acceptance Tests", () => {
         )
       ).projectId;
 
+      expect(idA).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+      expect(idB).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
       expect(idA).not.toBe(idB);
     });
   });
@@ -139,7 +139,10 @@ describe("Final Acceptance Tests", () => {
       setPreference(db, "test-first", "Always write tests before implementation");
 
       const prefs = getAllPreferences(db);
-      expect(prefs.length).toBe(2);
+      expect(prefs.map(({ key, value }) => ({ key, value })).sort((a, b) => a.key.localeCompare(b.key))).toEqual([
+        { key: "commit-convention", value: "Use conventional commits" },
+        { key: "test-first", value: "Always write tests before implementation" },
+      ]);
     });
   });
 
@@ -223,16 +226,6 @@ describe("Final Acceptance Tests", () => {
 
   // ─── TC-A.5: Dream Mode ─────────────────────────────────────────────
 
-  describe("TC-A.5: Dream Mode configuration accessible", () => {
-    it("dream engine module loads without errors", async () => {
-      const { GnosysDreamEngine, DEFAULT_DREAM_CONFIG } = await import(
-        "../lib/dream.js"
-      );
-      expect(DEFAULT_DREAM_CONFIG.enabled).toBe(false);
-      expect(typeof GnosysDreamEngine).toBe("function");
-    });
-  });
-
   // ─── TC-A.6: Export to Obsidian ─────────────────────────────────────
 
   describe("TC-A.6: Obsidian export", () => {
@@ -253,7 +246,9 @@ describe("Final Acceptance Tests", () => {
       const report = await exporter.export({ targetDir: exportDir });
 
       expect(report.memoriesExported).toBe(1);
-      expect(fs.existsSync(exportDir)).toBe(true);
+      const content = await fsp.readFile(path.join(exportDir, "decisions/acceptance-export.md"), "utf8");
+      expect(content).toContain("id: acc-exp-001");
+      expect(content).toContain("# Acceptance Export\n\nExport test.");
     });
   });
 
@@ -269,9 +264,15 @@ describe("Final Acceptance Tests", () => {
       fs.mkdirSync(backupDir, { recursive: true });
       const backupPath = await db.backup(backupDir);
 
-      expect(fs.existsSync(backupPath)).toBe(true);
-      const stat = fs.statSync(backupPath);
-      expect(stat.size).toBeGreaterThan(0);
+      const restoredDir = path.join(centralDir, "restored");
+      fs.mkdirSync(restoredDir);
+      fs.copyFileSync(backupPath, path.join(restoredDir, "gnosys.db"));
+      const restored = new GnosysDB(restoredDir);
+      try {
+        expect(restored.getMemory("bk-acc-001")?.title).toBe("Backup Acceptance");
+      } finally {
+        restored.close();
+      }
     });
   });
 
@@ -319,10 +320,12 @@ describe("Final Acceptance Tests", () => {
   describe("TC-A.9: CLI and library API both functional", () => {
     it("CLI list command works on initialized project", () => {
       cliInit(projADir, { centralDir });
+      setPreference(db, "acceptance-list", "Listed value");
 
       const output = execSync(`${CLI} list --json`, {
         encoding: "utf-8",
-        env: { ...process.env, GNOSYS_PROJECT: projADir, GNOSYS_HOME: centralDir },
+        cwd: projADir,
+        env: { ...process.env, GNOSYS_HOME: centralDir },
         stdio: ["pipe", "pipe", "pipe"],
       });
 
@@ -330,29 +333,25 @@ describe("Final Acceptance Tests", () => {
       const jsonStart = output.indexOf("{");
       const jsonStr = jsonStart >= 0 ? output.slice(jsonStart) : output;
       const parsed = JSON.parse(jsonStr);
-      expect(parsed).toHaveProperty("count");
-      expect(parsed).toHaveProperty("memories");
+      expect(parsed).toEqual({ count: 1, memories: [{
+        id: "pref-acceptance-list", title: "Acceptance List", category: "preferences", status: "active",
+        scope: "user", confidence: 0.95, project: null,
+      }] });
     });
 
     it("library API (GnosysDB) and CLI produce consistent results", () => {
-      // Insert via library API
-      db.insertMemory(
-        makeMemory({
-          id: "api-cli-001",
-          title: "API Inserted Memory",
-          project_id: "proj-a",
-          scope: "project",
-        })
-      );
-
-      // Read via library API
-      const mem = db.getMemory("api-cli-001");
-      expect(mem).not.toBeNull();
-      expect(mem!.title).toBe("API Inserted Memory");
-
-      // Count via library API
-      const counts = db.getMemoryCount();
-      expect(counts.total).toBeGreaterThanOrEqual(1);
+      cliInit(projADir, { centralDir });
+      const identity = JSON.parse(fs.readFileSync(path.join(projADir, ".gnosys/gnosys.json"), "utf8"));
+      db.insertMemory(makeMemory({ id: "api-cli-001", title: "API Inserted Memory", project_id: identity.projectId, scope: "project" }));
+      expect(db.getMemory("api-cli-001")?.title).toBe("API Inserted Memory");
+      const output = execSync(`${CLI} list --json`, {
+        encoding: "utf8", cwd: projADir,
+        env: { ...process.env, GNOSYS_HOME: centralDir }, stdio: "pipe",
+      });
+      const parsed = JSON.parse(output.slice(output.indexOf("{")));
+      expect(parsed.count).toBe(1);
+      expect(parsed.memories.map((memory: { id: string; title: string }) => ({ id: memory.id, title: memory.title })))
+        .toEqual([{ id: "api-cli-001", title: "API Inserted Memory" }]);
     });
 
     it("all major DB operations work in sequence", () => {

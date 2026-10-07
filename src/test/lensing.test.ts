@@ -44,11 +44,13 @@ describe("applyLens — single filters", () => {
 
   it("filters by status", () => {
     const result = applyLens(memories, { status: ["active"] });
+    expect(result.map((memory) => memory.frontmatter.id)).toEqual(["d1", "d2", "a1"]);
     expect(result).toHaveLength(3);
   });
 
   it("filters by multiple statuses", () => {
     const result = applyLens(memories, { status: ["archived", "superseded"] });
+    expect(result.map((memory) => memory.frontmatter.id)).toEqual(["c1", "a2"]);
     expect(result).toHaveLength(2);
   });
 
@@ -66,26 +68,31 @@ describe("applyLens — single filters", () => {
 
   it("filters by confidence range", () => {
     const result = applyLens(memories, { minConfidence: 0.8, maxConfidence: 0.9 });
+    expect(result.map((memory) => memory.frontmatter.id)).toEqual(["d1", "d2"]);
     expect(result).toHaveLength(2);
   });
 
   it("filters by author", () => {
     const result = applyLens(memories, { author: ["ai"] });
+    expect(result.map((memory) => memory.frontmatter.id)).toEqual(["a1", "c1"]);
     expect(result).toHaveLength(2);
   });
 
   it("filters by authority", () => {
     const result = applyLens(memories, { authority: ["observed", "inferred"] });
+    expect(result.map((memory) => memory.frontmatter.id)).toEqual(["a1", "c1"]);
     expect(result).toHaveLength(2);
   });
 
   it("filters by created date range", () => {
     const result = applyLens(memories, { createdAfter: "2026-02-01", createdBefore: "2026-03-01" });
+    expect(result.map((memory) => memory.frontmatter.id)).toEqual(["d2", "a1"]);
     expect(result).toHaveLength(2); // d2 and a1
   });
 
   it("filters by modified date range", () => {
     const result = applyLens(memories, { modifiedAfter: "2026-02-01" });
+    expect(result.map((memory) => memory.frontmatter.id)).toEqual(["d2", "a1", "a2"]);
     expect(result).toHaveLength(3); // d2, a1, a2
   });
 
@@ -95,12 +102,17 @@ describe("applyLens — single filters", () => {
   });
 
   it("combines multiple criteria in one filter", () => {
-    const result = applyLens(memories, {
+    const input = [...memories,
+      makeMem({ id: "low-confidence", category: "decisions", confidence: 0.84, status: "active" }),
+      makeMem({ id: "archived", category: "decisions", confidence: 0.99, status: "archived" }),
+      makeMem({ id: "other-category", category: "concepts", confidence: 0.99, status: "active" }),
+    ];
+    const result = applyLens(input, {
       category: "decisions",
       minConfidence: 0.85,
       status: ["active"],
     });
-    expect(result).toHaveLength(2); // d1 (0.9) and d2 (0.85)
+    expect(result.map((memory) => memory.frontmatter.id)).toEqual(["d1", "d2"]);
   });
 
   it("combines criteria with OR operator", () => {

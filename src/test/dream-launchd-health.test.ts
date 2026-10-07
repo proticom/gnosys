@@ -6,11 +6,16 @@
  * checkDreamLaunchAgent. launchctl behavior is deliberately not tested.
  */
 
-import { describe, it, expect } from "vitest";
+import fs from "fs";
+import os from "os";
+import path from "path";
+import { describe, it, expect, vi } from "vitest";
 import {
   parseDreamPlistPaths,
   checkDreamLaunchAgent,
 } from "../lib/dreamLaunchd.js";
+
+vi.mock("child_process", () => ({ execFileSync: vi.fn() }));
 
 const TEMPLATE_BODY = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -67,29 +72,42 @@ describe("parseDreamPlistPaths", () => {
   });
 });
 
-describe("checkDreamLaunchAgent (platform / not-installed branches)", () => {
-  it("returns a coherent all-false shape when unavailable or not installed", () => {
-    const health = checkDreamLaunchAgent();
-    if (process.platform !== "darwin") {
-      expect(health).toEqual({
-        installed: false,
-        loaded: false,
-        nodeExists: false,
-        cliExists: false,
-        healthy: false,
-        problems: ["launchd unavailable (not macOS)"],
-        plistFile: null,
+describe("checkDreamLaunchAgent", () => {
+  it("reports missing, healthy, and broken installed agents in an isolated home", () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-launch-health-"));
+    const home = vi.spyOn(os, "homedir").mockReturnValue(tmp);
+    const platform = process.platform;
+    Object.defineProperty(process, "platform", { value: "darwin" });
+    try {
+      const plistFile = path.join(tmp, "Library/LaunchAgents/com.gnosys.dream.plist");
+      expect(checkDreamLaunchAgent()).toEqual({
+        installed: false, loaded: false, nodeExists: false, cliExists: false, healthy: false,
+        problems: ["launchd agent not installed"], plistFile,
       });
-    } else if (!health.installed) {
-      expect(health.healthy).toBe(false);
-      expect(health.problems).toContain("launchd agent not installed");
-      expect(health.plistFile).toContain("com.gnosys.dream.plist");
-    } else {
-      // Installed on this machine: healthy must equal the AND of its parts.
-      expect(health.healthy).toBe(
-        health.loaded && health.nodeExists && health.cliExists,
-      );
-      expect(health.plistFile).toContain("com.gnosys.dream.plist");
+      const node = path.join(tmp, "node");
+      const cli = path.join(tmp, "gnosys");
+      fs.writeFileSync(node, "node fixture");
+      fs.writeFileSync(cli, "cli fixture");
+      fs.mkdirSync(path.dirname(plistFile), { recursive: true });
+      fs.writeFileSync(plistFile, `<plist><dict><string>com.gnosys.dream</string><array><string>${node}</string><string>${cli}</string></array></dict></plist>`);
+      expect(checkDreamLaunchAgent()).toEqual({
+        installed: true, loaded: true, nodeExists: true, cliExists: true, healthy: true,
+        problems: [], plistFile,
+      });
+      fs.unlinkSync(cli);
+      expect(checkDreamLaunchAgent()).toEqual({
+        installed: true, loaded: true, nodeExists: true, cliExists: false, healthy: false,
+        problems: [`gnosys cli missing at ${cli}`], plistFile,
+      });
+      Object.defineProperty(process, "platform", { value: "linux" });
+      expect(checkDreamLaunchAgent()).toEqual({
+        installed: false, loaded: false, nodeExists: false, cliExists: false, healthy: false,
+        problems: ["launchd unavailable (not macOS)"], plistFile: null,
+      });
+    } finally {
+      Object.defineProperty(process, "platform", { value: platform });
+      home.mockRestore();
+      fs.rmSync(tmp, { recursive: true, force: true });
     }
   });
 });

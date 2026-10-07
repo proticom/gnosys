@@ -58,32 +58,42 @@ describe("groupByPeriod", () => {
 
   it("groups by day", () => {
     const result = groupByPeriod(memories, "day");
-    // Each memory has a unique created date
-    expect(result.length).toBeGreaterThanOrEqual(5);
+    expect(result.map(({ period, created, modified }) => ({ period, created, modified }))).toEqual([
+      { period: "2026-01-10", created: 1, modified: 0 },
+      { period: "2026-01-15", created: 0, modified: 1 },
+      { period: "2026-01-20", created: 1, modified: 0 },
+      { period: "2026-02-01", created: 0, modified: 1 },
+      { period: "2026-02-05", created: 1, modified: 0 },
+      { period: "2026-02-15", created: 1, modified: 0 },
+      { period: "2026-03-01", created: 1, modified: 1 },
+      { period: "2026-03-06", created: 0, modified: 1 },
+    ]);
   });
 
   it("groups by week", () => {
     const result = groupByPeriod(memories, "week");
-    // Should have multiple weeks
-    expect(result.length).toBeGreaterThan(1);
-    // Each entry should have W## format
-    for (const entry of result) {
-      expect(entry.period).toMatch(/^\d{4}-W\d{2}$/);
-    }
+    expect(result.map(({ period, created, modified }) => ({ period, created, modified }))).toEqual([
+      { period: "2026-W02", created: 1, modified: 0 },
+      { period: "2026-W03", created: 0, modified: 1 },
+      { period: "2026-W04", created: 1, modified: 0 },
+      { period: "2026-W05", created: 0, modified: 1 },
+      { period: "2026-W06", created: 1, modified: 0 },
+      { period: "2026-W07", created: 1, modified: 0 },
+      { period: "2026-W09", created: 1, modified: 1 },
+      { period: "2026-W10", created: 0, modified: 1 },
+    ]);
   });
 
   it("returns entries sorted chronologically", () => {
     const result = groupByPeriod(memories, "month");
-    for (let i = 1; i < result.length; i++) {
-      expect(result[i].period > result[i - 1].period).toBe(true);
-    }
+    expect(result.map((entry) => entry.period)).toEqual(["2026-01", "2026-02", "2026-03"]);
   });
 
   it("tracks modified separately from created", () => {
     const result = groupByPeriod(memories, "month");
     // d2 created Jan, modified Feb → Feb should have modified count
     const feb = result.find((e) => e.period === "2026-02");
-    expect(feb?.modified).toBeGreaterThanOrEqual(1);
+    expect(feb).toMatchObject({ period: "2026-02", created: 2, modified: 1 });
   });
 
   it("includes titles for created memories", () => {

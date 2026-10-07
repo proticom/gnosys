@@ -34,7 +34,11 @@ describe("Panel — v5.9.4 edge cases (Bugs 1+2)", () => {
     const lines = strip(out).split("\n");
     const top = lines[0];
     const bottom = lines[lines.length - 1];
-    expect(top.length).toBe(bottom.length);
+    expect(top.length).toBe(71);
+    expect(bottom.length).toBe(71);
+    expect(lines).toHaveLength(5);
+    expect(lines[1]).toBe(" │ row one" + " ".repeat(59) + " │");
+    expect(top).toContain("gnosys settings");
     // Sanity: top starts with ` ╭` and ends with `╮`; bottom mirrors `╰`/`╯`.
     expect(top.endsWith("╮")).toBe(true);
     expect(bottom.endsWith("╯")).toBe(true);
@@ -45,7 +49,8 @@ describe("Panel — v5.9.4 edge cases (Bugs 1+2)", () => {
     const styledTitle = color(c.accentHi, "styled title");
     const out = Panel(styledTitle, ["row"]);
     const lines = strip(out).split("\n");
-    expect(lines[0].length).toBe(lines[lines.length - 1].length);
+    expect(lines[0]).toBe(" ╭─ styled title " + "─".repeat(53) + "╮");
+    expect(lines[lines.length - 1]).toBe(" ╰" + "─".repeat(68) + "╯");
   });
 
   it("very long titles fall back to a 1-char clamp instead of negative pad", async () => {
@@ -57,7 +62,7 @@ describe("Panel — v5.9.4 edge cases (Bugs 1+2)", () => {
     expect(lines[0].endsWith("╮")).toBe(true);
     expect(lines[lines.length - 1].endsWith("╯")).toBe(true);
     // Top should still have at least one rule char before the corner.
-    expect(/─╮$/.test(lines[0])).toBe(true);
+    expect(lines[0]).toBe(` ╭─ ${longTitle} ─╮`);
   });
 
   it("uses rounded glyphs + accent-dim border per design", async () => {
@@ -70,5 +75,9 @@ describe("Panel — v5.9.4 edge cases (Bugs 1+2)", () => {
     expect(out.includes("╯")).toBe(true); // ╯
     // Vertical glyph │ on every row.
     expect(out.includes("│")).toBe(true);
+    const accentDim = process.env.COLORTERM === "truecolor" || process.env.COLORTERM === "24bit"
+      ? "\x1b[38;2;122;46;46m" : "\x1b[38;5;88m";
+    expect(out).toContain(`${accentDim}╭─ \x1b[0m`);
+    expect(out).toContain(`${accentDim}╰${"─".repeat(68)}╯\x1b[0m`);
   });
 });

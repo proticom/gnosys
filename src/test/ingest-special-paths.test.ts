@@ -34,7 +34,7 @@ describe("ingestion of special-character paths", () => {
   for (const name of SPECIAL_NAMES) {
     it(`ingests ${JSON.stringify(name)}`, async () => {
       const filePath = join(workDir, name);
-      writeFileSync(filePath, `Special path content. ${"word ".repeat(50)}`, "utf-8");
+      writeFileSync(filePath, "# Special path content.\n\nContent preserved.", "utf-8");
 
       const result = await ingestFile({
         filePath,
@@ -43,7 +43,10 @@ describe("ingestion of special-character paths", () => {
         dryRun: true,
       });
 
-      expect(result.memories.length).toBeGreaterThanOrEqual(1);
+      expect(result).toMatchObject({
+        fileType: "text", errors: [], attachment: { originalName: name },
+        memories: [{ id: "dry-run-0", title: "Special path content.", path: "imported/special-path-content.md" }],
+      });
     });
   }
 });

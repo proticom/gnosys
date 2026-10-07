@@ -91,8 +91,10 @@ describe("Screen 10 — sync-projects render", () => {
     const { renderFailedSection } = await load();
     const rows = [{ title: "weird-proj", fullPath: "/tmp/weird (EACCES)" }];
     const lines = renderFailedSection(rows).map(strip);
-    expect(lines[0]).toContain("failed     1 projects");
-    expect(lines.length).toBe(2);
+    expect(lines).toEqual([
+      " failed     1 projects",
+      "   ✗  weird-proj                    /tmp/weird (EACCES)",
+    ]);
   });
 
   it("renders machines section with older-version warning", async () => {
@@ -129,8 +131,10 @@ describe("Screen 10 — sync-projects render", () => {
   it("renders dashboard summary with collapsed paths", async () => {
     const { renderDashboardSummary } = await load();
     const lines = renderDashboardSummary(`${FAKE_HOME}/gnosys-dashboard.html`, `${FAKE_HOME}/gnosys-dashboard.md`).map(strip);
-    expect(lines[0]).toContain("portfolio dashboard regenerated");
-    expect(lines[1]).toContain("html");
-    expect(lines[2]).toContain("md");
+    expect(lines).toEqual([
+      " portfolio dashboard regenerated",
+      "   html    ~/gnosys-dashboard.html",
+      "   md      ~/gnosys-dashboard.md",
+    ]);
   });
 });

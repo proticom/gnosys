@@ -92,6 +92,13 @@ describe("project bundle round-trip", () => {
     expect(result.compressedBytes).toBeGreaterThan(0);
     expect(result.compressedBytes).toBeLessThan(result.uncompressedBytes);
     expect(existsSync(bundlePath)).toBe(true);
+    expect(readBundle(bundlePath).memories.map(({ id, content }) => ({ id, content }))).toEqual([
+      { id: "mem-test-000", content: "Content of memory 0" },
+      { id: "mem-test-001", content: "Content of memory 1" },
+      { id: "mem-test-002", content: "Content of memory 2" },
+      { id: "mem-test-003", content: "Content of memory 3" },
+      { id: "mem-test-004", content: "Content of memory 4" },
+    ]);
   });
 
   it("readBundle round-trips the manifest, project, and memories", () => {
@@ -113,7 +120,7 @@ describe("project bundle round-trip", () => {
     seed(workspace.db, projectId, 4);
     exportProject(workspace.db, { projectId, outputPath: bundlePath });
 
-    // Re-import on the same DB (project + memories already exist) — should skip
+    workspace.db.updateMemory("mem-test-000", { content: "Locally revised content" });
     const result = importProject(workspace.db, {
       bundlePath,
       strategy: "merge",
@@ -122,6 +129,10 @@ describe("project bundle round-trip", () => {
     expect(result.memoriesInserted).toBe(0);
     expect(result.memoriesSkipped).toBe(4);
     expect(result.memoriesReplaced).toBe(0);
+    expect(workspace.db.getMemory("mem-test-000")?.content).toBe("Locally revised content");
+    expect(workspace.db.getMemoriesByProject("proj-merge").map(({ id }) => id).sort()).toEqual([
+      "mem-test-000", "mem-test-001", "mem-test-002", "mem-test-003",
+    ]);
   });
 
   it("import strategy=new-id remaps the project ID and memory IDs", () => {

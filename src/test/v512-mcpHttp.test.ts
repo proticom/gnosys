@@ -59,10 +59,15 @@ describe("v5.12 MCP HTTP transport", () => {
 
   it("tracks concurrent sessions independently", async () => {
     const base = await start();
-    await connect(base);
-    await connect(base);
-    const health = await (await fetch(base + "/health")).json();
-    expect(health.sessions).toBe(2);
+    const firstTransport = new StreamableHTTPClientTransport(new URL(base + "/mcp"));
+    const first = new Client({ name: "first-client", version: "1.0.0" });
+    await first.connect(firstTransport);
+    clients.push(first);
+    const second = await connect(base);
+    expect((await (await fetch(base + "/health")).json()).sessions).toBe(2);
+    await firstTransport.terminateSession();
+    expect((await (await fetch(base + "/health")).json()).sessions).toBe(1);
+    expect((await second.callTool({ name: "ping", arguments: {} })).content).toEqual([{ type: "text", text: "pong" }]);
   });
 
   it("404s unknown paths", async () => {

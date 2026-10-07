@@ -3,7 +3,8 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import type { Interface as ReadlineInterface } from "readline/promises";
+import { createInterface, type Interface as ReadlineInterface } from "readline/promises";
+import { PassThrough } from "stream";
 import {
   ASSIGNABLE_TASK_LIST,
   buildInlineKeyRequirements,
@@ -21,36 +22,22 @@ import {
   type GnosysConfig,
   type LLMProviderName,
 } from "../lib/config.js";
-import { apiKeyServiceName, storeApiKeySecret } from "../lib/apiKeyVault.js";
-import * as modelValidation from "../lib/modelValidation.js";
+import { apiKeyServiceName } from "../lib/apiKeyVault.js";
 import fs from "fs/promises";
 import path from "path";
 import os from "os";
 
-vi.mock("../lib/modelValidation.js", async (importOriginal) => {
-  const actual = await importOriginal<typeof modelValidation>();
-  return {
-    ...actual,
-    validateModel: vi.fn(),
-  };
-});
-
-vi.mock("../lib/apiKeyVault.js", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("../lib/apiKeyVault.js")>();
-  return {
-    ...actual,
-    storeApiKeySecret: vi.fn(() => true),
-    readStoredSecret: vi.fn(() => undefined),
-  };
-});
-
+const { commandRun } = vi.hoisted(() => ({ commandRun: vi.fn<(command: string) => string>(() => "") }));
+vi.mock("child_process", async (importOriginal) => ({
+  ...await importOriginal<typeof import("child_process")>(),
+  execSync: commandRun,
+}));
+const readlineInterfaces: ReadlineInterface[] = [];
 function mockRl(answers: string[] = []): ReadlineInterface {
-  let i = 0;
-  return {
-    question: vi.fn().mockImplementation(async () => answers[i++] ?? ""),
-    close: vi.fn(),
-    on: vi.fn(),
-  } as unknown as ReadlineInterface;
+  const rl = createInterface({ input: new PassThrough(), output: new PassThrough() });
+  vi.spyOn(rl, "question").mockImplementation(async () => answers.shift() ?? "");
+  readlineInterfaces.push(rl);
+  return rl;
 }
 
 function sampleConfig(): GnosysConfig {
@@ -78,9 +65,21 @@ function sampleConfig(): GnosysConfig {
 }
 
 describe("setup models task routing", () => {
-  beforeEach(() => {
-    vi.mocked(modelValidation.validateModel).mockReset();
-    vi.mocked(storeApiKeySecret).mockClear();
+  let isolatedHome: string;
+  beforeEach(async () => {
+    isolatedHome = await fs.mkdtemp(path.join(os.tmpdir(), "gnosys-routing-"));
+    vi.stubEnv("HOME", isolatedHome);
+    vi.stubEnv("GNOSYS_HOME", path.join(isolatedHome, ".gnosys"));
+    commandRun.mockClear();
+    vi.stubGlobal("fetch", vi.fn<typeof fetch>().mockRejectedValue(new Error("Unexpected network request")));
+  });
+
+  afterEach(async () => {
+    for (const rl of readlineInterfaces.splice(0)) rl.close();
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+    await fs.rm(isolatedHome, { recursive: true, force: true });
   });
 
   describe("buildInlineKeyRequirements", () => {
@@ -162,11 +161,7 @@ describe("setup models task routing", () => {
 
   describe("validateTaskCombo", () => {
     it("does not persist keys on validation failure", async () => {
-      vi.mocked(modelValidation.validateModel).mockResolvedValue({
-        ok: false,
-        error: "401 unauthorized",
-        latencyMs: 10,
-      });
+      vi.mocked(fetch).mockResolvedValue(new Response('{"error":{"message":"unauthorized"}}', { status: 401 }));
 
       const rl = mockRl();
       const repromptKey = vi.fn().mockResolvedValue(null);
@@ -181,14 +176,16 @@ describe("setup models task routing", () => {
       });
 
       expect(proceed).toBe(false);
-      expect(storeApiKeySecret).not.toHaveBeenCalled();
+      expect(fetch).toHaveBeenCalledWith("https://openrouter.ai/api/v1/chat/completions", expect.objectContaining({
+        method: "POST", headers: expect.objectContaining({ Authorization: "Bearer bad-key" }),
+        body: '{"model":"nemotron","messages":[{"role":"user","content":"Hi"}],"max_tokens":5}',
+      }));
+      expect(repromptKey).toHaveBeenCalledOnce();
+      expect(commandRun.mock.calls.filter(([command]) => /add-generic-password|secret-tool store/.test(command))).toEqual([]);
     });
 
     it("returns proceed true when validation succeeds", async () => {
-      vi.mocked(modelValidation.validateModel).mockResolvedValue({
-        ok: true,
-        latencyMs: 42,
-      });
+      vi.mocked(fetch).mockResolvedValue(new Response('{"choices":[{"message":{"content":"Hi"}}]}'));
 
       const rl = mockRl();
       const { proceed, apiKey } = await validateTaskCombo({
@@ -201,12 +198,16 @@ describe("setup models task routing", () => {
 
       expect(proceed).toBe(true);
       expect(apiKey).toBe("good-key");
-      expect(storeApiKeySecret).not.toHaveBeenCalled();
+      expect(fetch).toHaveBeenCalledWith("https://openrouter.ai/api/v1/chat/completions", expect.objectContaining({
+        method: "POST", headers: expect.objectContaining({ Authorization: "Bearer good-key" }),
+        body: '{"model":"nemotron","messages":[{"role":"user","content":"Hi"}],"max_tokens":5}',
+      }));
+      expect(commandRun.mock.calls.filter(([command]) => /add-generic-password|secret-tool store/.test(command))).toEqual([]);
     });
   });
 
   describe("promptKeyDestinationAndPersist", () => {
-    it("secure store (default choice) calls storeApiKeySecret", async () => {
+    it("secure store choice writes the scoped key through the OS boundary", async () => {
       const rl = mockRl();
       await promptKeyDestinationAndPersist({
         rl,
@@ -216,11 +217,12 @@ describe("setup models task routing", () => {
         scope: "global",
         destinationChoice: 0,
       });
-      expect(storeApiKeySecret).toHaveBeenCalledWith(
-        "GNOSYS_GLOBAL_OPENROUTER_KEY",
-        "secret",
-        "openrouter",
-      );
+      const writes = commandRun.mock.calls.filter(([command]) => /add-generic-password|secret-tool store/.test(command));
+      expect(writes).toEqual([[process.platform === "darwin"
+        ? 'security add-generic-password -a "$USER" -s "GNOSYS_GLOBAL_OPENROUTER_KEY" -w "secret" -U'
+        : 'printf "%s" "secret" | secret-tool store --label="Gnosys openrouter" service gnosys account GNOSYS_GLOBAL_OPENROUTER_KEY',
+        expect.objectContaining({ stdio: "pipe" }),
+      ]]);
     });
 
     it("dotenv choice writes scoped service line", async () => {
@@ -244,7 +246,7 @@ describe("setup models task routing", () => {
         });
         const content = await fs.readFile(envPath, "utf-8");
         expect(content).toContain("GNOSYS_GLOBAL_OPENROUTER_KEY=dotenv-secret");
-        expect(storeApiKeySecret).not.toHaveBeenCalled();
+        expect(commandRun.mock.calls.filter(([command]) => /add-generic-password|secret-tool store/.test(command))).toEqual([]);
       } finally {
         process.env.HOME = origHome;
         await fs.rm(tmp, { recursive: true, force: true });
@@ -253,6 +255,9 @@ describe("setup models task routing", () => {
 
     it("don't store prints env var names and persists nothing", async () => {
       const rl = mockRl();
+      const envPath = path.join(isolatedHome, ".config", "gnosys", ".env");
+      await fs.mkdir(path.dirname(envPath), { recursive: true });
+      await fs.writeFile(envPath, "EXISTING=preserved\n");
       const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
       const dest = await promptKeyDestinationAndPersist({
@@ -265,7 +270,8 @@ describe("setup models task routing", () => {
       });
 
       expect(dest).toBe("none");
-      expect(storeApiKeySecret).not.toHaveBeenCalled();
+      expect(await fs.readFile(envPath, "utf-8")).toBe("EXISTING=preserved\n");
+      expect(commandRun.mock.calls.filter(([command]) => /add-generic-password|secret-tool store/.test(command))).toEqual([]);
       const joined = logSpy.mock.calls.map((c) => String(c[0])).join("\n");
       expect(joined).toContain("GNOSYS_GLOBAL_OPENROUTER_KEY");
       logSpy.mockRestore();

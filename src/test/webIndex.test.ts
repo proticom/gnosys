@@ -1,3 +1,4 @@
+// biome-ignore-all lint/suspicious/noApproximativeNumericConstant: Rounded index scores are literal public-output expectations.
 /**
  * Tests for webIndex.ts — Build-time search index generator.
  */
@@ -111,13 +112,8 @@ describe("buildIndex", () => {
     const postgresqlEntries = index.invertedIndex["postgresql"];
     const randomEntries = index.invertedIndex["random"];
 
-    expect(postgresqlEntries).toBeDefined();
-    expect(postgresqlEntries![0].score).toBeGreaterThan(0);
-
-    // "postgresql" is in relevance (3x weight), "random" is in content (1x weight)
-    if (randomEntries) {
-      expect(postgresqlEntries![0].score).toBeGreaterThan(randomEntries[0].score);
-    }
+    expect(postgresqlEntries).toEqual([{ docIndex: 0, score: 2.0794 }]);
+    expect(randomEntries).toEqual([{ docIndex: 0, score: 0.6931 }]);
   });
 
   it("respects stop-word filtering", () => {
@@ -132,7 +128,7 @@ describe("buildIndex", () => {
 
     const index = buildIndexSync(tmpDir, { stopWords: true });
     expect(index.invertedIndex["the"]).toBeUndefined();
-    expect(index.invertedIndex["quick"]).toBeDefined();
+    expect(index.invertedIndex["quick"]).toEqual([{ docIndex: 0, score: 0.6931 }]);
   });
 
   it("disables stop-word filtering when option is false", () => {
@@ -146,7 +142,7 @@ describe("buildIndex", () => {
     }, "The fox and the hound.");
 
     const index = buildIndexSync(tmpDir, { stopWords: false });
-    expect(index.invertedIndex["the"]).toBeDefined();
+    expect(index.invertedIndex["the"]).toEqual([{ docIndex: 0, score: 2.7726 }]);
   });
 
   it("skips archived documents by default", () => {
@@ -164,13 +160,17 @@ describe("buildIndex", () => {
 
     const index = buildIndexSync(tmpDir, { includeArchived: true });
     expect(index.documentCount).toBe(2);
+    expect(index.documents.map(({ id, status }) => ({ id, status }))).toEqual([
+      { id: "a1", status: "active" },
+      { id: "a2", status: "archived" },
+    ]);
   });
 
   it("computes correct content hashes", () => {
     makeMd("doc.md", { id: "d1", title: "Doc", category: "general", tags: [], relevance: "", status: "active" }, "Some content.");
 
     const index = buildIndexSync(tmpDir);
-    expect(index.documents[0].contentHash).toMatch(/^[a-f0-9]{64}$/);
+    expect(index.documents[0].contentHash).toBe("3dc0dc503444016e6cd0e0668c82d7d46092775b49d4200bc576eccd2c0df1de");
   });
 
   it("handles files with no frontmatter id (uses filename)", () => {
@@ -213,10 +213,15 @@ describe("buildIndex", () => {
     // Remove generated timestamps for comparison
     const normalize = (idx: GnosysWebIndex) => ({ ...idx, generated: "" });
     expect(normalize(index1)).toEqual(normalize(index2));
-
-    // Verify tokens are sorted
-    const tokens = Object.keys(index1.invertedIndex);
-    expect(tokens).toEqual([...tokens].sort());
+    expect(index1.documents.map((doc) => doc.id)).toEqual(["a", "b"]);
+    expect(index1.invertedIndex).toEqual({
+      alpha: [{ docIndex: 0, score: 6.5917 }],
+      beta: [{ docIndex: 1, score: 6.5917 }],
+      document: [{ docIndex: 0, score: 0.6931 }, { docIndex: 1, score: 0.6931 }],
+      first: [{ docIndex: 0, score: 1.0986 }],
+      second: [{ docIndex: 1, score: 1.0986 }],
+    });
+    expect(Object.keys(index1.invertedIndex)).toEqual(["alpha", "beta", "document", "first", "second"]);
   });
 
   it("version field is set to 1", () => {
@@ -254,6 +259,10 @@ describe("buildIndex (async)", () => {
 
     const normalize = (idx: GnosysWebIndex) => ({ ...idx, generated: "" });
     expect(normalize(asyncResult)).toEqual(normalize(syncResult));
+    expect(asyncResult.documents.map(({ id, title }) => ({ id, title }))).toEqual([
+      { id: "d1", title: "Async Test" },
+    ]);
+    expect(asyncResult.invertedIndex.async).toEqual([{ docIndex: 0, score: 4.1589 }]);
   });
 });
 
@@ -270,6 +279,8 @@ describe("writeIndex", () => {
     const parsed = JSON.parse(fs.readFileSync(outputPath, "utf-8"));
     expect(parsed.version).toBe(1);
     expect(parsed.documentCount).toBe(1);
+    expect(parsed.documents).toEqual([expect.objectContaining({ id: "d1", title: "Write Test", contentLength: 8 })]);
+    expect(parsed.invertedIndex.content).toEqual([{ docIndex: 0, score: 0.6931 }]);
   });
 
   it("overwrites existing index file", async () => {
@@ -284,5 +295,7 @@ describe("writeIndex", () => {
     const parsed = JSON.parse(fs.readFileSync(outputPath, "utf-8"));
     expect(parsed.version).toBe(1);
     expect((parsed as Record<string, unknown>).old).toBeUndefined();
+    expect(parsed.documents).toEqual([expect.objectContaining({ id: "d1", title: "Overwrite" })]);
+    expect(parsed.invertedIndex.content).toEqual([{ docIndex: 0, score: 0.6931 }]);
   });
 });

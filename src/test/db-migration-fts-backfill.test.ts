@@ -137,8 +137,41 @@ describe("v1 database without memories_fts", () => {
     `);
     raw.close();
 
-    new GnosysDB(tmp).close();
-    expect(ftsIds()).toEqual([null, "deci-001", "deci-002"]);
+    const db = new GnosysDB(tmp);
+    try {
+      expect(db.searchFts("wombatlantern", 10).map((row) => row.id).sort()).toEqual(["deci-001", "deci-002"]);
+    } finally {
+      db.close();
+    }
+    expect(ftsIds()).toEqual(["deci-001", "deci-002"]);
+  });
+
+  it("repairs duplicates and backfills missing rows together without duplicating on reopen", () => {
+    seedV1WithoutFts(["deci-001", "deci-002"]);
+    const raw = new Database(dbFile);
+    raw.exec(`
+      CREATE VIRTUAL TABLE memories_fts USING fts5(
+        id, title, category, tags, relevance, content, summary,
+        tokenize='porter unicode61'
+      );
+      INSERT INTO memories_fts SELECT id, title, category, tags, relevance, content, summary
+        FROM memories WHERE id = 'deci-001';
+      INSERT INTO memories_fts SELECT id, title, category, tags, relevance, content, summary
+        FROM memories WHERE id = 'deci-001';
+    `);
+    raw.close();
+
+    for (let open = 0; open < 2; open++) {
+      const db = new GnosysDB(tmp);
+      try {
+        expect(db.searchFts("wombatlantern", 10).map((row) => row.id).sort()).toEqual(["deci-001", "deci-002"]);
+        expect(db.discoverFts("wombatlantern", 10).map((row) => row.id).sort()).toEqual(["deci-001", "deci-002"]);
+      } finally {
+        db.close();
+      }
+      expect(userVersion()).toBe(5);
+      expect(ftsIds()).toEqual(["deci-001", "deci-002"]);
+    }
   });
 
   it("opens a legacy DB whose memories table lacks an FTS source column", () => {

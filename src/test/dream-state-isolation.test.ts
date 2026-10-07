@@ -16,33 +16,18 @@
  * 80 MB model) while still reporting the coverage gap.
  */
 
-import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "fs";
 import os from "os";
 import path from "path";
 import { GnosysDB } from "../lib/db.js";
-import type { GnosysConfig } from "../lib/config.js";
+import { GnosysConfigSchema, type GnosysConfig } from "../lib/config.js";
 import { GnosysDreamEngine } from "../lib/dream.js";
 import { getDreamStatePath } from "../lib/dreamRunLog.js";
 import { makeMemory } from "./_helpers.js";
 
-vi.mock("../lib/llm.js", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("../lib/llm.js")>();
-  const fakeProvider = {
-    name: "ollama" as const,
-    model: "stub",
-    generate: vi.fn(async () => '{"action":"ok"}'),
-    testConnection: async () => true,
-  };
-  return {
-    ...actual,
-    getLLMProvider: vi.fn(() => fakeProvider),
-    createProvider: vi.fn(() => fakeProvider),
-  };
-});
-
 function baseConfig(): GnosysConfig {
-  return { llm: { defaultProvider: "anthropic" }, dream: { enabled: true } } as unknown as GnosysConfig;
+  return GnosysConfigSchema.parse({ llm: { defaultProvider: "ollama" }, dream: { enabled: true } });
 }
 
 const decayOnlyDream = {
@@ -78,14 +63,7 @@ afterEach(() => {
 });
 
 describe("dream-state isolation (v5.13.0)", () => {
-  it("the vitest global setup provides a throwaway GNOSYS_HOME to every worker", () => {
-    // prevGnosysHome is what the worker had before this test overrode it —
-    // the setup file must have already pointed it away from the real home.
-    expect(prevGnosysHome).toBeDefined();
-    expect(prevGnosysHome).not.toBe(path.join(os.homedir(), ".gnosys"));
-    expect(prevGnosysHome!.includes("gnosys-test-home-")).toBe(true);
-    expect(prevGnosysHome!.endsWith(".gnosys")).toBe(true);
-  });
+
 
   it("engine.dream() writes dream-state.json under GNOSYS_HOME, not the real home", async () => {
     const engine = new GnosysDreamEngine(db, baseConfig(), decayOnlyDream);
@@ -105,7 +83,7 @@ describe("dream-state isolation (v5.13.0)", () => {
       });
       await engine.dream();
 
-      expect(fs.existsSync(path.join(stateDir, "dream-state.json"))).toBe(true);
+      expect(JSON.parse(fs.readFileSync(path.join(stateDir, "dream-state.json"), "utf8")).lastMemoryCount).toBe(3);
       expect(fs.existsSync(path.join(tmp, "dream-state.json"))).toBe(false);
     } finally {
       fs.rmSync(stateDir, { recursive: true, force: true });

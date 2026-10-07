@@ -4,6 +4,7 @@ import { tmpdir } from "os";
 import { join } from "path";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { runWebRemoveCommand } from "../lib/webRemoveCommand.js";
+import { loadIndex, search } from "../lib/staticSearch.js";
 
 let base: string;
 let storeDir: string;
@@ -57,12 +58,15 @@ afterEach(() => {
 
 describe("runWebRemoveCommand (in-process invoke)", () => {
   it("removes a knowledge file and rebuilds the index (--json)", async () => {
+    writeFileSync(join(knowledgeDir, "keep.md"), "---\nid: keep\ntitle: Retained\ncategory: general\n---\n\nSearchable surviving document.");
     await runWebRemoveCommand(getWebStorePath, "doc.md", { json: true });
     const parsed = JSON.parse(logged());
     expect(parsed.ok).toBe(true);
     expect(parsed.removed).toBe("doc.md");
     expect(existsSync(join(knowledgeDir, "doc.md"))).toBe(false);
-    expect(existsSync(join(knowledgeDir, "gnosys-index.json"))).toBe(true);
+    const index = loadIndex(join(knowledgeDir, "gnosys-index.json"));
+    expect(index.documents.map(doc => ({ id: doc.id, title: doc.title }))).toEqual([{ id: "keep", title: "Retained" }]);
+    expect(search(index, "surviving").map(result => result.document.id)).toEqual(["keep"]);
   });
 
   it("refuses to remove a path outside the knowledge directory", async () => {

@@ -365,12 +365,3 @@ export async function describeMultiMachineSyncPanel(): Promise<string> {
     }
   }
 }
-
-// Internal helpers exported for tests.
-export const __test = {
-  resolveActiveStorePath,
-  renderPanelRows,
-  buildTrailingMap,
-  formatMultiMachineSyncSummary,
-  describeMultiMachineSyncPanel,
-};

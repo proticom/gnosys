@@ -17,13 +17,10 @@ echo "[e2e-setup] packing CLI…"
 npm run build > /dev/null
 TARBALL=$(npm pack --silent)
 mv "$TARBALL" e2e-setup/gnosys.tgz
+trap 'rm -f e2e-setup/gnosys.tgz' EXIT
 
 echo "[e2e-setup] building image…"
 docker build -q -t gnosys-e2e-setup e2e-setup/ > /dev/null
 
 echo "[e2e-setup] running isolated suite (no network)…"
 docker run --rm --network=none gnosys-e2e-setup
-status=$?
-
-rm -f e2e-setup/gnosys.tgz
-exit $status

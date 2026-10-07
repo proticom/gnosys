@@ -7,20 +7,36 @@
  *   TC-7d.3: Dream notes appear in audit_log
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import {
   createTestEnv,
   cleanupTestEnv,
   type TestEnv,
+  makeMemory,
 } from "./_helpers.js";
 
+import { GnosysConfigSchema } from "../lib/config.js";
+import { GnosysDreamEngine } from "../lib/dream.js";
+
 let env: TestEnv;
+function engine(): GnosysDreamEngine {
+  return new GnosysDreamEngine(env.db, GnosysConfigSchema.parse({}), {
+    minMemories: 1, selfCritique: false, generateSummaries: false, discoverRelationships: false,
+  }, { stateDir: env.tmpDir });
+}
+function seed(): void {
+  env.db.insertMemory(makeMemory({ id: "dream-effect", title: "Dream effect", confidence: 0.9, modified: "2026-01-01T00:00:00.000Z" }));
+}
+
 
 beforeEach(async () => {
   env = await createTestEnv("phase7d");
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(new Date("2026-01-11T00:00:00.000Z"));
 });
 
 afterEach(async () => {
+  vi.useRealTimers();
   await cleanupTestEnv(env);
 });
 
@@ -28,107 +44,64 @@ describe("Phase 7d: Dream Mode", () => {
   // ─── TC-7d.1: Dream engine and config ────────────────────────────────
 
   describe("TC-7d.1: Dream Mode configuration and engine", () => {
-    it("GnosysDreamEngine class is importable", async () => {
-      const dreamModule = await import("../lib/dream.js");
-      expect(dreamModule).toHaveProperty("GnosysDreamEngine");
-      expect(typeof dreamModule.GnosysDreamEngine).toBe("function");
+    it("Dream diagnoses an empty unmigrated store", async () => {
+      const report = await engine().dream();
+      expect(report.errors).toEqual(["gnosys.db not available or not migrated"]);
+      expect(report.decayUpdated).toBe(0);
+      expect(env.db.queryAuditLog({ limit: 10 })).toEqual([]);
     });
 
-    it("DEFAULT_DREAM_CONFIG has disabled=true by default", async () => {
-      const { DEFAULT_DREAM_CONFIG } = await import("../lib/dream.js");
-      expect(DEFAULT_DREAM_CONFIG.enabled).toBe(false);
-    });
 
-    it("DEFAULT_DREAM_CONFIG has sensible idle threshold", async () => {
-      const { DEFAULT_DREAM_CONFIG } = await import("../lib/dream.js");
-      expect(DEFAULT_DREAM_CONFIG.idleMinutes).toBeGreaterThan(0);
-      expect(DEFAULT_DREAM_CONFIG.maxRuntimeMinutes).toBeGreaterThan(0);
-    });
 
-    it("dream config supports self-critique and summary generation flags", async () => {
-      const { DEFAULT_DREAM_CONFIG } = await import("../lib/dream.js");
-      expect(typeof DEFAULT_DREAM_CONFIG.selfCritique).toBe("boolean");
-      expect(typeof DEFAULT_DREAM_CONFIG.generateSummaries).toBe("boolean");
-      expect(typeof DEFAULT_DREAM_CONFIG.discoverRelationships).toBe("boolean");
+
+
+    it("Dream runs all optional phases by default", async () => {
+      seed();
+      vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ response: "[]", done: true }), { status: 200 })));
+      try {
+        const actual = new GnosysDreamEngine(env.db, GnosysConfigSchema.parse({}), { minMemories: 1 }, { stateDir: env.tmpDir });
+        const report = await actual.dream();
+        expect(report.errors).toEqual([]);
+        expect(report.phases?.map(phase => phase.name)).toEqual(["decay", "embedding-health", "critique", "summaries", "relationships"]);
+        expect(env.db.getMemory("dream-effect")?.confidence).toBe(0.86);
+      } finally { vi.unstubAllGlobals(); }
     });
   });
 
   // ─── TC-7d.2: Resource safety ────────────────────────────────────────
 
   describe("TC-7d.2: Resource safety (no CPU hog)", () => {
-    it("dream config has runtime limits", async () => {
-      const { DEFAULT_DREAM_CONFIG } = await import("../lib/dream.js");
-      // Max runtime should be bounded
-      expect(DEFAULT_DREAM_CONFIG.maxRuntimeMinutes).toBeLessThanOrEqual(60);
-      // Min memories threshold prevents running on empty stores
-      expect(DEFAULT_DREAM_CONFIG.minMemories).toBeGreaterThan(0);
+    it("Dream aborts at a phase boundary after its default runtime limit", async () => {
+      seed();
+      const report = await engine().dream((phase) => {
+        if (phase === "decay") vi.setSystemTime(new Date("2026-01-11T00:31:00.000Z"));
+      });
+      expect(report).toMatchObject({ aborted: true, abortReason: "max runtime exceeded (30min)", decayUpdated: 1 });
+      expect(report.phases?.map(phase => phase.name)).toEqual(["decay"]);
+      expect(env.db.getMemory("dream-effect")?.confidence).toBe(0.86);
     });
   });
 
   // ─── TC-7d.3: Dream notes in audit_log ───────────────────────────────
 
   describe("TC-7d.3: Dream activity audit logging", () => {
-    it("audit_log accepts dream-related entries", () => {
-      // Simulate dream engine logging
-      env.db.logAudit({
-        timestamp: new Date().toISOString(),
-        operation: "consolidate",
-        memory_id: "dream-mem-001",
-        details: JSON.stringify({
-          action: "merge",
-          sources: ["mem-001", "mem-002"],
-          dreamCycle: 1,
-        }),
-        duration_ms: 1500,
-        trace_id: "dream-trace-001",
-      });
-
-      env.db.logAudit({
-        timestamp: new Date().toISOString(),
-        operation: "decay",
-        memory_id: "dream-mem-002",
-        details: JSON.stringify({
-          oldConfidence: 0.8,
-          newConfidence: 0.72,
-          daysSinceReinforced: 30,
-        }),
-        duration_ms: 5,
-        trace_id: "dream-trace-001",
-      });
-
-      // Query audit log for dream entries
-      const entries = (env.db as any).db
-        .prepare("SELECT * FROM audit_log WHERE trace_id = ?")
-        .all("dream-trace-001");
-
-      expect(entries.length).toBe(2);
-      expect(entries.map((e: any) => e.operation).sort()).toEqual([
-        "consolidate",
-        "decay",
-      ]);
+    it("Dream writes completion audit details for its persisted decay", async () => {
+      seed();
+      const report = await engine().dream();
+      expect(report).toMatchObject({ errors: [], decayUpdated: 1, aborted: false });
+      const entries = env.db.queryAuditLog({ operation: "dream_complete" });
+      expect(entries).toHaveLength(1);
+      expect(JSON.parse(entries[0].details || "null")).toMatchObject({ decayUpdated: 1, llmCallsMade: 0, errors: 0, aborted: false });
+      expect(env.db.getMemory("dream-effect")?.confidence).toBe(0.86);
     });
 
-    it("audit_log entries have correct schema", () => {
-      env.db.logAudit({
-        timestamp: new Date().toISOString(),
-        operation: "maintain",
-        memory_id: null,
-        details: JSON.stringify({ phase: "dream", dryRun: false }),
-        duration_ms: 500,
-        trace_id: "schema-check",
-      });
-
-      const entry = (env.db as any).db
-        .prepare("SELECT * FROM audit_log WHERE trace_id = ?")
-        .get("schema-check");
-
-      expect(entry).toHaveProperty("id");
-      expect(entry).toHaveProperty("timestamp");
-      expect(entry).toHaveProperty("operation");
-      expect(entry).toHaveProperty("memory_id");
-      expect(entry).toHaveProperty("details");
-      expect(entry).toHaveProperty("duration_ms");
-      expect(entry).toHaveProperty("trace_id");
+    it("Dream start audit records the actual run configuration and memory count", async () => {
+      seed();
+      await engine().dream();
+      const entries = env.db.queryAuditLog({ operation: "dream_start" });
+      expect(entries).toHaveLength(1);
+      expect(entries[0]).toMatchObject({ operation: "dream_start", timestamp: "2026-01-11T00:00:00.000Z", memory_id: null });
+      expect(JSON.parse(entries[0].details || "null")).toEqual({ startedAt: "2026-01-11T00:00:00.000Z", config: { maxRuntime: 30, selfCritique: false, generateSummaries: false, discoverRelationships: false, provider: "ollama", model: null }, memoryCount: 1 });
     });
   });
 });

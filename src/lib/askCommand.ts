@@ -1,3 +1,4 @@
+import { GnosysDB } from "./db.js";
 import { loadConfig, DEFAULT_CONFIG, type GnosysConfig } from "./config.js";
 import { GnosysSearch } from "./search.js";
 import { getSecureStorageSetupHint } from "./platform.js";
@@ -170,14 +171,21 @@ export async function runAskCommand(
         if (result.sources.length > 0) {
           const writeTarget = resolver.getWriteTarget();
           if (writeTarget) {
-            const { GnosysMaintenanceEngine } = await import("./maintenance.js");
-            await GnosysMaintenanceEngine.reinforceBatch(
-              writeTarget.store,
-              result.sources.map((s) => s.relativePath)
-            ).catch((err) => {
-              // Best-effort, but don't be fully silent (sprint 2026-07-02).
+            try {
+              const { GnosysMaintenanceEngine } = await import("./maintenance.js");
+              const centralDb = GnosysDB.openCentral();
+              try {
+                await GnosysMaintenanceEngine.reinforceBatch(
+                  writeTarget.store,
+                  result.sources.map((s) => s.relativePath),
+                  centralDb,
+                );
+              } finally {
+                centralDb.close();
+              }
+            } catch (err) {
               console.error(`gnosys: reinforcement skipped: ${err instanceof Error ? err.message : String(err)}`);
-            });
+            }
           }
         }
       } catch (err) {

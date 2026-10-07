@@ -5,6 +5,8 @@
 import { describe, it, expect, afterEach } from "vitest";
 import type { AddressInfo } from "node:net";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { startMcpHttpServer, type McpHttpHandle } from "../lib/mcpHttp.js";
 
 let handle: McpHttpHandle | null = null;
@@ -40,19 +42,27 @@ describe("v5.12 Origin guard", () => {
     expect(r.status).toBe(403);
   });
 
-  it("no Origin header → not 403", async () => {
+  it("no Origin header permits MCP initialization", async () => {
     const url = await start();
-    const r = await fetch(url, { method: "POST", headers: CT, body: init });
-    expect(r.status).not.toBe(403);
+    const client = new Client({ name: "cors-test", version: "1.0.0" });
+    const transport = new StreamableHTTPClientTransport(new URL(url), { requestInit: { headers: {} } });
+    try {
+      await client.connect(transport);
+      expect(client.getServerVersion()).toEqual({ name: "t", version: "1.0.0" });
+    } finally {
+      await client.close();
+    }
   });
 
-  it("allowlisted Origin → not 403", async () => {
+  it("allowlisted Origin permits MCP initialization", async () => {
     const url = await start(["https://app.example"]);
-    const r = await fetch(url, {
-      method: "POST",
-      headers: { ...CT, origin: "https://app.example" },
-      body: init,
-    });
-    expect(r.status).not.toBe(403);
+    const client = new Client({ name: "cors-test", version: "1.0.0" });
+    const transport = new StreamableHTTPClientTransport(new URL(url), { requestInit: { headers: { origin: "https://app.example" } } });
+    try {
+      await client.connect(transport);
+      expect(client.getServerVersion()).toEqual({ name: "t", version: "1.0.0" });
+    } finally {
+      await client.close();
+    }
   });
 });

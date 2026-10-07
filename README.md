@@ -26,6 +26,11 @@ The central brain is a single SQLite database at `~/.gnosys/gnosys.db` with sub-
 
 > **Requires Node.js ≥ 20.12.**
 
+Use Node 22 for now. Node 24.19.0 through 24.21.0 contain an
+[upstream native-addon cleanup regression](https://github.com/nodejs/node/issues/65446)
+that can crash SQLite. After switching Node versions, reinstall Gnosys to rebuild
+its native dependencies. CI uses Node 24.18.1 while the upstream fix is pending.
+
 ```bash
 npm install -g gnosys
 gnosys setup          # configures provider, API key, and your IDE/agent
