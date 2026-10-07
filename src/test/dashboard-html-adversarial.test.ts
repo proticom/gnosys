@@ -51,7 +51,7 @@ describe("dashboard HTML adversarial stored content", () => {
     expect(html.includes(payload)).toBe(false);
   });
 
-  it.fails("D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript", () => {
+  it("D-DASH-001: clicking a project with an apostrophe cannot execute stored JavaScript", () => {
     const projectName = "QA');globalThis.dashboardInjected=true;//";
     const html = render(projectName, "roadmap", "Ordinary roadmap memory");
     const card = html.match(/<div class="readiness-card[^>]*>/)?.[0];
