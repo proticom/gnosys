@@ -303,6 +303,32 @@ const projectRootParam = z.string().optional().describe(
   "Project root path; routes the call to that project's store."
 );
 
+const projectReadRootParam = z.string().optional().describe(
+  "Registered projectRoot searches that project plus user and global memories. An unregistered projectRoot returns an error asking for gnosys_init. Omit projectRoot to search all projects."
+);
+
+type ProjectBoundary =
+  | { kind: "all" }
+  | { kind: "project"; projectId: string }
+  | { kind: "unregistered"; root: string };
+
+function projectReadVisibility(boundary: ProjectBoundary): ProjectVisibility | undefined {
+  switch (boundary.kind) {
+    case "all":
+      return undefined;
+    case "project":
+      return { projectId: boundary.projectId };
+    case "unregistered":
+      throw new Error(
+        `${boundary.root} is not an initialised Gnosys project. Call gnosys_init with directory set to this projectRoot first (${boundary.root}), or ask the user whether to initialise it. To search without a project, omit projectRoot or use gnosys_federated_search.`
+      );
+    default: {
+      const unreachable: never = boundary;
+      return unreachable;
+    }
+  }
+}
+
 /**
  * Per-call context resolution. If projectRoot is provided, creates a scoped
  * resolver and returns a project-specific context. Otherwise returns the
@@ -319,8 +345,7 @@ interface ToolContext {
   centralDb: GnosysDB | null;
   /** v3.0: Project identity from .gnosys/gnosys.json */
   projectId: string | null;
-  /** Set only for a registered projectRoot: reads see that project plus user/global. */
-  visibility?: ProjectVisibility;
+  projectBoundary: ProjectBoundary;
   /** v13: Client read context (snapshot/master + pending overlay). */
   clientRead?: ClientReadContext | null;
   /** True when `search` was created for this call (projectRoot-scoped) and
@@ -388,6 +413,7 @@ async function resolveToolContext(projectRoot?: string): Promise<ToolContext> {
       gnosysDb,
       centralDb: applied.centralDb,
       projectId,
+      projectBoundary: { kind: "all" },
       clientRead: applied.clientRead,
     };
     activeToolContexts.getStore()?.push(ctx);
@@ -434,8 +460,9 @@ async function resolveToolContext(projectRoot?: string): Promise<ToolContext> {
     gnosysDb: scopedDb,
     centralDb: applied.centralDb,
     projectId,
-    // An unregistered projectRoot has no project boundary to enforce.
-    visibility: projectId ? { projectId } : undefined,
+    projectBoundary: projectId
+      ? { kind: "project", projectId }
+      : { kind: "unregistered", root: projectRoot },
     clientRead: applied.clientRead,
     ownsSearch: scopedSearch !== null,
   };
@@ -443,28 +470,20 @@ async function resolveToolContext(projectRoot?: string): Promise<ToolContext> {
   return ctx;
 }
 
-/**
- * v5.7.1 (#13): Resolve scope + projectId for a memory write.
- *
- * Previously every write was hard-coded to scope="project" with whatever
- * `ctx.projectId` happened to resolve to — including null. That produced
- * "project-scope, no project" orphans visible cross-project.
- *
- * Now: derive scope from the explicit `store` argument and refuse to
- * create a project-scoped memory when no project identity is reachable,
- * telling the caller exactly how to fix it.
- */
+const storeScopes: ReadonlyMap<string, MemoryScope> = new Map([
+  ["project", "project"],
+  ["personal", "user"],
+  ["global", "global"],
+]);
+
 function resolveWriteScope(
   ctx: ToolContext,
   targetStore: "project" | "personal" | "global" | undefined,
 ):
   | { ok: true; scope: MemoryScope; projectId: string | null }
   | { ok: false; error: string } {
-  const store = targetStore || "project";
-  // The "personal" store layer persists as DB scope "user"; the memories
-  // CHECK constraint only admits project/user/global.
-  if (store === "personal") return { ok: true, scope: "user", projectId: null };
-  if (store === "global") return { ok: true, scope: "global", projectId: null };
+  const scope = storeScopes.get(targetStore || "project");
+  if (scope === "user" || scope === "global") return { ok: true, scope, projectId: null };
   if (!ctx.projectId) {
     return {
       ok: false,
@@ -485,7 +504,7 @@ function resolveWriteScope(
 // ─── Tool: gnosys_discover ──────────────────────────────────────────────
 regTool(
   "gnosys_discover",
-  "Discover relevant memories by describing what you're working on. Searches relevance keyword clouds across all stores. Returns lightweight metadata (title, path, relevance keywords, status, modified date, replacement ID) — NO file contents. Use gnosys_read to load specific memories you need. Call this FIRST when starting a task to find what Gnosys knows. Set activeOnly=true to exclude non-active memories (default false).",
+  "Discover relevant memories by describing what you're working on. Searches relevance keyword clouds. Returns lightweight metadata (title, path, relevance keywords, status, modified date, replacement ID) — NO file contents. Use gnosys_read to load specific memories you need. Call this FIRST when starting a task to find what Gnosys knows. Set activeOnly=true to exclude non-active memories (default false). Registered projectRoot searches that project plus user and global memories. An unregistered projectRoot returns an error asking for gnosys_init. Omit projectRoot to search all projects.",
   {
     query: z
       .string()
@@ -494,19 +513,20 @@ regTool(
       ),
     limit: z.number().optional().describe("Max results (default 20)"),
     activeOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
-    projectRoot: projectRootParam,
+    projectRoot: projectReadRootParam,
   },
   async ({ query, limit, activeOnly, projectRoot }) => {
     const ctx = await resolveToolContext(projectRoot);
     try {
+    const visibility = projectReadVisibility(ctx.projectBoundary);
     // v2.0 DB-backed fast path
     if (ctx.centralDb?.isAvailable() && ctx.centralDb?.isMigrated()) {
       const lim = limit || 20;
-      let results = ctx.centralDb.discoverFts(query, lim, activeOnly, { visibility: ctx.visibility });
+      let results = ctx.centralDb.discoverFts(query, lim, activeOnly, { visibility });
       if (ctx.clientRead?.pendingOverlay.length) {
         results = mergeOverlayDiscoverResults(
           results,
-          ctx.clientRead.pendingOverlay.filter((p) => isVisibleInProject(p, ctx.visibility)),
+          ctx.clientRead.pendingOverlay.filter((p) => isVisibleInProject(p, visibility)),
           query,
           lim,
           (p) => ({
@@ -661,24 +681,25 @@ regTool(
 // ─── Tool: gnosys_search ─────────────────────────────────────────────────
 regTool(
   "gnosys_search",
-  "Search memories by keyword across all stores. Returns matches with snippets, status, modified date, and replacement IDs. History stays visible; replacements rank first. Set activeOnly=true to exclude non-active memories (default false).",
+  "Search memories by keyword. Returns matches with snippets, status, modified date, and replacement IDs. History stays visible; replacements rank first. Set activeOnly=true to exclude non-active memories (default false). Registered projectRoot searches that project plus user and global memories. An unregistered projectRoot returns an error asking for gnosys_init. Omit projectRoot to search all projects.",
   {
     query: z.string().describe("Search query (keywords)"),
     limit: z.number().optional().describe("Max results (default 20)"),
     activeOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
-    projectRoot: projectRootParam,
+    projectRoot: projectReadRootParam,
   },
   async ({ query, limit, activeOnly, projectRoot }) => {
     const ctx = await resolveToolContext(projectRoot);
     try {
+    const visibility = projectReadVisibility(ctx.projectBoundary);
     // v2.0 DB-backed fast path
     if (ctx.centralDb?.isAvailable() && ctx.centralDb?.isMigrated()) {
       const lim = limit || 20;
-      let results = ctx.centralDb.searchFts(query, lim, activeOnly, ctx.visibility);
+      let results = ctx.centralDb.searchFts(query, lim, activeOnly, visibility);
       if (ctx.clientRead?.pendingOverlay.length) {
         results = mergeOverlaySearchResults(
           results,
-          ctx.clientRead.pendingOverlay.filter((p) => isVisibleInProject(p, ctx.visibility)),
+          ctx.clientRead.pendingOverlay.filter((p) => isVisibleInProject(p, visibility)),
           query,
           lim,
           (p) => ({
@@ -779,7 +800,8 @@ regTool(
         dbMemories = dbMemories.filter((m) => m.status === status);
       }
       if (storeFilter) {
-        dbMemories = dbMemories.filter((m) => m.scope === storeFilter);
+        const scope = storeScopes.get(storeFilter) ?? storeFilter;
+        dbMemories = dbMemories.filter((m) => m.scope === scope);
       }
       if (category) {
         dbMemories = dbMemories.filter((m) => m.category === category);
@@ -2907,7 +2929,7 @@ regResource(
 // recall memories for a specific query. The resource above is preferred.
 regTool(
   "gnosys_recall",
-  "Fast memory recall — inject relevant memories as context. Returns <gnosys-recall> block. In aggressive mode (default), always returns top memories even at medium relevance. A wildcard query ('*') returns the top memories by reinforcement/confidence/recency. Hosts with gnosys hooks installed (via gnosys init) already get this automatically per prompt.",
+  "Fast memory recall — inject relevant memories as context. Returns <gnosys-recall> block. In aggressive mode (default), always returns top memories even at medium relevance. A wildcard query ('*') returns the top memories by reinforcement/confidence/recency. Hosts with gnosys hooks installed (via gnosys init) already get this automatically per prompt. Registered projectRoot searches that project plus user and global memories. An unregistered projectRoot returns an error asking for gnosys_init. Omit projectRoot to search all projects.",
   {
     query: z
       .string()
@@ -2917,12 +2939,13 @@ regTool(
     limit: z.number().optional().describe("Max memories to return (default from config, max 15)"),
     traceId: z.string().optional().describe("Optional trace ID from the outer orchestrator for audit correlation"),
     aggressive: z.boolean().optional().describe("Override aggressive mode for this call. Default: from gnosys.json (true)"),
-    projectRoot: projectRootParam,
+    projectRoot: projectReadRootParam,
   },
   async ({ query, limit, traceId, aggressive, projectRoot }) => {
     try {
     const ctx = await resolveToolContext(projectRoot);
     try {
+    const visibility = projectReadVisibility(ctx.projectBoundary);
     if (!ctx.search) {
       return {
         content: [{ type: "text" as const, text: "<gnosys: no-strong-recall-needed>" }],
@@ -2944,7 +2967,7 @@ regTool(
       recallConfig,
       gnosysDb: ctx.centralDb || undefined,
       pendingOverlay: ctx.clientRead?.pendingOverlay,
-      visibility: ctx.visibility,
+      visibility,
     });
 
     return {

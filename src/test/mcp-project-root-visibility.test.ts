@@ -6,8 +6,8 @@
  * federated design ranks project > user > global): a read scoped to a
  * registered projectRoot sees that project's memories plus the shared user and
  * global tiers, never another project's. gnosys_federated_search stays the
- * explicit cross-project tool. Calls without projectRoot, or with a root that
- * was never gnosys_init'ed, keep the whole-brain view.
+ * explicit cross-project tool. Calls without projectRoot keep the whole-brain
+ * view. Unregistered roots must be initialized before project-scoped reads.
  *
  * Drives the real MCP server (dist/index.js) over stdio against an isolated
  * GNOSYS_HOME.
@@ -136,20 +136,40 @@ describe("projectRoot-scoped reads", () => {
     expect(owners(text)).toEqual(["global", "p2", "user"]);
   });
 
-  it("gnosys_search without projectRoot keeps the whole-brain view", async () => {
-    const text = await call("gnosys_search", { query: KEYWORD });
+  it.each(["gnosys_search", "gnosys_discover", "gnosys_recall"])("%s without projectRoot keeps the whole-brain view", async (name) => {
+    const text = await call(name, { query: name === "gnosys_recall" ? "*" : KEYWORD, aggressive: true, limit: 15 });
     expect(owners(text)).toEqual(["global", "p1", "p2", "user"]);
   });
 
-  it("an unregistered projectRoot keeps the whole-brain view", async () => {
+  it.each(["gnosys_search", "gnosys_discover", "gnosys_recall"])("%s rejects an unregistered projectRoot", async (name) => {
     const unregistered = path.join(base, "not-initialized");
     fs.mkdirSync(unregistered, { recursive: true });
-    const text = await call("gnosys_search", { query: KEYWORD, projectRoot: unregistered });
-    expect(owners(text)).toEqual(["global", "p1", "p2", "user"]);
+    const result = await client.callTool({ name, arguments: { query: KEYWORD, projectRoot: unregistered } });
+    expect(result.isError).toBe(true);
+    const text = toolText(result);
+    expect(text).toContain(unregistered);
+    expect(text).toContain("not an initialised Gnosys project");
+    expect(text).toContain("gnosys_init");
+    expect(text).toContain("omit projectRoot");
+    expect(text).toContain("gnosys_federated_search");
   });
 
   it("gnosys_federated_search with projectRoot stays cross-project", async () => {
     const text = await call("gnosys_federated_search", { query: KEYWORD, projectRoot: p1 });
     expect(owners(text)).toEqual(["global", "p1", "p2", "user"]);
+  });
+
+  it("gnosys_federated_search accepts an unregistered projectRoot", async () => {
+    const text = await call("gnosys_federated_search", { query: KEYWORD, projectRoot: path.join(base, "not-initialized") });
+    expect(owners(text)).toEqual(["global", "p1", "p2", "user"]);
+  });
+
+  it.each(["gnosys_search", "gnosys_discover", "gnosys_recall"])("%s requires identity at the supplied root, even inside a project", async (name) => {
+    const subdirectory = path.join(p1, "src");
+    fs.mkdirSync(subdirectory, { recursive: true });
+    const result = await client.callTool({ name, arguments: { query: KEYWORD, projectRoot: subdirectory } });
+    expect(result.isError).toBe(true);
+    expect(toolText(result)).toContain(subdirectory);
+    expect(toolText(result)).toContain("gnosys_init");
   });
 });

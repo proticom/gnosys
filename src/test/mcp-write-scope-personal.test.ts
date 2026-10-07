@@ -46,6 +46,7 @@ beforeEach(async () => {
       GNOSYS_HOME: centralDir,
       GNOSYS_PERSONAL: personalDir,
       GNOSYS_LOCAL_ONLY: "1",
+      GNOSYS_MCP_TOOLSET: "full",
       HOME: home,
       USERPROFILE: home,
     },
@@ -80,6 +81,13 @@ describe("gnosys_add_structured store:'personal'", () => {
     });
     expect(toolText(res)).not.toContain("CHECK constraint failed");
     expect(res.isError).not.toBe(true);
+
+    const listed = await client.callTool({
+      name: "gnosys_list",
+      arguments: { store: "personal", projectRoot: projectDir },
+    });
+    expect(listed.isError).not.toBe(true);
+    expect(toolText(listed)).toContain("[user] **Personal scope regression note**");
 
     const db = new GnosysDB(centralDir);
     try {
