@@ -15,7 +15,7 @@
  */
 
 import { z } from "zod";
-import type { GnosysDB, DbMemory } from "./db.js";
+import type { GnosysDB, DbMemory, MemoryScope } from "./db.js";
 import type { MemoryFrontmatter, } from "./store.js";
 import { fnv1a } from "./db.js";
 import { queueMemoryEmbedding } from "./embedQueue.js";
@@ -42,7 +42,7 @@ export function syncMemoryToDb(
   content: string,
   sourcePath?: string,
   projectId?: string | null,
-  scope?: string
+  scope?: MemoryScope
 ): void {
   if (!db.isAvailable()) return;
 

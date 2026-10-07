@@ -48,6 +48,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dream errors now appear in audit rows and `gnosys dream log`, with compact,
   bounded messages. Invalid relationship items produce warnings while valid
   items are retained.
+- **`store: "personal"` writes no longer fail.** `gnosys_add_structured` and
+  `gnosys_add` with `store: "personal"` hit `CHECK constraint failed` because
+  the store layer name was written as the DB scope. Personal memories now
+  persist with scope `user`, and `gnosys_list` with `store: "personal"`
+  returns those memories.
+- **`projectRoot` now scopes `gnosys_search`, `gnosys_discover` and
+  `gnosys_recall`.** A call with a registered `projectRoot` sees that
+  project's memories plus user and global memories, and no longer returns
+  other projects' memories. An unregistered root returns an MCP error asking
+  the caller to run `gnosys_init` first. Calls without `projectRoot` and
+  `gnosys_federated_search` still search every project.
+- **Legacy databases without an FTS index become searchable.** Upgrading a
+  v1-shaped database that had no `memories_fts` table now indexes its
+  existing rows during migration.
 
 ## [6.2.1] — 2026-07-16
 

@@ -8,7 +8,7 @@ import { parse as csvParse } from "csv-parse/sync";
 import fs from "fs/promises";
 import type { GnosysIngestion } from "./ingest.js";
 import type { GnosysStore, MemoryFrontmatter } from "./store.js";
-import type { GnosysDB } from "./db.js";
+import type { GnosysDB, MemoryScope } from "./db.js";
 import { syncMemoryToDb } from "./dbWrite.js";
 import { safeFetch } from "./webIngest.js";
 
@@ -205,7 +205,7 @@ export async function performImport(
   options: ImportOptions,
   db?: GnosysDB | null,
   projectId?: string | null,
-  scope?: string
+  scope?: MemoryScope
 ): Promise<ImportResult> {
   const startTime = Date.now();
   const results: ImportResult = {

@@ -107,6 +107,42 @@ export interface DbProjectLocation {
 
 export type MemoryScope = "project" | "user" | "global";
 
+/** Validate a stored scope string (DbMemory.scope is typed as string). */
+export function parseMemoryScope(value: string): MemoryScope {
+  if (value === "project" || value === "user" || value === "global") return value;
+  throw new Error(`Invalid memory scope: ${value}`);
+}
+
+/**
+ * Restricts a read to one registered project's memories plus the shared user
+ * and global tiers.
+ */
+export interface ProjectVisibility {
+  projectId: string;
+}
+
+/** Row-level form of {@link visibilitySql}, for rows that never touch SQL. */
+export function isVisibleInProject(
+  row: { scope: string | null; project_id: string | null },
+  visibility: ProjectVisibility | undefined,
+): boolean {
+  if (!visibility) return true;
+  if (row.scope === "user" || row.scope === "global") return true;
+  return row.project_id === visibility.projectId;
+}
+
+/** SQL form of {@link isVisibleInProject}; `alias` is the memories table alias. */
+function visibilitySql(
+  visibility: ProjectVisibility | undefined,
+  alias: string,
+): { clause: string; params: string[] } {
+  if (!visibility) return { clause: "", params: [] };
+  return {
+    clause: ` AND (${alias}scope IN ('user','global') OR ${alias}project_id = ?)`,
+    params: [visibility.projectId],
+  };
+}
+
 export interface DbRelationship {
   source_id: string;
   target_id: string;
@@ -146,6 +182,21 @@ export interface MigrationStats {
 // ─── Schema ─────────────────────────────────────────────────────────────
 
 const SCHEMA_VERSION = 5;
+
+const FTS_SOURCE_COLUMNS = ["id", "title", "category", "tags", "relevance", "content", "summary"] as const;
+
+const MEMORIES_FTS_SQL = `
+CREATE VIRTUAL TABLE IF NOT EXISTS memories_fts USING fts5(
+  id,
+  title,
+  category,
+  tags,
+  relevance,
+  content,
+  summary,
+  tokenize='porter unicode61'
+);
+`;
 
 const SCHEMA_SQL = `
 CREATE TABLE IF NOT EXISTS memories (
@@ -191,16 +242,7 @@ CREATE INDEX IF NOT EXISTS idx_memories_scope ON memories(scope);
 CREATE INDEX IF NOT EXISTS idx_memories_modified ON memories(modified);
 CREATE INDEX IF NOT EXISTS idx_memories_created ON memories(created);
 
-CREATE VIRTUAL TABLE IF NOT EXISTS memories_fts USING fts5(
-  id,
-  title,
-  category,
-  tags,
-  relevance,
-  content,
-  summary,
-  tokenize='porter unicode61'
-);
+${MEMORIES_FTS_SQL}
 
 CREATE TABLE IF NOT EXISTS relationships (
   source_id   TEXT NOT NULL,
@@ -945,6 +987,29 @@ export class GnosysDB {
       }
     }
 
+    // Every upgrade: index memories rows missing from memories_fts. The
+    // insert trigger only covers rows written after the FTS table exists, so
+    // a DB that never had one stays unsearchable. NOT IN makes a rerun a
+    // no-op; a NULL id in the FTS table would turn NOT IN into NULL for
+    // every row. Legacy DBs reach this before SCHEMA_SQL, so memories may
+    // not exist yet. A failed backfill only costs search, so it must not
+    // stop the DB from opening.
+    const memoryCols = new Set(
+      (this.db.pragma("table_info(memories)") as Array<{ name: string }>).map((c) => c.name),
+    );
+    if (FTS_SOURCE_COLUMNS.every((c) => memoryCols.has(c))) {
+      try {
+        this.db.exec(MEMORIES_FTS_SQL);
+        this.db.exec(`
+          INSERT INTO memories_fts(${FTS_SOURCE_COLUMNS.join(", ")})
+          SELECT ${FTS_SOURCE_COLUMNS.join(", ")} FROM memories
+          WHERE id NOT IN (SELECT id FROM memories_fts WHERE id IS NOT NULL)
+        `);
+      } catch (err) {
+        logError(err, { op: "migrateSchema.ftsBackfill" });
+      }
+    }
+
     this.db.pragma(`user_version = ${SCHEMA_VERSION}`);
   }
 
@@ -1318,18 +1383,20 @@ export class GnosysDB {
     query: string,
     limit: number = 20,
     activeOnly: boolean = false,
+    visibility?: ProjectVisibility,
   ): FtsSearchResult[] {
     const candidateLimit = limit * 2;
     const statusFilter = activeOnly ? "AND COALESCE(m.status, 'active') = 'active' AND m.tier = 'active' AND NULLIF(m.superseded_by, '') IS NULL" : "";
     const terms = ftsTerms(query);
     if (terms.length === 0) return [];
+    const vis = visibilitySql(visibility, "m.");
 
     const finish = (results: FtsSearchResult[]) => rankReplacements({
       results, limit, key: (result) => result.id,
       replacement: (result) => {
         if (activeOnly) return null;
         const memory = result.superseded_by ? this.getMemory(result.superseded_by) : null;
-        return memory ? {
+        return memory && isVisibleInProject(memory, visibility) ? {
           id: memory.id, title: memory.title, snippet: memory.content.substring(0, 200), rank: result.rank,
           project_id: memory.project_id, status: memory.status, tier: memory.tier,
           modified: memory.modified, superseded_by: memory.superseded_by,
@@ -1348,10 +1415,10 @@ export class GnosysDB {
                  m.project_id AS project_id, m.status, m.tier, m.modified, m.superseded_by
           FROM memories_fts fts
           JOIN memories m ON m.id = fts.id
-          WHERE memories_fts MATCH ? ${statusFilter}
+          WHERE memories_fts MATCH ? ${statusFilter}${vis.clause}
           ORDER BY fts.rank
           LIMIT ?
-        `).all(match, candidateLimit) as FtsSearchResult[];
+        `).all(match, ...vis.params, candidateLimit) as FtsSearchResult[];
 
       // v5.12.3: AND first (precision), OR retry when AND finds nothing —
       // multi-word queries previously required every term to match.
@@ -1363,9 +1430,9 @@ export class GnosysDB {
       const pattern = `%${terms.join(" ")}%`;
       return finish(this.prep(`
         SELECT id, title, substr(content, 1, 200) as snippet, 0 as rank, project_id, status, tier, modified, superseded_by
-        FROM memories m WHERE (content LIKE ? OR title LIKE ? OR tags LIKE ?) ${statusFilter}
+        FROM memories m WHERE (content LIKE ? OR title LIKE ? OR tags LIKE ?) ${statusFilter}${vis.clause}
         LIMIT ?
-      `).all(pattern, pattern, pattern, candidateLimit) as FtsSearchResult[]);
+      `).all(pattern, pattern, pattern, ...vis.params, candidateLimit) as FtsSearchResult[]);
     }
     });
   }
@@ -1374,7 +1441,12 @@ export class GnosysDB {
     query: string,
     limit: number = 20,
     activeOnly: boolean = false,
-    options: { excludeSuperseded?: boolean; scope?: string; projectId?: string | null } = {},
+    options: {
+      excludeSuperseded?: boolean;
+      scope?: string;
+      projectId?: string | null;
+      visibility?: ProjectVisibility;
+    } = {},
   ): FtsDiscoverResult[] {
     const candidateLimit = limit * 2;
     const statusFilter = activeOnly
@@ -1386,15 +1458,17 @@ export class GnosysDB {
     const scopeParams = options.scope
       ? options.scope === "project" ? [options.scope, options.projectId ?? null] : [options.scope]
       : [];
+    const visibility = options.visibility;
     const terms = ftsTerms(query);
     if (terms.length === 0) return [];
+    const vis = visibilitySql(visibility, "m.");
 
     const finish = (results: FtsDiscoverResult[]) => rankReplacements({
       results, limit, key: (result) => result.id,
       replacement: (result) => {
         if (activeOnly || options.excludeSuperseded) return null;
         const memory = result.superseded_by ? this.getMemory(result.superseded_by) : null;
-        return memory ? {
+        return memory && isVisibleInProject(memory, visibility) ? {
           id: memory.id, title: memory.title, relevance: memory.relevance, rank: result.rank,
           project_id: memory.project_id, status: memory.status, tier: memory.tier,
           modified: memory.modified, superseded_by: memory.superseded_by,
@@ -1407,7 +1481,7 @@ export class GnosysDB {
       SELECT m.id AS id, m.title AS title, m.relevance AS relevance, fts.rank AS rank, m.project_id AS project_id, m.status, m.tier, m.modified, m.superseded_by
       FROM memories_fts fts
       JOIN memories m ON m.id = fts.id
-      WHERE memories_fts MATCH ? ${statusFilter} ${scopeFilter}
+      WHERE memories_fts MATCH ? ${statusFilter} ${scopeFilter}${vis.clause}
       ORDER BY ${options.excludeSuperseded ? "(m.tier = 'archive' OR COALESCE(m.status, 'active') = 'archived'), " : ""}fts.rank
       LIMIT ?
     `;
@@ -1416,7 +1490,7 @@ export class GnosysDB {
     // syntax failures still degrade gracefully to "no results".
     const tryRun = (match: string) => {
       try {
-        return this.prep(select).all(match, ...scopeParams, candidateLimit) as FtsDiscoverResult[];
+        return this.prep(select).all(match, ...scopeParams, ...vis.params, candidateLimit) as FtsDiscoverResult[];
       } catch (err) {
         if (GnosysDB.isCorruptionError(err)) throw err;
         return [];
@@ -1577,12 +1651,13 @@ export class GnosysDB {
    * resource asks for "the best memories, no query" — rank by how often a
    * memory proved useful (reinforcement), then confidence, then recency.
    */
-  getTopRecallMemories(limit: number = 15): DbMemory[] {
+  getTopRecallMemories(limit: number = 15, visibility?: ProjectVisibility): DbMemory[] {
+    const vis = visibilitySql(visibility, "");
     return this.withRecovery(() =>
       this.prep(
-        `SELECT ${LEAN_MEMORY_PROJECTION} FROM memories WHERE tier = 'active' AND COALESCE(status, 'active') = 'active' AND NULLIF(superseded_by, '') IS NULL
+        `SELECT ${LEAN_MEMORY_PROJECTION} FROM memories WHERE tier = 'active' AND COALESCE(status, 'active') = 'active' AND NULLIF(superseded_by, '') IS NULL${vis.clause}
          ORDER BY reinforcement_count DESC, confidence DESC, modified DESC LIMIT ?`,
-      ).all(limit) as DbMemory[],
+      ).all(...vis.params, limit) as DbMemory[],
     );
   }
 

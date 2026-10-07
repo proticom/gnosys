@@ -8,6 +8,7 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { z } from "zod";
 import { GnosysDB } from "../lib/db.js";
+import { createProjectIdentity } from "../lib/projectIdentity.js";
 import { makeMemory } from "./_helpers.js";
 
 const OLD_ID = "deci-legacy-00";
@@ -50,9 +51,11 @@ beforeAll(async () => {
   const home = join(base, ".gnosys");
   mkdirSync(home);
   const db = new GnosysDB(home);
+  const { projectId } = await createProjectIdentity(base, { centralDb: db });
   for (let i = 0; i < 24; i++) {
     const suffix = String(i).padStart(2, "0");
     db.insertMemory(makeMemory({
+      project_id: projectId,
       id: `deci-legacy-${suffix}`,
       title: `Amber cache legacy ${suffix}`,
       category: "decisions",
@@ -66,6 +69,7 @@ beforeAll(async () => {
     }));
   }
   db.insertMemory(makeMemory({
+    project_id: projectId,
     id: NEW_ID,
     title: NEW_TITLE,
     category: "decisions",
@@ -77,6 +81,7 @@ beforeAll(async () => {
     embedding: Buffer.from(new Float32Array([0.8, 0.2]).buffer),
   }));
   db.insertMemory(makeMemory({
+    project_id: projectId,
     id: "deci-archived",
     title: ARCHIVED_TITLE,
     category: "decisions",
@@ -87,7 +92,7 @@ beforeAll(async () => {
     embedding: Buffer.from(new Float32Array([0.9, 0.1]).buffer),
   }));
   for (const id of ["deci-write-old", "deci-update-old", "deci-update-new", "fan-a", "fan-b", "fan-next", "completed-old", "completed-next"]) {
-    db.insertMemory(makeMemory({ id, title: id, modified: "2022-01-02T12:00:00.000Z" }));
+    db.insertMemory(makeMemory({ id, title: id, project_id: projectId, modified: "2022-01-02T12:00:00.000Z" }));
   }
   db.close();
 

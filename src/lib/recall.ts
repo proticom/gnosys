@@ -24,7 +24,7 @@
 import { GnosysArchive } from "./archive.js";
 import type { GnosysSearch } from "./search.js";
 import type { GnosysResolver } from "./resolver.js";
-import type { GnosysDB } from "./db.js";
+import { isVisibleInProject, type GnosysDB, type ProjectVisibility } from "./db.js";
 import {
   mergeOverlayDiscoverResults,
   pendingAddToDbMemory,
@@ -110,6 +110,8 @@ export async function recall(
     gnosysDb?: GnosysDB;
     /** v13: Pending offline adds to merge into recall results */
     pendingOverlay?: PendingAddRow[];
+    /** Limit the DB fast path to one project plus the user/global tiers. */
+    visibility?: ProjectVisibility;
   }
 ): Promise<RecallResult> {
   const start = performance.now();
@@ -118,7 +120,8 @@ export async function recall(
 
   // ─── v2.0 DB-backed fast path ──────────────────────────────────────
   if (options.gnosysDb?.isAvailable() && options.gnosysDb?.isMigrated()) {
-    return recallFromDb(query, options.gnosysDb, limit, cfg, options.traceId, options.pendingOverlay);
+    const pendingOverlay = options.pendingOverlay?.filter((p) => isVisibleInProject(p, options.visibility));
+    return recallFromDb(query, options.gnosysDb, limit, cfg, options.traceId, pendingOverlay, options.visibility);
   }
 
   // ─── v1.x legacy path (filesystem + search.db) ────────────────────
@@ -210,6 +213,7 @@ function recallFromDb(
   cfg: RecallConfig,
   traceId?: string,
   pendingOverlay?: PendingAddRow[],
+  visibility?: ProjectVisibility,
 ): RecallResult {
   const start = performance.now();
   const memories: RecallMemory[] = [];
@@ -224,7 +228,7 @@ function recallFromDb(
   // searchable terms now serves top active memories ranked by
   // reinforcement, confidence, and recency.
   if (ftsTerms(query).length === 0) {
-    const top = db.getTopRecallMemories(fetchLimit);
+    const top = db.getTopRecallMemories(fetchLimit, visibility);
     for (let i = 0; i < top.length; i++) {
       const mem = top[i];
       memories.push({
@@ -259,7 +263,7 @@ function recallFromDb(
     });
     return result;
   }
-  let dbResults = db.discoverFts(query, fetchLimit, false, { excludeSuperseded: true });
+  let dbResults = db.discoverFts(query, fetchLimit, false, { excludeSuperseded: true, visibility });
   if (pendingOverlay?.length) {
     dbResults = mergeOverlayDiscoverResults(
       dbResults,

@@ -16,7 +16,7 @@ import { type GnosysConfig, DEFAULT_CONFIG } from "./config.js";
 import { type LLMProvider, getLLMProvider } from "./llm.js";
 import type { GnosysResolver, ResolvedStore } from "./resolver.js";
 import { GnosysArchive, getArchiveEligible } from "./archive.js";
-import type { GnosysDB } from "./db.js";
+import { parseMemoryScope, type GnosysDB } from "./db.js";
 import { syncMemoryToDb, syncUpdateToDb, syncConfidenceToDb, syncReinforcementToDb } from "./dbWrite.js";
 import { acquireWriteLock } from "./lock.js";
 import { auditLog } from "./audit.js";
@@ -442,7 +442,7 @@ Merged content:`;
       db.transaction(() => {
         const source = db.getMemory(pair.memoryA.frontmatter.id);
         if (!source) throw new Error(`Memory not found: ${pair.memoryA.frontmatter.id}`);
-        syncMemoryToDb(db, newFrontmatter, mergedContent, sourcePath, source.project_id, source.scope);
+        syncMemoryToDb(db, newFrontmatter, mergedContent, sourcePath, source.project_id, parseMemoryScope(source.scope));
         for (const memory of [pair.memoryA, pair.memoryB]) {
           syncUpdateToDb(db, memory.frontmatter.id, {
             status: "superseded",
