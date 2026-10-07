@@ -10,7 +10,7 @@
  * work without modification.
  */
 
-import type { GnosysDB, DbMemory } from "./db.js";
+import { isVisibleInProject, type GnosysDB, type DbMemory, type ProjectVisibility } from "./db.js";
 import type { SearchResult, DiscoverResult } from "./search.js";
 import type { HybridSearchResult, SearchMode } from "./searchTypes.js";
 import { rankReplacements } from "./searchStatus.js";
@@ -79,6 +79,7 @@ export class GnosysDbSearch {
     mode: SearchMode = "hybrid",
     embedQuery?: (text: string) => Promise<Float32Array>,
     activeOnly: boolean = false,
+    visibility?: ProjectVisibility,
   ): Promise<HybridSearchResult[]> {
     // Check if we have embeddings for semantic/hybrid
     const hasEmbeddings = this.db.getEmbeddingCount() > 0;
@@ -91,23 +92,23 @@ export class GnosysDbSearch {
     let results: HybridSearchResult[];
 
     if (mode === "keyword") {
-      results = this.keywordSearch(query, candidateLimit, activeOnly);
+      results = this.keywordSearch(query, candidateLimit, activeOnly, visibility);
     } else if (mode === "semantic" && embedQuery) {
-      results = await this.semanticSearch(query, candidateLimit, embedQuery, activeOnly);
+      results = await this.semanticSearch(query, candidateLimit, embedQuery, activeOnly, visibility);
     } else if (mode === "hybrid" && embedQuery) {
       const [kw, sem] = await Promise.all([
-        this.keywordSearch(query, candidateLimit, activeOnly),
-        this.semanticSearch(query, candidateLimit, embedQuery, activeOnly),
+        this.keywordSearch(query, candidateLimit, activeOnly, visibility),
+        this.semanticSearch(query, candidateLimit, embedQuery, activeOnly, visibility),
       ]);
       results = this.rrfFusion(kw, sem, candidateLimit);
     } else {
-      results = this.keywordSearch(query, candidateLimit, activeOnly);
+      results = this.keywordSearch(query, candidateLimit, activeOnly, visibility);
     }
 
     if (!activeOnly && results.length < limit) {
       const existing = new Set(results.map((result) => result.relativePath));
       const remaining = limit - results.length;
-      const archived = this.keywordSearch(query, remaining * 2, false)
+      const archived = this.keywordSearch(query, remaining * 2, false, visibility)
         .filter((result) => result.fromArchive && !existing.has(result.relativePath))
         .slice(0, remaining);
       results.push(...archived.map((result) => ({
@@ -115,15 +116,18 @@ export class GnosysDbSearch {
       })));
     }
 
-    return activeOnly ? results.slice(0, limit) : this.rankResults(results, limit);
+    return this.db.hideForeignReplacements(
+      activeOnly ? results.slice(0, limit) : this.rankResults(results, limit, visibility),
+      visibility,
+    );
   }
 
-  private rankResults(results: HybridSearchResult[], limit: number): HybridSearchResult[] {
+  private rankResults(results: HybridSearchResult[], limit: number, visibility: ProjectVisibility | undefined): HybridSearchResult[] {
     return rankReplacements({
       results, limit, key: (result) => result.relativePath,
       replacement: (result) => {
         const memory = result.superseded_by ? this.db.getMemory(result.superseded_by) : null;
-        return memory ? {
+        return memory && isVisibleInProject(memory, visibility) ? {
           relativePath: memory.id, memoryId: memory.id,
           title: memory.title, snippet: memory.content.substring(0, 200),
           score: result.score, sources: result.sources,
@@ -138,8 +142,8 @@ export class GnosysDbSearch {
   /**
    * FTS5 keyword search → HybridSearchResult
    */
-  private keywordSearch(query: string, limit: number, activeOnly: boolean): HybridSearchResult[] {
-    const results = this.db.searchFts(query, limit, activeOnly);
+  private keywordSearch(query: string, limit: number, activeOnly: boolean, visibility: ProjectVisibility | undefined): HybridSearchResult[] {
+    const results = this.db.searchFts(query, limit, activeOnly, visibility);
     return results.map((r, i) => ({
       relativePath: r.id,
       title: r.title,
@@ -160,9 +164,10 @@ export class GnosysDbSearch {
     limit: number,
     embedQuery: (text: string) => Promise<Float32Array>,
     activeOnly: boolean,
+    visibility: ProjectVisibility | undefined,
   ): Promise<HybridSearchResult[]> {
     const queryVec = await embedQuery(query);
-    const allEmbeddings = this.db.getAllEmbeddings(activeOnly);
+    const allEmbeddings = this.db.getAllEmbeddings(activeOnly, visibility);
 
     const scored: Array<{ id: string; similarity: number }> = [];
     for (const entry of allEmbeddings) {

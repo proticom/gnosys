@@ -59,6 +59,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   other projects' memories. An unregistered root returns an MCP error asking
   the caller to run `gnosys_init` first. Calls without `projectRoot` and
   `gnosys_federated_search` still search every project.
+- **`projectRoot` now scopes `gnosys_hybrid_search`, `gnosys_semantic_search`
+  and `gnosys_ask`.** The keyword and semantic legs both filter to the
+  project plus user and global memories before fusion, so `limit` counts
+  visible memories. The same unregistered-root error applies.
+- **The "superseded by" label no longer shows another project's memory ID.**
+  In a project-scoped read, a memory replaced by a memory in another project
+  is labelled `[superseded; <date>]` without the replacement's ID.
+- **Hybrid, semantic search and ask find memories added after the MCP server
+  started on an empty brain.** They used to stay in file-store mode until a
+  restart.
 - **Legacy databases without an FTS index become searchable.** Upgrading a
   v1-shaped database that had no `memories_fts` table now indexes its
   existing rows during migration.

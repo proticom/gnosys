@@ -1343,7 +1343,7 @@ export class GnosysDB {
     if (terms.length === 0) return [];
     const vis = visibilitySql(visibility, "m.");
 
-    const finish = (results: FtsSearchResult[]) => rankReplacements({
+    const finish = (results: FtsSearchResult[]) => this.hideForeignReplacements(rankReplacements({
       results, limit, key: (result) => result.id,
       replacement: (result) => {
         if (activeOnly) return null;
@@ -1354,7 +1354,7 @@ export class GnosysDB {
           modified: memory.modified, superseded_by: memory.superseded_by,
         } : null;
       },
-    });
+    }), visibility);
 
     // v5.8.0 (#7): join memories so callers can render project-prefixed IDs.
     return this.withRecovery(() => {
@@ -1415,7 +1415,7 @@ export class GnosysDB {
     if (terms.length === 0) return [];
     const vis = visibilitySql(visibility, "m.");
 
-    const finish = (results: FtsDiscoverResult[]) => rankReplacements({
+    const finish = (results: FtsDiscoverResult[]) => this.hideForeignReplacements(rankReplacements({
       results, limit, key: (result) => result.id,
       replacement: (result) => {
         if (activeOnly || options.excludeSuperseded) return null;
@@ -1428,7 +1428,7 @@ export class GnosysDB {
           modified: memory.modified, superseded_by: memory.superseded_by,
         } : null;
       },
-    });
+    }), visibility);
 
     // v5.7.1 (#14): join `memories` so callers can render project-prefixed IDs.
     const select = `
@@ -1471,6 +1471,24 @@ export class GnosysDB {
       if (results.length > 0) return finish(results);
 
       return finish(tryRun(orExpr));
+    });
+  }
+
+  /**
+   * A superseded row whose replacement lies outside `visibility` keeps its
+   * superseded status but loses the other project's memory ID.
+   */
+  hideForeignReplacements<T extends { status?: string | null; superseded_by?: string | null }>(
+    rows: T[],
+    visibility: ProjectVisibility | undefined,
+  ): T[] {
+    if (!visibility) return rows;
+    return rows.map((row) => {
+      if (!row.superseded_by) return row;
+      const replacement = this.getMemory(row.superseded_by);
+      return replacement && isVisibleInProject(replacement, visibility)
+        ? row
+        : { ...row, status: "superseded", superseded_by: null };
     });
   }
 
@@ -1636,9 +1654,10 @@ export class GnosysDB {
     });
   }
 
-  getAllEmbeddings(activeOnly: boolean = false): Array<{ id: string; embedding: Buffer }> {
+  getAllEmbeddings(activeOnly: boolean = false, visibility?: ProjectVisibility): Array<{ id: string; embedding: Buffer }> {
+    const vis = visibilitySql(visibility, "");
     return this.withRecovery(() =>
-      this.db.prepare(`SELECT id, embedding FROM memories WHERE embedding IS NOT NULL${activeOnly ? " AND COALESCE(status, 'active') = 'active' AND NULLIF(superseded_by, '') IS NULL AND tier = 'active'" : ""}`).all() as Array<{ id: string; embedding: Buffer }>,
+      this.db.prepare(`SELECT id, embedding FROM memories WHERE embedding IS NOT NULL${activeOnly ? " AND COALESCE(status, 'active') = 'active' AND NULLIF(superseded_by, '') IS NULL AND tier = 'active'" : ""}${vis.clause}`).all(...vis.params) as Array<{ id: string; embedding: Buffer }>,
     );
   }
 

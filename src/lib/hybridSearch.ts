@@ -13,7 +13,7 @@ import { GnosysEmbeddings } from "./embeddings.js";
 import type { GnosysResolver, LayeredMemory } from "./resolver.js";
 import { GnosysArchive } from "./archive.js";
 import { GnosysDbSearch } from "./dbSearch.js";
-import type { GnosysDB } from "./db.js";
+import type { GnosysDB, ProjectVisibility } from "./db.js";
 import type { HybridSearchResult, SearchMode } from "./searchTypes.js";
 import { checkEmbeddingPackage, EmbeddingUnavailableError } from "./embeddingHealth.js";
 import { rankReplacements } from "./searchStatus.js";
@@ -32,7 +32,7 @@ export class GnosysHybridSearch {
   private embeddings: GnosysEmbeddings;
   private resolver: GnosysResolver;
   private storePath: string;
-  /** v2.0: When set, hybrid search uses SQLite directly */
+  /** Set when the central DB is open; {@link useDb} decides per call whether to use it. */
   private dbSearch: GnosysDbSearch | null = null;
   /** v5.13.0: kept for central-DB embedding backfill (reindexCentralDb) */
   private gnosysDb: GnosysDB | null = null;
@@ -49,16 +49,31 @@ export class GnosysHybridSearch {
     this.resolver = resolver;
     this.storePath = storePath;
 
-    // v2.0: If GnosysDB is migrated, create a DB search adapter
-    if (gnosysDb?.isAvailable() && gnosysDb?.isMigrated()) {
+    if (gnosysDb?.isAvailable()) {
       this.dbSearch = new GnosysDbSearch(gnosysDb);
       this.gnosysDb = gnosysDb;
     }
   }
 
-  async searchWithStatus(query: string, limit = 15, mode: SearchMode = "hybrid", activeOnly = false): Promise<SearchOutcome> {
+  /**
+   * True once the central DB holds memories. Checked per call so a long-lived
+   * MCP server that started on an empty brain switches to the DB as soon as
+   * memories arrive. Project-scoped reads always use the DB: only DB rows
+   * carry a project_id.
+   */
+  private useDb(visibility?: ProjectVisibility): boolean {
+    return visibility !== undefined || this.gnosysDb?.isMigrated() === true;
+  }
+
+  async searchWithStatus(
+    query: string,
+    limit = 15,
+    mode: SearchMode = "hybrid",
+    activeOnly = false,
+    visibility?: ProjectVisibility,
+  ): Promise<SearchOutcome> {
     if (mode === "keyword") {
-      return { kind: "requested", results: await this.hybridSearch(query, limit, mode, activeOnly) };
+      return { kind: "requested", results: await this.hybridSearch(query, limit, mode, activeOnly, visibility) };
     }
     const runtime = checkEmbeddingPackage();
     let reason: string;
@@ -68,7 +83,7 @@ export class GnosysHybridSearch {
       reason = "No embeddings indexed. Run gnosys_reindex to build embeddings and enable semantic recall (CLI: gnosys reindex).";
     } else {
       try {
-        return { kind: "requested", results: await this.hybridSearch(query, limit, mode, activeOnly) };
+        return { kind: "requested", results: await this.hybridSearch(query, limit, mode, activeOnly, visibility) };
       } catch (error) {
         if (!(error instanceof EmbeddingUnavailableError)) throw error;
         reason = error.message;
@@ -76,7 +91,7 @@ export class GnosysHybridSearch {
     }
     return {
       kind: "keyword-fallback",
-      results: await this.hybridSearch(query, limit, "keyword", activeOnly),
+      results: await this.hybridSearch(query, limit, "keyword", activeOnly, visibility),
       note: `Semantic embeddings unavailable — ${mode} search ran keyword-only. ${reason}`,
     };
   }
@@ -84,15 +99,17 @@ export class GnosysHybridSearch {
   /**
    * Main hybrid search entry point.
    * Keeps history visible and puts linked replacements before their predecessors.
+   * `visibility` limits both legs to one project plus user and global memories.
    */
   async hybridSearch(
     query: string,
     limit: number = 15,
     mode: SearchMode = "hybrid",
     activeOnly: boolean = false,
+    visibility?: ProjectVisibility,
   ): Promise<HybridSearchResult[]> {
     // v2.0 DB-backed fast path: run entirely from gnosys.db
-    if (this.dbSearch) {
+    if (this.dbSearch && this.useDb(visibility)) {
       // v5.13.0: gate the semantic leg on stored central-DB vectors — the
       // query embedder loads the local model on demand, so the store-local
       // embeddings.db (the old gate) is irrelevant in DB mode. A machine
@@ -100,7 +117,10 @@ export class GnosysHybridSearch {
       const embedQuery = this.dbSearch.hasEmbeddings()
         ? (text: string) => this.embeddings.embed(text)
         : undefined;
-      return this.dbSearch.hybridSearch(query, limit, mode, embedQuery, activeOnly);
+      return this.dbSearch.hybridSearch(query, limit, mode, embedQuery, activeOnly, visibility);
+    }
+    if (visibility) {
+      throw new Error("Project-scoped hybrid search needs the central Gnosys database. Omit projectRoot to search all stores.");
     }
 
     // Auto-downgrade to keyword if no embeddings available
@@ -409,7 +429,7 @@ export class GnosysHybridSearch {
    */
   async loadContent(results: HybridSearchResult[]): Promise<HybridSearchResult[]> {
     // v2.0 DB-backed fast path
-    if (this.dbSearch) {
+    if (this.dbSearch && this.useDb()) {
       return this.dbSearch.loadContent(results);
     }
 
@@ -455,7 +475,7 @@ export class GnosysHybridSearch {
    * Check if embeddings are available.
    */
   hasEmbeddings(): boolean {
-    if (this.dbSearch) return this.dbSearch.hasEmbeddings();
+    if (this.dbSearch && this.useDb()) return this.dbSearch.hasEmbeddings();
     return this.embeddings.hasEmbeddings();
   }
 
@@ -467,7 +487,7 @@ export class GnosysHybridSearch {
    * embeddings.db must be populated.
    */
   canRunSemantic(): boolean {
-    if (this.dbSearch) {
+    if (this.dbSearch && this.useDb()) {
       return this.dbSearch.hasEmbeddings();
     }
     return this.embeddings.hasEmbeddings();
@@ -477,7 +497,7 @@ export class GnosysHybridSearch {
    * Get embedding count.
    */
   embeddingCount(): number {
-    if (this.dbSearch) return this.dbSearch.embeddingCount();
+    if (this.dbSearch && this.useDb()) return this.dbSearch.embeddingCount();
     return this.embeddings.count();
   }
 }

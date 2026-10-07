@@ -11,6 +11,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import type { GnosysHybridSearch } from "./hybridSearch.js";
 import type { HybridSearchResult } from "./searchTypes.js";
+import type { ProjectVisibility } from "./db.js";
 import { type GnosysConfig, DEFAULT_CONFIG } from "./config.js";
 import { type LLMProvider, getLLMProvider } from "./llm.js";
 import { GnosysArchive } from "./archive.js";
@@ -161,6 +162,8 @@ export class GnosysAsk {
       callbacks?: AskStreamCallbacks;
       /** Additional context to prepend (e.g. from federated search) */
       additionalContext?: string;
+      /** Limits retrieval to one project plus user and global memories. */
+      visibility?: ProjectVisibility;
     }
   ): Promise<AskResult> {
     if (!this.provider) {
@@ -204,7 +207,7 @@ export class GnosysAsk {
     const callbacks = options?.callbacks;
 
     // Step 1: Hybrid search for relevant memories
-    let results = await this.hybridSearch.hybridSearch(question, limit, mode);
+    let results = await this.hybridSearch.hybridSearch(question, limit, mode, false, options?.visibility);
     callbacks?.onSearchComplete?.(results.length, mode);
 
     if (results.length === 0) {
@@ -259,7 +262,9 @@ export class GnosysAsk {
       const moreResults = await this.hybridSearch.hybridSearch(
         refinedQuery,
         limit,
-        mode
+        mode,
+        false,
+        options?.visibility,
       );
 
       if (moreResults.length > 0) {
