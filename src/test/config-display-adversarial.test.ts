@@ -32,7 +32,7 @@ describe("adversarial config display", () => {
     expect(fs.readFileSync(configFile, "utf8")).toContain(canary);
   });
 
-  it.fails("ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes", () => {
+  it("ADV-CTX-001 JSON config output preserves model metadata without exposing stored key bytes", () => {
     const result = spawnSync(process.execPath, [cli, "config", "show", "--json"], { cwd: directory, env, encoding: "utf8" });
     expect(result.status, result.stderr).toBe(0);
     expect(displayedConfig.parse(JSON.parse(result.stdout))).toEqual({ llm: { defaultProvider: "custom", custom: { model: "display-canary-model", baseUrl: "http://provider.invalid/v1" } } });

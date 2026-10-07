@@ -454,7 +454,7 @@ code{font-family:'JetBrains Mono',monospace;font-size:.75rem;background:var(--bo
           ? `<div class="readiness-age stale">${a.label}</div>`
           : `<div class="readiness-age">${a.label}</div>`;
         return `
-        <div class="readiness-card${staleClass}" onclick="scrollToProject('${esc(s.project.name)}')">
+        <div class="readiness-card${staleClass}" onclick="scrollToProject(${esc(JSON.stringify(s.project.name))})">
           ${generateReadinessRing(s.readiness.score)}
           <h4>${esc(s.project.name)}</h4>
           <div class="label">${s.readiness.label}</div>

@@ -37,6 +37,13 @@ function providerModel(cfg: GnosysConfig, p: LLMProviderName): string | undefine
   }
 }
 
+const SECRET_FIELD = /api[-_]?key|secret|token|password|authorization/i;
+
+/** JSON.stringify replacer: stored credentials never reach `config show --json`. */
+function redactSecrets(key: string, value: unknown): unknown {
+  return SECRET_FIELD.test(key) && typeof value === "string" && value ? "[redacted]" : value;
+}
+
 export async function runConfigShowCommand(
   getResolver: GetResolver,
   opts: { json?: boolean },
@@ -53,7 +60,7 @@ export async function runConfigShowCommand(
         if (opts.json) {
           // v5.9.3 (design §12): --json keeps the old machine-readable
           // dump for scripts. Default output is the human-friendly view.
-          process.stdout.write(`${JSON.stringify(cfg, null, 2)}\n`);
+          process.stdout.write(`${JSON.stringify(cfg, redactSecrets, 2)}\n`);
           return;
         }
     

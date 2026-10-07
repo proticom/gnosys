@@ -45,6 +45,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Dashboard project names cannot run script (D-DASH-001).** The portfolio
+  dashboard built its project click handler by pasting the name into a quoted
+  JavaScript string. A name containing an apostrophe could run code when the
+  card was clicked. The name is now encoded as a JSON string literal.
+- **`gnosys config show --json` no longer prints stored API keys
+  (ADV-CTX-001).** Credential fields print as `[redacted]`; model and URL
+  settings are unchanged.
 - Dream errors now appear in audit rows and `gnosys dream log`, with compact,
   bounded messages. Invalid relationship items produce warnings while valid
   items are retained.
