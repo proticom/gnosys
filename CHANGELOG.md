@@ -5,7 +5,22 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [6.3.0] - 2026-10-06
+
+This release also merges the 6.2.2–6.2.4 fixes, which were published from a
+separate branch, into the main line.
+
+### Upgrade notes
+
+- MCP read tools (`gnosys_search`, `gnosys_discover`, `gnosys_recall`,
+  `gnosys_hybrid_search`, `gnosys_semantic_search`, `gnosys_ask`) given a
+  `projectRoot` that is not an initialised Gnosys project now return an error
+  that asks the agent to run `gnosys_init` for that directory. Before, they
+  searched every project. Omit `projectRoot`, or use
+  `gnosys_federated_search`, for a cross-project search.
+- After upgrading, run `gnosys doctor` to confirm local embeddings are
+  available. Without `@huggingface/transformers`, semantic search falls back
+  to keyword search and says so.
 
 ### Changed
 
