@@ -2294,11 +2294,10 @@ regTool(
     limit: z.number().optional().describe("Max results (default 15)"),
     mode: z.enum(["keyword", "semantic", "hybrid"]).optional().describe("Search mode (default: hybrid)"),
     activeOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
-    projectRoot: projectRootParam,
+    projectRoot: projectReadRootParam,
   },
   async ({ query, limit, mode, activeOnly, projectRoot }) => {
-    // Note: hybridSearch is module-level (heavy) and not scoped per project
-    (projectRoot); // quiets unused warning if any
+    const visibility = projectReadVisibility((await resolveToolContext(projectRoot)).projectBoundary);
     // v5.9.1 (#100): wait for the background heavy-init to finish.
     await ensureHeavyDeps();
     if (!hybridSearch) {
@@ -2310,7 +2309,7 @@ regTool(
 
     try {
       const requestedMode = (mode as "keyword" | "semantic" | "hybrid") || "hybrid";
-      const outcome = await hybridSearch.searchWithStatus(query, limit || 15, requestedMode, activeOnly);
+      const outcome = await hybridSearch.searchWithStatus(query, limit || 15, requestedMode, activeOnly, visibility);
       const results = outcome.results;
       const text = formatMcpSearchResults({
         query,
@@ -2351,11 +2350,10 @@ regTool(
     query: z.string().describe("Natural language search query"),
     limit: z.number().optional().describe("Max results (default 15)"),
     activeOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
-    projectRoot: projectRootParam,
+    projectRoot: projectReadRootParam,
   },
   async ({ query, limit, activeOnly, projectRoot }) => {
-    // Note: hybridSearch is module-level (heavy) and not scoped per project
-    (projectRoot); // quiets unused warning if any
+    const visibility = projectReadVisibility((await resolveToolContext(projectRoot)).projectBoundary);
     await ensureHeavyDeps();
     if (!hybridSearch) {
       return {
@@ -2365,7 +2363,7 @@ regTool(
     }
 
     try {
-      const outcome = await hybridSearch.searchWithStatus(query, limit || 15, "semantic", activeOnly);
+      const outcome = await hybridSearch.searchWithStatus(query, limit || 15, "semantic", activeOnly, visibility);
       const results = outcome.results;
       const text = formatMcpSearchResults({
         query,
@@ -2434,16 +2432,15 @@ regTool(
 // ─── Tool: gnosys_ask ────────────────────────────────────────────────────
 regTool(
   "gnosys_ask",
-  "Ask a natural-language question and get a synthesized answer with citations from the entire vault. Uses hybrid search to find relevant memories, then LLM to synthesize a cited response. Citations are Obsidian wikilinks [[filename.md]]. Requires an LLM provider (Anthropic or Ollama) and embeddings (run gnosys_reindex first).",
+  "Ask a natural-language question and get a synthesized answer with citations from the vault. Uses hybrid search to find relevant memories, then LLM to synthesize a cited response. Citations are Obsidian wikilinks [[filename.md]]. Requires an LLM provider (Anthropic or Ollama) and embeddings (run gnosys_reindex first).",
   {
     question: z.string().describe("Natural language question to answer from the vault"),
     limit: z.number().optional().describe("Max memories to retrieve (default 15)"),
     mode: z.enum(["keyword", "semantic", "hybrid"]).optional().describe("Search mode (default: hybrid)"),
-    projectRoot: projectRootParam,
+    projectRoot: projectReadRootParam,
   },
   async ({ question, limit, mode, projectRoot }) => {
-    // Note: askEngine is module-level (heavy) and not scoped per project
-    (projectRoot); // quiets unused warning if any
+    const visibility = projectReadVisibility((await resolveToolContext(projectRoot)).projectBoundary);
     await ensureHeavyDeps();
     if (!askEngine) {
       return {
@@ -2456,6 +2453,7 @@ regTool(
       const result = await askEngine.ask(question, {
         limit: limit || 15,
         mode: (mode as "keyword" | "semantic" | "hybrid") || "hybrid",
+        visibility,
       });
 
       // Reinforce used memories (best-effort, non-blocking)
