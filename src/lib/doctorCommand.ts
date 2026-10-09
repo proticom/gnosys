@@ -121,6 +121,15 @@ export async function runDoctorCommand(
             const counts = db.getMemoryCount();
             console.log(`  Status: ✓ migrated (schema v${db.getSchemaVersion()})`);
             console.log(`  Active: ${counts.active} | Archived: ${counts.archived} | Total: ${counts.total}`);
+            const embedded = db.getEmbeddingCount();
+            const missing = db.countMemoriesMissingEmbedding();
+            const total = embedded + missing;
+            // Floor so 3061 of 3062 reads 99.9%, never a misleading 100.0%.
+            const pct = total === 0 ? 100 : Math.floor((embedded / total) * 1000) / 10;
+            console.log(`  Embeddings: ${embedded} of ${total} memories (${pct.toFixed(1)}%)`);
+            if (missing > 0) {
+              console.log(`  ⚠ ${missing} ${missing === 1 ? "memory lacks an embedding" : "memories lack embeddings"}. Run gnosys reindex to backfill.`);
+            }
           } else if (db.isAvailable()) {
             console.log("  Status: ✗ not migrated (run gnosys upgrade)");
           } else {
@@ -215,26 +224,10 @@ export async function runDoctorCommand(
     
         console.log("");
     
-        // Check embeddings
         if (stores.length > 0) {
-          console.log("Embeddings:");
-          const { GnosysEmbeddings } = await import("./embeddings.js");
-          const embeddings = new GnosysEmbeddings(stores[0].path);
-          try {
-            const stats = embeddings.getStats();
-            if (stats.count > 0) {
-              console.log(`  Index: ${stats.count} embeddings (${stats.dbSizeMB.toFixed(1)} MB)`);
-            } else {
-              console.log("  Index: empty (run gnosys reindex to build)");
-            }
-          } catch {
-            console.log("  Index: not initialized (run gnosys reindex to build)");
-          }
-    
           // Maintenance health — v5.7.0: queries the central DB directly
           // (the prior version used GnosysMaintenanceEngine which only sees the
           // legacy file-based stores, which are empty post-DB-only).
-          console.log("");
           console.log("Maintenance Health:");
           try {
             const db2 = GnosysDB.openCentral();
