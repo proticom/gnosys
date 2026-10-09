@@ -217,7 +217,7 @@ export class GnosysMaintenanceEngine {
         }
         try {
           await this.consolidatePair(dup, writeTarget, log);
-          ids.forEach((id) => consumed.add(id));
+          for (const id of ids) consumed.add(id);
           report.consolidated++;
           report.actions.push(`Consolidated: "${dup.memoryA.frontmatter.title}" + "${dup.memoryB.frontmatter.title}"`);
         } catch (err) {
