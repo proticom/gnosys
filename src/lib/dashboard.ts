@@ -11,7 +11,6 @@ import {
   type LLMProviderName,
 } from "./config.js";
 import { isProviderAvailable } from "./llm.js";
-import { GnosysEmbeddings } from "./embeddings.js";
 import type { GnosysDB } from "./db.js";
 import { readMachineConfig } from "./machineConfig.js";
 import { effectiveProjectPath } from "./projectPaths.js";
@@ -30,7 +29,6 @@ export interface DashboardData {
     activeCount: number;
     archivedCount: number;
     totalCount: number;
-    embeddingCount: number;
     categories: string[];
   } | null;
   archive: {
@@ -45,9 +43,10 @@ export interface DashboardData {
     neverReinforced: number;
     totalReinforcements: number;
   } | null;
+  /** Coverage of memories.embedding in the central DB, all rows (what reindex backfills). */
   embeddings: {
-    count: number;
-    dbSizeMB: number;
+    embedded: number;
+    total: number;
   } | null;
   graph: {
     nodes: number;
@@ -130,7 +129,6 @@ export async function collectDashboardData(
   let gnosysDbData: DashboardData["gnosysDb"] = null;
   if (gnosysDb?.isAvailable() && gnosysDb?.isMigrated()) {
     const counts = gnosysDb.getMemoryCount();
-    const embCount = gnosysDb.getAllEmbeddings().length;
     const categories = gnosysDb.getCategories();
     gnosysDbData = {
       migrated: true,
@@ -138,7 +136,6 @@ export async function collectDashboardData(
       activeCount: counts.active,
       archivedCount: counts.archived,
       totalCount: counts.total,
-      embeddingCount: embCount,
       categories,
     };
   }
@@ -215,18 +212,11 @@ export async function collectDashboardData(
     }
   }
 
-  // Embeddings
+  // Same counts as doctor and Dream embedding-health.
   let embeddings: DashboardData["embeddings"] = null;
-  if (stores.length > 0) {
-    try {
-      const emb = new GnosysEmbeddings(stores[0].path);
-      const stats = emb.getStats();
-      if (stats.count > 0) {
-        embeddings = { count: stats.count, dbSizeMB: stats.dbSizeMB };
-      }
-    } catch {
-      // Embeddings not initialized
-    }
+  if (gnosysDb?.isAvailable() && gnosysDb?.isMigrated()) {
+    const embedded = gnosysDb.getEmbeddingCount();
+    embeddings = { embedded, total: embedded + gnosysDb.countMemoriesMissingEmbedding() };
   }
 
   // Graph stats
@@ -408,7 +398,6 @@ export function formatDashboard(data: DashboardData): string {
     lines.push(BOX_DIV);
     lines.push(row(`  Schema v${data.gnosysDb.schemaVersion} — migrated ✓`));
     lines.push(row(`  Active: ${data.gnosysDb.activeCount} | Archived: ${data.gnosysDb.archivedCount} | Total: ${data.gnosysDb.totalCount}`));
-    lines.push(row(`  Embeddings: ${data.gnosysDb.embeddingCount} inline vectors`));
     lines.push(row(`  Categories: ${data.gnosysDb.categories.join(", ")}`));
     lines.push(BOX_DIV);
   }
@@ -446,9 +435,16 @@ export function formatDashboard(data: DashboardData): string {
   lines.push(header("EMBEDDINGS"));
   lines.push(BOX_DIV);
   if (data.embeddings) {
-    lines.push(row(`  ${data.embeddings.count} vectors (${data.embeddings.dbSizeMB.toFixed(1)} MB)`));
+    const { embedded, total } = data.embeddings;
+    const missing = total - embedded;
+    // Floor so 3061 of 3062 reads 99.9%, never a misleading 100.0%.
+    const pct = total === 0 ? 100 : Math.floor((embedded / total) * 1000) / 10;
+    lines.push(row(`  ${embedded} of ${total} memories embedded (${pct.toFixed(1)}%)`));
+    if (missing > 0) {
+      lines.push(row(`  ⚠ ${missing} missing. Run gnosys reindex to backfill.`));
+    }
   } else {
-    lines.push(row("  Not initialized (run gnosys reindex)"));
+    lines.push(row("  Central DB not available"));
   }
 
   // Wikilink Graph
