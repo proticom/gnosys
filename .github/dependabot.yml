@@ -9,8 +9,17 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 10
+    # Supply-chain guard: let a new release age 7 days before proposing it.
+    # Security updates are not delayed by cooldown.
+    cooldown:
+      default-days: 7
     labels:
       - dependencies
+    ignore:
+      # Types track the lowest supported Node (engines >=20.12), not the newest.
+      - dependency-name: "@types/node"
+        update-types:
+          - version-update:semver-major
     groups:
       production-minor-patch:
         dependency-type: production
@@ -28,6 +37,8 @@ updates:
     schedule:
       interval: monthly
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
     labels:
       - dependencies
       - chore
