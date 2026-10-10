@@ -3,5 +3,5 @@
   "entry": ["src/postinstall.ts"],
   "project": ["src/**/*.{ts,tsx}"],
   "ignoreExportsUsedInFile": true,
-  "ignoreBinaries": ["which", "osascript", "notify-send", "ioreg", "systemctl", "launchctl", "ffmpeg", "gnosys", "python3"]
+  "ignoreBinaries": ["which", "where.exe", "powershell.exe", "osascript", "notify-send", "ioreg", "systemctl", "launchctl", "ffmpeg", "gnosys", "python3"]
 }

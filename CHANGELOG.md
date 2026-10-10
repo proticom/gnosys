@@ -5,6 +5,20 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **Windows IDE setup.** `gnosys setup ides` now discovers commands with
+  Windows-native tooling, executes npm `.cmd`/`.bat`/`.ps1` CLI shims safely, reports
+  Claude Code and Claude Desktop outcomes separately, and prints the exact
+  Claude Desktop config path it verified.
+- **MCP config preservation.** JSON configs with a UTF-8 BOM are accepted;
+  malformed existing configs are reported without being overwritten; writes
+  are read back and verified before setup reports success.
+- **Windows npm install.** The optional postinstall hook no longer relies on
+  the POSIX-only `true` command.
+
 ## [6.3.0] - 2026-10-06
 
 This release also merges the 6.2.2–6.2.4 fixes, which were published from a

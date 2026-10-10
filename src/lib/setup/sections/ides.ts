@@ -10,8 +10,9 @@
 import type { Interface as ReadlineInterface } from "readline/promises";
 import fs from "fs/promises";
 import path from "path";
-import { detectIDEs, setupIDE } from "../../setup.js";
+import { detectIDEs, setupIDE, type SetupIDEResult } from "../../setup.js";
 import { SUPPORTED_IDE_KEYS } from "../../ideMcpInstall.js";
+import { getClaudeDesktopConfigPath } from "../../platform.js";
 import { safeQuestion } from "../ui/safePrompt.js";
 import { renderTable } from "../ui/table.js";
 
@@ -41,7 +42,6 @@ const USER_LEVEL_IDES = new Set(["claude", "claude-desktop", "gemini-cli", "anti
 /** Per-IDE display target for the v5.9.3+ IDE table. */
 const IDE_TARGET_DISPLAY: Record<string, string> = {
   claude: "claude mcp add (CLI)",
-  "claude-desktop": "~/Library/.../claude_desktop_config.json",
   cursor: ".cursor/mcp.json",
   codex: "codex mcp add (CLI registry)",
   "gemini-cli": "~/.gemini/settings.json",
@@ -49,8 +49,16 @@ const IDE_TARGET_DISPLAY: Record<string, string> = {
   "grok-build": "~/.grok/config.toml ([mcp_servers.gnosys])",
 };
 
-function ideTarget(ide: string): string {
+export function ideTarget(ide: string): string {
+  if (ide === "claude-desktop") return getClaudeDesktopConfigPath();
   return IDE_TARGET_DISPLAY[ide] ?? `.${ide}/mcp.json`;
+}
+
+function componentResults(
+  result: SetupIDEResult,
+): Array<{ label: string; success: boolean; message: string }> | null {
+  if (!result.components?.length) return null;
+  return result.components.map(({ label, success, message }) => ({ label, success, message }));
 }
 
 export interface IdesSetupOptions {
@@ -193,7 +201,18 @@ export async function runIdesSetup(opts: IdesSetupOptions): Promise<boolean> {
     }
 
     const result = await setupIDE(ide, opts.directory);
-    if (result.success) {
+    const components = componentResults(result);
+    if (components) {
+      for (const component of components) {
+        if (component.success) {
+          console.log(`  ${CHECK} ${component.label}: ${component.message}`);
+          configured++;
+        } else {
+          console.log(`  ${CROSS} ${component.label}: ${component.message}`);
+          errors++;
+        }
+      }
+    } else if (result.success) {
       console.log(`  ${CHECK} ${result.message}`);
       configured++;
     } else {
@@ -220,7 +239,18 @@ export async function runIdesSetupAll(directory: string): Promise<{ configured: 
 
   for (const ide of idesToRun) {
     const result = await setupIDE(ide, directory);
-    if (result.success) {
+    const components = componentResults(result);
+    if (components) {
+      for (const component of components) {
+        if (component.success) {
+          console.log(`  ${CHECK} ${component.label}: ${component.message}`);
+          configured++;
+        } else {
+          console.log(`  ${CROSS} ${component.label}: ${component.message}`);
+          errors++;
+        }
+      }
+    } else if (result.success) {
       console.log(`  ${CHECK} ${IDE_LABELS[ide] ?? ide}: ${result.message}`);
       configured++;
     } else {
