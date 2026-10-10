@@ -5,6 +5,32 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.3.1] - 2026-10-09
+
+### Upgrade notes
+
+- The dashboard JSON (`gnosys status --system --json` and the
+  `gnosys_dashboard` MCP tool) changed shape. `embeddings` is now
+  `{ embedded, total }` from the central DB. Before, it was
+  `{ count, dbSizeMB }` from the legacy per-store index. The duplicate
+  `gnosysDb.embeddingCount` field is removed. Read `embeddings.embedded`
+  instead.
+
+### Fixed
+
+- `gnosys doctor` reported embeddings from the legacy per-store index
+  (`<store>/.config/embeddings.db`), which is empty since the DB-only
+  architecture. A brain with 3060 of 3062 memories embedded showed
+  "Index: 1 embeddings". Doctor now reads `memories.embedding` in the central
+  DB and prints `Embeddings: 3060 of 3062 memories (99.9%)`, with a
+  `gnosys reindex` hint when rows are missing (#56).
+- The dashboard embeddings section had the same legacy read and showed
+  "1 vectors". It now prints `3061 of 3063 memories embedded (99.9%)` and the
+  same reindex hint (#57).
+- Both use the counts Dream's embedding-health phase uses: all rows, which is
+  the set `gnosys reindex` backfills. The percentage rounds down, so partial
+  coverage never shows 100.0%.
+
 ## [6.3.0] - 2026-10-06
 
 This release also merges the 6.2.2–6.2.4 fixes, which were published from a
