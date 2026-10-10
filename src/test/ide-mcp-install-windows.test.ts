@@ -25,8 +25,10 @@ describe("ideMcpInstall Windows command handling", () => {
     childProcessMocks.execFileSync.mockReset();
     childProcessMocks.execSync.mockReset();
     setPlatform("win32");
-    process.env.ComSpec = "C:\\Windows\\System32\\cmd.exe";
+    // Windows env keys are case-insensitive: deleting COMSPEC after setting
+    // ComSpec would delete the value just set.
     delete process.env.COMSPEC;
+    process.env.ComSpec = "C:\\Windows\\System32\\cmd.exe";
   });
 
   afterEach(() => {

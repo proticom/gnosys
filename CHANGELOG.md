@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **MCP config preservation.** JSON configs with a UTF-8 BOM are accepted;
   malformed existing configs are reported without being overwritten; writes
   are read back and verified before setup reports success.
+- **Windows npm install.** The optional postinstall hook no longer relies on
+  the POSIX-only `true` command.
 
 ## [6.3.0] - 2026-10-06
 
