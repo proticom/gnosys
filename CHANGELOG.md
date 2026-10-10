@@ -30,6 +30,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Both use the counts Dream's embedding-health phase uses: all rows, which is
   the set `gnosys reindex` backfills. The percentage rounds down, so partial
   coverage never shows 100.0%.
+- `gnosys maintain` duplicate detection read the same legacy index and found
+  0 duplicate pairs on a real brain. It now reads each memory's vector from
+  the central DB, and falls back to the legacy index only for rows that were
+  never backfilled. Auto-apply also consolidates each memory at most once per
+  run. A three-way duplicate used to run three LLM merges and re-merge rows
+  that were already superseded. Later pairs that include a consolidated
+  memory are now reported as "Skipped" (#58).
 
 ## [6.3.0] - 2026-10-06
 
