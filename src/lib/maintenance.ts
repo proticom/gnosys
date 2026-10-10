@@ -93,7 +93,6 @@ export interface MaintenanceReport {
 export class GnosysMaintenanceEngine {
   private resolver: GnosysResolver;
   private config: GnosysConfig;
-  private embeddings: GnosysEmbeddings | null = null;
   private provider: LLMProvider | null = null;
   private db: GnosysDB | null = null;
 
@@ -205,10 +204,20 @@ export class GnosysMaintenanceEngine {
         log("action", action);
       }
     } else if (autoApply) {
-      // Auto-consolidate duplicates
+      // A three-way duplicate yields three pairs. Once a memory is merged, its
+      // later pairs would re-merge superseded rows, so skip them.
+      const consumed = new Set<string>();
       for (const dup of report.duplicates) {
+        const ids = [dup.memoryA.frontmatter.id, dup.memoryB.frontmatter.id];
+        if (ids.some((id) => consumed.has(id))) {
+          const action = `Skipped: "${dup.memoryA.frontmatter.title}" + "${dup.memoryB.frontmatter.title}" (a member was already consolidated this run)`;
+          report.actions.push(action);
+          log("info", `  ${action}`);
+          continue;
+        }
         try {
           await this.consolidatePair(dup, writeTarget, log);
+          for (const id of ids) consumed.add(id);
           report.consolidated++;
           report.actions.push(`Consolidated: "${dup.memoryA.frontmatter.title}" + "${dup.memoryB.frontmatter.title}"`);
         } catch (err) {
@@ -264,24 +273,32 @@ export class GnosysMaintenanceEngine {
     writeTarget: ResolvedStore,
     log: (level: "info" | "warn" | "action", message: string) => void
   ): Promise<DuplicatePair[]> {
-    // Initialize embeddings from the write target store
-    this.embeddings = new GnosysEmbeddings(writeTarget.path);
+    // DB-only brains keep vectors in memories.embedding. The legacy per-store
+    // index is a fallback for rows that were never backfilled.
+    const central = new Map<string, Float32Array>();
+    if (this.db?.isAvailable()) {
+      for (const e of this.db.getAllEmbeddings(true)) {
+        central.set(e.id, new Float32Array(e.embedding.buffer, e.embedding.byteOffset, e.embedding.byteLength / 4));
+      }
+    }
+    const legacyIndex = new GnosysEmbeddings(writeTarget.path);
+    const legacy = new Map<string, Float32Array>();
+    if (legacyIndex.hasEmbeddings()) {
+      for (const e of legacyIndex.getAllEmbeddings()) {
+        // Strip store prefix if present (format: "label:relativePath")
+        const key = e.filePath.includes(":") ? e.filePath.split(":").slice(1).join(":") : e.filePath;
+        legacy.set(key, e.embedding);
+      }
+    }
+    legacyIndex.close();
 
-    if (!this.embeddings.hasEmbeddings()) {
+    if (central.size === 0 && legacy.size === 0) {
       log("info", "  No embeddings found — skipping duplicate detection. Run gnosys reindex first.");
       return [];
     }
 
+    const embeddingOf = (m: Memory) => central.get(m.frontmatter.id) ?? legacy.get(m.relativePath);
     const duplicates: DuplicatePair[] = [];
-    const allEmbeddings = this.embeddings.getAllEmbeddings();
-
-    // Build a map from file path to embedding
-    const embeddingMap = new Map<string, Float32Array>();
-    for (const e of allEmbeddings) {
-      // Strip store prefix if present (format: "label:relativePath")
-      const key = e.filePath.includes(":") ? e.filePath.split(":").slice(1).join(":") : e.filePath;
-      embeddingMap.set(key, e.embedding);
-    }
 
     // Compare all pairs
     const checked = new Set<string>();
@@ -296,8 +313,8 @@ export class GnosysMaintenanceEngine {
         checked.add(pairKey);
 
         // Get embeddings for both
-        const embA = embeddingMap.get(a.relativePath);
-        const embB = embeddingMap.get(b.relativePath);
+        const embA = embeddingOf(a);
+        const embB = embeddingOf(b);
 
         if (!embA || !embB) continue;
 
