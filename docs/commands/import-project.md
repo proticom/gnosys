@@ -23,9 +23,10 @@ gnosys import project ./bundle.gnosys.json.gz --working-directory /path/to/proje
 1. Validates `--strategy` before opening the central DB.
 2. Opens the central DB via `GnosysDB.openCentral()`.
 3. Resolves `bundlePath` with `path.resolve()`.
-4. Calls `importProject(centralDb, { bundlePath, strategy, workingDirectoryOverride })`.
-5. Prints human summary or JSON.
-6. Closes central DB in `finally`.
+4. With `--strategy replace`, lists the existing memories the import would delete. When there are any, a human must type the project id. This follows the [memory deletion rule](../memory-deletion.md): without a terminal it is refused unless a human set `GNOSYS_ALLOW_MEMORY_DELETE=1`. `merge` and `new-id` never delete.
+5. Calls `importProject(centralDb, { bundlePath, strategy, workingDirectoryOverride })`.
+6. Prints human summary or JSON.
+7. Closes central DB in `finally`.
 
 ## Human output
 

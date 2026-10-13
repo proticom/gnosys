@@ -15,6 +15,11 @@ export default defineConfig({
     // fixture watermark into the real dream-state.json on every `npm test`,
     // chronically suppressing scheduled Dream on dev machines.
     setupFiles: ["src/test/_setupGnosysHome.ts"],
+    // Memory deletion needs a human (src/lib/memoryDeleteGuard.ts). The suite
+    // predates the guard and exercises delete paths directly, so the harness
+    // sets the human override. memory-delete-guard.test.ts and
+    // unattended-maintenance.test.ts strip it to prove the refusals.
+    env: { GNOSYS_ALLOW_MEMORY_DELETE: "1" },
     coverage: {
       provider: "v8",
       reporter: ["text", "text-summary", "json-summary", "html"],

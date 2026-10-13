@@ -22,6 +22,7 @@ import { enableWAL } from "./lock.js";
 import { getGnosysHome as getGnosysHomeImpl, getCentralDbPath as getCentralDbPathImpl } from "./paths.js";
 import { readMachineConfig } from "./machineConfig.js";
 import { logError } from "./log.js";
+import { assertMemoryDeletionAllowed } from "./memoryDeleteGuard.js";
 import { ftsTerms, ftsAndQuery, ftsOrQuery } from "./ftsQuery.js";
 import { ulid } from "ulidx";
 import { rankReplacements, type SearchMemoryMetadata } from "./searchStatus.js";
@@ -749,22 +750,60 @@ export class GnosysDB {
   }
 
   /**
-   * Restore from a backup file. Closes current DB, copies backup over, re-opens.
+   * Restore from a backup file. Replacing the live DB deletes every memory
+   * not in the backup, so it passes the memory-deletion guard and always
+   * snapshots the current DB first; the snapshot path lands in
+   * `out.preRestoreBackup`.
    */
-  static restore(backupPath: string, targetDir?: string): GnosysDB {
+  static restore(
+    backupPath: string,
+    targetDir?: string,
+    out?: { preRestoreBackup?: string },
+  ): GnosysDB {
     const dir = targetDir || GnosysDB.getGnosysHome();
     const targetPath = path.join(dir, "gnosys.db");
+    const source = path.resolve(backupPath);
 
-    // Validate backup file exists
-    if (!fs.existsSync(backupPath)) {
+    if (!fs.existsSync(source)) {
       throw new Error(`Backup file not found: ${backupPath}`);
     }
+    if (source === path.resolve(targetPath)) {
+      throw new Error("Cannot restore the live database over itself.");
+    }
 
-    // Copy backup over
-    fs.copyFileSync(backupPath, targetPath);
+    if (fs.existsSync(targetPath)) {
+      assertMemoryDeletionAllowed(source);
+      const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+      const snapshot = path.join(dir, `gnosys-pre-restore-${stamp}.db`);
+      GnosysDB.snapshotFile(dir, targetPath, snapshot);
+      if (out) out.preRestoreBackup = snapshot;
+    }
 
-    // Re-open
+    fs.copyFileSync(source, targetPath);
     return new GnosysDB(dir);
+  }
+
+  /**
+   * Consistent copy via VACUUM INTO. A corrupt DB (the usual reason to
+   * restore) cannot be opened, so fall back to copying the raw files.
+   */
+  private static snapshotFile(dir: string, dbPath: string, dest: string): void {
+    let current: GnosysDB | null = null;
+    try {
+      current = new GnosysDB(dir, { retries: 0 });
+      if (current.isAvailable()) {
+        current.db.prepare("VACUUM INTO ?").run(dest);
+        return;
+      }
+    } catch {
+      // Fall through to the raw copy.
+    } finally {
+      current?.close();
+    }
+    fs.copyFileSync(dbPath, dest);
+    for (const suffix of ["-wal", "-shm"]) {
+      if (fs.existsSync(dbPath + suffix)) fs.copyFileSync(dbPath + suffix, dest + suffix);
+    }
   }
 
   private applySchema(): void {
@@ -1171,6 +1210,7 @@ export class GnosysDB {
   }
 
   deleteMemory(id: string): void {
+    assertMemoryDeletionAllowed(id);
     return this.withRecovery(() => {
       this.db.prepare("DELETE FROM memories WHERE id = ?").run(id);
     });

@@ -31,6 +31,7 @@ import { stdin, stdout } from "process";
 import { getCentralDbPath, isTempProjectPath } from "./paths.js";
 import { readProjectIdAt, readRegistryEntries, writeRegistryEntries } from "./projectRegistry.js";
 import { safeQuestion } from "./setup/ui/safePrompt.js";
+import { nonInteractiveMessage } from "./interactiveGuard.js";
 import { Header } from "./setup/ui/header.js";
 import { Status } from "./setup/ui/status.js";
 import { c, color, glyph } from "./setup/ui/tokens.js";
@@ -158,8 +159,23 @@ export interface CleanupOptions {
   interactive: boolean;
   /** Non-interactive write (only used when `interactive === false`). */
   yes?: boolean;
+  /** Suppress the dry-run listing (JSON callers print the result themselves). */
+  quiet?: boolean;
   /** Optional readline (when called from inside `setup sync-projects`). */
   rl?: import("readline/promises").Interface;
+}
+
+/**
+ * Registry entries by category, as reported in `gnosys cleanup --json`.
+ * `moved` and `movedGroups` appear only when some folder shares a projectId
+ * with another, so the JSON for a registry without moves is unchanged.
+ */
+export interface RegistryEntries {
+  alive: string[];
+  dead: string[];
+  temp: string[];
+  moved?: string[];
+  movedGroups?: MovedGroup[];
 }
 
 export interface CleanupResult {
@@ -167,10 +183,19 @@ export interface CleanupResult {
   removed: number;
   /** Number of entries kept (alive + moved). */
   kept: number;
-  /** Number of kept entries that share a projectId with another folder. */
-  moved: number;
   /** True when the registry was actually rewritten. */
   wrote: boolean;
+  /** Entries by category, before any write. */
+  entries: RegistryEntries;
+}
+
+function toEntries(c: ClassifiedRegistry): RegistryEntries {
+  const entries: RegistryEntries = { alive: c.alive, dead: c.dead, temp: c.temp };
+  if (c.moved.length > 0) {
+    entries.moved = c.moved;
+    entries.movedGroups = c.movedGroups;
+  }
+  return entries;
 }
 
 function formatPath(p: string): string {
@@ -222,13 +247,13 @@ function printCategorized(categorized: ClassifiedRegistry): void {
 async function removeStillStale(
   confirmed: Set<string>,
   dbPaths: Map<string, string>,
-): Promise<{ removed: number; kept: number; moved: number }> {
+): Promise<{ removed: number; kept: number }> {
   const entries = await readRegistryEntries();
   const fresh = await classifyEntries(entries, dbPaths);
   const stillStale = new Set([...fresh.dead, ...fresh.temp].filter((p) => confirmed.has(p)));
   const kept = entries.filter((p) => !stillStale.has(p));
   await writeRegistryEntries(kept);
-  return { removed: entries.length - kept.length, kept: kept.length, moved: fresh.moved.length };
+  return { removed: entries.length - kept.length, kept: kept.length };
 }
 
 /**
@@ -242,6 +267,7 @@ export async function cleanupRegistry(opts: CleanupOptions): Promise<CleanupResu
   const toRemove = stale.length;
   const keptCount = categorized.alive.length + categorized.moved.length;
   const moved = categorized.moved.length;
+  const entries = toEntries(categorized);
 
   if (toRemove === 0) {
     if (opts.interactive) {
@@ -252,13 +278,14 @@ export async function cleanupRegistry(opts: CleanupOptions): Promise<CleanupResu
       } else {
         process.stdout.write(`${Status("ok", "project registry is already clean", `${keptCount} entries`)}\n`);
       }
-    } else if (moved > 0 && !opts.yes) {
+    } else if (moved > 0 && !opts.yes && !opts.quiet) {
       printCategorized(categorized);
     }
-    return { removed: 0, kept: keptCount, moved, wrote: false };
+    return { removed: 0, kept: keptCount, wrote: false, entries };
   }
 
   if (opts.interactive) {
+    if (!opts.rl && !stdin.isTTY) throw new Error(nonInteractiveMessage("cleanup", "--yes or --dry-run"));
     process.stdout.write("\n");
     process.stdout.write(Header(["gnosys", "cleanup"]) + "\n\n");
     process.stdout.write(`${Status("warn", `${toRemove} stale registry entries`, `${categorized.alive.length} alive · ${moved} moved`)}\n`);
@@ -272,20 +299,20 @@ export async function cleanupRegistry(opts: CleanupOptions): Promise<CleanupResu
         .toLowerCase();
       if (answer === "n" || answer === "no") {
         process.stdout.write(`${Status("warn", "registry left unchanged")}\n`);
-        return { removed: 0, kept: keptCount, moved, wrote: false };
+        return { removed: 0, kept: keptCount, wrote: false, entries };
       }
     } finally {
       if (ownsRl) rl.close();
     }
   } else if (!opts.yes) {
     // Dry-run.
-    printCategorized(categorized);
-    return { removed: toRemove, kept: keptCount, moved, wrote: false };
+    if (!opts.quiet) printCategorized(categorized);
+    return { removed: toRemove, kept: keptCount, wrote: false, entries };
   }
 
   const written = await removeStillStale(new Set(stale), dbPaths);
   if (opts.interactive) {
     process.stdout.write(`${Status("ok", `removed ${written.removed} entries`, `${written.kept} kept`)}\n`);
   }
-  return { ...written, wrote: true };
+  return { ...written, wrote: true, entries };
 }

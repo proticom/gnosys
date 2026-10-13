@@ -1,4 +1,5 @@
 import { GnosysDB } from "./db.js";
+import { confirmMemoryDeletion } from "./memoryDeleteGuard.js";
 import {
   deletePreference,
   getAllPreferences,
@@ -124,11 +125,17 @@ export async function runPrefDeleteCommand(key: string): Promise<void> {
       return;
     }
 
-    const deleted = deletePreference(centralDb, key);
-    if (!deleted) {
+    const existing = centralDb.getMemory(`pref-${key}`);
+    if (existing?.category !== "preferences") {
       console.log(`No preference found for key "${key}".`);
       return;
     }
+    await confirmMemoryDeletion({
+      confirmText: key,
+      targets: [`pref-${key}`],
+      summary: `Delete preference "${key}" (pref-${key}). This cannot be undone.`,
+    });
+    deletePreference(centralDb, key);
     console.log(`Preference "${key}" deleted.`);
     console.log(`Run 'gnosys sync' to update agent rules files.`);
   } catch (err) {

@@ -14,6 +14,10 @@ export async function runMigrateCommand(
   opts: MigrateCommandOptions,
 ): Promise<void> {
   const { createInterface } = await import("readline/promises");
+  if (!opts.yes) {
+    const { guardInteractiveStdin } = await import("./interactiveGuard.js");
+    guardInteractiveStdin("migrate", "--yes");
+  }
   const rl = opts.yes ? null : createInterface({ input: process.stdin, output: process.stdout });
   let centralDb: GnosysDB | null = null;
 

@@ -274,8 +274,21 @@ describe("gnosys cleanup: moved, missing and no-.gnosys entries", () => {
     expect(dry.stdout).toContain("dead      (1) — folder exists, no .gnosys/ directory");
     expect(dry.stdout).not.toContain("alive     (");
 
-    const { json } = runJson(["cleanup", "--yes"]);
-    expect(json).toEqual({ removed: 2, kept: 2, moved: 2, wrote: true });
+    const { json } = runJson(["cleanup", "--yes", "--json"]);
+    expect(json).toEqual({
+      ok: true,
+      dryRun: false,
+      removed: 2,
+      kept: 2,
+      wrote: true,
+      entries: {
+        alive: [],
+        dead: [missing, noStore],
+        temp: [],
+        moved: [oldDir, newDir],
+        movedGroups: [{ projectId: "proj-p", paths: [oldDir, newDir], dbPath: null }],
+      },
+    });
     expect(readRegistry()).toEqual([oldDir, newDir]);
   });
 
@@ -288,8 +301,21 @@ describe("gnosys cleanup: moved, missing and no-.gnosys entries", () => {
     const dry = run(["cleanup", "--dry-run"]);
     expect(dry.stdout).toContain(`${newDir}  (central DB location)`);
     expect(dry.stdout).toContain(`fix: gnosys project relocate "${oldDir}" "${newDir}"`);
-    const { json } = runJson(["cleanup", "--yes"]);
-    expect(json).toEqual({ removed: 0, kept: 1, moved: 1, wrote: false });
+    const { json } = runJson(["cleanup", "--yes", "--json"]);
+    expect(json).toEqual({
+      ok: true,
+      dryRun: false,
+      removed: 0,
+      kept: 1,
+      wrote: false,
+      entries: {
+        alive: [],
+        dead: [],
+        temp: [],
+        moved: [oldDir],
+        movedGroups: [{ projectId: "proj-p", paths: [oldDir, newDir], dbPath: newDir }],
+      },
+    });
   });
 });
 
@@ -312,6 +338,9 @@ describe("gnosys setup sync-projects skips moved folders", () => {
     expect(identityText(newDir)).toBe(newBefore);
     expect(identityText(solo)).not.toBe(soloBefore);
     expect(query("SELECT id FROM projects")).toEqual([{ id: "proj-solo" }]);
+
+    const { json } = runJson(["setup", "sync-projects", "--json", "--skip-dashboard"]);
+    expect(json).toMatchObject({ upgraded: [solo], moved: [oldDir, newDir], skipped: [], failed: [] });
   });
 });
 
@@ -338,7 +367,7 @@ describe("interactive cleanup re-reads the registry before writing", () => {
     const { cleanupRegistry } = await import("../lib/cleanup.js");
     const result = await cleanupRegistry({ interactive: true, rl: rl as unknown as import("readline/promises").Interface });
 
-    expect(result).toEqual({ removed: 1, kept: 3, moved: 0, wrote: true });
+    expect(result).toEqual({ removed: 1, kept: 3, wrote: true, entries: { alive: [alive], dead: [gone, repaired], temp: [] } });
     expect(readRegistry()).toEqual([alive, repaired, added]);
   });
 });

@@ -7,7 +7,17 @@ Check Gnosys system health: stores, central DB, archive, recall/SOC config, LLM 
 ```bash
 gnosys doctor
 gnosys doctor --fix
+gnosys doctor --fix --yes
+gnosys doctor --json
 ```
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `--fix` | Offer removal of a legacy per-store `gnosys.db` |
+| `--yes` | With `--fix`: remove without prompting. The safety check still applies |
+| `--json` | Print one JSON report on stdout |
 
 ## Behavior
 
@@ -21,7 +31,8 @@ gnosys doctor --fix
 - **Embeddings:** index size or empty/not-initialized state.
 - **Maintenance health:** stale-memory and reinforcement stats from central DB.
 - **Legacy local `gnosys.db`:** warns if a pre-v2.0 per-store DB file exists.
-- **`--fix`:** when a legacy local `gnosys.db` is found, verifies it is safe to remove (empty or all IDs present in central DB), then prompts interactively before deletion.
+- **`--fix`:** when a legacy local `gnosys.db` is found, verifies it is safe to remove (empty or all IDs present in central DB), then prompts interactively before deletion. With `--yes` it removes without the prompt, but only when that check passes. A store with unmigrated rows is always kept and reported as `"action": "unsafe"`.
+- **Without a terminal:** `--fix` without `--yes` exits with code 1 and names `--yes`.
 
 ## Output example
 
