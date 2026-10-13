@@ -57,219 +57,353 @@ async function isLegacyStoreSafeToRemove(localDbPath: string): Promise<{ ok: boo
   }
 }
 
+type LegacyStoreAction = "reported" | "removed" | "kept" | "unsafe";
+
+export interface DoctorReport {
+  embeddingRuntime: { available: boolean; message: string | null };
+  legacyStore: { path: string; action: LegacyStoreAction; reason: string | null } | null;
+  centralDb: {
+    path: string;
+    status: "migrated" | "not_migrated" | "unavailable" | "not_initialized";
+    schemaVersion: number | null;
+    memories: { active: number; archived: number; total: number } | null;
+    embeddings: { embedded: number; total: number; missing: number; percent: number } | null;
+  };
+  stores: Array<{ label: string; path: string; memories: number }>;
+  archive: { status: "ok" | "unavailable" | "not_initialized"; archived: number | null; dbSizeMB: number | null; oldest: string | null; newest: string | null } | null;
+  recall: { mode: "aggressive" | "filtered"; maxMemories: number; minRelevance: number };
+  soc: { defaultProvider: string | null; structuring: string | null; synthesis: string | null };
+  llm: Array<{ provider: string; status: "unavailable" | "connected" | "error"; detail: string }>;
+  maintenance: { active: number; stale: number; staleThreshold: number; averageConfidence: number; averageDecayed: number; neverReinforced: number; totalReinforcements: number } | { error: string } | null;
+}
+
+export type DoctorCommandOptions = {
+  /** Remove the legacy per-store gnosys.db when every row is already in the central DB. */
+  fix?: boolean;
+  /** With --fix: remove without prompting (the safety check still applies). */
+  yes?: boolean;
+  json?: boolean;
+};
+
+async function removeLegacyStore(localDbPath: string): Promise<void> {
+  await fs.unlink(localDbPath).catch(() => undefined);
+  await fs.unlink(localDbPath + "-wal").catch(() => undefined);
+  await fs.unlink(localDbPath + "-shm").catch(() => undefined);
+}
+
 export async function runDoctorCommand(
   getResolver: GetResolver,
-  opts: { fix?: boolean },
+  opts: DoctorCommandOptions,
 ): Promise<void> {
-        const resolver = await getResolver();
-        const stores = resolver.getStores();
-    
-        console.log("Gnosys Doctor");
-        console.log("=============\n");
-    
-        const { checkEmbeddingRuntime } = await import("./embeddingHealth.js");
-        const embeddingRuntime = await checkEmbeddingRuntime();
-        console.log("Local embedding runtime:");
-        console.log(embeddingRuntime.kind === "available"
-          ? "  ✓ available (model loads on first semantic search or reindex)"
-          : `  ✗ unavailable. ${embeddingRuntime.message}`);
-        console.log("");
+  if (opts.fix && !opts.yes) {
+    const { guardInteractiveStdin } = await import("./interactiveGuard.js");
+    if (opts.json) {
+      console.error("gnosys doctor --fix --json cannot prompt. Pass --yes to remove safe legacy artifacts.");
+      process.exit(1);
+    }
+    guardInteractiveStdin("doctor --fix", "--yes");
+  }
+  const report = await collectDoctorReport(getResolver, opts);
+  if (opts.json) console.log(JSON.stringify(report, null, 2));
+  else for (const line of renderDoctorReport(report)) console.log(line);
+}
 
-        // Check local gnosys.db (legacy — should NOT exist in DB-only architecture)
-        if (stores.length > 0) {
-          const localDbPath = path.join(stores[0].path, "gnosys.db");
-          const localDbExists = await fs.stat(localDbPath).then(() => true).catch(() => false);
-          if (localDbExists) {
-            console.log("Local Store (gnosys.db):");
-            console.log("  ⚠ Local gnosys.db found — this is a legacy artifact (pre-v2.0 file-based store).");
-            console.log(`  All memories live in the central DB now (${GnosysDB.getCentralDbPath()}).`);
-            console.log(`  Path: ${localDbPath}`);
-    
-            if (opts.fix) {
-              // Interactive cleanup — verify the local DB is safe to delete
-              // (no rows that aren't already in the central DB) before prompting.
-              const safe = await isLegacyStoreSafeToRemove(localDbPath);
-              if (!safe.ok) {
-                console.log(`  ✗ NOT safe to auto-remove: ${safe.reason}`);
-                console.log(`  Inspect manually with: sqlite3 ${localDbPath} "SELECT COUNT(*) FROM memories;"`);
-              } else {
-                const readline = await import("readline/promises");
-                const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-                const answer = await rl.question(`  Remove "${localDbPath}"? [y/N] `);
-                rl.close();
-                if (answer.trim().toLowerCase() === "y") {
-                  await fs.unlink(localDbPath).catch(() => undefined);
-                  await fs.unlink(localDbPath + "-wal").catch(() => undefined);
-                  await fs.unlink(localDbPath + "-shm").catch(() => undefined);
-                  console.log("  ✓ Removed.");
-                } else {
-                  console.log("  Skipped.");
-                }
-              }
-            } else {
-              console.log("  Run 'gnosys doctor --fix' to remove safely (after verifying it's empty).");
-            }
-            console.log("");
-          }
-        }
-    
-        // Check central DB
-        console.log(`Central DB (${GnosysDB.getCentralDbPath()}):`);
-        try {
-          const db = GnosysDB.openCentral();
-          if (db.isAvailable() && db.isMigrated()) {
-            const counts = db.getMemoryCount();
-            console.log(`  Status: ✓ migrated (schema v${db.getSchemaVersion()})`);
-            console.log(`  Active: ${counts.active} | Archived: ${counts.archived} | Total: ${counts.total}`);
-            const embedded = db.getEmbeddingCount();
-            const missing = db.countMemoriesMissingEmbedding();
-            const total = embedded + missing;
-            // Floor so 3061 of 3062 reads 99.9%, never a misleading 100.0%.
-            const pct = total === 0 ? 100 : Math.floor((embedded / total) * 1000) / 10;
-            console.log(`  Embeddings: ${embedded} of ${total} memories (${pct.toFixed(1)}%)`);
-            if (missing > 0) {
-              console.log(`  ⚠ ${missing} ${missing === 1 ? "memory lacks an embedding" : "memories lack embeddings"}. Run gnosys reindex to backfill.`);
-            }
-          } else if (db.isAvailable()) {
-            console.log("  Status: ✗ not migrated (run gnosys upgrade)");
-          } else {
-            console.log("  Status: — not available (better-sqlite3 not installed)");
-          }
-          db.close();
-        } catch {
-          console.log("  Status: — not initialized");
-        }
-        console.log("");
-    
-        // Check stores
-        console.log("Stores:");
-        if (stores.length === 0) {
-          console.log("  No stores found. Run gnosys init first.");
+async function collectDoctorReport(getResolver: GetResolver, opts: DoctorCommandOptions): Promise<DoctorReport> {
+  const resolver = await getResolver();
+  const stores = resolver.getStores();
+
+  const { checkEmbeddingRuntime } = await import("./embeddingHealth.js");
+  const runtime = await checkEmbeddingRuntime();
+  const embeddingRuntime = runtime.kind === "available"
+    ? { available: true, message: null }
+    : { available: false, message: runtime.message };
+
+  // Legacy per-store gnosys.db (pre-v2.0): should not exist in DB-only mode.
+  let legacyStore: DoctorReport["legacyStore"] = null;
+  if (stores.length > 0) {
+    const localDbPath = path.join(stores[0].path, "gnosys.db");
+    const localDbExists = await fs.stat(localDbPath).then(() => true).catch(() => false);
+    if (localDbExists) {
+      legacyStore = { path: localDbPath, action: "reported", reason: null };
+      if (opts.fix) {
+        // Only remove when every row is already in the central DB.
+        const safe = await isLegacyStoreSafeToRemove(localDbPath);
+        if (!safe.ok) {
+          legacyStore = { path: localDbPath, action: "unsafe", reason: safe.reason ?? null };
         } else {
-          for (const s of stores) {
-            const memories = await s.store.getAllMemories();
-            console.log(`  ${s.label}: ${memories.length} memories (${s.path})`);
-          }
-        }
-        console.log("");
-    
-        // Check archive
-        if (stores.length > 0) {
-          console.log("Archive (Two-Tier Memory):");
-          try {
-            const { GnosysArchive } = await import("./archive.js");
-            const archive = new GnosysArchive(stores[0].path);
-            if (archive.isAvailable()) {
-              const stats = archive.getStats();
-              console.log(`  Archived memories: ${stats.totalArchived}`);
-              if (stats.totalArchived > 0) {
-                console.log(`  Archive DB size: ${stats.dbSizeMB.toFixed(2)} MB`);
-                console.log(`  Oldest archived: ${stats.oldestArchived}`);
-                console.log(`  Newest archived: ${stats.newestArchived}`);
-              }
-              archive.close();
-            } else {
-              console.log("  Not available (better-sqlite3 not installed)");
+          let remove = Boolean(opts.yes);
+          if (!remove) {
+            const readline = await import("readline/promises");
+            const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+            try {
+              remove = (await rl.question(`Legacy store ${localDbPath} has no rows missing from the central DB. Remove it? [y/N] `)).trim().toLowerCase() === "y";
+            } finally {
+              rl.close();
             }
-          } catch {
-            console.log("  Not initialized");
           }
-          console.log("");
+          if (remove) await removeLegacyStore(localDbPath);
+          legacyStore = { path: localDbPath, action: remove ? "removed" : "kept", reason: null };
         }
-    
-        // Check config — SOC routing + recall
-        const cfg = stores.length > 0 ? await loadConfig(stores[0].path) : DEFAULT_CONFIG;
-    
-        console.log("Recall (Automatic Memory Injection):");
-        const recallMode = cfg.recall?.aggressive !== false ? "aggressive" : "filtered";
-        console.log(`  Mode: ${recallMode}`);
-        console.log(`  Max memories per turn: ${cfg.recall?.maxMemories ?? 8}`);
-        console.log(`  Min relevance: ${cfg.recall?.minRelevance ?? 0.4}`);
-        console.log("");
-    
-        console.log("System of Cognition (SOC):");
-        // v6.0.0 (deci-049): no implicit anthropic default — display "not set"
-        console.log(`  Default provider: ${cfg.llm.defaultProvider ?? "not set — run gnosys setup"}`);
+      }
+    }
+  }
 
-        const fmtTask = (task: "structuring" | "synthesis"): string => {
-          try {
-            const t = resolveTaskModel(cfg, task);
-            return `${t.provider}/${t.model}`;
-          } catch {
-            return "not set — run gnosys setup";
-          }
+  const centralDb: DoctorReport["centralDb"] = {
+    path: GnosysDB.getCentralDbPath(),
+    status: "not_initialized",
+    schemaVersion: null,
+    memories: null,
+    embeddings: null,
+  };
+  try {
+    const db = GnosysDB.openCentral();
+    if (db.isAvailable() && db.isMigrated()) {
+      centralDb.status = "migrated";
+      centralDb.schemaVersion = db.getSchemaVersion();
+      centralDb.memories = db.getMemoryCount();
+      const embedded = db.getEmbeddingCount();
+      const missing = db.countMemoriesMissingEmbedding();
+      const total = embedded + missing;
+      // Floor so 3061 of 3062 reads 99.9%, never a misleading 100.0%.
+      const percent = total === 0 ? 100 : Math.floor((embedded / total) * 1000) / 10;
+      centralDb.embeddings = { embedded, total, missing, percent };
+    } else {
+      centralDb.status = db.isAvailable() ? "not_migrated" : "unavailable";
+    }
+    db.close();
+  } catch {
+    centralDb.status = "not_initialized";
+  }
+
+  const storeRows: DoctorReport["stores"] = [];
+  for (const s of stores) {
+    const memories = await s.store.getAllMemories();
+    storeRows.push({ label: s.label, path: s.path, memories: memories.length });
+  }
+
+  let archive: DoctorReport["archive"] = null;
+  if (stores.length > 0) {
+    archive = { status: "not_initialized", archived: null, dbSizeMB: null, oldest: null, newest: null };
+    try {
+      const { GnosysArchive } = await import("./archive.js");
+      const a = new GnosysArchive(stores[0].path);
+      if (a.isAvailable()) {
+        const stats = a.getStats();
+        archive = {
+          status: "ok",
+          archived: stats.totalArchived,
+          dbSizeMB: stats.dbSizeMB,
+          oldest: stats.oldestArchived ?? null,
+          newest: stats.newestArchived ?? null,
         };
-        console.log(`  Structuring → ${fmtTask("structuring")}`);
-        console.log(`  Synthesis   → ${fmtTask("synthesis")}`);
-        console.log("");
-    
-        // Check all LLM providers
-        console.log("LLM Connectivity:");
-    
-        for (const providerName of ALL_PROVIDERS) {
-          const status = isProviderAvailable(cfg, providerName);
-          if (!status.available) {
-            console.log(`  ${providerName}: — ${status.error}`);
-            continue;
-          }
-          try {
-            const provider = getLLMProvider({ ...cfg, llm: { ...cfg.llm, defaultProvider: providerName } });
-            await provider.testConnection();
-            const model = getProviderModel(cfg, providerName);
-            console.log(`  ${providerName}: ✓ connected (${model})`);
-          } catch (err) {
-            console.log(`  ${providerName}: ✗ ${err instanceof Error ? err.message : String(err)}`);
-          }
+        a.close();
+      } else {
+        archive.status = "unavailable";
+      }
+    } catch {
+      archive.status = "not_initialized";
+    }
+  }
+
+  const cfg = stores.length > 0 ? await loadConfig(stores[0].path) : DEFAULT_CONFIG;
+  const recall: DoctorReport["recall"] = {
+    mode: cfg.recall?.aggressive !== false ? "aggressive" : "filtered",
+    maxMemories: cfg.recall?.maxMemories ?? 8,
+    minRelevance: cfg.recall?.minRelevance ?? 0.4,
+  };
+  const taskModel = (task: "structuring" | "synthesis"): string | null => {
+    try {
+      const t = resolveTaskModel(cfg, task);
+      return `${t.provider}/${t.model}`;
+    } catch {
+      return null;
+    }
+  };
+  // v6.0.0 (deci-049): no implicit anthropic default.
+  const soc: DoctorReport["soc"] = {
+    defaultProvider: cfg.llm.defaultProvider ?? null,
+    structuring: taskModel("structuring"),
+    synthesis: taskModel("synthesis"),
+  };
+
+  const llm: DoctorReport["llm"] = [];
+  for (const providerName of ALL_PROVIDERS) {
+    const status = isProviderAvailable(cfg, providerName);
+    if (!status.available) {
+      llm.push({ provider: providerName, status: "unavailable", detail: String(status.error) });
+      continue;
+    }
+    try {
+      const provider = getLLMProvider({ ...cfg, llm: { ...cfg.llm, defaultProvider: providerName } });
+      await provider.testConnection();
+      llm.push({ provider: providerName, status: "connected", detail: getProviderModel(cfg, providerName) });
+    } catch (err) {
+      llm.push({ provider: providerName, status: "error", detail: err instanceof Error ? err.message : String(err) });
+    }
+  }
+
+  // v5.7.0: maintenance health reads the central DB directly.
+  let maintenance: DoctorReport["maintenance"] = null;
+  if (stores.length > 0) {
+    try {
+      const db2 = GnosysDB.openCentral();
+      if (db2.isAvailable() && db2.isMigrated()) {
+        const memories = db2.getActiveMemories();
+        const now = Date.now();
+        const DECAY_LAMBDA = 0.005;
+        const STALE_THRESHOLD = 0.3;
+        let sumConfidence = 0;
+        let sumDecayed = 0;
+        let staleCount = 0;
+        let neverReinforced = 0;
+        let totalReinforcements = 0;
+        for (const m of memories) {
+          const baseConfidence = m.confidence ?? 0.8;
+          const lastIso = m.last_reinforced || m.modified || m.created;
+          const lastTs = lastIso ? new Date(lastIso).getTime() : NaN;
+          // Some legacy memories have non-ISO dates that don't parse; treat
+          // them as "today" rather than NaN-corrupting the average.
+          const daysSince = Number.isFinite(lastTs)
+            ? Math.max(0, Math.floor((now - lastTs) / (1000 * 60 * 60 * 24)))
+            : 0;
+          const decayed = baseConfidence * Math.exp(-DECAY_LAMBDA * daysSince);
+          sumConfidence += baseConfidence;
+          sumDecayed += decayed;
+          if (decayed < STALE_THRESHOLD) staleCount++;
+          const rc = m.reinforcement_count ?? 0;
+          if (rc === 0) neverReinforced++;
+          totalReinforcements += rc;
         }
-    
-        console.log("");
-    
-        if (stores.length > 0) {
-          // Maintenance health — v5.7.0: queries the central DB directly
-          // (the prior version used GnosysMaintenanceEngine which only sees the
-          // legacy file-based stores, which are empty post-DB-only).
-          console.log("Maintenance Health:");
-          try {
-            const db2 = GnosysDB.openCentral();
-            if (db2.isAvailable() && db2.isMigrated()) {
-              const memories = db2.getActiveMemories();
-              const now = Date.now();
-              const DECAY_LAMBDA = 0.005;
-              const STALE_THRESHOLD = 0.3;
-              let sumConfidence = 0;
-              let sumDecayed = 0;
-              let staleCount = 0;
-              let neverReinforced = 0;
-              let totalReinforcements = 0;
-              for (const m of memories) {
-                const baseConfidence = m.confidence ?? 0.8;
-                const lastIso = m.last_reinforced || m.modified || m.created;
-                const lastTs = lastIso ? new Date(lastIso).getTime() : NaN;
-                // Some legacy memories have non-ISO dates that don't parse; treat
-                // them as "today" rather than NaN-corrupting the average.
-                const daysSince = Number.isFinite(lastTs)
-                  ? Math.max(0, Math.floor((now - lastTs) / (1000 * 60 * 60 * 24)))
-                  : 0;
-                const decayed = baseConfidence * Math.exp(-DECAY_LAMBDA * daysSince);
-                sumConfidence += baseConfidence;
-                sumDecayed += decayed;
-                if (decayed < STALE_THRESHOLD) staleCount++;
-                const rc = m.reinforcement_count ?? 0;
-                if (rc === 0) neverReinforced++;
-                totalReinforcements += rc;
-              }
-              const n = Math.max(1, memories.length);
-              console.log(`  Active memories: ${memories.length}`);
-              console.log(`  Stale (decayed confidence < ${STALE_THRESHOLD}): ${staleCount}`);
-              console.log(`  Average confidence: ${(sumConfidence / n).toFixed(3)} (decayed: ${(sumDecayed / n).toFixed(3)})`);
-              console.log(`  Never reinforced: ${neverReinforced}`);
-              console.log(`  Total reinforcements: ${totalReinforcements}`);
-            } else {
-              console.log("  — central DB not available");
-            }
-            db2.close();
-          } catch (err) {
-            console.log(`  Error: ${err instanceof Error ? err.message : String(err)}`);
-          }
-        }
+        const n = Math.max(1, memories.length);
+        maintenance = {
+          active: memories.length,
+          stale: staleCount,
+          staleThreshold: STALE_THRESHOLD,
+          averageConfidence: sumConfidence / n,
+          averageDecayed: sumDecayed / n,
+          neverReinforced,
+          totalReinforcements,
+        };
+      }
+      db2.close();
+    } catch (err) {
+      maintenance = { error: err instanceof Error ? err.message : String(err) };
+    }
+  }
+
+  return { embeddingRuntime, legacyStore, centralDb, stores: storeRows, archive, recall, soc, llm, maintenance };
+}
+
+function renderDoctorReport(r: DoctorReport): string[] {
+  const out: string[] = ["Gnosys Doctor", "=============\n"];
+
+  out.push("Local embedding runtime:");
+  out.push(r.embeddingRuntime.available
+    ? "  ✓ available (model loads on first semantic search or reindex)"
+    : `  ✗ unavailable. ${r.embeddingRuntime.message}`);
+  out.push("");
+
+  if (r.legacyStore) {
+    const p = r.legacyStore.path;
+    out.push("Local Store (gnosys.db):");
+    out.push("  ⚠ Local gnosys.db found — this is a legacy artifact (pre-v2.0 file-based store).");
+    out.push(`  All memories live in the central DB now (${r.centralDb.path}).`);
+    out.push(`  Path: ${p}`);
+    switch (r.legacyStore.action) {
+      case "reported":
+        out.push("  Run 'gnosys doctor --fix' to remove safely (after verifying it's empty).");
+        break;
+      case "unsafe":
+        out.push(`  ✗ NOT safe to auto-remove: ${r.legacyStore.reason}`);
+        out.push(`  Inspect manually with: sqlite3 ${p} "SELECT COUNT(*) FROM memories;"`);
+        break;
+      case "removed":
+        out.push("  ✓ Removed.");
+        break;
+      case "kept":
+        out.push("  Skipped.");
+        break;
+    }
+    out.push("");
+  }
+
+  const c = r.centralDb;
+  out.push(`Central DB (${c.path}):`);
+  if (c.status === "migrated" && c.memories && c.embeddings) {
+    out.push(`  Status: ✓ migrated (schema v${c.schemaVersion})`);
+    out.push(`  Active: ${c.memories.active} | Archived: ${c.memories.archived} | Total: ${c.memories.total}`);
+    const e = c.embeddings;
+    out.push(`  Embeddings: ${e.embedded} of ${e.total} memories (${e.percent.toFixed(1)}%)`);
+    if (e.missing > 0) {
+      out.push(`  ⚠ ${e.missing} ${e.missing === 1 ? "memory lacks an embedding" : "memories lack embeddings"}. Run gnosys reindex to backfill.`);
+    }
+  } else if (c.status === "not_migrated") {
+    out.push("  Status: ✗ not migrated (run gnosys upgrade)");
+  } else if (c.status === "unavailable") {
+    out.push("  Status: — not available (better-sqlite3 not installed)");
+  } else {
+    out.push("  Status: — not initialized");
+  }
+  out.push("");
+
+  out.push("Stores:");
+  if (r.stores.length === 0) out.push("  No stores found. Run gnosys init first.");
+  for (const s of r.stores) out.push(`  ${s.label}: ${s.memories} memories (${s.path})`);
+  out.push("");
+
+  if (r.archive) {
+    out.push("Archive (Two-Tier Memory):");
+    const a = r.archive;
+    if (a.status === "ok") {
+      out.push(`  Archived memories: ${a.archived}`);
+      if ((a.archived ?? 0) > 0) {
+        out.push(`  Archive DB size: ${(a.dbSizeMB ?? 0).toFixed(2)} MB`);
+        out.push(`  Oldest archived: ${a.oldest}`);
+        out.push(`  Newest archived: ${a.newest}`);
+      }
+    } else if (a.status === "unavailable") {
+      out.push("  Not available (better-sqlite3 not installed)");
+    } else {
+      out.push("  Not initialized");
+    }
+    out.push("");
+  }
+
+  out.push("Recall (Automatic Memory Injection):");
+  out.push(`  Mode: ${r.recall.mode}`);
+  out.push(`  Max memories per turn: ${r.recall.maxMemories}`);
+  out.push(`  Min relevance: ${r.recall.minRelevance}`);
+  out.push("");
+
+  const notSet = "not set — run gnosys setup";
+  out.push("System of Cognition (SOC):");
+  out.push(`  Default provider: ${r.soc.defaultProvider ?? notSet}`);
+  out.push(`  Structuring → ${r.soc.structuring ?? notSet}`);
+  out.push(`  Synthesis   → ${r.soc.synthesis ?? notSet}`);
+  out.push("");
+
+  out.push("LLM Connectivity:");
+  for (const l of r.llm) {
+    if (l.status === "unavailable") out.push(`  ${l.provider}: — ${l.detail}`);
+    else if (l.status === "connected") out.push(`  ${l.provider}: ✓ connected (${l.detail})`);
+    else out.push(`  ${l.provider}: ✗ ${l.detail}`);
+  }
+  out.push("");
+
+  if (r.stores.length > 0) {
+    out.push("Maintenance Health:");
+    const m = r.maintenance;
+    if (m === null) {
+      out.push("  — central DB not available");
+    } else if ("error" in m) {
+      out.push(`  Error: ${m.error}`);
+    } else {
+      out.push(`  Active memories: ${m.active}`);
+      out.push(`  Stale (decayed confidence < ${m.staleThreshold}): ${m.stale}`);
+      out.push(`  Average confidence: ${m.averageConfidence.toFixed(3)} (decayed: ${m.averageDecayed.toFixed(3)})`);
+      out.push(`  Never reinforced: ${m.neverReinforced}`);
+      out.push(`  Total reinforcements: ${m.totalReinforcements}`);
+    }
+  }
+  return out;
 }

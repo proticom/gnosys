@@ -7,6 +7,7 @@ Re-initialize all registered projects after upgrading Gnosys: refresh agent rule
 ```bash
 gnosys setup sync-projects
 gnosys setup sync-projects --skip-dashboard
+gnosys setup sync-projects --yes --json
 ```
 
 ## Options
@@ -14,6 +15,8 @@ gnosys setup sync-projects --skip-dashboard
 | Option | Description |
 |--------|-------------|
 | `--skip-dashboard` | Skip regenerating the portfolio dashboard files |
+| `--yes` | Remove dead and temp registry entries without prompting (same as `gnosys cleanup --yes`) |
+| `--json` | Print one JSON result on stdout and nothing else |
 
 ## Behavior
 
@@ -27,7 +30,7 @@ gnosys setup sync-projects --skip-dashboard
 4. Updates global agent rules.
 5. Stamps central DB metadata (app version, last upgrade, machine list).
 6. Reports upgraded, skipped, and failed projects.
-7. When skipped projects exist and stdout is a TTY, offers interactive registry cleanup.
+7. When skipped projects exist: `--yes` removes the stale registry entries; on a terminal (stdin and stdout) without `--yes` it prompts; otherwise it leaves the registry unchanged.
 8. Unless `--skip-dashboard`, regenerates portfolio dashboard HTML and Markdown.
 
 ## Output
@@ -40,7 +43,28 @@ Projects without `.gnosys/` on disk are skipped. Per-project errors are collecte
 
 ## Cleanup prompt
 
-When skipped entries exist and the command runs on a TTY, it may invoke `cleanupRegistry({ interactive: true })`. Non-TTY runs (CI) skip the prompt and suggest `gnosys cleanup` instead.
+When skipped entries exist:
+
+- `--yes` removes them without a prompt.
+- On a terminal (stdin and stdout are TTYs) without `--yes`, it prompts `remove N entries? [Y/n]`.
+- Otherwise (CI, agents, `--json` without `--yes`) the registry is left unchanged and `registryCleanup` is `null`. This is the safe default.
+
+## JSON output
+
+```json
+{
+  "ok": true,
+  "version": "6.3.1",
+  "total": 3,
+  "upgraded": ["/work/app"],
+  "skipped": ["/old/project"],
+  "failed": [],
+  "tempPruned": 0,
+  "globalRules": "updated",
+  "registryCleanup": { "removed": 1, "kept": 1, "wrote": true },
+  "dashboard": { "html": "/Users/me/gnosys-dashboard.html", "md": "/Users/me/gnosys-dashboard.md" }
+}
+```
 
 ## Dashboard outputs
 
@@ -65,7 +89,7 @@ Individual project failures are reported but do not abort the entire sync.
 ```bash
 cd gnosys-public
 npm run cli -- setup sync-projects --help
-npx vitest run src/test/setup-sync-projects-command-handler.test.ts
+npx vitest run src/test/unattended-maintenance.test.ts
 ```
 
 ## Related commands

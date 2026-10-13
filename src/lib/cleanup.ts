@@ -26,6 +26,7 @@ import { createInterface } from "readline/promises";
 import { stdin, stdout } from "process";
 import { getProjectRegistryPath, isTempProjectPath } from "./paths.js";
 import { safeQuestion } from "./setup/ui/safePrompt.js";
+import { nonInteractiveMessage } from "./interactiveGuard.js";
 import { Header } from "./setup/ui/header.js";
 import { Status } from "./setup/ui/status.js";
 import { c, color, glyph } from "./setup/ui/tokens.js";
@@ -83,6 +84,8 @@ export interface CleanupOptions {
   interactive: boolean;
   /** Non-interactive write (only used when `interactive === false`). */
   yes?: boolean;
+  /** Suppress the dry-run listing (JSON callers print the result themselves). */
+  quiet?: boolean;
   /** Optional readline (when called from inside `setup sync-projects`). */
   rl?: import("readline/promises").Interface;
 }
@@ -94,6 +97,8 @@ export interface CleanupResult {
   kept: number;
   /** True when the registry was actually rewritten. */
   wrote: boolean;
+  /** Entries by category, before any write. */
+  entries: ClassifiedRegistry;
 }
 
 function formatPath(p: string): string {
@@ -144,10 +149,11 @@ export async function cleanupRegistry(opts: CleanupOptions): Promise<CleanupResu
     if (opts.interactive) {
       process.stdout.write(`${Status("ok", "project registry is already clean", `${categorized.alive.length} entries`)}\n`);
     }
-    return { removed: 0, kept: categorized.alive.length, wrote: false };
+    return { removed: 0, kept: categorized.alive.length, wrote: false, entries: categorized };
   }
 
   if (opts.interactive) {
+    if (!stdin.isTTY) throw new Error(nonInteractiveMessage("cleanup", "--yes or --dry-run"));
     process.stdout.write("\n");
     process.stdout.write(Header(["gnosys", "cleanup"]) + "\n\n");
     process.stdout.write(`${Status("warn", `${toRemove} stale registry entries`, `${categorized.alive.length} alive`)}\n`);
@@ -161,20 +167,20 @@ export async function cleanupRegistry(opts: CleanupOptions): Promise<CleanupResu
         .toLowerCase();
       if (answer === "n" || answer === "no") {
         process.stdout.write(`${Status("warn", "registry left unchanged")}\n`);
-        return { removed: 0, kept: categorized.alive.length, wrote: false };
+        return { removed: 0, kept: categorized.alive.length, wrote: false, entries: categorized };
       }
     } finally {
       if (ownsRl) rl.close();
     }
   } else if (!opts.yes) {
     // Dry-run.
-    if (toRemove > 0) printCategorized(categorized);
-    return { removed: toRemove, kept: categorized.alive.length, wrote: false };
+    if (toRemove > 0 && !opts.quiet) printCategorized(categorized);
+    return { removed: toRemove, kept: categorized.alive.length, wrote: false, entries: categorized };
   }
 
   await writeAlive(categorized.alive);
   if (opts.interactive) {
     process.stdout.write(`${Status("ok", `removed ${toRemove} entries`, `${categorized.alive.length} kept`)}\n`);
   }
-  return { removed: toRemove, kept: categorized.alive.length, wrote: true };
+  return { removed: toRemove, kept: categorized.alive.length, wrote: true, entries: categorized };
 }

@@ -29,6 +29,8 @@ setupCmd
     const hasConfig = existsSync(configPath);
 
     if (hasConfig && !opts.full && !opts.nonInteractive) {
+      const { guardInteractiveStdin } = await import("../lib/interactiveGuard.js");
+      guardInteractiveStdin("setup", "--non-interactive");
       const { runSummaryWizard } = await import("../lib/setup/summary.js");
       await runSummaryWizard({ directory: projectDir });
       return;
@@ -45,6 +47,8 @@ setupCmd
   .command("providers")
   .description("Manage LLM provider API keys (view, rotate, delete)")
   .action(async () => {
+    const { guardInteractiveStdin } = await import("../lib/interactiveGuard.js");
+    guardInteractiveStdin("setup providers");
     const readline = await import("readline/promises");
     const { runProvidersSetup } = await import("../lib/setup/sections/providers.js");
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
@@ -196,6 +200,8 @@ setupCmd
       console.log(`\n${configured} ides configured · ${errors} errors`);
       return;
     }
+    const { guardInteractiveStdin } = await import("../lib/interactiveGuard.js");
+    guardInteractiveStdin("setup ides", "--all");
     const readline = await import("readline/promises");
     const { runIdesSetup } = await import("../lib/setup/sections/ides.js");
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
@@ -211,6 +217,8 @@ setupCmd
   .command("routing")
   .description("Configure per-task LLM routing (structuring, synthesis, vision, transcription, dream)")
   .action(async () => {
+    const { guardInteractiveStdin } = await import("../lib/interactiveGuard.js");
+    guardInteractiveStdin("setup routing");
     const readline = await import("readline/promises");
     const { runRoutingSetup } = await import("../lib/setup/sections/routing.js");
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
@@ -226,6 +234,8 @@ setupCmd
   .command("preferences")
   .description("Review and clean up user-scope preferences (incl. legacy imports)")
   .action(async () => {
+    const { guardInteractiveStdin } = await import("../lib/interactiveGuard.js");
+    guardInteractiveStdin("setup preferences");
     const readline = await import("readline/promises");
     const { runPreferencesReview } = await import("../lib/setup/sections/preferences.js");
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });

@@ -56,7 +56,7 @@ export async function runWebInitCommand(
       custom: "GNOSYS_LLM_API_KEY",
     };
 
-    if (!opts.nonInteractive && !opts.json && process.stdout.isTTY) {
+    if (!opts.nonInteractive && !opts.json && process.stdout.isTTY && process.stdin.isTTY) {
       const rl = createInterface({ input: process.stdin, output: process.stdout });
 
       try {

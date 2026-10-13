@@ -56,6 +56,7 @@ import { getLLMProvider, type LLMProvider } from "./lib/llm.js";
 import { recall, formatRecall, } from "./lib/recall.js";
 import { initAudit, readAuditLog, readAuditFromDb, formatAuditTimeline } from "./lib/audit.js";
 import { logError } from "./lib/log.js";
+import { markAgentSurface, MemoryDeletionRefusedError } from "./lib/memoryDeleteGuard.js";
 import { GnosysDB, isVisibleInProject, type MemoryScope, type ProjectVisibility } from "./lib/db.js";
 import { memoryOverlapWarning } from "./lib/memoryOverlap.js";
 import { updateStatusSchema, syncMemoryToDb, syncUpdateToDb, syncReinforcementToDb, auditToDb } from "./lib/dbWrite.js";
@@ -85,6 +86,10 @@ import {
 import type { GnosysIngestion } from "./lib/ingest.js";
 import type { GnosysHybridSearch } from "./lib/hybridSearch.js";
 import type { GnosysAsk } from "./lib/ask.js";
+
+// Every tool call in this process comes from an agent: memory deletion is
+// always refused here, whatever the environment says.
+markAgentSurface("mcp");
 
 // Initialize resolver (discovers all layered stores)
 const resolver = new GnosysResolver();
@@ -3185,7 +3190,7 @@ regTool(
 // ─── Tool: gnosys_preference_delete ──────────────────────────────────────
 regTool(
   "gnosys_preference_delete",
-  "Delete a user preference by key.",
+  "Delete a user preference by key. Always refused for agents: memory deletion needs a human at a terminal. Use gnosys_update to mark it superseded or archived.",
   {
     key: z.string().describe("Preference key to delete."),
     projectRoot: projectRootParam,
@@ -3198,7 +3203,13 @@ regTool(
       };
     }
 
-    const deleted = deletePreference(centralDb, key);
+    let deleted: boolean;
+    try {
+      deleted = deletePreference(centralDb, key);
+    } catch (err) {
+      if (!(err instanceof MemoryDeletionRefusedError)) throw err;
+      return { content: [{ type: "text" as const, text: err.message }], isError: true };
+    }
     if (!deleted) {
       return {
         content: [{ type: "text" as const, text: `No preference found for key "${key}".` }],

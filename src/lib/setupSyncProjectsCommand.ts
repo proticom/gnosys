@@ -8,7 +8,25 @@ import { createProjectIdentity } from "./projectIdentity.js";
 
 export type SetupSyncProjectsCommandOptions = {
   skipDashboard?: boolean;
+  /** Remove dead/temp registry entries without prompting. */
+  yes?: boolean;
+  /** Print one JSON result on stdout and nothing else. */
+  json?: boolean;
 };
+
+export interface SyncProjectsResult {
+  ok: true;
+  version: string;
+  total: number;
+  upgraded: string[];
+  skipped: string[];
+  failed: Array<{ path: string; error: string }>;
+  tempPruned: number;
+  globalRules: "updated" | "failed" | "unavailable";
+  /** null when the registry cleanup did not run (no stale entries, or no --yes without a terminal). */
+  registryCleanup: { removed: number; kept: number; wrote: boolean } | null;
+  dashboard: { html: string; md: string } | null;
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,9 +54,13 @@ export async function runSetupSyncProjectsCommand(
   } = await import("./setup/syncProjectsRender.js");
   const { Spinner } = await import("./setup/ui/spinner.js");
 
-  console.log("");
-  console.log(renderSyncHeader(currentVersion));
-  console.log("");
+  const json = Boolean(opts.json);
+  const say = (line = ""): void => {
+    if (!json) console.log(line);
+  };
+  say();
+  say(renderSyncHeader(currentVersion));
+  say();
 
   // 1. Read registered projects from file registry AND central DB
   const home = process.env.HOME || process.env.USERPROFILE || "/tmp";
@@ -103,15 +125,29 @@ export async function runSetupSyncProjectsCommand(
     projects.push(resolved);
   }
 
+  const result: SyncProjectsResult = {
+    ok: true,
+    version: currentVersion,
+    total: projects.length,
+    upgraded: [],
+    skipped: [],
+    failed: [],
+    tempPruned: droppedTemp,
+    globalRules: "unavailable",
+    registryCleanup: null,
+    dashboard: null,
+  };
+
   if (projects.length === 0) {
-    console.log(" no registered projects found");
-    console.log(" run `gnosys init` in each project first");
+    if (json) console.log(JSON.stringify(result, null, 2));
+    say(" no registered projects found");
+    say(" run `gnosys init` in each project first");
     return;
   }
 
   // Lead-in spinner: shows we're churning through the registry. Resolves
   // to ✓ summary after the iteration loop completes (or fail on hard error).
-  const syncSpinner = Spinner(`syncing ${projects.length} registered projects…`);
+  const syncSpinner = json ? null : Spinner(`syncing ${projects.length} registered projects…`);
 
   // Sync the merged list back to file registry
   try {
@@ -122,9 +158,7 @@ export async function runSetupSyncProjectsCommand(
   }
 
   // 2. Iterate and upgrade each project that exists on this machine
-  const upgraded: string[] = [];
-  const skipped: string[] = [];
-  const failed: string[] = [];
+  const { upgraded, skipped, failed } = result;
 
   for (const projectDir of projects) {
     // Temp/test directories were already filtered out of `projects`.
@@ -174,13 +208,13 @@ export async function runSetupSyncProjectsCommand(
 
       upgraded.push(projectDir);
     } catch (err) {
-      failed.push(`${projectDir} (${(err as Error).message})`);
+      failed.push({ path: projectDir, error: (err as Error).message });
     }
   }
 
   // Stop the lead-in spinner now that the iteration is done. Resolved
   // before any per-section output so the cursor is on a fresh line.
-  syncSpinner.ok(
+  syncSpinner?.ok(
     `synced ${projects.length} registered projects`,
     `${upgraded.length} upgraded · ${skipped.length} skipped · ${failed.length} failed` +
       (droppedTemp > 0 ? ` · ${droppedTemp} temp entries pruned` : ""),
@@ -199,12 +233,14 @@ export async function runSetupSyncProjectsCommand(
       const { syncToTarget } = await import("./rulesGen.js");
       await syncToTarget(centralDb, process.cwd(), "global", null);
       centralDb.close();
+      result.globalRules = "updated";
       const { printStatus } = await import("./setup/ui/status.js");
-      printStatus("ok", "global agent rules updated", "~/.claude/CLAUDE.md");
+      if (!json) printStatus("ok", "global agent rules updated", "~/.claude/CLAUDE.md");
     }
   } catch {
+    result.globalRules = "failed";
     const { printStatus } = await import("./setup/ui/status.js");
-    printStatus("warn", "could not update global agent rules");
+    if (!json) printStatus("warn", "could not update global agent rules");
   }
 
   // 4. Stamp the central DB with current version and machine info
@@ -244,22 +280,20 @@ export async function runSetupSyncProjectsCommand(
   }
   const upgradedRows = upgraded.map(rowFor);
   const skippedRows = skipped.map(rowFor);
-  const failedRows = failed.map((f) => {
-    // failed entries are "<path> (<err>)" — extract path for the title.
-    const match = f.match(/^(.+?)\s\((.+)\)$/);
-    const projectPath = match ? match[1] : f;
-    return { title: titleByDir.get(projectPath) ?? path.basename(projectPath), fullPath: f };
-  });
+  const failedRows = failed.map((f) => ({
+    title: titleByDir.get(f.path) ?? path.basename(f.path),
+    fullPath: `${f.path} (${f.error})`,
+  }));
 
-  console.log("");
-  for (const line of renderUpgradedSection(upgradedRows)) console.log(line);
+  say();
+  for (const line of renderUpgradedSection(upgradedRows)) say(line);
   if (upgradedRows.length > 0 && (skippedRows.length > 0 || failedRows.length > 0)) {
-    console.log("");
+    say();
   }
-  for (const line of renderSkippedSection(skippedRows)) console.log(line);
+  for (const line of renderSkippedSection(skippedRows)) say(line);
   if (failedRows.length > 0) {
-    console.log("");
-    for (const line of renderFailedSection(failedRows)) console.log(line);
+    say();
+    for (const line of renderFailedSection(failedRows)) say(line);
   }
 
   // Connected-machines callout (separate divider per design spec).
@@ -287,33 +321,36 @@ export async function runSetupSyncProjectsCommand(
   }
 
   if (machineLines.length > 0) {
-    console.log("");
-    console.log(renderDivider());
-    console.log("");
-    for (const line of machineLines) console.log(line);
+    say();
+    say(renderDivider());
+    say();
+    for (const line of machineLines) say(line);
   }
 
-  console.log("");
-  console.log(renderDivider());
-  console.log("");
-  console.log(renderDoneLine(currentVersion));
+  say();
+  say(renderDivider());
+  say();
+  say(renderDoneLine(currentVersion));
 
   if (skippedRows.length > 0) {
-    // v5.9.3 Phase H: offer one-keystroke cleanup. Stays interactive
-    // by default; users on a TTY get the prompt, non-TTY runs silently
-    // (sync-projects is sometimes invoked from CI).
-    console.log("");
-    if (process.stdout.isTTY) {
+    // Stale registry entries: --yes removes them (the prompt's default);
+    // a terminal user gets the prompt; otherwise leave the registry alone.
+    say();
+    const { printStatus } = await import("./setup/ui/status.js");
+    const canPrompt = !json && Boolean(process.stdin.isTTY && process.stdout.isTTY);
+    if (opts.yes || canPrompt) {
       try {
         const { cleanupRegistry } = await import("./cleanup.js");
-        await cleanupRegistry({ interactive: true });
+        const cleanup = await cleanupRegistry({ interactive: !opts.yes, yes: opts.yes, quiet: json });
+        result.registryCleanup = { removed: cleanup.removed, kept: cleanup.kept, wrote: cleanup.wrote };
+        if (opts.yes && !json) {
+          printStatus("ok", `removed ${cleanup.removed} stale registry entries`, `${cleanup.kept} kept`);
+        }
       } catch (err) {
-        const { printStatus } = await import("./setup/ui/status.js");
-        printStatus("warn", "cleanup skipped", err instanceof Error ? err.message : String(err));
+        if (!json) printStatus("warn", "cleanup skipped", err instanceof Error ? err.message : String(err));
       }
-    } else {
-      const { printStatus } = await import("./setup/ui/status.js");
-      printStatus("progress", "tip", "run `gnosys cleanup` to remove stale entries");
+    } else if (!json) {
+      printStatus("progress", "tip", "run `gnosys cleanup` (or pass --yes) to remove stale entries");
     }
   }
 
@@ -330,15 +367,18 @@ export async function runSetupSyncProjectsCommand(
         await fs.writeFile(dashboardPath, generatePortfolioHtml(report, dashboardPath), "utf-8");
         await fs.writeFile(dashboardMdPath, formatPortfolioMarkdown(report), "utf-8");
         centralDb.close();
-        console.log("");
+        result.dashboard = { html: dashboardPath, md: dashboardMdPath };
+        say();
         for (const line of renderDashboardSummary(dashboardPath, dashboardMdPath)) {
-          console.log(line);
+          say(line);
         }
       }
     } catch {
       const { printStatus } = await import("./setup/ui/status.js");
-      console.log("");
-      printStatus("warn", "could not regenerate portfolio dashboard");
+      say();
+      if (!json) printStatus("warn", "could not regenerate portfolio dashboard");
     }
   }
+
+  if (json) console.log(JSON.stringify(result, null, 2));
 }

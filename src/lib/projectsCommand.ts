@@ -67,6 +67,8 @@ export async function runProjectsCommand(opts: ProjectsCommandOptions): Promise<
       }
 
       if (!opts.yes) {
+        const { guardInteractiveStdin } = await import("./interactiveGuard.js");
+        guardInteractiveStdin("projects --prune", "--yes or --dry-run");
         const readline = await import("readline/promises");
         const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
         let answer = "";
