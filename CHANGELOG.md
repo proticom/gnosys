@@ -17,6 +17,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Windows IDE setup.** `gnosys setup ides` now discovers commands with
+  Windows-native tooling, executes npm `.cmd`/`.bat`/`.ps1` CLI shims safely, reports
+  Claude Code and Claude Desktop outcomes separately, and prints the exact
+  Claude Desktop config path it verified.
+- **MCP config preservation.** JSON configs with a UTF-8 BOM are accepted;
+  malformed existing configs are reported without being overwritten; writes
+  are read back and verified before setup reports success.
+- **Windows npm install.** The optional postinstall hook no longer relies on
+  the POSIX-only `true` command.
 - `gnosys cleanup` and `gnosys setup sync-projects` now detect registry
   folders that share a projectId with another folder ("moved"). Cleanup keeps
   them and prints the relocate command. Sync-projects skips them, so it no
