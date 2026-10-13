@@ -129,7 +129,7 @@
   },
   "optionalDependencies": {
     "@huggingface/transformers": "^4.2.0",
-    "better-sqlite3": "^11.7.0"
+    "better-sqlite3": "^13.0.3"
   },
   "overrides": {
     "prebuild-install": "^7.1.3",
