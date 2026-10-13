@@ -18,7 +18,7 @@ gnosys setup ides --all
 - Without flags, opens the interactive IDE integration picker.
 - With `--all`, runs the non-interactive setup path for all supported IDEs.
 - Supports Claude Code + Desktop, Cursor, Codex, Gemini CLI, Antigravity, and Grok Build.
-- Detects which IDEs are already present in the current project directory.
+- Detects IDEs from project markers, user-level config directories, installed applications, and CLI commands on `PATH`.
 - Prints a configured/error summary when finished.
 
 ## Writes and side effects
@@ -46,9 +46,12 @@ gnosys setup ides --all
 
 ### Windows
 
-- **User-level configs:** Claude Desktop, Gemini, Antigravity, and Grok Build use the same relative paths under the user profile (`~` expands to `%USERPROFILE%`).
-- **Cursor:** Project-level `.cursor/mcp.json` in the current working directory.
-- **CLI registries:** Run from PowerShell or cmd; ensure `claude` / `codex` are on `PATH` before using interactive setup.
+- **Claude Desktop:** Updates the exact `%APPDATA%\Claude\claude_desktop_config.json` file printed by setup.
+- **Other user-level configs:** Gemini, Antigravity, and Grok Build use paths under `%USERPROFILE%`.
+- **Cursor:** Updates both project `.cursor\mcp.json` and `%USERPROFILE%\.cursor\mcp.json`.
+- **CLI registries:** Claude Code and Codex use their CLI registry commands. npm-installed `.cmd`/`.bat`/`.ps1` shims are supported when the CLI is on `PATH`.
+- Existing JSON config is preserved. A BOM is accepted, while malformed JSON is reported and left untouched for manual repair.
+- Restart Claude Desktop after setup. If Gnosys is still missing, run `where.exe gnosys-mcp` and inspect the exact config file path printed by setup.
 
 ## Validation
 
