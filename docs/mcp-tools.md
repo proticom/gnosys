@@ -32,7 +32,7 @@ _Generated from `src/index.ts` by `scripts/gen-mcp-tools.mjs`. Do not edit by ha
 | `gnosys_maintain` | Run vault maintenance: detect duplicate memories, apply confidence decay, consolidate similar memories. Use --dry-run mode first to see what would change. Requires embeddings (run gnosys_reindex first). |
 | `gnosys_migrate` | Migrate a Gnosys store (.gnosys/) from one directory to another. Updates the project name, working directory, and central DB registration. Use this when a project has moved or you want to consolidate stores. |
 | `gnosys_portfolio` | Portfolio dashboard — shows all registered projects with memory counts, categories, status snapshots, roadmap items, and recent activity. Use for cross-project status overview. |
-| `gnosys_preference_delete` | Delete a user preference by key. |
+| `gnosys_preference_delete` | Delete a user preference by key. Always refused for agents: memory deletion needs a human at a terminal. Use gnosys_update to mark it superseded or archived. |
 | `gnosys_preference_get` | Get a user preference by key, or list all preferences. |
 | `gnosys_preference_set` | Set a user preference. Preferences are stored in the central DB as user-scoped memories. They persist across all projects and are injected into agent rules files on `gnosys sync`. Use this to record workflow conventions, coding standards, tool preferences, etc. |
 | `gnosys_read` | Read a specific memory. Accepts a memory ID (e.g., 'arch-012') or layer-prefixed path (e.g., 'project:decisions/why-not-rag.md'). Without a prefix, searches all stores in precedence order. Includes supersedes and superseded_by links when set. |

@@ -20,6 +20,7 @@ import { DEFAULT_CONFIG, type GnosysConfig } from "../lib/config.js";
 import { generateRulesBlock, } from "../lib/rulesGen.js";
 import { getSandboxDir as getSandboxDirImpl } from "../lib/paths.js";
 import { logError, logWarn } from "../lib/log.js";
+import { markAgentSurface, MemoryDeletionRefusedError } from "../lib/memoryDeleteGuard.js";
 
 // ─── Socket + PID paths ─────────────────────────────────────────────────
 
@@ -340,8 +341,13 @@ export function handleRequest(db: GnosysDB, req: SandboxRequest): SandboxRespons
         const { key } = req.params as Record<string, any>;
         if (!key) return { id: req.id, ok: false, error: "key is required" };
 
-        const deleted = deletePreference(db, key as string);
-        return { id: req.id, ok: true, result: { deleted } };
+        try {
+          const deleted = deletePreference(db, key as string);
+          return { id: req.id, ok: true, result: { deleted } };
+        } catch (err) {
+          if (!(err instanceof MemoryDeletionRefusedError)) throw err;
+          return { id: req.id, ok: false, error: err.message };
+        }
       }
 
       case "pref_search": {
@@ -662,6 +668,8 @@ export function handleRequest(db: GnosysDB, req: SandboxRequest): SandboxRespons
 // ─── Server ──────────────────────────────────────────────────────────────
 
 export function startServer(dbPath?: string): net.Server {
+  // The socket serves agents: memory deletion is always refused here.
+  markAgentSurface("sandbox");
   const socketPath = getSocketPath();
 
   // Clean up stale socket

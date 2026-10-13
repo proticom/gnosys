@@ -8,6 +8,7 @@ Remove dead and temp-dir entries from the project registry (`~/.config/gnosys/pr
 gnosys cleanup
 gnosys cleanup --dry-run
 gnosys cleanup --yes
+gnosys cleanup --dry-run --json
 ```
 
 ## Options
@@ -16,6 +17,7 @@ gnosys cleanup --yes
 |--------|-------------|
 | `--dry-run` | Show what would be removed without writing the registry |
 | `--yes` | Non-interactive: remove dead/temp entries without prompting |
+| `--json` | Print only one JSON result on stdout. Needs `--yes` or `--dry-run` (or `--rules`) |
 
 ## Classification
 
@@ -60,6 +62,22 @@ Removes dead/temp entries immediately and prints JSON with the cleanup result.
 With `--yes` or `--dry-run`, output is JSON including counts of removed and kept entries.
 
 Interactive mode prints a human-readable classification summary before prompting.
+
+With `--json` the result also lists the entries by category:
+
+```json
+{ "ok": true, "dryRun": true, "removed": 1, "kept": 0, "wrote": false,
+  "entries": { "alive": [], "dead": ["/old/project"], "temp": [] } }
+```
+
+## Without a terminal
+
+When stdin is not a TTY and neither `--yes` nor `--dry-run` is given, the
+command exits with code 1 and writes nothing:
+
+```text
+gnosys cleanup is interactive and requires a terminal (stdin is not a TTY). Pass --yes or --dry-run to run it without prompts.
+```
 
 ## Safety notes
 

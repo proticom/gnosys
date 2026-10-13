@@ -61,7 +61,9 @@ setupCmd
   .command("sync-projects")
   .description("Re-initialize all registered projects after upgrading gnosys: refresh agent rules, project registry, central DB stamp, and portfolio dashboard.")
   .option("--skip-dashboard", "Skip regenerating the portfolio dashboard")
-  .action(async (opts: { skipDashboard?: boolean }) => {
+  .option("--yes", "Remove dead and temp registry entries without prompting (same as `gnosys cleanup --yes`)")
+  .option("--json", "Print one JSON result on stdout")
+  .action(async (opts: { skipDashboard?: boolean; yes?: boolean; json?: boolean }) => {
     const { runSetupSyncProjectsCommand } = await import("../lib/setupSyncProjectsCommand.js");
     await runSetupSyncProjectsCommand(opts);
   });
@@ -75,162 +77,55 @@ program
   .description("Remove dead and temp-dir entries from the project registry")
   .option("--yes", "Non-interactive, remove without prompting")
   .option("--dry-run", "Show what would be removed without writing")
+  .option("--json", "Print one JSON result on stdout (needs --yes or --dry-run unless --rules)")
   .option(
     "--rules [dir]",
     "Remove the GNOSYS block from agent rules files (CLAUDE.md, .cursor, .codex) in the given directory (default: cwd)",
   )
-  .action(async (opts: { yes?: boolean; dryRun?: boolean; rules?: string | boolean }) => {
+  .action(async (opts: { yes?: boolean; dryRun?: boolean; json?: boolean; rules?: string | boolean }) => {
     // v5.12.1: uninstall counterpart of `gnosys setup ides` rules generation.
     if (opts.rules !== undefined) {
       const { removeRulesFromProject } = await import("../lib/rulesGen.js");
       const dir = typeof opts.rules === "string" ? path.resolve(opts.rules) : process.cwd();
       const cleaned = await removeRulesFromProject(dir);
-      if (cleaned.length === 0) {
+      if (opts.json) {
+        console.log(JSON.stringify({ ok: true, dir, rulesCleaned: cleaned }, null, 2));
+      } else if (cleaned.length === 0) {
         console.log(`No GNOSYS rules blocks found in ${dir}`);
       } else {
         for (const rel of cleaned) console.log(`Removed GNOSYS block: ${rel}`);
       }
       return;
     }
+    const interactive = !opts.yes && !opts.dryRun;
+    if (interactive) {
+      const { guardInteractiveStdin } = await import("../lib/interactiveGuard.js");
+      if (opts.json) {
+        console.error("gnosys cleanup --json cannot prompt. Pass --yes to remove or --dry-run to preview.");
+        process.exit(1);
+      }
+      guardInteractiveStdin("cleanup", "--yes or --dry-run");
+    }
     const { cleanupRegistry } = await import("../lib/cleanup.js");
-    const result = await cleanupRegistry({
-      interactive: !opts.yes && !opts.dryRun,
-      yes: opts.yes,
-    });
-    if (opts.yes || opts.dryRun) {
-      console.log(JSON.stringify(result, null, 2));
+    const result = await cleanupRegistry({ interactive, yes: opts.yes, quiet: opts.json });
+    if (opts.json || !interactive) {
+      console.log(JSON.stringify({ ok: true, dryRun: Boolean(opts.dryRun && !opts.yes), ...result }, null, 2));
     }
   });
 
-// `gnosys upgrade` — upgrade the gnosys CLI/MCP itself, then prompt the
-// user to run sync-projects. Writes ~/.gnosys/last-upgrade-at so running
-// MCP servers exit cleanly and the host respawns them against the new
-// global binary (see src/lib/upgrade.ts).
+// `gnosys upgrade` — upgrade the gnosys CLI/MCP itself, then refresh
+// registered projects. Writes ~/.gnosys/last-upgrade-at so running MCP
+// servers exit cleanly and the host respawns them against the new global
+// binary (see src/lib/upgrade.ts and src/lib/upgradeCommand.ts).
 program
   .command("upgrade")
-  .description("Upgrade gnosys itself and signal running MCP servers to restart. After upgrading, suggests running 'gnosys setup sync-projects'.")
-  .option("--yes", "Skip the post-upgrade sync-projects prompt and exit")
-  .option("--no-sync", "Don't suggest running sync-projects afterward")
-  .action(async (opts: { yes?: boolean; sync?: boolean }) => {
-    const currentVersion = pkg.version;
-    console.log(`Gnosys CLI: currently v${currentVersion}`);
-
-    const { detectPackageManager, upgradeCommand } = await import("../lib/packageManager.js");
-    const pm = detectPackageManager();
-    const cmd = upgradeCommand(pm);
-    if (!cmd) {
-      console.log(
-        "Running under npx — there's no global install to upgrade. Use `npx gnosys@latest` to run the latest.",
-      );
-      return;
-    }
-
-    console.log(`Running: ${cmd} ...`);
-
-    const { execSync, spawn } = await import("child_process");
-    const { makeNpmStderrFilter } = await import("../lib/installOutput.js");
-    try {
-      // Stream the install live, but filter out the two unfixable, harmless
-      // deprecation warnings (prebuild-install, boolean — see installOutput.ts).
-      // stdout is inherited; stderr is piped so we can drop those lines.
-      await new Promise<void>((resolve, reject) => {
-        const child = spawn(cmd, { shell: true, stdio: ["inherit", "inherit", "pipe"] });
-        const filter = makeNpmStderrFilter((text) => process.stderr.write(text));
-        child.stderr?.setEncoding("utf8");
-        child.stderr?.on("data", (chunk: string) => filter.feed(chunk));
-        child.on("error", reject);
-        child.on("close", (code) => {
-          filter.end();
-          if (code === 0) resolve();
-          else reject(new Error(`${cmd} exited with code ${code}`));
-        });
-      });
-    } catch (err) {
-      console.error(`\nUpgrade failed: ${err instanceof Error ? err.message : err}`);
-      console.error(`Try running '${cmd}' manually.`);
-      process.exit(1);
-    }
-
-    const { EMBEDDING_INSTALL_HINT } = await import("../lib/embeddingHealth.js");
-    console.log(`Check optional embeddings with gnosys doctor. If unavailable, run: ${EMBEDDING_INSTALL_HINT}`);
-
-    // Read the newly-installed version (best-effort — we may still be the
-    // old binary in-process; this is purely informational).
-    let newVersion = "(see npm output)";
-    try {
-      const out = execSync("npm ls -g gnosys --depth=0 --json", { encoding: "utf8" });
-      const parsed = JSON.parse(out);
-      newVersion = parsed?.dependencies?.gnosys?.version || newVersion;
-    } catch {
-      // Best-effort lookup only.
-    }
-
-    // v5.8.5: surface the version transition so it's obvious the upgrade
-    // worked, even though this process is still on the old binary in-memory.
-    if (newVersion !== "(see npm output)" && newVersion !== currentVersion) {
-      console.log(`\n✓ Installed gnosys v${newVersion} (was v${currentVersion})`);
-    } else if (newVersion === currentVersion) {
-      console.log(`\n✓ Already on latest: v${currentVersion}`);
-    }
-
-    // UPG polish (from command-coverage-plan UPG track): the makeNpmStderrFilter
-    // (see installOutput.ts) already drops the two known-benign deprecations
-    // (prebuild-install from better-sqlite3, boolean from onnxruntime). This keeps
-    // `gnosys upgrade` and `npm install -g` output clean for users.
-    console.log("  (known-benign deprecation warnings from optional native deps were suppressed)");
-
-    // Write the marker so any running MCP servers exit and respawn.
-    const { writeUpgradeMarker } = await import("../lib/upgrade.js");
-    try {
-      writeUpgradeMarker(typeof newVersion === "string" && newVersion !== "(see npm output)"
-        ? newVersion
-        : currentVersion);
-      console.log(`\n✓ Upgrade marker written: ~/.gnosys/last-upgrade-at`);
-      console.log(`  Any running MCP servers will detect this within 10s and restart cleanly.`);
-      console.log(`  (Your MCP client — Claude Code, Cursor, VS Code — will auto-respawn.)`);
-    } catch (err) {
-      console.error(`\nCould not write upgrade marker: ${err instanceof Error ? err.message : err}`);
-      console.error(`Running MCP servers will need to be restarted manually.`);
-    }
-
-    // v5.15: a Node upgrade moves the node path hardcoded in the dream
-    // LaunchAgent plist, silently killing the scheduler. Repair it here.
-    const { repairDreamLaunchAgentAfterUpgrade } = await import("../lib/dreamLaunchd.js");
-    const dreamRepairLine = await repairDreamLaunchAgentAfterUpgrade();
-    if (dreamRepairLine) console.log(`\n${dreamRepairLine}`);
-
-    if (opts.sync === false || opts.yes) {
-      console.log(`\nDone. Run 'gnosys setup sync-projects' when you're ready to refresh registered projects.`);
-      return;
-    }
-
-    // Prompt for sync-projects.
-    const readline = await import("readline");
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-    const answer = await new Promise<string>((resolve) =>
-      rl.question(`\nRun 'gnosys setup sync-projects' now to refresh registered projects? [Y/n] `, resolve),
-    );
-    rl.close();
-
-    if (answer.trim().toLowerCase() === "n" || answer.trim().toLowerCase() === "no") {
-      console.log(`Done. You can run 'gnosys setup sync-projects' later.`);
-      return;
-    }
-
-    console.log(``);
-    // v5.8.5: shell out to the freshly-installed binary instead of running
-    // syncProjectsAction in-process. The in-process call reuses pkg.version
-    // captured at startup (the OLD version), so the banner said "Gnosys
-    // v5.8.3 — upgrading registered projects" right after installing 5.8.4.
-    // execSync spawns a new process that resolves `gnosys` on PATH to the
-    // upgraded global binary, so the right version banner shows.
-    try {
-      execSync("gnosys setup sync-projects", { stdio: "inherit" });
-    } catch (err) {
-      console.error(`\nSync-projects failed: ${err instanceof Error ? err.message : err}`);
-      console.error(`Run 'gnosys setup sync-projects' manually.`);
-      process.exit(1);
-    }
+  .description("Upgrade gnosys itself and signal running MCP servers to restart. After upgrading, suggests running 'gnosys setup sync-projects'. --yes runs it (and removes dead registry entries) without prompting.")
+  .option("--yes", "Accept the defaults without prompting: upgrade, then run 'gnosys setup sync-projects --yes'")
+  .option("--no-sync", "Upgrade only; skip sync-projects")
+  .option("--json", "Print one JSON result on stdout (needs --yes or --no-sync)")
+  .action(async (opts: { yes?: boolean; sync?: boolean; json?: boolean }) => {
+    const { runUpgradeCommand } = await import("../lib/upgradeCommand.js");
+    await runUpgradeCommand(pkg.version, opts);
   });
 
 // ─── gnosys doctor ──────────────────────────────────────────────────────
@@ -238,7 +133,9 @@ program
   .command("doctor")
   .description("Check system health: stores, LLM connectivity, embeddings, archive")
   .option("--fix", "Offer interactive cleanup of legacy artifacts (e.g. per-store gnosys.db)")
-  .action(async (opts: { fix?: boolean }) => {
+  .option("--yes", "With --fix: remove without prompting (only artifacts whose rows are all in the central DB)")
+  .option("--json", "Print one JSON report on stdout")
+  .action(async (opts: { fix?: boolean; yes?: boolean; json?: boolean }) => {
     const { runDoctorCommand } = await import("../lib/doctorCommand.js");
     await runDoctorCommand(getResolver, opts);
   });

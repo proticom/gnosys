@@ -19,6 +19,8 @@ export async function runSetupRemoteCommand(
       const { configureFromPath } = await import("./remoteWizard.js");
       await configureFromPath(db, opts.path);
     } else {
+      const { guardInteractiveStdin } = await import("./interactiveGuard.js");
+      guardInteractiveStdin("setup remote", "--path <dir>");
       const { runConfigureWizard } = await import("./remoteWizard.js");
       await runConfigureWizard(db);
     }

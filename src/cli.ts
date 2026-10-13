@@ -19,6 +19,8 @@ import { readFileSync } from "fs";
 // `gnosys --help` and other lightweight commands fast.
 import { GnosysDB } from "./lib/db.js";
 import { pkg } from "./cli/_shared.js";
+// Human-only: a .env file can be written by an agent, so it never sets this.
+import { MEMORY_DELETE_OVERRIDE_ENV } from "./lib/memoryDeleteGuard.js";
 // Lazy-loaded inside action handlers (each ~200ms-2.5s on cold cache):
 //   - ./lib/embeddings.js       (@huggingface/transformers — 80MB)
 //   - ./lib/hybridSearch.js     (depends on embeddings)
@@ -52,7 +54,7 @@ try {
   const envFile = readFileSync(path.join(home, ".config", "gnosys", ".env"), "utf8");
   const parsed = dotenv.parse(envFile);
   for (const [key, val] of Object.entries(parsed)) {
-    if (!(key in process.env)) process.env[key] = val;
+    if (!(key in process.env) && key !== MEMORY_DELETE_OVERRIDE_ENV) process.env[key] = val;
   }
 } catch {
   // .env file not found — that's fine, env vars may be set elsewhere
@@ -62,7 +64,7 @@ try {
   const localEnv = readFileSync(".env", "utf8");
   const localParsed = dotenv.parse(localEnv);
   for (const [key, val] of Object.entries(localParsed)) {
-    if (!(key in process.env)) process.env[key] = val;
+    if (!(key in process.env) && key !== MEMORY_DELETE_OVERRIDE_ENV) process.env[key] = val;
   }
 } catch {
   // No local .env — fine

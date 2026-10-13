@@ -68,6 +68,28 @@ function portableToDbMemory(p: PortableMemory): Omit<DbMemory, "embedding" | "at
   };
 }
 
+/**
+ * Memory ids that importProject would delete with strategy "replace": the
+ * existing project's memories plus any bundle memory whose id already exists.
+ * Callers confirm these with the memory-deletion guard before importing.
+ */
+export function plannedReplaceDeletions(
+  db: GnosysDB,
+  opts: ImportProjectOptions,
+): { projectId: string; memoryIds: string[] } {
+  const bundle = readBundle(opts.bundlePath);
+  const projectId = bundle.project.id;
+  if ((opts.strategy ?? "merge") !== "replace") return { projectId, memoryIds: [] };
+  const ids = new Set<string>();
+  if (db.getProject(projectId)) {
+    for (const mem of db.getMemoriesByProject(projectId, true)) ids.add(mem.id);
+  }
+  for (const mem of bundle.memories) {
+    if (db.getMemory(mem.id)) ids.add(mem.id);
+  }
+  return { projectId, memoryIds: [...ids] };
+}
+
 /** Restore a bundle into the central DB. Returns counts and the final project ID. */
 export function importProject(
   db: GnosysDB,

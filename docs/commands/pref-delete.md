@@ -12,9 +12,10 @@ gnosys pref delete code-style
 ## Behavior
 
 1. Opens the central DB via `GnosysDB.openCentral()`.
-2. Calls `deletePreference(centralDb, key)`.
-3. Prints confirmation or a missing-key message.
-4. Reminds you to run `gnosys sync` to update agent rules files after a successful delete.
+2. Asks a human to type the key. Deletion follows the [memory deletion rule](../memory-deletion.md): without a terminal it is refused unless a human set `GNOSYS_ALLOW_MEMORY_DELETE=1`. Agents should mark the preference `superseded` or `archived` instead.
+3. Calls `deletePreference(centralDb, key)`.
+4. Prints confirmation or a missing-key message.
+5. Reminds you to run `gnosys sync` to update agent rules files after a successful delete.
 
 ## Output
 

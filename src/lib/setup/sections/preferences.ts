@@ -19,10 +19,10 @@ import type { Interface as ReadlineInterface } from "readline/promises";
 import { GnosysDB, type DbMemory } from "../../db.js";
 import {
   setPreference,
-  deletePreference,
   KNOWN_PREFERENCE_KEYS,
 } from "../../preferences.js";
 import { safeQuestion } from "../ui/safePrompt.js";
+import { confirmMemoryDeletion } from "../../memoryDeleteGuard.js";
 
 const DIM = "\x1b[2m";
 const GREEN = "\x1b[32m";
@@ -169,19 +169,22 @@ async function viewAndMaybeDelete(rl: ReadlineInterface, pref: UserPreference): 
 
   if (action !== "d" && action !== "delete") return false;
 
-  const confirm = (await safeQuestion(rl, `Delete "${pref.title}"? [y/N] `)).trim().toLowerCase();
-  if (confirm !== "y" && confirm !== "yes") return false;
+  try {
+    await confirmMemoryDeletion({
+      confirmText: pref.key,
+      targets: [pref.id],
+      summary: `Delete "${pref.title}" (${pref.id}). This cannot be undone.`,
+      ask: (q) => safeQuestion(rl, q),
+    });
+  } catch (err) {
+    console.log(`${DIM}${err instanceof Error ? err.message : String(err)}${RESET}`);
+    return false;
+  }
 
   const db = GnosysDB.openCentral();
   try {
-    const ok = deletePreference(db, pref.key);
-    if (ok) {
-      console.log(`${GREEN}✓${RESET} Deleted ${pref.id}`);
-      return true;
-    }
-    // Fall back to direct memory delete for non-standard ids.
     db.deleteMemory(pref.id);
-    console.log(`${GREEN}✓${RESET} Deleted ${pref.id} (legacy id format)`);
+    console.log(`${GREEN}✓${RESET} Deleted ${pref.id}`);
     return true;
   } catch (err) {
     console.log(`${RED}✗${RESET} Failed: ${err instanceof Error ? err.message : String(err)}`);

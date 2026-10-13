@@ -5,6 +5,45 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Upgrade notes
+
+- `gnosys upgrade --yes` changed meaning. It used to skip the post-upgrade
+  sync-projects prompt. It now accepts the defaults: upgrade, then run
+  `gnosys setup sync-projects --yes`, which also removes dead and temp
+  registry entries. To upgrade without syncing, use `gnosys upgrade --no-sync`.
+- Commands that prompt now exit with code 1 when stdin is not a terminal,
+  instead of hanging or exiting silently. The message names the flag to pass:
+  `upgrade` (`--yes` or `--no-sync`), `cleanup` (`--yes` or `--dry-run`),
+  `doctor --fix` (`--yes`), `setup ides` (`--all`), `setup remote`
+  (`--path <dir>`), `migrate` (`--yes`), `projects --prune` (`--yes` or
+  `--dry-run`), bare `setup` on a configured machine (`--non-interactive`),
+  and `setup providers`, `setup routing`, `setup preferences` (terminal only).
+- Memory deletion now needs a human. `gnosys pref delete`, the Delete action in
+  `gnosys setup preferences`, `gnosys import project --strategy replace` and
+  `gnosys restore` ask you to type the key, project id or backup file name.
+  Without a terminal they are refused unless `GNOSYS_ALLOW_MEMORY_DELETE=1` is
+  set by a human for that command. The MCP tool `gnosys_preference_delete` and
+  the sandbox `pref_delete` method are always refused; mark memories
+  superseded or archived instead. See `docs/memory-deletion.md`.
+
+### Added
+
+- `--json` on `gnosys upgrade`, `gnosys setup sync-projects`,
+  `gnosys cleanup` and `gnosys doctor`.
+- `--yes` on `gnosys setup sync-projects` (non-interactive registry cleanup)
+  and on `gnosys doctor --fix` (keeps the unmigrated-rows safety check).
+- `gnosys restore` writes `gnosys-pre-restore-<timestamp>.db` before replacing
+  the live database and reports it as `preRestoreBackup`.
+
+### Changed
+
+- `gnosys setup sync-projects` only prompts for registry cleanup when both
+  stdin and stdout are terminals. It used to check stdout only.
+- `gnosys web init` only prompts when stdin is a terminal too.
+- The `.env` loader in the CLI never sets `GNOSYS_ALLOW_MEMORY_DELETE`.
+
 ## [6.3.1] - 2026-10-09
 
 ### Upgrade notes
