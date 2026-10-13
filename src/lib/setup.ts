@@ -14,7 +14,7 @@ import fs from "fs/promises";
 import fsSync from "fs";
 import path from "path";
 import os from "os";
-import { execSync } from "child_process";
+import { execFileSync, execSync } from "child_process";
 import { guardInteractiveStdin } from "./interactiveGuard.js";
 import {
   loadConfig,
@@ -54,6 +54,7 @@ import {
   cursorMcpPaths,
   runCli,
   removeTomlSection,
+  type SupportedIde,
 } from "./ideMcpInstall.js";
 import { runKeysSetup } from "./setupKeys.js";
 
@@ -118,6 +119,20 @@ export interface SetupResult {
     dream?: TaskRouting;
   };
   dreamEnabled?: boolean;
+}
+
+export interface SetupIDEComponentResult {
+  ide: SupportedIde;
+  label: string;
+  success: boolean;
+  message: string;
+}
+
+export interface SetupIDEResult {
+  success: boolean;
+  message: string;
+  /** Separate outcomes when one setup target configures multiple clients. */
+  components?: SetupIDEComponentResult[];
 }
 
 // ─── Provider Tiers ─────────────────────────────────────────────────────────
@@ -717,7 +732,7 @@ export async function detectIDEs(projectDir: string): Promise<string[]> {
 
   // Check for Claude Code — CLI in PATH or global ~/.claude/ directory
   try {
-    execSync("which claude", { stdio: "ignore" });
+    if (!isCliCommandAvailable("claude")) throw new Error("not found");
     detected.push("claude");
   } catch {
     try {
@@ -744,7 +759,7 @@ export async function detectIDEs(projectDir: string): Promise<string[]> {
 
   // Check for Codex — CLI in PATH or global ~/.codex/ directory
   try {
-    execSync("which codex", { stdio: "ignore" });
+    if (!isCliCommandAvailable("codex")) throw new Error("not found");
     detected.push("codex");
   } catch {
     try {
@@ -757,7 +772,7 @@ export async function detectIDEs(projectDir: string): Promise<string[]> {
 
   // Check for Gemini CLI — CLI in PATH or global ~/.gemini/ directory
   try {
-    execSync("which gemini", { stdio: "ignore" });
+    if (!isCliCommandAvailable("gemini")) throw new Error("not found");
     detected.push("gemini-cli");
   } catch {
     try {
@@ -783,22 +798,9 @@ export async function detectIDEs(projectDir: string): Promise<string[]> {
     }
   }
 
-  // Check for Claude Desktop — distinct from Claude Code CLI. Detected via the
-  // app bundle on macOS or the platform-specific config dir.
-  try {
-    const cfg = getClaudeDesktopConfigPath();
-    const cfgDir = path.dirname(cfg);
-    const stat = await fs.stat(cfgDir);
-    if (stat.isDirectory()) detected.push("claude-desktop");
-  } catch {
-    // Also check macOS Applications
-    try {
-      await fs.stat("/Applications/Claude.app");
-      detected.push("claude-desktop");
-    } catch {
-      // Not installed
-    }
-  }
+  // Claude Desktop is distinct from Claude Code. In particular, a Windows
+  // config directory is not installation evidence: other tools may create it.
+  if (await isClaudeDesktopInstalled()) detected.push("claude-desktop");
 
   // v5.9.4 Bug 12 — Grok Build (xAI's coding agent) stores MCP config at
   // ~/.grok/config.toml. The directory's presence is the detection signal.
@@ -810,6 +812,83 @@ export async function detectIDEs(projectDir: string): Promise<string[]> {
   }
 
   return detected;
+}
+
+type CliProbeName = "claude" | "codex" | "gemini";
+
+function isCliCommandAvailable(command: CliProbeName): boolean {
+  const probe = process.platform === "win32" ? `where ${command}` : `command -v ${command}`;
+  try {
+    execSync(probe, { stdio: ["pipe", "ignore", "ignore"] });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** True only when there is platform-specific evidence of the Desktop app. */
+export async function isClaudeDesktopInstalled(): Promise<boolean> {
+  if (process.platform === "darwin") {
+    try {
+      const stat = await fs.stat(path.dirname(getClaudeDesktopConfigPath()));
+      if (stat.isDirectory()) return true;
+    } catch {
+      // Fall through to the application bundle check.
+    }
+    try {
+      await fs.stat("/Applications/Claude.app");
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  if (process.platform === "win32") {
+    const home = os.homedir();
+    const localAppData = process.env.LOCALAPPDATA ?? path.join(home, "AppData", "Local");
+    const appCandidates = [
+      path.join(localAppData, "AnthropicClaude"),
+      path.join(localAppData, "Programs", "Claude", "Claude.exe"),
+      path.join(localAppData, "Microsoft", "WindowsApps", "Claude.exe"),
+    ];
+    for (const candidate of appCandidates) {
+      try {
+        await fs.stat(candidate);
+        return true;
+      } catch {
+        // Try the next installation layout.
+      }
+    }
+
+    // Current Claude Desktop releases may be registered as a per-user MSIX
+    // without a stable executable path. Anthropic documents this package query
+    // as its Windows deployment detection mechanism.
+    try {
+      execFileSync(
+        "powershell.exe",
+        [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-Command",
+          "if (Get-AppxPackage -Name Claude -ErrorAction SilentlyContinue) { exit 0 } else { exit 1 }",
+        ],
+        { stdio: ["pipe", "ignore", "ignore"] },
+      );
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  // Linux has no single universal package location. Preserve the existing
+  // config-directory signal there until package-manager detection is added.
+  try {
+    const stat = await fs.stat(path.dirname(getClaudeDesktopConfigPath()));
+    return stat.isDirectory();
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -888,7 +967,7 @@ function renderGrokMcpBlock(entry: { command: string; args: string[]; startup_ti
 export async function setupIDE(
   ide: string,
   projectDir: string
-): Promise<{ success: boolean; message: string }> {
+): Promise<SetupIDEResult> {
   const canonical = normalizeIdeKey(ide);
   if (!canonical) {
     return { success: false, message: `Unknown IDE: ${ide}` };
@@ -898,24 +977,36 @@ export async function setupIDE(
     switch (canonical) {
       case "claude": {
         const mcpCmd = resolveGnosysMcpCommand();
-        let codeMsg = `Claude Code MCP registered (${mcpCmd})`;
+        let codeSuccess = true;
+        let codeMsg = `MCP registered (${mcpCmd})`;
         try {
           runCli("claude", ["mcp", "remove", "gnosys"], { allowFailure: true });
           runCli("claude", ["mcp", "add", "-s", "user", "gnosys", "--", mcpCmd]);
         } catch (e) {
           const msg = e instanceof Error ? e.message : String(e);
           if (msg.includes("already exists")) {
-            codeMsg = "Claude Code MCP server already configured";
+            codeMsg = "MCP server already configured";
           } else {
-            codeMsg = `Claude Code MCP skipped (is \`claude\` on PATH?): ${msg}`;
+            codeSuccess = false;
+            codeMsg = `MCP registration failed: ${msg}`;
           }
         }
         const desktop = await setupIDE("claude-desktop", projectDir);
+        const components: SetupIDEComponentResult[] = [
+          { ide: "claude", label: "Claude Code", success: codeSuccess, message: codeMsg },
+          {
+            ide: "claude-desktop",
+            label: "Claude Desktop",
+            success: desktop.success,
+            message: desktop.message,
+          },
+        ];
         return {
-          success: desktop.success,
-          message: desktop.success
-            ? `${codeMsg}; ${desktop.message}`
-            : `${codeMsg}; Claude Desktop: ${desktop.message}`,
+          success: components.every((component) => component.success),
+          message: components
+            .map((component) => `${component.label}: ${component.message}`)
+            .join("; "),
+          components,
         };
       }
 
@@ -1042,16 +1133,12 @@ export async function setupIDE(
       }
 
       case "claude-desktop": {
-        const configPath = getClaudeDesktopConfigPath();
+        const configPath = path.resolve(getClaudeDesktopConfigPath());
         await fs.mkdir(path.dirname(configPath), { recursive: true });
         await installStdioMcpJson(configPath);
-        const home = os.homedir();
-        const displayPath = configPath.startsWith(home)
-          ? configPath.replace(home, "~")
-          : configPath;
         return {
           success: true,
-          message: `Claude Desktop MCP config updated (${displayPath}). Restart Claude Desktop for the change to take effect.`,
+          message: `Claude Desktop MCP config updated (${configPath}). Restart Claude Desktop for the change to take effect.`,
         };
       }
     }
@@ -2145,7 +2232,16 @@ export async function runSetup(opts: {
       }
 
       const result = await setupIDE(ide, projectDir);
-      if (result.success) {
+      if (result.components?.length) {
+        for (const component of result.components) {
+          if (component.success) {
+            console.log(`  ${CHECK} ${component.label}: ${component.message}`);
+            if (!configuredIdes.includes(component.ide)) configuredIdes.push(component.ide);
+          } else {
+            console.log(`  ${CROSS} ${component.label}: ${component.message}`);
+          }
+        }
+      } else if (result.success) {
         console.log(`  ${CHECK} ${result.message}`);
         configuredIdes.push(ide);
       } else {

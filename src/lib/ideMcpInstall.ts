@@ -7,6 +7,10 @@ import path from "path";
 import os from "os";
 import { mergeJsonMcpServer } from "./mcpClientConfig.js";
 
+const WINDOWS_BATCH_EXTENSION = /\.(?:cmd|bat)$/i;
+const WINDOWS_POWERSHELL_EXTENSION = /\.ps1$/i;
+const WINDOWS_PATH_SEPARATOR = /[\\/]/;
+
 /** IDE keys handled by `setupIDE()`. */
 export const SUPPORTED_IDE_KEYS = [
   "claude",
@@ -36,8 +40,15 @@ export function normalizeIdeKey(ide: string): SupportedIde | null {
 
 /** Absolute path to `gnosys-mcp` when on PATH, else bare name. */
 export function resolveGnosysMcpCommand(): string {
+  if (process.platform === "win32") {
+    return resolveWindowsPathCommand("gnosys-mcp") ?? "gnosys-mcp";
+  }
+
   try {
-    const p = execSync("command -v gnosys-mcp", { encoding: "utf-8" }).trim();
+    const p = execSync("command -v gnosys-mcp", {
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "ignore"],
+    }).trim();
     if (p) return p;
   } catch {
     // Fall back to bare name on PATH.
@@ -81,17 +92,92 @@ export function runCli(
   args: string[],
   opts?: { allowFailure?: boolean },
 ): string {
+  let invokedCommand = command;
+  let invokedArgs = args;
+  let windowsVerbatimArguments = false;
+
   try {
-    return execFileSync(command, args, {
+    if (process.platform === "win32") {
+      const resolvedCommand = WINDOWS_PATH_SEPARATOR.test(command)
+        ? command
+        : resolveWindowsPathCommand(command);
+      if (!resolvedCommand) {
+        throw cliBinaryNotFound(command);
+      }
+
+      if (WINDOWS_BATCH_EXTENSION.test(resolvedCommand)) {
+        invokedCommand = process.env.ComSpec ?? process.env.COMSPEC ?? "cmd.exe";
+        invokedArgs = windowsBatchArguments(resolvedCommand, args);
+        windowsVerbatimArguments = true;
+      } else if (WINDOWS_POWERSHELL_EXTENSION.test(resolvedCommand)) {
+        invokedCommand = "powershell.exe";
+        invokedArgs = [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          resolvedCommand,
+          ...args,
+        ];
+      } else {
+        invokedCommand = resolvedCommand;
+      }
+    }
+
+    return execFileSync(invokedCommand, invokedArgs, {
       encoding: "utf-8",
       stdio: ["pipe", "pipe", "pipe"],
+      ...(windowsVerbatimArguments ? { windowsVerbatimArguments: true } : {}),
     });
   } catch (err) {
     if (opts?.allowFailure) {
       return err instanceof Error && "stdout" in err ? String((err as { stdout?: string }).stdout ?? "") : "";
     }
+    if (process.platform === "win32" && isMissingBinaryError(err)) {
+      throw cliBinaryNotFound(command);
+    }
     throw err;
   }
+}
+
+/** Resolve the first non-empty `where.exe` match without leaking probe errors. */
+function resolveWindowsPathCommand(command: string): string | null {
+  try {
+    const output = execFileSync("where.exe", [command], {
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "ignore"],
+    });
+    return output
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .find(Boolean) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Build one quoted `cmd.exe /c` command string for an npm batch shim. Quoting
+ * every token keeps paths containing spaces intact; the additional outer pair
+ * is required by cmd.exe when the command itself begins with a quoted path.
+ */
+function windowsBatchArguments(command: string, args: string[]): string[] {
+  const commandLine = [command, ...args]
+    .map((value) => `"${value.replaceAll('"', '""')}"`)
+    .join(" ");
+  return ["/d", "/s", "/c", `"${commandLine}"`];
+}
+
+function isMissingBinaryError(error: unknown): boolean {
+  return error instanceof Error
+    && "code" in error
+    && (error as NodeJS.ErrnoException).code === "ENOENT";
+}
+
+function cliBinaryNotFound(command: string): Error {
+  return new Error(`CLI binary "${command}" was not found on PATH.`);
 }
 
 /** Remove a `[section]` block from hand-rolled TOML text. */
