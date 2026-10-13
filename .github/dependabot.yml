@@ -28,6 +28,10 @@ updates:
       - dependency-name: "commander"
         update-types:
           - version-update:semver-major
+      # better-sqlite3 13 requires Node >=22; hold at 12 while gnosys supports Node >=20.12.
+      - dependency-name: "better-sqlite3"
+        versions:
+          - ">=13"
     groups:
       production-minor-patch:
         dependency-type: production
