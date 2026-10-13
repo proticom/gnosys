@@ -147,6 +147,31 @@ program
     console.log(`Start adding memories with: gnosys add "your knowledge here"`);
   });
 
+// ─── gnosys project relocate | merge ─────────────────────────────────────
+const projectCmd = program
+  .command("project")
+  .description("Repair the project registry and central DB after a project folder moves");
+
+projectCmd
+  .command("relocate <oldPath> <newPath>")
+  .description("Point a moved project at its new folder (registry, central DB row, per-machine location). Dry run unless --yes")
+  .option("--yes", "Apply the changes (takes a SQLite backup first)")
+  .option("--json", "Output as JSON")
+  .action(async (oldPath: string, newPath: string, opts: { yes?: boolean; json?: boolean }) => {
+    const { runProjectRelocateCommand } = await import("../lib/projectRepairCommand.js");
+    await runProjectRelocateCommand(oldPath, newPath, opts);
+  });
+
+projectCmd
+  .command("merge <fromId> <intoId>")
+  .description("Move memories from a duplicate project into another project and drop the emptied row. Dry run unless --yes")
+  .option("--yes", "Apply the changes (takes a SQLite backup first)")
+  .option("--json", "Output as JSON")
+  .action(async (fromId: string, intoId: string, opts: { yes?: boolean; json?: boolean }) => {
+    const { runProjectMergeCommand } = await import("../lib/projectRepairCommand.js");
+    await runProjectMergeCommand(fromId, intoId, opts);
+  });
+
 // ─── gnosys migrate ─────────────────────────────────────────────────────
 program
   .command("migrate")

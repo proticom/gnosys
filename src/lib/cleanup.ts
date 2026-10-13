@@ -1,10 +1,15 @@
 /**
  * `gnosys cleanup` — remove stale entries from the project registry.
  *
- * Three categories:
- *   alive — directory still exists and has a `.gnosys/` subdir
- *   dead  — directory missing or no `.gnosys/` subdir
- *   temp  — path starts with /tmp, /private/tmp, /var/folders, /private/var/folders, or os.tmpdir()
+ * Categories:
+ *   alive — directory exists, has a `.gnosys/` subdir, and no other folder
+ *           holds the same projectId
+ *   moved — directory is alive, but another registered or discoverable
+ *           (central DB) folder holds the same projectId. Kept, never
+ *           auto-removed: the user picks the live copy with
+ *           `gnosys project relocate <old> <new>`.
+ *   dead  — directory missing (`missing`) or present without `.gnosys/`
+ *   temp  — path under /tmp, /private/tmp, /var/folders, or os.tmpdir()
  *
  * Interactive mode (default): print the categorized list, then prompt
  * `Remove N entries? [Y/n]` before writing.
@@ -13,70 +18,140 @@
  * `--dry-run` (or `interactive=false, yes=false`) just returns the diff
  * without writing.
  *
- * Implementation: read the registry via `getProjectRegistryPath()`, do
- * the classification, write back only the alive paths. The central DB
- * is untouched — its projects table is a separate concern and may
- * reasonably keep history for federated search.
+ * The registry is re-read and re-classified right before writing, and only
+ * entries that were shown as stale AND are still stale get dropped, so an
+ * edit made while the prompt was open is not overwritten. The central DB is
+ * read (never written) to find where each project currently lives.
  */
 
-import fs from "fs/promises";
 import fsSync from "fs";
 import path from "path";
 import { createInterface } from "readline/promises";
 import { stdin, stdout } from "process";
-import { getProjectRegistryPath, isTempProjectPath } from "./paths.js";
+import { getCentralDbPath, isTempProjectPath } from "./paths.js";
+import { readProjectIdAt, readRegistryEntries, writeRegistryEntries } from "./projectRegistry.js";
 import { safeQuestion } from "./setup/ui/safePrompt.js";
 import { nonInteractiveMessage } from "./interactiveGuard.js";
 import { Header } from "./setup/ui/header.js";
 import { Status } from "./setup/ui/status.js";
 import { c, color, glyph } from "./setup/ui/tokens.js";
 
-export interface ClassifiedRegistry {
-  alive: string[];
-  dead: string[];
-  temp: string[];
+/** Folders that hold the same projectId. */
+export interface MovedGroup {
+  projectId: string;
+  /** Registry entries first (file order), then discovered folders. */
+  paths: string[];
+  /** Where the central DB says this project lives, when that folder is in `paths`. */
+  dbPath: string | null;
 }
 
-function isAlive(p: string): boolean {
+export interface ClassifiedRegistry {
+  alive: string[];
+  moved: string[];
+  /** missing + present-without-.gnosys/ */
+  dead: string[];
+  /** Subset of `dead` whose folder does not exist at all. */
+  missing: string[];
+  temp: string[];
+  movedGroups: MovedGroup[];
+}
+
+function isDirectory(p: string): boolean {
   try {
-    const stat = fsSync.statSync(path.join(p, ".gnosys"));
-    return stat.isDirectory();
+    return fsSync.statSync(p).isDirectory();
   } catch {
     return false;
   }
 }
 
 /**
- * Read the registry and classify each entry. Missing registry → empty
- * categories (caller can treat as nothing-to-do).
+ * projectId → this machine's path for every project in the central DB.
+ * Opens the DB only when the file already exists, so classification never
+ * creates a database as a side effect.
  */
-export async function classifyRegistryEntries(): Promise<ClassifiedRegistry> {
-  const registryPath = getProjectRegistryPath();
-  let entries: string[] = [];
+export async function discoverDbProjectPaths(): Promise<Map<string, string>> {
+  const found = new Map<string, string>();
+  if (!fsSync.existsSync(getCentralDbPath())) return found;
+  const { GnosysDB } = await import("./db.js");
+  const { readMachineConfig } = await import("./machineConfig.js");
+  const { effectiveProjectPath } = await import("./projectPaths.js");
+  let db: InstanceType<typeof GnosysDB> | null = null;
   try {
-    const raw = await fs.readFile(registryPath, "utf-8");
-    const parsed = JSON.parse(raw) as unknown;
-    if (Array.isArray(parsed)) {
-      entries = parsed.filter((v): v is string => typeof v === "string");
+    db = GnosysDB.openCentral();
+    if (!db.isAvailable()) return found;
+    const machine = readMachineConfig();
+    for (const project of db.getAllProjects()) {
+      const p = effectiveProjectPath(db, project, machine);
+      if (p) found.set(project.id, path.resolve(p));
     }
   } catch {
-    // No registry — nothing to do.
-    return { alive: [], dead: [], temp: [] };
+    // Discovery is best-effort; registry-only classification still works.
+  } finally {
+    db?.close();
   }
+  return found;
+}
 
-  const alive: string[] = [];
-  const dead: string[] = [];
-  const temp: string[] = [];
+/** Classify an explicit list of registry entries. */
+export async function classifyEntries(
+  entries: string[],
+  dbPaths: Map<string, string>,
+): Promise<ClassifiedRegistry> {
+  const result: ClassifiedRegistry = { alive: [], moved: [], dead: [], missing: [], temp: [], movedGroups: [] };
+  const withStore: Array<{ entry: string; id: string | null }> = [];
   for (const e of entries) {
     if (isTempProjectPath(e)) {
-      temp.push(e);
-    } else if (isAlive(e)) {
-      alive.push(e);
+      result.temp.push(e);
+    } else if (!isDirectory(e)) {
+      result.dead.push(e);
+      result.missing.push(e);
+    } else if (!isDirectory(path.join(e, ".gnosys"))) {
+      result.dead.push(e);
     } else {
-      dead.push(e);
+      withStore.push({ entry: e, id: await readProjectIdAt(e) });
     }
   }
-  return { alive, dead, temp };
+
+  const pathsById = new Map<string, string[]>();
+  for (const { entry, id } of withStore) {
+    if (!id) continue;
+    const paths = pathsById.get(id) ?? [];
+    if (!paths.some((p) => path.resolve(p) === path.resolve(entry))) paths.push(entry);
+    pathsById.set(id, paths);
+  }
+  for (const [id, paths] of pathsById) {
+    const dbPath = dbPaths.get(id);
+    if (!dbPath || paths.some((p) => path.resolve(p) === dbPath)) continue;
+    if ((await readProjectIdAt(dbPath)) === id) paths.push(dbPath);
+  }
+
+  const movedIds = new Set<string>();
+  for (const [id, paths] of pathsById) {
+    if (paths.length < 2) continue;
+    movedIds.add(id);
+    const dbPath = dbPaths.get(id);
+    result.movedGroups.push({
+      projectId: id,
+      paths,
+      dbPath: dbPath && paths.some((p) => path.resolve(p) === dbPath) ? dbPath : null,
+    });
+  }
+  for (const { entry, id } of withStore) {
+    (id && movedIds.has(id) ? result.moved : result.alive).push(entry);
+  }
+  return result;
+}
+
+/**
+ * Read the registry and classify each entry. Missing registry → empty
+ * categories (caller can treat as nothing-to-do). `dbPaths` defaults to the
+ * central DB's view of where each project lives.
+ */
+export async function classifyRegistryEntries(
+  opts: { dbPaths?: Map<string, string> } = {},
+): Promise<ClassifiedRegistry> {
+  const dbPaths = opts.dbPaths ?? (await discoverDbProjectPaths());
+  return classifyEntries(await readRegistryEntries(), dbPaths);
 }
 
 export interface CleanupOptions {
@@ -90,15 +165,37 @@ export interface CleanupOptions {
   rl?: import("readline/promises").Interface;
 }
 
+/**
+ * Registry entries by category, as reported in `gnosys cleanup --json`.
+ * `moved` and `movedGroups` appear only when some folder shares a projectId
+ * with another, so the JSON for a registry without moves is unchanged.
+ */
+export interface RegistryEntries {
+  alive: string[];
+  dead: string[];
+  temp: string[];
+  moved?: string[];
+  movedGroups?: MovedGroup[];
+}
+
 export interface CleanupResult {
   /** Number of entries removed (dead + temp). */
   removed: number;
-  /** Number of entries kept (alive). */
+  /** Number of entries kept (alive + moved). */
   kept: number;
   /** True when the registry was actually rewritten. */
   wrote: boolean;
   /** Entries by category, before any write. */
-  entries: ClassifiedRegistry;
+  entries: RegistryEntries;
+}
+
+function toEntries(c: ClassifiedRegistry): RegistryEntries {
+  const entries: RegistryEntries = { alive: c.alive, dead: c.dead, temp: c.temp };
+  if (c.moved.length > 0) {
+    entries.moved = c.moved;
+    entries.movedGroups = c.movedGroups;
+  }
+  return entries;
 }
 
 function formatPath(p: string): string {
@@ -109,32 +206,54 @@ function formatPath(p: string): string {
   return p;
 }
 
+function printSection(title: string, note: string, paths: string[], mark: string): void {
+  if (paths.length === 0) return;
+  process.stdout.write(`\n ${color(c.text, title.padEnd(9))} ${color(c.textDim, `(${paths.length})${note ? ` — ${note}` : ""}`)}\n`);
+  for (const p of paths) {
+    process.stdout.write(`   ${mark}  ${color(c.textDim, formatPath(p))}\n`);
+  }
+}
+
+function printMovedGroups(groups: MovedGroup[]): void {
+  if (groups.length === 0) return;
+  const count = groups.reduce((n, g) => n + g.paths.length, 0);
+  process.stdout.write(`\n ${color(c.text, "moved".padEnd(9))} ${color(c.textDim, `(${groups.length} ${groups.length === 1 ? "project" : "projects"}, ${count} folders) — same projectId in more than one folder; kept`)}\n`);
+  for (const g of groups) {
+    process.stdout.write(`   ${color(c.warn, glyph.warn)}  ${color(c.textDim, g.projectId)}\n`);
+    for (const p of g.paths) {
+      const tag = p === g.dbPath ? "  (central DB location)" : "";
+      process.stdout.write(`        ${color(c.textDim, formatPath(p) + tag)}\n`);
+    }
+    const target = g.dbPath ?? "<new>";
+    const source = g.paths.find((p) => p !== g.dbPath) ?? "<old>";
+    process.stdout.write(`        ${color(c.textDim, `fix: gnosys project relocate "${source}" "${target}"`)}\n`);
+  }
+}
+
 function printCategorized(categorized: ClassifiedRegistry): void {
-  if (categorized.alive.length > 0) {
-    process.stdout.write(`\n ${color(c.text, "alive")}     ${color(c.textDim, `(${categorized.alive.length})`)}\n`);
-    for (const p of categorized.alive) {
-      process.stdout.write(`   ${color(c.ok, glyph.ok)}  ${color(c.textDim, formatPath(p))}\n`);
-    }
-  }
-  if (categorized.dead.length > 0) {
-    process.stdout.write(`\n ${color(c.text, "dead")}      ${color(c.textDim, `(${categorized.dead.length}) — no .gnosys/ directory`)}\n`);
-    for (const p of categorized.dead) {
-      process.stdout.write(`   ${color(c.fail, glyph.fail)}  ${color(c.textDim, formatPath(p))}\n`);
-    }
-  }
-  if (categorized.temp.length > 0) {
-    process.stdout.write(`\n ${color(c.text, "temp")}      ${color(c.textDim, `(${categorized.temp.length}) — under /tmp or /var/folders`)}\n`);
-    for (const p of categorized.temp) {
-      process.stdout.write(`   ${color(c.warn, glyph.warn)}  ${color(c.textDim, formatPath(p))}\n`);
-    }
-  }
+  printSection("alive", "", categorized.alive, color(c.ok, glyph.ok));
+  printMovedGroups(categorized.movedGroups);
+  const missing = new Set(categorized.missing);
+  printSection("missing", "folder does not exist", categorized.missing, color(c.fail, glyph.fail));
+  printSection("dead", "folder exists, no .gnosys/ directory", categorized.dead.filter((p) => !missing.has(p)), color(c.fail, glyph.fail));
+  printSection("temp", "under /tmp or /var/folders", categorized.temp, color(c.warn, glyph.warn));
   process.stdout.write("\n");
 }
 
-async function writeAlive(alivePaths: string[]): Promise<void> {
-  const registryPath = getProjectRegistryPath();
-  await fs.mkdir(path.dirname(registryPath), { recursive: true });
-  await fs.writeFile(registryPath, JSON.stringify(alivePaths, null, 2), "utf-8");
+/**
+ * Drop the confirmed stale entries that are still stale on a fresh read.
+ * Entries added, or repaired, since `confirmed` was computed survive.
+ */
+async function removeStillStale(
+  confirmed: Set<string>,
+  dbPaths: Map<string, string>,
+): Promise<{ removed: number; kept: number }> {
+  const entries = await readRegistryEntries();
+  const fresh = await classifyEntries(entries, dbPaths);
+  const stillStale = new Set([...fresh.dead, ...fresh.temp].filter((p) => confirmed.has(p)));
+  const kept = entries.filter((p) => !stillStale.has(p));
+  await writeRegistryEntries(kept);
+  return { removed: entries.length - kept.length, kept: kept.length };
 }
 
 /**
@@ -142,21 +261,34 @@ async function writeAlive(alivePaths: string[]): Promise<void> {
  * writes when `yes === true`, otherwise just returns the diff (dry run).
  */
 export async function cleanupRegistry(opts: CleanupOptions): Promise<CleanupResult> {
-  const categorized = await classifyRegistryEntries();
-  const toRemove = categorized.dead.length + categorized.temp.length;
+  const dbPaths = await discoverDbProjectPaths();
+  const categorized = await classifyRegistryEntries({ dbPaths });
+  const stale = [...categorized.dead, ...categorized.temp];
+  const toRemove = stale.length;
+  const keptCount = categorized.alive.length + categorized.moved.length;
+  const moved = categorized.moved.length;
+  const entries = toEntries(categorized);
 
   if (toRemove === 0) {
     if (opts.interactive) {
-      process.stdout.write(`${Status("ok", "project registry is already clean", `${categorized.alive.length} entries`)}\n`);
+      if (moved > 0) {
+        process.stdout.write(`${Status("warn", `${categorized.movedGroups.length} projects registered in more than one folder`, `${keptCount} entries`)}\n`);
+        printMovedGroups(categorized.movedGroups);
+        process.stdout.write("\n");
+      } else {
+        process.stdout.write(`${Status("ok", "project registry is already clean", `${keptCount} entries`)}\n`);
+      }
+    } else if (moved > 0 && !opts.yes && !opts.quiet) {
+      printCategorized(categorized);
     }
-    return { removed: 0, kept: categorized.alive.length, wrote: false, entries: categorized };
+    return { removed: 0, kept: keptCount, wrote: false, entries };
   }
 
   if (opts.interactive) {
-    if (!stdin.isTTY) throw new Error(nonInteractiveMessage("cleanup", "--yes or --dry-run"));
+    if (!opts.rl && !stdin.isTTY) throw new Error(nonInteractiveMessage("cleanup", "--yes or --dry-run"));
     process.stdout.write("\n");
     process.stdout.write(Header(["gnosys", "cleanup"]) + "\n\n");
-    process.stdout.write(`${Status("warn", `${toRemove} stale registry entries`, `${categorized.alive.length} alive`)}\n`);
+    process.stdout.write(`${Status("warn", `${toRemove} stale registry entries`, `${categorized.alive.length} alive · ${moved} moved`)}\n`);
     printCategorized(categorized);
 
     const ownsRl = !opts.rl;
@@ -167,20 +299,20 @@ export async function cleanupRegistry(opts: CleanupOptions): Promise<CleanupResu
         .toLowerCase();
       if (answer === "n" || answer === "no") {
         process.stdout.write(`${Status("warn", "registry left unchanged")}\n`);
-        return { removed: 0, kept: categorized.alive.length, wrote: false, entries: categorized };
+        return { removed: 0, kept: keptCount, wrote: false, entries };
       }
     } finally {
       if (ownsRl) rl.close();
     }
   } else if (!opts.yes) {
     // Dry-run.
-    if (toRemove > 0 && !opts.quiet) printCategorized(categorized);
-    return { removed: toRemove, kept: categorized.alive.length, wrote: false, entries: categorized };
+    if (!opts.quiet) printCategorized(categorized);
+    return { removed: toRemove, kept: keptCount, wrote: false, entries };
   }
 
-  await writeAlive(categorized.alive);
+  const written = await removeStillStale(new Set(stale), dbPaths);
   if (opts.interactive) {
-    process.stdout.write(`${Status("ok", `removed ${toRemove} entries`, `${categorized.alive.length} kept`)}\n`);
+    process.stdout.write(`${Status("ok", `removed ${written.removed} entries`, `${written.kept} kept`)}\n`);
   }
-  return { removed: toRemove, kept: categorized.alive.length, wrote: true, entries: categorized };
+  return { ...written, wrote: true, entries };
 }

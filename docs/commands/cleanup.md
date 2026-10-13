@@ -25,11 +25,15 @@ Each registered path is classified as:
 
 | Category | Meaning |
 |----------|---------|
-| **alive** | Directory exists and contains `.gnosys/` |
-| **dead** | Directory missing, or exists without `.gnosys/` |
+| **alive** | Directory exists, contains `.gnosys/`, and no other folder holds the same projectId |
+| **moved** | Directory is alive, but another registered folder, or the folder the central DB points at, holds the same projectId |
+| **missing** | Directory does not exist (a kind of dead entry) |
+| **dead** | Directory exists without `.gnosys/` |
 | **temp** | Path under `/tmp`, `/private/tmp`, `/var/folders`, or the OS temp directory |
 
-Only **dead** and **temp** entries are candidates for removal. **Alive** entries are always kept.
+Only **missing**, **dead**, and **temp** entries are candidates for removal. **Alive** and **moved** entries are always kept. For each moved project, cleanup prints the folders and a `gnosys project relocate <old> <new>` command. `gnosys setup sync-projects` skips moved folders, so it does not write agent files into a stale copy.
+
+Before it writes, cleanup reads and classifies the registry again. It removes only entries that were shown as stale and are still stale, so an edit made while the prompt was open is kept.
 
 ## Behavior
 
@@ -59,7 +63,7 @@ Removes dead/temp entries immediately and prints JSON with the cleanup result.
 
 ## Output
 
-With `--yes` or `--dry-run`, output is JSON including counts of removed and kept entries.
+With `--yes` or `--dry-run`, output is JSON including counts of removed and kept entries, and `entries` by category (`alive`, `dead`, `temp`). When some folders share a projectId, `entries` also has `moved` (the registry paths) and `movedGroups` (`projectId`, all `paths`, and the central DB's `dbPath` when it is one of them).
 
 Interactive mode prints a human-readable classification summary before prompting.
 
@@ -96,4 +100,5 @@ node scripts/audit-commands.mjs --write
 
 - `gnosys setup sync-projects` — refresh registry and agent rules after upgrades.
 - `gnosys projects` — list registered projects.
+- `gnosys project relocate` — point a moved project at its new folder.
 - `gnosys init` — register a new project.

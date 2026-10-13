@@ -29,7 +29,7 @@ gnosys setup sync-projects --yes --json
    - Configures IDE hooks for automatic memory recall
 4. Updates global agent rules.
 5. Stamps central DB metadata (app version, last upgrade, machine list).
-6. Reports upgraded, skipped, and failed projects.
+6. Reports upgraded, skipped, moved, and failed projects. A **moved** folder shares its projectId with another registered folder (or with the folder the central DB points at). Moved folders are not synced; run `gnosys project relocate <old> <new>` to keep one.
 7. When skipped projects exist: `--yes` removes the stale registry entries; on a terminal (stdin and stdout) without `--yes` it prompts; otherwise it leaves the registry unchanged.
 8. Unless `--skip-dashboard`, regenerates portfolio dashboard HTML and Markdown.
 
@@ -58,6 +58,7 @@ When skipped entries exist:
   "total": 3,
   "upgraded": ["/work/app"],
   "skipped": ["/old/project"],
+  "moved": [],
   "failed": [],
   "tempPruned": 0,
   "globalRules": "updated",

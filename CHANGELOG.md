@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+<<<<<<< HEAD
+### Added
+
+- `gnosys project relocate <oldPath> <newPath>` points a moved project at its
+  new folder: registry, central DB row, this machine's location, and the
+  folder's `gnosys.json`. Dry run unless `--yes`; takes a SQLite backup first.
+- `gnosys project merge <fromId> <intoId>` moves a duplicate project's
+  memories and pending adds into another project and drops the emptied row.
+=======
 ### Upgrade notes
 
 - `gnosys upgrade --yes` changed meaning. It used to skip the post-upgrade
@@ -43,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   stdin and stdout are terminals. It used to check stdout only.
 - `gnosys web init` only prompts when stdin is a terminal too.
 - The `.env` loader in the CLI never sets `GNOSYS_ALLOW_MEMORY_DELETE`.
+>>>>>>> 543ba3ed883df5426d2ffc35174dfde22ea8d519
 
 ### Fixed
 
@@ -55,6 +65,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   are read back and verified before setup reports success.
 - **Windows npm install.** The optional postinstall hook no longer relies on
   the POSIX-only `true` command.
+- `gnosys cleanup` and `gnosys setup sync-projects` now detect registry
+  folders that share a projectId with another folder ("moved"). Cleanup keeps
+  them and prints the relocate command. Sync-projects skips them, so it no
+  longer writes agent files into the stale copy of a moved project.
+- `gnosys cleanup` labels a missing folder "folder does not exist" instead of
+  "no .gnosys/ directory".
+- Interactive `gnosys cleanup` re-reads the registry before it writes, so an
+  edit made while the prompt was open is not overwritten.
 
 ## [6.3.1] - 2026-10-09
 

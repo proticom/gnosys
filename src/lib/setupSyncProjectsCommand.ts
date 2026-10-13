@@ -20,6 +20,8 @@ export interface SyncProjectsResult {
   total: number;
   upgraded: string[];
   skipped: string[];
+  /** Folders sharing a projectId with another folder; not synced. */
+  moved: string[];
   failed: Array<{ path: string; error: string }>;
   tempPruned: number;
   globalRules: "updated" | "failed" | "unavailable";
@@ -47,6 +49,7 @@ export async function runSetupSyncProjectsCommand(
     renderUpgradedSection,
     renderSkippedSection,
     renderFailedSection,
+    renderMovedSection,
     renderMachinesSection,
     renderDivider,
     renderDoneLine,
@@ -131,6 +134,7 @@ export async function runSetupSyncProjectsCommand(
     total: projects.length,
     upgraded: [],
     skipped: [],
+    moved: [],
     failed: [],
     tempPruned: droppedTemp,
     globalRules: "unavailable",
@@ -157,11 +161,21 @@ export async function runSetupSyncProjectsCommand(
     // non-critical
   }
 
+  // Folders sharing a projectId with another folder are left alone:
+  // syncing both flips the central DB row between them and writes agent
+  // files into the stale copy. `gnosys project relocate` resolves them.
+  const { classifyEntries, discoverDbProjectPaths } = await import("./cleanup.js");
+  const movedSet = new Set((await classifyEntries(projects, await discoverDbProjectPaths())).moved);
+
   // 2. Iterate and upgrade each project that exists on this machine
-  const { upgraded, skipped, failed } = result;
+  const { upgraded, skipped, moved, failed } = result;
 
   for (const projectDir of projects) {
     // Temp/test directories were already filtered out of `projects`.
+    if (movedSet.has(projectDir)) {
+      moved.push(projectDir);
+      continue;
+    }
     const storePath = path.join(projectDir, ".gnosys");
     try {
       await fs.stat(storePath);
@@ -216,7 +230,7 @@ export async function runSetupSyncProjectsCommand(
   // before any per-section output so the cursor is on a fresh line.
   syncSpinner?.ok(
     `synced ${projects.length} registered projects`,
-    `${upgraded.length} upgraded · ${skipped.length} skipped · ${failed.length} failed` +
+    `${upgraded.length} upgraded · ${skipped.length} skipped · ${moved.length} moved · ${failed.length} failed` +
       (droppedTemp > 0 ? ` · ${droppedTemp} temp entries pruned` : ""),
   );
 
@@ -280,6 +294,7 @@ export async function runSetupSyncProjectsCommand(
   }
   const upgradedRows = upgraded.map(rowFor);
   const skippedRows = skipped.map(rowFor);
+  const movedRows = moved.map(rowFor);
   const failedRows = failed.map((f) => ({
     title: titleByDir.get(f.path) ?? path.basename(f.path),
     fullPath: `${f.path} (${f.error})`,
@@ -287,10 +302,14 @@ export async function runSetupSyncProjectsCommand(
 
   say();
   for (const line of renderUpgradedSection(upgradedRows)) say(line);
-  if (upgradedRows.length > 0 && (skippedRows.length > 0 || failedRows.length > 0)) {
+  if (upgradedRows.length > 0 && (skippedRows.length > 0 || movedRows.length > 0 || failedRows.length > 0)) {
     say();
   }
   for (const line of renderSkippedSection(skippedRows)) say(line);
+  if (movedRows.length > 0) {
+    if (skippedRows.length > 0) say();
+    for (const line of renderMovedSection(movedRows)) say(line);
+  }
   if (failedRows.length > 0) {
     say();
     for (const line of renderFailedSection(failedRows)) say(line);
@@ -332,9 +351,10 @@ export async function runSetupSyncProjectsCommand(
   say();
   say(renderDoneLine(currentVersion));
 
-  if (skippedRows.length > 0) {
+  if (skippedRows.length > 0 || movedRows.length > 0) {
     // Stale registry entries: --yes removes them (the prompt's default);
     // a terminal user gets the prompt; otherwise leave the registry alone.
+    // Moved entries are always kept; the prompt lists their relocate fix.
     say();
     const { printStatus } = await import("./setup/ui/status.js");
     const canPrompt = !json && Boolean(process.stdin.isTTY && process.stdout.isTTY);

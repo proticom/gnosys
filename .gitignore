@@ -23,3 +23,4 @@ rules/
 # project-status-dashboard skill outputs
 project-status-dashboard.html
 project-status-dashboard.data.json
+.test-project-relocate/
