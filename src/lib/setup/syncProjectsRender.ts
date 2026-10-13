@@ -101,6 +101,20 @@ export function renderSkippedSection(rows: ProjectRow[]): string[] {
 }
 
 /**
+ * Render the "moved N projects" section: registry folders that share a
+ * projectId with another folder. They are not synced, so agent files stop
+ * landing in a stale copy. Returns [] when empty.
+ */
+export function renderMovedSection(rows: ProjectRow[]): string[] {
+  if (rows.length === 0) return [];
+  const lines: string[] = [];
+  lines.push(` ${color(c.text, `moved      ${rows.length} folders`)} ${color(c.textDim, "· same projectId in another folder, not synced")}`);
+  lines.push(...renderProjectRows("skip", rows));
+  lines.push(`   ${color(c.textDim, "fix: gnosys project relocate <old> <new>  (gnosys cleanup lists the pairs)")}`);
+  return lines;
+}
+
+/**
  * Render the "failed N projects" section. Renders all rows (no "more"
  * collapse) since failures matter.
  */

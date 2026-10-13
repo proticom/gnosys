@@ -1309,6 +1309,35 @@ export class GnosysDB {
     });
   }
 
+  /** Rows that reference a projectId, for `gnosys project merge` plans. */
+  countProjectReferences(projectId: string): { memories: number; pendingAdds: number; locations: number } {
+    return this.withRecovery(() => {
+      const count = (sql: string): number => (this.db.prepare(sql).get(projectId) as { n: number }).n;
+      return {
+        memories: count("SELECT COUNT(*) AS n FROM memories WHERE project_id = ?"),
+        pendingAdds: count("SELECT COUNT(*) AS n FROM sync_pending_adds WHERE project_id = ?"),
+        locations: count("SELECT COUNT(*) AS n FROM project_locations WHERE project_id = ?"),
+      };
+    });
+  }
+
+  /**
+   * Move every memory and pending add from one project to another, then
+   * drop the source project's row and per-machine locations. One
+   * transaction, so a crash leaves either the old or the new state.
+   */
+  mergeProjectInto(fromId: string, intoId: string): { memories: number; pendingAdds: number } {
+    return this.withRecovery(() =>
+      this.db.transaction(() => {
+        const memories = this.db.prepare("UPDATE memories SET project_id = ? WHERE project_id = ?").run(intoId, fromId).changes as number;
+        const pendingAdds = this.db.prepare("UPDATE sync_pending_adds SET project_id = ? WHERE project_id = ?").run(intoId, fromId).changes as number;
+        this.db.prepare("DELETE FROM project_locations WHERE project_id = ?").run(fromId);
+        this.db.prepare("DELETE FROM projects WHERE id = ?").run(fromId);
+        return { memories, pendingAdds };
+      })(),
+    );
+  }
+
   /**
    * Generate the next sequential ID for a category.
    * Format (v5.4.1+): first 4 chars of category + dash + ULID

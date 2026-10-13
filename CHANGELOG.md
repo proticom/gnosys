@@ -5,6 +5,27 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `gnosys project relocate <oldPath> <newPath>` points a moved project at its
+  new folder: registry, central DB row, this machine's location, and the
+  folder's `gnosys.json`. Dry run unless `--yes`; takes a SQLite backup first.
+- `gnosys project merge <fromId> <intoId>` moves a duplicate project's
+  memories and pending adds into another project and drops the emptied row.
+
+### Fixed
+
+- `gnosys cleanup` and `gnosys setup sync-projects` now detect registry
+  folders that share a projectId with another folder ("moved"). Cleanup keeps
+  them and prints the relocate command. Sync-projects skips them, so it no
+  longer writes agent files into the stale copy of a moved project.
+- `gnosys cleanup` labels a missing folder "folder does not exist" instead of
+  "no .gnosys/ directory".
+- Interactive `gnosys cleanup` re-reads the registry before it writes, so an
+  edit made while the prompt was open is not overwritten.
+
 ## [6.3.1] - 2026-10-09
 
 ### Upgrade notes

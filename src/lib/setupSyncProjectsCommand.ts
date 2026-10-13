@@ -29,6 +29,7 @@ export async function runSetupSyncProjectsCommand(
     renderUpgradedSection,
     renderSkippedSection,
     renderFailedSection,
+    renderMovedSection,
     renderMachinesSection,
     renderDivider,
     renderDoneLine,
@@ -121,13 +122,24 @@ export async function runSetupSyncProjectsCommand(
     // non-critical
   }
 
+  // Folders sharing a projectId with another folder are left alone:
+  // syncing both flips the central DB row between them and writes agent
+  // files into the stale copy. `gnosys project relocate` resolves them.
+  const { classifyEntries, discoverDbProjectPaths } = await import("./cleanup.js");
+  const movedSet = new Set((await classifyEntries(projects, await discoverDbProjectPaths())).moved);
+
   // 2. Iterate and upgrade each project that exists on this machine
   const upgraded: string[] = [];
   const skipped: string[] = [];
+  const moved: string[] = [];
   const failed: string[] = [];
 
   for (const projectDir of projects) {
     // Temp/test directories were already filtered out of `projects`.
+    if (movedSet.has(projectDir)) {
+      moved.push(projectDir);
+      continue;
+    }
     const storePath = path.join(projectDir, ".gnosys");
     try {
       await fs.stat(storePath);
@@ -182,7 +194,7 @@ export async function runSetupSyncProjectsCommand(
   // before any per-section output so the cursor is on a fresh line.
   syncSpinner.ok(
     `synced ${projects.length} registered projects`,
-    `${upgraded.length} upgraded · ${skipped.length} skipped · ${failed.length} failed` +
+    `${upgraded.length} upgraded · ${skipped.length} skipped · ${moved.length} moved · ${failed.length} failed` +
       (droppedTemp > 0 ? ` · ${droppedTemp} temp entries pruned` : ""),
   );
 
@@ -244,6 +256,7 @@ export async function runSetupSyncProjectsCommand(
   }
   const upgradedRows = upgraded.map(rowFor);
   const skippedRows = skipped.map(rowFor);
+  const movedRows = moved.map(rowFor);
   const failedRows = failed.map((f) => {
     // failed entries are "<path> (<err>)" — extract path for the title.
     const match = f.match(/^(.+?)\s\((.+)\)$/);
@@ -253,10 +266,14 @@ export async function runSetupSyncProjectsCommand(
 
   console.log("");
   for (const line of renderUpgradedSection(upgradedRows)) console.log(line);
-  if (upgradedRows.length > 0 && (skippedRows.length > 0 || failedRows.length > 0)) {
+  if (upgradedRows.length > 0 && (skippedRows.length > 0 || movedRows.length > 0 || failedRows.length > 0)) {
     console.log("");
   }
   for (const line of renderSkippedSection(skippedRows)) console.log(line);
+  if (movedRows.length > 0) {
+    if (skippedRows.length > 0) console.log("");
+    for (const line of renderMovedSection(movedRows)) console.log(line);
+  }
   if (failedRows.length > 0) {
     console.log("");
     for (const line of renderFailedSection(failedRows)) console.log(line);
@@ -298,7 +315,7 @@ export async function runSetupSyncProjectsCommand(
   console.log("");
   console.log(renderDoneLine(currentVersion));
 
-  if (skippedRows.length > 0) {
+  if (skippedRows.length > 0 || movedRows.length > 0) {
     // v5.9.3 Phase H: offer one-keystroke cleanup. Stays interactive
     // by default; users on a TTY get the prompt, non-TTY runs silently
     // (sync-projects is sometimes invoked from CI).

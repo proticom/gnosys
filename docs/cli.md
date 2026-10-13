@@ -90,6 +90,18 @@ Review and clean up user-scope preferences (incl. legacy imports)
 
 Initialize Gnosys in the current directory (project store, identity, central DB). Wire IDE MCP servers with: gnosys setup ides
 
+## `gnosys project`
+
+Repair the project registry and central DB after a project folder moves
+
+## `gnosys relocate <oldPath> <newPath>`
+
+Point a moved project at its new folder (registry, central DB row, per-machine location). Dry run unless --yes
+
+## `gnosys merge <fromId> <intoId>`
+
+Move memories from a duplicate project into another project and drop the emptied row. Dry run unless --yes
+
 ## `gnosys migrate`
 
 Interactively migrate a .gnosys/ store to a new directory. Moves files, updates project name/paths, syncs to central DB, and cleans up.
