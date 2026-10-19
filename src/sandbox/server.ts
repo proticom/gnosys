@@ -6,7 +6,7 @@
  *
  * Phase 9b: Integrates Dream Mode (idle-triggered), preferences, and sync.
  *
- * No Docker. No external deps. Just Node + better-sqlite3.
+ * No Docker. No external deps. Just Node + node:sqlite.
  */
 
 import net from "net";
@@ -683,7 +683,7 @@ export function startServer(dbPath?: string): net.Server {
   const db = new GnosysDB(dbDir, isNetworkPath ? { retries: 5, retryDelayMs: 1000 } : undefined);
 
   if (!db.isAvailable()) {
-    logError(new Error("Failed to open GnosysDB"), { module: "sandbox", op: "openDb", hint: "Install it with: npm install better-sqlite3" });
+    logError(new Error("Failed to open GnosysDB"), { module: "sandbox", op: "openDb", hint: "Requires node:sqlite (Node ^22.16.0 || >=24.0.0)" });
     if (isNetworkPath) {
       logWarn(`Network path "${dbDir}" may be unavailable`, { module: "sandbox", dbDir });
     }

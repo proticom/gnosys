@@ -153,7 +153,7 @@ try {
     }
     previousPicked = picked;
   }
-  assert.deepEqual(db.db.pragma("integrity_check"), [{ integrity_check: "ok" }]);
+  assert.deepEqual(db.db.prepare("PRAGMA integrity_check").all(), [{ integrity_check: "ok" }]);
 } finally {
   db.close();
 }

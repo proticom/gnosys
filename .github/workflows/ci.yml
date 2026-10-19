@@ -18,15 +18,14 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        # Node native-addon cleanup regression: https://github.com/nodejs/node/pull/65042
-        node-version: [20, 22, "24.18.1"]
+        node-version: ["22.16.0", "22.x", "24.x"]
         exclude:
-          # macOS Node 20 truncates `gnosys --help` mid-output when stdout is a
-          # pipe (Node 20.x macOS stdout-flush-on-exit quirk). Affects only
-          # piped capture; interactive use is fine. Track separately; re-enable
-          # once on Node 22+ or when the stdout-flush bug is patched upstream.
+          # macOS Node 22.16.0 (and 24.0.0) truncate piped stdout at ~8 KB on exit, so
+          # `gnosys --help` captured via a pipe is cut off. Pre-existing Node bug, not
+          # SQLite-related: released gnosys 6.3.1 shows the same truncation. Fixed by 22.17.0.
+          # The floor stays covered on ubuntu; macOS runs 22.x and 24.x.
           - os: macos-latest
-            node-version: 20
+            node-version: "22.16.0"
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -38,9 +37,8 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: |
-          npm ci --omit=optional
-          npm install better-sqlite3@^11.7.0 --no-save --no-audit --no-fund
+        # Optional deps (@huggingface/transformers) are needed for tsc types; master got them implicitly via the old better-sqlite3 install step.
+        run: npm ci
 
       - name: Audit dependencies
         run: npm audit --audit-level=high
@@ -55,7 +53,7 @@ jobs:
         run: npm test
 
       - name: Run tests with coverage
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '24.18.1'
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '24.x'
         run: npm run test:coverage
 
       # v5.13.0: !cancelled() on the reporting/guardrail steps — vitest
@@ -64,7 +62,7 @@ jobs:
       # when the gate fails (previously they were skipped, hiding the
       # actionable message).
       - name: Upload coverage report
-        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.node-version == '24.18.1' }}
+        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.node-version == '24.x' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-report
@@ -72,7 +70,7 @@ jobs:
           retention-days: 14
 
       - name: Check coverage thresholds
-        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.node-version == '24.18.1' }}
+        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.node-version == '24.x' }}
         run: |
           if [ -f coverage/coverage-summary.json ]; then
             echo "Coverage summary:"
@@ -92,7 +90,7 @@ jobs:
       # failures (new modules without tests dropping the global average
       # under the 50% threshold).
       - name: Check coverage of newly-added files
-        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.node-version == '24.18.1' }}
+        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.node-version == '24.x' }}
         run: |
           git fetch --no-tags --unshallow origin +refs/heads/master:refs/remotes/origin/master
           COVERAGE_BASE_REF=origin/master node scripts/check-new-file-coverage.mjs

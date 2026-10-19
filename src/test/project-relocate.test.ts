@@ -13,7 +13,7 @@ import { execFileSync } from "child_process";
 import fs from "fs";
 import os from "os";
 import path from "path";
-import Database from "better-sqlite3";
+import { DatabaseSync as Database, type SQLInputValue } from "node:sqlite";
 import { GnosysDB } from "../lib/db.js";
 import { makeMemory, makeProject, extractJson } from "./_helpers.js";
 
@@ -90,8 +90,8 @@ function seedDb(fn: (db: GnosysDB) => void): void {
   }
 }
 
-function query<T>(sql: string, ...params: unknown[]): T[] {
-  const db = new Database(path.join(home, "gnosys.db"), { readonly: true });
+function query<T>(sql: string, ...params: SQLInputValue[]): T[] {
+  const db = new Database(path.join(home, "gnosys.db"), { readOnly: true });
   try {
     return db.prepare(sql).all(...params) as T[];
   } finally {
@@ -152,7 +152,7 @@ describe("gnosys project relocate", () => {
 
     const backupPath = json.backupPath as string;
     expect(path.dirname(backupPath)).toBe(path.join(home, "backups"));
-    const backup = new Database(backupPath, { readonly: true });
+    const backup = new Database(backupPath, { readOnly: true });
     try {
       expect(backup.prepare("SELECT working_directory FROM projects WHERE id = 'proj-p'").get()).toEqual({ working_directory: oldDir });
     } finally {

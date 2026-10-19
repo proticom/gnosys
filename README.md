@@ -24,19 +24,14 @@ The central brain is a single SQLite database at `~/.gnosys/gnosys.db` with sub-
 
 ## Install
 
-> **Requires Node.js ≥ 20.12.**
-
-Use Node 22 for now. Node 24.19.0 through 24.21.0 contain an
-[upstream native-addon cleanup regression](https://github.com/nodejs/node/issues/65446)
-that can crash SQLite. After switching Node versions, reinstall Gnosys to rebuild
-its native dependencies. CI uses Node 24.18.1 while the upstream fix is pending.
+> **Requires Node.js ^22.16.0 || >=24.0.0.** FTS5 requires this floor. Node 23.x is unsupported. SQLite uses built-in `node:sqlite`. No native SQLite dependency or rebuild is needed when switching supported Node versions.
 
 ```bash
 npm install -g gnosys
 gnosys setup          # configures provider, API key, and your IDE/agent
 ```
 
-> **Optional native deps.** Gnosys auto-installs **better-sqlite3** (the SQLite engine) and **@huggingface/transformers** (local embeddings). If your environment lacks build tools and either fails to install, run `npm install better-sqlite3 @huggingface/transformers` — or configure an external embedding API. Both degrade gracefully if absent.
+> **Optional local embeddings.** Gnosys auto-installs **@huggingface/transformers**. If it cannot install, use an external embedding API. SQLite does not need this package.
 
 ## Quick start
 

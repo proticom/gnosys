@@ -1,14 +1,16 @@
+import { prepare } from "./sqliteStatement.js";
+import { transaction } from "./sqliteTransaction.js";
 /**
  * Gnosys Search — SQLite FTS5 keyword index for fast text search.
  * FTS5-based search and discovery across all Gnosys stores.
  */
 
-// Dynamic import — gracefully handles missing native module (dlopen failures)
-let Database: any = null;
+// Dynamic import keeps database features unavailable on unsupported Node versions.
+let Database: typeof import("node:sqlite").DatabaseSync | null = null;
 try {
-  Database = (await import("better-sqlite3")).default;
+  Database = (await import("node:sqlite")).DatabaseSync;
 } catch {
-  // better-sqlite3 native module not available — search degrades gracefully
+  // node:sqlite unavailable — search degrades gracefully
 }
 import path from "path";
 import type { GnosysStore } from "./store.js";
@@ -46,7 +48,7 @@ export class GnosysSearch {
     try {
       const dbPath = path.join(storePath, ".config", "search.db");
       this.db = new Database(dbPath);
-      this.db.pragma("busy_timeout = 5000");
+      this.db.exec("PRAGMA busy_timeout = 5000");
       this.initSchema();
       // Smoke-test: insert + delete to confirm journal ops work
       this.db.exec(
@@ -104,12 +106,12 @@ export class GnosysSearch {
     if (!this.db) return 0;
     const memories = await store.getAllMemories();
 
-    const deletePath = this.db.prepare("DELETE FROM memories_fts WHERE relative_path = ?");
-    const insert = this.db.prepare(
+    const deletePath = prepare(this.db, "DELETE FROM memories_fts WHERE relative_path = ?");
+    const insert = prepare(this.db, 
       "INSERT INTO memories_fts (relative_path, title, category, tags, relevance, content) VALUES (?, ?, ?, ?, ?, ?)"
     );
 
-    const tx = this.db.transaction(() => {
+    transaction(this.db, () => {
       for (const m of memories) {
         const tags = Array.isArray(m.frontmatter.tags)
           ? m.frontmatter.tags.join(" ")
@@ -138,7 +140,6 @@ export class GnosysSearch {
       }
     });
 
-    tx();
     return memories.length;
   }
 
@@ -149,12 +150,12 @@ export class GnosysSearch {
   addDbMemories(memories: Array<{ id: string; title: string; category: string; tags: string; relevance: string | null; content: string } & Partial<SearchMemoryMetadata>>, storeLabel?: string): number {
     if (!this.db) return 0;
 
-    const deletePath = this.db.prepare("DELETE FROM memories_fts WHERE relative_path = ?");
-    const insert = this.db.prepare(
+    const deletePath = prepare(this.db, "DELETE FROM memories_fts WHERE relative_path = ?");
+    const insert = prepare(this.db, 
       "INSERT INTO memories_fts (relative_path, title, category, tags, relevance, content) VALUES (?, ?, ?, ?, ?, ?)"
     );
 
-    const tx = this.db.transaction(() => {
+    transaction(this.db, () => {
       for (const m of memories) {
         // Parse tags — could be JSON array or JSON object
         let tagsStr = m.tags || "";
@@ -189,7 +190,6 @@ export class GnosysSearch {
       }
     });
 
-    tx();
     return memories.length;
   }
 
@@ -199,7 +199,7 @@ export class GnosysSearch {
   }
 
   private indexMetadata(relativePath: string, id: string, metadata: SearchMemoryMetadata): void {
-    this.db.prepare("INSERT OR REPLACE INTO search_metadata VALUES (?, ?, ?, ?, ?, ?)")
+    prepare(this.db, "INSERT OR REPLACE INTO search_metadata VALUES (?, ?, ?, ?, ?, ?)")
       .run(relativePath, id, metadata.status, metadata.tier, metadata.modified, metadata.superseded_by);
   }
 
@@ -209,7 +209,7 @@ export class GnosysSearch {
       results, limit, key: (result) => result.relative_path,
       replacement: (result) => {
         if (!result.superseded_by) return null;
-        const next = this.db.prepare(`
+        const next = prepare(this.db, `
           SELECT f.relative_path, m.id AS memoryId, f.title, f.relevance, substr(f.content, 1, 200) AS snippet,
                  m.status, m.tier, m.modified, m.superseded_by
           FROM memories_fts f JOIN search_metadata m ON m.relative_path = f.relative_path
@@ -230,7 +230,7 @@ export class GnosysSearch {
     const terms = ftsTerms(query);
     if (terms.length === 0) return [];
 
-    const stmt = this.db.prepare(`
+    const stmt = prepare(this.db, `
       SELECT
         memories_fts.relative_path,
         title,
@@ -251,7 +251,7 @@ export class GnosysSearch {
       return this.rankResults(stmt.all(ftsOrQuery(terms), candidateLimit) as SearchResult[], limit, activeOnly);
     } catch {
       // If FTS5 query fails, fall back to simple LIKE search
-      const likeStmt = this.db.prepare(`
+      const likeStmt = prepare(this.db, `
         SELECT
           memories_fts.relative_path,
           title,
@@ -283,7 +283,7 @@ export class GnosysSearch {
 
     // Search primarily on relevance + title + tags (not content body)
     // FTS5 column filter: {relevance title tags}
-    const stmt = this.db.prepare(`
+    const stmt = prepare(this.db, `
       SELECT
         memories_fts.relative_path,
         title,
@@ -326,6 +326,6 @@ export class GnosysSearch {
   }
 
   close(): void {
-    this.db?.close();
+    if (this.db?.isOpen) this.db.close();
   }
 }

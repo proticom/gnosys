@@ -1,8 +1,10 @@
+import { prepare } from "./sqliteStatement.js";
+import { transaction } from "./sqliteTransaction.js";
 /**
  * Gnosys Archive — Two-Tier Memory (Active + Archive).
  *
  * Active layer: .gnosys/<category>/*.md (atomic markdown with YAML frontmatter)
- * Archive layer: .gnosys/archive.db (SQLite — reuses existing better-sqlite3)
+ * Archive layer: .gnosys/archive.db (SQLite — reuses existing node:sqlite)
  *
  * Bidirectional flow:
  *   maintain → moves old/low-confidence memories from active → archive.db
@@ -10,12 +12,12 @@
  *                then dearchives used memories back to active
  */
 
-// Dynamic import — gracefully handles missing native module
-let Database: any = null;
+// Dynamic import keeps database features unavailable on unsupported Node versions.
+let Database: typeof import("node:sqlite").DatabaseSync | null = null;
 try {
-  Database = (await import("better-sqlite3")).default;
+  Database = (await import("node:sqlite")).DatabaseSync;
 } catch {
-  // better-sqlite3 native module not available — archive degrades gracefully
+  // node:sqlite unavailable — archive degrades gracefully
 }
 
 import path from "path";
@@ -115,9 +117,9 @@ export class GnosysArchive {
       );
     `);
 
-    const healed = this.db.prepare("SELECT 1 FROM archive_meta WHERE key = 'fts_consistency_v1'");
+    const healed = prepare(this.db, "SELECT 1 FROM archive_meta WHERE key = 'fts_consistency_v1'");
     if (healed.get()) return;
-    const heal = this.db.transaction(() => {
+    transaction(this.db, () => {
       if (healed.get()) return;
       this.db.exec(`
         DELETE FROM archive_fts;
@@ -125,12 +127,11 @@ export class GnosysArchive {
           SELECT id, title, tags, content FROM archived_memories;
         INSERT INTO archive_meta (key, value) VALUES ('fts_consistency_v1', '1');
       `);
-    });
-    heal.immediate();
+    }, "immediate");
   }
 
   /**
-   * Whether the archive is available (better-sqlite3 loaded + DB opened).
+   * Whether the archive is available (node:sqlite loaded + DB opened).
    */
   isAvailable(): boolean {
     return this.available;
@@ -144,9 +145,9 @@ export class GnosysArchive {
       return { totalArchived: 0, dbSizeMB: 0, oldestArchived: null, newestArchived: null };
     }
 
-    const count = this.db.prepare("SELECT COUNT(*) as cnt FROM archived_memories").get() as { cnt: number };
-    const oldest = this.db.prepare("SELECT MIN(archived_date) as d FROM archived_memories").get() as { d: string | null };
-    const newest = this.db.prepare("SELECT MAX(archived_date) as d FROM archived_memories").get() as { d: string | null };
+    const count = prepare(this.db, "SELECT COUNT(*) as cnt FROM archived_memories").get() as { cnt: number };
+    const oldest = prepare(this.db, "SELECT MIN(archived_date) as d FROM archived_memories").get() as { d: string | null };
+    const newest = prepare(this.db, "SELECT MAX(archived_date) as d FROM archived_memories").get() as { d: string | null };
 
     let dbSizeMB = 0;
     try {
@@ -183,20 +184,20 @@ export class GnosysArchive {
     // Serialize full frontmatter as YAML for lossless restoration
     const yamlFrontmatter = JSON.stringify(memory.frontmatter);
 
-    const insertMem = this.db.prepare(`
+    const insertMem = prepare(this.db, `
       INSERT OR REPLACE INTO archived_memories
         (id, title, content, yaml_frontmatter, tags, confidence, last_reinforced, archived_date, category, original_path)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
-    const insertFts = this.db.prepare(`
+    const insertFts = prepare(this.db, `
       INSERT INTO archive_fts (id, title, tags, content)
       VALUES (?, ?, ?, ?)
     `);
 
-    const deleteFts = this.db.prepare("DELETE FROM archive_fts WHERE id = ?");
+    const deleteFts = prepare(this.db, "DELETE FROM archive_fts WHERE id = ?");
 
-    const tx = this.db.transaction(() => {
+    transaction(this.db, () => {
       insertMem.run(
         memory.frontmatter.id,
         memory.frontmatter.title,
@@ -219,7 +220,6 @@ export class GnosysArchive {
       );
     });
 
-    tx();
 
     if (centralDb) {
       centralDb.transaction(() => {
@@ -256,7 +256,7 @@ export class GnosysArchive {
   ): Promise<string | null> {
     if (!this.db) return null;
 
-    const row = this.db.prepare(
+    const row = prepare(this.db, 
       "SELECT * FROM archived_memories WHERE id = ?"
     ).get(memoryId) as ArchivedMemory | undefined;
 
@@ -307,11 +307,10 @@ export class GnosysArchive {
     });
 
     // Remove from archive.db
-    const tx = this.db.transaction(() => {
-      this.db.prepare("DELETE FROM archived_memories WHERE id = ?").run(memoryId);
-      this.db.prepare("DELETE FROM archive_fts WHERE id = ?").run(memoryId);
+    transaction(this.db, () => {
+      prepare(this.db, "DELETE FROM archived_memories WHERE id = ?").run(memoryId);
+      prepare(this.db, "DELETE FROM archive_fts WHERE id = ?").run(memoryId);
     });
-    tx();
 
     auditLog({
       operation: "dearchive",
@@ -351,7 +350,7 @@ export class GnosysArchive {
     const terms = ftsTerms(query);
     if (terms.length === 0) return [];
 
-    const stmt = this.db.prepare(`
+    const stmt = prepare(this.db, `
       SELECT
         archive_fts.id,
         archive_fts.title,
@@ -374,7 +373,7 @@ export class GnosysArchive {
       return stmt.all(ftsOrQuery(terms), limit) as ArchiveSearchResult[];
     } catch {
       // FTS5 query syntax failed — try LIKE fallback
-      const likeStmt = this.db.prepare(`
+      const likeStmt = prepare(this.db, `
         SELECT
           id,
           title,
@@ -396,7 +395,7 @@ export class GnosysArchive {
    */
   getAllArchivedIds(): string[] {
     if (!this.db) return [];
-    const rows = this.db.prepare("SELECT id FROM archived_memories").all() as { id: string }[];
+    const rows = prepare(this.db, "SELECT id FROM archived_memories").all() as { id: string }[];
     return rows.map((r) => r.id);
   }
 
@@ -405,7 +404,7 @@ export class GnosysArchive {
    */
   getArchivedMemory(memoryId: string): ArchivedMemory | null {
     if (!this.db) return null;
-    return (this.db.prepare("SELECT * FROM archived_memories WHERE id = ?").get(memoryId) as ArchivedMemory) || null;
+    return (prepare(this.db, "SELECT * FROM archived_memories WHERE id = ?").get(memoryId) as ArchivedMemory) || null;
   }
 
   /**
@@ -413,7 +412,7 @@ export class GnosysArchive {
    */
   isArchived(memoryId: string): boolean {
     if (!this.db) return false;
-    const row = this.db.prepare("SELECT 1 FROM archived_memories WHERE id = ?").get(memoryId);
+    const row = prepare(this.db, "SELECT 1 FROM archived_memories WHERE id = ?").get(memoryId);
     return !!row;
   }
 
@@ -421,7 +420,8 @@ export class GnosysArchive {
    * Close the database connection.
    */
   close(): void {
-    this.db?.close();
+    if (this.db?.isOpen) this.db.close();
+    this.available = false;
   }
 }
 

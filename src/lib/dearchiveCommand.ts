@@ -35,7 +35,7 @@ export async function runDearchiveCommand(
 
     archive = new GnosysArchive(writeTarget.path);
     if (!archive.isAvailable()) {
-      console.error("Archive not available. Install it with: npm install better-sqlite3");
+      console.error("Archive not available. Requires node:sqlite (Node ^22.16.0 || >=24.0.0)");
       process.exit(1);
     }
 

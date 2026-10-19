@@ -1,10 +1,11 @@
 # ─── Stage 1: Build ──────────────────────────────────────────────────────
-FROM node:20.20.2-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
-# Install build dependencies for native modules (better-sqlite3)
-RUN apk add --no-cache python3 make g++ git
+# Node 24 includes SQLite FTS5. Node 23.x is unsupported.
+# Git is used by history features; SQLite is built into Node.
+RUN apk add --no-cache git
 
 COPY package.json package-lock.json ./
 RUN npm ci
@@ -14,10 +15,10 @@ COPY src/ ./src/
 RUN npm run build
 
 # Remove dev dependencies
-RUN npm prune --production
+RUN npm prune --omit=dev
 
 # ─── Stage 2: Runtime ────────────────────────────────────────────────────
-FROM node:20.20.2-alpine
+FROM node:24-alpine
 
 WORKDIR /app
 

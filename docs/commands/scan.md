@@ -75,7 +75,7 @@ Add roots to /Users/you/.gnosys/machine.json, e.g.
 Central DB unavailable:
 
 ```text
-Central DB not available (better-sqlite3 missing).
+Central DB not available (node:sqlite unavailable; requires Node ^22.16.0 || >=24.0.0).
 ```
 
 Both exit with code 1.

@@ -5,7 +5,7 @@
  * and provides search functions for serverless chatbot integrations.
  *
  * CRITICAL: This module must have ZERO dependencies beyond Node.js built-ins.
- * No better-sqlite3, no gray-matter, no @anthropic-ai/sdk, nothing.
+ * No node:sqlite, no gray-matter, no @anthropic-ai/sdk, nothing.
  */
 
 import { readFileSync, existsSync } from "fs";

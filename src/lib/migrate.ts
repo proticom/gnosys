@@ -1,3 +1,4 @@
+import { prepare } from "./sqliteStatement.js";
 /**
  * Gnosys Migrate — Moves data from v1.x (Markdown + archive.db + embeddings.db)
  * into the unified gnosys.db (v2.0).
@@ -12,9 +13,9 @@ import { GnosysStore } from "./store.js";
 import { GnosysArchive } from "./archive.js";
 
 // Dynamic import for embeddings DB
-let Database: any = null;
+let Database: typeof import("node:sqlite").DatabaseSync | null = null;
 try {
-  Database = (await import("better-sqlite3")).default;
+  Database = (await import("node:sqlite")).DatabaseSync;
 } catch {
   // Not available
 }
@@ -67,7 +68,7 @@ export async function migrate(
   // 1. Open/create gnosys.db
   const db = new GnosysDB(storePath);
   if (!db.isAvailable()) {
-    throw new Error("Cannot create gnosys.db — better-sqlite3 not available");
+    throw new Error(`Cannot create gnosys.db (${db.getUnavailableReason()})`);
   }
 
   // 2. Read all active .md memories
@@ -183,9 +184,9 @@ export async function migrate(
   try {
     const embPath = path.join(storePath, ".config", "embeddings.db");
     if (Database) {
-      const embDb = new Database(embPath, { readonly: true });
-      embDb.pragma("busy_timeout = 5000");
-      const rows = embDb.prepare("SELECT file_path, embedding FROM embeddings").all() as Array<{
+      const embDb = new Database(embPath, { readOnly: true });
+      embDb.exec("PRAGMA busy_timeout = 5000");
+      const rows = prepare(embDb, "SELECT file_path, embedding FROM embeddings").all() as Array<{
         file_path: string;
         embedding: Buffer;
       }>;

@@ -35,7 +35,7 @@ export async function runPrefSetCommand(
   try {
     centralDb = GnosysDB.openCentral();
     if (!centralDb.isAvailable()) {
-      console.error("Central DB not available (better-sqlite3 missing).");
+      console.error(`Central DB not available (${centralDb.getUnavailableReason()})`);
       process.exitCode = 1;
       return;
     }
@@ -72,7 +72,7 @@ export async function runPrefGetCommand(
   try {
     centralDb = GnosysDB.openCentral();
     if (!centralDb.isAvailable()) {
-      console.error("Central DB not available (better-sqlite3 missing).");
+      console.error(`Central DB not available (${centralDb.getUnavailableReason()})`);
       process.exitCode = 1;
       return;
     }
@@ -120,7 +120,7 @@ export async function runPrefDeleteCommand(key: string): Promise<void> {
   try {
     centralDb = GnosysDB.openCentral();
     if (!centralDb.isAvailable()) {
-      console.error("Central DB not available (better-sqlite3 missing).");
+      console.error(`Central DB not available (${centralDb.getUnavailableReason()})`);
       process.exitCode = 1;
       return;
     }

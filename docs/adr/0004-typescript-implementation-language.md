@@ -18,4 +18,4 @@ Gnosys is implemented in TypeScript, distributed via npm, with the official MCP 
 - `gnosys serve` and future web UI work naturally in the JavaScript ecosystem.
 - Strong typing helps an open-source project with multiple contributors catch errors early.
 - `npm install -g gnosys` / `npx gnosys` is a clean distribution story for agent-tooling developers.
-- Accepted costs: LLM SDK ergonomics are stronger in Python; SQLite needs `better-sqlite3` (native addon); ML-heavy contributors are less common than TypeScript agent-tooling contributors — acceptable because Gnosys is agent infrastructure, not ML research code.
+- Accepted costs: LLM SDK ergonomics are stronger in Python; SQLite uses built-in `node:sqlite` as of v7, requiring Node ^22.16.0 || >=24.0.0; ML-heavy contributors are less common than TypeScript agent-tooling contributors — acceptable because Gnosys is agent infrastructure, not ML research code.

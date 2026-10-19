@@ -26,7 +26,7 @@ gnosys traverse mem-abc123 --json
 
 ## Prerequisites
 
-Requires the central Gnosys database with `better-sqlite3` available.
+Requires the central Gnosys database with `node:sqlite` available on Node ^22.16.0 || >=24.0.0.
 
 ## Request mapping
 

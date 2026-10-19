@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.0] - 2026-10-18
+
+### Breaking changes
+
+- Require Node.js `^22.16.0 || >=24.0.0` for built-in FTS5 support. Node 23.x is unsupported. Replace the native `better-sqlite3` addon with built-in `node:sqlite`, so switching supported Node versions no longer requires a SQLite rebuild.
+- BLOB columns are still returned as `Buffer` (node:sqlite `Uint8Array` results are wrapped zero-copy at the DB boundary). Transactions retain nested savepoints; WAL, foreign keys, busy timeouts, and FTS5 remain enabled. Backups use `VACUUM INTO`.
+- CLI and MCP entry points suppress only SQLite experimental warnings. Other warnings remain visible.
+- Backup files are now named `gnosys-backup-<timestamp>-<ulid>.db` so consecutive backups never collide.
+
 <<<<<<< HEAD
 ### Added
 

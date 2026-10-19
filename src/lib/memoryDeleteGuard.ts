@@ -11,7 +11,7 @@
  *      the human-only override env var is set.
  *
  * The prompt lives here rather than in deleteMemory because deleteMemory is
- * synchronous and may run inside a better-sqlite3 transaction.
+ * synchronous and may run inside a node:sqlite transaction.
  */
 
 import { createInterface } from "readline/promises";

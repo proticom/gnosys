@@ -14,7 +14,7 @@ import {
   formatStatus,
 } from "../lib/remote.js";
 
-import Database from "better-sqlite3";
+import { DatabaseSync as Database } from "node:sqlite";
 
 function rejectInsert(dir: string, table: string, condition: string, message: string): void {
   const connection = new Database(path.join(dir, "gnosys.db"));
@@ -22,11 +22,14 @@ function rejectInsert(dir: string, table: string, condition: string, message: st
   finally { connection.close(); }
 }
 
-function failRemoteQuery(code: string, message: string): void {
+function failRemoteQuery(errcode: number, message: string): void {
   const prepare = Database.prototype.prepare;
-  vi.spyOn(Database.prototype, "prepare").mockImplementation(function(this: Database.Database, sql: string) {
-    if (this.name === path.join(remotePath, "gnosys.db") && sql.startsWith("SELECT id, modified FROM memories")) {
-      throw Object.assign(new Error(message), { code });
+  vi.spyOn(Database.prototype, "prepare").mockImplementation(function(this: Database, sql: string) {
+    if (sql.startsWith("SELECT id, modified FROM memories")) {
+      const file = prepare.call(this, "PRAGMA database_list").get()?.file;
+      if (typeof file === "string" && fs.realpathSync(file) === fs.realpathSync(path.join(remotePath, "gnosys.db"))) {
+        throw Object.assign(new Error(message), { code: "ERR_SQLITE_ERROR", errcode, errstr: message });
+      }
     }
     return prepare.call(this, sql);
   });
@@ -315,13 +318,13 @@ describe("getMachineId and resolveHostname", () => {
 
 describe("RemoteSync.getStatus SQLITE_BUSY", () => {
   it("returns friendly message on SQLITE_BUSY", async () => {
-    failRemoteQuery("SQLITE_BUSY", "busy");
+    failRemoteQuery(5, "database is locked");
     const status = await sync.getStatus();
     expect(status.message).toMatch(/Remote DB busy/);
   });
 
   it("rethrows non-busy sqlite errors", async () => {
-    failRemoteQuery("SQLITE_IOERR", "disk read failed");
+    failRemoteQuery(10, "disk read failed");
     await expect(sync.getStatus()).rejects.toThrow("disk read failed");
   });
 });
