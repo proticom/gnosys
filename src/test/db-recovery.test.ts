@@ -32,8 +32,7 @@ function injectCorruptOnce(db: any): void {
   db.db.prepare = (...args: any[]) => {
     if (!thrown) {
       thrown = true;
-      const err = new Error("database disk image is malformed") as Error & { code?: string };
-      err.code = "SQLITE_CORRUPT";
+      const err = Object.assign(new Error("database disk image is malformed"), { code: "ERR_SQLITE_ERROR", errcode: 11, errstr: "database disk image is malformed" });
       throw err;
     }
     return originalPrepare(...args);
@@ -172,8 +171,7 @@ describe("DB recovery from SQLITE_CORRUPT", () => {
   it("throws a clear message if reopen also fails", () => {
     // Make prepare throw corrupt persistently — both initial and post-reopen
     (workspace.db as any).db.prepare = () => {
-      const err = new Error("database disk image is malformed") as Error & { code?: string };
-      err.code = "SQLITE_CORRUPT";
+      const err = Object.assign(new Error("database disk image is malformed"), { code: "ERR_SQLITE_ERROR", errcode: 11, errstr: "database disk image is malformed" });
       throw err;
     };
 

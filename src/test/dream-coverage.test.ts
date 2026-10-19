@@ -626,7 +626,7 @@ describe("DreamScheduler", () => {
   it("releases the lock after a native read failure and runs the next idle cycle", async () => {
     const scheduler = makeScheduler({ enabled: true, idleMinutes: 1 });
     scheduler.start();
-    const Database = (await import("better-sqlite3")).default;
+    const Database = (await import("node:sqlite")).DatabaseSync;
     vi.spyOn(Database.prototype, "prepare").mockImplementationOnce(() => { throw new Error("audit native read failed"); });
     await vi.advanceTimersByTimeAsync(60_000);
     expect(scheduler.isDreaming()).toBe(false);

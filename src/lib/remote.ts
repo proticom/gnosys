@@ -1,3 +1,4 @@
+import { sqliteErrorCode } from "./sqliteError.js";
 /**
  * Gnosys Remote Sync — multi-machine database synchronization
  *
@@ -150,7 +151,7 @@ export async function validateLocation(remotePath: string): Promise<ValidationRe
     const start = Date.now();
     const testDb = new GnosysDB(remotePath);
     if (!testDb.isAvailable()) {
-      result.errors.push("better-sqlite3 not available");
+      result.errors.push("node:sqlite unavailable; requires Node ^22.16.0 || >=24.0.0");
       return result;
     }
     // Simple read/write probe
@@ -302,8 +303,7 @@ export class RemoteSync {
         }
         pendingPush = pushCount;
       } catch (err) {
-        const errAny = err as { code?: string };
-        if (errAny?.code === "SQLITE_BUSY") {
+        if (sqliteErrorCode(err) === "SQLITE_BUSY") {
           remoteBusy = true;
         } else {
           throw err;

@@ -16,7 +16,7 @@ updates:
     labels:
       - dependencies
     ignore:
-      # Types track the lowest supported Node (engines >=20.12), not the newest.
+      # Types track the lowest supported Node (engines ^22.16.0 || >=24.0.0), not the newest.
       - dependency-name: "@types/node"
         update-types:
           - version-update:semver-major
@@ -24,14 +24,10 @@ updates:
       - dependency-name: "typescript"
         update-types:
           - version-update:semver-major
-      # commander 15 requires Node >=22.12; gnosys still supports Node >=20.12.
+      # Commander major upgrades require a separate API review.
       - dependency-name: "commander"
         update-types:
           - version-update:semver-major
-      # better-sqlite3 13 requires Node >=22; hold at 12 while gnosys supports Node >=20.12.
-      - dependency-name: "better-sqlite3"
-        versions:
-          - ">=13"
     groups:
       production-minor-patch:
         dependency-type: production

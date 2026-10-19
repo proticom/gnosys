@@ -17,7 +17,7 @@ beforeEach(async () => {
   env = await createTestEnv("v512-central");
   if (!env.db.isAvailable()) {
     throw new Error(
-      "GnosysDB unavailable in test environment — better-sqlite3 must load for centralize tests",
+      "GnosysDB unavailable in test environment — node:sqlite must load for centralize tests",
     );
   }
   expect(fs.existsSync(path.join(env.tmpDir, "gnosys.db"))).toBe(true);

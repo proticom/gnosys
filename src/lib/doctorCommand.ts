@@ -1,3 +1,4 @@
+import { prepare } from "./sqliteStatement.js";
 import path from "path";
 import fs from "fs/promises";
 import type { GnosysResolver } from "./resolver.js";
@@ -22,12 +23,12 @@ type GetResolver = () => Promise<GnosysResolver>;
  */
 async function isLegacyStoreSafeToRemove(localDbPath: string): Promise<{ ok: boolean; reason?: string }> {
   try {
-    const Database = (await import("better-sqlite3")).default;
-    const localDb = new Database(localDbPath, { readonly: true });
-    localDb.pragma("busy_timeout = 5000");
+    const Database = (await import("node:sqlite")).DatabaseSync;
+    const localDb = new Database(localDbPath, { readOnly: true });
+    localDb.exec("PRAGMA busy_timeout = 5000");
     let localIds: string[] = [];
     try {
-      const rows = localDb.prepare("SELECT id FROM memories").all() as Array<{ id: string }>;
+      const rows = prepare(localDb, "SELECT id FROM memories").all() as Array<{ id: string }>;
       localIds = rows.map((r) => r.id);
     } catch {
       // Table doesn't exist — file is effectively empty
@@ -340,7 +341,7 @@ function renderDoctorReport(r: DoctorReport): string[] {
   } else if (c.status === "not_migrated") {
     out.push("  Status: ✗ not migrated (run gnosys upgrade)");
   } else if (c.status === "unavailable") {
-    out.push("  Status: — not available (better-sqlite3 not installed)");
+    out.push("  Status: — not available (node:sqlite unavailable; requires Node ^22.16.0 || >=24.0.0)");
   } else {
     out.push("  Status: — not initialized");
   }
@@ -362,7 +363,7 @@ function renderDoctorReport(r: DoctorReport): string[] {
         out.push(`  Newest archived: ${a.newest}`);
       }
     } else if (a.status === "unavailable") {
-      out.push("  Not available (better-sqlite3 not installed)");
+      out.push("  Not available (node:sqlite unavailable; requires Node ^22.16.0 || >=24.0.0)");
     } else {
       out.push("  Not initialized");
     }

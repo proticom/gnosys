@@ -32,7 +32,7 @@ npm run knip           # dead code / unused exports (zero findings — CI-gated)
 3. **TypeScript strict**: `strict: true` in tsconfig. Fix all type errors before committing.
 4. **Test before commit**: Run `npm test` — the full suite must pass (1700+ tests in `src/test/`). CI also gates `tsc --noEmit`, biome lint, and knip.
 5. **Path quoting**: The project may live in a path with spaces (iCloud). Always quote paths in shell commands.
-6. **Web subpath isolation**: `src/lib/staticSearch.ts` must not import (only `import type`) from modules that depend on `better-sqlite3` or any native addon.
+6. **Web subpath isolation**: `src/lib/staticSearch.ts` must not import (only `import type`) from modules that depend on `node:sqlite` or any native addon.
 7. **CLI-first, MCP-second**: New features are CLI commands first; MCP tools are thin wrappers around CLI logic.
 
 ## Remote Sync Awareness (v5.3.0+)

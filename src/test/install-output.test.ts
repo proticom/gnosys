@@ -1,6 +1,6 @@
 /**
- * Upgrade-output filtering — strip the two unfixable deprecation warnings
- * (prebuild-install, boolean) from `gnosys upgrade` without hiding anything
+ * Upgrade-output filtering — strip the optional embedding deprecation warning
+ * (boolean) from `gnosys upgrade` without hiding anything
  * else npm prints.
  */
 
@@ -13,8 +13,8 @@ const BOOLEAN_LINE =
   "npm warn deprecated boolean@3.2.0: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.";
 
 describe("isSuppressedNpmLine", () => {
-  it("suppresses the prebuild-install and boolean deprecation lines", () => {
-    expect(isSuppressedNpmLine(PREBUILD_LINE)).toBe(true);
+  it("suppresses boolean and keeps prebuild-install visible", () => {
+    expect(isSuppressedNpmLine(PREBUILD_LINE)).toBe(false);
     expect(isSuppressedNpmLine(BOOLEAN_LINE)).toBe(true);
   });
 
@@ -51,15 +51,15 @@ describe("makeNpmStderrFilter", () => {
       `${PREBUILD_LINE}\n${BOOLEAN_LINE}\nchanged 309 packages in 35s\n`,
     );
     filter.end();
-    expect(box.out).toBe("changed 309 packages in 35s\n");
+    expect(box.out).toBe(`${PREBUILD_LINE}\nchanged 309 packages in 35s\n`);
   });
 
   it("handles a suppressed line split across two chunks", () => {
     const { box, write } = collect();
     const filter = makeNpmStderrFilter(write);
-    const mid = Math.floor(PREBUILD_LINE.length / 2);
-    filter.feed(PREBUILD_LINE.slice(0, mid));
-    filter.feed(`${PREBUILD_LINE.slice(mid)}\nkept line\n`);
+    const mid = Math.floor(BOOLEAN_LINE.length / 2);
+    filter.feed(BOOLEAN_LINE.slice(0, mid));
+    filter.feed(`${BOOLEAN_LINE.slice(mid)}\nkept line\n`);
     filter.end();
     expect(box.out).toBe("kept line\n");
   });
@@ -75,7 +75,7 @@ describe("makeNpmStderrFilter", () => {
   it("suppresses a trailing partial line if it matches", () => {
     const { box, write } = collect();
     const filter = makeNpmStderrFilter(write);
-    filter.feed(PREBUILD_LINE); // no trailing newline
+    filter.feed(BOOLEAN_LINE); // no trailing newline
     filter.end();
     expect(box.out).toBe("");
   });

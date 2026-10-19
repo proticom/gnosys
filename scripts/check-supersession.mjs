@@ -6,7 +6,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-import Database from "better-sqlite3";
+import { DatabaseSync as Database } from "node:sqlite";
 
 // Usage: npm run build && node scripts/check-supersession.mjs [copied-database]
 const worktree = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -20,7 +20,7 @@ const report = { directory: base };
 if (process.argv[2]) {
   const censusPath = join(base, "census.db");
   copyFileSync(resolve(process.argv[2]), censusPath);
-  const db = new Database(censusPath, { readonly: true });
+  const db = new Database(censusPath, { readOnly: true });
   const rows = db.prepare("SELECT id, supersedes, superseded_by, status FROM memories ORDER BY id").all();
   const byId = new Map(rows.map(row => [row.id, row]));
   const predecessors = new Map();
@@ -88,7 +88,7 @@ try {
   await call("gnosys_update", { path: a, superseded_by: replacement });
   await call("gnosys_update", { path: b, superseded_by: replacement });
   report.reads = await Promise.all(ids.map(path => call("gnosys_read", { path })));
-  const db = new Database(join(home, "gnosys.db"), { readonly: true });
+  const db = new Database(join(home, "gnosys.db"), { readOnly: true });
   report.rows = ids.map(id => db.prepare(
     "SELECT id, status, supersedes, superseded_by, modified FROM memories WHERE id = ?",
   ).get(id));
@@ -136,7 +136,7 @@ try {
   cli("update", replacement, "--superseded-by", globalId, "--allow-cross-scope");
   cli("add-structured", "--title", "CLI boundary correction", "--category", "decisions",
     "--content", "boundary check", "--supersedes", globalId, "--allow-cross-scope");
-  const checked = new Database(join(home, "gnosys.db"), { readonly: true });
+  const checked = new Database(join(home, "gnosys.db"), { readOnly: true });
   try {
     const row = checked.prepare("SELECT status, superseded_by FROM memories WHERE id = ?").get(globalId);
     const successor = checked.prepare("SELECT title, supersedes, scope FROM memories WHERE id = ?").get(row.superseded_by);

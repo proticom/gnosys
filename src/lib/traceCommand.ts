@@ -20,7 +20,7 @@ export async function runTraceCommand(
     db = new GnosysDBClass(dbDir);
 
     if (!db.isAvailable()) {
-      console.error("Error: GnosysDB not available. Install it with: npm install better-sqlite3");
+      console.error(`Error: GnosysDB not available (${db.getUnavailableReason()})`);
       process.exit(1);
     }
 

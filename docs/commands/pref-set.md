@@ -42,7 +42,7 @@ Run 'gnosys sync' to update agent rules files.
 Central DB unavailable:
 
 ```text
-Central DB not available (better-sqlite3 missing).
+Central DB not available (node:sqlite unavailable; requires Node ^22.16.0 || >=24.0.0).
 ```
 
 Unknown key with suggestion:

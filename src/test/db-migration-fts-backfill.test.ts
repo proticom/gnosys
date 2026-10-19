@@ -10,7 +10,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "fs";
 import os from "os";
 import path from "path";
-import Database from "better-sqlite3";
+import { DatabaseSync as Database } from "node:sqlite";
 import { GnosysDB } from "../lib/db.js";
 
 let tmp: string;
@@ -62,12 +62,12 @@ function seedV1WithoutFts(ids: string[]): void {
   for (const id of ids) {
     insert.run(id, `Legacy ${id}`, `# Legacy ${id}\n\nwombatlantern body for ${id}`, `wombatlantern ${id}`, `hash-${id}`);
   }
-  raw.pragma("user_version = 1");
+  raw.exec("PRAGMA user_version = 1");
   raw.close();
 }
 
 function ftsIds(): Array<string | null> {
-  const raw = new Database(dbFile, { readonly: true });
+  const raw = new Database(dbFile, { readOnly: true });
   try {
     return (raw.prepare("SELECT id FROM memories_fts ORDER BY id").all() as Array<{ id: string | null }>).map((r) => r.id);
   } finally {
@@ -76,9 +76,9 @@ function ftsIds(): Array<string | null> {
 }
 
 function userVersion(): number {
-  const raw = new Database(dbFile, { readonly: true });
+  const raw = new Database(dbFile, { readOnly: true });
   try {
-    return raw.pragma("user_version", { simple: true }) as number;
+    return raw.prepare("PRAGMA user_version").get()?.user_version as number;
   } finally {
     raw.close();
   }
@@ -181,7 +181,7 @@ describe("v1 database without memories_fts", () => {
       INSERT INTO memories (id, title, category, content, content_hash, created, modified)
       VALUES ('deci-001', 'No summary column', 'decisions', 'body', 'h', '2026-01-01', '2026-01-01')
     `).run();
-    raw.pragma("user_version = 1");
+    raw.exec("PRAGMA user_version = 1");
     raw.close();
 
     const db = new GnosysDB(tmp);

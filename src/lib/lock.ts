@@ -146,7 +146,7 @@ function isLockStale(lock: LockInfo): boolean {
 }
 
 /**
- * Enable WAL mode on a better-sqlite3 database instance.
+ * Enable WAL mode on a node:sqlite database instance.
  * WAL (Write-Ahead Logging) allows concurrent reads during writes.
  *
  * Also configures `wal_autocheckpoint` so the WAL file gets flushed to
@@ -156,15 +156,15 @@ function isLockStale(lock: LockInfo): boolean {
  */
 export function enableWAL(db: any, busyTimeoutMs: number = 5000): void {
   try {
-    db.pragma("journal_mode = WAL");
+    db.exec("PRAGMA journal_mode = WAL");
     // Single source of truth for the connection's busy timeout — callers on
     // network shares (central DB) pass a longer value (10s) instead of
     // overriding with a second pragma afterwards.
-    db.pragma(`busy_timeout = ${Math.max(0, Math.floor(busyTimeoutMs))}`);
+    db.exec(`PRAGMA busy_timeout = ${Math.max(0, Math.floor(busyTimeoutMs))}`);
     // Auto-checkpoint after every 1000 frames written to WAL. Default is
     // 1000 anyway in newer SQLite, but set explicitly so behavior is
     // predictable across SQLite versions.
-    db.pragma("wal_autocheckpoint = 1000");
+    db.exec("PRAGMA wal_autocheckpoint = 1000");
   } catch {
     // WAL not supported or DB not available
   }

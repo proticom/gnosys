@@ -569,7 +569,7 @@ Merged content:`;
 
     const archive = new GnosysArchive(writeTarget.path);
     if (!archive.isAvailable()) {
-      log("info", "  Archive not available (better-sqlite3 not installed). Skipping.");
+      log("info", "  Archive not available (node:sqlite unavailable; requires Node ^22.16.0 || >=24.0.0). Skipping.");
       return { archived: 0, totalArchived: 0, actions };
     }
 

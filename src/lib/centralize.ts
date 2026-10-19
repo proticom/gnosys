@@ -1,16 +1,18 @@
+import { prepare } from "./sqliteStatement.js";
 /**
  * Seed a central server's brain from a local one (v5.12 Phase E).
  *
  * When you move from local-stdio to the central-server topology, the new host
  * (a Docker volume, another machine) starts empty. `centralizeDb` makes a
  * CONSISTENT copy of this machine's `~/.gnosys/gnosys.db` into a target dir,
- * using SQLite's online backup API so it's safe even while the source is in use
+ * using SQLite VACUUM INTO so it's safe even while the source is in use
  * (WAL is handled — no torn copy).
  */
 
 import fs from "fs";
+import { randomUUID } from "node:crypto";
 import path from "path";
-import Database from "better-sqlite3";
+import { DatabaseSync as Database } from "node:sqlite";
 import { getCentralDbPath } from "./paths.js";
 
 export interface CentralizeResult {
@@ -35,13 +37,16 @@ export async function centralizeDb(opts: {
   }
   fs.mkdirSync(opts.to, { recursive: true });
 
-  // Online backup → a single consistent gnosys.db at the target (handles WAL).
+  // VACUUM INTO includes committed WAL data in a consistent snapshot.
   const db = new Database(source);
-  db.pragma("busy_timeout = 5000");
+  db.exec("PRAGMA busy_timeout = 5000");
+  const snapshot = path.join(opts.to, `gnosys-${randomUUID()}.db`);
   try {
-    await db.backup(target);
+    prepare(db, "VACUUM INTO ?").run(snapshot);
+    fs.renameSync(snapshot, target);
   } finally {
     db.close();
+    fs.rmSync(snapshot, { force: true });
   }
 
   return { source, target, bytes: fs.statSync(target).size };

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import "./lib/sqliteWarnings.js";
 /**
  * Gnosys MCP Server — The core of Gnosys.
  * Exposes memory operations as MCP tools that any agent can call.
@@ -2630,7 +2631,7 @@ regTool(
       const archive = new GnosysArchive(writeTarget.path);
       if (!archive.isAvailable()) {
         return {
-          content: [{ type: "text", text: "Archive not available. Install it with: npm install better-sqlite3" }],
+          content: [{ type: "text", text: "Archive not available. Requires node:sqlite (Node ^22.16.0 || >=24.0.0)" }],
           isError: true,
         };
       }
@@ -3914,7 +3915,7 @@ async function openCentralDbForTrace(): Promise<GnosysDB> {
   const db = new GnosysDB(GnosysDB.getCentralDbDir());
   if (!db.isAvailable()) {
     db.close();
-    throw new Error("GnosysDB not available. Install it with: npm install better-sqlite3");
+    throw new Error(`GnosysDB not available (${db.getUnavailableReason()})`);
   }
   return db;
 }
@@ -4540,8 +4541,8 @@ export async function startMcpServer() {
       const projects = centralDb.getAllProjects();
       console.error(`Central DB: ready ✓ (${projects.length} projects registered, schema v${centralDb.getSchemaVersion()})`);
     } else {
+      console.error(`Central DB: not available (${centralDb.getUnavailableReason()})`);
       centralDb = null;
-      console.error("Central DB: not available (better-sqlite3 missing)");
     }
   } catch (err) {
     centralDb = null;

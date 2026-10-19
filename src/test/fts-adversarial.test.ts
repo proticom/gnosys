@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import Database from "better-sqlite3";
+import { DatabaseSync as Database } from "node:sqlite";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { GnosysDB } from "../lib/db.js";
 import { GnosysDbSearch } from "../lib/dbSearch.js";
@@ -93,7 +93,7 @@ describe("FTS duplicate attacks", () => {
         cobalt: env.db.searchFts("cobalt").map(row => row.id),
         quartz: env.db.searchFts("quartz").map(row => row.id),
         contents: env.db.getAllMemories().map(row => [row.id, row.content]).sort(),
-        version: witness.pragma("user_version", { simple: true }),
+        version: witness.prepare("PRAGMA user_version").get()?.user_version,
         marker: witness.prepare("SELECT value FROM gnosys_meta WHERE key = 'memories_fts_unique_id_v1'").get(),
       };
       expect(healed, JSON.stringify(healed)).toEqual({
@@ -104,11 +104,11 @@ describe("FTS duplicate attacks", () => {
         marker: { value: "1" },
       });
       env.db.close();
-      const versionAfterHealing = witness.pragma("data_version", { simple: true });
+      const versionAfterHealing = witness.prepare("PRAGMA data_version").get()?.data_version;
       env.db = new GnosysDB(env.tmpDir);
       expect({
-        dataVersion: witness.pragma("data_version", { simple: true }),
-        schemaVersion: witness.pragma("user_version", { simple: true }),
+        dataVersion: witness.prepare("PRAGMA data_version").get()?.data_version,
+        schemaVersion: witness.prepare("PRAGMA user_version").get()?.user_version,
         cobalt: env.db.searchFts("cobalt").map(row => row.id),
         quartz: env.db.searchFts("quartz").map(row => row.id),
       }).toEqual({ dataVersion: versionAfterHealing, schemaVersion: 5, cobalt: ["legacy-cobalt"], quartz: ["legacy-quartz"] });
@@ -128,7 +128,7 @@ describe("FTS duplicate attacks", () => {
       const observed = {
         memory: env.db.getMemory("fts-recovery")?.content,
         search: env.db.searchFts("saffron").map(row => row.id),
-        version: witness.pragma("user_version", { simple: true }),
+        version: witness.prepare("PRAGMA user_version").get()?.user_version,
       };
       expect(observed, JSON.stringify(observed)).toEqual({ memory: "saffron survives index loss", search: ["fts-recovery"], version: 5 });
     } finally { witness.close(); }

@@ -1,3 +1,4 @@
+import { prepare } from "./sqliteStatement.js";
 /**
  * Gnosys Embeddings — Lazy-loaded semantic embedding engine.
  * Uses @huggingface/transformers (ONNX, pure Node) with all-MiniLM-L6-v2.
@@ -5,12 +6,12 @@
  * Embeddings are stored in SQLite as regeneratable sidecar data.
  */
 
-// Dynamic import — gracefully handles missing native module (dlopen failures)
-let Database: any = null;
+// Dynamic import keeps database features unavailable on unsupported Node versions.
+let Database: typeof import("node:sqlite").DatabaseSync | null = null;
 try {
-  Database = (await import("better-sqlite3")).default;
+  Database = (await import("node:sqlite")).DatabaseSync;
 } catch {
-  // better-sqlite3 native module not available — embeddings features disabled
+  // node:sqlite unavailable — embeddings features disabled
 }
 import path from "path";
 import fs from "fs/promises";
@@ -154,8 +155,8 @@ export class GnosysEmbeddings {
    */
   storeEmbedding(filePath: string, embedding: Float32Array, contentHash: string): void {
     const db = this.openDb();
-    const buffer = Buffer.from(embedding.buffer);
-    db.prepare(
+    const buffer = Buffer.from(embedding.buffer, embedding.byteOffset, embedding.byteLength);
+    prepare(db, 
       "INSERT OR REPLACE INTO embeddings (file_path, embedding, content_hash, updated_at) VALUES (?, ?, ?, ?)"
     ).run(filePath, buffer, contentHash, new Date().toISOString());
   }
@@ -165,7 +166,7 @@ export class GnosysEmbeddings {
    */
   getEmbedding(filePath: string): Float32Array | null {
     const db = this.openDb();
-    const row = db.prepare("SELECT embedding FROM embeddings WHERE file_path = ?").get(filePath) as
+    const row = prepare(db, "SELECT embedding FROM embeddings WHERE file_path = ?").get(filePath) as
       | { embedding: Buffer }
       | undefined;
     if (!row) return null;
@@ -177,7 +178,7 @@ export class GnosysEmbeddings {
    */
   getAllEmbeddings(): { filePath: string; embedding: Float32Array; contentHash: string }[] {
     const db = this.openDb();
-    const rows = db.prepare("SELECT file_path, embedding, content_hash FROM embeddings").all() as {
+    const rows = prepare(db, "SELECT file_path, embedding, content_hash FROM embeddings").all() as {
       file_path: string;
       embedding: Buffer;
       content_hash: string;
@@ -195,7 +196,7 @@ export class GnosysEmbeddings {
    */
   isUpToDate(filePath: string, contentHash: string): boolean {
     const db = this.openDb();
-    const row = db.prepare("SELECT content_hash FROM embeddings WHERE file_path = ?").get(filePath) as
+    const row = prepare(db, "SELECT content_hash FROM embeddings WHERE file_path = ?").get(filePath) as
       | { content_hash: string }
       | undefined;
     return row?.content_hash === contentHash;
@@ -206,7 +207,7 @@ export class GnosysEmbeddings {
    */
   count(): number {
     const db = this.openDb();
-    const row = db.prepare("SELECT COUNT(*) as cnt FROM embeddings").get() as { cnt: number };
+    const row = prepare(db, "SELECT COUNT(*) as cnt FROM embeddings").get() as { cnt: number };
     return row.cnt;
   }
 

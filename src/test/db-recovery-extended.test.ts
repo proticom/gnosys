@@ -1,13 +1,13 @@
 /**
  * Extended DB recovery scenarios — SIGKILL mid-transaction, full disk,
- * corrupted FTS index, and missing better-sqlite3 native binary.
+ * corrupted FTS index, and missing node:sqlite native binary.
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import Database from "better-sqlite3";
+import { DatabaseSync as Database } from "node:sqlite";
 import { GnosysDB } from "../lib/db.js";
 
 const sampleMemory = {
@@ -60,8 +60,7 @@ describe("DB recovery — extended failure modes", () => {
     inner.prepare = (...args: unknown[]) => {
       const stmt = originalPrepare(...args) as { run: (...runArgs: unknown[]) => unknown };
       stmt.run = (...runArgs: unknown[]) => {
-        const err = new Error("database or disk is full") as Error & { code?: string };
-        err.code = "SQLITE_FULL";
+        const err = Object.assign(new Error("database or disk is full"), { code: "ERR_SQLITE_ERROR", errcode: 13, errstr: "database or disk is full" });
         throw err;
       };
       return stmt;
@@ -91,9 +90,9 @@ describe("DB recovery — extended failure modes", () => {
     expect(results.map(row => row.id)).toEqual(["fts-test-001"]);
   });
 
-  it("degrades gracefully when better-sqlite3 cannot load", async () => {
+  it("degrades gracefully when node:sqlite cannot load", async () => {
     vi.resetModules();
-    vi.doMock("better-sqlite3", () => {
+    vi.doMock("node:sqlite", () => {
       throw new Error("Could not locate the bindings file. Tried: /fake/path.node");
     });
 
@@ -108,7 +107,7 @@ describe("DB recovery — extended failure modes", () => {
     } finally {
       rmSync(tmp, { recursive: true, force: true });
       vi.resetModules();
-      vi.doUnmock("better-sqlite3");
+      vi.doUnmock("node:sqlite");
     }
   });
 });
