@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import "./lib/sqliteWarnings.js";
+import { ensureSqliteRuntime } from "./lib/sqliteStartup.js";
 /**
  * Gnosys MCP Server — The core of Gnosys.
  * Exposes memory operations as MCP tools that any agent can call.
@@ -4517,6 +4517,7 @@ async function initHeavyDeps(): Promise<void> {
 // ─── Start the server ────────────────────────────────────────────────────
 /** Start the MCP server (stdio or http). Called by `gnosys serve` and when invoked as `gnosys-mcp`. */
 export async function startMcpServer() {
+  await ensureSqliteRuntime();
   // v5.12.1 reliability: an escaped async error must not kill the server.
   // Log to stderr (stdout is JSON-RPC in stdio mode) and keep serving —
   // all persistent state is transactional SQLite, so survivors are safe.

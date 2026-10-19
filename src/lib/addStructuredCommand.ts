@@ -93,6 +93,11 @@ export async function runAddStructuredCommand(
         let centralDb: GnosysDB | null = null;
         try {
           centralDb = GnosysDB.openCentral();
+          if (!centralDb.isAvailable()) {
+            console.error(`Central DB not available (${centralDb.getUnavailableReason()})`);
+            process.exitCode = 1;
+            return;
+          }
           const projectId = await resolveProjectId();
           const id = centralDb.getNextId(opts.category, projectId || undefined);
           const now = new Date().toISOString();

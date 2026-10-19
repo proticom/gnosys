@@ -3,7 +3,7 @@ import { sqliteErrorCode } from "./sqliteError.js";
 import { prepare } from "./sqliteStatement.js";
 import { requireFts5, SQLITE_REQUIREMENT } from "./sqliteAvailability.js";
 import { sqliteValue } from "./sqliteValue.js";
-import { transaction } from "./sqliteTransaction.js";
+import { transaction, type SyncTransactionResult } from "./sqliteTransaction.js";
 /**
  * Gnosys DB — Agent-native SQLite core.
  *
@@ -1750,8 +1750,9 @@ export class GnosysDB {
 
   // ─── Transactions ───────────────────────────────────────────────────
 
-  transaction<T>(fn: () => T): T {
-    return transaction(this.db, fn);
+  transaction<T>(fn: () => SyncTransactionResult<T>): T {
+    if (!this.available) throw new Error(`Database not available (${this.getUnavailableReason()})`);
+    return transaction<T>(this.db, fn);
   }
 
   // ─── Metadata ──────────────────────────────────────────────────────

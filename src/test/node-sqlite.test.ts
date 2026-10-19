@@ -168,7 +168,8 @@ it("round-trips a sliced embedding through a file BLOB and reopen", () => {
 it("suppresses only SQLite experimental warnings before importing SQLite", () => {
   const warningModule = new URL("../../dist/lib/sqliteWarnings.js", import.meta.url).href;
   const child = spawnSync(process.execPath, ["--input-type=module", "-e", `
-    import ${JSON.stringify(warningModule)};
+    import { installSqliteWarningFilter } from ${JSON.stringify(warningModule)};
+    installSqliteWarningFilter();
     await import('node:sqlite');
     process.emitWarning('SQLite synthetic warning', 'ExperimentalWarning');
     process.emitWarning('SQLite options warning', { type: 'ExperimentalWarning' });
@@ -178,7 +179,10 @@ it("suppresses only SQLite experimental warnings before importing SQLite", () =>
     process.emitWarning('Deprecated feature stays visible', 'DeprecationWarning');
   `], { encoding: "utf8", env: { ...process.env, HOME: home, GNOSYS_HOME: home } });
   expect(child.status).toBe(0);
-  expect(child.stderr).not.toMatch(/SQLite (synthetic|options|error) warning|SQLite is an experimental/);
+  expect(child.stderr).not.toContain("SQLite is an experimental feature and might change at any time");
+  expect(child.stderr).toContain("ExperimentalWarning: SQLite synthetic warning");
+  expect(child.stderr).toContain("ExperimentalWarning: SQLite options warning");
+  expect(child.stderr).toContain("ExperimentalWarning: SQLite error warning");
   expect(child.stderr).toContain("ExperimentalWarning: Other experiment stays visible");
   expect(child.stderr).toContain("Warning: SQLite ordinary warning stays visible");
   expect(child.stderr).toContain("DeprecationWarning: Deprecated feature stays visible");

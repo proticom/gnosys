@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import "./lib/sqliteWarnings.js";
+import "./lib/sqliteStartup.js";
 /**
  * Gnosys CLI — Thin wrapper around the core modules.
  * Uses the resolver for layered multi-store support.

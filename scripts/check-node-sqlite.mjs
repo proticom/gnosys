@@ -1,4 +1,5 @@
-import "../dist/lib/sqliteWarnings.js";
+import { installSqliteWarningFilter } from "../dist/lib/sqliteWarnings.js";
+installSqliteWarningFilter();
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, rmSync } from "node:fs";
