@@ -1,0 +1,71 @@
+import type { ToolAnnotations } from "@modelcontextprotocol/sdk/types.js";
+
+type Hints = Required<Pick<ToolAnnotations,
+  "readOnlyHint" | "destructiveHint" | "idempotentHint" | "openWorldHint"
+>>;
+
+// readOnlyHint means no user-visible data/config/file changes; derived indexes,
+// local model/snapshot caches, and access/audit logs are excluded.
+// destructiveHint covers overwriting, archiving, merging, or deleting existing
+// user data; additive writes and feedback are non-destructive.
+// idempotentHint means identical calls add no further user-visible effects.
+// openWorldHint covers provider calls, explicit NAS operations, and arbitrary
+// caller paths, excluding incidental NAS cache refresh and local embedding models.
+export const TOOL_ANNOTATIONS: Readonly<Record<string, Hints>> = {
+  gnosys_add: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+  gnosys_add_structured: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
+  gnosys_ask: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+  gnosys_attach: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+  gnosys_audit: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_bootstrap: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
+  gnosys_briefing: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_commit_context: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+  gnosys_dashboard: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+  gnosys_dearchive: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false },
+  gnosys_detect_ambiguity: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_discover: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_dream: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
+  gnosys_export: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true },
+  gnosys_federated_search: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_get_attachment: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true },
+  gnosys_graph: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_history: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_hybrid_search: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
+  gnosys_import: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+  gnosys_ingest_file: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+  gnosys_init: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
+  gnosys_lens: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_links: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_list: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_maintain: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
+  gnosys_migrate: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
+  gnosys_portfolio: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_preference_delete: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_preference_get: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_preference_set: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false },
+  gnosys_read: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_recall: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_reflect: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
+  gnosys_reindex: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_reindex_graph: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_reinforce: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
+  gnosys_remote_pull: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
+  gnosys_remote_push: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
+  gnosys_remote_resolve: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
+  gnosys_remote_status: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+  gnosys_search: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_semantic_search: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_stale: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_stats: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_stores: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_sync: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true },
+  gnosys_tags: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_tags_add: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_timeline: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_toolset: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_trace: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+  gnosys_traverse: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_update: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false },
+  gnosys_update_status: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  gnosys_working_set: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+};

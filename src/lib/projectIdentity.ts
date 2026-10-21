@@ -480,25 +480,25 @@ alwaysApply: true
 
 # MANDATORY: Gnosys Memory Recall
 
-**YOU MUST call \`gnosys_discover\` at the START of every task before doing any work.**
+**YOU MUST call \`gnosys_hybrid_search\` at the START of every task before doing any work.**
 This is not optional. Gnosys contains project decisions, architecture, and context that prevents wasted effort.
 
 ## At task start (REQUIRED)
-1. Call \`gnosys_discover\` with keywords relevant to the task
+1. Call \`gnosys_hybrid_search\` with keywords relevant to the task
 2. Call \`gnosys_read\` on any results that look relevant
 3. Then proceed with the task using that context
 
 ## During work (automatic)
-- When the user states a decision or preference — call \`gnosys_add\` to save it
-- After significant implementation — call \`gnosys_add\` with findings and gotchas
-- When the user says "remember", "save this", "note this" — call \`gnosys_add\`
+- When the user states a decision or preference — call \`gnosys_add_structured\` to save it
+- After significant implementation — call \`gnosys_add_structured\` with findings and gotchas
+- When the user says "remember", "save this", "note this" — call \`gnosys_add_structured\`
 
 ## Key tools
 | Action | Tool |
 |--------|------|
-| Find memories | \`gnosys_discover\` then \`gnosys_read\` |
-| Search | \`gnosys_hybrid_search\` or \`gnosys_search\` |
-| Write | \`gnosys_add\` or \`gnosys_add_structured\` |
+| Find memories | \`gnosys_hybrid_search\` then \`gnosys_read\` |
+| Search | \`gnosys_hybrid_search\` |
+| Write | \`gnosys_add_structured\` |
 | Update | \`gnosys_update\`, \`gnosys_reinforce\` |
 
 **Always pass \`projectRoot\` set to the workspace root with every Gnosys tool call.**

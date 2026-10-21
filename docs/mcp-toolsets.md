@@ -1,18 +1,17 @@
 # MCP Toolset Tiers
 
-Every MCP tool definition (name, description, JSON schema) is injected into the calling agent's
-context window on every session. With all Gnosys tools active, the `tools/list` payload is
-roughly **41k characters (~10k tokens)** — paid before the agent does any work.
+Every MCP tool definition includes a name, description, JSON schema, and four annotation hints.
+The enabled definitions are sent to the agent in `tools/list`.
 
 Since v6.2.0 the server **starts every session on the `core` tier** and lets agents
 self-escalate (or shrink back) at runtime via the always-available `gnosys_toolset` tool.
 All tools are registered on every server; tiers only control which tools are *enabled*.
 
-| Tier | Tools | Serialized payload | Approx. tokens |
-|------|-------|--------------------|----------------|
-| `core` (default) | 19 | ~15k chars | ~3.7k |
-| `standard` | 34 | ~25k chars | ~6.3k |
-| `full` | 56 | ~41k chars | ~10.2k |
+| Tier | Tools |
+|------|-------|
+| `core` (default) | 14 |
+| `standard` | 33 |
+| `full` | 56 |
 
 ## In-session self-escalation (v6.2)
 
@@ -28,18 +27,11 @@ All tools are registered on every server; tiers only control which tools are *en
 
 ## Tier contents
 
-- **core** — the proven Apple "Core 15" surface plus the v6.1 process-trace tools and the
-  v6.2 tier switcher:
-  `gnosys_init`, `gnosys_add_structured`, `gnosys_add`, `gnosys_read`, `gnosys_update`,
-  `gnosys_discover`, `gnosys_recall`, `gnosys_search`, `gnosys_hybrid_search`,
-  `gnosys_federated_search`, `gnosys_reinforce`, `gnosys_preference_set`,
-  `gnosys_preference_get`, `gnosys_briefing`, `gnosys_dashboard`,
-  `gnosys_trace`, `gnosys_reflect`, `gnosys_traverse`, `gnosys_toolset`.
-- **standard** — core plus: `gnosys_list`, `gnosys_stats`, `gnosys_tags`, `gnosys_timeline`,
-  `gnosys_working_set`, `gnosys_semantic_search`, `gnosys_ask`, `gnosys_lens`, `gnosys_links`,
-  `gnosys_graph`, `gnosys_attach`, `gnosys_get_attachment`, `gnosys_ingest_file`,
-  `gnosys_update_status`, `gnosys_preference_delete`.
-- **full** — everything, including maintenance, import/export, remote sync, and debug tools.
+- **core** (14): `gnosys_init`, `gnosys_add_structured`, `gnosys_read`, `gnosys_update`, `gnosys_recall`, `gnosys_hybrid_search`, `gnosys_reinforce`, `gnosys_preference_set`, `gnosys_preference_get`, `gnosys_briefing`, `gnosys_dashboard`, `gnosys_reflect`, `gnosys_traverse`, `gnosys_toolset`.
+- **standard** (33): core plus `gnosys_list`, `gnosys_stats`, `gnosys_tags`, `gnosys_timeline`, `gnosys_working_set`, `gnosys_semantic_search`, `gnosys_ask`, `gnosys_lens`, `gnosys_links`, `gnosys_graph`, `gnosys_attach`, `gnosys_get_attachment`, `gnosys_ingest_file`, `gnosys_update_status`, `gnosys_preference_delete`, `gnosys_trace`, `gnosys_search`, `gnosys_federated_search`, `gnosys_discover`.
+- **full** (56): everything, including `gnosys_add`, maintenance, import/export, remote sync, and debug tools.
+
+`gnosys_add` moved from core to full. `gnosys_trace`, `gnosys_search`, `gnosys_federated_search`, and `gnosys_discover` moved from core to standard. No tool was renamed or removed. Standard has 33 tools because freeform add moved out of standard as well.
 
 ## Environment override
 
@@ -60,3 +52,44 @@ self-escalation hint are announced in the server `instructions` returned in the 
   }
 }
 ```
+
+## Annotation decisions
+
+[The generated tool table](mcp-tools.md) lists all four boolean hints for all 56 tools.
+Read-only means no user-visible state changes. Derived search/embedding/graph indexes, local snapshots, and access/audit logs do not count. Incidental NAS cache refresh does not make a local-store tool open-world. Local embedding models and their caches are also excluded.
+
+Read, search, discover, federated search, recall, and semantic search do not reinforce memories. Their hints are readOnly=true, destructive=false, idempotent=true, openWorld=false. Reindex and graph reindex only rebuild derived data, so they have the same hints. Portfolio returns text and does not write HTML. Preference deletion is refused on the MCP agent surface, so it also has the default hints.
+
+The following tools differ from that default. Additive writes and feedback use destructive=false. Optional file outputs are included in a tool's capability hints. Preference set is an exception to ordinary idempotent upserts: its handler increments reinforcement_count even when the value is unchanged. Update and init also refresh visible modification metadata.
+
+| Tool | Justification |
+|------|---------------|
+| `gnosys_add` | Calls an LLM to create new memories when operator-enabled. |
+| `gnosys_add_structured` | Creates a new structured memory and optional predecessor links; classified as additive. |
+| `gnosys_ask` | Calls an LLM for a cited answer and reinforces retrieved memories. |
+| `gnosys_attach` | Reads a caller-supplied file and stores its attachment bytes; identical bytes are deduplicated. |
+| `gnosys_bootstrap` | Reads caller-supplied documents, calls an LLM, and can overwrite slug-named memory files. |
+| `gnosys_commit_context` | Calls an LLM to extract and structure new memories; repeat model output is not guaranteed identical. |
+| `gnosys_dashboard` | Only reads user data, but probes configured Ollama/LM Studio HTTP endpoints. |
+| `gnosys_dearchive` | Restores existing archived memories; repeated limited queries can restore additional batches. |
+| `gnosys_dream` | Calls an LLM and changes confidence, summaries, relationships, and existing memory state. |
+| `gnosys_export` | Writes a caller-selected vault and can overwrite files; identical source data produces identical content. |
+| `gnosys_get_attachment` | Optional outputPath writes attachment bytes to an arbitrary destination and can overwrite a file. |
+| `gnosys_hybrid_search` | Reinforces retrieved memories; local embedding computation and incidental caches are excluded from open-world effects. |
+| `gnosys_import` | Reads a caller-supplied CSV/JSON/JSONL file and creates fresh memory IDs; this MCP path has no overwrite mode. |
+| `gnosys_ingest_file` | Reads a caller-supplied file and can call LLM/transcription providers to create new memories. |
+| `gnosys_init` | Accepts an arbitrary project directory; re-sync can replace existing identity/IDE files and project metadata. |
+| `gnosys_maintain` | Can decay or consolidate existing memories and call an LLM during consolidation. |
+| `gnosys_migrate` | Moves caller-selected stores, replaces project registration, and can remove the source directory. |
+| `gnosys_preference_set` | Replaces an existing preference and increments reinforcement_count even when the supplied value is unchanged. |
+| `gnosys_reflect` | Creates an outcome memory, links evidence, and adjusts confidence; classified as additive feedback. |
+| `gnosys_reinforce` | Changes reinforcement or review metadata; repeated useful signals increment the count again. |
+| `gnosys_remote_pull` | Reads the NAS and can replace local rows; unresolved conflict records receive new detection timestamps on repeats. |
+| `gnosys_remote_push` | Writes the NAS and can replace remote rows; unresolved conflict records receive new detection timestamps on repeats. |
+| `gnosys_remote_resolve` | Overwrites a local or NAS version and refreshes the selected memory modification timestamp. |
+| `gnosys_remote_status` | Reads NAS reachability and sync state without changing user data. |
+| `gnosys_sync` | Optional commit_to_disk rewrites caller-selected project IDE rules; identical input produces identical blocks. |
+| `gnosys_tags_add` | Adds a registry tag; adding an existing tag has no additional effect. |
+| `gnosys_toolset` | Changes session tool visibility; selecting the current tier again leaves visibility unchanged. |
+| `gnosys_trace` | Reads an arbitrary source directory and creates new procedural memory IDs and relationships on every run. |
+| `gnosys_update` | Overwrites existing memory fields/status/links and updates the visible modified timestamp on every call. |

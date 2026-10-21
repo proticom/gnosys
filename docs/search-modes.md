@@ -1,5 +1,9 @@
 # Search Modes
 
+Start with core `gnosys_hybrid_search`, which accepts `mode: "keyword" | "semantic" | "hybrid"` (default hybrid). It returns ranked snippets and IDs; use `gnosys_recall` for an injected context block or `gnosys_read` for a full body.
+
+Specialist tools `gnosys_search`, `gnosys_semantic_search`, `gnosys_federated_search` (scope boosts), and `gnosys_discover` (metadata only) require `gnosys_toolset {"set":"standard"}`. Building embeddings with `gnosys_reindex` requires `gnosys_toolset {"set":"full"}`.
+
 Gnosys offers three retrieval modes. All search across project, user, and global memory stores (subject to scope filters when configured).
 
 | Mode | Tool | Mechanism | Needs embeddings | Best for | Misses |
@@ -18,7 +22,7 @@ score(d) = Σ  1 / (k + rank_i(d))
 
 The sum runs over each ranking list *i* (keyword FTS and semantic similarity). A memory ranked high by **either** list surfaces in the fused results; memories that rank well in **both** lists score highest.
 
-When embeddings are not available, hybrid mode downgrades to keyword-only (semantic mode returns empty).
+When embeddings are not available, hybrid and semantic searches fall back to keyword results with an explicit fallback note.
 
 ## Same-query example
 

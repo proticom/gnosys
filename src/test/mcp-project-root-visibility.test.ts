@@ -74,6 +74,7 @@ beforeAll(async () => {
       GNOSYS_PERSONAL: personal,
       GNOSYS_GLOBAL: global,
       GNOSYS_LOCAL_ONLY: "1",
+      GNOSYS_MCP_TOOLSET: "standard",
       HOME: home,
       USERPROFILE: home,
     },
@@ -151,7 +152,7 @@ describe("projectRoot-scoped reads", () => {
     expect(text).toContain("not an initialised Gnosys project");
     expect(text).toContain("gnosys_init");
     expect(text).toContain("omit projectRoot");
-    expect(text).toContain("gnosys_federated_search");
+    expect(text).toContain("gnosys_hybrid_search");
   });
 
   it("gnosys_federated_search with projectRoot stays cross-project", async () => {
