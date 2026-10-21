@@ -1,9 +1,15 @@
-name: Publish to npm
+name: Publish to npm and GitHub Release
 
 on:
   push:
     tags:
       - "v*"
+
+# One publish at a time per repo, never cancelled mid-publish, so the
+# latest/older-line decision below can't race a newer tag's run.
+concurrency:
+  group: publish-${{ github.repository }}
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -13,53 +19,16 @@ jobs:
     environment: npm
 
     permissions:
-      # Required for gh release create to write the GitHub Release.
-      contents: write
+      contents: read
       id-token: write
+
+    outputs:
+      version: ${{ steps.classify.outputs.version }}
+      gh_prerelease: ${{ steps.classify.outputs.gh_prerelease }}
+      gh_latest: ${{ steps.classify.outputs.gh_latest }}
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      # Decide the npm dist-tag and GitHub Release flags once, before publishing,
-      # so both steps agree:
-      #   vX.Y.Z, highest plain vX.Y.Z tag      -> npm latest,       Release --latest
-      #   vX.Y.Z, older than the highest plain  -> npm v<major>-latest, Release --latest=false
-      #   vX.Y.Z-<pre>[+build]                  -> npm next,         Release --prerelease --latest=false
-      #   anything else (warning)               -> npm next,         Release --latest=false
-      # Prerelease tags are ignored when finding the highest plain tag.
-      - name: Classify tag
-        id: classify
-        run: |
-          tag="$GITHUB_REF_NAME"
-          plain_re='^v[0-9]+\.[0-9]+\.[0-9]+$'
-          pre_re='^v[0-9]+\.[0-9]+\.[0-9]+-[0-9A-Za-z.-]+(\+[0-9A-Za-z.-]+)?$'
-          if [[ "$tag" =~ $pre_re ]]; then
-            npm_tag=next; gh_prerelease=true; gh_latest=false
-          elif [[ "$tag" =~ $plain_re ]]; then
-            gh_prerelease=false
-            highest=$(git ls-remote --tags --refs origin 'refs/tags/v*' \
-              | sed 's|.*refs/tags/||' \
-              | { grep -E "$plain_re" || true; } \
-              | sed 's/^v//' \
-              | sort -t. -k1,1n -k2,2n -k3,3n \
-              | tail -n 1)
-            if [[ -z "$highest" || "v$highest" == "$tag" ]]; then
-              npm_tag=latest; gh_latest=true
-            else
-              major="${tag#v}"; major="${major%%.*}"
-              npm_tag="v${major}-latest"; gh_latest=false
-              echo "$tag is older than the highest plain tag v$highest; npm dist-tag $npm_tag, not GitHub Latest"
-            fi
-          else
-            echo "::warning::$tag is not vX.Y.Z or vX.Y.Z-<prerelease>; publishing to npm dist-tag next and not marking the release Latest"
-            npm_tag=next; gh_prerelease=false; gh_latest=false
-          fi
-          echo "tag=$tag npm_tag=$npm_tag gh_prerelease=$gh_prerelease gh_latest=$gh_latest"
-          {
-            echo "npm_tag=$npm_tag"
-            echo "gh_prerelease=$gh_prerelease"
-            echo "gh_latest=$gh_latest"
-          } >> "$GITHUB_OUTPUT"
 
       - name: Use Node.js 24.x
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -68,6 +37,12 @@ jobs:
           cache: npm
           # DO NOT set registry-url — it writes .npmrc with empty token
           # which overrides OIDC auth and causes 404
+
+      # Fail fast, before installing anything: strict semver tag that matches
+      # package.json. See .github/scripts/classify-release-tag.sh.
+      - name: Validate tag
+        shell: bash
+        run: bash .github/scripts/classify-release-tag.sh
 
       - name: Install dependencies
         run: npm ci
@@ -81,21 +56,57 @@ jobs:
       - name: Run tests
         run: npm test
 
+      # Re-classify right before publishing so the dist-tag / Latest decision
+      # reflects the remote tags at publish time, not before the test run.
+      - name: Classify tag
+        id: classify
+        shell: bash
+        run: bash .github/scripts/classify-release-tag.sh
+
       - name: Publish to npm (OIDC trusted publishing, no token needed)
+        shell: bash
         env:
           NPM_DIST_TAG: ${{ steps.classify.outputs.npm_tag }}
-        run: npm publish --access public --tag "$NPM_DIST_TAG"
+          PKG_VERSION: ${{ steps.classify.outputs.version }}
+        run: |
+          set -euo pipefail
+          pkg_name=$(node -p "require('./package.json').name")
+          # Skip if this version is already on npm (e.g. re-running after a
+          # failed release job). A lookup error falls through to publish,
+          # which itself refuses to overwrite an existing version.
+          existing=$(npm view "${pkg_name}@${PKG_VERSION}" version 2>/dev/null || true)
+          if [[ "$existing" == "$PKG_VERSION" ]]; then
+            echo "${pkg_name}@${PKG_VERSION} is already published; skipping npm publish"
+            exit 0
+          fi
+          npm publish --access public --tag "$NPM_DIST_TAG"
 
+  release:
+    needs: publish
+    runs-on: ubuntu-latest
+    # Only this job can write repository contents (the GitHub Release); the
+    # publish job, which runs dependency install scripts, stays read-only.
+    permissions:
+      contents: write
+    steps:
       - name: Create GitHub Release
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-          GH_PRERELEASE: ${{ steps.classify.outputs.gh_prerelease }}
-          GH_LATEST: ${{ steps.classify.outputs.gh_latest }}
-        # Flags come from the "Classify tag" step. Skipped if the release exists.
+          GH_PRERELEASE: ${{ needs.publish.outputs.gh_prerelease }}
+          GH_LATEST: ${{ needs.publish.outputs.gh_latest }}
         run: |
-          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo "GitHub Release $GITHUB_REF_NAME already exists"
+          set -euo pipefail
+          if view_out=$(gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json tagName 2>&1); then
+            echo "GitHub Release $GITHUB_REF_NAME already exists; skipping"
             exit 0
+          elif [[ "$view_out" != *"release not found"* ]]; then
+            echo "::error::Could not check for an existing release: $view_out"
+            exit 1
+          fi
+          if [[ "$GH_LATEST" != "true" && "$GH_LATEST" != "false" ]]; then
+            echo "::error::Missing classification output gh_latest='$GH_LATEST'"
+            exit 1
           fi
           release_flags=("--latest=$GH_LATEST")
           if [[ "$GH_PRERELEASE" == "true" ]]; then
