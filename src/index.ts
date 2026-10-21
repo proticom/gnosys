@@ -10,6 +10,7 @@ import { ensureSqliteRuntime } from "./lib/sqliteStartup.js";
 // IMPORTANT: We use dotenv.parse() instead of dotenv.config() because
 // dotenv v17+ writes injection notices to stdout, which corrupts the
 // MCP stdio JSON protocol. parse() is a pure function with no side effects.
+import { TOOL_ANNOTATIONS, type ToolName } from "./lib/toolAnnotations.js";
 import { formatSearchStatus } from "./lib/searchStatus.js";
 import dotenv from "dotenv";
 import path from "path";
@@ -40,7 +41,9 @@ const RUNNING_VERSION: string = (() => {
   }
 })();
 
-import { McpServer, type RegisteredTool } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { McpServer, type RegisteredTool, type ToolCallback } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { getLiteralValue, getObjectShape } from "@modelcontextprotocol/sdk/server/zod-compat.js";
+import { CallToolRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import fs from "fs/promises";
@@ -118,8 +121,8 @@ const _registrations: Array<{ name: string | null; register: Registrar }> = [];
 
 // ─── v6.1/v6.2: MCP toolset tiers (context-bloat reduction) ──────────────
 // GNOSYS_MCP_TOOLSET=core|standard|full (v6.2 default: core). Smaller tiers
-// cut the tools/list payload an agent must carry in context (~3.6k tokens
-// for core vs ~10k for full). v6.2: ALL tools are registered on every
+// cut the tools/list payload an agent must carry in context.
+// v6.2: ALL tools are registered on every
 // server; tiers are applied by enabling/disabling RegisteredTool entries at
 // runtime, and the always-on core tool `gnosys_toolset` lets an agent
 // self-promote (or shrink) mid-session. Tier membership sets (CORE_TOOLS,
@@ -191,7 +194,19 @@ function withContextRelease(
 
 // Typed to the McpServer methods so call-site generic inference (Zod schema →
 // handler arg types) is preserved; the body just collects a replay thunk.
-const regTool: typeof server.tool = ((...args: unknown[]) => {
+const regTool: <Args extends z.ZodRawShape>(
+  name: ToolName,
+  description: string,
+  paramsSchema: Args,
+  callback: ToolCallback<Args>,
+) => void = (...args: unknown[]) => {
+  const rawName = args[0];
+  if (typeof rawName !== "string" || !Object.hasOwn(TOOL_ANNOTATIONS, rawName)) {
+    throw new Error(`Missing MCP annotations for ${String(rawName)}`);
+  }
+  const name = rawName as ToolName;
+  const annotations = TOOL_ANNOTATIONS[name];
+  args.splice(args.length - 1, 0, annotations);
   const last = args.length - 1;
   if (typeof args[last] === "function") {
     args[last] = withContextRelease(
@@ -203,7 +218,7 @@ const regTool: typeof server.tool = ((...args: unknown[]) => {
     name: typeof args[0] === "string" ? args[0] : null,
     register: (s) => (s.tool as (...a: unknown[]) => unknown)(...args),
   });
-}) as typeof server.tool;
+};
 const regPrompt: typeof server.prompt = ((...args: unknown[]) => {
   _registrations.push({ name: null, register: (s) => (s.prompt as (...a: unknown[]) => unknown)(...args) });
 }) as typeof server.prompt;
@@ -234,12 +249,42 @@ function applyToolset(state: ToolsetState, tier: McpToolset): void {
  *  the always-enabled `gnosys_toolset` tool. */
 export function registerCapabilities(s: McpServer, toolset: McpToolset = resolveToolset()): void {
   const state: ToolsetState = { tier: toolset, tools: new Map() };
-  for (const r of _registrations) {
-    const rt = r.register(s);
-    if (r.name !== null) state.tools.set(r.name, rt as RegisteredTool);
+  const original = s.server.setRequestHandler;
+  const install = original.bind(s.server);
+  // The SDK rejects disabled tools before callbacks. Wrap its public dispatch
+  // installation while retaining SDK validation, listing, and notifications.
+  s.server.setRequestHandler = (schema, handler) => {
+    const methodSchema = getObjectShape(schema)?.method;
+    if (!methodSchema || getLiteralValue(methodSchema) !== "tools/call") {
+      install(schema, handler);
+      return;
+    }
+    install(schema, (request, extra) => {
+      const { params } = CallToolRequestSchema.parse(request);
+      const name = params.name;
+      if (state.tools.has(name) && !toolInToolset(name, state.tier)) {
+        const tier = toolTier(name);
+        const alternative = name === "gnosys_add"
+          ? " Use gnosys_add_structured for agent-authored memories."
+          : "";
+        return {
+          isError: true,
+          content: [{ type: "text", text: `${name} is in the ${tier} toolset (active: ${state.tier}). Call gnosys_toolset ${JSON.stringify({ set: tier })} to enable it.${alternative}` }],
+        };
+      }
+      return handler(request, extra);
+    });
+  };
+  try {
+    for (const r of _registrations) {
+      const rt = r.register(s);
+      if (r.name !== null) state.tools.set(r.name, rt as RegisteredTool);
+    }
+    registerToolsetTool(s, state);
+    applyToolset(state, toolset);
+  } finally {
+    s.server.setRequestHandler = original;
   }
-  registerToolsetTool(s, state);
-  applyToolset(state, toolset);
 }
 
 /**
@@ -326,7 +371,7 @@ function projectReadVisibility(boundary: ProjectBoundary): ProjectVisibility | u
       return { projectId: boundary.projectId };
     case "unregistered":
       throw new Error(
-        `${boundary.root} is not an initialised Gnosys project. Call gnosys_init with directory set to this projectRoot first (${boundary.root}), or ask the user whether to initialise it. To search without a project, omit projectRoot or use gnosys_federated_search.`
+        `${boundary.root} is not an initialised Gnosys project. Call gnosys_init with directory set to this projectRoot first (${boundary.root}), or ask the user whether to initialise it. To search without a project, omit projectRoot from gnosys_hybrid_search.`
       );
     default: {
       const unreachable: never = boundary;
@@ -560,7 +605,7 @@ function resolveWriteScope(
 // ─── Tool: gnosys_discover ──────────────────────────────────────────────
 regTool(
   "gnosys_discover",
-  "Discover relevant memories by describing what you're working on. Searches relevance keyword clouds. Returns lightweight metadata (title, path, relevance keywords, status, modified date, replacement ID) — NO file contents. Use gnosys_read to load specific memories you need. Call this FIRST when starting a task to find what Gnosys knows. Set activeOnly=true to exclude non-active memories (default false). Registered projectRoot searches that project plus user and global memories. An unregistered projectRoot returns an error asking for gnosys_init. Omit projectRoot to search all projects.",
+  "Find memory metadata by keyword relevance, returning titles, IDs, status, dates, and replacement links without bodies (limit 20; activeOnly false). Requires gnosys_toolset {\"set\":\"standard\"}. Use gnosys_hybrid_search instead for ranked snippets or gnosys_recall for a ready-to-inject context block; load selected bodies with gnosys_read. Registered projectRoot includes project, user, and global memories; omit it to search all projects, or run gnosys_init for an unregistered root.",
   {
     query: z
       .string()
@@ -655,7 +700,7 @@ regTool(
 // ─── Tool: gnosys_read ───────────────────────────────────────────────────
 regTool(
   "gnosys_read",
-  "Read a specific memory. Accepts a memory ID (e.g., 'arch-012') or layer-prefixed path (e.g., 'project:decisions/why-not-rag.md'). Without a prefix, searches all stores in precedence order. Includes supersedes and superseded_by links when set.",
+  "Read a memory by ID (e.g. arch-012) or layer-prefixed path (e.g. project:decisions/why-not-rag.md), returning Markdown content, metadata, and supersession links. Unprefixed paths search stores in precedence order. Use gnosys_hybrid_search instead when you do not know the ID, or gnosys_recall for several relevant memories as context.",
   {
     path: z.string().describe("Memory ID or path, optionally prefixed with store layer"),
     projectRoot: projectRootParam,
@@ -737,7 +782,7 @@ regTool(
 // ─── Tool: gnosys_search ─────────────────────────────────────────────────
 regTool(
   "gnosys_search",
-  "Search memories by keyword. Returns matches with snippets, status, modified date, and replacement IDs. History stays visible; replacements rank first. Set activeOnly=true to exclude non-active memories (default false). Registered projectRoot searches that project plus user and global memories. An unregistered projectRoot returns an error asking for gnosys_init. Omit projectRoot to search all projects.",
+  "Search memory text by keyword, returning snippets, IDs, status, dates, and replacement links (limit 20; activeOnly false). Requires gnosys_toolset {\"set\":\"standard\"}. Use gnosys_hybrid_search instead as the main search, including mode keyword for exact terms, or gnosys_recall for context injection. Registered projectRoot includes project, user, and global memories; omit it for all projects, or run gnosys_init for an unregistered root.",
   {
     query: z.string().describe("Search query (keywords)"),
     limit: z.number().optional().describe("Max results (default 20)"),
@@ -1099,10 +1144,10 @@ regTool(
 // ─── Tool: gnosys_add_structured ─────────────────────────────────────────
 regTool(
   "gnosys_add_structured",
-  "Add a memory with structured fields; no LLM call. supersedes adds links to comma-separated predecessor IDs; to unlink, call gnosys_update on the predecessor with superseded_by=''. Cross-scope or cross-project links require allowCrossScope=true. Reports up to three active overlaps.",
+  "Save a structured memory without an LLM call, returning its ID, store label, and up to three active overlaps. Supply title, category, tags, and Markdown content; store defaults to project, author to ai, authority to observed, and confidence to 0.8 (also used for an explicit zero). supersedes links comma-separated predecessor IDs; cross-scope or cross-project links require allowCrossScope=true. Use gnosys_update instead to change an existing memory or unlink a predecessor with superseded_by=\"\".",
   {
     title: z.string().describe("Memory title"),
-    category: z.string().describe("Category name"),
+    category: z.string().describe("Open category name, e.g. decisions, architecture, requirements, concepts, roadmap, landscape, open-questions, or how"),
     tags: z
       .record(z.string(), z.array(z.string()))
       .describe("Tags object, e.g. { domain: ['auth'], type: ['decision'] }"),
@@ -1112,11 +1157,11 @@ regTool(
       .describe("Space-separated keyword cloud for discovery search"),
     content: z.string().describe("Memory content as markdown"),
     store: z.enum(["project", "personal", "global"]).optional().describe("Target store (default: project)"),
-    author: z.enum(["human", "ai", "human+ai"]).optional(),
+    author: z.enum(["human", "ai", "human+ai"]).optional().describe("Author: human, ai (default), or human+ai"),
     authority: z
       .enum(["declared", "observed", "imported", "inferred"])
-      .optional(),
-    confidence: z.number().min(0).max(1).optional(),
+      .optional().describe("Authority: declared, observed (default), imported, or inferred"),
+    confidence: z.number().min(0).max(1).optional().describe("Confidence from 0 to 1 (omitted or zero uses 0.8), e.g. 0.9 for verified evidence"),
     supersedes: z.string().optional().describe("Comma-separated IDs of memories this replaces"),
     allowCrossScope: z.boolean().optional().describe("Allow supersession across scopes or projects (default false)"),
     projectRoot: projectRootParam,
@@ -1253,7 +1298,7 @@ regTool(
 // ─── Tool: gnosys_reinforce ──────────────────────────────────────────────
 regTool(
   "gnosys_reinforce",
-  "Signal whether a memory was useful. 'useful' reinforces it (resets decay). 'not_relevant' means routing was wrong, not the memory (memory unchanged). 'outdated' flags for review.",
+  "Record usefulness feedback for one memory, returning a signal confirmation. useful increments reinforcement and resets decay; not_relevant records a routing miss without changing the memory; outdated marks it for review. Use gnosys_reflect instead to record an outcome memory, link evidence, and adjust confidence; repeated useful calls reinforce again.",
   {
     memory_id: z.string().describe("The memory ID (from frontmatter)"),
     signal: z
@@ -1315,7 +1360,7 @@ regTool(
 // ─── Tool: gnosys_init ───────────────────────────────────────────────────
 regTool(
   "gnosys_init",
-  "Initialize Gnosys in a project directory. Creates .gnosys/ with project identity (gnosys.json), registers the project in the central DB (~/.gnosys/gnosys.db), and sets up tag registry. You MUST run this before any other Gnosys tool in a new project. Pass the full absolute path to the project root.",
+  "Initialize a project directory, returning its identity, store path, and setup summary. Pass an absolute directory (e.g. /work/app); projectName defaults to its basename. Creates .gnosys/ metadata and registers the project in the central SQLite store; run this before project-scoped operations on a new root. Use gnosys_briefing instead to inspect an already registered project.",
   {
     directory: z
       .string()
@@ -1376,15 +1421,16 @@ regTool(
     // Directly add the new store to the resolver (no re-resolve from cwd needed)
     await resolver.addProjectStore(storePath);
 
-    // Initialize search, tags, and ingestion if this is the first store
+    // Initialize offline search for the first store; providers remain lazy.
     const writeTarget = resolver.getWriteTarget();
     if (writeTarget && !search) {
       search = new GnosysSearch(writeTarget.store.getStorePath());
       tagRegistry = new GnosysTagRegistry(writeTarget.store.getStorePath());
       await tagRegistry.load();
-      const { GnosysIngestion } = await import("./lib/ingest.js");
-      ingestion = new GnosysIngestion(writeTarget.store, tagRegistry, await loadConfig(writeTarget.store.getStorePath()));
+      config = await loadConfig(writeTarget.store.getStorePath());
       await reindexAllStores();
+      gnosysDb = centralDb;
+      await initSearchDeps();
     }
 
     // Configure IDE hooks for automatic memory recall
@@ -1400,7 +1446,7 @@ regTool(
       content: [
         {
           type: "text",
-          text: `Gnosys store ${action} at ${storePath}\n\nProject Identity:\n- ID: ${identity.projectId}\n- Name: ${identity.projectName}\n- Directory: ${identity.workingDirectory}\n- Agent rules target: ${identity.agentRulesTarget || "none detected"}\n- Central DB: ${centralDb?.isAvailable() ? "registered ✓" : "not available"}\n\n${isResync ? "Identity re-synced." : "Created:\n- gnosys.json (project identity)\n- .config/ (internal config)\n- tags.json (tag registry)"}${hookInfo}\n\nThe store is ready. Use gnosys_discover to find existing memories or gnosys_add_structured to create new ones.`,
+          text: `Gnosys store ${action} at ${storePath}\n\nProject Identity:\n- ID: ${identity.projectId}\n- Name: ${identity.projectName}\n- Directory: ${identity.workingDirectory}\n- Agent rules target: ${identity.agentRulesTarget || "none detected"}\n- Central DB: ${centralDb?.isAvailable() ? "registered ✓" : "not available"}\n\n${isResync ? "Identity re-synced." : "Created:\n- gnosys.json (project identity)\n- .config/ (internal config)\n- tags.json (tag registry)"}${hookInfo}\n\nThe store is ready. Use gnosys_hybrid_search to find existing memories or gnosys_add_structured to create new ones.`,
         },
       ],
     };
@@ -1504,7 +1550,7 @@ regTool(
 // ─── Tool: gnosys_update ─────────────────────────────────────────────────
 regTool(
   "gnosys_update",
-  "Update a memory by id or path. supersedes adds links; to unlink, call gnosys_update on the predecessor with superseded_by=''. Links validate IDs, reject cycles, and require allowCrossScope=true across scopes or projects.",
+  "Update an existing memory by ID or path, returning a confirmation and changed fields. To archive, retire, or \"delete\" a memory, set status to archived or superseded with superseded_by (the replacement ID, mapped to supersededBy / --superseded-by in the CLI); hard deletion is human-only by design via the CLI. confidence accepts 0..1; content replaces the Markdown body; supersedes adds predecessor links and superseded_by=\"\" unlinks a predecessor. Links reject cycles and require allowCrossScope=true across scopes or projects. Use gnosys_add_structured instead for a new memory.",
   {
     path: z.string().describe("Memory id or path"),
     title: z.string().optional().describe("New title"),
@@ -2343,7 +2389,7 @@ regTool(
 // ─── Tool: gnosys_hybrid_search ──────────────────────────────────────────
 regTool(
   "gnosys_hybrid_search",
-  "Search memories using hybrid keyword + semantic search with Reciprocal Rank Fusion. Combines FTS5 keyword matching with embedding-based semantic similarity for best results. Includes status, modified date, and replacement IDs; replacements rank before their history. Run gnosys_reindex first if embeddings don't exist yet. Set activeOnly=true to exclude non-active memories (default false).",
+  "Search memories by keyword and meaning, returning ranked snippets, IDs, scores, status, dates, and replacement links. mode is keyword, semantic, or hybrid (default); limit defaults to 15 and activeOnly to false. Use gnosys_recall instead for a context block, or gnosys_read for a full body. Specialist tools require gnosys_toolset {\"set\":\"standard\"}: use gnosys_search for plain keyword search, gnosys_federated_search for scope boosts, gnosys_discover for metadata only, or gnosys_semantic_search for embedding-only results. Embedding setup requires gnosys_toolset {\"set\":\"full\"} then gnosys_reindex. Example: {\"query\":\"JWT refresh flow\",\"mode\":\"keyword\",\"limit\":5}.",
   {
     query: z.string().describe("Natural language search query"),
     limit: z.number().optional().describe("Max results (default 15)"),
@@ -2353,8 +2399,7 @@ regTool(
   },
   async ({ query, limit, mode, activeOnly, projectRoot }) => {
     const visibility = projectReadVisibility((await resolveToolContext(projectRoot)).projectBoundary);
-    // v5.9.1 (#100): wait for the background heavy-init to finish.
-    await ensureHeavyDeps();
+    await initSearchDeps();
     if (!hybridSearch) {
       return {
         content: [{ type: "text", text: "Hybrid search not initialized. No stores found." }],
@@ -2403,7 +2448,7 @@ regTool(
 // ─── Tool: gnosys_semantic_search ────────────────────────────────────────
 regTool(
   "gnosys_semantic_search",
-  "Search memories using semantic similarity. Finds conceptually related memories even without exact keyword matches. Falls back to keyword search with an explicit note when embeddings are unavailable. Includes status, modified date, and replacement IDs; replacements rank before their history. Run gnosys_reindex to build embeddings. Set activeOnly=true to exclude non-active memories (default false).",
+  "Search memories using semantic similarity. Finds conceptually related memories even without exact keyword matches. Falls back to keyword search with an explicit note when embeddings are unavailable. Includes status, modified date, and replacement IDs; replacements rank before their history. Build embeddings with gnosys_reindex, which requires gnosys_toolset {\"set\":\"full\"}. Use gnosys_hybrid_search instead for combined ranking. Set activeOnly=true to exclude non-active memories (default false).",
   {
     query: z.string().describe("Natural language search query"),
     limit: z.number().optional().describe("Max results (default 15)"),
@@ -2412,7 +2457,7 @@ regTool(
   },
   async ({ query, limit, activeOnly, projectRoot }) => {
     const visibility = projectReadVisibility((await resolveToolContext(projectRoot)).projectBoundary);
-    await ensureHeavyDeps();
+    await initSearchDeps();
     if (!hybridSearch) {
       return {
         content: [{ type: "text", text: "Search not initialized. No stores found." }],
@@ -2443,12 +2488,12 @@ regTool(
 // ─── Tool: gnosys_reindex ────────────────────────────────────────────────
 regTool(
   "gnosys_reindex",
-  "Rebuild all semantic embeddings from every memory file. Downloads the embedding model (~80 MB) on first run. Required before hybrid/semantic search can be used. Safe to re-run — fully regenerates the index.",
+  "Rebuild all semantic embeddings from every memory file. Downloads the embedding model (~23 MB) on first run. Required before hybrid/semantic search can be used. Safe to re-run — fully regenerates the index.",
   { projectRoot: projectRootParam },
   async ({ projectRoot }) => {
     // Note: reindex operates on all stores, projectRoot is for API consistency
     (projectRoot); // quiets unused warning if any
-    await ensureHeavyDeps();
+    await initSearchDeps();
     if (!hybridSearch) {
       return {
         content: [{ type: "text", text: "No stores found. Initialize a store with gnosys_init first." }],
@@ -2490,7 +2535,7 @@ regTool(
 // ─── Tool: gnosys_ask ────────────────────────────────────────────────────
 regTool(
   "gnosys_ask",
-  "Ask a natural-language question and get a synthesized answer with citations from the vault. Uses hybrid search to find relevant memories, then LLM to synthesize a cited response. Citations are Obsidian wikilinks [[filename.md]]. Requires an LLM provider (Anthropic or Ollama) and embeddings (run gnosys_reindex first).",
+  "Ask a natural-language question and get a synthesized answer with citations from the vault. Uses hybrid search to find relevant memories, then LLM to synthesize a cited response. Citations are Obsidian wikilinks [[filename.md]]. Requires an LLM provider (Anthropic or Ollama) and embeddings (requires gnosys_toolset {\"set\":\"full\"} then gnosys_reindex).",
   {
     question: z.string().describe("Natural language question to answer from the vault"),
     limit: z.number().optional().describe("Max memories to retrieve (default 15)"),
@@ -2564,7 +2609,7 @@ regTool(
 // ─── Tool: gnosys_maintain ────────────────────────────────────────────────
 regTool(
   "gnosys_maintain",
-  "Run vault maintenance: detect duplicate memories, apply confidence decay, consolidate similar memories. Use --dry-run mode first to see what would change. Requires embeddings (run gnosys_reindex first).",
+  "Run vault maintenance: detect duplicate memories, apply confidence decay, consolidate similar memories. Use --dry-run mode first to see what would change. Requires embeddings (requires gnosys_toolset {\"set\":\"full\"} then gnosys_reindex).",
   {
     dryRun: z.boolean().optional().describe("Show what would change without modifying anything (default: true)"),
     autoApply: z.boolean().optional().describe("Automatically apply all changes (default: false)"),
@@ -2838,7 +2883,7 @@ regTool(
 // ─── Tool: gnosys_dashboard ──────────────────────────────────────────────
 regTool(
   "gnosys_dashboard",
-  "Show the Gnosys system dashboard: memory counts, maintenance health, graph stats, LLM provider status. Returns structured JSON.",
+  "Inspect local memory-system health as JSON with memory counts, maintenance health, graph statistics, and LLM provider status. projectRoot selects the project context; omission uses the detected context. Use gnosys_briefing instead for a project summary and recent activity as Markdown.",
   { projectRoot: projectRootParam },
   async ({ projectRoot }) => {
     const ctx = await resolveToolContext(projectRoot);
@@ -2991,7 +3036,7 @@ regResource(
 // recall memories for a specific query. The resource above is preferred.
 regTool(
   "gnosys_recall",
-  "Fast memory recall — inject relevant memories as context. Returns <gnosys-recall> block. In aggressive mode (default), always returns top memories even at medium relevance. A wildcard query ('*') returns the top memories by reinforcement/confidence/recency. Hosts with gnosys hooks installed (via gnosys init) already get this automatically per prompt. Registered projectRoot searches that project plus user and global memories. An unregistered projectRoot returns an error asking for gnosys_init. Omit projectRoot to search all projects.",
+  "Recall relevant memories as a <gnosys-recall> context block for a task, e.g. query=\"JWT middleware\". query=\"*\" selects by reinforcement, confidence, and recency; limit uses config by default and is capped at 15; aggressive defaults to config (true). Use gnosys_hybrid_search instead to inspect ranked results or gnosys_read for one complete body. Registered projectRoot includes project, user, and global memories; omit it for all projects, or run gnosys_init for an unregistered root. Installed hooks may already inject this context per prompt.",
   {
     query: z
       .string()
@@ -3082,7 +3127,7 @@ regTool(
 // ─── Tool: gnosys_preference_set ─────────────────────────────────────────
 regTool(
   "gnosys_preference_set",
-  "Set a user preference. Preferences are stored in the central DB as user-scoped memories. They persist across all projects and are injected into agent rules files on `gnosys sync`. Use this to record workflow conventions, coding standards, tool preferences, etc.",
+  "Save or replace a user preference across projects, returning its key, title, and value. Use kebab-case keys, e.g. {\"key\":\"code-style\",\"value\":\"Use named exports\"}; title is generated from the key if omitted. Preferences persist as user-scoped memories; the CLI command gnosys sync refreshes generated rules files. Use gnosys_preference_get instead to inspect a key or list preferences.",
   {
     key: z.string().describe(
       "Preference key, kebab-case. Examples: 'commit-convention', 'code-style', 'llm-provider', 'testing-approach', 'naming-convention'"
@@ -3139,7 +3184,7 @@ regTool(
 // ─── Tool: gnosys_preference_get ─────────────────────────────────────────
 regTool(
   "gnosys_preference_get",
-  "Get a user preference by key, or list all preferences.",
+  "Read a user preference by key, returning its title, value, confidence, and modified date, or omit key to list all preferences with their keys and values. Keys are kebab-case, e.g. {\"key\":\"code-style\"}; missing keys return a not-found message. Use gnosys_preference_set instead to save or replace a preference.",
   {
     key: z.string().optional().describe("Preference key to retrieve. Omit to list all preferences."),
     projectRoot: projectRootParam,
@@ -3349,12 +3394,12 @@ regTool(
 
 regTool(
   "gnosys_federated_search",
-  "Search across project, user, and global scopes with scope and recency boosts. Returns memory IDs, status labels, modified dates, replacement IDs, and score breakdowns. Replacements rank before their history. Set activeOnly=true to exclude non-active memories (default false).",
+  "Search project, user, and global memories with scope and recency boosts, returning IDs, status, dates, replacement links, and score breakdowns. Requires gnosys_toolset {\"set\":\"standard\"}; limit defaults to 20, activeOnly to false, and includeGlobal to true. projectRoot selects the project used for scope boosts. Use gnosys_hybrid_search instead for keyword plus semantic ranking, or gnosys_recall for context injection.",
   {
     query: z.string().describe("Search query"),
     limit: z.number().optional().describe("Max results (default: 20)"),
     projectRoot: z.string().optional().describe("Project root directory for context detection"),
-    activeOnly: z.boolean().optional().describe("Only active memories"),
+    activeOnly: z.boolean().optional().describe("Only active memories (default false; includes history otherwise)"),
     includeGlobal: z.boolean().optional().describe("Include global-scope memories (default: true)"),
   },
   async ({ query, limit, projectRoot, includeGlobal, activeOnly }) => {
@@ -3430,7 +3475,7 @@ regTool(
 
 regTool(
   "gnosys_briefing",
-  "Generate a project briefing — a summary of memory state, categories, recent activity, and top tags. Use for dream mode pre-computation or quick project status.",
+  "Summarize a project as Markdown with memory counts, categories, activity from the last seven days, top tags, and a summary. projectId takes precedence over projectRoot; otherwise detect from projectRoot or cwd. all=true returns summaries for all projects and ignores both selectors (default false). Use gnosys_dashboard instead for system health, graph statistics, and provider status as JSON.",
   {
     projectId: z.string().optional().describe("Project ID (auto-detects from cwd if omitted)"),
     all: z.boolean().optional().describe("Generate briefings for ALL projects"),
@@ -3922,7 +3967,7 @@ async function openCentralDbForTrace(): Promise<GnosysDB> {
 
 regTool(
   "gnosys_trace",
-  "Trace a codebase directory and store procedural 'how' memories with call-chain relationships.",
+  "Trace a source directory and WRITE many procedural memories plus call-chain relationships, returning counts of files, functions, memories, and relationships. Requires gnosys_toolset {\"set\":\"standard\"}; supports TypeScript and JavaScript (.ts, .tsx, .js, .jsx), with maxFiles default 500. Runs local parsing without an LLM or provider cost; work and database growth scale with source size. Each re-run creates new memory IDs and duplicates prior traces, so it is not idempotent. Use gnosys_traverse instead to read relationships already stored.",
   {
     directory: z.string().describe("Source directory to trace"),
     maxFiles: z.number().int().positive().optional().describe("Max source files to scan (default: 500)"),
@@ -3963,13 +4008,13 @@ regTool(
 
 regTool(
   "gnosys_reflect",
-  "Record a real-world outcome against related memories, adjusting their confidence and linking them.",
+  "Record an outcome as a new reflection memory, returning its ID, confidence delta, updated memory IDs and confidences, and relationship count. memoryIds defaults to up to five keyword matches on outcome; success defaults to true and confidenceDelta to +0.05 on success or -0.1 on failure, clamping resulting confidence to 0.05..1. Success also reinforces targets and adds validates links; failure adds contradicts links. Use gnosys_reinforce instead for usefulness feedback without creating an outcome memory; each reflection call creates a new record and applies the delta again.",
   {
     outcome: z.string().describe("What happened (the outcome to reflect on)"),
     memoryIds: z.array(z.string()).optional().describe("Memory IDs to relate to (default: FTS match on outcome)"),
     success: z.boolean().optional().describe("Was it a success? (default: true)"),
     notes: z.string().optional().describe("Additional notes"),
-    confidenceDelta: z.number().optional().describe("Custom confidence delta (e.g. 0.1 or -0.2)"),
+    confidenceDelta: z.number().optional().describe("Confidence change (default +0.05 on success, -0.1 on failure); resulting confidence clamps to 0.05..1"),
     projectRoot: projectRootParam,
   },
   async ({ outcome, memoryIds, success, notes, confidenceDelta }) => {
@@ -4013,12 +4058,12 @@ regTool(
 
 regTool(
   "gnosys_traverse",
-  "Walk relationship chains from a memory id (BFS, depth-limited), optionally filtered by direction or relationship types.",
+  "Traverse stored memory relationships breadth-first, returning an indented text tree of IDs, titles, confidences, depths, and connecting edges. direction is out, in, or both (default); depth defaults to 3 with range 1..10. relTypes accepts stored relationship strings, including references, supersedes, leads_to, follows_from, requires, validates, contradicts, and corroborates; omission follows all types. Example: {\"memoryId\":\"arch-012\",\"depth\":2,\"relTypes\":[\"requires\"]}. To create relationships from source code, use gnosys_trace instead, which requires gnosys_toolset {\"set\":\"standard\"}.",
   {
     memoryId: z.string().describe("Starting memory ID"),
     direction: z.enum(["out", "in", "both"]).optional().describe("Edge direction to follow (default: both)"),
     depth: z.number().int().min(1).max(10).optional().describe("Max traversal depth (default: 3, max: 10)"),
-    relTypes: z.array(z.string()).optional().describe("Relationship types to follow, e.g. ['leads_to','requires']"),
+    relTypes: z.array(z.string()).optional().describe("Stored relationship types to follow (default all), e.g. leads_to, follows_from, requires, validates, contradicts, corroborates, references, supersedes"),
     projectRoot: projectRootParam,
   },
   async ({ memoryId, direction, depth, relTypes }) => {
@@ -4063,13 +4108,13 @@ regTool(
 // from the first occurrence of a quoted tool name still hit the regTool
 // call. Only consulted at registerCapabilities() replay time.
 
-/** The proven Apple "Core 15" + the three process-trace tools. */
+/** Default tools for memory work and in-session tier switching. */
 const CORE_TOOLS = new Set(
   [
-    "init", "add_structured", "add", "read", "update", "discover", "recall",
-    "search", "hybrid_search", "federated_search", "reinforce",
+    "init", "add_structured", "read", "update", "recall",
+    "hybrid_search", "reinforce",
     "preference_set", "preference_get", "briefing", "dashboard",
-    "trace", "reflect", "traverse",
+    "reflect", "traverse",
     "toolset", // v6.2: gnosys_toolset — the tier switcher, never disabled
   ].map((t) => `gnosys_${t}`),
 );
@@ -4080,6 +4125,7 @@ const STANDARD_EXTRA_TOOLS = new Set(
     "list", "stats", "tags", "timeline", "working_set", "semantic_search",
     "ask", "lens", "links", "graph", "attach", "get_attachment",
     "ingest_file", "update_status", "preference_delete",
+    "trace", "search", "federated_search", "discover",
   ].map((t) => `gnosys_${t}`),
 );
 
@@ -4105,6 +4151,10 @@ export function toolInToolset(name: string, toolset: McpToolset): boolean {
  *  gnosys_toolset catalog so agents can decide whether to expand. */
 const TOOL_SUMMARIES: Record<string, string> = {
   // standard tier additions
+  gnosys_trace: "write procedural memories from TypeScript/JavaScript source",
+  gnosys_search: "keyword search with snippets",
+  gnosys_federated_search: "cross-project search with scope and recency boosts",
+  gnosys_discover: "find memory metadata without loading bodies",
   gnosys_list: "list memories with filters",
   gnosys_stats: "store statistics and counts",
   gnosys_tags: "browse the categorized tag registry",
@@ -4119,8 +4169,9 @@ const TOOL_SUMMARIES: Record<string, string> = {
   gnosys_get_attachment: "retrieve a stored attachment",
   gnosys_ingest_file: "ingest a document into memories",
   gnosys_update_status: "guided project-status checklist writer",
-  gnosys_preference_delete: "delete a stored user preference",
+  gnosys_preference_delete: "refuses deletion over MCP; deletion is human-only via the CLI",
   // full tier additions
+  gnosys_add: "freeform LLM ingestion for operator-enabled non-agent callers",
   gnosys_tags_add: "register new tags in the registry",
   gnosys_migrate: "migrate legacy stores into the central DB",
   gnosys_stale: "list decayed/stale memories for review",
@@ -4172,8 +4223,9 @@ function toolsetCatalog(state: ToolsetState): string {
 function registerToolsetTool(s: McpServer, state: ToolsetState): void {
   s.tool(
     "gnosys_toolset",
-    "Gnosys starts with a core toolset. Call without args to list tools available in higher tiers; call with set (core|standard|full) to expand or shrink the active toolset.",
+    "List the active tool tier and a catalog of higher-tier tools as text, or set core, standard, or full to switch tiers and return added/removed tool names. Starts on core unless configured otherwise; omit set to inspect without switching. Example: {\"set\":\"standard\"} enables specialist search and tracing tools for this session.",
     { set: z.enum(["core", "standard", "full"]).optional().describe("Target tier to switch to. Omit to see the current tier and what higher tiers add.") },
+    TOOL_ANNOTATIONS.gnosys_toolset,
     async ({ set }) => {
       if (!set) {
         return { content: [{ type: "text" as const, text: toolsetCatalog(state) }] };
@@ -4338,9 +4390,9 @@ Scan the conversation for:
 
 ### How to save each memory
 For each candidate memory:
-1. First call \`gnosys_search\` with relevant keywords to check if it already exists
+1. First call \`gnosys_hybrid_search\` with relevant keywords to check if it already exists
 2. If a similar memory exists, call \`gnosys_update\` to augment it instead of creating a duplicate
-3. If genuinely new, call \`gnosys_add_structured\` (NOT \`gnosys_add\`) with these fields:
+3. If genuinely new, call \`gnosys_add_structured\` with these fields:
    - **title**: Clear, descriptive title (e.g. "Decision: Use Postgres over SQLite for production")
    - **category**: One of: \`decisions\`, \`architecture\`, \`requirements\`, \`concepts\`, \`roadmap\`, \`landscape\`, \`open-questions\`
    - **content**: The full memory in markdown
@@ -4353,7 +4405,7 @@ For each candidate memory:
      * Any names, acronyms, or abbreviations used in discussion
      Example: \`"postgres sqlite database migration production scaling orm prisma drizzle chose rejected backend data-layer persistence"\`
 
-Using \`gnosys_add_structured\` instead of \`gnosys_add\` means **no separate LLM API call is needed** — YOU are the LLM doing the structuring.
+Using \`gnosys_add_structured\` means **no separate LLM API call is needed** — YOU are the LLM doing the structuring.
 
 ### When done
 After saving all memories, call \`gnosys_preference_set\` with:
@@ -4383,24 +4435,36 @@ This marks the conversation checkpoint so the next /gnosys-memorize only process
 // running them AFTER server.connect() responds to the MCP handshake, we
 // avoid the client-side timeout (Grok Build = 10s default).
 
-let heavyDepsReadyResolve: (() => void) | null = null;
-const heavyDepsReady: Promise<void> = new Promise((resolve) => {
-  heavyDepsReadyResolve = resolve;
-});
+let heavyDepsReady: Promise<void> | null = null;
 
-/**
- * Returns once the heavy deps have been loaded and module-level vars
- * (ingestion, hybridSearch, askEngine) are populated. Handlers that
- * need any of these should `await ensureHeavyDeps()` first.
- */
 export function ensureHeavyDeps(): Promise<void> {
+  if (!resolver.getWriteTarget() || !tagRegistry || !search) return Promise.resolve();
+  heavyDepsReady ??= initHeavyDeps();
   return heavyDepsReady;
+}
+
+async function initSearchDeps(): Promise<GnosysHybridSearch | null> {
+  if (hybridSearch) return hybridSearch;
+  const writeTarget = resolver.getWriteTarget();
+  if (!writeTarget || !search) return null;
+  const { GnosysEmbeddings } = await import("./lib/embeddings.js");
+  const { GnosysHybridSearch } = await import("./lib/hybridSearch.js");
+  const embeddings = new GnosysEmbeddings(writeTarget.store.getStorePath());
+  hybridSearch = new GnosysHybridSearch(
+    search, embeddings, resolver, writeTarget.store.getStorePath(), gnosysDb || undefined,
+  );
+  const { checkEmbeddingPackage } = await import("./lib/embeddingHealth.js");
+  if (checkEmbeddingPackage().kind === "available" && centralDb?.isAvailable()) {
+    const { enableWriteTimeEmbedding } = await import("./lib/embedQueue.js");
+    enableWriteTimeEmbedding(() => centralDb, embeddings);
+    console.error("Write-time embeddings: enabled (central DB)");
+  }
+  return hybridSearch;
 }
 
 async function initHeavyDeps(): Promise<void> {
   const writeTarget = resolver.getWriteTarget();
   if (!writeTarget || !tagRegistry || !search) {
-    heavyDepsReadyResolve?.();
     return;
   }
 
@@ -4411,34 +4475,16 @@ async function initHeavyDeps(): Promise<void> {
     `LLM ingestion: ${ingestion.isLLMAvailable ? `enabled (${ingestion.providerName})` : "disabled (configure LLM provider)"}`,
   );
 
-  // Hybrid search + ask (used by gnosys_hybrid_search / gnosys_ask).
-  const { GnosysEmbeddings } = await import("./lib/embeddings.js");
-  const { GnosysHybridSearch } = await import("./lib/hybridSearch.js");
+  const searchEngine = await initSearchDeps();
+  if (!searchEngine) return;
   const { GnosysAsk } = await import("./lib/ask.js");
-  const embeddings = new GnosysEmbeddings(writeTarget.store.getStorePath());
-  hybridSearch = new GnosysHybridSearch(
-    search,
-    embeddings,
-    resolver,
-    writeTarget.store.getStorePath(),
-    gnosysDb || undefined,
-  );
-  askEngine = new GnosysAsk(hybridSearch, config, resolver, writeTarget.store.getStorePath());
-
-  // v5.13.0: write-time embeddings (serve mode only) — new and updated
-  // memories get vectors without waiting for a manual reindex. Best-effort:
-  // queued writes drain on an unref'd timer and never block a tool call.
+  askEngine = new GnosysAsk(searchEngine, config, resolver, writeTarget.store.getStorePath());
   const { checkEmbeddingPackage } = await import("./lib/embeddingHealth.js");
   const embeddingRuntime = checkEmbeddingPackage();
-  if (embeddingRuntime.kind === "available" && centralDb?.isAvailable() && centralDb.isMigrated()) {
-    const { enableWriteTimeEmbedding } = await import("./lib/embedQueue.js");
-    enableWriteTimeEmbedding(() => centralDb, embeddings);
-    console.error("Write-time embeddings: enabled (central DB)");
-  }
 
-  const embCount = hybridSearch.embeddingCount();
+  const embCount = searchEngine.embeddingCount();
   console.error(
-    `Hybrid search: ${embeddingRuntime.kind === "unavailable" ? "keyword fallback (local embeddings unavailable)" : embCount > 0 ? `ready (${embCount} embeddings)` : "available (run gnosys_reindex to build embeddings)"}`,
+    `Hybrid search: ${embeddingRuntime.kind === "unavailable" ? "keyword fallback (local embeddings unavailable)" : embCount > 0 ? `ready (${embCount} embeddings)` : "available (CLI: gnosys reindex builds embeddings)"}`,
   );
   console.error(
     `Ask engine: ${askEngine.isLLMAvailable ? `ready (${askEngine.providerName}/${askEngine.modelName})` : "disabled (configure LLM provider)"}`,
@@ -4511,7 +4557,6 @@ async function initHeavyDeps(): Promise<void> {
   }
 
   console.error("Gnosys MCP: heavy modules ready");
-  heavyDepsReadyResolve?.();
 }
 
 // ─── Start the server ────────────────────────────────────────────────────
@@ -4645,7 +4690,7 @@ export async function startMcpServer() {
     console.error(
       `Gnosys MCP: HTTP transport ready on http://${host}:${port}/mcp${authToken ? " (bearer auth required)" : ""}`,
     );
-    void initHeavyDeps().catch((err) => {
+    void ensureHeavyDeps().catch((err) => {
       console.error(`Gnosys MCP: heavy-init failed — ${err instanceof Error ? err.message : err}`);
     });
     return;
@@ -4659,7 +4704,7 @@ export async function startMcpServer() {
   // Kick off heavy deps; fire-and-forget. Errors here are non-fatal —
   // they're logged to stderr and the affected handlers will report the
   // failure on first use.
-  void initHeavyDeps().catch((err) => {
+  void ensureHeavyDeps().catch((err) => {
     console.error(
       `Gnosys MCP: heavy-init failed — ${err instanceof Error ? err.message : err}`,
     );

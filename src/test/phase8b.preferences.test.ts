@@ -220,7 +220,7 @@ More custom instructions.
     it("generateRulesBlock always includes base tool instructions", () => {
       const block = generateRulesBlock([], []);
       expect(block).toContain("Gnosys Memory System");
-      expect(block).toContain("gnosys_discover");
+      expect(block).toContain("gnosys_hybrid_search");
     });
   });
 

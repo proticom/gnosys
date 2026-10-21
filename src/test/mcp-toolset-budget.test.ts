@@ -38,7 +38,6 @@ describe("MCP toolset budgets", () => {
       "gnosys_add_structured",
       "gnosys_recall",
       "gnosys_hybrid_search",
-      "gnosys_trace",
       "gnosys_reflect",
       "gnosys_traverse",
     ]) {

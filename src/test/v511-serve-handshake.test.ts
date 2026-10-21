@@ -56,7 +56,7 @@ describe("gnosys serve MCP handshake", () => {
     const client = new Client({ name: "gnosys-mcp-bin-test", version: "0.0.0" });
     await client.connect(transport);
     const { tools } = await client.listTools();
-    expect(tools.map(tool => tool.name)).toEqual(expect.arrayContaining(["gnosys_discover", "gnosys_read", "gnosys_add_structured"]));
+    expect(tools.map(tool => tool.name)).toEqual(expect.arrayContaining(["gnosys_hybrid_search", "gnosys_read", "gnosys_add_structured"]));
     const result = await client.callTool({ name: "gnosys_read", arguments: { path: "handshake-memory", projectRoot: tmpHome } });
     expect(JSON.stringify(result.content)).toContain("handshake literal body");
     await client.close();
@@ -78,7 +78,7 @@ describe("gnosys serve MCP handshake", () => {
     const client = new Client({ name: "serve-handshake-test", version: "0.0.0" });
     await client.connect(transport);
     const { tools } = await client.listTools();
-    expect(tools.map(tool => tool.name)).toEqual(expect.arrayContaining(["gnosys_discover", "gnosys_read", "gnosys_add_structured"]));
+    expect(tools.map(tool => tool.name)).toEqual(expect.arrayContaining(["gnosys_hybrid_search", "gnosys_read", "gnosys_add_structured"]));
     const result = await client.callTool({ name: "gnosys_read", arguments: { path: "handshake-memory", projectRoot: tmpHome } });
     expect(JSON.stringify(result.content)).toContain("handshake literal body");
     await client.close();
