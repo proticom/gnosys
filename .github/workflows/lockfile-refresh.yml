@@ -42,8 +42,9 @@ jobs:
       - name: Run npm update
         run: npm update
 
+      # Match ci.yml: GHSA-hp3w-g68c-fv3c is moderate and has no fix.
       - name: Confirm audit clean
-        run: npm audit --audit-level=moderate
+        run: npm audit --audit-level=high
 
       - name: Skip if no lockfile changes
         id: diff
@@ -78,9 +79,9 @@ jobs:
             committed lockfile and current npm advisories before it
             hits a release.
 
-            Includes a `npm audit --audit-level=moderate` clean
-            confirmation. If audit failed, this PR would not have
-            been opened — investigate manually instead.
+            Includes a `npm audit --audit-level=high` clean confirmation,
+            matching ci.yml. If audit failed, this PR would not have been
+            opened — investigate manually instead.
 
             Tests run on Node 24.18.1 against the updated lockfile.
           labels: |
