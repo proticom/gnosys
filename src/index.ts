@@ -10,7 +10,7 @@ import { ensureSqliteRuntime } from "./lib/sqliteStartup.js";
 // IMPORTANT: We use dotenv.parse() instead of dotenv.config() because
 // dotenv v17+ writes injection notices to stdout, which corrupts the
 // MCP stdio JSON protocol. parse() is a pure function with no side effects.
-import { TOOL_ANNOTATIONS } from "./lib/toolAnnotations.js";
+import { TOOL_ANNOTATIONS, type ToolName } from "./lib/toolAnnotations.js";
 import { formatSearchStatus } from "./lib/searchStatus.js";
 import dotenv from "dotenv";
 import path from "path";
@@ -41,7 +41,9 @@ const RUNNING_VERSION: string = (() => {
   }
 })();
 
-import { McpServer, type RegisteredTool } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { McpServer, type RegisteredTool, type ToolCallback } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { getLiteralValue, getObjectShape } from "@modelcontextprotocol/sdk/server/zod-compat.js";
+import { CallToolRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import fs from "fs/promises";
@@ -192,10 +194,18 @@ function withContextRelease(
 
 // Typed to the McpServer methods so call-site generic inference (Zod schema →
 // handler arg types) is preserved; the body just collects a replay thunk.
-const regTool: typeof server.tool = ((...args: unknown[]) => {
-  const name = typeof args[0] === "string" ? args[0] : "";
+const regTool: <Args extends z.ZodRawShape>(
+  name: ToolName,
+  description: string,
+  paramsSchema: Args,
+  callback: ToolCallback<Args>,
+) => void = (...args: unknown[]) => {
+  const rawName = args[0];
+  if (typeof rawName !== "string" || !Object.hasOwn(TOOL_ANNOTATIONS, rawName)) {
+    throw new Error(`Missing MCP annotations for ${String(rawName)}`);
+  }
+  const name = rawName as ToolName;
   const annotations = TOOL_ANNOTATIONS[name];
-  if (!annotations) throw new Error(`Missing MCP annotations for ${name}`);
   args.splice(args.length - 1, 0, annotations);
   const last = args.length - 1;
   if (typeof args[last] === "function") {
@@ -208,7 +218,7 @@ const regTool: typeof server.tool = ((...args: unknown[]) => {
     name: typeof args[0] === "string" ? args[0] : null,
     register: (s) => (s.tool as (...a: unknown[]) => unknown)(...args),
   });
-}) as typeof server.tool;
+};
 const regPrompt: typeof server.prompt = ((...args: unknown[]) => {
   _registrations.push({ name: null, register: (s) => (s.prompt as (...a: unknown[]) => unknown)(...args) });
 }) as typeof server.prompt;
@@ -239,12 +249,42 @@ function applyToolset(state: ToolsetState, tier: McpToolset): void {
  *  the always-enabled `gnosys_toolset` tool. */
 export function registerCapabilities(s: McpServer, toolset: McpToolset = resolveToolset()): void {
   const state: ToolsetState = { tier: toolset, tools: new Map() };
-  for (const r of _registrations) {
-    const rt = r.register(s);
-    if (r.name !== null) state.tools.set(r.name, rt as RegisteredTool);
+  const original = s.server.setRequestHandler;
+  const install = original.bind(s.server);
+  // The SDK rejects disabled tools before callbacks. Wrap its public dispatch
+  // installation while retaining SDK validation, listing, and notifications.
+  s.server.setRequestHandler = (schema, handler) => {
+    const methodSchema = getObjectShape(schema)?.method;
+    if (!methodSchema || getLiteralValue(methodSchema) !== "tools/call") {
+      install(schema, handler);
+      return;
+    }
+    install(schema, (request, extra) => {
+      const { params } = CallToolRequestSchema.parse(request);
+      const name = params.name;
+      if (state.tools.has(name) && !toolInToolset(name, state.tier)) {
+        const tier = toolTier(name);
+        const alternative = name === "gnosys_add"
+          ? " Use gnosys_add_structured for agent-authored memories."
+          : "";
+        return {
+          isError: true,
+          content: [{ type: "text", text: `${name} is in the ${tier} toolset (active: ${state.tier}). Call gnosys_toolset ${JSON.stringify({ set: tier })} to enable it.${alternative}` }],
+        };
+      }
+      return handler(request, extra);
+    });
+  };
+  try {
+    for (const r of _registrations) {
+      const rt = r.register(s);
+      if (r.name !== null) state.tools.set(r.name, rt as RegisteredTool);
+    }
+    registerToolsetTool(s, state);
+    applyToolset(state, toolset);
+  } finally {
+    s.server.setRequestHandler = original;
   }
-  registerToolsetTool(s, state);
-  applyToolset(state, toolset);
 }
 
 /**
@@ -1381,7 +1421,7 @@ regTool(
     // Directly add the new store to the resolver (no re-resolve from cwd needed)
     await resolver.addProjectStore(storePath);
 
-    // Initialize search, tags, and ingestion if this is the first store
+    // Initialize offline search for the first store; providers remain lazy.
     const writeTarget = resolver.getWriteTarget();
     if (writeTarget && !search) {
       search = new GnosysSearch(writeTarget.store.getStorePath());
@@ -1390,7 +1430,7 @@ regTool(
       config = await loadConfig(writeTarget.store.getStorePath());
       await reindexAllStores();
       gnosysDb = centralDb;
-      await initHeavyDeps();
+      await initSearchDeps();
     }
 
     // Configure IDE hooks for automatic memory recall
@@ -2359,8 +2399,7 @@ regTool(
   },
   async ({ query, limit, mode, activeOnly, projectRoot }) => {
     const visibility = projectReadVisibility((await resolveToolContext(projectRoot)).projectBoundary);
-    // v5.9.1 (#100): wait for the background heavy-init to finish.
-    await ensureHeavyDeps();
+    await initSearchDeps();
     if (!hybridSearch) {
       return {
         content: [{ type: "text", text: "Hybrid search not initialized. No stores found." }],
@@ -2418,7 +2457,7 @@ regTool(
   },
   async ({ query, limit, activeOnly, projectRoot }) => {
     const visibility = projectReadVisibility((await resolveToolContext(projectRoot)).projectBoundary);
-    await ensureHeavyDeps();
+    await initSearchDeps();
     if (!hybridSearch) {
       return {
         content: [{ type: "text", text: "Search not initialized. No stores found." }],
@@ -2454,7 +2493,7 @@ regTool(
   async ({ projectRoot }) => {
     // Note: reindex operates on all stores, projectRoot is for API consistency
     (projectRoot); // quiets unused warning if any
-    await ensureHeavyDeps();
+    await initSearchDeps();
     if (!hybridSearch) {
       return {
         content: [{ type: "text", text: "No stores found. Initialize a store with gnosys_init first." }],
@@ -4130,7 +4169,7 @@ const TOOL_SUMMARIES: Record<string, string> = {
   gnosys_get_attachment: "retrieve a stored attachment",
   gnosys_ingest_file: "ingest a document into memories",
   gnosys_update_status: "guided project-status checklist writer",
-  gnosys_preference_delete: "delete a stored user preference",
+  gnosys_preference_delete: "refuses deletion over MCP; deletion is human-only via the CLI",
   // full tier additions
   gnosys_add: "freeform LLM ingestion for operator-enabled non-agent callers",
   gnosys_tags_add: "register new tags in the registry",
@@ -4396,24 +4435,36 @@ This marks the conversation checkpoint so the next /gnosys-memorize only process
 // running them AFTER server.connect() responds to the MCP handshake, we
 // avoid the client-side timeout (Grok Build = 10s default).
 
-let heavyDepsReadyResolve: (() => void) | null = null;
-const heavyDepsReady: Promise<void> = new Promise((resolve) => {
-  heavyDepsReadyResolve = resolve;
-});
+let heavyDepsReady: Promise<void> | null = null;
 
-/**
- * Returns once the heavy deps have been loaded and module-level vars
- * (ingestion, hybridSearch, askEngine) are populated. Handlers that
- * need any of these should `await ensureHeavyDeps()` first.
- */
 export function ensureHeavyDeps(): Promise<void> {
+  if (!resolver.getWriteTarget() || !tagRegistry || !search) return Promise.resolve();
+  heavyDepsReady ??= initHeavyDeps();
   return heavyDepsReady;
+}
+
+async function initSearchDeps(): Promise<GnosysHybridSearch | null> {
+  if (hybridSearch) return hybridSearch;
+  const writeTarget = resolver.getWriteTarget();
+  if (!writeTarget || !search) return null;
+  const { GnosysEmbeddings } = await import("./lib/embeddings.js");
+  const { GnosysHybridSearch } = await import("./lib/hybridSearch.js");
+  const embeddings = new GnosysEmbeddings(writeTarget.store.getStorePath());
+  hybridSearch = new GnosysHybridSearch(
+    search, embeddings, resolver, writeTarget.store.getStorePath(), gnosysDb || undefined,
+  );
+  const { checkEmbeddingPackage } = await import("./lib/embeddingHealth.js");
+  if (checkEmbeddingPackage().kind === "available" && centralDb?.isAvailable()) {
+    const { enableWriteTimeEmbedding } = await import("./lib/embedQueue.js");
+    enableWriteTimeEmbedding(() => centralDb, embeddings);
+    console.error("Write-time embeddings: enabled (central DB)");
+  }
+  return hybridSearch;
 }
 
 async function initHeavyDeps(): Promise<void> {
   const writeTarget = resolver.getWriteTarget();
   if (!writeTarget || !tagRegistry || !search) {
-    heavyDepsReadyResolve?.();
     return;
   }
 
@@ -4424,32 +4475,14 @@ async function initHeavyDeps(): Promise<void> {
     `LLM ingestion: ${ingestion.isLLMAvailable ? `enabled (${ingestion.providerName})` : "disabled (configure LLM provider)"}`,
   );
 
-  // Hybrid search + ask (used by gnosys_hybrid_search / gnosys_ask).
-  const { GnosysEmbeddings } = await import("./lib/embeddings.js");
-  const { GnosysHybridSearch } = await import("./lib/hybridSearch.js");
+  const searchEngine = await initSearchDeps();
+  if (!searchEngine) return;
   const { GnosysAsk } = await import("./lib/ask.js");
-  const embeddings = new GnosysEmbeddings(writeTarget.store.getStorePath());
-  hybridSearch = new GnosysHybridSearch(
-    search,
-    embeddings,
-    resolver,
-    writeTarget.store.getStorePath(),
-    gnosysDb || undefined,
-  );
-  askEngine = new GnosysAsk(hybridSearch, config, resolver, writeTarget.store.getStorePath());
-
-  // v5.13.0: write-time embeddings (serve mode only) — new and updated
-  // memories get vectors without waiting for a manual reindex. Best-effort:
-  // queued writes drain on an unref'd timer and never block a tool call.
+  askEngine = new GnosysAsk(searchEngine, config, resolver, writeTarget.store.getStorePath());
   const { checkEmbeddingPackage } = await import("./lib/embeddingHealth.js");
   const embeddingRuntime = checkEmbeddingPackage();
-  if (embeddingRuntime.kind === "available" && centralDb?.isAvailable() && centralDb.isMigrated()) {
-    const { enableWriteTimeEmbedding } = await import("./lib/embedQueue.js");
-    enableWriteTimeEmbedding(() => centralDb, embeddings);
-    console.error("Write-time embeddings: enabled (central DB)");
-  }
 
-  const embCount = hybridSearch.embeddingCount();
+  const embCount = searchEngine.embeddingCount();
   console.error(
     `Hybrid search: ${embeddingRuntime.kind === "unavailable" ? "keyword fallback (local embeddings unavailable)" : embCount > 0 ? `ready (${embCount} embeddings)` : "available (CLI: gnosys reindex builds embeddings)"}`,
   );
@@ -4524,7 +4557,6 @@ async function initHeavyDeps(): Promise<void> {
   }
 
   console.error("Gnosys MCP: heavy modules ready");
-  heavyDepsReadyResolve?.();
 }
 
 // ─── Start the server ────────────────────────────────────────────────────
@@ -4658,7 +4690,7 @@ export async function startMcpServer() {
     console.error(
       `Gnosys MCP: HTTP transport ready on http://${host}:${port}/mcp${authToken ? " (bearer auth required)" : ""}`,
     );
-    void initHeavyDeps().catch((err) => {
+    void ensureHeavyDeps().catch((err) => {
       console.error(`Gnosys MCP: heavy-init failed — ${err instanceof Error ? err.message : err}`);
     });
     return;
@@ -4672,7 +4704,7 @@ export async function startMcpServer() {
   // Kick off heavy deps; fire-and-forget. Errors here are non-fatal —
   // they're logged to stderr and the affected handlers will report the
   // failure on first use.
-  void initHeavyDeps().catch((err) => {
+  void ensureHeavyDeps().catch((err) => {
     console.error(
       `Gnosys MCP: heavy-init failed — ${err instanceof Error ? err.message : err}`,
     );

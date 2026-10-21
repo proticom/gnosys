@@ -56,26 +56,26 @@ self-escalation hint are announced in the server `instructions` returned in the 
 ## Annotation decisions
 
 [The generated tool table](mcp-tools.md) lists all four boolean hints for all 56 tools.
-Read-only means no user-visible state changes. Derived search/embedding/graph indexes, local snapshots, and access/audit logs do not count. Incidental NAS cache refresh does not make a local-store tool open-world. Local embedding models and their caches are also excluded.
+Read-only means no user-visible state changes. Derived search/embedding/graph indexes, local snapshots, and access/audit logs do not count. Incidental NAS cache refresh does not make a local-store tool open-world. Tools that can load an uncached embedding model are open-world because first use can download it from Hugging Face.
 
-Read, search, discover, federated search, recall, and semantic search do not reinforce memories. Their hints are readOnly=true, destructive=false, idempotent=true, openWorld=false. Reindex and graph reindex only rebuild derived data, so they have the same hints. Portfolio returns text and does not write HTML. Preference deletion is refused on the MCP agent surface, so it also has the default hints.
+Read, keyword search, discover, federated search, and recall do not reinforce memories. Their hints are readOnly=true, destructive=false, idempotent=true, openWorld=false. Graph reindex only rebuilds derived data and has the same hints. Semantic search is also open-world because it can download the embedding model. Explicit embedding reindex is write-capable, non-destructive, idempotent, and open-world. Portfolio returns text and does not write HTML. Preference deletion is refused on the MCP agent surface, so it also has the default hints.
 
 The following tools differ from that default. Additive writes and feedback use destructive=false. Optional file outputs are included in a tool's capability hints. Preference set is an exception to ordinary idempotent upserts: its handler increments reinforcement_count even when the value is unchanged. Update and init also refresh visible modification metadata.
 
 | Tool | Justification |
 |------|---------------|
 | `gnosys_add` | Calls an LLM to create new memories when operator-enabled. |
-| `gnosys_add_structured` | Creates a new structured memory and optional predecessor links; classified as additive. |
-| `gnosys_ask` | Calls an LLM for a cited answer and reinforces retrieved memories. |
-| `gnosys_attach` | Reads a caller-supplied file and stores its attachment bytes; identical bytes are deduplicated. |
-| `gnosys_bootstrap` | Reads caller-supplied documents, calls an LLM, and can overwrite slug-named memory files. |
+| `gnosys_add_structured` | Creates a structured memory and optional predecessor links; serve-mode write-time embeddings can download the model. |
+| `gnosys_ask` | Calls an LLM, can download the embedding model, reinforces retrieved memories, and can reactivate archived memories. |
+| `gnosys_attach` | Reads a caller-supplied file and replaces an existing different attachment; identical bytes are deduplicated. |
+| `gnosys_bootstrap` | Reads caller-supplied documents and can overwrite slug-named memory files. |
 | `gnosys_commit_context` | Calls an LLM to extract and structure new memories; repeat model output is not guaranteed identical. |
 | `gnosys_dashboard` | Only reads user data, but probes configured Ollama/LM Studio HTTP endpoints. |
-| `gnosys_dearchive` | Restores existing archived memories; repeated limited queries can restore additional batches. |
+| `gnosys_dearchive` | Restores archived memories; missing central rows trigger write-time embeddings and possible model download. Repeated limited queries can restore additional batches. |
 | `gnosys_dream` | Calls an LLM and changes confidence, summaries, relationships, and existing memory state. |
 | `gnosys_export` | Writes a caller-selected vault and can overwrite files; identical source data produces identical content. |
 | `gnosys_get_attachment` | Optional outputPath writes attachment bytes to an arbitrary destination and can overwrite a file. |
-| `gnosys_hybrid_search` | Reinforces retrieved memories; local embedding computation and incidental caches are excluded from open-world effects. |
+| `gnosys_hybrid_search` | Reinforces retrieved memories and can download the embedding model for semantic ranking. |
 | `gnosys_import` | Reads a caller-supplied CSV/JSON/JSONL file and creates fresh memory IDs; this MCP path has no overwrite mode. |
 | `gnosys_ingest_file` | Reads a caller-supplied file and can call LLM/transcription providers to create new memories. |
 | `gnosys_init` | Accepts an arbitrary project directory; re-sync can replace existing identity/IDE files and project metadata. |
@@ -83,13 +83,15 @@ The following tools differ from that default. Additive writes and feedback use d
 | `gnosys_migrate` | Moves caller-selected stores, replaces project registration, and can remove the source directory. |
 | `gnosys_preference_set` | Replaces an existing preference and increments reinforcement_count even when the supplied value is unchanged. |
 | `gnosys_reflect` | Creates an outcome memory, links evidence, and adjusts confidence; classified as additive feedback. |
+| `gnosys_reindex` | Rebuilds derived vectors and can download the embedding model; repeated calls produce the same index without changing user data. |
 | `gnosys_reinforce` | Changes reinforcement or review metadata; repeated useful signals increment the count again. |
 | `gnosys_remote_pull` | Reads the NAS and can replace local rows; unresolved conflict records receive new detection timestamps on repeats. |
 | `gnosys_remote_push` | Writes the NAS and can replace remote rows; unresolved conflict records receive new detection timestamps on repeats. |
 | `gnosys_remote_resolve` | Overwrites a local or NAS version and refreshes the selected memory modification timestamp. |
 | `gnosys_remote_status` | Reads NAS reachability and sync state without changing user data. |
+| `gnosys_semantic_search` | Reads memories without reinforcement and can download the embedding model for query vectors. |
 | `gnosys_sync` | Optional commit_to_disk rewrites caller-selected project IDE rules; identical input produces identical blocks. |
 | `gnosys_tags_add` | Adds a registry tag; adding an existing tag has no additional effect. |
 | `gnosys_toolset` | Changes session tool visibility; selecting the current tier again leaves visibility unchanged. |
 | `gnosys_trace` | Reads an arbitrary source directory and creates new procedural memory IDs and relationships on every run. |
-| `gnosys_update` | Overwrites existing memory fields/status/links and updates the visible modified timestamp on every call. |
+| `gnosys_update` | Overwrites existing memory fields/status/links and refreshes modification metadata; searchable-text changes can download the embedding model through the write-time queue. |

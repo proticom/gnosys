@@ -6,7 +6,7 @@ import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { registerCapabilities, toolTier, type McpToolset } from "../index.js";
-import { TOOL_ANNOTATIONS } from "../lib/toolAnnotations.js";
+import { TOOL_ANNOTATIONS, type ToolName } from "../lib/toolAnnotations.js";
 import { generateRulesBlock } from "../lib/rulesGen.js";
 import { GnosysDB } from "../lib/db.js";
 import { setPreference } from "../lib/preferences.js";
@@ -18,6 +18,65 @@ const CORE = [
   "gnosys_preference_set", "gnosys_preference_get", "gnosys_briefing",
   "gnosys_dashboard", "gnosys_traverse", "gnosys_toolset",
 ].sort();
+
+const EXPECTED_HINTS = {
+  gnosys_add: [false, false, false, true],
+  gnosys_add_structured: [false, false, false, true],
+  gnosys_ask: [false, true, false, true],
+  gnosys_attach: [false, true, true, true],
+  gnosys_audit: [true, false, true, false],
+  gnosys_bootstrap: [false, true, false, true],
+  gnosys_briefing: [true, false, true, false],
+  gnosys_commit_context: [false, false, false, true],
+  gnosys_dashboard: [true, false, true, true],
+  gnosys_dearchive: [false, true, false, true],
+  gnosys_detect_ambiguity: [true, false, true, false],
+  gnosys_discover: [true, false, true, false],
+  gnosys_dream: [false, true, false, true],
+  gnosys_export: [false, true, true, true],
+  gnosys_federated_search: [true, false, true, false],
+  gnosys_get_attachment: [false, true, true, true],
+  gnosys_graph: [true, false, true, false],
+  gnosys_history: [true, false, true, false],
+  gnosys_hybrid_search: [false, false, false, true],
+  gnosys_import: [false, false, false, true],
+  gnosys_ingest_file: [false, false, false, true],
+  gnosys_init: [false, true, false, true],
+  gnosys_lens: [true, false, true, false],
+  gnosys_links: [true, false, true, false],
+  gnosys_list: [true, false, true, false],
+  gnosys_maintain: [false, true, false, true],
+  gnosys_migrate: [false, true, false, true],
+  gnosys_portfolio: [true, false, true, false],
+  gnosys_preference_delete: [true, false, true, false],
+  gnosys_preference_get: [true, false, true, false],
+  gnosys_preference_set: [false, true, false, false],
+  gnosys_read: [true, false, true, false],
+  gnosys_recall: [true, false, true, false],
+  gnosys_reflect: [false, false, false, false],
+  gnosys_reindex: [false, false, true, true],
+  gnosys_reindex_graph: [true, false, true, false],
+  gnosys_reinforce: [false, false, false, false],
+  gnosys_remote_pull: [false, true, false, true],
+  gnosys_remote_push: [false, true, false, true],
+  gnosys_remote_resolve: [false, true, false, true],
+  gnosys_remote_status: [true, false, true, true],
+  gnosys_search: [true, false, true, false],
+  gnosys_semantic_search: [true, false, true, true],
+  gnosys_stale: [true, false, true, false],
+  gnosys_stats: [true, false, true, false],
+  gnosys_stores: [true, false, true, false],
+  gnosys_sync: [false, true, true, true],
+  gnosys_tags: [true, false, true, false],
+  gnosys_tags_add: [false, false, true, false],
+  gnosys_timeline: [true, false, true, false],
+  gnosys_toolset: [false, false, true, false],
+  gnosys_trace: [false, false, false, true],
+  gnosys_traverse: [true, false, true, false],
+  gnosys_update: [false, true, false, true],
+  gnosys_update_status: [true, false, true, false],
+  gnosys_working_set: [true, false, true, false],
+} satisfies Record<ToolName, readonly [boolean, boolean, boolean, boolean]>;
 
 const pairs: Array<{ client: Client; server: McpServer }> = [];
 afterEach(async () => {
@@ -55,26 +114,59 @@ describe("MCP metadata contract", () => {
     expect(tools).toHaveLength(56);
     expect(tools.map(t => t.name).sort()).toEqual(Object.keys(TOOL_ANNOTATIONS).sort());
     for (const tool of tools) {
-      expect(tool.annotations, tool.name).toEqual(TOOL_ANNOTATIONS[tool.name]);
       const hints: Array<"readOnlyHint" | "destructiveHint" | "idempotentHint" | "openWorldHint"> = ["readOnlyHint", "destructiveHint", "idempotentHint", "openWorldHint"];
       for (const key of hints) {
         expect(typeof tool.annotations?.[key], `${tool.name}.${key}`).toBe("boolean");
       }
     }
+    expect(Object.fromEntries(tools.map(tool => [tool.name, [
+      tool.annotations?.readOnlyHint, tool.annotations?.destructiveHint,
+      tool.annotations?.idempotentHint, tool.annotations?.openWorldHint,
+    ]]))).toEqual(EXPECTED_HINTS);
     const byName = Object.fromEntries(tools.map(t => [t.name, t.annotations]));
-    expect(byName.gnosys_hybrid_search).toEqual({ readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false });
+    expect(byName.gnosys_hybrid_search).toEqual({ readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true });
     expect(byName.gnosys_update?.destructiveHint).toBe(true);
-    expect(byName.gnosys_add_structured).toEqual({ readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false });
+    expect(byName.gnosys_add_structured).toEqual({ readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true });
     expect(byName.gnosys_remote_push?.openWorldHint).toBe(true);
+    expect(byName.gnosys_attach?.destructiveHint).toBe(true);
+    expect(byName.gnosys_reindex).toEqual({ readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true });
+    expect(byName.gnosys_semantic_search?.openWorldHint).toBe(true);
     expect(byName.gnosys_toolset?.destructiveHint).toBe(false);
     expect(byName.gnosys_get_attachment).toEqual({ readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true });
     expect(byName.gnosys_dashboard).toEqual({ readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true });
-    for (const name of ["gnosys_read", "gnosys_search", "gnosys_recall", "gnosys_discover", "gnosys_federated_search", "gnosys_semantic_search", "gnosys_reindex", "gnosys_reindex_graph"]) {
+    for (const name of ["gnosys_read", "gnosys_search", "gnosys_recall", "gnosys_discover", "gnosys_federated_search", "gnosys_reindex_graph"]) {
       expect(byName[name]?.readOnlyHint, name).toBe(true);
       expect(byName[name]?.destructiveHint, name).toBe(false);
       expect(byName[name]?.idempotentHint, name).toBe(true);
       expect(byName[name]?.openWorldHint, name).toBe(false);
     }
+  });
+
+  it("covers registered full-tier names and annotation keys in both directions", async () => {
+    const registered = (await listTools("full")).map(tool => tool.name);
+    const annotated = Object.keys(TOOL_ANNOTATIONS);
+    expect(registered.filter(name => !annotated.includes(name))).toEqual([]);
+    expect(annotated.filter(name => !registered.includes(name))).toEqual([]);
+    expect(registered.sort()).toEqual(Object.keys(EXPECTED_HINTS).sort());
+  });
+
+  it.each([
+    ["gnosys_discover", 'gnosys_discover is in the standard toolset (active: core). Call gnosys_toolset {"set":"standard"} to enable it.'],
+    ["gnosys_add", 'gnosys_add is in the full toolset (active: core). Call gnosys_toolset {"set":"full"} to enable it. Use gnosys_add_structured for agent-authored memories.'],
+  ])("explains how to enable disabled %s", async (name, message) => {
+    await listTools("core");
+    const result = await pairs[0].client.callTool({ name, arguments: {} });
+    expect(result).toEqual({ isError: true, content: [{ type: "text", text: message }] });
+  });
+
+  it("keeps disabled-tool guidance isolated after another session promotes", async () => {
+    await listTools("core");
+    await listTools("core");
+    await pairs[0].client.callTool({ name: "gnosys_toolset", arguments: { set: "standard" } });
+    const enabled = await pairs[0].client.callTool({ name: "gnosys_discover", arguments: {} });
+    expect(JSON.stringify(enabled.content)).toContain("Input validation error");
+    const disabled = await pairs[1].client.callTool({ name: "gnosys_discover", arguments: {} });
+    expect(disabled).toEqual({ isError: true, content: [{ type: "text", text: 'gnosys_discover is in the standard toolset (active: core). Call gnosys_toolset {"set":"standard"} to enable it.' }] });
   });
 
   it("treats identical preference writes as non-idempotent because they reinforce", () => {
@@ -129,6 +221,7 @@ describe("MCP metadata contract", () => {
       gnosys_search: "keyword search with snippets",
       gnosys_federated_search: "cross-project search with scope and recency boosts",
       gnosys_discover: "find memory metadata without loading bodies",
+      gnosys_preference_delete: "refuses deletion over MCP; deletion is human-only via the CLI",
     })) expect(text).toContain(`- ${name} — ${summary}`);
   });
 });
