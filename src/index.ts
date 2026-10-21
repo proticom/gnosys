@@ -2488,7 +2488,7 @@ regTool(
 // ─── Tool: gnosys_reindex ────────────────────────────────────────────────
 regTool(
   "gnosys_reindex",
-  "Rebuild all semantic embeddings from every memory file. Downloads the embedding model (~80 MB) on first run. Required before hybrid/semantic search can be used. Safe to re-run — fully regenerates the index.",
+  "Rebuild all semantic embeddings from every memory file. Downloads the embedding model (~23 MB) on first run. Required before hybrid/semantic search can be used. Safe to re-run — fully regenerates the index.",
   { projectRoot: projectRootParam },
   async ({ projectRoot }) => {
     // Note: reindex operates on all stores, projectRoot is for API consistency
