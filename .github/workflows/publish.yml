@@ -46,9 +46,20 @@ jobs:
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
+        # Plain vX.Y.Z -> full release marked Latest.
+        # vX.Y.Z-<pre> (e.g. v7.1.0-beta, v7.1.0-rc.1) -> prerelease, never Latest.
+        # Build metadata (+...) after a prerelease part is allowed. Any other v* tag -> full release, not marked Latest.
         run: |
-          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY"; then
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             echo "GitHub Release $GITHUB_REF_NAME already exists"
             exit 0
           fi
-          gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes
+          if [[ "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-[0-9A-Za-z.-]+(\+[0-9A-Za-z.-]+)?$ ]]; then
+            release_flags=(--prerelease --latest=false)
+          elif [[ "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            release_flags=(--latest)
+          else
+            echo "::warning::$GITHUB_REF_NAME is not vX.Y.Z or vX.Y.Z-<prerelease>; creating a release not marked Latest"
+            release_flags=(--latest=false)
+          fi
+          gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes "${release_flags[@]}"
