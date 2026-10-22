@@ -2,7 +2,7 @@
 import { mkdirSync, mkdtempSync, rmSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { GnosysDB } from "../lib/db.js";
 import { runStatsCommand } from "../lib/statsCommand.js";
 import { makeMemory, makeProject } from "./_helpers.js";
@@ -48,21 +48,12 @@ let errSpy: ReturnType<typeof vi.spyOn>;
 let exitSpy: ReturnType<typeof vi.spyOn>;
 const logged = () => logSpy.mock.calls.map((c: unknown[]) => c.join(" ")).join("\n");
 
-beforeAll(() => {
+beforeEach(() => {
   base = mkdtempSync(join(tmpdir(), "gnosys-stats-invoke-"));
   const home = join(base, ".gnosys");
   mkdirSync(home, { recursive: true });
   process.env.GNOSYS_HOME = home;
   process.env.GNOSYS_LOCAL_ONLY = "1";
-});
-afterAll(() => {
-  if (origHome === undefined) delete process.env.GNOSYS_HOME;
-  else process.env.GNOSYS_HOME = origHome;
-  if (origLocal === undefined) delete process.env.GNOSYS_LOCAL_ONLY;
-  else process.env.GNOSYS_LOCAL_ONLY = origLocal;
-  rmSync(base, { recursive: true, force: true });
-});
-beforeEach(() => {
   logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
   errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
   exitSpy = vi.spyOn(process, "exit").mockImplementation(((code?: number) => {
@@ -74,6 +65,11 @@ afterEach(() => {
   errSpy.mockRestore();
   exitSpy.mockRestore();
   process.exitCode = undefined;
+  if (origHome === undefined) delete process.env.GNOSYS_HOME;
+  else process.env.GNOSYS_HOME = origHome;
+  if (origLocal === undefined) delete process.env.GNOSYS_LOCAL_ONLY;
+  else process.env.GNOSYS_LOCAL_ONLY = origLocal;
+  rmSync(base, { recursive: true, force: true });
 });
 
 describe("runStatsCommand (in-process invoke)", () => {
@@ -97,6 +93,11 @@ describe("runStatsCommand (in-process invoke)", () => {
   });
 
   it("renders the human table with category/status/author sections", async () => {
+    const db = GnosysDB.openLocal();
+    seedMemory(db, "table-decision");
+    seedMemory(db, "table-architecture", { category: "architecture" });
+    db.close();
+
     await runStatsCommand({ all: true });
     const out = logged();
     expect(out).toContain("Gnosys Store Statistics:");
