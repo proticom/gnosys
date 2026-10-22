@@ -18,7 +18,7 @@ Run after bulk imports, schema changes, or when hybrid/semantic search returns p
 4. Loads `GnosysEmbeddings` and `GnosysHybridSearch`.
 5. Builds semantic embeddings for all indexed memories.
 
-On first run, downloads the `all-MiniLM-L6-v2` embedding model (~80 MB).
+On first run, downloads the `all-MiniLM-L6-v2` embedding model (~23 MB, 8-bit quantized).
 
 ## Progress output
 

@@ -34,6 +34,7 @@ async function connectMcpSubprocess(
     env: {
       ...process.env,
       GNOSYS_HOME: centralDir,
+      GNOSYS_MCP_TOOLSET: "core",
       HOME: isolatedHome,
       USERPROFILE: isolatedHome,
     },
@@ -110,7 +111,7 @@ describe("Acceptance feature smokes", () => {
       const names = tools.map((tool) => tool.name);
       expect(names.some((name) => name.startsWith("gnosys_"))).toBe(true);
       expect(names).toContain("gnosys_add_structured");
-      expect(names).toContain("gnosys_search");
+      expect(names).toContain("gnosys_hybrid_search");
 
       const initResult = await client.callTool({
         name: "gnosys_init",
@@ -133,14 +134,15 @@ describe("Acceptance feature smokes", () => {
       expect(toolText(addResult as { content?: unknown; isError?: boolean | null })).toContain("Acceptance MCP Memory");
 
       const searchResult = await client.callTool({
-        name: "gnosys_search",
+        name: "gnosys_hybrid_search",
         arguments: {
           query: "acceptance mcp smoke",
+          mode: "keyword",
           limit: 5,
           projectRoot: projectDir,
         },
       });
-      expect(searchResult.isError).not.toBe(true);
+      expect(searchResult.isError, JSON.stringify(searchResult.content)).not.toBe(true);
       expect(toolText(searchResult as { content?: unknown; isError?: boolean | null })).toContain("Acceptance MCP Memory");
     }, 60_000);
   });

@@ -1,9 +1,17 @@
-name: Publish to npm
+name: Publish to npm and GitHub Release
 
 on:
   push:
     tags:
       - "v*"
+
+# One publish at a time per repo; a running publish is never cancelled.
+# GitHub keeps only one *pending* run per group: a third tag pushed while
+# one run is active and one is waiting cancels the waiting run. See
+# RELEASING.md for the (safe) recovery: re-run the cancelled run.
+concurrency:
+  group: publish-${{ github.repository }}
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -16,6 +24,11 @@ jobs:
       contents: read
       id-token: write
 
+    outputs:
+      version: ${{ steps.classify.outputs.version }}
+      gh_prerelease: ${{ steps.classify.outputs.gh_prerelease }}
+      gh_latest: ${{ steps.classify.outputs.gh_latest }}
+
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -26,6 +39,12 @@ jobs:
           cache: npm
           # DO NOT set registry-url — it writes .npmrc with empty token
           # which overrides OIDC auth and causes 404
+
+      # Fail fast, before installing anything: strict semver tag that matches
+      # package.json. See .github/scripts/classify-release-tag.sh.
+      - name: Validate tag
+        shell: bash
+        run: bash .github/scripts/classify-release-tag.sh
 
       - name: Install dependencies
         run: npm ci
@@ -39,5 +58,60 @@ jobs:
       - name: Run tests
         run: npm test
 
+      # Re-classify right before publishing so the dist-tag / Latest decision
+      # reflects the remote tags at publish time, not before the test run.
+      - name: Classify tag
+        id: classify
+        shell: bash
+        run: bash .github/scripts/classify-release-tag.sh
+
       - name: Publish to npm (OIDC trusted publishing, no token needed)
-        run: npm publish --access public
+        shell: bash
+        env:
+          NPM_DIST_TAG: ${{ steps.classify.outputs.npm_tag }}
+          PKG_VERSION: ${{ steps.classify.outputs.version }}
+        run: |
+          set -euo pipefail
+          pkg_name=$(node -p "require('./package.json').name")
+          # Skip if this version is already on npm (e.g. re-running after a
+          # failed release job). A lookup error falls through to publish,
+          # which itself refuses to overwrite an existing version.
+          existing=$(npm view "${pkg_name}@${PKG_VERSION}" version 2>/dev/null || true)
+          if [[ "$existing" == "$PKG_VERSION" ]]; then
+            echo "${pkg_name}@${PKG_VERSION} is already published; skipping npm publish"
+            exit 0
+          fi
+          npm publish --access public --tag "$NPM_DIST_TAG"
+
+  release:
+    needs: publish
+    runs-on: ubuntu-latest
+    # Only this job can write repository contents (the GitHub Release); the
+    # publish job, which runs dependency install scripts, stays read-only.
+    permissions:
+      contents: write
+    steps:
+      - name: Create GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_PRERELEASE: ${{ needs.publish.outputs.gh_prerelease }}
+          GH_LATEST: ${{ needs.publish.outputs.gh_latest }}
+        run: |
+          set -euo pipefail
+          if view_out=$(gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json tagName 2>&1); then
+            echo "GitHub Release $GITHUB_REF_NAME already exists; skipping"
+            exit 0
+          elif [[ "$view_out" != *"release not found"* ]]; then
+            echo "::error::Could not check for an existing release: $view_out"
+            exit 1
+          fi
+          if [[ "$GH_LATEST" != "true" && "$GH_LATEST" != "false" ]]; then
+            echo "::error::Missing classification output gh_latest='$GH_LATEST'"
+            exit 1
+          fi
+          release_flags=("--latest=$GH_LATEST")
+          if [[ "$GH_PRERELEASE" == "true" ]]; then
+            release_flags+=(--prerelease)
+          fi
+          gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes "${release_flags[@]}"

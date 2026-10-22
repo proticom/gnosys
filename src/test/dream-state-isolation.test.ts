@@ -13,7 +13,7 @@
  *
  * Also covers the v5.13.0 embedding-health phase's no-model guarantees:
  * with zero embeddings initialized it must skip (never auto-download the
- * 80 MB model) while still reporting the coverage gap.
+ * ~23 MB model) while still reporting the coverage gap.
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";

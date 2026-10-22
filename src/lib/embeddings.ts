@@ -2,7 +2,7 @@ import { prepare } from "./sqliteStatement.js";
 /**
  * Gnosys Embeddings — Lazy-loaded semantic embedding engine.
  * Uses @huggingface/transformers (ONNX, pure Node) with all-MiniLM-L6-v2.
- * Model (~80 MB) is downloaded only on first use and cached.
+ * Model (~23 MB, 8-bit quantized) is downloaded only on first use and cached.
  * Embeddings are stored in SQLite as regeneratable sidecar data.
  */
 
@@ -34,7 +34,7 @@ export class GnosysEmbeddings {
   }
 
   /**
-   * Lazily initialize the embedding model. Downloads on first use (~80 MB).
+   * Lazily initialize the embedding model. Downloads on first use (~23 MB).
    * Cached in ~/.cache/gnosys or GNOSYS_CACHE_DIR.
    */
   async init(): Promise<void> {
@@ -58,7 +58,7 @@ export class GnosysEmbeddings {
 
     // Dynamic import — keeps @huggingface/transformers out of the main bundle.
     // dtype 'q8' replaces the v2-era `quantized: true` option (8-bit quantized,
-    // ~80 MB vs ~280 MB for fp32). Smaller is fine for sentence embeddings.
+    // ~23 MB vs ~90 MB for fp32). Smaller is fine for sentence embeddings.
     // Use `any` here so `tsc` succeeds even when the optional dep is not installed
     // (CI network-share-simulation job, fresh checkouts, etc.). The real type
     // is only needed at runtime when the package is present.

@@ -542,7 +542,7 @@ You are updating the project status for the Gnosys portfolio dashboard. Follow t
 
 ## Step 1: Analyze the codebase
 
-Read the project structure, recent git history, test results, build status, and any existing status memories (use gnosys_discover and gnosys_read). Fill in as much as you can from code.
+Read the project structure, recent git history, test results, build status, and any existing status memories (use gnosys_hybrid_search and gnosys_read). Fill in as much as you can from code.
 
 ## Step 2: Work through every section below
 

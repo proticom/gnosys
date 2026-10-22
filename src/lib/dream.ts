@@ -563,7 +563,7 @@ export class GnosysDreamEngine {
           log("embedding-health", `All ${total} memories embedded`);
         } else if (embeddedCount === 0) {
           // Embeddings never initialized on this install — that's an explicit
-          // user choice (reindex downloads the 80 MB model); Dream repairs
+          // user choice (reindex downloads the ~23 MB model); Dream repairs
           // drift, it doesn't opt users in. Report it loudly and move on.
           embedPhase.status = "skipped";
           embedPhase.reason = "embeddings not initialized — run gnosys_reindex";

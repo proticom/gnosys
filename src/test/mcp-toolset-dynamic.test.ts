@@ -43,11 +43,11 @@ afterEach(() => {
 });
 
 describe("MCP dynamic toolset switching (v6.2)", () => {
-  it("a fresh default server starts on core: 19 tools (core 18 + gnosys_toolset)", async () => {
+  it("a fresh default server starts on core: 14 tools (core 13 + gnosys_toolset)", async () => {
     vi.stubEnv("GNOSYS_MCP_TOOLSET", "");
     const { server, client } = await makePair();
     const names = await toolNames(client);
-    expect(names).toHaveLength(19);
+    expect(names).toHaveLength(14);
     expect(names).toContain("gnosys_toolset");
     expect(names).toContain("gnosys_recall");
     expect(names).not.toContain("gnosys_lens"); // standard tier
@@ -94,7 +94,7 @@ describe("MCP dynamic toolset switching (v6.2)", () => {
     expect(out).toContain("full → core");
     expect(out).toContain("Removed:");
     const names = await toolNames(client);
-    expect(names).toHaveLength(19);
+    expect(names).toHaveLength(14);
     expect(names).toContain("gnosys_toolset");
     await client.close();
     await server.close();

@@ -184,7 +184,7 @@ Import a project bundle (.json.gz) created by
 
 ## `gnosys reindex`
 
-Rebuild semantic embeddings for every memory in the central DB. Run after bulk imports, schema changes, or if hybrid search starts returning poor matches. Downloads the all-MiniLM-L6-v2 model (~80 MB) on first run.
+Rebuild semantic embeddings for every memory in the central DB. Run after bulk imports, schema changes, or if hybrid search starts returning poor matches. Downloads the all-MiniLM-L6-v2 model (~23 MB, 8-bit quantized) on first run.
 
 ## `gnosys hybrid-search <query>`
 

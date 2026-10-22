@@ -24,23 +24,39 @@ function extractTools(source) {
   const tools = [];
   let match;
   while ((match = REG_TOOL_RE.exec(source)) !== null) {
-    tools.push({ name: match[1], description: collapseWhitespace(match[2]) });
+    tools.push({ name: match[1], description: collapseWhitespace(JSON.parse(`"${match[2]}"`)) });
   }
   return tools;
 }
 
-function renderMarkdown(tools) {
+function renderMarkdown(tools, source) {
+  const tiers = Object.fromEntries(["CORE_TOOLS", "STANDARD_EXTRA_TOOLS"].map(key => {
+    const block = source.match(new RegExp(`const ${key} = new Set\\([\\s\\S]*?\\]`))?.[0] ?? "";
+    return [key, new Set([...block.matchAll(/"([a-z_]+)"/g)].map(m => `gnosys_${m[1]}`))];
+  }));
+  const annotationSource = fs.readFileSync(path.join(REPO_ROOT, "src/lib/toolAnnotations.ts"), "utf8");
+  const annotations = new Map([...annotationSource.matchAll(/(gnosys_\w+): \{([^}]+)\}/g)].map(m => {
+    const hints = Object.fromEntries([...m[2].matchAll(/(\w+Hint): (true|false)/g)].map(h => [h[1], h[2]]));
+    return [m[1], hints];
+  }));
   const rows = tools
     .sort((a, b) => a.name.localeCompare(b.name))
-    .map((t) => `| \`${t.name}\` | ${t.description.replace(/\|/g, "\\|")} |`)
+    .map((t) => {
+      const tier = tiers.CORE_TOOLS.has(t.name) ? "core" : tiers.STANDARD_EXTRA_TOOLS.has(t.name) ? "standard" : "full";
+      const hints = annotations.get(t.name);
+      if (!hints || Object.keys(hints).length !== 4) throw new Error(`Missing annotations: ${t.name}`);
+      return `| \`${t.name}\` | ${tier} | ${hints.readOnlyHint} | ${hints.destructiveHint} | ${hints.idempotentHint} | ${hints.openWorldHint} | ${t.description.replace(/\|/g, "\\|")} |`;
+    })
     .join("\n");
 
   return `# MCP Tools
 
 _Generated from \`src/index.ts\` by \`scripts/gen-mcp-tools.mjs\`. Do not edit by hand._
 
-| Tool | Description |
-|------|-------------|
+Hints apply to all supported arguments and configurations. See [annotation decisions](mcp-toolsets.md#annotation-decisions) for user-visible effects and optional external operations.
+
+| Tool | Tier | readOnlyHint | destructiveHint | idempotentHint | openWorldHint | Description |
+|------|------|--------------|-----------------|----------------|---------------|-------------|
 ${rows}
 `;
 }
@@ -53,7 +69,7 @@ function main() {
     process.exit(1);
   }
 
-  const markdown = renderMarkdown(tools);
+  const markdown = renderMarkdown(tools, source);
   const write = process.argv.includes("--write");
 
   if (write) {
