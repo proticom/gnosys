@@ -1,5 +1,5 @@
 # ─── Stage 1: Build ──────────────────────────────────────────────────────
-FROM node:24-alpine AS builder
+FROM node:24.22.1-alpine AS builder
 
 WORKDIR /app
 
@@ -18,12 +18,13 @@ RUN npm run build
 RUN npm prune --omit=dev
 
 # ─── Stage 2: Runtime ────────────────────────────────────────────────────
-FROM node:24-alpine
+FROM node:24.22.1-alpine
 
 WORKDIR /app
 
-# Runtime needs git for history/rollback features (busybox provides wget for the healthcheck)
-RUN apk add --no-cache git
+# Keep the Alpine trust store at or above 20261020-r0 for the eMudhra CA fix.
+# Busybox provides wget for the healthcheck.
+RUN apk add --no-cache --upgrade ca-certificates git
 
 # Copy built artifacts and production dependencies
 COPY --from=builder /app/dist ./dist
