@@ -122,9 +122,14 @@ describe("preferences", () => {
   });
 
   it("returns a real preference with the same preference-shaped id", () => {
-    setPreference(db, "category-guard-positive", "Use the preference path");
+    setPreference(db, "category-guard", "Use the preference path");
+    const mem = db.getMemory("pref-category-guard");
 
-    expect(getPreference(db, "category-guard-positive")?.value).toBe("Use the preference path");
+    expect(mem?.category).toBe("preferences");
+    expect(getPreference(db, "category-guard")).toEqual(expect.objectContaining({
+      key: "category-guard",
+      value: "Use the preference path",
+    }));
   });
 
   it("stores tags on preference", () => {

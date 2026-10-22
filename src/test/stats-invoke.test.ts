@@ -128,10 +128,16 @@ describe("runStatsCommand (in-process invoke)", () => {
     db.insertProject(makeProject({ id: "project-lexical", name: "Lexical Project" }));
     db.insertMemory(makeMemory({ id: "fractional", project_id: "project-lexical", scope: "project", modified: "2026-03-01T10:00:00.500Z" }));
     db.insertMemory(makeMemory({ id: "whole-second", project_id: "project-lexical", scope: "project", modified: "2026-03-01T10:00:00Z" }));
+    db.insertMemory(makeMemory({ id: "user-lexical-fractional", project_id: null, scope: "user", modified: "2999-03-02T10:00:00.500Z" }));
+    db.insertMemory(makeMemory({ id: "user-lexical-whole", project_id: null, scope: "user", modified: "2999-03-02T10:00:00Z" }));
+    db.insertMemory(makeMemory({ id: "global-lexical-fractional", project_id: null, scope: "global", modified: "2999-03-03T10:00:00.500Z" }));
+    db.insertMemory(makeMemory({ id: "global-lexical-whole", project_id: null, scope: "global", modified: "2999-03-03T10:00:00Z" }));
     db.close();
 
     await runStatsCommand({ byProject: true, json: true });
     const rows = JSON.parse(logged()).rows as Array<{ name: string; lastTouch: string }>;
     expect(rows.find((row) => row.name === "Lexical Project")?.lastTouch).toBe("2026-03-01T10:00:00Z");
+    expect(rows.find((row) => row.name === "(user)")?.lastTouch).toBe("2999-03-02T10:00:00Z");
+    expect(rows.find((row) => row.name === "(global)")?.lastTouch).toBe("2999-03-03T10:00:00Z");
   });
 });
