@@ -5,6 +5,7 @@ import { join } from "path";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { GnosysDB } from "../lib/db.js";
 import { runStatsCommand } from "../lib/statsCommand.js";
+import { makeMemory, makeProject } from "./_helpers.js";
 
 let base: string;
 const origHome = process.env.GNOSYS_HOME;
@@ -102,5 +103,35 @@ describe("runStatsCommand (in-process invoke)", () => {
     expect(out).toContain("By category:");
     expect(out).toContain("By status:");
     expect(out).toContain("By author:");
+  });
+
+  it("reports lexical lastTouch for project, user, and global rows", async () => {
+    const db = GnosysDB.openLocal();
+    db.insertProject(makeProject({ id: "project-last-touch", name: "Last Touch Project" }));
+    db.insertProject(makeProject({ id: "project-empty", name: "Empty Project" }));
+    db.insertMemory(makeMemory({ id: "proj-old", project_id: "project-last-touch", scope: "project", modified: "2026-03-01T09:00:00Z" }));
+    db.insertMemory(makeMemory({ id: "proj-new", project_id: "project-last-touch", scope: "project", modified: "2026-03-01T10:00:00Z" }));
+    db.insertMemory(makeMemory({ id: "user-last", project_id: null, scope: "user", modified: "2099-03-02T10:00:00Z" }));
+    db.insertMemory(makeMemory({ id: "global-last", project_id: null, scope: "global", modified: "2099-03-03T10:00:00Z" }));
+    db.close();
+
+    await runStatsCommand({ byProject: true, json: true });
+    const rows = JSON.parse(logged()).rows as Array<{ name: string; lastTouch: string }>;
+    expect(rows.find((row) => row.name === "Last Touch Project")?.lastTouch).toBe("2026-03-01T10:00:00Z");
+    expect(rows.find((row) => row.name === "(user)")?.lastTouch).toBe("2099-03-02T10:00:00Z");
+    expect(rows.find((row) => row.name === "(global)")?.lastTouch).toBe("2099-03-03T10:00:00Z");
+    expect(rows.find((row) => row.name === "Empty Project")?.lastTouch).toBe("0");
+  });
+
+  it("documents current lexical lastTouch behavior instead of chronological order", async () => {
+    const db = GnosysDB.openLocal();
+    db.insertProject(makeProject({ id: "project-lexical", name: "Lexical Project" }));
+    db.insertMemory(makeMemory({ id: "fractional", project_id: "project-lexical", scope: "project", modified: "2026-03-01T10:00:00.500Z" }));
+    db.insertMemory(makeMemory({ id: "whole-second", project_id: "project-lexical", scope: "project", modified: "2026-03-01T10:00:00Z" }));
+    db.close();
+
+    await runStatsCommand({ byProject: true, json: true });
+    const rows = JSON.parse(logged()).rows as Array<{ name: string; lastTouch: string }>;
+    expect(rows.find((row) => row.name === "Lexical Project")?.lastTouch).toBe("2026-03-01T10:00:00Z");
   });
 });

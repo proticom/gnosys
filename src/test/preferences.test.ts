@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import fs from "fs/promises";
 import path from "path";
 import os from "os";
@@ -83,6 +83,48 @@ describe("preferences", () => {
   it("returns false when deleting nonexistent preference", () => {
     const deleted = deletePreference(db, "nope");
     expect(deleted).toBe(false);
+  });
+
+  it("does not treat a non-preferences memory at the preference id as a preference", () => {
+    const key = "category-guard";
+    db.insertMemory({
+      id: `pref-${key}`,
+      title: "A note with a preference-shaped id",
+      category: "notes",
+      content: "This is not a preference.",
+      summary: null,
+      tags: "[]",
+      relevance: "note",
+      author: "human",
+      authority: "declared",
+      confidence: 0.9,
+      reinforcement_count: 0,
+      content_hash: "category-guard-hash",
+      status: "active",
+      tier: "active",
+      supersedes: null,
+      superseded_by: null,
+      last_reinforced: null,
+      created: "2026-01-01",
+      modified: "2026-01-01",
+      embedding: null,
+      source_path: null,
+      project_id: null,
+      scope: "user",
+    });
+    const before = db.getMemory(`pref-${key}`);
+    const deleteMemory = vi.spyOn(db, "deleteMemory");
+
+    expect(getPreference(db, key)).toBeNull();
+    expect(deletePreference(db, key)).toBe(false);
+    expect(deleteMemory).not.toHaveBeenCalled();
+    expect(db.getMemory(`pref-${key}`)).toEqual(before);
+  });
+
+  it("returns a real preference with the same preference-shaped id", () => {
+    setPreference(db, "category-guard-positive", "Use the preference path");
+
+    expect(getPreference(db, "category-guard-positive")?.value).toBe("Use the preference path");
   });
 
   it("stores tags on preference", () => {
