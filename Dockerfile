@@ -23,7 +23,8 @@ FROM node:24.22.1-alpine
 WORKDIR /app
 
 # Keep the Alpine trust store at or above 20261020-r0 for the eMudhra CA fix.
-RUN apk upgrade --no-cache ca-certificates && apk add --no-cache git
+# Busybox provides wget for the healthcheck.
+RUN apk add --no-cache --upgrade ca-certificates git
 
 # Copy built artifacts and production dependencies
 COPY --from=builder /app/dist ./dist
