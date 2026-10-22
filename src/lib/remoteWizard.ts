@@ -655,5 +655,3 @@ export async function configureFromPath(
 
   return true;
 }
-
-export { machineStagingDir as stagingDirForMachine, clientPresencePath } from "./syncStaging.js";

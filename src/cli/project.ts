@@ -2,7 +2,7 @@
  * Gnosys CLI — command registrations extracted verbatim from src/cli.ts
  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
  */
-import { Command } from "commander";
+import type { Command } from "commander";
 import path from "path";
 import fs from "fs/promises";
 import { GnosysResolver } from "../lib/resolver.js";

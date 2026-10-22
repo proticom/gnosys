@@ -67,7 +67,8 @@ describe("TC-9e.1: GnosysDB constructor retry logic", () => {
 
   it("retries transient native open failures before persisting data", async () => {
     let attempts = 0;
-    vi.doMock("node:sqlite", () => ({ DatabaseSync: function(file: string) {
+    vi.doMock("node:sqlite", () => ({ DatabaseSync: // biome-ignore lint/complexity/useArrowFunction: the production code constructs DatabaseSync with new
+      function(file: string) {
       if (++attempts <= 4) throw new Error("share temporarily unavailable");
       return new Database(file);
     } }));
@@ -97,7 +98,8 @@ describe("TC-9e.1: GnosysDB constructor retry logic", () => {
 describe("TC-9e.2: GnosysDB constructor with retry options", () => {
   it("default retry count is 3 (no opts)", async () => {
     let attempts = 0;
-    vi.doMock("node:sqlite", () => ({ DatabaseSync: function() {
+    vi.doMock("node:sqlite", () => ({ DatabaseSync: // biome-ignore lint/complexity/useArrowFunction: the production code constructs DatabaseSync with new
+      function() {
       attempts++;
       throw new Error("share offline");
     } }));

@@ -156,7 +156,7 @@ describe("getLastSuccessfulDreamRun", () => {
     const result = db.getLastSuccessfulDreamRun();
     expect(result).not.toBeNull();
     expect(result?.completed).toBe("2026-01-01T00:00:00Z");
-    expect((result?.details as { decayUpdated?: number }).decayUpdated).toBe(5);
+    expect(result?.details).toEqual(expect.objectContaining({ decayUpdated: 5 }));
   });
 
   it("counts relationships-only runs as successful", () => {
@@ -174,6 +174,6 @@ describe("getLastSuccessfulDreamRun", () => {
     logComplete(db, "2026-01-01T00:00:00Z", { summariesGenerated: 3 });
     const result = db.getLastSuccessfulDreamRun();
     expect(result).not.toBeNull();
-    expect((result?.details as { summariesGenerated?: number }).summariesGenerated).toBe(3);
+    expect(result?.details).toEqual(expect.objectContaining({ summariesGenerated: 3 }));
   });
 });
