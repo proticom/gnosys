@@ -35,7 +35,10 @@ export async function runStatsCommand(opts: StatsCommandOptions): Promise<void> 
         const active = ms.filter((m) => m.tier === "active" && m.status === "active").length;
         const archived = ms.filter((m) => m.tier === "archive").length;
         const reinforced = ms.reduce((sum, m) => sum + (m.reinforcement_count ?? 0), 0);
-        const lastTouch = ms.reduce((m, x) => (x.modified > m ? x.modified : m), "0");
+        const lastTouch = ms.reduce((m, x) => {
+          if (x.modified > m) return x.modified;
+          return m;
+        }, "0");
         return { name: p.name, id: p.id, active, archived, reinforced, lastTouch };
       });
       // User/global memories (no project_id)
@@ -48,7 +51,10 @@ export async function runStatsCommand(opts: StatsCommandOptions): Promise<void> 
           active: userScope.filter((m) => m.tier === "active" && m.status === "active").length,
           archived: userScope.filter((m) => m.tier === "archive").length,
           reinforced: userScope.reduce((sum, m) => sum + (m.reinforcement_count ?? 0), 0),
-          lastTouch: userScope.reduce((m, x) => (x.modified > m ? x.modified : m), "0"),
+          lastTouch: userScope.reduce((m, x) => {
+            if (x.modified > m) return x.modified;
+            return m;
+          }, "0"),
         });
       }
       if (globalScope.length > 0) {
@@ -58,7 +64,10 @@ export async function runStatsCommand(opts: StatsCommandOptions): Promise<void> 
           active: globalScope.filter((m) => m.tier === "active" && m.status === "active").length,
           archived: globalScope.filter((m) => m.tier === "archive").length,
           reinforced: globalScope.reduce((sum, m) => sum + (m.reinforcement_count ?? 0), 0),
-          lastTouch: globalScope.reduce((m, x) => (x.modified > m ? x.modified : m), "0"),
+          lastTouch: globalScope.reduce((m, x) => {
+            if (x.modified > m) return x.modified;
+            return m;
+          }, "0"),
         });
       }
 

@@ -1,7 +1,7 @@
 {
-  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "$schema": "https://unpkg.com/knip@6/schema.json",
   "entry": ["src/postinstall.ts"],
   "project": ["src/**/*.{ts,tsx}"],
   "ignoreExportsUsedInFile": true,
-  "ignoreBinaries": ["which", "where.exe", "powershell.exe", "osascript", "notify-send", "ioreg", "systemctl", "launchctl", "ffmpeg", "gnosys", "python3"]
+  "ignoreBinaries": ["where.exe", "osascript", "notify-send", "ioreg", "ffmpeg", "gnosys", "secret-tool"]
 }

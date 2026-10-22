@@ -59,11 +59,11 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.15",
+    "@biomejs/biome": "^2.6.2",
     "@types/node": "^22.20.5",
     "@types/turndown": "^5.0.6",
     "@vitest/coverage-v8": "^4.1.11",
-    "knip": "^6.16.1",
+    "knip": "^6.42.1",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0",
     "vitest": "^4.1.11"

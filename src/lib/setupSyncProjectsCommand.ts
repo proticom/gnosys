@@ -82,7 +82,7 @@ export async function runSetupSyncProjectsCommand(
   // Also check central DB for projects not in the file registry. Also
   // capture project titles so the Screen 10 row labels can use the
   // human-readable name where available.
-  let dbProjects: string[] = [];
+  const dbProjects: string[] = [];
   const titleByDir = new Map<string, string>();
   try {
     const centralDb = GnosysDB.openCentral();
