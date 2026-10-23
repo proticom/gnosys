@@ -17,6 +17,7 @@ import path from "path";
 import { AsyncLocalStorage } from "async_hooks";
 import { readFileSync, realpathSync } from "fs";
 import { fileURLToPath } from "url";
+import { getGnosysVersion } from "./lib/version.js";
 const home = process.env.HOME || process.env.USERPROFILE || "/tmp";
 try {
   const envFile = readFileSync(path.join(home, ".config", "gnosys", ".env"), "utf8");
@@ -28,18 +29,7 @@ try {
   // .env file not found — that's fine, env vars may be set elsewhere
 }
 
-// v5.7.1 (#15): read our running version so the upgrade-marker watcher
-// can detect when a newer global install lands and exit for client respawn.
-const __filenameMcp = fileURLToPath(import.meta.url);
-const __dirnameMcp = path.dirname(__filenameMcp);
-const RUNNING_VERSION: string = (() => {
-  try {
-    const raw = readFileSync(path.resolve(__dirnameMcp, "..", "package.json"), "utf8");
-    return (JSON.parse(raw).version as string) || "0.0.0";
-  } catch {
-    return "0.0.0";
-  }
-})();
+const RUNNING_VERSION = getGnosysVersion();
 
 import { McpServer, type RegisteredTool, type ToolCallback } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { getLiteralValue, getObjectShape } from "@modelcontextprotocol/sdk/server/zod-compat.js";
