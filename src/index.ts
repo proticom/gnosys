@@ -58,7 +58,8 @@ import { buildLinkGraph, getBacklinks, getOutgoingLinks, formatGraphSummary } fr
 import { loadConfig, type GnosysConfig, DEFAULT_CONFIG } from "./lib/config.js";
 import { getLLMProvider, type LLMProvider } from "./lib/llm.js";
 import { recall, formatRecall, } from "./lib/recall.js";
-import { initAudit, readAuditLog, readAuditFromDb, formatAuditTimeline } from "./lib/audit.js";
+import { initAudit, closeAudit, readAuditLog, readAuditFromDb, formatAuditTimeline } from "./lib/audit.js";
+import { disableWriteTimeEmbedding } from "./lib/embedQueue.js";
 import { logError } from "./lib/log.js";
 import { markAgentSurface, MemoryDeletionRefusedError } from "./lib/memoryDeleteGuard.js";
 import { GnosysDB, isVisibleInProject, type MemoryScope, type ProjectVisibility } from "./lib/db.js";
@@ -90,6 +91,7 @@ import {
 import type { GnosysIngestion } from "./lib/ingest.js";
 import type { GnosysHybridSearch } from "./lib/hybridSearch.js";
 import type { GnosysAsk } from "./lib/ask.js";
+import type { GnosysEmbeddings } from "./lib/embeddings.js";
 
 // Every tool call in this process comes from an agent: memory deletion is
 // always refused here, whatever the environment says.
@@ -338,6 +340,7 @@ let search: GnosysSearch | null = null;
 let tagRegistry: GnosysTagRegistry | null = null;
 let ingestion: GnosysIngestion | null = null;
 let hybridSearch: GnosysHybridSearch | null = null;
+let embeddings: GnosysEmbeddings | null = null;
 let askEngine: GnosysAsk | null = null;
 /** v2.0: Unified SQLite store (available after migration) */
 let gnosysDb: GnosysDB | null = null;
@@ -4449,7 +4452,7 @@ async function initSearchDeps(): Promise<GnosysHybridSearch | null> {
   if (!writeTarget || !search) return null;
   const { GnosysEmbeddings } = await import("./lib/embeddings.js");
   const { GnosysHybridSearch } = await import("./lib/hybridSearch.js");
-  const embeddings = new GnosysEmbeddings(writeTarget.store.getStorePath());
+  embeddings = new GnosysEmbeddings(writeTarget.store.getStorePath());
   hybridSearch = new GnosysHybridSearch(
     search, embeddings, resolver, writeTarget.store.getStorePath(), gnosysDb || undefined,
   );
@@ -4698,7 +4701,37 @@ export async function startMcpServer() {
 
   registerCapabilities(server);
   const transport = new StdioServerTransport();
+  let shuttingDown = false;
+  const shutdown = () => {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    // A stalled transport or background model must not orphan this process.
+    setTimeout(() => process.exit(0), 1000).unref();
+    disableWriteTimeEmbedding();
+    for (const resource of new Set([embeddings, search, gnosysDb, centralDb])) {
+      try {
+        resource?.close();
+      } catch (err) {
+        console.error("Gnosys MCP: cleanup failed:", err);
+      }
+    }
+    closeAudit();
+    void server.close().catch((err) => {
+      console.error("Gnosys MCP: transport cleanup failed:", err);
+    }).finally(() => process.exit(0));
+  };
+  transport.onclose = shutdown;
   await server.connect(transport);
+  if (server.server.transport === transport) {
+    process.stdin.once("end", shutdown);
+    process.stdin.once("close", shutdown);
+    process.on("SIGINT", shutdown);
+    process.on("SIGTERM", shutdown);
+    if (process.stdin.readableEnded || process.stdin.destroyed) {
+      shutdown();
+      return;
+    }
+  }
   console.error("Gnosys MCP: handshake ready (heavy modules still loading)");
 
   // Kick off heavy deps; fire-and-forget. Errors here are non-fatal —
