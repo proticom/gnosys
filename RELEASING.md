@@ -10,7 +10,7 @@ Releases are tag-driven (see [ADR-0008](docs/adr/0008-automated-npm-publish.md))
 After `publish` succeeds, two independent jobs run. Each has only `needs: publish`:
 
 5. **Creates the GitHub Release** in the `release` job, the only job with `contents: write`. It skips this step if the release already exists.
-6. **Publishes to the MCP Registry** in the `mcp-registry` job through GitHub OIDC, with no secret needed. It syncs both `server.json` versions from the validated tag, checks them against `package.json`, and skips publication if that registry version already exists. It retries failed publication up to five attempts, waits 30 seconds between attempts, and re-checks the registry before each retry in case an earlier attempt landed. Registry versions are immutable, so each new publication needs a unique version.
+6. **Publishes to the MCP Registry** in the `mcp-registry` job through GitHub OIDC, with no secret needed. It runs under the `npm` deployment environment, like the `publish` job, so the same tag/branch restriction applies. It syncs both `server.json` versions from the validated tag, checks them against `package.json`, and skips publication if that registry version already exists. It retries failed publication up to five attempts, waits 30 seconds between attempts, and re-checks the registry before each retry in case an earlier attempt landed. Registry versions are immutable, so each new publication needs a unique version.
 
 A registry failure does not block the GitHub Release. The registry prerelease policy (QA 90-1) is undecided. Today prereleases are also published to the registry, which selects "latest" by semver.
 

@@ -120,6 +120,9 @@ jobs:
   mcp-registry:
     needs: publish
     runs-on: ubuntu-latest
+    # Same deployment environment as publish: the same tag/branch restriction
+    # applies before this job can mint an OIDC token.
+    environment: npm
     permissions:
       contents: read
       # Only for mcp-publisher login github-oidc. This job runs no npm install,
