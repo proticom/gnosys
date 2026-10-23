@@ -60,7 +60,7 @@ import { getLLMProvider, type LLMProvider } from "./lib/llm.js";
 import { recall, formatRecall, } from "./lib/recall.js";
 import { initAudit, closeAudit, readAuditLog, readAuditFromDb, formatAuditTimeline } from "./lib/audit.js";
 import { disableWriteTimeEmbedding, flushWriteTimeEmbeddings } from "./lib/embedQueue.js";
-import { createStdioShutdown, trackStdioRequests } from "./lib/stdioShutdown.js";
+import { createStdioShutdown, trackStdioRequests, parseShutdownTimeout } from "./lib/stdioShutdown.js";
 import { logError } from "./lib/log.js";
 import { markAgentSurface, MemoryDeletionRefusedError } from "./lib/memoryDeleteGuard.js";
 import { GnosysDB, isVisibleInProject, type MemoryScope, type ProjectVisibility } from "./lib/db.js";
@@ -4667,13 +4667,28 @@ export async function startMcpServer() {
   // v5.12: HTTP transport (central-server topology) — opt-in via env, set by
   // `gnosys serve --transport http`. Each session gets its own McpServer
   // (registrations replayed); all share the module-global brain/search.
+  const timeoutMs = parseShutdownTimeout(process.env.GNOSYS_SHUTDOWN_TIMEOUT_MS, message => console.error(message));
+  let resourcesClosed = false;
+  const closeResources = () => {
+    if (resourcesClosed) return;
+    resourcesClosed = true;
+    const errors: unknown[] = [];
+    disableWriteTimeEmbedding();
+    for (const resource of new Set([embeddings, search, gnosysDb, centralDb])) {
+      try { resource?.close(); }
+      catch (error) { errors.push(error); }
+    }
+    try { closeAudit(); }
+    catch (error) { errors.push(error); }
+    if (errors.length > 0) throw new AggregateError(errors, "Resource cleanup failed");
+  };
   if (process.env.GNOSYS_TRANSPORT === "http") {
     const { startMcpHttpServer } = await import("./lib/mcpHttp.js");
     const host = process.env.GNOSYS_HTTP_HOST || "127.0.0.1";
     const port = parseInt(process.env.GNOSYS_HTTP_PORT || "7777", 10);
     const authToken = process.env.GNOSYS_SERVE_TOKEN || undefined;
     try {
-      await startMcpHttpServer({
+      const http = await startMcpHttpServer({
         host,
         port,
         authToken,
@@ -4687,6 +4702,25 @@ export async function startMcpServer() {
           return s;
         },
       });
+      let signalCode: 130 | 143 = 143;
+      const shutdown = createStdioShutdown({
+        drain: async () => {},
+        flush: flushWriteTimeEmbeddings,
+        close: async () => { try { await http.close(); } finally { closeResources(); } },
+        closeSync: () => {
+          try { closeResources(); }
+          finally {
+            http.server.closeAllConnections();
+            if (http.server.listening) http.server.close();
+          }
+        },
+        // HTTP keeps the requested signal status even if best-effort cleanup times out.
+        exit: code => process.exit(code === 1 ? signalCode : code),
+        log: (message, error) => console.error(message, error ?? ""),
+        timeoutMs,
+      });
+      process.on("SIGINT", () => { signalCode = 130; void shutdown(130); });
+      process.on("SIGTERM", () => { signalCode = 143; void shutdown(143); });
     } catch (err) {
       console.error(`Gnosys MCP: ${err instanceof Error ? err.message : String(err)}`);
       process.exit(1);
@@ -4702,30 +4736,24 @@ export async function startMcpServer() {
 
   registerCapabilities(server);
   const transport = new StdioServerTransport();
-  const drain = trackStdioRequests({ transport, stdout: process.stdout });
+  let drain = () => Promise.resolve();
+  const start = transport.start.bind(transport);
+  transport.start = async () => {
+    // Protocol.connect installs dispatch before start; wrap it before stdin can deliver data.
+    drain = trackStdioRequests({ transport, stdout: process.stdout });
+    await start();
+  };
   const shutdown = createStdioShutdown({
-    drain,
+    drain: () => drain(),
     flush: flushWriteTimeEmbeddings,
     close: async () => {
-      const errors: unknown[] = [];
-      disableWriteTimeEmbedding();
-      for (const resource of new Set([embeddings, search, gnosysDb, centralDb])) {
-        try {
-          resource?.close();
-        } catch (error) {
-          errors.push(error);
-        }
-      }
-      try {
-        closeAudit();
-      } finally {
-        await server.close();
-      }
-      if (errors.length > 0) throw new AggregateError(errors, "Resource cleanup failed");
+      try { closeResources(); }
+      finally { await server.close(); }
     },
+    closeSync: closeResources,
     exit: code => process.exit(code),
     log: (message, error) => console.error(message, error ?? ""),
-    timeoutMs: z.coerce.number().int().min(1).max(60_000).catch(5000).parse(process.env.GNOSYS_SHUTDOWN_TIMEOUT_MS),
+    timeoutMs,
   });
   const disconnected = () => { process.stdin.pause(); void shutdown(); };
   transport.onclose = disconnected;
@@ -4733,7 +4761,7 @@ export async function startMcpServer() {
   if (server.server.transport === transport) {
     process.stdin.once("end", disconnected);
     process.stdin.once("close", disconnected);
-    // Both transports use 128 + signal; HTTP retains Node's default handlers.
+    // Both transports exit with 128 + signal; another signal forces synchronous cleanup.
     process.on("SIGINT", () => { process.stdin.pause(); void shutdown(130); });
     process.on("SIGTERM", () => { process.stdin.pause(); void shutdown(143); });
     if (process.stdin.readableEnded || process.stdin.destroyed) {
