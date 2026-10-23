@@ -22,6 +22,7 @@ jobs:
 
     permissions:
       contents: read
+      # Used by both npm trusted publishing and MCP Registry GitHub OIDC.
       id-token: write
 
     outputs:
@@ -82,6 +83,55 @@ jobs:
             exit 0
           fi
           npm publish --access public --tag "$NPM_DIST_TAG"
+
+      - name: Sync server.json version
+        shell: bash
+        env:
+          PKG_VERSION: ${{ steps.classify.outputs.version }}
+        run: |
+          set -euo pipefail
+          jq --arg v "$PKG_VERSION" '.version = $v | .packages[0].version = $v' server.json > server.tmp
+          mv server.tmp server.json
+          jq -e --arg name "$(jq -r '.mcpName' package.json)" \
+            --arg version "$(jq -r '.version' package.json)" \
+            '.name == $name and .version == $version and .packages[0].version == $version' server.json
+
+      - name: Install mcp-publisher
+        shell: bash
+        env:
+          # Bump both values from the release and its registry_<version>_checksums.txt.
+          MCP_PUBLISHER_VERSION: "1.8.1"
+          MCP_PUBLISHER_SHA256: "a06c9096dcb9727c13555b6be26c7effa707b01f06a4c561ba7a3635443cf2cc"
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/mcp-publisher_linux_amd64.tar.gz"
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/download/v${MCP_PUBLISHER_VERSION}/mcp-publisher_linux_amd64.tar.gz" -o "$archive"
+          echo "${MCP_PUBLISHER_SHA256}  $archive" | sha256sum -c -
+          tar -xzf "$archive" -C "$RUNNER_TEMP" mcp-publisher
+
+      - name: Publish to MCP Registry (GitHub OIDC)
+        shell: bash
+        env:
+          PKG_VERSION: ${{ steps.classify.outputs.version }}
+        run: |
+          set -euo pipefail
+          status=$(curl -sS -o /dev/null -w '%{http_code}' "https://registry.modelcontextprotocol.io/v0.1/servers/io.github.proticom%2Fgnosys/versions/${PKG_VERSION}")
+          if [[ "$status" == "200" ]]; then
+            echo "io.github.proticom/gnosys@${PKG_VERSION} is already published; skipping MCP Registry publish"
+            exit 0
+          fi
+          "$RUNNER_TEMP/mcp-publisher" login github-oidc
+          # npm metadata may take a short time to reach the registry's lookup.
+          for attempt in {1..5}; do
+            if "$RUNNER_TEMP/mcp-publisher" publish; then
+              exit 0
+            fi
+            if [[ "$attempt" -lt 5 ]]; then
+              echo "MCP Registry publish failed (attempt ${attempt}/5); retrying in 30 seconds"
+              sleep 30
+            fi
+          done
+          exit 1
 
   release:
     needs: publish

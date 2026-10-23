@@ -1,0 +1,30 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.proticom/gnosys",
+  "title": "Gnosys",
+  "description": "Persistent memory for AI agents with a central SQLite brain and federated search.",
+  "websiteUrl": "https://gnosys.ai",
+  "repository": {
+    "url": "https://github.com/proticom/gnosys",
+    "source": "github"
+  },
+  "version": "7.0.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "gnosys",
+      "version": "7.0.0",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "serve"
+        }
+      ]
+    }
+  ]
+}
