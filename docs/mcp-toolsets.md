@@ -46,7 +46,7 @@ self-escalation hint are announced in the server `instructions` returned in the 
   "mcpServers": {
     "gnosys": {
       "command": "npx",
-      "args": ["-y", "gnosys-mcp"],
+      "args": ["-y", "gnosys", "serve"],
       "env": { "GNOSYS_MCP_TOOLSET": "full" }
     }
   }
