@@ -120,7 +120,7 @@ export function setPreference(
 export function getPreference(db: GnosysDB, key: string): Preference | null {
   const id = `pref-${key}`;
   const mem = db.getMemory(id);
-  if (!mem || mem.category !== "preferences") return null;
+  if (mem?.category !== "preferences") return null;
   return memoryToPreference(mem);
 }
 
@@ -140,7 +140,7 @@ export function getAllPreferences(db: GnosysDB): Preference[] {
 export function deletePreference(db: GnosysDB, key: string): boolean {
   const id = `pref-${key}`;
   const mem = db.getMemory(id);
-  if (!mem || mem.category !== "preferences") return false;
+  if (mem?.category !== "preferences") return false;
   db.deleteMemory(id);
   return true;
 }

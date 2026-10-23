@@ -32,12 +32,12 @@ npm run knip           # dead code / unused exports (zero findings — CI-gated)
 3. **TypeScript strict**: `strict: true` in tsconfig. Fix all type errors before committing.
 4. **Test before commit**: Run `npm test` — the full suite must pass (1700+ tests in `src/test/`). CI also gates `tsc --noEmit`, biome lint, and knip.
 5. **Path quoting**: The project may live in a path with spaces (iCloud). Always quote paths in shell commands.
-6. **Web subpath isolation**: `src/lib/staticSearch.ts` must not import (only `import type`) from modules that depend on `better-sqlite3` or any native addon.
+6. **Web subpath isolation**: `src/lib/staticSearch.ts` must not import (only `import type`) from modules that depend on `node:sqlite` or any native addon.
 7. **CLI-first, MCP-second**: New features are CLI commands first; MCP tools are thin wrappers around CLI logic.
 
 ## Remote Sync Awareness (v5.3.0+)
 
-When the user has configured multi-machine sync (`gnosys_remote_status` returns `configured: true`), be aware of pending changes and conflicts.
+After `gnosys_toolset {"set":"full"}`, when the user has configured multi-machine sync (`gnosys_remote_status` returns `configured: true`), be aware of pending changes and conflicts.
 
 ### When to check sync state
 
@@ -47,7 +47,7 @@ When the user has configured multi-machine sync (`gnosys_remote_status` returns 
 
 ### How to handle the response
 
-Call `gnosys_remote_status`. The response includes:
+After `gnosys_toolset {"set":"full"}`, call `gnosys_remote_status`. The response includes:
 - `pendingPush`, `pendingPull` — counts of changes in each direction
 - `conflicts` — array of memory IDs with true conflicts (modified on both sides since last sync)
 - `queuedWrites` — local writes waiting because NAS was unreachable
@@ -58,7 +58,7 @@ Call `gnosys_remote_status`. The response includes:
 
 **Don't surface for:**
 - `pendingPush > 0` only — auto-syncing in background, mention only if user asks
-- `pendingPull > 0` only — agent can call `gnosys_remote_pull` autonomously after notifying user briefly
+- `pendingPull > 0` only — agent can enable full with `gnosys_toolset {"set":"full"}` and call `gnosys_remote_pull` autonomously after notifying user briefly
 - `reachable: false` — if user knows they're offline, don't bug them
 
 **Do surface for:**
@@ -71,14 +71,14 @@ Call `gnosys_remote_status`. The response includes:
 1. List conflicts to the user with `local_modified` vs `remote_modified` timestamps
 2. For each conflict, optionally fetch and show both versions (titles + key content differences)
 3. Make a recommendation if the difference is clear (e.g. "remote is more recent and more detailed")
-4. Call `gnosys_remote_resolve(memoryId, choice)` with the user's decision
+4. After `gnosys_toolset {"set":"full"}`, call `gnosys_remote_resolve(memoryId, choice)` with the user's decision
 5. Confirm completion
 
 ## Memory System
 
 This project uses Gnosys for its own memory. When working here:
 
-- Call `gnosys_discover` at task start to find relevant context
+- Call `gnosys_hybrid_search` at task start to find relevant context
 - Write decisions to `gnosys_add_structured` with category `decisions`
 - After significant work, run `gnosys update-status` to refresh the project status
 - Use `gnosys status` to check current readiness and blockers

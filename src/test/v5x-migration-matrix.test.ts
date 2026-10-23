@@ -6,7 +6,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "fs";
 import os from "os";
 import path from "path";
-import Database from "better-sqlite3";
+import { DatabaseSync as Database } from "node:sqlite";
 import { GnosysDB } from "../lib/db.js";
 
 let tmp: string;
@@ -79,7 +79,7 @@ function seedV1(dbFile: string): void {
       trace_id    TEXT
     );
   `);
-  raw.prepare(`
+  const insert = raw.prepare(`
     INSERT INTO memories (
       id, title, category, content, summary, tags, relevance, author, authority,
       confidence, reinforcement_count, content_hash, status, tier, supersedes,
@@ -89,8 +89,10 @@ function seedV1(dbFile: string): void {
       @confidence, @reinforcement_count, @content_hash, @status, @tier, @supersedes,
       @superseded_by, @last_reinforced, @created, @modified, @embedding, @source_path
     )
-  `).run(MEMORY_ROW);
-  raw.pragma("user_version = 1");
+  `);
+  insert.setAllowBareNamedParameters(true);
+  insert.run(MEMORY_ROW);
+  raw.exec("PRAGMA user_version = 1");
   raw.close();
 }
 
@@ -115,7 +117,7 @@ function seedV2(dbFile: string): void {
     "INSERT INTO projects (id,name,working_directory,user,created,modified) VALUES (?,?,?,?,?,?)",
   ).run("proj-1", "Matrix Project", "/tmp/matrix-project", "edward", "2026-01-01", "2026-01-01");
   raw.prepare("UPDATE memories SET project_id = ?, scope = ? WHERE id = ?").run("proj-1", "project", MEMORY_ROW.id);
-  raw.pragma("user_version = 2");
+  raw.exec("PRAGMA user_version = 2");
   raw.close();
 }
 
@@ -123,7 +125,7 @@ function assertMigratedToCurrent(dir: string, opts: { projectId?: string | null 
   const dbFile = path.join(dir, "gnosys.db");
   const raw = new Database(dbFile);
   // v5.12: SCHEMA_VERSION grew 4 → 5 (inline attachment columns).
-  expect(raw.pragma("user_version", { simple: true })).toBe(5);
+  expect(raw.prepare("PRAGMA user_version").get()?.user_version).toBe(5);
 
   const mcols = (raw.prepare("PRAGMA table_info(memories)").all() as Array<{ name: string }>).map((c) => c.name);
   expect(mcols).toEqual(expect.arrayContaining([

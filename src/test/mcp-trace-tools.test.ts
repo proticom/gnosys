@@ -84,7 +84,7 @@ beforeAll(async () => {
   );
 
   server = new McpServer({ name: "trace-test", version: "0.0.0" });
-  registerCapabilities(server);
+  registerCapabilities(server, "standard");
   client = new Client({ name: "trace-test-client", version: "0.0.0" });
   const [st, ct] = InMemoryTransport.createLinkedPair();
   await Promise.all([server.connect(st), client.connect(ct)]);

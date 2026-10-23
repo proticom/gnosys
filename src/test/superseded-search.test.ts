@@ -1,5 +1,6 @@
+import { transaction } from "../lib/sqliteTransaction.js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import Database from "better-sqlite3";
+import { DatabaseSync as Database } from "node:sqlite";
 import path from "node:path";
 import { federatedSearch, federatedDiscover } from "../lib/federated.js";
 import { formatSearchStatus } from "../lib/searchStatus.js";
@@ -67,11 +68,11 @@ describe("history-visible search", () => {
     const sqlite = new Database(path.join(env.tmpDir, "gnosys.db"));
     try {
       const trigger = sqlite.prepare("SELECT sql FROM sqlite_master WHERE type = 'trigger' AND name = 'memories_fts_au'").get() as { sql: string };
-      sqlite.transaction(() => {
+      transaction(sqlite, () => {
         sqlite.exec("DROP TRIGGER memories_fts_au");
         sqlite.prepare("UPDATE memories SET status = NULL WHERE id = ?").run("new");
         sqlite.exec(trigger.sql);
-      })();
+      });
     } finally {
       sqlite.close();
     }

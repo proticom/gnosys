@@ -105,7 +105,7 @@ describe("federated paths use client read context", () => {
       command: process.execPath,
       args: [path.resolve("dist/index.js")],
       cwd: project,
-      env: Object.fromEntries(Object.entries(process.env).filter((entry): entry is [string, string] => entry[1] !== undefined)),
+      env: { ...Object.fromEntries(Object.entries(process.env).filter((entry): entry is [string, string] => entry[1] !== undefined)), GNOSYS_MCP_TOOLSET: "standard" },
       stderr: "pipe",
     });
     const client = new Client({ name: "federated-read-audit", version: "1" });

@@ -11,7 +11,7 @@ import { GnosysStore } from "../lib/store.js";
 import { GnosysTagRegistry } from "../lib/tags.js";
 import { GnosysIngestion } from "../lib/ingest.js";
 import { GnosysDB } from "../lib/db.js";
-import Database from "better-sqlite3";
+import { DatabaseSync as Database } from "node:sqlite";
 
 let tmpDir: string;
 let store: GnosysStore;

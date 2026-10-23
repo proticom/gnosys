@@ -1,6 +1,6 @@
 /**
  * Gnosys path resolution — single source of truth for where gnosys stores
- * its per-user data. Imports nothing native (no better-sqlite3) so it can
+ * its per-user data. Imports nothing native (no node:sqlite) so it can
  * be statically imported from any module, including ones that load before
  * the database layer.
  *

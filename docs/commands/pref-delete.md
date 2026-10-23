@@ -37,7 +37,7 @@ No preference found for key "unknown-key".
 Central DB unavailable:
 
 ```text
-Central DB not available (better-sqlite3 missing).
+Central DB not available (node:sqlite unavailable; requires Node ^22.16.0 || >=24.0.0).
 ```
 
 Other errors:

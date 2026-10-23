@@ -14,7 +14,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "fs";
-import Database from "better-sqlite3";
+import { DatabaseSync as Database } from "node:sqlite";
 import path from "path";
 import os from "os";
 import {
@@ -834,11 +834,11 @@ describe("TC-9d.9: enableWAL utility", () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-wal-"));
     const db = new Database(path.join(dir, "data.db"));
     try {
-      db.pragma("wal_autocheckpoint = 0");
+      db.exec("PRAGMA wal_autocheckpoint = 0");
       enableWAL(db, 1234.9);
-      expect(db.pragma("journal_mode", { simple: true })).toBe("wal");
-      expect(db.pragma("busy_timeout", { simple: true })).toBe(1234);
-      expect(db.pragma("wal_autocheckpoint", { simple: true })).toBe(1000);
+      expect(db.prepare("PRAGMA journal_mode").get()?.journal_mode).toBe("wal");
+      expect(db.prepare("PRAGMA busy_timeout").get()?.timeout).toBe(1234);
+      expect(db.prepare("PRAGMA wal_autocheckpoint").get()?.wal_autocheckpoint).toBe(1000);
     } finally { db.close(); fs.rmSync(dir, { recursive: true, force: true }); }
   });
 
@@ -850,8 +850,8 @@ describe("TC-9d.9: enableWAL utility", () => {
     try {
       enableWAL(closed);
       enableWAL(db, -5);
-      expect(db.pragma("journal_mode", { simple: true })).toBe("wal");
-      expect(db.pragma("busy_timeout", { simple: true })).toBe(0);
+      expect(db.prepare("PRAGMA journal_mode").get()?.journal_mode).toBe("wal");
+      expect(db.prepare("PRAGMA busy_timeout").get()?.timeout).toBe(0);
     } finally { db.close(); fs.rmSync(dir, { recursive: true, force: true }); }
   });
 });

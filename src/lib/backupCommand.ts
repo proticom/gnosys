@@ -13,7 +13,7 @@ export async function runBackupCommand(opts: BackupCommandOptions): Promise<void
   try {
     centralDb = GnosysDB.openCentral();
     if (!centralDb.isAvailable()) {
-      console.error("Central DB not available (better-sqlite3 missing).");
+      console.error(`Central DB not available (${centralDb.getUnavailableReason()})`);
       process.exitCode = 1;
       return;
     }

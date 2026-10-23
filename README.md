@@ -24,19 +24,14 @@ The central brain is a single SQLite database at `~/.gnosys/gnosys.db` with sub-
 
 ## Install
 
-> **Requires Node.js ≥ 20.12.**
-
-Use Node 22 for now. Node 24.19.0 through 24.21.0 contain an
-[upstream native-addon cleanup regression](https://github.com/nodejs/node/issues/65446)
-that can crash SQLite. After switching Node versions, reinstall Gnosys to rebuild
-its native dependencies. CI uses Node 24.18.1 while the upstream fix is pending.
+> **Requires Node.js ^22.16.0 || >=24.0.0.** FTS5 requires this floor. Node 23.x is unsupported. SQLite uses built-in `node:sqlite`. No native SQLite dependency or rebuild is needed when switching supported Node versions.
 
 ```bash
 npm install -g gnosys
 gnosys setup          # configures provider, API key, and your IDE/agent
 ```
 
-> **Optional native deps.** Gnosys auto-installs **better-sqlite3** (the SQLite engine) and **@huggingface/transformers** (local embeddings). If your environment lacks build tools and either fails to install, run `npm install better-sqlite3 @huggingface/transformers` — or configure an external embedding API. Both degrade gracefully if absent.
+> **Optional local embeddings.** Gnosys auto-installs **@huggingface/transformers**. If it cannot install, use an external embedding API. SQLite does not need this package.
 
 ## Quick start
 
@@ -69,73 +64,74 @@ This package installs two binaries:
 - **`gnosys`** — the CLI. `gnosys serve` starts the MCP server (stdio by default, `--transport http` for the central-server topology). `gnosys setup ides` wires `gnosys-mcp` into your IDE/agent configs.
 - **`gnosys-mcp`** — a direct alias for the MCP stdio server entry, for MCP clients that prefer to spawn the server binary directly (e.g. `npx -y gnosys-mcp`). Equivalent to `gnosys serve`.
 
-| Tool | Description |
-|------|-------------|
-| `gnosys_discover` | Discover relevant memories by describing what you're working on. |
-| `gnosys_read` | Read a specific memory. |
-| `gnosys_search` | Search memories by keyword across all stores. |
-| `gnosys_list` | List memories across all stores, optionally filtered by category, tag, or store layer. |
-| `gnosys_add_structured` | **Preferred for LLM agents.** Add a memory with structured fields you supply (title, category, tags, content) — makes no server-side LLM call. |
-| `gnosys_add` | Add a memory from raw text; the server's LLM structures it. For non-agent callers (scripts, cron) — agents should use `gnosys_add_structured`. |
-| `gnosys_tags` | List all tags in the registry, grouped by category. |
-| `gnosys_tags_add` | Add a new tag to the registry. |
-| `gnosys_reinforce` | Signal whether a memory was useful. |
-| `gnosys_init` | Initialize Gnosys in a project directory. |
-| `gnosys_migrate` | Migrate a Gnosys store (.gnosys/) from one directory to another. |
-| `gnosys_update` | Update an existing memory's frontmatter and/or content. |
-| `gnosys_stale` | Find memories that haven't been modified or reviewed within a given number of days. |
-| `gnosys_commit_context` | Pre-compaction memory sweep. |
-| `gnosys_history` | View audit history for a memory. |
-| `gnosys_lens` | Filtered view of memories. |
-| `gnosys_timeline` | View memory creation and modification activity over time. |
-| `gnosys_stats` | Summary statistics across all memories — totals by category, status, author, authority, average confidence, and date ranges. |
-| `gnosys_links` | Show wikilinks for a specific memory — outgoing [[links]] and backlinks from other memories. |
-| `gnosys_graph` | Show the full cross-reference graph across all memories. |
-| `gnosys_bootstrap` | Batch-import existing documents from a directory into the memory store. |
-| `gnosys_import` | Bulk import structured data (CSV, JSON, JSONL) into Gnosys memories. |
-| `gnosys_hybrid_search` | Search memories using hybrid keyword + semantic search with Reciprocal Rank Fusion. |
-| `gnosys_semantic_search` | Search memories using semantic similarity only (no keyword matching). |
-| `gnosys_reindex` | Rebuild all semantic embeddings from every memory file. |
-| `gnosys_ask` | Ask a natural-language question and get a synthesized answer with citations from the entire vault. |
-| `gnosys_maintain` | Run vault maintenance: detect duplicate memories, apply confidence decay, consolidate similar memories. |
-| `gnosys_dearchive` | Force-dearchive memories from archive.db back to active. |
-| `gnosys_reindex_graph` | Build or rebuild the wikilink graph (.gnosys/graph.json). |
-| `gnosys_dream` | Run a Dream Mode cycle — idle-time consolidation that decays confidence, generates category summaries, discovers relationships, and creates review suggestions. |
-| `gnosys_export` | Export gnosys.db to Obsidian-compatible vault — atomic Markdown files with YAML frontmatter, [[wikilinks]], category summaries, and relationship graph. |
-| `gnosys_dashboard` | Show the Gnosys system dashboard: memory counts, maintenance health, graph stats, LLM provider status. |
-| `gnosys_stores` | Debug tool — lists all detected Gnosys stores across registered projects, MCP workspace roots, cwd, and environment variables. |
-| `gnosys_recall` | Fast memory recall — inject relevant memories as context. |
-| `gnosys_audit` | View the audit trail of all memory operations (reads, writes, reinforcements, dearchives, maintenance). |
-| `gnosys_preference_set` | Set a user preference. |
-| `gnosys_preference_get` | Get a user preference by key, or list all preferences. |
-| `gnosys_preference_delete` | Delete a user preference by key. |
-| `gnosys_sync` | Get the current user preferences + project conventions formatted as a GNOSYS:START/GNOSYS:END block. |
-| `gnosys_federated_search` | Search across scopes with boosts, memory IDs, status labels, and replacements before history. |
-| `gnosys_detect_ambiguity` | Check if a query matches memories in multiple projects. |
-| `gnosys_briefing` | Generate a project briefing — a summary of memory state, categories, recent activity, and top tags. |
-| `gnosys_portfolio` | Portfolio dashboard — shows all registered projects with memory counts, categories, status snapshots, roadmap items, and recent activity. |
-| `gnosys_remote_status` | Check the status of remote sync (multi-machine). |
-| `gnosys_remote_push` | Push local memory changes to the remote (NAS) database. |
-| `gnosys_remote_pull` | Pull remote memory changes to the local database. |
-| `gnosys_remote_resolve` | Resolve a sync conflict by choosing which version to keep. |
-| `gnosys_update_status` | Get the prompt/template for writing a dashboard-compatible status memory for this project. |
-| `gnosys_working_set` | Get the implicit working set — recently modified memories for the current project. |
-| `gnosys_ingest_file` | Ingest a file (PDF, DOCX, TXT, MD, images via vision LLM, audio/video via Whisper transcription) into Gnosys memory. |
-| `gnosys_attach` | Attach a small binary file (logo, diagram, screenshot, small PDF) inline to a memory (~10MB limit; syncs machine-to-machine). |
-| `gnosys_get_attachment` | Retrieve the binary attachment stored on a memory (base64 bytes, or write to disk via outputPath). |
-| `gnosys_trace` | Trace a codebase directory and store procedural "how" memories with call-chain relationships. |
-| `gnosys_reflect` | Record a real-world outcome against related memories, adjusting their confidence and linking them. |
-| `gnosys_traverse` | Walk relationship chains from a memory id (BFS, depth-limited), optionally filtered by direction or relationship types. |
+| Tool | Tier | Description |
+|------|------|-------------|
+| `gnosys_discover` | standard | Discover relevant memories by describing what you're working on. |
+| `gnosys_read` | core | Read a specific memory. |
+| `gnosys_search` | standard | Search memories by keyword across all stores. |
+| `gnosys_list` | standard | List memories across all stores, optionally filtered by category, tag, or store layer. |
+| `gnosys_add_structured` | core | **Preferred for LLM agents.** Add a memory with structured fields you supply (title, category, tags, content) — makes no server-side LLM call. |
+| `gnosys_add` | full | Add a memory from raw text; the server's LLM structures it. For non-agent callers (scripts, cron) — agents should use `gnosys_add_structured`. |
+| `gnosys_tags` | standard | List all tags in the registry, grouped by category. |
+| `gnosys_tags_add` | full | Add a new tag to the registry. |
+| `gnosys_reinforce` | core | Signal whether a memory was useful. |
+| `gnosys_init` | core | Initialize Gnosys in a project directory. |
+| `gnosys_migrate` | full | Migrate a Gnosys store (.gnosys/) from one directory to another. |
+| `gnosys_update` | core | Update an existing memory's frontmatter and/or content. |
+| `gnosys_stale` | full | Find memories that haven't been modified or reviewed within a given number of days. |
+| `gnosys_commit_context` | full | Pre-compaction memory sweep. |
+| `gnosys_history` | full | View audit history for a memory. |
+| `gnosys_lens` | standard | Filtered view of memories. |
+| `gnosys_timeline` | standard | View memory creation and modification activity over time. |
+| `gnosys_stats` | standard | Summary statistics across all memories — totals by category, status, author, authority, average confidence, and date ranges. |
+| `gnosys_links` | standard | Show wikilinks for a specific memory — outgoing [[links]] and backlinks from other memories. |
+| `gnosys_graph` | standard | Show the full cross-reference graph across all memories. |
+| `gnosys_bootstrap` | full | Batch-import existing documents from a directory into the memory store. |
+| `gnosys_import` | full | Bulk import structured data (CSV, JSON, JSONL) into Gnosys memories. |
+| `gnosys_hybrid_search` | core | Main search: keyword, semantic, or hybrid ranking with snippets and IDs. |
+| `gnosys_semantic_search` | standard | Search memories using semantic similarity only (no keyword matching). |
+| `gnosys_reindex` | full | Rebuild all semantic embeddings from every memory file. |
+| `gnosys_ask` | standard | Ask a natural-language question and get a synthesized answer with citations from the entire vault. |
+| `gnosys_maintain` | full | Run vault maintenance: detect duplicate memories, apply confidence decay, consolidate similar memories. |
+| `gnosys_dearchive` | full | Force-dearchive memories from archive.db back to active. |
+| `gnosys_reindex_graph` | full | Build or rebuild the wikilink graph (.gnosys/graph.json). |
+| `gnosys_dream` | full | Run a Dream Mode cycle — idle-time consolidation that decays confidence, generates category summaries, discovers relationships, and creates review suggestions. |
+| `gnosys_export` | full | Export gnosys.db to Obsidian-compatible vault — atomic Markdown files with YAML frontmatter, [[wikilinks]], category summaries, and relationship graph. |
+| `gnosys_dashboard` | core | Show the Gnosys system dashboard: memory counts, maintenance health, graph stats, LLM provider status. |
+| `gnosys_stores` | full | Debug tool — lists all detected Gnosys stores across registered projects, MCP workspace roots, cwd, and environment variables. |
+| `gnosys_recall` | core | Fast memory recall — inject relevant memories as context. |
+| `gnosys_audit` | full | View the audit trail of all memory operations (reads, writes, reinforcements, dearchives, maintenance). |
+| `gnosys_preference_set` | core | Set a user preference. |
+| `gnosys_preference_get` | core | Get a user preference by key, or list all preferences. |
+| `gnosys_preference_delete` | standard | Delete a user preference by key. |
+| `gnosys_sync` | full | Get the current user preferences + project conventions formatted as a GNOSYS:START/GNOSYS:END block. |
+| `gnosys_federated_search` | standard | Search across scopes with boosts, memory IDs, status labels, and replacements before history. |
+| `gnosys_detect_ambiguity` | full | Check if a query matches memories in multiple projects. |
+| `gnosys_briefing` | core | Generate a project briefing — a summary of memory state, categories, recent activity, and top tags. |
+| `gnosys_portfolio` | full | Portfolio dashboard — shows all registered projects with memory counts, categories, status snapshots, roadmap items, and recent activity. |
+| `gnosys_remote_status` | full | Check the status of remote sync (multi-machine). |
+| `gnosys_remote_push` | full | Push local memory changes to the remote (NAS) database. |
+| `gnosys_remote_pull` | full | Pull remote memory changes to the local database. |
+| `gnosys_remote_resolve` | full | Resolve a sync conflict by choosing which version to keep. |
+| `gnosys_update_status` | standard | Get the prompt/template for writing a dashboard-compatible status memory for this project. |
+| `gnosys_working_set` | standard | Get the implicit working set — recently modified memories for the current project. |
+| `gnosys_ingest_file` | standard | Ingest a file (PDF, DOCX, TXT, MD, images via vision LLM, audio/video via Whisper transcription) into Gnosys memory. |
+| `gnosys_attach` | standard | Attach a small binary file (logo, diagram, screenshot, small PDF) inline to a memory (~10MB limit; syncs machine-to-machine). |
+| `gnosys_get_attachment` | standard | Retrieve the binary attachment stored on a memory (base64 bytes, or write to disk via outputPath). |
+| `gnosys_trace` | standard | Trace a codebase directory and store procedural "how" memories with call-chain relationships. |
+| `gnosys_reflect` | core | Record a real-world outcome against related memories, adjusting their confidence and linking them. |
+| `gnosys_traverse` | core | Walk relationship chains from a memory id (BFS, depth-limited), optionally filtered by direction or relationship types. |
+| `gnosys_toolset` | core | Inspect the tool catalog or switch the active tier. |
 
 ### Toolset tiers
 
-The full tool list costs an agent roughly 10k tokens of context per session, so since v6.2.0 every session **starts on the `core` tier** and agents self-escalate in-session: calling `gnosys_toolset` without arguments lists what the higher tiers add, and `gnosys_toolset {"set": "standard"|"full"}` enables them at runtime (and `"core"` shrinks back). The switch emits `notifications/tools/list_changed`, so MCP clients pick up the new tools automatically.
+Tool descriptions and schemas consume agent context, so since v6.2.0 every session **starts on the `core` tier** and agents self-escalate in-session: calling `gnosys_toolset` without arguments lists what the higher tiers add, and `gnosys_toolset {"set": "standard"|"full"}` enables them at runtime (and `"core"` shrinks back). The switch emits `notifications/tools/list_changed`, so MCP clients pick up the new tools automatically.
 
-| Tier | Tools | Approx. context cost |
+| Tier | Tools | Contents |
 |------|-------|----------------------|
-| `core` (default) | 19 | ~3.7k tokens — the proven "Core 15" + trace/reflect/traverse + `gnosys_toolset` |
-| `standard` | 34 | ~6.3k tokens — core + list/stats/tags/timeline/working_set/semantic_search/ask/lens/links/graph/attach/get_attachment/ingest_file/update_status/preference_delete |
-| `full` | 56 | ~10.2k tokens — everything |
+| `core` (default) | 14 | Main memory workflow, hybrid search, reflection, traversal, and tier switching |
+| `standard` | 33 | Core plus specialist search, tracing, browsing, attachments, and ingestion |
+| `full` | 56 | All tools, including freeform ingestion, maintenance, remote sync, and export |
 
 `GNOSYS_MCP_TOOLSET=core|standard|full` overrides the starting tier (unknown values warn on stderr and fall back to `core`). The starting toolset and escalation hint are announced in the MCP server instructions. See [docs/mcp-toolsets.md](./docs/mcp-toolsets.md).
 

@@ -16,7 +16,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import fs from "fs";
 import path from "path";
 import os from "os";
-import Database from "better-sqlite3";
+import { DatabaseSync as Database } from "node:sqlite";
 import { GnosysDB } from "../lib/db.js";
 import { handleRequest, } from "../sandbox/server.js";
 import {
@@ -34,7 +34,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-  vi.doUnmock("better-sqlite3");
+  vi.doUnmock("node:sqlite");
   vi.resetModules();
   vi.restoreAllMocks();
   await cleanupTestEnv(env);
@@ -67,7 +67,8 @@ describe("TC-9e.1: GnosysDB constructor retry logic", () => {
 
   it("retries transient native open failures before persisting data", async () => {
     let attempts = 0;
-    vi.doMock("better-sqlite3", () => ({ default: function(file: string) {
+    vi.doMock("node:sqlite", () => ({ DatabaseSync: // biome-ignore lint/complexity/useArrowFunction: the production code constructs DatabaseSync with new
+      function(file: string) {
       if (++attempts <= 4) throw new Error("share temporarily unavailable");
       return new Database(file);
     } }));
@@ -82,7 +83,7 @@ describe("TC-9e.1: GnosysDB constructor retry logic", () => {
   });
 
   it("returns unavailable when Database module is absent (constructor guard)", async () => {
-    vi.doMock("better-sqlite3", () => { throw new Error("Native SQLite module missing"); });
+    vi.doMock("node:sqlite", () => { throw new Error("Native SQLite module missing"); });
     vi.resetModules();
     const { GnosysDB: MissingDB } = await import("../lib/db.js");
     const db = new MissingDB(path.join(env.tmpDir, "missing-native"));
@@ -97,7 +98,8 @@ describe("TC-9e.1: GnosysDB constructor retry logic", () => {
 describe("TC-9e.2: GnosysDB constructor with retry options", () => {
   it("default retry count is 3 (no opts)", async () => {
     let attempts = 0;
-    vi.doMock("better-sqlite3", () => ({ default: function() {
+    vi.doMock("node:sqlite", () => ({ DatabaseSync: // biome-ignore lint/complexity/useArrowFunction: the production code constructs DatabaseSync with new
+      function() {
       attempts++;
       throw new Error("share offline");
     } }));
@@ -232,11 +234,11 @@ describe("TC-9e.5: Backup with custom --to path", () => {
 
 describe("TC-9e.7: busy_timeout pragma is set", () => {
   it("new GnosysDB sets busy_timeout to 10000", () => {
-    const pragma = vi.spyOn(Database.prototype, "pragma");
+    const pragma = vi.spyOn(Database.prototype, "exec");
     const db = new GnosysDB(path.join(env.tmpDir, "pragma"));
     try {
       expect(db.isAvailable()).toBe(true);
-      expect(pragma).toHaveBeenCalledWith("busy_timeout = 10000");
+      expect(pragma).toHaveBeenCalledWith("PRAGMA busy_timeout = 10000");
       db.insertMemory(makeMemory({ id: "timeout-data", title: "Busy timeout configured" }));
       expect(db.getMemory("timeout-data")?.title).toBe("Busy timeout configured");
     } finally { db.close(); }

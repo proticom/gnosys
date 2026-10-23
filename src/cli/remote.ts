@@ -2,7 +2,7 @@
  * Gnosys CLI — command registrations extracted verbatim from src/cli.ts
  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
  */
-import { Command } from "commander";
+import type { Command } from "commander";
 import { GnosysDB } from "../lib/db.js";
 import { outputResult } from "./_shared.js";
 
@@ -67,7 +67,7 @@ machineCmd
     const { getMachineConfigPath } = await import("../lib/paths.js");
     const db = GnosysDB.openLocal();
     if (!db.isAvailable()) {
-      console.error("Central DB not available (better-sqlite3 missing).");
+      console.error(`Central DB not available (${db.getUnavailableReason()})`);
       process.exit(1);
     }
     const res = await migrateMachine(db, { root: opts.root, scan: opts.scan });
@@ -100,7 +100,7 @@ machineCmd
     const { readMachineRegistry } = await import("../lib/machineRegistry.js");
     const db = GnosysDB.openCentral();
     if (!db.isAvailable()) {
-      console.error("Central DB not available (better-sqlite3 missing).");
+      console.error(`Central DB not available (${db.getUnavailableReason()})`);
       process.exit(1);
     }
     const registry = readMachineRegistry(db);
@@ -134,7 +134,7 @@ machineCmd
     }
     const db = GnosysDB.openCentral();
     if (!db.isAvailable()) {
-      console.error("Central DB not available (better-sqlite3 missing).");
+      console.error(`Central DB not available (${db.getUnavailableReason()})`);
       process.exit(1);
     }
     const removed = forgetMachine(db, hostname);
@@ -167,7 +167,7 @@ program
 
     const db = GnosysDB.openCentral();
     if (!db.isAvailable()) {
-      console.error("Central DB not available (better-sqlite3 missing).");
+      console.error(`Central DB not available (${db.getUnavailableReason()})`);
       process.exit(1);
     }
     const result = await scanProjects(db, machine);

@@ -15,7 +15,7 @@ async function withCentralDb(json: boolean | undefined, fn: (db: GnosysDB) => Pr
   let db: GnosysDB | null = null;
   try {
     db = GnosysDB.openCentral();
-    if (!db.isAvailable()) throw new ProjectRepairError("central DB not available (better-sqlite3 missing).");
+    if (!db.isAvailable()) throw new ProjectRepairError(`central DB not available (${db.getUnavailableReason()})`);
     await fn(db);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

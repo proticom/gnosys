@@ -58,7 +58,7 @@ Stores:
 
 ### Linux
 
-- Same checks as macOS. Requires `better-sqlite3` for central DB and archive sections.
+- Same checks as macOS. Requires `node:sqlite` (Node ^22.16.0 || >=24.0.0) for central DB and archive sections.
 
 ### Windows
 

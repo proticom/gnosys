@@ -49,7 +49,7 @@ Dearchived 2 memories back to active:
 |-----------|---------|
 | No stores | `No Gnosys stores found. Run gnosys init first.` |
 | No writable store | `No writable store found.` |
-| Archive unavailable | `Archive not available. Install it with: npm install better-sqlite3` |
+| Archive unavailable | `Archive not available. Requires node:sqlite (Node ^22.16.0 \|\| >=24.0.0)` |
 
 Error paths exit with code 1.
 

@@ -25,20 +25,20 @@ describe("toolset tier isolation between agent sessions", () => {
     const b = await session();
 
     // Both start on core.
-    expect((await a.client.listTools()).tools.length).toBe(19);
-    expect((await b.client.listTools()).tools.length).toBe(19);
+    expect((await a.client.listTools()).tools.length).toBe(14);
+    expect((await b.client.listTools()).tools.length).toBe(14);
 
     // A escalates to full.
     await a.client.callTool({ name: "gnosys_toolset", arguments: { set: "full" } });
     expect((await a.client.listTools()).tools.length).toBe(56);
 
     // B is untouched.
-    expect((await b.client.listTools()).tools.length).toBe(19);
+    expect((await b.client.listTools()).tools.length).toBe(14);
 
     // A shrinks back down; B still untouched.
     await a.client.callTool({ name: "gnosys_toolset", arguments: { set: "core" } });
-    expect((await a.client.listTools()).tools.length).toBe(19);
-    expect((await b.client.listTools()).tools.length).toBe(19);
+    expect((await a.client.listTools()).tools.length).toBe(14);
+    expect((await b.client.listTools()).tools.length).toBe(14);
 
     await Promise.all([a.client.close(), b.client.close(), a.server.close(), b.server.close()]);
   });

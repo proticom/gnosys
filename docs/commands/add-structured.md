@@ -66,7 +66,7 @@ ID: deci-042
 ### macOS / Linux / Windows
 
 - JSON for `--tags` must be valid JSON; quote carefully in shell.
-- Requires central DB available (`better-sqlite3` installed and migrated).
+- Requires central DB available (`node:sqlite` available on Node ^22.16.0 || >=24.0.0 and migrated).
 
 ## Validation
 

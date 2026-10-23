@@ -279,7 +279,7 @@ import { promises as fs } from 'fs';
 import { dirname } from 'path';
 // Third-party packages
 import { z } from 'zod';
-import sqlite3 from 'better-sqlite3';
+import { DatabaseSync } from 'node:sqlite';
 // Project modules
 import { LLMProvider } from '../lib/llm.js';
 import { validateInput } from '../lib/validation.js';
@@ -350,9 +350,12 @@ Brief summary of the change and its purpose.
 
 ## Database
 
-Gnosys uses **better-sqlite3** for persistent storage. When working with the database:
+Gnosys requires Node.js ^22.16.0 || >=24.0.0 and uses built-in **node:sqlite** for persistent storage. FTS5 requires this floor; Node 23.x is unsupported. SQLite needs no native addon. When working with the database:
 
 - Use prepared statements to prevent SQL injection
+- Use `transaction(db, fn)` from `src/lib/sqliteTransaction.ts` for transactions and nested savepoints
+- Use `exec("PRAGMA ...")` for setters and prepared queries for reads
+- Use `prepare(db, sql)` from `src/lib/sqliteStatement.ts` so BLOB columns come back as `Buffer`; bind booleans as 0/1 and undefined as null
 - Handle connection lifecycle properly (open/close)
 - Test database operations with temporary databases in tests
 - Document schema changes in the CHANGELOG

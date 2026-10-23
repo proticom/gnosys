@@ -4,7 +4,7 @@ import { join, resolve } from "path";
 import { pathToFileURL } from "url";
 import { spawn } from "child_process";
 import { once } from "events";
-import Database from "better-sqlite3";
+import { DatabaseSync as Database } from "node:sqlite";
 import { GnosysDB } from "../lib/db.js";
 import { GnosysDreamEngine, DreamScheduler } from "../lib/dream.js";
 import { DEFAULT_CONFIG } from "../lib/config.js";
@@ -95,7 +95,7 @@ describe("SQLite recovery through public reads and search", () => {
 
   it("retries a native SQLITE_NOTADB read and returns persisted content", () => {
     vi.spyOn(Database.prototype, "prepare").mockImplementationOnce(() => {
-      throw Object.assign(new Error("file is not a database"), { code: "SQLITE_NOTADB" });
+      throw Object.assign(new Error("file is not a database"), { code: "ERR_SQLITE_ERROR", errcode: 26, errstr: "file is not a database" });
     });
     expect(db.getMemory("recovery-001")).toMatchObject({ title: "Recovery target", content: "originalword" });
   });

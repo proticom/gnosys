@@ -26,12 +26,12 @@ gnosys trace ./src --json
 
 ## Prerequisites
 
-Requires the central Gnosys database with `better-sqlite3` available. If the DB driver is missing, the command exits with an error.
+Requires the central Gnosys database with `node:sqlite` available on Node ^22.16.0 || >=24.0.0. If the DB driver is missing, the command exits with an error.
 
 ## Behavior
 
 1. Opens the central DB via `GnosysDB.getCentralDbDir()`.
-2. Verifies DB availability (`better-sqlite3` installed).
+2. Verifies DB availability (`node:sqlite` available on Node ^22.16.0 || >=24.0.0).
 3. Runs `traceCodebase` on the given directory with optional `projectId` and `maxFiles`.
 4. Closes the DB in a `finally` block even when tracing throws.
 5. Prints human summary or JSON result.
@@ -61,7 +61,7 @@ On failure with `--json`:
 
 ## Errors
 
-- Missing DB driver: `Error: GnosysDB not available. Install it with: npm install better-sqlite3` then exit 1.
+- Missing DB driver: `Error: GnosysDB not available. Requires node:sqlite (Node ^22.16.0 || >=24.0.0)` then exit 1.
 - Trace failure: `Trace failed: ...` on stderr (human) or JSON error object, then exit 1.
 
 ## Validation

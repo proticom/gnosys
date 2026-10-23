@@ -2,7 +2,7 @@
  * Gnosys CLI — command registrations extracted verbatim from src/cli.ts
  * (v6.2.1 cli split). Pure file reorganization; no behavior change.
  */
-import { Command } from "commander";
+import type { Command } from "commander";
 import { getResolver } from "./_shared.js";
 
 export function registerData(program: Command): void {
@@ -104,7 +104,7 @@ importCmd
 program
   .command("reindex")
   .description(
-    "Rebuild semantic embeddings for every memory in the central DB. Run after bulk imports, schema changes, or if hybrid search starts returning poor matches. Downloads the all-MiniLM-L6-v2 model (~80 MB) on first run.",
+    "Rebuild semantic embeddings for every memory in the central DB. Run after bulk imports, schema changes, or if hybrid search starts returning poor matches. Downloads the all-MiniLM-L6-v2 model (~23 MB, 8-bit quantized) on first run.",
   )
   .action(async () => {
     const { runReindexCommand } = await import("../lib/reindexCommand.js");

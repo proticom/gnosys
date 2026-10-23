@@ -11,7 +11,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "fs";
 import os from "os";
 import path from "path";
-import Database from "better-sqlite3";
+import { DatabaseSync as Database } from "node:sqlite";
 import { GnosysDB, type DbProject } from "../lib/db.js";
 
 let tmp: string;
@@ -105,7 +105,7 @@ describe("v5.11 schema: migration from v3", () => {
     raw.prepare(
       "INSERT INTO projects (id,name,working_directory,user,created,modified) VALUES (?,?,?,?,?,?)",
     ).run("legacy1", "Legacy", "/Volumes/Dev/projects/legacy", "edward", "2026-01-01", "2026-01-01");
-    raw.pragma("user_version = 3");
+    raw.exec("PRAGMA user_version = 3");
     raw.close();
 
     // Opening via GnosysDB triggers the v3 -> v4 migration.

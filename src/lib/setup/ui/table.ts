@@ -67,7 +67,7 @@ export function renderTable<T>(
     const headerLen = col.header.length;
     const maxCell = rawCells.reduce((max, cells) => {
       const len = stripAnsi(cells[idx] ?? "").length;
-      return len > max ? len : max;
+      return Math.max(len, max);
     }, 0);
     return Math.max(headerLen, maxCell);
   });
