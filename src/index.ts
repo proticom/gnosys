@@ -59,7 +59,8 @@ import { loadConfig, type GnosysConfig, DEFAULT_CONFIG } from "./lib/config.js";
 import { getLLMProvider, type LLMProvider } from "./lib/llm.js";
 import { recall, formatRecall, } from "./lib/recall.js";
 import { initAudit, closeAudit, readAuditLog, readAuditFromDb, formatAuditTimeline } from "./lib/audit.js";
-import { disableWriteTimeEmbedding } from "./lib/embedQueue.js";
+import { disableWriteTimeEmbedding, flushWriteTimeEmbeddings } from "./lib/embedQueue.js";
+import { createStdioShutdown, trackStdioRequests } from "./lib/stdioShutdown.js";
 import { logError } from "./lib/log.js";
 import { markAgentSurface, MemoryDeletionRefusedError } from "./lib/memoryDeleteGuard.js";
 import { GnosysDB, isVisibleInProject, type MemoryScope, type ProjectVisibility } from "./lib/db.js";
@@ -4701,34 +4702,42 @@ export async function startMcpServer() {
 
   registerCapabilities(server);
   const transport = new StdioServerTransport();
-  let shuttingDown = false;
-  const shutdown = () => {
-    if (shuttingDown) return;
-    shuttingDown = true;
-    // A stalled transport or background model must not orphan this process.
-    setTimeout(() => process.exit(0), 1000).unref();
-    disableWriteTimeEmbedding();
-    for (const resource of new Set([embeddings, search, gnosysDb, centralDb])) {
-      try {
-        resource?.close();
-      } catch (err) {
-        console.error("Gnosys MCP: cleanup failed:", err);
+  const drain = trackStdioRequests({ transport, stdout: process.stdout });
+  const shutdown = createStdioShutdown({
+    drain,
+    flush: flushWriteTimeEmbeddings,
+    close: async () => {
+      const errors: unknown[] = [];
+      disableWriteTimeEmbedding();
+      for (const resource of new Set([embeddings, search, gnosysDb, centralDb])) {
+        try {
+          resource?.close();
+        } catch (error) {
+          errors.push(error);
+        }
       }
-    }
-    closeAudit();
-    void server.close().catch((err) => {
-      console.error("Gnosys MCP: transport cleanup failed:", err);
-    }).finally(() => process.exit(0));
-  };
-  transport.onclose = shutdown;
+      try {
+        closeAudit();
+      } finally {
+        await server.close();
+      }
+      if (errors.length > 0) throw new AggregateError(errors, "Resource cleanup failed");
+    },
+    exit: code => process.exit(code),
+    log: (message, error) => console.error(message, error ?? ""),
+    timeoutMs: z.coerce.number().int().min(1).max(60_000).catch(5000).parse(process.env.GNOSYS_SHUTDOWN_TIMEOUT_MS),
+  });
+  const disconnected = () => { process.stdin.pause(); void shutdown(); };
+  transport.onclose = disconnected;
   await server.connect(transport);
   if (server.server.transport === transport) {
-    process.stdin.once("end", shutdown);
-    process.stdin.once("close", shutdown);
-    process.on("SIGINT", shutdown);
-    process.on("SIGTERM", shutdown);
+    process.stdin.once("end", disconnected);
+    process.stdin.once("close", disconnected);
+    // Both transports use 128 + signal; HTTP retains Node's default handlers.
+    process.on("SIGINT", () => { process.stdin.pause(); void shutdown(130); });
+    process.on("SIGTERM", () => { process.stdin.pause(); void shutdown(143); });
     if (process.stdin.readableEnded || process.stdin.destroyed) {
-      shutdown();
+      disconnected();
       return;
     }
   }

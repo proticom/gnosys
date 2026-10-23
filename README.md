@@ -64,6 +64,12 @@ This package installs two binaries:
 - **`gnosys`** — the CLI. `gnosys serve` starts the MCP server (stdio by default, `--transport http` for the central-server topology). `gnosys setup ides` wires `gnosys-mcp` into your IDE/agent configs.
 - **`gnosys-mcp`** — a direct alias for the MCP stdio server entry, for MCP clients that prefer to spawn the server binary directly (e.g. `npx -y gnosys-mcp`). Equivalent to `gnosys serve`.
 
+On stdio EOF, the server drains received requests, writes their responses, flushes
+queued embeddings, and closes resources before exiting 0. Cleanup errors or the
+five-second shutdown backstop exit 1. `GNOSYS_SHUTDOWN_TIMEOUT_MS` overrides the
+bound (1–60000 ms). Both transports use the conventional signal status of
+128 + signal: SIGINT is 130 and SIGTERM is 143. HTTP ignores stdin closure.
+
 | Tool | Tier | Description |
 |------|------|-------------|
 | `gnosys_discover` | standard | Discover relevant memories by describing what you're working on. |
