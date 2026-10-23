@@ -18,7 +18,13 @@
 
 # Gnosys — One Brain. Zero Context Bloat.
 
-**Gnosys gives AI agents persistent memory that survives across sessions, projects, and machines.**
+**Gnosys gives AI agents persistent, portable, and shared memory that survives across sessions, projects, and machines.**
+
+<p align="center">
+  <a href="https://x.ai/bot/g9DYB8WEL5lf7QXvXI1Li"><img src="docs/bot-avatar/gnosys-bot-eyes.gif" alt="Animated Gnosys bot avatar" width="128"></a>
+  <br>
+  <strong><a href="https://x.ai/bot/g9DYB8WEL5lf7QXvXI1Li">Add to your Grok Bot team</a></strong>
+</p>
 
 The central brain is a single SQLite database at `~/.gnosys/gnosys.db` with sub-10ms reads — no vector DBs, no black boxes, no external services. Federated search ranks results across project, user, and global scopes. It runs as a CLI and as a full MCP server that drops straight into Claude Code, Claude Desktop (Chat / Cowork / Code), Cursor, Codex, Gemini CLI, Antigravity, Grok Build, or any MCP client. When you want a human-readable view, `gnosys export` regenerates a full Obsidian vault on demand.
 
