@@ -103,7 +103,7 @@ let config: GnosysConfig = DEFAULT_CONFIG;
 const server = new McpServer(
   {
     name: "gnosys",
-    version: "2.0.0",
+    version: RUNNING_VERSION,
   },
   { instructions: makeServerInstructions() },
 );
@@ -2889,7 +2889,7 @@ regTool(
     const ctx = await resolveToolContext(projectRoot);
     try {
       const { collectDashboardData, formatDashboardJSON } = await import("./lib/dashboard.js");
-      const data = await collectDashboardData(ctx.resolver, ctx.config, "1.1.0", ctx.centralDb || undefined);
+      const data = await collectDashboardData(ctx.resolver, ctx.config, RUNNING_VERSION, ctx.centralDb || undefined);
       return {
         content: [{ type: "text", text: formatDashboardJSON(data) }],
       };
@@ -4676,7 +4676,7 @@ export async function startMcpServer() {
         log: (m) => console.error(`Gnosys MCP[http]: ${m}`),
         makeServer: () => {
           const s = new McpServer(
-            { name: "gnosys", version: "2.0.0" },
+            { name: "gnosys", version: RUNNING_VERSION },
             { instructions: makeServerInstructions() },
           );
           registerCapabilities(s);
