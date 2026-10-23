@@ -4702,9 +4702,8 @@ export async function startMcpServer() {
           return s;
         },
       });
-      let signalCode: 130 | 143 = 143;
       const shutdown = createStdioShutdown({
-        drain: async () => {},
+        drain: () => http.drain(),
         flush: flushWriteTimeEmbeddings,
         close: async () => { try { await http.close(); } finally { closeResources(); } },
         closeSync: () => {
@@ -4714,13 +4713,12 @@ export async function startMcpServer() {
             if (http.server.listening) http.server.close();
           }
         },
-        // HTTP keeps the requested signal status even if best-effort cleanup times out.
-        exit: code => process.exit(code === 1 ? signalCode : code),
+        exit: code => process.exit(code),
         log: (message, error) => console.error(message, error ?? ""),
         timeoutMs,
       });
-      process.on("SIGINT", () => { signalCode = 130; void shutdown(130); });
-      process.on("SIGTERM", () => { signalCode = 143; void shutdown(143); });
+      process.on("SIGINT", () => { void shutdown(130); });
+      process.on("SIGTERM", () => { void shutdown(143); });
     } catch (err) {
       console.error(`Gnosys MCP: ${err instanceof Error ? err.message : String(err)}`);
       process.exit(1);

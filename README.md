@@ -74,6 +74,8 @@ the nearest bound; other formats warn and use 1500 ms. Both transports exit
 130 for SIGINT and 143 for SIGTERM. The first signal during an EOF drain lets
 requests finish and sets that exit status. Only a second actual signal forces
 immediate resource cleanup and exits with its status. HTTP ignores stdin closure.
+On a signal, HTTP rejects new requests and drains admitted POST responses before closing SSE streams.
+Synchronous event-loop blocking (for example a long handler or SQLite call) defeats the shutdown bound/backstop; there is no watchdog process.
 
 | Tool | Tier | Description |
 |------|------|-------------|
