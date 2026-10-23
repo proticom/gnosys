@@ -12,7 +12,7 @@ import { GnosysDB } from "../lib/db.js";
 const root = path.resolve(__dirname, "../..");
 const index = path.join(root, "dist/index.js");
 const marker = "round-3 persisted memory";
-type Fault = "cancel" | "dispatch" | "embedding" | "close" | "second-signal" | "http";
+type Fault = "cancel" | "dispatch" | "embedding" | "close" | "second-signal" | "http" | "write";
 interface Running {
   home: string;
   env: Record<string, string>;
@@ -37,7 +37,10 @@ async function within<T>(promise: Promise<T>, ms = 5000): Promise<T> {
 afterEach(async () => {
   vi.restoreAllMocks();
   if (!running) return;
-  const instance = running;
+  await dispose(running);
+});
+
+async function dispose(instance: Running): Promise<void> {
   try {
     const closing = instance.client?.close();
     if (instance.child?.exitCode === null && instance.child.signalCode === null) instance.child.kill("SIGKILL");
@@ -47,7 +50,7 @@ afterEach(async () => {
     rmSync(instance.home, { recursive: true, force: true });
     running = undefined;
   }
-});
+}
 
 function fixture(fault: Fault): Running {
   const home = mkdtempSync(path.join(tmpdir(), "gnosys-job95r3-child-"));
@@ -81,6 +84,10 @@ ${fault === "http" ? `
 const { Server } = await import("node:http");
 const listen = Server.prototype.listen;
 Server.prototype.listen = function (...args) {
+  this.once("listening", () => {
+    const address = this.address();
+    if (address && typeof address === "object") console.error("r4 HTTP port " + address.port);
+  });
   this.once("error", error => {
     if (error.code !== "EPERM") throw error;
     console.error("r3 loopback EPERM: using test listener for HTTP signal handling");
@@ -115,6 +122,18 @@ McpServer.prototype.tool = function (name, ...args) {
   if (name === "gnosys_read") args[args.length - 1] = async () => {
     console.error("r3 handler started"); await new Promise(() => {});
   };
+  return tool.call(this, name, ...args);
+};` : ""}
+${fault === "write" ? `
+const tool = McpServer.prototype.tool;
+McpServer.prototype.tool = function (name, ...args) {
+  if (name === "gnosys_add_structured") {
+    const add = args[args.length - 1];
+    args[args.length - 1] = async (...params) => {
+      await new Promise(resolve => setTimeout(resolve, 50));
+      return add(...params);
+    };
+  }
   return tool.call(this, name, ...args);
 };` : ""}
 ${fault === "close" ? 'McpServer.prototype.close = async () => { console.error("r3 close started"); await new Promise(resolve => setTimeout(resolve, 3000)); };' : ""}
@@ -293,3 +312,103 @@ for (const { signal, code } of [{ signal: "SIGINT", code: 130 }, { signal: "SIGT
     expect(instance.stderr).toContain("r3 database closed");
   });
 }
+
+it("r4 HTTP SIGTERM with an open SSE stream exits before the backstop", async ({ skip }) => {
+  const instance = fixture("http");
+  instance.env.GNOSYS_TRANSPORT = "http";
+  instance.env.GNOSYS_HTTP_HOST = "127.0.0.1";
+  instance.env.GNOSYS_HTTP_PORT = "0";
+  observe(instance, spawn(process.execPath, instance.args, { cwd: instance.home, env: instance.env, stdio: "pipe" }));
+  await waitFor(instance, "HTTP transport ready");
+  if (instance.stderr.includes("r3 loopback EPERM")) skip("Sandbox denies native loopback binding; requires a real SSE socket");
+  const port = /r4 HTTP port (\d+)/.exec(instance.stderr)?.[1];
+  if (!port) throw new Error(`Missing native HTTP port: ${instance.stderr}`);
+  const url = `http://127.0.0.1:${port}/mcp`;
+  const controller = new AbortController();
+  let stream: Response | undefined;
+  try {
+    const initialized = await within(fetch(url, {
+      method: "POST", signal: controller.signal,
+      headers: { "content-type": "application/json", accept: "application/json, text/event-stream" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: {
+        protocolVersion: "2024-11-05", capabilities: {}, clientInfo: { name: "r4-http", version: "1" },
+      } }),
+    }));
+    expect(initialized.status).toBe(200);
+    expect(await within(initialized.text())).toContain('"protocolVersion":"2024-11-05"');
+    const sessionId = initialized.headers.get("mcp-session-id");
+    if (!sessionId) throw new Error("HTTP initialize did not return a session id");
+    const headers = {
+      "content-type": "application/json", accept: "application/json, text/event-stream",
+      "mcp-session-id": sessionId, "mcp-protocol-version": "2024-11-05",
+    };
+    const notification = await within(fetch(url, {
+      method: "POST", headers, signal: controller.signal,
+      body: JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" }),
+    }));
+    expect(notification.status).toBe(202);
+    await within(notification.text());
+    stream = await within(fetch(url, { headers: { ...headers, accept: "text/event-stream" }, signal: controller.signal }));
+    expect(stream.status).toBe(200);
+    expect(stream.headers.get("content-type")).toContain("text/event-stream");
+    const started = performance.now();
+    instance.child?.kill("SIGTERM");
+    await exited(instance, 143);
+    expect(performance.now() - started).toBeLessThan(1000);
+    expect(instance.stderr).not.toContain("backstop fired");
+    expect(instance.stderr).toContain("r3 database closed");
+  } finally {
+    controller.abort();
+    await stream?.body?.cancel().catch(() => {});
+  }
+});
+
+function addLine(instance: Running, title: string): string {
+  return `${JSON.stringify({ jsonrpc: "2.0", id: 7, method: "tools/call", params: {
+    name: "gnosys_add_structured", arguments: { title, content: title, tags: {}, category: "decisions", projectRoot: instance.home },
+  } })}\n`;
+}
+
+function committed(instance: Running, title: string): void {
+  const db = new GnosysDB(path.join(instance.home, "brain"));
+  try { expect(db.getAllMemories().filter(memory => memory.title === title).map(memory => memory.title)).toEqual([title]); }
+  finally { db.close(); }
+}
+
+for (const delay of [0, 1]) {
+  it(`r4 EOF plus first SIGTERM after ${delay} ms preserves the request`, async () => {
+    for (let iteration = 0; iteration < 3; iteration++) {
+      const instance = fixture("write");
+      await raw(instance);
+      await waitFor(instance, "Gnosys MCP: heavy modules ready");
+      const title = `r4 signal ${delay} ${iteration}`;
+      const started = performance.now();
+      instance.child?.stdin?.end(addLine(instance, title));
+      if (delay !== 0) await new Promise(resolve => setTimeout(resolve, delay));
+      instance.child?.kill("SIGTERM");
+      await exited(instance, 143);
+      const response = lines(instance).find(message => "id" in message && message.id === 7);
+      if (!response || !("result" in response)) throw new Error(`Missing result for request 7: ${instance.stdout}\n${instance.stderr}`);
+      expect(response.result).toMatchObject({ content: [{ type: "text", text: expect.stringContaining(`**${title}**\nID:`) }] });
+      committed(instance, title);
+      expect(instance.stderr).not.toContain("forced shutdown");
+      expect(instance.stderr).not.toContain("backstop fired");
+      expect(performance.now() - started).toBeLessThan(1000);
+      await dispose(instance);
+    }
+  });
+}
+
+it("r4 a broken stdout during shutdown preserves the write without an uncaught EPIPE", async () => {
+  const instance = fixture("write");
+  await raw(instance);
+  await waitFor(instance, "Gnosys MCP: heavy modules ready");
+  const title = "r4 broken stdout memory";
+  instance.child?.stdin?.write(addLine(instance, title));
+  instance.child?.stdout?.destroy();
+  instance.child?.stdin?.end();
+  await exited(instance, 0);
+  committed(instance, title);
+  expect(instance.stderr).not.toContain("uncaught exception");
+  expect(instance.stderr).not.toContain("EPIPE");
+});

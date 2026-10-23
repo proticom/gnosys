@@ -4739,12 +4739,20 @@ export async function startMcpServer() {
   let drain = () => Promise.resolve();
   const start = transport.start.bind(transport);
   transport.start = async () => {
-    // Protocol.connect installs dispatch before start; wrap it before stdin can deliver data.
+    // Defensively wrap SDK dispatch at start, before stdin can deliver data.
     drain = trackStdioRequests({ transport, stdout: process.stdout });
     await start();
   };
   const shutdown = createStdioShutdown({
-    drain: () => drain(),
+    drain: async () => {
+      process.stdout.on("error", (error: NodeJS.ErrnoException) => {
+        if (error.code !== "EPIPE") throw error;
+      });
+      // A signal can run before an already-ready stdin read callback dispatches its requests.
+      await new Promise<void>(resolve => setImmediate(resolve));
+      process.stdin.pause();
+      await drain();
+    },
     flush: flushWriteTimeEmbeddings,
     close: async () => {
       try { closeResources(); }
@@ -4762,8 +4770,8 @@ export async function startMcpServer() {
     process.stdin.once("end", disconnected);
     process.stdin.once("close", disconnected);
     // Both transports exit with 128 + signal; another signal forces synchronous cleanup.
-    process.on("SIGINT", () => { process.stdin.pause(); void shutdown(130); });
-    process.on("SIGTERM", () => { process.stdin.pause(); void shutdown(143); });
+    process.on("SIGINT", () => { void shutdown(130); });
+    process.on("SIGTERM", () => { void shutdown(143); });
     if (process.stdin.readableEnded || process.stdin.destroyed) {
       disconnected();
       return;

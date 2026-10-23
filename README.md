@@ -68,10 +68,12 @@ On stdio EOF, the server drains received requests, writes their responses, and
 closes resources before exiting 0. Embedding flushes get at most 500 ms or one
 third of the shutdown timeout; reindex or an embedding-enabled Dream run recovers
 missing vectors. Cleanup errors or the 1500 ms shutdown backstop exit 1.
-`GNOSYS_SHUTDOWN_TIMEOUT_MS` accepts 100–60000 ms; invalid values warn and are
-clamped, while empty or non-numeric values use 1500 ms. Both transports exit
-130 for SIGINT and 143 for SIGTERM. A second signal forces immediate resource
-cleanup and exits with that signal's status. HTTP ignores stdin closure.
+`GNOSYS_SHUTDOWN_TIMEOUT_MS` accepts plain decimal integers without whitespace
+(100–60000 ms). Out-of-range integers and signed infinities warn and clamp to
+the nearest bound; other formats warn and use 1500 ms. Both transports exit
+130 for SIGINT and 143 for SIGTERM. The first signal during an EOF drain lets
+requests finish and sets that exit status. Only a second actual signal forces
+immediate resource cleanup and exits with its status. HTTP ignores stdin closure.
 
 | Tool | Tier | Description |
 |------|------|-------------|

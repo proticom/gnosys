@@ -131,6 +131,7 @@ export function startMcpHttpServer(opts: McpHttpOptions): Promise<McpHttpHandle>
   const mcpPath = opts.path ?? "/mcp";
   const log = opts.log ?? (() => {});
   const transports = new Map<string, StreamableHTTPServerTransport>();
+  const sseResponses = new Set<http.ServerResponse>();
   const lastSeen = new Map<string, number>();
   const idleMs = opts.sessionIdleMs ?? 30 * 60 * 1000;
   const sweepMs = opts.sweepIntervalMs ?? 60 * 1000;
@@ -244,6 +245,10 @@ export function startMcpHttpServer(opts: McpHttpOptions): Promise<McpHttpHandle>
         return;
       }
       if (sessionId) touch(sessionId);
+      if (req.method === "GET") {
+        sseResponses.add(res);
+        res.once("close", () => sseResponses.delete(res));
+      }
       await transport.handleRequest(req, res);
       return;
     }
@@ -257,18 +262,22 @@ export function startMcpHttpServer(opts: McpHttpOptions): Promise<McpHttpHandle>
       log(`listening on http://${opts.host}:${opts.port}${mcpPath}`);
       const sweep = setInterval(() => reapIdle(), sweepMs);
       sweep.unref();
+      let closing: Promise<void> | undefined;
       resolve({
         server: httpServer,
         sessionCount: () => transports.size,
         reapIdleSessions: (now?: number) => reapIdle(now),
-        close: () =>
-          new Promise<void>((r) => {
-            clearInterval(sweep);
-            for (const t of transports.values()) void t.close();
-            transports.clear();
-            lastSeen.clear();
-            httpServer.close(() => r());
-          }),
+        close: () => closing ??= (async () => {
+          clearInterval(sweep);
+          await Promise.allSettled([...transports.values()].map(t => t.close()));
+          // SDK stream closure can finish before the HTTP adapter releases its socket.
+          for (const response of sseResponses) response.destroy();
+          sseResponses.clear();
+          transports.clear();
+          lastSeen.clear();
+          httpServer.closeIdleConnections();
+          await new Promise<void>(resolve => { httpServer.close(() => resolve()); });
+        })(),
       });
     });
   });

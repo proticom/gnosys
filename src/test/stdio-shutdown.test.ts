@@ -244,3 +244,64 @@ for (const { raw, expected, warns } of [
     } else expect(warnings).toEqual([]);
   });
 }
+
+it("r4 lets the first signal update an EOF shutdown while requests drain", async () => {
+  const requests = gate();
+  const events: string[] = [];
+  const shutdown = createStdioShutdown({
+    drain: () => requests.promise, flush: async () => {}, close: async () => { events.push("close"); },
+    closeSync: () => { events.push("forced close"); }, exit: code => { events.push(`exit ${code}`); },
+    log: message => { events.push(message); }, timeoutMs: 1500,
+  });
+  const closing = shutdown();
+  try {
+    void shutdown(143);
+    expect(events).toEqual([]);
+  } finally { requests.release(); await closing; }
+  expect(events).toEqual(["close", "exit 143"]);
+});
+
+it("r4 forces shutdown only after two actual signals", async () => {
+  const requests = gate();
+  const events: string[] = [];
+  const shutdown = createStdioShutdown({
+    drain: () => requests.promise, flush: async () => {}, close: async () => { events.push("close"); },
+    closeSync: () => { events.push("forced close"); }, exit: code => { events.push(`exit ${code}`); },
+    log: message => { events.push(message); }, timeoutMs: 1500,
+  });
+  const closing = shutdown(143);
+  try {
+    void shutdown();
+    void shutdown(130);
+    expect(events).toEqual(["Gnosys MCP: forced shutdown", "forced close", "exit 130"]);
+  } finally { requests.release(); await closing; }
+});
+
+for (const raw of ["0x3e8", "0o1750", "0b1111101000", " 2000 ", "1e3", "1.5e3", "1000.0", "", " ", "NaN", "abc", "1_000"]) {
+  it(`r4 rejects non-decimal-integer timeout ${JSON.stringify(raw)}`, () => {
+    const warnings: string[] = [];
+    expect(shutdownModule.parseShutdownTimeout(raw, message => { warnings.push(message); })).toBe(1500);
+    expect(warnings).toEqual([`Gnosys MCP: invalid GNOSYS_SHUTDOWN_TIMEOUT_MS=${JSON.stringify(raw)}; using 1500 ms`]);
+  });
+}
+
+for (const { raw, expected } of [
+  { raw: "0", expected: 100 }, { raw: "-5", expected: 100 }, { raw: "99", expected: 100 },
+  { raw: "60001", expected: 60000 }, { raw: "9".repeat(400), expected: 60000 },
+  { raw: `-${"9".repeat(400)}`, expected: 100 },
+  { raw: "Infinity", expected: 60000 }, { raw: "+Infinity", expected: 60000 }, { raw: "-Infinity", expected: 100 },
+]) {
+  it(`r4 reports an out-of-range timeout ${JSON.stringify(raw)}`, () => {
+    const warnings: string[] = [];
+    expect(shutdownModule.parseShutdownTimeout(raw, message => { warnings.push(message); })).toBe(expected);
+    expect(warnings).toEqual([`Gnosys MCP: out of range GNOSYS_SHUTDOWN_TIMEOUT_MS=${JSON.stringify(raw)}; using ${expected} ms`]);
+  });
+}
+
+it("r4 accepts signed plain decimal integers without warning", () => {
+  const warnings: string[] = [];
+  for (const { raw, expected } of [{ raw: "100", expected: 100 }, { raw: "+1500", expected: 1500 }, { raw: "060000", expected: 60000 }]) {
+    expect(shutdownModule.parseShutdownTimeout(raw, message => { warnings.push(message); })).toBe(expected);
+  }
+  expect(warnings).toEqual([]);
+});

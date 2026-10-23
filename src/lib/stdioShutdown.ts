@@ -16,16 +16,21 @@ interface ShutdownSteps {
 export function parseShutdownTimeout(raw: string | undefined, warn: (message: string) => void): number {
   const fallback = 1500;
   if (raw === undefined) return fallback;
-  const value = raw.trim() === "" ? Number.NaN : Number(raw);
-  const timeout = Number.isFinite(value) ? Math.min(60_000, Math.max(100, Math.trunc(value))) : fallback;
-  if (!Number.isFinite(value) || timeout !== value) {
-    warn(`Gnosys MCP: invalid GNOSYS_SHUTDOWN_TIMEOUT_MS=${JSON.stringify(raw)}; using ${timeout} ms`);
+  if (raw !== raw.trim() || !/^[+-]?(?:\d+|Infinity)$/.test(raw)) {
+    warn(`Gnosys MCP: invalid GNOSYS_SHUTDOWN_TIMEOUT_MS=${JSON.stringify(raw)}; using ${fallback} ms`);
+    return fallback;
+  }
+  const value = Number(raw);
+  const timeout = Math.min(60_000, Math.max(100, value));
+  if (timeout !== value) {
+    warn(`Gnosys MCP: out of range GNOSYS_SHUTDOWN_TIMEOUT_MS=${JSON.stringify(raw)}; using ${timeout} ms`);
   }
   return timeout;
 }
 
 export function createStdioShutdown(steps: ShutdownSteps): (code?: 0 | 130 | 143) => Promise<void> {
   let closing: Promise<void> | undefined;
+  let signalCode: 130 | 143 | undefined;
   let exited = false;
   let lifetime: ReturnType<typeof setInterval> | undefined;
   let backstop: ReturnType<typeof setTimeout> | undefined;
@@ -40,7 +45,7 @@ export function createStdioShutdown(steps: ShutdownSteps): (code?: 0 | 130 | 143
     }
     steps.exit(code);
   };
-  const run = async (code: 0 | 130 | 143) => {
+  const run = async () => {
     // Awaited promises and the embedding queue's unref'd timer cannot keep Node alive.
     lifetime = setInterval(() => {}, 60_000);
     // Synchronous event-loop blocking defeats this backstop; there is no watchdog process by design.
@@ -69,14 +74,17 @@ export function createStdioShutdown(steps: ShutdownSteps): (code?: 0 | 130 | 143
     if (exited) return;
     try { await steps.close(); }
     catch (error) { failed = true; steps.log("Gnosys MCP: shutdown failed:", error); }
-    finish(failed ? 1 : code, failed);
+    finish(failed ? 1 : signalCode ?? 0, failed);
   };
   return (code = 0) => {
-    if (closing && code !== 0 && !exited) {
-      steps.log("Gnosys MCP: forced shutdown");
-      finish(code, true);
+    if (code !== 0 && !exited) {
+      if (signalCode !== undefined) {
+        steps.log("Gnosys MCP: forced shutdown");
+        finish(code, true);
+      }
+      signalCode = code;
     }
-    closing ??= run(code);
+    closing ??= run();
     return closing;
   };
 }
