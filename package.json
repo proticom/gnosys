@@ -77,7 +77,8 @@
     "prompts",
     "README.md",
     "LICENSE",
-    "docs/logo.svg"
+    "docs/logo.svg",
+    "docs/mcp-toolsets.md"
   ],
   "keywords": [
     "gnosys",
