@@ -71,6 +71,62 @@ describe("embedded Gnosys version", () => {
     );
   });
 
+  describe("locked-in rejections (PR #93 QA)", () => {
+    describe.each([false, true])(
+      "with existing embedded module %s",
+      (existing) => {
+        it.each(["7.0", "", " \t\n ", "01.0.0", "7.0.0-"])(
+          "rejects %j at runtime and in the generator",
+          (version) => {
+            expect(() => validateGnosysVersion(version)).toThrow(
+              new Error(
+                "gnosys: embedded version missing or invalid; " +
+                "rebuild the package",
+              ),
+            );
+
+            const root = join(tempHome, "package");
+            mkdirSync(root);
+            writeFileSync(
+              join(root, "package.json"),
+              JSON.stringify({ version }),
+            );
+            const generated = join(root, "src", "version.ts");
+            const original = Buffer.from(
+              'export const GNOSYS_VERSION = "7.0.0";\r\n',
+            );
+            if (existing) {
+              mkdirSync(join(root, "src"));
+              writeFileSync(generated, original);
+            }
+
+            const result = spawnSync(process.execPath, [SYNC_SCRIPT, root], {
+              cwd: tempHome,
+              env: {
+                ...process.env,
+                HOME: tempHome,
+                GNOSYS_HOME: join(tempHome, "brain"),
+              },
+              encoding: "utf8",
+              timeout: 10_000,
+            });
+
+            expect(result.status).toBe(1);
+            expect(result.stderr).toBe(
+              `gnosys: package.json version ${JSON.stringify(version)}` +
+              " is not valid semver\n",
+            );
+            if (existing) {
+              expect(readFileSync(generated)).toEqual(original);
+            } else {
+              expect(existsSync(generated)).toBe(false);
+            }
+          },
+        );
+      },
+    );
+  });
+
   it("generates a deterministic module in a supplied package root without rewriting unchanged content", () => {
     const root = join(tempHome, "package with spaces");
     mkdirSync(root);
