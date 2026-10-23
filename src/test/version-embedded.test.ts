@@ -1,5 +1,5 @@
-import { execFileSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, utimesSync, writeFileSync } from "node:fs";
+import { execFileSync, spawnSync } from "node:child_process";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, utimesSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -28,6 +28,47 @@ describe("embedded Gnosys version", () => {
     const pkg = JSON.parse(readFileSync(PACKAGE_JSON, "utf8"));
     expect(GNOSYS_VERSION).toBe(pkg.version);
     expect(getGnosysVersion()).toBe(pkg.version);
+  });
+
+  it("uses identical semver regexes in the generator and runtime validator", () => {
+    const runtime = readFileSync(new URL("../lib/version.ts", import.meta.url), "utf8");
+    const script = readFileSync(SYNC_SCRIPT, "utf8");
+    const pattern = /^const SEMVER = (\/.+\/);$/m;
+    const runtimeRegex = runtime.match(pattern)?.[1];
+    expect(typeof runtimeRegex).toBe("string");
+    expect(script.match(pattern)?.[1]).toBe(runtimeRegex);
+  });
+
+  describe.each([false, true])("invalid package version with existing module %s", (existing) => {
+    it.each(["banana", "v7.0.0", "7.0.0-01", "7.0.0\n", null, 7, undefined])(
+      "rejects %s before writing the embedded module",
+      (version) => {
+        const root = join(tempHome, "package");
+        mkdirSync(root);
+        writeFileSync(join(root, "package.json"), JSON.stringify({ version }));
+        const generated = join(root, "src", "version.ts");
+        const original = Buffer.from('// existing embedded version\r\nexport const GNOSYS_VERSION = "7.0.0";\r\n');
+        if (existing) {
+          mkdirSync(join(root, "src"));
+          writeFileSync(generated, original);
+        }
+
+        const result = spawnSync(process.execPath, [SYNC_SCRIPT, root], {
+          cwd: tempHome,
+          env: { ...process.env, HOME: tempHome, GNOSYS_HOME: join(tempHome, "brain") },
+          encoding: "utf8",
+          timeout: 10_000,
+        });
+
+        expect(result.status).toBe(1);
+        expect(result.stderr).toBe(`gnosys: package.json version ${JSON.stringify(version)} is not valid semver\n`);
+        if (existing) {
+          expect(readFileSync(generated)).toEqual(original);
+        } else {
+          expect(existsSync(generated)).toBe(false);
+        }
+      },
+    );
   });
 
   it("generates a deterministic module in a supplied package root without rewriting unchanged content", () => {
