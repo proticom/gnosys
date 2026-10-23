@@ -1,4 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { mkdtempSync, rmSync } from "fs";
+import { tmpdir } from "os";
+import { join } from "path";
 
 const childProcessMocks = vi.hoisted(() => ({
   execFileSync: vi.fn(),
@@ -7,7 +10,7 @@ const childProcessMocks = vi.hoisted(() => ({
 
 vi.mock("child_process", () => childProcessMocks);
 
-import { resolveGnosysMcpCommand, runCli } from "../lib/ideMcpInstall.js";
+import { resolveGnosysStdioCommand, runCli } from "../lib/ideMcpInstall.js";
 
 const originalPlatform = Object.getOwnPropertyDescriptor(process, "platform");
 const originalComSpec = process.env.ComSpec;
@@ -21,7 +24,12 @@ function setPlatform(platform: NodeJS.Platform): void {
 }
 
 describe("ideMcpInstall Windows command handling", () => {
+  let testHome: string;
+
   beforeEach(() => {
+    testHome = mkdtempSync(join(tmpdir(), "gnosys-windows-mcp-"));
+    vi.stubEnv("HOME", testHome);
+    vi.stubEnv("GNOSYS_HOME", join(testHome, "brain"));
     childProcessMocks.execFileSync.mockReset();
     childProcessMocks.execSync.mockReset();
     setPlatform("win32");
@@ -32,6 +40,8 @@ describe("ideMcpInstall Windows command handling", () => {
   });
 
   afterEach(() => {
+    vi.unstubAllEnvs();
+    rmSync(testHome, { recursive: true, force: true });
     if (originalPlatform) Object.defineProperty(process, "platform", originalPlatform);
     if (originalComSpec === undefined) delete process.env.ComSpec;
     else process.env.ComSpec = originalComSpec;
@@ -44,9 +54,10 @@ describe("ideMcpInstall Windows command handling", () => {
       "\r\nC:\\Users\\Edward\\AppData\\Roaming\\npm\\gnosys-mcp.cmd\r\nC:\\fallback\\gnosys-mcp.cmd\r\n",
     );
 
-    expect(resolveGnosysMcpCommand()).toBe(
-      "C:\\Users\\Edward\\AppData\\Roaming\\npm\\gnosys-mcp.cmd",
-    );
+    expect(resolveGnosysStdioCommand()).toEqual({
+      command: "C:\\Users\\Edward\\AppData\\Roaming\\npm\\gnosys-mcp.cmd",
+      args: [],
+    });
     expect(childProcessMocks.execFileSync).toHaveBeenCalledWith(
       "where.exe",
       ["gnosys-mcp"],
@@ -55,6 +66,29 @@ describe("ideMcpInstall Windows command handling", () => {
         stdio: ["pipe", "pipe", "ignore"],
       }),
     );
+  });
+
+  it.each([
+    "C:\\Users\\Edward\\npm-cache\\_NPX\\123\\gnosys-mcp.cmd\r\n",
+    "/home/user/.npm/_npx/123/node_modules/.bin/gnosys-mcp\n",
+    "",
+  ])("resolves the npx shim when gnosys-mcp lookup returns %j", (lookup) => {
+    childProcessMocks.execFileSync
+      .mockReturnValueOnce(lookup)
+      .mockReturnValueOnce("C:\\Program Files\\nodejs\\npx.cmd\r\n");
+
+    expect(resolveGnosysStdioCommand()).toEqual({
+      command: "C:\\Program Files\\nodejs\\npx.cmd",
+      args: ["-y", "gnosys", "serve"],
+    });
+    expect(childProcessMocks.execFileSync.mock.calls.map(([, args]) => args)).toEqual([
+      ["gnosys-mcp"], ["npx"],
+    ]);
+  });
+
+  it("falls back to bare npx when neither Windows command can be resolved", () => {
+    childProcessMocks.execFileSync.mockImplementation(() => { throw new Error("not found"); });
+    expect(resolveGnosysStdioCommand()).toEqual({ command: "npx", args: ["-y", "gnosys", "serve"] });
   });
 
   it("runs an npm .cmd shim through ComSpec with space-safe arguments", () => {

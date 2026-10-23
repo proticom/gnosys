@@ -50,7 +50,7 @@ import {
   gnosysStdioMcpEntry,
   installStdioMcpJson,
   normalizeIdeKey,
-  resolveGnosysMcpCommand,
+  resolveGnosysStdioCommand,
   cursorMcpPaths,
   runCli,
   removeTomlSection,
@@ -976,12 +976,12 @@ export async function setupIDE(
   try {
     switch (canonical) {
       case "claude": {
-        const mcpCmd = resolveGnosysMcpCommand();
+        const { command, args } = resolveGnosysStdioCommand();
         let codeSuccess = true;
-        let codeMsg = `MCP registered (${mcpCmd})`;
+        let codeMsg = `MCP registered (${[command, ...args].join(" ")})`;
         try {
           runCli("claude", ["mcp", "remove", "gnosys"], { allowFailure: true });
-          runCli("claude", ["mcp", "add", "-s", "user", "gnosys", "--", mcpCmd]);
+          runCli("claude", ["mcp", "add", "-s", "user", "gnosys", "--", command, ...args]);
         } catch (e) {
           const msg = e instanceof Error ? e.message : String(e);
           if (msg.includes("already exists")) {
@@ -1047,19 +1047,27 @@ export async function setupIDE(
           // No user-level config.toml to clean — fine.
         }
 
-        // 2. Absolute path to `gnosys-mcp` (stdio entry) for Codex spawn.
-        const gnosysCmd = resolveGnosysMcpCommand();
+        const { command, args } = resolveGnosysStdioCommand();
 
         // 3. Check whether gnosys is already registered. If yes and the
         //    command matches, leave it alone (idempotent). If it differs,
         //    remove and re-add.
         let alreadyCorrect = false;
         try {
-          const existing = runCli("codex", ["mcp", "get", "gnosys"], { allowFailure: true });
-          if (existing?.includes(gnosysCmd) && !existing.includes(" serve")) {
-            alreadyCorrect = true;
-          } else if (existing) {
-            runCli("codex", ["mcp", "remove", "gnosys"], { allowFailure: true });
+          const existing = runCli("codex", ["mcp", "get", "gnosys", "--json"], { allowFailure: true });
+          if (existing) {
+            const entry: unknown = JSON.parse(existing);
+            if (entry && typeof entry === "object" && "transport" in entry) {
+              const transport = entry.transport;
+              alreadyCorrect = transport !== null && typeof transport === "object"
+                && "command" in transport && transport.command === command
+                && "args" in transport && Array.isArray(transport.args)
+                && transport.args.length === args.length
+                && transport.args.every((arg, index) => arg === args[index]);
+            }
+            if (!alreadyCorrect) {
+              runCli("codex", ["mcp", "remove", "gnosys"], { allowFailure: true });
+            }
           }
         } catch {
           // `codex mcp get` failed — proceed to add.
@@ -1075,7 +1083,7 @@ export async function setupIDE(
 
         // 4. Register via the canonical Codex CLI command.
         try {
-          runCli("codex", ["mcp", "add", "gnosys", "--", gnosysCmd]);
+          runCli("codex", ["mcp", "add", "gnosys", "--", command, ...args]);
         } catch (err) {
           const msg = err instanceof Error ? err.message : String(err);
           // Common failure: codex CLI not installed. Don't fail the whole

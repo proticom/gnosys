@@ -12,6 +12,11 @@ import { GnosysDB } from "../lib/db.js";
 import os from "node:os";
 import { setupIDE } from "../lib/setup.js";
 
+vi.mock("child_process", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("child_process")>();
+  return { ...actual, execSync: vi.fn(() => "/usr/local/bin/gnosys-mcp") };
+});
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FIXTURE_DIR = join(__dirname, "fixtures", "ide-init");
 
@@ -70,15 +75,23 @@ describe("IDE init golden fixtures", () => {
 describe("IDE init MCP config structure", () => {
   let projectDir: string;
   let savedHome: string | undefined;
+  let savedGnosysHome: string | undefined;
+  const originalPlatform = Object.getOwnPropertyDescriptor(process, "platform");
 
   beforeEach(() => {
     projectDir = mkdtempSync(join(tmpdir(), "gnosys-ide-init-mcp-"));
     savedHome = process.env.HOME;
+    savedGnosysHome = process.env.GNOSYS_HOME;
     process.env.HOME = projectDir;
+    process.env.GNOSYS_HOME = join(projectDir, "brain");
+    Object.defineProperty(process, "platform", { ...originalPlatform, value: "linux" });
     vi.spyOn(os, "homedir").mockImplementation(() => process.env.HOME || projectDir);
   });
 
   afterEach(() => {
+    if (originalPlatform) Object.defineProperty(process, "platform", originalPlatform);
+    if (savedGnosysHome === undefined) delete process.env.GNOSYS_HOME;
+    else process.env.GNOSYS_HOME = savedGnosysHome;
     if (savedHome !== undefined) {
       process.env.HOME = savedHome;
     } else {
