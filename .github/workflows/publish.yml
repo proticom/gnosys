@@ -123,10 +123,12 @@ jobs:
     # Same deployment environment as publish: the same tag/branch restriction
     # applies before this job can mint an OIDC token.
     environment: npm
+    timeout-minutes: 15
     permissions:
       contents: read
-      # Only for mcp-publisher login github-oidc. This job runs no npm install,
-      # so no dependency install scripts can mint the token.
+      # Only for `mcp-publisher login github-oidc`. This job runs no npm install,
+      # but publish (id-token: write, runs npm ci) can mint registry-accepted tokens.
+      # The registry does not bind tokens to a job or environment.
       id-token: write
 
     # Prerelease policy (QA 90-1) is pending Edward's decision. Today every
@@ -176,7 +178,7 @@ jobs:
           set -euo pipefail
           is_listed() {
             local status
-            status=$(curl -sS -o /dev/null -w '%{http_code}' "https://registry.modelcontextprotocol.io/v0.1/servers/io.github.proticom%2Fgnosys/versions/${PKG_VERSION}") || return 1
+            status=$(curl --connect-timeout 10 --max-time 20 -sS -o /dev/null -w '%{http_code}' "https://registry.modelcontextprotocol.io/v0.1/servers/io.github.proticom%2Fgnosys/versions/${PKG_VERSION}") || return 1
             [[ "$status" == "200" ]]
           }
           if is_listed; then
