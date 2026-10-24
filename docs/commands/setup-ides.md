@@ -21,12 +21,14 @@ gnosys setup ides --all
 - Detects IDEs from project markers, user-level config directories, installed applications, and CLI commands on `PATH`.
 - Prints a configured/error summary when finished.
 
+Setup writes the global `gnosys-mcp` bin path when installed globally. Otherwise, it writes `npx -y gnosys serve` so IDE configs do not depend on an npx cache path.
+
 ## Writes and side effects
 
 - Writes MCP server configuration for selected IDEs.
 - May create project-level IDE config directories such as `.cursor/`.
 - May update user-level IDE configuration files or CLI registries (Claude Desktop, Gemini, Antigravity, Grok Build, Codex MCP registry).
-- Does not modify Gnosys memory stores directly; it wires the `gnosys-mcp` stdio server into IDE configs.
+- Does not modify Gnosys memory stores directly; it wires the Gnosys stdio server into IDE configs.
 
 ## Platform notes
 
