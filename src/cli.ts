@@ -10,9 +10,9 @@ import "./lib/sqliteStartup.js";
  */
 
 import { Command } from "commander";
-import path from "path";
 import dotenv from "dotenv";
 import { readFileSync } from "fs";
+import { loadGnosysEnv } from "./lib/loadGnosysEnv.js";
 // v5.8.0 (#4): only the lightweight modules are imported at top-level.
 // Anything that pulls @huggingface/transformers, mammoth/pdf-parse/turndown,
 // large file-walking machinery, or otherwise costs >100ms to load gets
@@ -46,20 +46,10 @@ import { registerSandbox } from "./cli/sandbox.js";
 import { registerTrace } from "./cli/trace.js";
 import { registerWeb } from "./cli/web.js";
 
-// Load API keys from ~/.config/gnosys/.env (same as MCP server)
-// IMPORTANT: We use dotenv.parse() instead of dotenv.config() because
-// dotenv v17+ writes injection notices to stdout, which corrupts
-// --json output and piped usage. parse() is a pure function with no side effects.
-const home = process.env.HOME || process.env.USERPROFILE || "/tmp";
-try {
-  const envFile = readFileSync(path.join(home, ".config", "gnosys", ".env"), "utf8");
-  const parsed = dotenv.parse(envFile);
-  for (const [key, val] of Object.entries(parsed)) {
-    if (!(key in process.env) && key !== MEMORY_DELETE_OVERRIDE_ENV) process.env[key] = val;
-  }
-} catch {
-  // .env file not found — that's fine, env vars may be set elsewhere
-}
+// Load API keys from ~/.config/gnosys/.env (same file as the MCP executable).
+// A .env file can be written by an agent, so it never sets the memory-delete override.
+// parse() vs config(): see loadGnosysEnv (stdout must stay clean for --json and pipes).
+loadGnosysEnv({ skipKeys: [MEMORY_DELETE_OVERRIDE_ENV] });
 // Also try .env from current directory as fallback
 try {
   const localEnv = readFileSync(".env", "utf8");
