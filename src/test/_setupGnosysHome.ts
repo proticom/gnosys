@@ -19,6 +19,10 @@
 import fs from "fs";
 import os from "os";
 import path from "path";
+import { afterAll } from "vitest";
+
+let createdBase: string | undefined;
+let createdHome: string | undefined;
 
 if (!process.env.GNOSYS_HOME) {
   // The throwaway home ends in ".gnosys" so path-shape assertions (e.g.
@@ -27,5 +31,21 @@ if (!process.env.GNOSYS_HOME) {
   const base = fs.mkdtempSync(path.join(os.tmpdir(), "gnosys-test-home-"));
   const home = path.join(base, ".gnosys");
   fs.mkdirSync(home, { recursive: true });
+  createdBase = base;
+  createdHome = home;
   process.env.GNOSYS_HOME = home;
+
+  // Remove only the throwaway home created by this setup file.
+  const cleanup = () => {
+    if (!createdBase) return;
+    fs.rmSync(createdBase, { recursive: true, force: true });
+    if (process.env.GNOSYS_HOME === createdHome) {
+      delete process.env.GNOSYS_HOME;
+    }
+    createdBase = undefined;
+    createdHome = undefined;
+  };
+
+  afterAll(cleanup);
+  process.once("exit", cleanup);
 }
