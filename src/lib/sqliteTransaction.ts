@@ -12,11 +12,16 @@ export function transaction<T>(db: DatabaseSync, fn: () => SyncTransactionResult
   depths.set(db, depth + 1);
   try {
     const result = fn();
-    if (result !== null && (typeof result === "object" || typeof result === "function") && "then" in result && typeof result.then === "function") {
-      // The callback has already started. Later writes cannot be rolled back here.
-      void Promise.resolve(result).catch(error => {
-        process.emitWarning(`Rejected transaction promise: ${error instanceof Error ? error.message : String(error)}`, "TransactionRejectionWarning");
-      });
+    const thenable = result !== null && (typeof result === "object" || typeof result === "function") && "then" in result && typeof result.then === "function";
+    if (thenable) {
+      // Only a real Promise is observed. Promise.resolve() would call an arbitrary thenable's then().
+      if (result instanceof Promise) {
+        // The callback has already started. Later writes cannot be rolled back here.
+        void result.catch(error => {
+          process.exitCode = 1;
+          process.emitWarning(`Rejected transaction promise: ${error instanceof Error ? error.message : String(error)}`, "TransactionRejectionWarning");
+        });
+      }
       throw new TypeError("Transaction function cannot return a promise");
     }
     db.exec(depth === 0 ? "COMMIT" : `RELEASE SAVEPOINT ${savepoint}`);

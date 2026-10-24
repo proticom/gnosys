@@ -11,12 +11,15 @@ import { runAddStructuredCommand } from "../lib/addStructuredCommand.js";
 
 let db: DatabaseSync;
 let home: string;
+let exitCode: typeof process.exitCode;
 beforeEach(() => {
+  exitCode = process.exitCode;
   home = mkdtempSync(path.join(tmpdir(), "gnosys-residuals-"));
   db = new DatabaseSync(":memory:");
   db.exec("CREATE TABLE items (value TEXT)");
 });
 afterEach(() => {
+  process.exitCode = exitCode;
   db.close();
   vi.restoreAllMocks();
   vi.unstubAllEnvs();
@@ -83,6 +86,40 @@ it("cannot prevent later autocommit writes after the callback has awaited", asyn
   expect(rows(db)).toEqual([]);
   await new Promise<void>(resolve => setImmediate(resolve));
   expect(rows(db)).toEqual(["late"]);
+});
+
+it("sets exit code 1 when a rejected transaction promise is only warned", () => {
+  const modulePath = new URL("../lib/sqliteTransaction.ts", import.meta.url);
+  const child = spawnSync(process.execPath, ["--experimental-strip-types", "--input-type=module", "-e", `
+    import { DatabaseSync } from "node:sqlite";
+    import { transaction } from ${JSON.stringify(modulePath.href)};
+    const db = new DatabaseSync(":memory:");
+    db.exec("CREATE TABLE t(v TEXT)");
+    const ins = (v) => db.exec("INSERT INTO t VALUES ('" + v + "')");
+    try {
+      transaction(db, async () => { ins("top-pre"); await null; ins("top-post"); throw new Error("top boom"); });
+    } catch (e) {
+      console.log(e.constructor.name, e.message);
+    }
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    console.log(JSON.stringify(db.prepare("SELECT v FROM t").all().map((row) => row.v)));
+  `], { encoding: "utf8", cwd: home, env: { ...process.env, HOME: home, GNOSYS_HOME: path.join(home, ".gnosys") } });
+  expect(child.status).toBe(1);
+  expect(child.stderr).toContain("TransactionRejectionWarning: Rejected transaction promise: top boom");
+  expect(child.stdout).toContain("TypeError Transaction function cannot return a promise");
+  expect(child.stdout).toContain('["top-post"]');
+});
+
+it("does not call then() on a non-Promise thenable", () => {
+  let called = false;
+  expect(() => transaction(db, () => {
+    db.exec("INSERT INTO items VALUES ('thenable-pre')");
+    // biome-ignore lint/suspicious/noThenProperty: Exercise an intentional non-Promise thenable.
+    return { then(resolve: (value: number) => void) { called = true; db.exec("INSERT INTO items VALUES ('thenable-then')"); resolve(1); } };
+  })).toThrow(new TypeError("Transaction function cannot return a promise"));
+  expect(called).toBe(false);
+  expect(rows(db)).toEqual([]);
+  expect(db.isTransaction).toBe(false);
 });
 
 it("rejects non-Promise object and function thenables", () => {
