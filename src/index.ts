@@ -9,6 +9,8 @@ import { ensureSqliteRuntime } from "./lib/sqliteStartup.js";
 import { TOOL_ANNOTATIONS, type ToolName } from "./lib/toolAnnotations.js";
 import { formatSearchStatus } from "./lib/searchStatus.js";
 import { loadGnosysEnv } from "./lib/loadGnosysEnv.js";
+// A .env file can be written by an agent, so it never sets this.
+import { MEMORY_DELETE_OVERRIDE_ENV } from "./lib/memoryDeleteGuard.js";
 import { getGnosysVersion } from "./lib/version.js";
 import path from "path";
 import { AsyncLocalStorage } from "async_hooks";
@@ -32,8 +34,9 @@ function isMcpEntryPoint(): boolean {
 // (`gnosys-mcp` / `node dist/index.js`), before this module reads env-backed
 // settings. A library import must not copy that file into the host process.
 // `gnosys serve` loads the same file from the CLI before it imports this module.
+// Same skip list as the CLI: the memory-delete override stays process-env only.
 // parse() vs config(): see loadGnosysEnv (stdout must stay clean for MCP stdio).
-if (isMcpEntryPoint()) loadGnosysEnv();
+if (isMcpEntryPoint()) loadGnosysEnv({ skipKeys: [MEMORY_DELETE_OVERRIDE_ENV] });
 
 // Embedded at build time (src/version.ts). Replaces the old package.json read.
 const RUNNING_VERSION = getGnosysVersion();
@@ -99,20 +102,12 @@ markAgentSurface("mcp");
 const resolver = new GnosysResolver();
 let config: GnosysConfig = DEFAULT_CONFIG;
 
-// Create MCP server
-const server = new McpServer(
-  {
-    name: "gnosys",
-    version: RUNNING_VERSION,
-  },
-  { instructions: makeServerInstructions() },
-);
-
 // v5.12: capability registrations (tool/prompt/resource) are collected as
-// replayable thunks so a fresh McpServer can be built per HTTP session, while
-// stdio keeps reusing the singleton `server`. Handlers reference module-global
-// state (the shared brain/search/resolver), so sessions need no per-client
-// state — only the registrations are replayed. See registerCapabilities().
+// replayable thunks so a fresh McpServer can be built per HTTP session. The
+// stdio server is created in startMcpServer(), not at import, so its
+// instructions see GNOSYS_MCP_TOOLSET at start. Handlers reference
+// module-global state (the shared brain/search/resolver), so sessions need
+// no per-client state — only the registrations are replayed. See registerCapabilities().
 type Registrar = (s: McpServer) => unknown;
 /** v6.1: tool registrations carry their name so registerCapabilities can
  *  filter by the active toolset tier. Prompts/resources have name=null and
@@ -154,6 +149,14 @@ export function toolsetInstructions(toolset: McpToolset): string {
 /** Server-level instructions surfaced in the MCP initialize response. */
 function makeServerInstructions(): string {
   return `Gnosys — persistent memory for AI agents. ${toolsetInstructions(resolveToolset())}`;
+}
+
+/** Create the server at start time so instructions read the env then, not at import. */
+function createGnosysMcpServer(): McpServer {
+  return new McpServer(
+    { name: "gnosys", version: RUNNING_VERSION },
+    { instructions: makeServerInstructions() },
+  );
 }
 
 // v5.12.1 reliability: every tool handler resolves a ToolContext whose
@@ -219,12 +222,12 @@ const regTool: <Args extends z.ZodRawShape>(
     register: (s) => (s.tool as (...a: unknown[]) => unknown)(...args),
   });
 };
-const regPrompt: typeof server.prompt = ((...args: unknown[]) => {
+const regPrompt: McpServer["prompt"] = ((...args: unknown[]) => {
   _registrations.push({ name: null, register: (s) => (s.prompt as (...a: unknown[]) => unknown)(...args) });
-}) as typeof server.prompt;
-const regResource: typeof server.resource = ((...args: unknown[]) => {
+}) as McpServer["prompt"];
+const regResource: McpServer["resource"] = ((...args: unknown[]) => {
   _registrations.push({ name: null, register: (s) => (s.resource as (...a: unknown[]) => unknown)(...args) });
-}) as typeof server.resource;
+}) as McpServer["resource"];
 /** Per-server dynamic toolset state (v6.2). Each McpServer instance (stdio
  *  singleton or per-HTTP-session) owns its own map of RegisteredTool handles
  *  and its own active tier, so sessions switch tiers independently. */
@@ -4566,7 +4569,8 @@ export async function startMcpServer() {
   // Programmatic start (`gnosys serve`, or a direct startMcpServer() call)
   // still needs the file. The CLI call, or the isMcpEntryPoint() call above,
   // already ran in those processes; a second call does not override it.
-  loadGnosysEnv();
+  // Same skip list as the CLI: the memory-delete override stays process-env only.
+  loadGnosysEnv({ skipKeys: [MEMORY_DELETE_OVERRIDE_ENV] });
   await ensureSqliteRuntime();
   // v5.12.1 reliability: an escaped async error must not kill the server.
   // Log to stderr (stdout is JSON-RPC in stdio mode) and keep serving —
@@ -4695,10 +4699,7 @@ export async function startMcpServer() {
         authToken,
         log: (m) => console.error(`Gnosys MCP[http]: ${m}`),
         makeServer: () => {
-          const s = new McpServer(
-            { name: "gnosys", version: RUNNING_VERSION },
-            { instructions: makeServerInstructions() },
-          );
+          const s = createGnosysMcpServer();
           registerCapabilities(s);
           return s;
         },
@@ -4733,6 +4734,7 @@ export async function startMcpServer() {
     return;
   }
 
+  const server = createGnosysMcpServer();
   registerCapabilities(server);
   const transport = new StdioServerTransport();
   let drain = () => Promise.resolve();

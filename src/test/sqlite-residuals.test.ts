@@ -110,13 +110,16 @@ it("sets exit code 1 when a rejected transaction promise is only warned", () => 
   expect(child.stdout).toContain('["top-post"]');
 });
 
-it("does not call then() on a non-Promise thenable", () => {
+it("does not call then() on a non-Promise thenable", async () => {
   let called = false;
   expect(() => transaction(db, () => {
     db.exec("INSERT INTO items VALUES ('thenable-pre')");
     // biome-ignore lint/suspicious/noThenProperty: Exercise an intentional non-Promise thenable.
     return { then(resolve: (value: number) => void) { called = true; db.exec("INSERT INTO items VALUES ('thenable-then')"); resolve(1); } };
   })).toThrow(new TypeError("Transaction function cannot return a promise"));
+  // Promise.resolve() runs then() as a microtask. A macrotask lets that happen
+  // before the assertion, so the pre-#99 code fails here instead of passing early.
+  await new Promise<void>(resolve => setImmediate(resolve));
   expect(called).toBe(false);
   expect(rows(db)).toEqual([]);
   expect(db.isTransaction).toBe(false);
