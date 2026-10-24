@@ -8,6 +8,7 @@
   <a href="https://gnosys.ai"><img src="https://img.shields.io/badge/docs-gnosys.ai-C04C4C" alt="docs"></a>
   <a href="https://gnosys.ai/guide.html"><img src="https://img.shields.io/badge/CLI%20reference-gnosys.ai%2Fguide-555560" alt="user guide"></a>
   <a href="https://github.com/proticom/gnosys/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/gnosys.svg" alt="license"></a>
+  <a href="https://glama.ai/mcp/servers/proticom/gnosys"><img src="https://glama.ai/mcp/servers/proticom/gnosys/badges/score.svg" alt="Gnosys MCP server – quality and maintenance score on Glama"></a>
 </p>
 
 <p align="center">
