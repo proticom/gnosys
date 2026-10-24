@@ -46,7 +46,7 @@ self-escalation hint are announced in the server `instructions` returned in the 
   "mcpServers": {
     "gnosys": {
       "command": "npx",
-      "args": ["-y", "gnosys-mcp"],
+      "args": ["-y", "gnosys", "serve"],
       "env": { "GNOSYS_MCP_TOOLSET": "full" }
     }
   }
@@ -55,7 +55,7 @@ self-escalation hint are announced in the server `instructions` returned in the 
 
 ## Annotation decisions
 
-[The generated tool table](mcp-tools.md) lists all four boolean hints for all 56 tools.
+[The generated tool table](https://github.com/proticom/gnosys/blob/master/docs/mcp-tools.md) lists all four boolean hints for all 56 tools.
 Read-only means no user-visible state changes. Derived search/embedding/graph indexes, local snapshots, and access/audit logs do not count. Incidental NAS cache refresh does not make a local-store tool open-world. Tools that can load an uncached embedding model are open-world because first use can download it from Hugging Face.
 
 Read, keyword search, discover, federated search, and recall do not reinforce memories. Their hints are readOnly=true, destructive=false, idempotent=true, openWorld=false. Graph reindex only rebuilds derived data and has the same hints. Semantic search is also open-world because it can download the embedding model. Explicit embedding reindex is write-capable, non-destructive, idempotent, and open-world. Portfolio returns text and does not write HTML. Preference deletion is refused on the MCP agent surface, so it also has the default hints.

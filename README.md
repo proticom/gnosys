@@ -62,7 +62,7 @@ All tools are exposed over stdio and HTTP transports. Many tools accept an optio
 This package installs two binaries:
 
 - **`gnosys`** — the CLI. `gnosys serve` starts the MCP server (stdio by default, `--transport http` for the central-server topology). `gnosys setup ides` wires `gnosys-mcp` into your IDE/agent configs.
-- **`gnosys-mcp`** — a direct alias for the MCP stdio server entry, for MCP clients that prefer to spawn the server binary directly (e.g. `npx -y gnosys-mcp`). Equivalent to `gnosys serve`.
+- **`gnosys-mcp`** — a direct alias for the MCP stdio server entry, installed with `npm install -g gnosys`, for MCP clients that spawn the server binary directly. Equivalent to `gnosys serve`. With npx, use `npx -y gnosys serve`.
 
 | Tool | Tier | Description |
 |------|------|-------------|
