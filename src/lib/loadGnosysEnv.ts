@@ -5,8 +5,8 @@ import dotenv from "dotenv";
 export interface LoadGnosysEnvOptions {
   /**
    * Keys that must not be copied out of the file.
-   * The CLI passes the memory-delete override: a .env file can be written
-   * by an agent, so that key stays human-only.
+   * The CLI and the MCP entry pass the memory-delete override: a .env file
+   * can be written by an agent, so that key stays human-only.
    */
   skipKeys?: readonly string[];
 }

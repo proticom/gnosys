@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- The `gnosys-mcp` entry and `startMcpServer()` no longer copy `GNOSYS_ALLOW_MEMORY_DELETE` out of `~/.config/gnosys/.env`. That matches the CLI and `gnosys serve`. Set the variable in the process environment to opt in. The MCP server still refuses memory deletion either way.
+- Docs recommend `npx -y gnosys serve` instead of the unpublished `gnosys-mcp` package, and the npm tarball ships `docs/mcp-toolsets.md` (#91).
+
+### Fixed
+
+- MCP `initialize` reports the package version, and the dashboard no longer hard-codes its own version (#92). The version is embedded at build time instead of falling back to `0.0.0` (#93).
+- `gnosys setup ides` writes a durable stdio command (the installed `gnosys-mcp`, or `npx -y gnosys serve`) instead of an npx cache path (#94).
+- The stdio MCP server exits when the client closes stdin, after it drains requests that already arrived (#95).
+- `transaction()` attaches its rejection handler only to a real Promise, sets exit code 1 when that Promise rejects, and does not call `.then()` on any other thenable (#99, fixes #77).
+- Importing the library no longer copies `~/.config/gnosys/.env` into the host `process.env`. The CLI and the MCP server still load that file (#100, fixes #72).
+- Server instructions are built inside `startMcpServer()`, so an embedder that sets `GNOSYS_MCP_TOOLSET` after import, or a toolset that exists only in the gnosys `.env`, is announced in the `Toolset:` line. `gnosys-mcp` and `gnosys serve` still see a toolset that is already in the process environment.
+
 ## [7.0.0] - 2026-10-18
 
 ### Breaking changes
