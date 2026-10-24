@@ -5,11 +5,12 @@ All notable changes to Gnosys are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [7.0.1] - 2026-10-23
 
 ### Changed
 
-- The `gnosys-mcp` entry and `startMcpServer()` no longer copy `GNOSYS_ALLOW_MEMORY_DELETE` out of `~/.config/gnosys/.env`. That matches the CLI and `gnosys serve`. Set the variable in the process environment to opt in. The MCP server still refuses memory deletion either way.
+- MCP core tier is 14 tools (was 19) and standard is 33 (was 34). `gnosys_add` moved from core to full. `gnosys_trace`, `gnosys_search`, `gnosys_federated_search`, and `gnosys_discover` moved from core to standard. No tool was renamed or removed. Every tool sets the four MCP annotation hints. The `@modelcontextprotocol/sdk` dependency floor is `^1.32.0` (#81).
+- The `gnosys-mcp` entry and `startMcpServer()` no longer copy `GNOSYS_ALLOW_MEMORY_DELETE` out of the gnosys `.env` (`~/.config/gnosys/.env` or `./.env`). That matches the CLI and `gnosys serve`. Set the variable in the process environment to opt in. The MCP server still refuses memory deletion either way (#101).
 - Docs recommend `npx -y gnosys serve` instead of the unpublished `gnosys-mcp` package, and the npm tarball ships `docs/mcp-toolsets.md` (#91).
 
 ### Fixed
@@ -17,9 +18,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MCP `initialize` reports the package version, and the dashboard no longer hard-codes its own version (#92). The version is embedded at build time instead of falling back to `0.0.0` (#93).
 - `gnosys setup ides` writes a durable stdio command (the installed `gnosys-mcp`, or `npx -y gnosys serve`) instead of an npx cache path (#94).
 - The stdio MCP server exits when the client closes stdin, after it drains requests that already arrived (#95).
+- On stdio and HTTP, SIGINT exits 130 and SIGTERM exits 143. A cleanup failure, the shutdown backstop, or an HTTP bind failure exits 1. `GNOSYS_SHUTDOWN_TIMEOUT_MS` sets the shutdown bound: a plain integer from 100 to 60000, default 1500 (#95).
 - `transaction()` attaches its rejection handler only to a real Promise, sets exit code 1 when that Promise rejects, and does not call `.then()` on any other thenable (#99, fixes #77).
 - Importing the library no longer copies `~/.config/gnosys/.env` into the host `process.env`. The CLI and the MCP server still load that file (#100, fixes #72).
-- Server instructions are built inside `startMcpServer()`, so an embedder that sets `GNOSYS_MCP_TOOLSET` after import, or a toolset that exists only in the gnosys `.env`, is announced in the `Toolset:` line. `gnosys-mcp` and `gnosys serve` still see a toolset that is already in the process environment.
+- Server instructions are built inside `startMcpServer()`, so an embedder that sets `GNOSYS_MCP_TOOLSET` after import, or a toolset that exists only in the gnosys `.env`, is announced in the `Toolset:` line. `gnosys-mcp` and `gnosys serve` still see a toolset that is already in the process environment (#101).
+
+### Security
+
+- `body-parser` is 2.4.0 in the lockfile (was 2.3.0) for GHSA-27r3-jxmh-p828 (#98).
+- Docker base image pinned to `node:24.22.1-alpine` (was floating `node:24-alpine`). The runtime stage installs current `ca-certificates` for the eMudhra intermediate CA fix (#88).
 
 ## [7.0.0] - 2026-10-18
 
