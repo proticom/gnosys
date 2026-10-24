@@ -21,7 +21,7 @@
 
 import { createInterface, type Interface as ReadlineInterface } from "readline/promises";
 import { stdin, stdout } from "process";
-import fsSync from "fs";
+import { getGnosysVersion } from "../version.js";
 import {
   loadConfig,
   resolveTaskModel,
@@ -38,16 +38,7 @@ import { Status } from "./ui/status.js";
 import { Footer } from "./ui/footer.js";
 import { c, color, glyph } from "./ui/tokens.js";
 
-// Read once at module init — used by Header().
-const PKG_VERSION = (() => {
-  try {
-    const url = new URL("../../../package.json", import.meta.url);
-    const raw = fsSync.readFileSync(url, "utf-8");
-    return `v${(JSON.parse(raw) as { version?: string }).version ?? "0.0.0"}`;
-  } catch {
-    return undefined;
-  }
-})();
+const PKG_VERSION = `v${getGnosysVersion()}`;
 
 // ─── Provider-revert repair ────────────────────────────────────────────────
 //

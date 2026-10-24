@@ -9,9 +9,10 @@ import { ensureSqliteRuntime } from "./lib/sqliteStartup.js";
 import { TOOL_ANNOTATIONS, type ToolName } from "./lib/toolAnnotations.js";
 import { formatSearchStatus } from "./lib/searchStatus.js";
 import { loadGnosysEnv } from "./lib/loadGnosysEnv.js";
+import { getGnosysVersion } from "./lib/version.js";
 import path from "path";
 import { AsyncLocalStorage } from "async_hooks";
-import { readFileSync, realpathSync } from "fs";
+import { realpathSync } from "fs";
 import { fileURLToPath } from "url";
 
 /** True when this file is the process entry (direct path or npm `gnosys-mcp` bin symlink). */
@@ -34,18 +35,8 @@ function isMcpEntryPoint(): boolean {
 // parse() vs config(): see loadGnosysEnv (stdout must stay clean for MCP stdio).
 if (isMcpEntryPoint()) loadGnosysEnv();
 
-// v5.7.1 (#15): read our running version so the upgrade-marker watcher
-// can detect when a newer global install lands and exit for client respawn.
-const __filenameMcp = fileURLToPath(import.meta.url);
-const __dirnameMcp = path.dirname(__filenameMcp);
-const RUNNING_VERSION: string = (() => {
-  try {
-    const raw = readFileSync(path.resolve(__dirnameMcp, "..", "package.json"), "utf8");
-    return (JSON.parse(raw).version as string) || "0.0.0";
-  } catch {
-    return "0.0.0";
-  }
-})();
+// Embedded at build time (src/version.ts). Replaces the old package.json read.
+const RUNNING_VERSION = getGnosysVersion();
 
 import { McpServer, type RegisteredTool, type ToolCallback } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { getLiteralValue, getObjectShape } from "@modelcontextprotocol/sdk/server/zod-compat.js";
@@ -64,7 +55,9 @@ import { buildLinkGraph, getBacklinks, getOutgoingLinks, formatGraphSummary } fr
 import { loadConfig, type GnosysConfig, DEFAULT_CONFIG } from "./lib/config.js";
 import { getLLMProvider, type LLMProvider } from "./lib/llm.js";
 import { recall, formatRecall, } from "./lib/recall.js";
-import { initAudit, readAuditLog, readAuditFromDb, formatAuditTimeline } from "./lib/audit.js";
+import { initAudit, closeAudit, readAuditLog, readAuditFromDb, formatAuditTimeline } from "./lib/audit.js";
+import { disableWriteTimeEmbedding, flushWriteTimeEmbeddings } from "./lib/embedQueue.js";
+import { createStdioShutdown, trackStdioRequests, parseShutdownTimeout } from "./lib/stdioShutdown.js";
 import { logError } from "./lib/log.js";
 import { markAgentSurface, MemoryDeletionRefusedError } from "./lib/memoryDeleteGuard.js";
 import { GnosysDB, isVisibleInProject, type MemoryScope, type ProjectVisibility } from "./lib/db.js";
@@ -96,6 +89,7 @@ import {
 import type { GnosysIngestion } from "./lib/ingest.js";
 import type { GnosysHybridSearch } from "./lib/hybridSearch.js";
 import type { GnosysAsk } from "./lib/ask.js";
+import type { GnosysEmbeddings } from "./lib/embeddings.js";
 
 // Every tool call in this process comes from an agent: memory deletion is
 // always refused here, whatever the environment says.
@@ -109,7 +103,7 @@ let config: GnosysConfig = DEFAULT_CONFIG;
 const server = new McpServer(
   {
     name: "gnosys",
-    version: "2.0.0",
+    version: RUNNING_VERSION,
   },
   { instructions: makeServerInstructions() },
 );
@@ -344,6 +338,7 @@ let search: GnosysSearch | null = null;
 let tagRegistry: GnosysTagRegistry | null = null;
 let ingestion: GnosysIngestion | null = null;
 let hybridSearch: GnosysHybridSearch | null = null;
+let embeddings: GnosysEmbeddings | null = null;
 let askEngine: GnosysAsk | null = null;
 /** v2.0: Unified SQLite store (available after migration) */
 let gnosysDb: GnosysDB | null = null;
@@ -2895,7 +2890,7 @@ regTool(
     const ctx = await resolveToolContext(projectRoot);
     try {
       const { collectDashboardData, formatDashboardJSON } = await import("./lib/dashboard.js");
-      const data = await collectDashboardData(ctx.resolver, ctx.config, "1.1.0", ctx.centralDb || undefined);
+      const data = await collectDashboardData(ctx.resolver, ctx.config, RUNNING_VERSION, ctx.centralDb || undefined);
       return {
         content: [{ type: "text", text: formatDashboardJSON(data) }],
       };
@@ -4455,7 +4450,7 @@ async function initSearchDeps(): Promise<GnosysHybridSearch | null> {
   if (!writeTarget || !search) return null;
   const { GnosysEmbeddings } = await import("./lib/embeddings.js");
   const { GnosysHybridSearch } = await import("./lib/hybridSearch.js");
-  const embeddings = new GnosysEmbeddings(writeTarget.store.getStorePath());
+  embeddings = new GnosysEmbeddings(writeTarget.store.getStorePath());
   hybridSearch = new GnosysHybridSearch(
     search, embeddings, resolver, writeTarget.store.getStorePath(), gnosysDb || undefined,
   );
@@ -4673,26 +4668,58 @@ export async function startMcpServer() {
   // v5.12: HTTP transport (central-server topology) — opt-in via env, set by
   // `gnosys serve --transport http`. Each session gets its own McpServer
   // (registrations replayed); all share the module-global brain/search.
+  const timeoutMs = parseShutdownTimeout(process.env.GNOSYS_SHUTDOWN_TIMEOUT_MS, message => console.error(message));
+  let resourcesClosed = false;
+  const closeResources = () => {
+    if (resourcesClosed) return;
+    resourcesClosed = true;
+    const errors: unknown[] = [];
+    disableWriteTimeEmbedding();
+    for (const resource of new Set([embeddings, search, gnosysDb, centralDb])) {
+      try { resource?.close(); }
+      catch (error) { errors.push(error); }
+    }
+    try { closeAudit(); }
+    catch (error) { errors.push(error); }
+    if (errors.length > 0) throw new AggregateError(errors, "Resource cleanup failed");
+  };
   if (process.env.GNOSYS_TRANSPORT === "http") {
     const { startMcpHttpServer } = await import("./lib/mcpHttp.js");
     const host = process.env.GNOSYS_HTTP_HOST || "127.0.0.1";
     const port = parseInt(process.env.GNOSYS_HTTP_PORT || "7777", 10);
     const authToken = process.env.GNOSYS_SERVE_TOKEN || undefined;
     try {
-      await startMcpHttpServer({
+      const http = await startMcpHttpServer({
         host,
         port,
         authToken,
         log: (m) => console.error(`Gnosys MCP[http]: ${m}`),
         makeServer: () => {
           const s = new McpServer(
-            { name: "gnosys", version: "2.0.0" },
+            { name: "gnosys", version: RUNNING_VERSION },
             { instructions: makeServerInstructions() },
           );
           registerCapabilities(s);
           return s;
         },
       });
+      const shutdown = createStdioShutdown({
+        drain: () => http.drain(),
+        flush: flushWriteTimeEmbeddings,
+        close: async () => { try { await http.close(); } finally { closeResources(); } },
+        closeSync: () => {
+          try { closeResources(); }
+          finally {
+            http.server.closeAllConnections();
+            if (http.server.listening) http.server.close();
+          }
+        },
+        exit: code => process.exit(code),
+        log: (message, error) => console.error(message, error ?? ""),
+        timeoutMs,
+      });
+      process.on("SIGINT", () => { void shutdown(130); });
+      process.on("SIGTERM", () => { void shutdown(143); });
     } catch (err) {
       console.error(`Gnosys MCP: ${err instanceof Error ? err.message : String(err)}`);
       process.exit(1);
@@ -4708,7 +4735,47 @@ export async function startMcpServer() {
 
   registerCapabilities(server);
   const transport = new StdioServerTransport();
+  let drain = () => Promise.resolve();
+  const start = transport.start.bind(transport);
+  transport.start = async () => {
+    // Defensively wrap SDK dispatch at start, before stdin can deliver data.
+    drain = trackStdioRequests({ transport, stdout: process.stdout });
+    await start();
+  };
+  const shutdown = createStdioShutdown({
+    drain: async () => {
+      process.stdout.on("error", (error: NodeJS.ErrnoException) => {
+        if (error.code !== "EPIPE") throw error;
+      });
+      // A signal can run before an already-ready stdin read callback dispatches its requests.
+      await new Promise<void>(resolve => setImmediate(resolve));
+      process.stdin.pause();
+      await drain();
+    },
+    flush: flushWriteTimeEmbeddings,
+    close: async () => {
+      try { closeResources(); }
+      finally { await server.close(); }
+    },
+    closeSync: closeResources,
+    exit: code => process.exit(code),
+    log: (message, error) => console.error(message, error ?? ""),
+    timeoutMs,
+  });
+  const disconnected = () => { process.stdin.pause(); void shutdown(); };
+  transport.onclose = disconnected;
   await server.connect(transport);
+  if (server.server.transport === transport) {
+    process.stdin.once("end", disconnected);
+    process.stdin.once("close", disconnected);
+    // Both transports exit with 128 + signal; another signal forces synchronous cleanup.
+    process.on("SIGINT", () => { void shutdown(130); });
+    process.on("SIGTERM", () => { void shutdown(143); });
+    if (process.stdin.readableEnded || process.stdin.destroyed) {
+      disconnected();
+      return;
+    }
+  }
   console.error("Gnosys MCP: handshake ready (heavy modules still loading)");
 
   // Kick off heavy deps; fire-and-forget. Errors here are non-fatal —
