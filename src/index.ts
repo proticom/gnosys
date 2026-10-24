@@ -6,27 +6,33 @@ import { ensureSqliteRuntime } from "./lib/sqliteStartup.js";
  * Supports layered stores: project (auto-discovered), personal, global, optional.
  */
 
-// Load API keys from ~/.config/gnosys/.env before anything else.
-// IMPORTANT: We use dotenv.parse() instead of dotenv.config() because
-// dotenv v17+ writes injection notices to stdout, which corrupts the
-// MCP stdio JSON protocol. parse() is a pure function with no side effects.
 import { TOOL_ANNOTATIONS, type ToolName } from "./lib/toolAnnotations.js";
 import { formatSearchStatus } from "./lib/searchStatus.js";
-import dotenv from "dotenv";
+import { loadGnosysEnv } from "./lib/loadGnosysEnv.js";
 import path from "path";
 import { AsyncLocalStorage } from "async_hooks";
 import { readFileSync, realpathSync } from "fs";
 import { fileURLToPath } from "url";
-const home = process.env.HOME || process.env.USERPROFILE || "/tmp";
-try {
-  const envFile = readFileSync(path.join(home, ".config", "gnosys", ".env"), "utf8");
-  const parsed = dotenv.parse(envFile);
-  for (const [key, val] of Object.entries(parsed)) {
-    if (!(key in process.env)) process.env[key] = val;
+
+/** True when this file is the process entry (direct path or npm `gnosys-mcp` bin symlink). */
+function isMcpEntryPoint(): boolean {
+  if (!process.argv[1]) return false;
+  const entry = path.resolve(process.argv[1]);
+  const self = fileURLToPath(import.meta.url);
+  if (entry === self) return true;
+  try {
+    return realpathSync(entry) === realpathSync(self);
+  } catch {
+    return false;
   }
-} catch {
-  // .env file not found — that's fine, env vars may be set elsewhere
 }
+
+// Load API keys from ~/.config/gnosys/.env only for the MCP executable
+// (`gnosys-mcp` / `node dist/index.js`), before this module reads env-backed
+// settings. A library import must not copy that file into the host process.
+// `gnosys serve` loads the same file from the CLI before it imports this module.
+// parse() vs config(): see loadGnosysEnv (stdout must stay clean for MCP stdio).
+if (isMcpEntryPoint()) loadGnosysEnv();
 
 // v5.7.1 (#15): read our running version so the upgrade-marker watcher
 // can detect when a newer global install lands and exit for client respawn.
@@ -4562,6 +4568,10 @@ async function initHeavyDeps(): Promise<void> {
 // ─── Start the server ────────────────────────────────────────────────────
 /** Start the MCP server (stdio or http). Called by `gnosys serve` and when invoked as `gnosys-mcp`. */
 export async function startMcpServer() {
+  // Programmatic start (`gnosys serve`, or a direct startMcpServer() call)
+  // still needs the file. The CLI call, or the isMcpEntryPoint() call above,
+  // already ran in those processes; a second call does not override it.
+  loadGnosysEnv();
   await ensureSqliteRuntime();
   // v5.12.1 reliability: an escaped async error must not kill the server.
   // Log to stderr (stdout is JSON-RPC in stdio mode) and keep serving —
@@ -4743,19 +4753,6 @@ export async function startMcpServer() {
     );
   } catch {
     // Notification handler setup failed — non-critical
-  }
-}
-
-/** True when this file is the process entry (direct path or npm `gnosys-mcp` bin symlink). */
-function isMcpEntryPoint(): boolean {
-  if (!process.argv[1]) return false;
-  const entry = path.resolve(process.argv[1]);
-  const self = fileURLToPath(import.meta.url);
-  if (entry === self) return true;
-  try {
-    return realpathSync(entry) === realpathSync(self);
-  } catch {
-    return false;
   }
 }
 
