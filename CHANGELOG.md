@@ -16,15 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CLI and MCP entry points suppress only SQLite experimental warnings. Other warnings remain visible.
 - Backup files are now named `gnosys-backup-<timestamp>-<ulid>.db` so consecutive backups never collide.
 
-<<<<<<< HEAD
-### Added
-
-- `gnosys project relocate <oldPath> <newPath>` points a moved project at its
-  new folder: registry, central DB row, this machine's location, and the
-  folder's `gnosys.json`. Dry run unless `--yes`; takes a SQLite backup first.
-- `gnosys project merge <fromId> <intoId>` moves a duplicate project's
-  memories and pending adds into another project and drops the emptied row.
-=======
 ### Upgrade notes
 
 - `gnosys upgrade --yes` changed meaning. It used to skip the post-upgrade
@@ -48,6 +39,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `gnosys project relocate <oldPath> <newPath>` points a moved project at its
+  new folder: registry, central DB row, this machine's location, and the
+  folder's `gnosys.json`. Dry run unless `--yes`; takes a SQLite backup first.
+- `gnosys project merge <fromId> <intoId>` moves a duplicate project's
+  memories and pending adds into another project and drops the emptied row.
 - `--json` on `gnosys upgrade`, `gnosys setup sync-projects`,
   `gnosys cleanup` and `gnosys doctor`.
 - `--yes` on `gnosys setup sync-projects` (non-interactive registry cleanup)
@@ -61,7 +57,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   stdin and stdout are terminals. It used to check stdout only.
 - `gnosys web init` only prompts when stdin is a terminal too.
 - The `.env` loader in the CLI never sets `GNOSYS_ALLOW_MEMORY_DELETE`.
->>>>>>> 543ba3ed883df5426d2ffc35174dfde22ea8d519
 
 ### Fixed
 
