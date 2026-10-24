@@ -43,6 +43,9 @@ jobs:
       - name: Audit dependencies
         run: npm audit --audit-level=high
 
+      - name: Check embedded version before build
+        run: ./node_modules/.bin/vitest run src/test/version-embedded.test.ts
+
       - name: Build
         run: npm run build
 

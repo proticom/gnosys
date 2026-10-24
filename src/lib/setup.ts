@@ -57,6 +57,7 @@ import {
   type SupportedIde,
 } from "./ideMcpInstall.js";
 import { runKeysSetup } from "./setupKeys.js";
+import { getGnosysVersion } from "./version.js";
 
 // ─── ANSI Colors ────────────────────────────────────────────────────────────
 
@@ -70,21 +71,6 @@ const RESET = "\x1b[0m";
 const CHECK = `${GREEN}\u2713${RESET}`;
 const WARN = `${YELLOW}\u26A0${RESET}`;
 const CROSS = `${RED}\u2717${RESET}`;
-
-// ─── Version (read from package.json at runtime) ───────────────────────────
-
-function getVersion(): string {
-  try {
-    const pkgPath = path.resolve(
-      new URL(".", import.meta.url).pathname,
-      "../../package.json"
-    );
-    const pkg = JSON.parse(fsSync.readFileSync(pkgPath, "utf-8"));
-    return pkg.version ?? "0.0.0";
-  } catch {
-    return "0.0.0";
-  }
-}
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -1491,7 +1477,7 @@ export async function runSetup(opts: {
   const embeddingRuntime = checkEmbeddingPackage();
   if (embeddingRuntime.kind === "unavailable") console.error(`Embedding setup: ${embeddingRuntime.message}`);
 
-  const version = getVersion();
+  const version = getGnosysVersion();
   const projectDir = opts.directory ? path.resolve(opts.directory) : process.cwd();
 
   // ─── Non-interactive mode ─────────────────────────────────────────────

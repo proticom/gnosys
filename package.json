@@ -19,10 +19,12 @@
     "gnosys-mcp": "dist/index.js"
   },
   "scripts": {
-    "prebuild": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
+    "sync-version": "node scripts/sync-version.mjs",
+    "version": "node scripts/sync-version.mjs && git add src/version.ts",
+    "prebuild": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && npm run sync-version",
     "build": "tsc -p tsconfig.build.json",
     "postbuild": "node -e \"const fs=require('fs');for (const f of ['dist/cli.js','dist/index.js']) { try { fs.chmodSync(f,0o755); } catch {} }\"",
-    "prebuild:publish": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
+    "prebuild:publish": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && npm run sync-version",
     "build:publish": "tsc -p tsconfig.publish.json",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",

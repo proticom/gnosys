@@ -8,6 +8,8 @@ Releases are tag-driven (see [ADR-0008](docs/adr/0008-automated-npm-publish.md))
 4. **Publishes to npm** through OIDC trusted publishing with the chosen dist-tag. It skips this step if that version is already on npm.
 5. **Creates the GitHub Release** in a separate `release` job, the only job with `contents: write`. It skips this step if the release already exists.
 
+Bump with `npm version <x.y.z> --no-git-tag-version` (or run `npm run sync-version` after editing `package.json`) so `src/version.ts` stays in sync; the version test fails otherwise.
+
 ## Dist-tags and GitHub "Latest"
 
 | Tag | npm dist-tag | GitHub Release |
