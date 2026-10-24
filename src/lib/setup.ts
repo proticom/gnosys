@@ -50,13 +50,14 @@ import {
   gnosysStdioMcpEntry,
   installStdioMcpJson,
   normalizeIdeKey,
-  resolveGnosysMcpCommand,
+  resolveGnosysStdioCommand,
   cursorMcpPaths,
   runCli,
   removeTomlSection,
   type SupportedIde,
 } from "./ideMcpInstall.js";
 import { runKeysSetup } from "./setupKeys.js";
+import { getGnosysVersion } from "./version.js";
 
 // ─── ANSI Colors ────────────────────────────────────────────────────────────
 
@@ -70,21 +71,6 @@ const RESET = "\x1b[0m";
 const CHECK = `${GREEN}\u2713${RESET}`;
 const WARN = `${YELLOW}\u26A0${RESET}`;
 const CROSS = `${RED}\u2717${RESET}`;
-
-// ─── Version (read from package.json at runtime) ───────────────────────────
-
-function getVersion(): string {
-  try {
-    const pkgPath = path.resolve(
-      new URL(".", import.meta.url).pathname,
-      "../../package.json"
-    );
-    const pkg = JSON.parse(fsSync.readFileSync(pkgPath, "utf-8"));
-    return pkg.version ?? "0.0.0";
-  } catch {
-    return "0.0.0";
-  }
-}
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -976,12 +962,12 @@ export async function setupIDE(
   try {
     switch (canonical) {
       case "claude": {
-        const mcpCmd = resolveGnosysMcpCommand();
+        const { command, args } = resolveGnosysStdioCommand();
         let codeSuccess = true;
-        let codeMsg = `MCP registered (${mcpCmd})`;
+        let codeMsg = `MCP registered (${[command, ...args].join(" ")})`;
         try {
           runCli("claude", ["mcp", "remove", "gnosys"], { allowFailure: true });
-          runCli("claude", ["mcp", "add", "-s", "user", "gnosys", "--", mcpCmd]);
+          runCli("claude", ["mcp", "add", "-s", "user", "gnosys", "--", command, ...args]);
         } catch (e) {
           const msg = e instanceof Error ? e.message : String(e);
           if (msg.includes("already exists")) {
@@ -1047,19 +1033,27 @@ export async function setupIDE(
           // No user-level config.toml to clean — fine.
         }
 
-        // 2. Absolute path to `gnosys-mcp` (stdio entry) for Codex spawn.
-        const gnosysCmd = resolveGnosysMcpCommand();
+        const { command, args } = resolveGnosysStdioCommand();
 
         // 3. Check whether gnosys is already registered. If yes and the
         //    command matches, leave it alone (idempotent). If it differs,
         //    remove and re-add.
         let alreadyCorrect = false;
         try {
-          const existing = runCli("codex", ["mcp", "get", "gnosys"], { allowFailure: true });
-          if (existing?.includes(gnosysCmd) && !existing.includes(" serve")) {
-            alreadyCorrect = true;
-          } else if (existing) {
-            runCli("codex", ["mcp", "remove", "gnosys"], { allowFailure: true });
+          const existing = runCli("codex", ["mcp", "get", "gnosys", "--json"], { allowFailure: true });
+          if (existing) {
+            const entry: unknown = JSON.parse(existing);
+            if (entry && typeof entry === "object" && "transport" in entry) {
+              const transport = entry.transport;
+              alreadyCorrect = transport !== null && typeof transport === "object"
+                && "command" in transport && transport.command === command
+                && "args" in transport && Array.isArray(transport.args)
+                && transport.args.length === args.length
+                && transport.args.every((arg, index) => arg === args[index]);
+            }
+            if (!alreadyCorrect) {
+              runCli("codex", ["mcp", "remove", "gnosys"], { allowFailure: true });
+            }
           }
         } catch {
           // `codex mcp get` failed — proceed to add.
@@ -1075,7 +1069,7 @@ export async function setupIDE(
 
         // 4. Register via the canonical Codex CLI command.
         try {
-          runCli("codex", ["mcp", "add", "gnosys", "--", gnosysCmd]);
+          runCli("codex", ["mcp", "add", "gnosys", "--", command, ...args]);
         } catch (err) {
           const msg = err instanceof Error ? err.message : String(err);
           // Common failure: codex CLI not installed. Don't fail the whole
@@ -1491,7 +1485,7 @@ export async function runSetup(opts: {
   const embeddingRuntime = checkEmbeddingPackage();
   if (embeddingRuntime.kind === "unavailable") console.error(`Embedding setup: ${embeddingRuntime.message}`);
 
-  const version = getVersion();
+  const version = getGnosysVersion();
   const projectDir = opts.directory ? path.resolve(opts.directory) : process.cwd();
 
   // ─── Non-interactive mode ─────────────────────────────────────────────

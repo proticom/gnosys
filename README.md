@@ -62,7 +62,20 @@ All tools are exposed over stdio and HTTP transports. Many tools accept an optio
 This package installs two binaries:
 
 - **`gnosys`** — the CLI. `gnosys serve` starts the MCP server (stdio by default, `--transport http` for the central-server topology). `gnosys setup ides` wires `gnosys-mcp` into your IDE/agent configs.
-- **`gnosys-mcp`** — a direct alias for the MCP stdio server entry, for MCP clients that prefer to spawn the server binary directly (e.g. `npx -y gnosys-mcp`). Equivalent to `gnosys serve`.
+- **`gnosys-mcp`** — a direct alias for the MCP stdio server entry, installed with `npm install -g gnosys`, for MCP clients that spawn the server binary directly. Equivalent to `gnosys serve`. With npx, use `npx -y gnosys serve`.
+
+On stdio EOF, the server drains received requests, writes their responses, and
+closes resources before exiting 0. Embedding flushes get at most 500 ms or one
+third of the shutdown timeout; reindex or an embedding-enabled Dream run recovers
+missing vectors. Cleanup errors or the 1500 ms shutdown backstop exit 1.
+`GNOSYS_SHUTDOWN_TIMEOUT_MS` accepts plain decimal integers without whitespace
+(100–60000 ms). Out-of-range integers and signed infinities warn and clamp to
+the nearest bound; other formats warn and use 1500 ms. Both transports exit
+130 for SIGINT and 143 for SIGTERM. The first signal during an EOF drain lets
+requests finish and sets that exit status. Only a second actual signal forces
+immediate resource cleanup and exits with its status. HTTP ignores stdin closure.
+On a signal, HTTP rejects new requests and drains admitted POST responses before closing SSE streams.
+Synchronous event-loop blocking (for example a long handler or SQLite call) defeats the shutdown bound/backstop; there is no watchdog process.
 
 | Tool | Tier | Description |
 |------|------|-------------|

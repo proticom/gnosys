@@ -48,6 +48,8 @@ export interface McpHttpHandle {
   sessionCount: () => number;
   /** Close+remove sessions idle beyond sessionIdleMs. Returns count reaped. */
   reapIdleSessions: (now?: number) => number;
+  /** Stop accepting requests and wait for admitted POST responses to finish. */
+  drain: () => Promise<void>;
   close: () => Promise<void>;
 }
 
@@ -131,6 +133,10 @@ export function startMcpHttpServer(opts: McpHttpOptions): Promise<McpHttpHandle>
   const mcpPath = opts.path ?? "/mcp";
   const log = opts.log ?? (() => {});
   const transports = new Map<string, StreamableHTTPServerTransport>();
+  const sseResponses = new Set<http.ServerResponse>();
+  const posts = new Set<http.ServerResponse>();
+  const waiters = new Set<() => void>();
+  let draining = false;
   const lastSeen = new Map<string, number>();
   const idleMs = opts.sessionIdleMs ?? 30 * 60 * 1000;
   const sweepMs = opts.sweepIntervalMs ?? 60 * 1000;
@@ -139,6 +145,7 @@ export function startMcpHttpServer(opts: McpHttpOptions): Promise<McpHttpHandle>
   const touch = (sid: string) => lastSeen.set(sid, Date.now());
 
   function reapIdle(now = Date.now()): number {
+    if (draining) return 0;
     let reaped = 0;
     for (const [sid, t] of transports) {
       if (now - (lastSeen.get(sid) ?? now) > idleMs) {
@@ -151,6 +158,26 @@ export function startMcpHttpServer(opts: McpHttpOptions): Promise<McpHttpHandle>
   }
 
   const httpServer = http.createServer((req, res) => {
+    if (draining) {
+      res.setHeader("connection", "close");
+      jsonRpcError(res, 503, -32000, "Server shutting down");
+      req.resume();
+      return;
+    }
+    if (req.method === "POST") {
+      posts.add(res);
+      const complete = () => {
+        res.off("finish", complete);
+        res.off("close", complete);
+        posts.delete(res);
+        if (posts.size === 0) {
+          for (const resolve of waiters) resolve();
+          waiters.clear();
+        }
+      };
+      res.once("finish", complete);
+      res.once("close", complete);
+    }
     void handle(req, res).catch((e) => {
       log(`request error: ${e instanceof Error ? e.message : String(e)}`);
       if (!res.headersSent) jsonRpcError(res, 500, -32603, "Internal error");
@@ -244,6 +271,10 @@ export function startMcpHttpServer(opts: McpHttpOptions): Promise<McpHttpHandle>
         return;
       }
       if (sessionId) touch(sessionId);
+      if (req.method === "GET") {
+        sseResponses.add(res);
+        res.once("close", () => sseResponses.delete(res));
+      }
       await transport.handleRequest(req, res);
       return;
     }
@@ -252,23 +283,42 @@ export function startMcpHttpServer(opts: McpHttpOptions): Promise<McpHttpHandle>
     res.end("Method not allowed");
   }
 
-  return new Promise<McpHttpHandle>((resolve) => {
+  return new Promise<McpHttpHandle>((resolve, reject) => {
+    httpServer.once("error", reject);
     httpServer.listen(opts.port, opts.host, () => {
+      httpServer.off("error", reject);
       log(`listening on http://${opts.host}:${opts.port}${mcpPath}`);
       const sweep = setInterval(() => reapIdle(), sweepMs);
       sweep.unref();
+      let serverClosed: Promise<void> | undefined;
+      let drained: Promise<void> | undefined;
+      const drain = () => drained ??= (async () => {
+        draining = true;
+        clearInterval(sweep);
+        serverClosed = new Promise<void>((resolve, reject) => {
+          httpServer.close(error => { if (error) reject(error); else resolve(); });
+        });
+        // Listener closure can fail while a POST is still draining; close() reports that error.
+        void serverClosed.catch(() => {});
+        if (posts.size > 0) await new Promise<void>(resolve => { waiters.add(resolve); });
+      })();
+      let closing: Promise<void> | undefined;
       resolve({
         server: httpServer,
         sessionCount: () => transports.size,
         reapIdleSessions: (now?: number) => reapIdle(now),
-        close: () =>
-          new Promise<void>((r) => {
-            clearInterval(sweep);
-            for (const t of transports.values()) void t.close();
-            transports.clear();
-            lastSeen.clear();
-            httpServer.close(() => r());
-          }),
+        drain,
+        close: () => closing ??= (async () => {
+          await drain();
+          await Promise.allSettled([...transports.values()].map(t => t.close()));
+          // SDK stream closure can finish before the HTTP adapter releases its socket.
+          for (const response of sseResponses) response.destroy();
+          sseResponses.clear();
+          transports.clear();
+          lastSeen.clear();
+          httpServer.closeIdleConnections();
+          await serverClosed;
+        })(),
       });
     });
   });

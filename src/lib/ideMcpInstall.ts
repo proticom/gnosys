@@ -10,6 +10,7 @@ import { mergeJsonMcpServer } from "./mcpClientConfig.js";
 const WINDOWS_BATCH_EXTENSION = /\.(?:cmd|bat)$/i;
 const WINDOWS_POWERSHELL_EXTENSION = /\.ps1$/i;
 const WINDOWS_PATH_SEPARATOR = /[\\/]/;
+const NPX_CACHE_SEGMENT = /(?:^|[\\/])_npx(?:[\\/]|$)/i;
 
 /** IDE keys handled by `setupIDE()`. */
 export const SUPPORTED_IDE_KEYS = [
@@ -38,10 +39,20 @@ export function normalizeIdeKey(ide: string): SupportedIde | null {
   return IDE_ALIASES[key] ?? null;
 }
 
-/** Absolute path to `gnosys-mcp` when on PATH, else bare name. */
-export function resolveGnosysMcpCommand(): string {
+export function resolveGnosysStdioCommand(): { command: string; args: string[] } {
+  const command = resolveGnosysMcpCommand();
+  if (command && !NPX_CACHE_SEGMENT.test(command)) {
+    return { command, args: [] };
+  }
+  return {
+    command: process.platform === "win32" ? resolveWindowsPathCommand("npx") ?? "npx" : "npx",
+    args: ["-y", "gnosys", "serve"],
+  };
+}
+
+function resolveGnosysMcpCommand(): string | null {
   if (process.platform === "win32") {
-    return resolveWindowsPathCommand("gnosys-mcp") ?? "gnosys-mcp";
+    return resolveWindowsPathCommand("gnosys-mcp");
   }
 
   try {
@@ -51,21 +62,22 @@ export function resolveGnosysMcpCommand(): string {
     }).trim();
     if (p) return p;
   } catch {
-    // Fall back to bare name on PATH.
+    return null;
   }
-  return "gnosys-mcp";
+  return null;
 }
 
 export function gnosysStdioMcpEntry(): { command: string; args: string[] } {
-  return { command: resolveGnosysMcpCommand(), args: [] };
+  return resolveGnosysStdioCommand();
 }
 
-/** True when an existing JSON MCP entry still points at broken `gnosys serve`. */
+/** Detect legacy serve entries and commands tied to an npx cache. */
 export function isStaleGnosysMcpEntry(entry: unknown): boolean {
   if (!entry || typeof entry !== "object") return false;
   const e = entry as { command?: unknown; args?: unknown };
   const cmd = String(e.command ?? "");
   const args = Array.isArray(e.args) ? e.args.map(String) : [];
+  if (NPX_CACHE_SEGMENT.test(cmd)) return true;
   if (cmd.includes("gnosys-mcp")) return false;
   if (cmd.endsWith("/gnosys") || cmd === "gnosys") {
     return args.includes("serve") || args.length === 0;
