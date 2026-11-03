@@ -107,12 +107,13 @@ export class GnosysStore {
     });
 
     const memories: Memory[] = [];
-    for (const file of files) {
-      try {
-        const memory = await this.readMemory(file);
-        if (memory) memories.push(memory);
-      } catch {
-        // Skip files that can't be parsed
+    const batchSize = 8;
+    for (let i = 0; i < files.length; i += batchSize) {
+      const results = await Promise.allSettled(
+        files.slice(i, i + batchSize).map(async (file) => this.readMemory(file))
+      );
+      for (const result of results) {
+        if (result.status === "fulfilled" && result.value) memories.push(result.value);
       }
     }
     return memories;
