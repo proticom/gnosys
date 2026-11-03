@@ -247,22 +247,24 @@ export async function collectDashboardData(
   let synthesis: { provider: LLMProviderName; model: string } | null = null;
   try { structuring = resolveTaskModel(config, "structuring"); } catch { /* not set */ }
   try { synthesis = resolveTaskModel(config, "synthesis"); } catch { /* not set */ }
-  const providerStatus: DashboardData["soc"]["providerStatus"] = [];
-
-  for (const p of ALL_PROVIDERS) {
+  const providerStatus: DashboardData["soc"]["providerStatus"] = ALL_PROVIDERS.map((p) => {
     const status = isProviderAvailable(config, p);
-    let available = status.available;
-    let note = status.available ? "ready" : (status.error || "not configured");
+    return {
+      name: p,
+      available: status.available,
+      note: status.available ? "ready" : (status.error || "not configured"),
+    };
+  });
+  await Promise.all(providerStatus.map(async (status) => {
     // v5.4.1: For local providers, the sync isProviderAvailable check just
     // confirms "no API key needed." Actually probe the local server with a
     // short timeout so the dashboard reports truthful state.
-    if (status.available && (p === "ollama" || p === "lmstudio")) {
-      const reachable = await probeLocalProvider(p, config);
-      available = reachable;
-      note = reachable ? "ready" : "server not running";
+    if (status.available && (status.name === "ollama" || status.name === "lmstudio")) {
+      const reachable = await probeLocalProvider(status.name, config);
+      status.available = reachable;
+      status.note = reachable ? "ready" : "server not running";
     }
-    providerStatus.push({ name: p, available, note });
-  }
+  }));
 
   // Performance benchmarks (quick probe of search/archive latency)
   let performance: DashboardData["performance"] = null;
